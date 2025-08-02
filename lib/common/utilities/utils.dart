@@ -1,0 +1,2369 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+import 'package:csc_picker_plus/dropdown_with_search.dart';
+import 'package:excel/excel.dart' as excel;
+import 'package:fullcomm_crm/common/styles/styles.dart';
+import 'package:fullcomm_crm/common/widgets/log_in.dart';
+import 'package:fullcomm_crm/common/widgets/sign_up.dart';
+import 'package:fullcomm_crm/screens/leads/prospects.dart';
+import 'package:fullcomm_crm/screens/leads/qualified.dart';
+import 'package:fullcomm_crm/screens/leads/suspects.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unique_simple_bar_chart/data_models.dart';
+import 'package:unique_simple_bar_chart/simple_bar_chart.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/screens/customer/view_customer.dart';
+import 'package:fullcomm_crm/screens/dashboard.dart';
+import '../../components/custom_alert_dialog.dart';
+import '../../components/custom_loading_button.dart';
+import '../../components/custom_sidebar_text.dart';
+import '../../components/custom_text.dart';
+import '../../components/custom_textbutton.dart';
+import '../../controller/controller.dart';
+import '../../controller/image_controller.dart';
+import '../../services/api_services.dart';
+import '../constant/api.dart';
+import '../constant/assets_constant.dart';
+import '../constant/colors_constant.dart';
+import '../constant/default_constant.dart';
+import '../widgets/camera.dart';
+import 'dart:html' as html;
+
+final Utils utils = Utils._();
+
+class Utils {
+  Utils._();
+
+  makingPhoneCall({String? ph}) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: ph,
+    );
+    await launchUrl(launchUri);
+  }
+
+  makingWhatApp({String? whatsapp}) async {
+    // String url(){
+    //   if (Platform.isAndroid){
+    var url = Uri.parse("https://wa.me/$whatsapp/?text=hi");
+    // return "https://www.whatsapp.com/?text=Your%20text%20here";
+    //   } else {
+    //     return "https://api.whatsapp.com/send?phone=$whatsapp=hi";
+    //   }
+    // }
+    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  Widget headingBox({double? width, String? text}) {
+    return Container(
+      alignment: Alignment.center,
+      width: width,
+      height: 50,
+      decoration: BoxDecoration(
+          color: Colors.grey.shade300, borderRadius: BorderRadius.circular(8)),
+      child: CustomText(
+        textAlign: TextAlign.center,
+        colors: colorsConst.primary,
+        size: 18,
+        isBold: true,
+        text: text.toString(),
+      ),
+    );
+  }
+
+  void sendEmailDialog(
+      {required String id,
+      required String name,
+      required String mobile,
+      required String coName}) {
+    showDialog(
+        context: Get.context!,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: colorsConst.primary,
+            actions: [
+              Column(
+                children: [
+                  Divider(
+                    color: Colors.grey.shade300,
+                    thickness: 1,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        child: Row(
+                          children: [
+                            IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(assets.b,
+                                    width: 17, height: 17)),
+                            IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(
+                                  assets.i,
+                                  width: 15,
+                                  height: 15,
+                                )),
+                            IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(
+                                  assets.u,
+                                  width: 19,
+                                  height: 19,
+                                )),
+                            IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(
+                                  assets.fileFilter,
+                                  width: 17,
+                                  height: 17,
+                                )),
+                            // IconButton(
+                            //     onPressed: (){},
+                            //     icon:SvgPicture.asset(assets.textFilter,width: 17,height: 17,)
+                            // ),
+                            IconButton(
+                                onPressed: () {
+                                  utils.chooseFile(mediaDataV:imageController.empMediaData,
+                                      fileName:imageController.empFileName,
+                                      pathName:imageController.photo1);
+                                },
+                                icon: SvgPicture.asset(assets.file)),
+                            IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(
+                                  assets.layer,
+                                  width: 17,
+                                  height: 17,
+                                )),
+                            IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(assets.a)),
+                          ],
+                        ),
+                      ),
+                      Obx(
+                        () => CustomLoadingButton(
+                          callback: () {
+                            apiService.insertEmailAPI(context, id.toString(),imageController.photo1.value);
+                          },
+                          controller: controllers.emailCtr,
+                          isImage: false,
+                          isLoading: true,
+                          backgroundColor: colorsConst.primary,
+                          radius: 5,
+                          width: controllers.emailCount.value == 0 ||
+                                  controllers.emailCount.value == 1
+                              ? 90
+                              : 200,
+                          height: 50,
+                          text: controllers.emailCount.value == 0
+                              ? "Quotation"
+                              : controllers.emailCount.value == 1
+                                  ? "Reply"
+                                  : "Reply & Quotation",
+                          textColor: Colors.white,
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ],
+            content: SizedBox(
+                width: 600,
+                height: 400,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Align(
+                          alignment: Alignment.topRight,
+                          child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Icon(
+                                Icons.clear,
+                                size: 18,
+                                color: colorsConst.textColor,
+                              ))),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: TextButton(
+                            onPressed: () {
+                              controllers.isTemplate.value =
+                                  !controllers.isTemplate.value;
+                            },
+                            child: CustomText(
+                              text: "Get Form Template",
+                              colors: colorsConst.third,
+                              size: 18,
+                              isBold: true,
+                            )),
+                      ),
+                      Row(
+                        children: [
+                          CustomText(
+                            textAlign: TextAlign.center,
+                            text: "To",
+                            colors: colorsConst.textColor,
+                            size: 15,
+                          ),
+                          50.width,
+                          SizedBox(
+                            width: 500,
+                            child: TextField(
+                              controller: controllers.emailToCtr,
+                              style: TextStyle(
+                                  fontSize: 15, color: colorsConst.textColor),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                          width: 600,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Divider(
+                                  color: Colors.grey.shade300,
+                                  thickness: 1,
+                                ),
+                                Row(
+                                  children: [
+                                    15.height,
+                                    CustomText(
+                                      text: "Subject",
+                                      colors: colorsConst.textColor,
+                                      size: 14,
+                                    ),
+                                    20.width,
+                                    SizedBox(
+                                      width: 500,
+                                      height: 50,
+                                      child: TextField(
+                                        controller: controllers.emailSubjectCtr,
+                                        maxLines: null,
+                                        minLines: 1,
+                                        style: TextStyle(
+                                          color: colorsConst.textColor,
+                                        ),
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Divider(
+                                  color: Colors.grey.shade300,
+                                  thickness: 1,
+                                ),
+                                Obx(
+                                  () => controllers.isTemplate.value == false
+                                      ? SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            Obx(()=>imageController.photo1.value.isEmpty?0.height:
+                                            Image.memory(base64Decode(imageController.photo1.value),
+                                              fit: BoxFit.cover,width: 80,height: 80,),),
+                                            SizedBox(
+                                              width: 600,
+                                              height: 223,
+                                              child: TextField(
+                                                textInputAction: TextInputAction.newline,
+                                                controller: controllers.emailMessageCtr,
+                                                keyboardType: TextInputType.multiline,
+                                                maxLines: 21,
+                                                expands: false,
+                                                style: TextStyle(
+                                                  color: colorsConst.textColor,
+                                                ),
+                                                decoration: InputDecoration(
+                                                  hintText: "Message",
+                                                  hintStyle: TextStyle(
+                                                      color: colorsConst.textColor,
+                                                      fontSize: 14,
+                                                      fontFamily: "Lato"),
+                                                  border: InputBorder.none,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                      : UnconstrainedBox(
+                                          child: Container(
+                                            width: 500,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              color: colorsConst.secondary,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: SingleChildScrollView(
+                                              child: Column(
+                                                children: [
+                                                  SizedBox(
+                                                    width: 500,
+                                                    height: 210,
+                                                    child: Table(
+                                                      defaultColumnWidth:
+                                                          const FixedColumnWidth(
+                                                              120.0),
+                                                      border: TableBorder.all(
+                                                          color: Colors
+                                                              .grey.shade300,
+                                                          style:
+                                                              BorderStyle.solid,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          width: 1),
+                                                      children: [
+                                                        TableRow(
+                                                            children: [
+                                                              CustomText(
+                                                                textAlign: TextAlign.center,
+                                                                text: "\nTemplate Name\n",
+                                                                colors: colorsConst.textColor,
+                                                                size: 15,
+                                                                isBold: true,
+                                                              ),
+                                                          CustomText(
+                                                            textAlign:
+                                                                TextAlign.center,
+                                                            text: "\nSubject\n",
+                                                            colors: colorsConst
+                                                                .textColor,
+                                                            size: 15,
+                                                            isBold: true,
+                                                          ),
+                                                        ]),
+                                                        utils.emailRow(
+                                                            context,
+                                                            isCheck: controllers.isAdd,
+                                                            templateName:
+                                                                "Promotional",
+                                                            msg:
+                                                                "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
+                                                            subject:
+                                                                "Exclusive Promotion for You - \nLimited Time Offer!"),
+                                                        utils.emailRow(
+                                                            context,
+                                                            isCheck: controllers.isAdd,
+                                                            templateName: "Follow-Up",
+                                                            msg: "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+                                                            subject: "Follow-up on Recent Service Interaction"),
+                                                        utils.emailRow(context,
+                                                            msg:
+                                                                "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+                                                            isCheck:
+                                                                controllers.isAdd,
+                                                            templateName:
+                                                                "Service Update",
+                                                            subject:
+                                                                "Service Update - [Brief Description]"),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  // 10.height,
+                                                  // CustomLoadingButton(
+                                                  //   callback: (){},
+                                                  //   isImage: false,
+                                                  //   isLoading: false,
+                                                  //   backgroundColor: colorsConst.primary,
+                                                  //   radius: 20,
+                                                  //   width: 70,
+                                                  //   height: 30,
+                                                  //   text: "Done",
+                                                  //   textColor: Colors.white,
+                                                  //
+                                                  // ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                )
+                              ],
+                            ),
+                          )),
+                    ],
+                  ),
+                )),
+          );
+        });
+  }
+
+  Widget barChart() {
+    return BarChart(
+      BarChartData(
+        alignment: BarChartAlignment.spaceAround,
+        maxY: 10,
+        barGroups: [
+          makeGroupData(0, 5),
+          makeGroupData(1, 6),
+          makeGroupData(2, 8),
+          makeGroupData(3, 2),
+          makeGroupData(4, 5),
+          makeGroupData(5, 7),
+        ],
+        titlesData: FlTitlesData(
+          show: true,
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (double value, TitleMeta meta) {
+                const style = TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                );
+                var conData = "";
+                Widget text(String text) {
+                  return CustomText(
+                    text: text,
+                    colors: const Color(0xffE1E5FA),
+                    size: 12,
+                  );
+                }
+
+                ;
+                switch (value.toInt()) {
+                  case 0:
+                    conData = 'Mon';
+                    break;
+                  case 1:
+                    conData = 'Tue';
+                    break;
+                  case 2:
+                    conData = 'Wed';
+                    break;
+                  case 3:
+                    conData = 'Thur';
+                    break;
+                  case 4:
+                    conData = 'Fri';
+                    break;
+                  case 5:
+                    conData = 'Sat';
+                    break;
+                  default:
+                    conData = '';
+                    break;
+                }
+                return SideTitleWidget(
+                  axisSide: meta.axisSide,
+                  space: 8.0, // margin between the chart and the titles
+                  child: text(conData),
+                );
+              },
+            ),
+          ),
+          leftTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+        ),
+        borderData: FlBorderData(
+          show: false,
+        ),
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+            tooltipPadding: const EdgeInsets.all(5),
+            tooltipBorder: const BorderSide(color: Colors.grey),
+          ),
+        ),
+        gridData: const FlGridData(show: false),
+      ),
+    );
+  }
+
+  BarChartGroupData makeGroupData(int x, double y) {
+    return BarChartGroupData(
+      barsSpace: 4,
+      x: x,
+      barRods: [
+        BarChartRodData(
+          color: Colors.cyanAccent,
+          width: 20,
+          toY: y,
+        )
+      ],
+    );
+  }
+
+  Widget simpleBarChart() {
+    return SimpleBarChart(
+      makeItDouble: false,
+      verticalInterval: 70,
+      horizontalBarPadding: 10,
+      listOfHorizontalBarData: [
+        HorizontalDetailsModel(
+          name: 'Mon',
+          color: const Color(0xFFEB7735),
+          size: 200,
+          // sizeTwo: 40,
+          // colorTwo: Colors.blue,
+        ),
+        HorizontalDetailsModel(
+          name: 'Tues',
+          color: const Color(0xFFEB7735),
+          size: 92,
+          // sizeTwo: 85,
+          // colorTwo: Colors.blue,
+        ),
+        HorizontalDetailsModel(
+          name: 'Wed',
+          color: const Color(0xFFFBBC05),
+          size: 120,
+          // sizeTwo: 100,
+          // colorTwo: Colors.blue,
+        ),
+        HorizontalDetailsModel(
+          name: 'Thurs',
+          color: const Color(0xFFFBBC05),
+          size: 86,
+          //sizeTwo: 220,
+          //colorTwo: Colors.blue,
+        ),
+        HorizontalDetailsModel(
+          name: 'Fri',
+          color: const Color(0xFFFBBC05),
+          size: 64,
+          // sizeTwo: 170,
+          // colorTwo: Colors.blue,
+        ),
+        HorizontalDetailsModel(
+          name: 'Sat',
+          color: const Color(0xFFFBBC05),
+          size: 155,
+          // sizeTwo: 120,
+          // colorTwo: Colors.blue,
+        ),
+        HorizontalDetailsModel(
+          name: 'Sun',
+          color: const Color(0xFFFBBC05),
+          size: 200,
+          // sizeTwo: 96,
+          // colorTwo: Colors.blue,
+        ),
+      ],
+    );
+  }
+
+  makingFacebook({String? fb}) async {
+    // String url(){
+    //   if (Platform.isAndroid){
+    var url = Uri.parse('https://www.facebook.com/$fb/');
+    //return "fb://page/page_id";
+    //   } else {
+    //     return "fb://profile/page_id";
+    //     //return "fb://profile/page_id";
+    //   }
+    // }
+    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  makingEmail({String? mail}) async {
+    final url = Uri.parse('mailto:$mail');
+    //final url = 'https://mail.google.com/mail/u/0/#inbox';
+    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  makingInstagram({String? instagram}) async {
+    var url = Uri.parse('https://www.instagram.com/$instagram/');
+    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  makingTwitter({String? twitter}) async {
+    var url = Uri.parse('https://www.twitter.com/$twitter/');
+    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  makingLinkDin({String? link}) async {
+    var url = Uri.parse('https://www.linkedin.com/');
+    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  makingWebsite({String? web}) async {
+    final url = Uri.parse('https://www.$web.com');
+    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  // Future<File?> pickFile() async {
+  //   final result = await FilePicker.platform.pickFiles(
+  //     type: FileType.custom,
+  //     allowedExtensions: ['pdf'],
+  //   );
+  //
+  //   if (result == null) return null;
+  //   return File(result.paths.first.toString());
+  // }
+
+  Future<File> loadNetwork(String url) async {
+    final response = await http.get(Uri.parse(url));
+    final bytes = response.bodyBytes;
+
+    return _storeFile(url, bytes);
+  }
+
+  Future<File> _storeFile(String url, List<int> bytes) async {
+    final filename = basename(url);
+    final dir = await getApplicationDocumentsDirectory();
+
+    final file = File('${dir.path}/$filename');
+    await file.writeAsBytes(bytes, flush: true);
+    return file;
+  }
+  // String? selectedTime;
+  // void displayTimeDialog(BuildContext context,{TextEditingController? controller}) async {
+  //   TimeOfDay? time =await showTimePicker(
+  //     context: context,
+  //     initialTime: TimeOfDay.now(),
+  //     builder: (BuildContext context, Widget? child){
+  //       return MediaQuery(
+  //         data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+  //         child: child!,
+  //       );
+  //     }
+  //   );
+  //   if (time != null){
+  //       selectedTime=_formatTime12Hour(time,context);
+  //       controller!.text=selectedTime.toString();
+  //
+  //   }
+  // }
+
+  Future<void> pickImage() async {
+    XFile? pickedFile;
+    try {
+      pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    } on Exception catch (e) {
+      // Handle exception
+      log('Image capture failed: $e');
+    }
+
+    if (pickedFile != null) {
+      imageController.photo1.value = pickedFile.path;
+    }
+  }
+
+  Widget imageContainer(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        showImagePickerDialog(context);
+      },
+      child: Stack(
+        children: [
+          Obx(
+            () => Container(
+                height: 150,
+                width: 150,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                padding: const EdgeInsets.all(8),
+                child: imageController.photo1.value == ""
+                    ? Image.asset(assets.addStall)
+                    : Image.file(
+                        File(imageController.photo1.value),
+                        fit: BoxFit.fill,
+                      )),
+          ),
+          Obx(
+            () => imageController.photo1.value == ""
+                ? const SizedBox()
+                : Positioned(
+                    bottom: 100,
+                    right: 0.7,
+                    left: 100,
+                    child: Card(
+                      color: Colors.white,
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(35.0),
+                      ),
+                      child: ClipOval(
+                        child: Material(
+                          color: Colors.red,
+                          child: InkWell(
+                            splashColor: Colors.redAccent,
+                            child: const SizedBox(
+                              width: 35,
+                              height: 35,
+                              child: Icon(
+                                Icons.remove_circle_outline,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                            onTap: () {
+                              imageController.photo1.value = "";
+                              imageController.imagePath1 = "";
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+          ),
+          const Positioned(
+            bottom: 5,
+            right: 5,
+            child: Icon(
+              Icons.camera_alt,
+              size: 25,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  // String _formatTime12Hour(TimeOfDay time,BuildContext context){
+  //   int hour = time.hourOfPeriod;
+  //   String period = time.period == DayPeriod.am ? 'AM' : 'PM';
+  //
+  //   String hourStr = hour.toString().padLeft(2, '0');
+  //   String minuteStr = time.minute.toString().padLeft(2, '0');
+  //
+  //   return '$hourStr:$minuteStr $period';
+  // }
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar(
+      {required BuildContext context,
+      required String msg,
+      required Color color}) {
+    var snack = SnackBar(
+        width: 500,
+        content: Center(child: Text(msg)),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 4),
+        backgroundColor: color,
+        //margin: const EdgeInsets.all(50),
+        elevation: 30,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20))));
+    return ScaffoldMessenger.of(context).showSnackBar(
+      snack,
+    );
+  }
+
+  // Widget leadCon(
+  //     BuildContext context,int index,String id,String mainName,String mainMobile,String mainEmail,String companyName,
+  // String status,String rating,String emailUpdate,String name,String title,String mobileNumber,String whatsappNumber,
+  // String email,String mainTitle,String addressId,String companyWebsite,String companyNumber,String companyEmail,
+  // String industry,String productServices,String source,String owner,String budget,String timelineDecision,
+  // String serviceInterest,String description,String leadStatus,String active,String addressLine1,String addressLine2,
+  // String area,String city,String state,String country,String pinCode){
+  //   return Container(
+  //     width: MediaQuery.of(context).size.width/4.5,
+  //     height: 245,
+  //     decoration: BoxDecoration(
+  //       color: colorsConst.secondary,
+  //       borderRadius: BorderRadius.circular(2)
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children:[
+  //         10.height,
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children:[
+  //             CustomText(
+  //               text: "       $mainName",
+  //               isBold: true,
+  //               colors: colorsConst.textColor,
+  //               size: 18,
+  //             ),
+  //             Container(
+  //               width:32,
+  //               alignment: Alignment.center,
+  //               child: CustomCheckBox(
+  //                   text: "",
+  //                   onChanged: (value){
+  //                     setState(() {
+  //                       if(controllers.isNewLeadList[widget.index!]==true){
+  //                         controllers.isNewLeadList[widget.index!]=false;
+  //                         var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==widget.id.toString());
+  //                         apiService.prospectsList.removeAt(i);
+  //                       }else{
+  //                         controllers.isNewLeadList[widget.index!]=true;
+  //                         apiService.prospectsList.add({
+  //                           "lead_id":widget.id.toString(),
+  //                           "user_id":controllers.storage.read("id"),
+  //                           "rating":widget.rating.toString(),
+  //                           "cos_id":cosId,
+  //                         });
+  //                       }
+  //                       print(apiService.prospectsList);
+  //                     });
+  //                     },
+  //                   saveValue: controllers.isNewLeadList[widget.index!]),
+  //             ),
+  //           ],
+  //         ),
+  //         CustomText(
+  //           text: "       $mainMobile",
+  //           colors: colorsConst.textColor,
+  //           size: 16,
+  //         ),
+  //         10.height,
+  //         CustomText(
+  //           text: "       $mainEmail",
+  //           colors: colorsConst.textColor,
+  //           size: 16,
+  //         ),
+  //         10.height,
+  //         CustomText(
+  //           text: "       $city",
+  //           colors: colorsConst.textColor,
+  //           size: 16,
+  //         ),
+  //         10.height,
+  //         CustomText(
+  //           text: "        $companyName",
+  //           colors: colorsConst.textColor,
+  //           size: 15,
+  //           isBold: true,
+  //         ),
+  //         10.height,
+  //         CustomText(
+  //           text: "        $status",
+  //           colors: colorsConst.third,
+  //           size: 16,
+  //           isBold: true,
+  //         ),
+  //         10.height,
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.end,
+  //           children:[
+  //             Container(
+  //               width: 150,
+  //               height: 25,
+  //               alignment: Alignment.center,
+  //               decoration: BoxDecoration(
+  //                 color: Color(0xffAFC8D9),
+  //                 borderRadius: BorderRadius.circular(10)
+  //               ),
+  //               child: CustomText(
+  //                 text: emailUpdate,
+  //                 colors: colorsConst.primary,
+  //                 size: 12,
+  //                 isBold: true,
+  //               ),
+  //             ),
+  //             5.width,
+  //             const CircleAvatar(
+  //               radius: 15,
+  //               backgroundColor: Color(0xffAFC8D9),
+  //               child: Icon(Icons.call,color: Colors.black,size: 18,),
+  //             ),
+  //             5.width
+  //           ],
+  //         ),
+  //         10.height
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget sideBarFunction(BuildContext context) {
+    return Obx(()=>controllers.isLeftOpen.value?Container(
+      width: 130,
+      height: MediaQuery.of(context).size.height,
+      color: colorsConst.secondary,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            5.height,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Tooltip(
+                  message: "Click to close the side panel.",
+                  child: InkWell(
+                      focusColor: Colors.transparent,
+                      onTap: (){
+                        controllers.isLeftOpen.value=!controllers.isLeftOpen.value;
+                      },
+                    child: SvgPicture.asset("assets/images/left.svg",width: 40,height: 40,),
+                      // icon: Icon(controllers.isLeftOpen.value?Icons.arrow_back_ios:Icons.arrow_forward_ios,
+                      //   color: colorsConst.third,)
+                  ),
+                ),
+              ],
+            ),
+            const Text(
+              "$appName CRM",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                fontFamily: "Lato",
+              ),
+            ),
+            10.height,
+            Text(
+              controllers.storage.read("f_name"),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontFamily: "Lato",
+                //fontStyle: FontStyle.italic
+              ),
+            ),
+            20.height,
+            Obx(
+                  () => CustomSideBarText(
+                  text: constValue.dashboard,
+                  textColor: controllers.selectedIndex.value == 0
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  onClicked: () {
+                    controllers.selectedIndex.value = 0;
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Dashboard(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                    //Get.to(const Dashboard());
+                  }),
+            ),
+
+            // const Divider(
+            //   color: Colors.white,
+            //   thickness: 0.5,
+            // ),
+            Obx(
+                  () => CustomSideBarText(
+                  textColor: controllers.selectedIndex.value == 1
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  text: constValue.newLead,
+                  onClicked: () {
+                    controllers.isLead.value = true;
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Suspects(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                    controllers.selectedIndex.value = 1;
+                  }),
+            ),
+
+            // const Divider(
+            //   color: Colors.white,
+            //   thickness: 0.5,
+            // ),
+            Obx(
+                  () => CustomSideBarText(
+                  textColor: controllers.selectedIndex.value == 2
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  text: constValue.leads,
+                  onClicked: () {
+                    //controllers.isLead.value=true;
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Prospects(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+
+                    controllers.selectedIndex.value = 2;
+                  }),
+            ),
+
+            // const Divider(
+            //   color: Colors.white,
+            //   thickness: 0.5,
+            // ),
+            Obx(
+                  () => CustomSideBarText(
+                  textColor: controllers.selectedIndex.value == 3
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  text: constValue.goodLead,
+                  onClicked: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Qualified(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                    controllers.isEmployee.value = true;
+                    controllers.selectedIndex.value = 3;
+                  }),
+            ),
+            Obx(
+                  () => CustomSideBarText(
+                  textColor: controllers.selectedIndex.value == 4
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  text: constValue.customer,
+                  onClicked: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const ViewCustomer(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                    controllers.isCustomer.value = true;
+                    controllers.selectedIndex.value = 4;
+                  }),
+            ),
+
+            // const Divider(
+            //   color: Colors.white,
+            //   thickness: 0.5,
+            // ),
+
+            // const Divider(
+            //   color: Colors.white,
+            //   thickness: 0.5,
+            // ),
+            // Obx(() => CustomSideBarText(
+            //     textColor:controllers.selectedIndex.value==5?const Color(0xffF5CB39):colorsConst.textColor,
+            //
+            //     text: constValue.products,
+            //     onClicked: (){
+            //       Navigator.push(context,
+            //         PageRouteBuilder(
+            //           pageBuilder: (context, animation1, animation2) => const ViewProduct(),
+            //           transitionDuration: Duration.zero,
+            //           reverseTransitionDuration: Duration.zero,
+            //         ),
+            //       );
+            //       controllers.isProduct.value=true;
+            //       controllers.selectedIndex.value=5;
+            //     }),
+            // ),
+            // Obx(() => controllers.isAdmin.value?CustomSideBarText(
+            //     textColor:controllers.selectedIndex.value==6?const Color(0xffF5CB39):colorsConst.textColor,
+            //     text: "Add Profile",
+            //     onClicked:(){
+            //       Navigator.push(context,
+            //         PageRouteBuilder(
+            //           pageBuilder: (context, animation1, animation2) => const SignUp(),
+            //           transitionDuration: Duration.zero,
+            //           reverseTransitionDuration: Duration.zero,
+            //         ),
+            //       );
+            //       //controllers.isEmployee.value=true;
+            //       //controllers.selectedIndex.value=6;
+            //     }):0.height,),
+            Obx(
+                  () => CustomSideBarText(
+                  textColor: controllers.selectedIndex.value == 7
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  text: "LogOut",
+                  onClicked: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setBool("loginScreen", false);
+                    prefs.setBool("isAdmin", false);
+                    Get.to(const LoginPage(), duration: Duration.zero);
+                    //controllers.isEmployee.value=true;
+                    controllers.selectedIndex.value = 7;
+                  }),
+            ),
+            100.height
+          ],
+        ),
+      ),
+    ):Container(
+      width: 60,
+      height: MediaQuery.of(context).size.height,
+      padding: const EdgeInsets.fromLTRB(6, 8, 0, 0),
+      color: colorsConst.primary,
+      alignment: Alignment.topCenter,
+      child:Tooltip(
+        message: "Click to view the side panel",
+        child: InkWell(
+            focusColor: Colors.transparent,
+            onTap: (){
+              controllers.isLeftOpen.value=!controllers.isLeftOpen.value;
+            },
+          child: SvgPicture.asset("assets/images/new_menu.svg",width: 40,height: 40,),
+        ),
+      ),
+    ));
+  }
+
+  Widget leadFirstCon(String image, String count, String day) {
+    return Container(
+      width: 150,
+      height: 140,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          color: Colors.transparent, borderRadius: BorderRadius.circular(10)),
+      child: Column(
+        //crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              Container(
+                width: 75,
+                height: 75,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    color: colorsConst.primary,
+                    borderRadius: BorderRadius.circular(50),
+                    border: Border.all(color: const Color(0xff5D5FEF), width: 2.4)),
+                child: CustomText(
+                  text: count,
+                  colors: colorsConst.textColor,
+                  size: 20,
+                  isBold: true,
+                ),
+              ),
+              const Positioned(
+                bottom: 1,
+                right: 15,
+                child: CircleAvatar(
+                  radius: 5,
+                  backgroundColor: Color(0xff5D5FEF),
+                ),
+              )
+            ],
+          ),
+          // Row(
+          //   children:[
+          //     10.width,
+          //     CustomText(
+          //       text: count,
+          //       size: 25,
+          //       isBold: true,
+          //       colors: colorsConst.textColor,
+          //     ),
+          //   ],
+          // ),
+          5.height,
+          CustomText(
+            text: day,
+            size: 15,
+            colors: colorsConst.textColor,
+          ),
+          10.height,
+          // Row(
+          //   children:[
+          //     10.width,
+          //     const CustomText(
+          //       text: "+8% from yesterday",
+          //       size: 14,
+          //       colors: Color(0xff5D5FEF),
+          //     ),
+          //   ],
+          // ),
+        ],
+      ),
+    );
+  }
+
+  Widget leadText({String? text, Color? color}) {
+    return CustomText(
+      textAlign: TextAlign.start,
+      text: text.toString(),
+      size: 14,
+      colors: color,
+      isBold: true,
+    );
+  }
+
+  Widget textFieldNearText(String text, bool isOptional) {
+    return Container(
+      height: 50,
+      alignment: Alignment.center,
+      child: Row(
+        children: [
+          CustomText(
+            text: text,
+            textAlign: TextAlign.start,
+            colors: colorsConst.headColor,
+            size: 15,
+          ),
+          isOptional == true
+              ? const CustomText(
+                  text: "*",
+                  colors: Colors.red,
+                  size: 25,
+                )
+              : 0.width
+        ],
+      ),
+    );
+  }
+
+  Widget funnelContainer(BuildContext context) {
+    return Obx(()=>controllers.isRightOpen.value?SizedBox(
+      width: 300,
+      height: MediaQuery.of(context).size.height,
+      child: Row(
+        children: [
+          VerticalDivider(
+            thickness: 2,
+            color: colorsConst.secondary,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 230, 0),
+                child: Tooltip(
+                  message: "Click to close the side panel.",
+                  child: Obx(()=>InkWell(
+                      focusColor: Colors.transparent,
+                      onTap: (){
+                        controllers.isRightOpen.value=!controllers.isRightOpen.value;
+                      },
+                      // icon: Icon(controllers.isRightOpen.value?Icons.arrow_forward_ios:Icons.arrow_back_ios,
+                      //   color: colorsConst.third,)
+                    child: SvgPicture.asset(
+                      controllers.isRightOpen.value?"assets/images/right.svg":"assets/images/left.svg",width: 50,height: 50,),
+                  ),
+                  ),
+                ),
+              ),
+              Stack(
+                children: [
+                  Obx(
+                        () => SvgPicture.asset(
+                      controllers.selectedIndex.value == 1
+                          ? "assets/images/sSuspects.svg"
+                          : "assets/images/suspects.svg",
+                    ),
+                  ),
+                  Positioned(
+                      left: 105,
+                      bottom: 15,
+                      child: Obx(() => CustomText(
+                          text:
+                          "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[0]["value"]}\n${controllers.allNewLeadsLength.value}",
+                          colors: controllers.selectedIndex.value == 1
+                              ? Colors.black
+                              : colorsConst.textColor,
+                          size: 15,
+                          isBold: true,
+                        ),
+                      ))
+                ],
+              ),
+              Stack(
+                children: [
+                  Obx(
+                        () => SvgPicture.asset(
+                      controllers.selectedIndex.value == 2
+                          ? "assets/images/sProspects.svg"
+                          : "assets/images/prospects.svg",
+                    ),
+                  ),
+                  Positioned(
+                      left: 70,
+                      bottom: 15,
+                      child: Obx(
+                            () => CustomText(
+                          text:
+                          "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[1]["value"]}\n${controllers.allLeadsLength.value}",
+                          colors: controllers.selectedIndex.value == 2
+                              ? Colors.black
+                              : colorsConst.textColor,
+                          size: 15,
+                          isBold: true,
+                        ),
+                      ))
+                ],
+              ),
+              Stack(
+                children: [
+                  Obx(
+                        () => SvgPicture.asset(
+                      controllers.selectedIndex.value == 3
+                          ? "assets/images/sQualified.svg"
+                          : "assets/images/qualified.svg",
+                    ),
+                  ),
+                  Positioned(
+                      left: 50,
+                      bottom: 15,
+                      child: Obx(
+                            () => CustomText(
+                          text:
+                          "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[2]["value"]}\n${controllers.allGoodLeadsLength.value}",
+                          colors: controllers.selectedIndex.value == 3
+                              ? Colors.black
+                              : colorsConst.textColor,
+                          size: 15,
+                          isBold: true,
+                        ),
+                      ))
+                ],
+              ),
+              Stack(
+                children: [
+                  Obx(
+                        () => SvgPicture.asset(
+                      controllers.selectedIndex.value == 4
+                          ? "assets/images/sCustomer.svg"
+                          : "assets/images/customer.svg",
+                    ),
+                  ),
+                  Positioned(
+                      left: 20,
+                      bottom: 35,
+                      child: Obx(
+                            () => CustomText(
+                          text:
+                          "CUSTOMERS\n${controllers.allCustomerLength.value}",
+                          colors: controllers.selectedIndex.value == 4
+                              ? Colors.black
+                              : colorsConst.textColor,
+                          size: 13,
+                          isBold: true,
+                        ),
+                      ))
+                ],
+              ),
+              15.height
+            ],
+          )
+        ],
+      ),
+    ):Container(
+      width: 60,
+      height: MediaQuery.of(context).size.height,
+      color: colorsConst.primary,
+      alignment: Alignment.topCenter,
+      padding: const EdgeInsets.fromLTRB(0, 10, 5, 0),
+      child:Tooltip(
+        message: "Click to view the side panel",
+        child: Obx(()=>InkWell(
+
+            focusColor: Colors.transparent,
+            onTap: (){
+              controllers.isRightOpen.value=!controllers.isRightOpen.value;
+            },
+          child: SvgPicture.asset(controllers.isRightOpen.value?"assets/images/right.svg":"assets/images/left.svg",width: 50,height: 50,),
+            // icon: Icon(controllers.isRightOpen.value?Icons.arrow_forward_ios:Icons.arrow_back_ios,
+            //   color: colorsConst.third,)
+        ),
+        ),
+      ),
+    ));
+  }
+
+  Widget commentHead({required String head, required String value}) {
+    return Row(
+      children: [
+        15.width,
+        CustomText(
+          text: "$head :",
+          colors: colorsConst.third,
+          size: 15,
+          isBold: true,
+        ),
+        5.width,
+        CustomText(
+          text: value,
+          colors: colorsConst.textColor,
+          size: 15,
+        ),
+      ],
+    );
+  }
+
+  Future<void> datePicker(
+      {BuildContext? context,
+      TextEditingController? textEditingController,
+      RxString? pathVal}) async {
+    controllers.dateTime =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    showDatePicker(
+      context: context!,
+      initialDate: controllers.dateTime,
+      firstDate: DateTime(2010),
+      lastDate: DateTime(2030),
+    ).then((value) {
+      controllers.dateTime = value!;
+      textEditingController?.text =
+          "${(controllers.dateTime.year.toString())}-${(controllers.dateTime.month.toString().padLeft(2, "0"))}-${(controllers.dateTime.day.toString().padLeft(2, "0"))}";
+      pathVal?.value =
+          "${(controllers.dateTime.day.toString().padLeft(2, "0"))}-${(controllers.dateTime.month.toString().padLeft(2, "0"))}-${(controllers.dateTime.year.toString())}";
+
+      // controllers.empDOB.value=;
+      // controllers.empDOJ.value=;
+      // if(utils.isAdult()==false){
+      //   controllers.empDOB.value="";
+      // }
+
+      // date.value= ("${(controllers.dateTime.year.toString())}-"
+      //     "${(controllers.dateTime.month.toString().padLeft(2,"0"))}-"
+      //     "${(controllers.dateTime.day.toString().padLeft(2,"0"))}");
+    });
+  }
+
+  bool isAdult() {
+    String birthDateString = controllers.emDOBController.text;
+
+    String datePattern = "dd-mm-yyyy";
+
+    DateTime birthDate = DateFormat(datePattern).parse(birthDateString);
+    DateTime today = DateTime.now();
+
+    int yearDiff = today.year - birthDate.year;
+    int monthDiff = today.month - birthDate.month;
+    int dayDiff = today.day - birthDate.day;
+
+    return yearDiff > 18 || yearDiff == 18 && monthDiff >= 0 && dayDiff >= 0;
+  }
+
+  Future<void> chooseFile(
+      {RxList? mediaDataV, RxString? fileName, RxString? pathName}) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'png', 'jpeg', 'jpg'],
+    );
+
+    if (result != null) {
+      fileName?.value = result.files.single.name;
+      print("file name ${result.files.single.name}");
+      mediaDataV?.value = result.files.single.bytes!.toList();
+      print("byte name ${result.files.single.bytes!.toList()}");
+      pathName?.value = base64.encode(result.files.single.bytes!.toList());
+    } else {
+      print('No file selected');
+    }
+  }
+
+  //Add a country to country list
+  void addCountryToList(data) {
+    // var model = Country();
+    // model.name = data['name'];
+    // model.emoji = data['emoji'];
+    // //if (!mounted) return;
+    // //setState(() {
+    //   CountryFlag.DISABLE == CountryFlag.ENABLE ||
+    //       CountryFlag.DISABLE == CountryFlag.SHOW_IN_DROP_DOWN_ONLY
+    //       ? controllers.allCountry.add("${model.emoji!}    ${model.name!}") /* : _country.add(model.name)*/
+    //       : controllers.allCountry.add(model.name);
+    // });
+  }
+
+  Future<dynamic> getResponse() async {
+    var res = await rootBundle
+        .loadString('packages/csc_picker/lib/assets/country.json');
+    return jsonDecode(res);
+  }
+
+  //get countries from json response
+  Future<List<String?>> getCountries() async {
+    controllers.allCountry.clear();
+    var countries = await getResponse() as List;
+    for (var data in countries) {
+      addCountryToList(data);
+    }
+    return controllers.allCountry;
+  }
+
+  ///get states from json response
+  Future<List<String?>> getStates() async {
+    controllers.allStates.clear();
+    //print(_selectedCountry);
+    var response = await getResponse();
+    // var takeState = CountryFlag.DISABLE == CountryFlag.ENABLE ||
+    //     CountryFlag.DISABLE == CountryFlag.SHOW_IN_DROP_DOWN_ONLY
+    //     ? response
+    //     .map((map) => Country.fromJson(map))
+    //     .where(
+    //         (item) => item.emoji + "    " + item.name == controllers.selectedCountry.value)
+    //     .map((item) => item.state)
+    //     .toList()
+    //     : response
+    //     .map((map) => Country.fromJson(map))
+    //     .where((item) => item.name == controllers.selectedCountry.value)
+    //     .map((item) => item.state)
+    //     .toList();
+    var states = [];
+    for (var f in states) {
+      // setState(() {
+      var name = f.map((item) => item.name).toList();
+      for (var stateName in name) {
+        //print(stateName.toString());
+        controllers.allStates.add(stateName.toString());
+      }
+      //});
+    }
+    controllers.allStates.sort((a, b) => a!.compareTo(b!));
+    return controllers.allStates;
+  }
+
+  ///get cities from json response
+  Future<List<String?>> getCities() async {
+    controllers.allCities.clear();
+    var response = await getResponse();
+    // var takeCity = CountryFlag.DISABLE == CountryFlag.ENABLE ||
+    //     CountryFlag.DISABLE == CountryFlag.SHOW_IN_DROP_DOWN_ONLY
+    //     ? response
+    //     .map((map) => Country.fromJson(map))
+    //     .where(
+    //         (item) => item.emoji + "    " + item.name == controllers.selectedCountry.value)
+    //     .map((item) => item.state)
+    //     .toList()
+    //     : response
+    //     .map((map) => Country.fromJson(map))
+    //     .where((item) => item.name == controllers.selectedCountry.value)
+    //     .map((item) => item.state)
+    //     .toList();
+    var cities = [];
+    for (var f in cities) {
+      var name =
+          f.where((item) => item.name == controllers.selectedState.value);
+      var cityName = name.map((item) => item.city).toList();
+      cityName.forEach((ci) {
+        var citiesName = ci.map((item) => item.name).toList();
+        for (var cityName in citiesName) {
+          //print(cityName.toString());
+          controllers.allCities.add(cityName.toString());
+        }
+      });
+    }
+    controllers.allCities.sort((a, b) => a!.compareTo(b!));
+    return controllers.allCities;
+  }
+
+  void _onSelectedCountry(
+      String value,
+      TextEditingController cityController,
+      TextEditingController stateController,
+      TextEditingController countryController) {
+    // if (CountryFlag.DISABLE == CountryFlag.SHOW_IN_DROP_DOWN_ONLY) {
+    //   try {
+    //     value.substring(6).trim();
+    //   } catch (e) {print(e);}
+    // } else {
+    //   value;
+    // }
+    //code added in if condition
+    if (value != controllers.selectedCountry.value) {
+      controllers.allStates.clear();
+      controllers.allCities.clear();
+      controllers.selectedState.value = "State";
+      controllers.selectedCity.value = "City";
+      null;
+      null;
+      controllers.selectedCountry.value = value;
+      countryController.text = controllers.selectedCountry.value;
+      print("country ${controllers.selectedCountry}");
+      stateController.text = "";
+      cityController.text = "";
+      getStates();
+    } else {
+      controllers.selectedState;
+      controllers.selectedCity;
+      stateController.text = controllers.selectedState.value;
+      cityController.text = controllers.selectedCity.value;
+    }
+  }
+
+  Future<void> _onSelectedState(
+      String value,
+      TextEditingController cityController,
+      TextEditingController stateController) async {
+    value;
+    try {
+      if (value != controllers.selectedState.value) {
+        controllers.allCities.clear();
+        null;
+        controllers.selectedState.value = value;
+        stateController.text = controllers.selectedState.value;
+        cityController.text = "";
+        await getCities();
+        controllers.selectedCity.value = controllers.allCities.first.toString();
+      } else {
+        controllers.selectedCity.value;
+        cityController.text = controllers.selectedCity.value;
+      }
+    } catch (e) {
+      print("e $e");
+    }
+  }
+
+  void onSelectedCity(String value, TextEditingController cityController) {
+    if (value != controllers.selectedCity.value) {
+      controllers.selectedCity.value = value;
+      cityController.text = controllers.selectedCity.value;
+      print(controllers.coCityController.text);
+      value;
+      // controllers.selectPinCodeList = controllers.pinCodeList
+      //     .where((location) =>
+      // location["STATE"] == controllers.selectedState &&
+      //     location["DISTRICT"] == controllers.selectedCity)
+      //     .map((location) => location["PINCODE"])
+      //     .toList();
+    }
+  }
+
+  ///Country Dropdown Widget
+
+  Widget countryDropdown(
+      double width,
+      TextEditingController cityController,
+      TextEditingController stateController,
+      TextEditingController countryController) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        25.width,
+        SizedBox(
+          width: width,
+          height: 50,
+          child: Obx(() => DropdownWithSearch(
+                title: "",
+                placeHolder: "",
+                selectedItemStyle:
+                    customStyle.textStyle(colors: Colors.white, size: 14),
+                dropdownHeadingStyle: customStyle.textStyle(
+                  colors: Colors.white,
+                  size: 17,
+                  isBold: true,
+                ),
+                itemStyle:
+                    customStyle.textStyle(colors: Colors.white, size: 14),
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    color: Colors.transparent,
+                    border: Border.all(color: Colors.grey.shade200, width: 1)),
+                disabledDecoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    color: Colors.transparent,
+                    border: Border.all(color: Colors.grey.shade200, width: 1)),
+                disabled: false,
+                dialogRadius: 10.0,
+                searchBarRadius: 10.0,
+                label: "Country",
+                items: controllers.allCountry.map((String? dropDownStringItem) {
+                  return dropDownStringItem;
+                }).toList(),
+                selected: controllers.selectedCountry.value,
+                //selected: _selectedCountry != null ? _selectedCountry : "Country",
+                //onChanged: (value) => _onSelectedCountry(value),
+                onChanged: (value) {
+                  if (value != null) {
+                    _onSelectedCountry(value, cityController, stateController,
+                        countryController);
+                  }
+                },
+              )),
+        ),
+      ],
+    );
+  }
+
+  ///State Dropdown Widget
+  Widget stateDropdown(
+      double width,
+      TextEditingController cityController,
+      TextEditingController stateController,
+      TextEditingController countryController) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        25.width,
+        SizedBox(
+            width: width,
+            height: 50,
+            child: Obx(
+              () => DropdownWithSearch(
+                title: "",
+                placeHolder: "",
+                disabled: controllers.allStates.isEmpty ? true : false,
+                items: controllers.allStates.map((String? dropDownStringItem) {
+                  return dropDownStringItem;
+                }).toList(),
+                selectedItemStyle:
+                    customStyle.textStyle(colors: Colors.white, size: 14),
+                dropdownHeadingStyle: customStyle.textStyle(
+                    colors: Colors.white, size: 17, isBold: true),
+                itemStyle:
+                    customStyle.textStyle(colors: Colors.black, size: 14),
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    color: Colors.transparent,
+                    border: Border.all(color: Colors.grey.shade200, width: 1)),
+                disabledDecoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    color: Colors.transparent,
+                    border: Border.all(color: Colors.grey.shade200, width: 1)),
+                dialogRadius: 10.0,
+                searchBarRadius: 10.0,
+                selected: controllers.selectedState.value,
+                label: "",
+                //onChanged: (value) => _onSelectedState(value),
+                onChanged: (value) {
+                  //print("stateChanged $value $_selectedState");
+                  value != null
+                      ? _onSelectedState(value, cityController, stateController)
+                      : _onSelectedState(controllers.selectedState.value,
+                          cityController, stateController);
+                },
+              ),
+            )),
+      ],
+    );
+  }
+
+  ///City Dropdown Widget
+  Widget cityDropdown(
+      double width,
+      TextEditingController cityController,
+      TextEditingController stateController,
+      TextEditingController countryController,
+      ValueChanged<String?>? onChanged) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        25.width,
+        SizedBox(
+            width: width,
+            height: 50,
+            child: Obx(
+              () => DropdownWithSearch(
+                  title: "",
+                  placeHolder: "",
+                  disabled: controllers.allCities.isEmpty ? true : false,
+                  items:
+                      controllers.allCities.map((String? dropDownStringItem) {
+                    return dropDownStringItem;
+                  }).toList(),
+                  selectedItemStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                  dropdownHeadingStyle: customStyle.textStyle(
+                      colors: Colors.white, isBold: true, size: 17),
+                  itemStyle:
+                      customStyle.textStyle(colors: Colors.black, size: 14),
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      color: Colors.transparent,
+                      border:
+                          Border.all(color: Colors.grey.shade200, width: 1)),
+                  disabledDecoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      color: Colors.transparent,
+                      border:
+                          Border.all(color: Colors.grey.shade200, width: 1)),
+                  dialogRadius: 10.0,
+                  searchBarRadius: 10.0,
+                  selected: controllers.selectedCity.value,
+                  label: "",
+                  //onChanged: (value) => _onSelectedCity(value),
+                  onChanged: onChanged!),
+            )),
+      ],
+    );
+  }
+
+  TableRow emailRow(BuildContext context,
+      {RxBool? isCheck, String? templateName, String? subject, String? msg}) {
+    return TableRow(
+        decoration: BoxDecoration(color: colorsConst.secondary),
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              10.width,
+              SizedBox(
+                width: 15,
+                height: 15,
+                child: Checkbox(
+                  //materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  side: MaterialStateBorderSide.resolveWith(
+                    (states) =>
+                        BorderSide(width: 1.0, color: colorsConst.textColor),
+                  ),
+                  checkColor: Colors.white,
+                  activeColor: colorsConst.third,
+                  value: isCheck?.value,
+                  onChanged: (value) {
+                    controllers.isTemplate.value = false;
+                    //Navigator.pop(context);
+                    controllers.emailSubjectCtr.text = subject.toString().replaceAll('\n', ' ');
+                    //controllers.emailMessageCtr.text += "\n${msg.toString()}";
+                    controllers.emailMessageCtr.text = msg.toString();
+                    controllers.emailQuotationCtr.text = templateName.toString();
+                  },
+                ),
+              ),
+              20.width,
+              Container(
+                alignment: Alignment.center,
+                height: 50,
+                child: CustomText(
+                  textAlign: TextAlign.center,
+                  text: templateName.toString(),
+                  colors: colorsConst.textColor,
+                  size: 13,
+                ),
+              ),
+            ],
+          ),
+          Container(
+            alignment: Alignment.center,padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+            height: 50,
+            child: CustomText(
+              textAlign: TextAlign.center,
+              text: subject.toString(),
+              colors: colorsConst.textColor,
+              size: 13,
+            ),
+          ),
+        ]);
+  }
+
+  Future<void> showImagePickerDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomAlertDialog(
+          title: constValue.img,
+          onPressed: () async {
+            imageController.imagePath1 = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const CameraWidget(
+                        cameraPosition: CameraType.back,
+                      )),
+            );
+            imageController.photo1.value = imageController.imagePath1;
+            Get.back(); // Close the dialog
+          },
+          positiveBtnText: constValue.gallery,
+          cancelOnPressed: () async {
+            pickImage();
+            Navigator.pop(context); // Close the dialog
+          },
+        );
+      },
+    );
+  }
+
+  void pickAndReadExcelFile(BuildContext context) {
+    final html.FileUploadInputElement input = html.FileUploadInputElement()
+      ..accept = '.xlsx, .xls';
+    input.click();
+
+    input.onChange.listen((event) {
+      final file = input.files!.first;
+      final reader = html.FileReader();
+
+      reader.readAsArrayBuffer(file);
+      reader.onLoadEnd.listen((event) {
+        Uint8List bytes = reader.result as Uint8List;
+        parseExcelFile(bytes, context);
+      });
+    });
+  }
+
+  List<Map<String, dynamic>> customerData = [];
+  List<Map<String, dynamic>> mCustomerData = [];
+
+  void parseExcelFile(Uint8List bytes, BuildContext context) async {
+    customerData = [];
+    var excelD = excel.Excel.decodeBytes(bytes);
+    for (var table in excelD.tables.keys) {
+      var sheet = excelD.tables[table];
+      print('Sheet Name: $table'); // 🔥 Sheet name
+
+      for (var row in sheet!.rows) {
+        // Each row
+        print(row.map((cell) => cell?.value).toList());
+      }
+    }
+
+    Map<String, String> keyMapping = {
+      "SITE LOCATION DETAILS": "city",
+      "LEAD / PROSPECT": "lead_status",
+      "CURRENT STATUS": "status",
+      "NAME OF THE CUSTOMER": "company_name",
+      "DETAILS OF SERVICES REQUIRED": "points",
+      "NAME OF THE ACCOUNT MANAGER": "owner",
+      "PROSPECT ENROLLMENT DATE": "prospect_enrollment_date",
+      "EXPECTED CONVERSION DATE": "expected_convertion_date",
+      "STATUS UPDATE": "status_update",
+      "TOTAL NUMBER OF HEAD COUNT": "num_of_headcount",
+      "EXPECTED MONTHLY BILLING VALUE": "expected_billing_value",
+      "ARPU VALUE": "arpu_value",
+      "KEY CONTACT PERSON": "name",
+      "EMAIL ID": "email",
+      "CONTACT NUMBER": "phone_no",
+      "SOURCE OF PROSPECT (either BNI or social)": "source",
+      "PROSPECT SOURCE DETAILS": "source_details",
+      "PROSPECT GRADING": "rating"
+    };
+
+    for (var table in excelD.tables.keys) {
+      var rows = excelD.tables[table]!.rows;
+
+      List<String> headers = rows.first.map((cell) => (cell?.value.toString().trim().toUpperCase()) ?? "").toList();
+
+      List<String> missingColumns = [];
+
+      for (var key in keyMapping.keys) {
+        if (!headers.contains(key.toUpperCase().trim())) {
+          missingColumns.add(key);
+        }
+      }
+
+      print("missingColumns: $missingColumns");
+
+      if (missingColumns.isNotEmpty) {
+        Navigator.of(context).pop(); // Close loader if any
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: colorsConst.primary,
+            title: CustomText(
+              text: "Missing Columns",
+              colors: colorsConst.textColor,
+              size: 18,
+              isBold: true,
+            ),
+            content: CustomText(
+              text: "The following columns are missing:\n\n${missingColumns.join(", ")}",
+              colors: colorsConst.textColor,
+              size: 16,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: CustomText(
+                  text: "OK",
+                  colors: colorsConst.textColor,
+                  size: 16,
+                ),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+
+      for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        Map<String, dynamic> rowData = {};
+        Map<String, dynamic> formattedData = {};
+        bool isRowEmpty = row.every((cell) =>
+            cell == null ||
+            cell.value == null ||
+            cell.value.toString().trim().isEmpty);
+
+        if (isRowEmpty) {
+          continue; // Skip this empty row
+        }
+        for (var j = 0; j < headers.length; j++) {
+          String header =
+              rows.first[j]?.value.toString().trim().toUpperCase() ?? "";
+          rowData[header] = row[j]?.value;
+        }
+
+        rowData.forEach((key, value) {
+          if (keyMapping.containsKey(key)) {
+            if (keyMapping[key] == "rating") {
+              formattedData[keyMapping[key]!] =
+                  value.toString().isNotEmpty && value != null ? value : "WARM";
+            } else {
+              formattedData[keyMapping[key]!] = value;
+            }
+          }
+        });
+        if (rowData.containsKey("CONTACT NUMBER")) {
+          formattedData["whatsapp_no"] = rowData["CONTACT NUMBER"];
+        }
+
+        // Add extra fields
+        formattedData["user_id"] = controllers.storage.read("id");
+        formattedData["cos_id"] = cosId;
+        formattedData["door_no"] = "";
+        formattedData["area"] = "";
+        formattedData["country"] = "India";
+        formattedData["state"] = "Tamil Nadu";
+        formattedData["pincode"] = "";
+        formattedData["product_discussion"] = "";
+        formattedData["discussion_point"] = "";
+        formattedData["points"] = "";
+        formattedData["department"] = "";
+        formattedData["designation"] = "";
+        if (!formattedData.containsKey("source")) {
+          formattedData["source"] = "";
+        }
+        if ((formattedData["phone_no"].toString().isNotEmpty &&
+            formattedData["phone_no"] != null) ||
+            (formattedData["name"].toString().isNotEmpty &&
+            formattedData["name"] != null)) {
+          customerData.add(formattedData);
+        }else{
+          if(formattedData["email"].toString().isNotEmpty && formattedData["email"] != null){
+            customerData.add(formattedData);
+          }else{
+            mCustomerData.add(formattedData);
+          }
+        }
+        // if (formattedData["phone_no"].toString().isNotEmpty &&
+        //     formattedData["phone_no"] != null) {
+          //customerData.add(formattedData);
+        //}
+      }
+    }
+    print("mCustomerData ${mCustomerData.length}");
+    //print("customerData $customerData");
+    print("customerData ${customerData.length}");
+    if (customerData.isEmpty) {
+      Navigator.of(context).pop(); // Close loader if any
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: colorsConst.primary,
+          content: CustomText(
+            text: "Some entries under KEY CONTACT PERSON and CONTACT NUMBER are empty in your Excel sheet. Please check and re-upload.",
+            colors: colorsConst.textColor,
+            size: 16,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: CustomText(
+                text: "OK",
+                colors: colorsConst.textColor,
+                size: 16,
+              ),
+            ),
+          ],
+        ),
+      );
+      return;
+    } else {
+      await apiService.insertCustomersAPI(context, customerData);
+    }
+  }
+
+  Future<void> showImportDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          insetPadding: const EdgeInsets.all(5),
+          backgroundColor: colorsConst.secondary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          content: SizedBox(
+            width: 350,
+            height: 500,
+            child: SelectionArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    colors: colorsConst.third,
+                    text: "Your uploaded Excel file should have columns matching the required fields exactly as listed below to ensure correct data insertion:",
+                    isBold: true,
+                    size: 15,
+                    textAlign: TextAlign.start,
+                  ),
+                  10.height,
+                  CustomText(
+                    text: "Column Names:",
+                    colors: colorsConst.textColor,
+                    size: 15,
+                    isBold: true,
+                  ),
+                  5.height,
+                  dialogText("NAME OF THE ACCOUNT MANAGER"),
+                  dialogText("NAME OF THE CUSTOMER"),
+                  dialogText("KEY CONTACT PERSON"),
+                  dialogText("CONTACT NUMBER"),
+                  dialogText("EMAIL ID"),
+                  dialogText("SITE LOCATION DETAILS"),
+                  dialogText("SOURCE OF PROSPECT (either BNI or social)"),
+                  dialogText("LEAD / PROSPECT"),
+                  dialogText("PROSPECT SOURCE DETAILS"),
+                  dialogText("PROSPECT ENROLLMENT DATE"),
+                  dialogText("EXPECTED CONVERSION DATE"),
+                  dialogText("DETAILS OF SERVICES REQUIRED"),
+                  dialogText("PROSPECT GRADING"),
+                  dialogText("STATUS UPDATE"),
+                  dialogText("TOTAL NUMBER OF HEAD COUNT"),
+                  dialogText("EXPECTED MONTHLY BILLING VALUE"),
+                  dialogText("ARPU VALUE"),
+                  dialogText("CURRENT STATUS"),
+                  10.height,
+                  CustomText(
+                    text: "File format:",
+                    colors: colorsConst.textColor,
+                    size: 15,
+                    isBold: true,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(17, 5, 5, 5),
+                    child: CustomText(
+                      textAlign: TextAlign.start,
+                      text: '.xlsx, .xls',
+                      colors: colorsConst.textColor,
+                      size: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(
+                  width: 120,
+                  height: 40,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(40),
+                        backgroundColor: colorsConst.third,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            side: BorderSide(color: colorsConst.third))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const CustomText(
+                      text: "Cancel",
+                      colors: Colors.black,
+                      isBold: true,
+                      size: 15,
+                    ),
+                  ),
+                ),
+                10.width,
+                CustomLoadingButton(
+                  callback: () {
+                    pickAndReadExcelFile(context);
+                  },
+                  isLoading: true,
+                  backgroundColor: colorsConst.secondary,
+                  radius: 5,
+                  width: 120,
+                  controller: controllers.customerCtr,
+                  text: "Import",
+                  isImage: false,
+                  textColor: colorsConst.textColor,
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget dialogText(String text) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(17, 2, 5, 2),
+      child: CustomText(
+        textAlign: TextAlign.start,
+        text: text,
+        colors: colorsConst.textColor,
+        size: 13,
+      ),
+    );
+  }
+
+  final ImagePicker _picker = ImagePicker();
+  Future<void> takePhoto(
+      ImageSource source, XFile? fileName, RxString? pathName) async {
+    XFile? pickedFile = await _picker.pickImage(source: source);
+    fileName = pickedFile;
+    pathName?.value = fileName!.path;
+  }
+
+  Future<XFile?> compressImage(File file, RxString? savePhoto) async {
+    final filePath = file.absolute.path;
+    final lastIndex = filePath.lastIndexOf(RegExp(r'.png|.jp'));
+    final split = filePath.substring(0, (lastIndex));
+    final outPath = "${split}_out${filePath.substring(lastIndex)}";
+    int originalSize = await file.length();
+
+    if (lastIndex == filePath.lastIndexOf(RegExp(r'.png'))) {
+      final compressedImage = await FlutterImageCompress.compressAndGetFile(
+          filePath, outPath,
+          minWidth: 1000,
+          minHeight: 1000,
+          quality: 50,
+          format: CompressFormat.png);
+      int compressedSize = await compressedImage!.length();
+      savePhoto?.value = compressedImage.path;
+      // Convert sizes to KB and MB
+      double originalSizeKB = originalSize / 1024;
+      double compressedSizeKB = compressedSize / 1024;
+
+      double originalSizeMB = originalSizeKB / 1024;
+      double compressedSizeMB = compressedSizeKB / 1024;
+      log("Original Size: ${originalSizeKB.toStringAsFixed(2)} KB (${originalSizeMB.toStringAsFixed(2)} MB)");
+      log("Compressed Size: ${compressedSizeKB.toStringAsFixed(2)} KB (${compressedSizeMB.toStringAsFixed(2)} MB)");
+      return compressedImage;
+    } else {
+      final compressedImage = await FlutterImageCompress.compressAndGetFile(
+        filePath,
+        outPath,
+        minWidth: 1000,
+        minHeight: 1000,
+        quality: 50,
+      );
+      int compressedSize = await compressedImage!.length();
+      savePhoto?.value = compressedImage.path;
+      // Convert sizes to KB and MB
+      double originalSizeKB = originalSize / 1024;
+      double compressedSizeKB = compressedSize / 1024;
+
+      double originalSizeMB = originalSizeKB / 1024;
+      double compressedSizeMB = compressedSizeKB / 1024;
+      log("Original Size: ${originalSizeKB.toStringAsFixed(2)} KB (${originalSizeMB.toStringAsFixed(2)} MB)");
+      log("Compressed Size: ${compressedSizeKB.toStringAsFixed(2)} KB (${compressedSizeMB.toStringAsFixed(2)} MB)");
+      return compressedImage;
+    }
+  }
+
+  void bottomSheet({RxString? pathName, var cameraPath, XFile? fileName}) {
+    Get.bottomSheet(
+        SizedBox(
+          height: 220,
+          child: Column(
+            children: [
+              20.height,
+              const CustomText(
+                text: "Add photo",
+                size: 25,
+                colors: Colors.white,
+                isBold: true,
+              ),
+              5.height,
+              pathName?.value == ""
+                  ? 10.height
+                  : Row(
+                      children: [
+                        20.width,
+                        GestureDetector(
+                          onTap: () {
+                            pathName?.value = "";
+                            Get.back();
+                          },
+                          child: CustomText(
+                              text: constValue.removePhoto,
+                              size: 20,
+                              colors: Colors.white),
+                        ),
+                      ],
+                    ),
+              20.height,
+              Row(
+                children: [
+                  20.width,
+                  GestureDetector(
+                    onTap: () async {
+                      cameraPath = await Get.to(const CameraWidget(
+                        cameraPosition: CameraType.front,
+                      ));
+                      pathName?.value = cameraPath;
+                      compressImage(File(cameraPath), pathName);
+                      Get.back();
+                    },
+                    child: CustomText(
+                        text: constValue.takePhoto,
+                        size: 20,
+                        colors: Colors.white),
+                  ),
+                ],
+              ),
+              20.height,
+              Row(
+                children: [
+                  20.width,
+                  GestureDetector(
+                    onTap: () {
+                      takePhoto(ImageSource.gallery, fileName, pathName);
+                      compressImage(File(pathName!.value), pathName);
+                      Get.back();
+                    },
+                    child: CustomText(
+                        text: constValue.galleryPhoto,
+                        size: 20,
+                        colors: Colors.white),
+                  ),
+                ],
+              ),
+              20.height,
+            ],
+          ),
+        ),
+        backgroundColor: Colors.black54,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(10.0))));
+  }
+}

@@ -1,0 +1,171 @@
+
+import 'package:fullcomm_crm/common/constant/colors_constant.dart';
+import 'package:fullcomm_crm/common/constant/default_constant.dart';
+import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/components/password_text_field.dart';
+import 'package:fullcomm_crm/services/api_services.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../components/custom_loading_button.dart';
+import '../../components/custom_text.dart';
+import '../../components/custom_textfield.dart';
+import '../../controller/controller.dart';
+import '../constant/api.dart';
+import '../constant/key_constant.dart';
+import '../utilities/utils.dart';
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  GlobalKey<FormState> formKey=GlobalKey<FormState>();
+
+  var isEyeOpen=false;
+  DateTime? currentBackPressTime;
+  var back=0;
+  Future<void> readValue() async {
+    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    final mobileNumber= sharedPref.getString("loginNumber") ?? "";
+    final password=sharedPref.getString("loginPassword") ?? "";
+    setState((){
+      controllers.loginNumber.text=mobileNumber.toString();
+      controllers.loginPassword.text=password.toString();
+    });
+  }
+  @override
+  void initState(){
+    super.initState();
+    readValue();
+  }
+  @override
+  Widget build(BuildContext context){
+    //print("width ${MediaQuery.of(context).size.width}");
+    return Scaffold(
+      backgroundColor: colorsConst.primary,
+      body: Row(
+        children:[
+          Container(
+            width:MediaQuery.of(context).size.width/2,
+            height: MediaQuery.of(context).size.height,
+            alignment: Alignment.center,
+            //color: Colors.orange[50],
+            color: colorsConst.secondary,
+            child: SvgPicture.asset("assets/images/login.svg",
+                height: MediaQuery.of(context).size.height-300),
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width/2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children:[
+                //Image.asset("assets/images/homeLogo.png",width: 150,height: 150,),
+                //50.height,
+                //SvgPicture.asset("assets/images/Loader-3.svg"),
+                CustomText(
+                 text: "Login",
+                 colors: colorsConst.textColor,
+                 size: 25,
+                 isBold: true,),
+                70.height,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CustomTextField(
+                      onChanged:(value) async {
+                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                        sharedPref.setString("loginNumber", value.toString().trim());
+                      },
+                      width:MediaQuery.of(context).size.width/4.5,height:40,
+                      textInputAction: TextInputAction.next,
+                      inputFormatters: constInputFormatters.mobileNumberInput,
+                      keyboardType: TextInputType.number,
+                      controller:controllers.loginNumber,
+                      text: MediaQuery.of(context).size.width<=987?'Mobile':'Mobile Number',
+                      hintText: MediaQuery.of(context).size.width<=987?'Mobile':'Mobile Number',
+                      isOptional: true,),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Obx(()=>CustomPasswordTextField(
+                      iconData: controllers.isEyeOpen.value?Icons.remove_red_eye_outlined:Icons.visibility_off,
+                      onChanged:(value) async {
+                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                        sharedPref.setString("loginPassword", value.toString().trim());
+                      },
+                      width:MediaQuery.of(context).size.width/4.5,
+                      height:40,
+                      isLogin: true,
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.visiblePassword,
+                      controller:controllers.loginPassword,
+                      text:'Password',
+                      hintText:'Password',
+                      isOptional: true,
+                    ),),
+                  ],
+                ),
+
+                70.height,
+                CustomLoadingButton(
+                    callback:(){
+                  if(controllers.loginNumber.text.length!=10){
+                    utils.snackBar(context: Get.context!, msg: "Please enter mobile number",color:Colors.red);
+                    controllers.loginCtr.reset();
+                  }else if(controllers.loginPassword.text.isEmpty){
+                    utils.snackBar(context: Get.context!, msg: "Please enter password",color:Colors.red);
+                    controllers.loginCtr.reset();
+                  }else{
+                    if(cosId=="202110"){
+                      print("Chakra");
+                      apiService.loginCApi();
+                    }else{
+                      print("JPS");
+                      apiService.loginHistoryApi();
+                    }
+                  }
+                },
+                    isLoading: true,
+                    text: "Log In",
+                    textColor: Colors.white,
+                    controller: controllers.loginCtr,
+                    backgroundColor: colorsConst.primary,
+                    radius:5,
+                    height: 50,
+                    width: 100),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children:[
+                //     10.width,
+                //     CustomText(text: constValue.account,colors: Colors.grey,size: 15),
+                //     TextButton(
+                //         onPressed:(){
+                //           //Get.to(const SignUp(),transition: Transition.downToUp,duration: const Duration(seconds: 1));
+                //         },
+                //         child: CustomText(
+                //           text: constValue.signUp,
+                //           colors: colorsConst.primary,
+                //           size: 16,
+                //           isBold: true,)
+                //     )
+                //   ],
+                // ),
+
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+}
+
