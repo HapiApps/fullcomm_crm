@@ -994,7 +994,7 @@ class _AddLeadState extends State<AddLead> {
                                 children:[
                                   utils.textFieldNearText('Actions to be taken',false),
                                   10.height,
-                                  utils.textFieldNearText('Discussed Points',false),
+                                  utils.textFieldNearText('Source Of Prospect',false),
                                   10.height,
                                   utils.textFieldNearText('Product Discussed',false),
                                   10.height,
@@ -1028,7 +1028,7 @@ class _AddLeadState extends State<AddLead> {
                                   ),
                                   CustomTextField(
                                     hintText: "",
-                                    text: "Discussed Points",
+                                    text: "Source Of Prospect",
                                     controller: controllers.leadDisPointsCrt,
                                     width: textFieldSize,
                                     isOptional: false,
@@ -1119,7 +1119,7 @@ class _AddLeadState extends State<AddLead> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children:[
                                   //utils.textFieldNearText('Points',false),
-                                  utils.textFieldNearText('Call Visit Type',false),
+                                  utils.textFieldNearText('Call Visit Type',true),
                                   10.height,
                                   utils.textFieldNearText('Total Number Of Head Count',false),
                                   8.height,

@@ -36,6 +36,11 @@ class _QualifiedState extends State<Qualified> {
     Future.delayed(Duration.zero,(){
       controllers.selectedIndex.value=3;
       controllers.groupController.selectIndex(0);
+      setState(() {
+        controllers.search.clear();
+        apiService.customerList = [];
+        apiService.customerList.clear();
+      });
     });
   }
   @override
@@ -251,67 +256,69 @@ class _QualifiedState extends State<Qualified> {
                     thickness: 2,
                     color: colorsConst.secondary,
                   ),
-                  10.height,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children:[
-                      CustomSearchTextField(controller: controllers.search),
-                      Row(
-                        children: [
-                          SizedBox(
-                            height:40,
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: colorsConst.secondary,
-                                    shape:  RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5)
-                                    )
-                                ),
-                                onPressed: (){},
-                                child:Row(
-                                  children:[
-                                    SvgPicture.asset("assets/images/filter.svg"),
-                                    5.width,
-                                    CustomText(
-                                      text: "Filter",
-                                      colors: colorsConst.textColor,
-                                      size: 15,
-
-                                    ),
-                                  ],
-                                )
-                            ),
-                          ),
-                          10.width,
-                          SizedBox(
-                            height: 40,
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: colorsConst.secondary,
-                                    shape:  RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5)
-                                    )
-                                ),
-                                onPressed: (){},
-                                child:Row(
-                                  children: [
-                                    SvgPicture.asset("assets/images/sort.svg"),
-                                    6.width,
-                                    CustomText(
-                                      text: "Sort by",
-                                      colors: colorsConst.textColor,
-                                      size: 15,
-
-                                    ),
-                                  ],
-                                )
-                            ),
-                          ),
-                        ],
-                      ),
-
-                    ],
-                  ),
+                  // 10.height,
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children:[
+                  //     CustomSearchTextField(controller: controllers.search,
+                  //       hintText: "Search Name, Company, Mobile No.",
+                  //     ),
+                  //     Row(
+                  //       children: [
+                  //         SizedBox(
+                  //           height:40,
+                  //           child: ElevatedButton(
+                  //               style: ElevatedButton.styleFrom(
+                  //                   backgroundColor: colorsConst.secondary,
+                  //                   shape:  RoundedRectangleBorder(
+                  //                       borderRadius: BorderRadius.circular(5)
+                  //                   )
+                  //               ),
+                  //               onPressed: (){},
+                  //               child:Row(
+                  //                 children:[
+                  //                   SvgPicture.asset("assets/images/filter.svg"),
+                  //                   5.width,
+                  //                   CustomText(
+                  //                     text: "Filter",
+                  //                     colors: colorsConst.textColor,
+                  //                     size: 15,
+                  //
+                  //                   ),
+                  //                 ],
+                  //               )
+                  //           ),
+                  //         ),
+                  //         10.width,
+                  //         SizedBox(
+                  //           height: 40,
+                  //           child: ElevatedButton(
+                  //               style: ElevatedButton.styleFrom(
+                  //                   backgroundColor: colorsConst.secondary,
+                  //                   shape:  RoundedRectangleBorder(
+                  //                       borderRadius: BorderRadius.circular(5)
+                  //                   )
+                  //               ),
+                  //               onPressed: (){},
+                  //               child:Row(
+                  //                 children: [
+                  //                   SvgPicture.asset("assets/images/sort.svg"),
+                  //                   6.width,
+                  //                   CustomText(
+                  //                     text: "Sort by",
+                  //                     colors: colorsConst.textColor,
+                  //                     size: 15,
+                  //
+                  //                   ),
+                  //                 ],
+                  //               )
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //
+                  //   ],
+                  // ),
                   15.height,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

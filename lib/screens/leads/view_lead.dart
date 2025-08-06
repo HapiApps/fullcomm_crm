@@ -243,88 +243,88 @@ double screenWidth=MediaQuery.of(context).size.width;
                                         size: 20,
                                         isBold: true,
                                       ),
-                                      SizedBox(
-                                        width: 200,
-                                        child: Row(
-                                          children: [
-                                            TextButton(
-                                                onPressed: (){
-                                                  //Get.to(const Suspects(),duration: Duration.zero);
-                                                  Get.to( UpdateLead(
-                                                    id:widget.id,
-                                                    linkedin: "",
-                                                    x: "",
-                                                    mainName:leadData.firstname,
-                                                    mainMobile:leadData.mobileNumber,
-                                                    mainEmail:leadData.emailId,
-                                                    mainWhatsApp: leadData.mobileNumber,
-                                                    companyName:leadData.companyName,
-                                                    status:leadData.status,
-                                                    rating:leadData.rating,
-                                                    emailUpdate:leadData.quotationRequired,
-                                                    name:leadData.firstname,
-                                                    title:"",
-                                                    mobileNumber:leadData.mobileNumber,
-                                                    whatsappNumber:leadData.mobileNumber,
-                                                    email:leadData.emailId,
-                                                    mainTitle:"",
-                                                    addressId:leadData.addressId,
-                                                    companyWebsite:"",
-                                                    companyNumber:"",
-                                                    companyEmail:"",
-                                                    industry:"",
-                                                    productServices:"",
-                                                    source:"",
-                                                    owner:"",
-                                                    budget:"",
-                                                    timelineDecision:"",
-                                                    serviceInterest:"",
-                                                    description:"",
-                                                    leadStatus:leadData.leadStatus,
-                                                    active:leadData.active,
-                                                    addressLine1:leadData.doorNo,
-                                                    addressLine2:leadData.landmark1,
-                                                    area:leadData.area,
-                                                    city:leadData.city,
-                                                    state:leadData.state,
-                                                    country:leadData.country,
-                                                    pinCode:leadData.pincode,
-                                                    quotationStatus:leadData.quotationStatus,
-                                                    productDiscussion:leadData.productDiscussion,
-                                                    discussionPoint:leadData.discussionPoint,
-                                                    notes:leadData.notes.toString(),
-                                                    prospectEnrollmentDate: leadData.prospectEnrollmentDate ?? "",
-                                                    expectedConvertionDate: leadData.expectedConvertionDate ?? "",
-                                                    numOfHeadcount: leadData.numOfHeadcount ?? "",
-                                                    expectedBillingValue: leadData.expectedBillingValue ?? "",
-                                                    arpuValue: leadData.arpuValue ?? "",
-                                                    updateTs: leadData.updatedTs.toString(),
-                                                    sourceDetails: leadData.sourceDetails.toString(),));
-                                                  print("address id ${leadData.addressId}");
-                                                }, child: CustomText(text: "Edit",colors: colorsConst.headColor,)),
-                                            CustomLoadingButton(
-                                              callback:(){
-                                                // controllers.mailReceivesList.value=[];
-                                                // apiService.mailReceiveDetails(widget.id.toString());
-                                                controllers.emailSubjectCtr.clear();
-                                                controllers.emailMessageCtr.clear();
-                                                imageController.photo1.value="";
-                                                controllers.emailToCtr.text=widget.email.toString()=="null"?"":widget.email.toString();
-                                                utils.sendEmailDialog(id: widget.id.toString(), name: widget.name.toString(),
-                                                    mobile: widget.mobileNumber.toString(), coName: widget.companyName.toString());
-                                              },
-                                              height: 35,
-                                              isLoading: false,
-                                              backgroundColor: colorsConst.third,
-                                              radius: 2,
-                                              width: 120,
-                                              isImage: false,
-                                              text: "Send Email",
-                                              textColor: Colors.black,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                      // SizedBox(
+                                      //   width: 200,
+                                      //   child: Row(
+                                      //     children: [
+                                      //       TextButton(
+                                      //           onPressed: (){
+                                      //             //Get.to(const Suspects(),duration: Duration.zero);
+                                      //             Get.to( UpdateLead(
+                                      //               id:widget.id,
+                                      //               linkedin: "",
+                                      //               x: "",
+                                      //               mainName:leadData.firstname,
+                                      //               mainMobile:leadData.mobileNumber,
+                                      //               mainEmail:leadData.emailId,
+                                      //               mainWhatsApp: leadData.mobileNumber,
+                                      //               companyName:leadData.companyName,
+                                      //               status:leadData.status,
+                                      //               rating:leadData.rating,
+                                      //               emailUpdate:leadData.quotationRequired,
+                                      //               name:leadData.firstname,
+                                      //               title:"",
+                                      //               mobileNumber:leadData.mobileNumber,
+                                      //               whatsappNumber:leadData.mobileNumber,
+                                      //               email:leadData.emailId,
+                                      //               mainTitle:"",
+                                      //               addressId:leadData.addressId,
+                                      //               companyWebsite:"",
+                                      //               companyNumber:"",
+                                      //               companyEmail:"",
+                                      //               industry:"",
+                                      //               productServices:"",
+                                      //               source:"",
+                                      //               owner:"",
+                                      //               budget:"",
+                                      //               timelineDecision:"",
+                                      //               serviceInterest:"",
+                                      //               description:"",
+                                      //               leadStatus:leadData.leadStatus,
+                                      //               active:leadData.active,
+                                      //               addressLine1:leadData.doorNo,
+                                      //               addressLine2:leadData.landmark1,
+                                      //               area:leadData.area,
+                                      //               city:leadData.city,
+                                      //               state:leadData.state,
+                                      //               country:leadData.country,
+                                      //               pinCode:leadData.pincode,
+                                      //               quotationStatus:leadData.quotationStatus,
+                                      //               productDiscussion:leadData.productDiscussion,
+                                      //               discussionPoint:leadData.discussionPoint,
+                                      //               notes:leadData.notes.toString(),
+                                      //               prospectEnrollmentDate: leadData.prospectEnrollmentDate ?? "",
+                                      //               expectedConvertionDate: leadData.expectedConvertionDate ?? "",
+                                      //               numOfHeadcount: leadData.numOfHeadcount ?? "",
+                                      //               expectedBillingValue: leadData.expectedBillingValue ?? "",
+                                      //               arpuValue: leadData.arpuValue ?? "",
+                                      //               updateTs: leadData.updatedTs.toString(),
+                                      //               sourceDetails: leadData.sourceDetails.toString(),));
+                                      //             print("address id ${leadData.addressId}");
+                                      //           }, child: CustomText(text: "Edit",colors: colorsConst.headColor,)),
+                                      //       CustomLoadingButton(
+                                      //         callback:(){
+                                      //           // controllers.mailReceivesList.value=[];
+                                      //           // apiService.mailReceiveDetails(widget.id.toString());
+                                      //           controllers.emailSubjectCtr.clear();
+                                      //           controllers.emailMessageCtr.clear();
+                                      //           imageController.photo1.value="";
+                                      //           controllers.emailToCtr.text=widget.email.toString()=="null"?"":widget.email.toString();
+                                      //           utils.sendEmailDialog(id: widget.id.toString(), name: widget.name.toString(),
+                                      //               mobile: widget.mobileNumber.toString(), coName: widget.companyName.toString());
+                                      //         },
+                                      //         height: 35,
+                                      //         isLoading: false,
+                                      //         backgroundColor: colorsConst.third,
+                                      //         radius: 2,
+                                      //         width: 120,
+                                      //         isImage: false,
+                                      //         text: "Send Email",
+                                      //         textColor: Colors.black,
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // ),
 
                                     ],
                                   ),
@@ -393,7 +393,7 @@ double screenWidth=MediaQuery.of(context).size.width;
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       CustomText(
-                                        text: "Added DateTime : ${formatDateTime(leadData.updatedTs.toString())}",
+                                        text: "Added DateTime : ${formatDateTime(leadData.updatedTs.toString())}        ",
                                         colors: colorsConst.textColor,
                                         size: 12,
                                       )
@@ -492,7 +492,7 @@ double screenWidth=MediaQuery.of(context).size.width;
                                                         size: 16,
                                                       ),
                                                       20.height,
-                                                      utils.leadText(text: leadData.accountManager.toString()=="null"?"":leadData.accountManager.toString(),color:colorsConst.textColor),
+                                                      utils.leadText(text: leadData.owner.toString()=="null"?"":leadData.owner.toString(),color:colorsConst.textColor),
                                                       20.height,
                                                       utils.leadText(text: leadData.mobileNumber.toString()=="null"?"":leadData.mobileNumber.toString().split("||")[0],color: colorsConst.textColor),
                                                       20.height,
@@ -971,6 +971,8 @@ double screenWidth=MediaQuery.of(context).size.width;
                                                       utils.leadText(text: "Details of Service Required",color: colorsConst.headColor),
                                                       20.height,
                                                       utils.leadText(text: "Prospect Grading",color: colorsConst.headColor),
+                                                      20.height,
+                                                      utils.leadText(text: "PROSPECT SOURCE DETAILS",color: colorsConst.headColor),
                                                     ],
                                                   ),
                                                   40.width,
@@ -988,16 +990,19 @@ double screenWidth=MediaQuery.of(context).size.width;
                                                       20.height,
                                                       // utils.leadText(text: widget.notes.toString()=="null"?"":widget.notes,color: colorsConst.textColor),
                                                       // 20.height,
-                                                      utils.leadText(text: leadData.leadStatus.toString()=="null"?"":leadData.leadStatus=="1"?"Suspects":leadData.leadStatus=="2"?"Prospects":leadData.leadStatus=="3"?"Qualified":"Customers",
+                                                      utils.leadText(
+                                                          text: leadData.leadStatus.toString()=="null"?"":leadData.leadStatus=="1"?"Suspects":leadData.leadStatus=="2"?"Prospects":leadData.leadStatus=="3"?"Qualified":"Customers",
                                                           color: colorsConst.textColor),
                                                       20.height,
                                                       utils.leadText(text: leadData.expectedBillingValue.toString()=="null"?"":leadData.expectedBillingValue,color: colorsConst.textColor),
                                                       20.height,
                                                       utils.leadText(text: leadData.numOfHeadcount.toString()=="null"?"":leadData.numOfHeadcount,color: colorsConst.textColor),
                                                       20.height,
-                                                      utils.leadText(text: leadData.sourceDetails.toString()=="null"?"":leadData.sourceDetails,color: colorsConst.textColor),
+                                                      utils.leadText(text: leadData.detailsOfServiceRequired.toString()=="null"?"":leadData.detailsOfServiceRequired,color: colorsConst.textColor),
                                                       20.height,
-                                                      utils.leadText(text: leadData.prospectGrading.toString()=="null"?"":leadData.prospectGrading,color: colorsConst.textColor),
+                                                      utils.leadText(text: leadData.rating.toString()=="null"?"":leadData.rating,color: colorsConst.textColor),
+                                                      20.height,
+                                                      utils.leadText(text: leadData.sourceDetails.toString()=="null"?"":leadData.sourceDetails,color: colorsConst.textColor),
                                                     ],
                                                   ),
                                                 ],
@@ -1027,8 +1032,8 @@ double screenWidth=MediaQuery.of(context).size.width;
                                                       utils.leadText(text: "Expected Conversion Date",color: colorsConst.headColor),
                                                       20.height,
                                                       utils.leadText(text: "Prospect Enrollment Date",color: colorsConst.headColor),
-                                                      20.height,
-                                                      utils.leadText(text: "Source Of Details",color: colorsConst.headColor),
+                                                      10.height,
+                                                      utils.leadText(text: "SOURCE OF PROSPECT \n (either BNI or social)",color: colorsConst.headColor),
                                                       20.height,
                                                       utils.leadText(text: "Status Update",color: colorsConst.headColor),
                                                       25.height,
@@ -1055,7 +1060,7 @@ double screenWidth=MediaQuery.of(context).size.width;
                                                       20.height,
                                                       utils.leadText(text:leadData.prospectEnrollmentDate.toString()=="null"?"":leadData.prospectEnrollmentDate.toString(),color: colorsConst.textColor),
                                                       20.height,
-                                                      utils.leadText(text:leadData.sourceDetails.toString()=="null"?"":leadData.sourceDetails.toString(),color: colorsConst.textColor),
+                                                      utils.leadText(text:leadData.source.toString()=="null"?"":leadData.source.toString(),color: colorsConst.textColor),
                                                       20.height,
                                                       Tooltip(
                                                         message: leadData.statusUpdate.toString(),

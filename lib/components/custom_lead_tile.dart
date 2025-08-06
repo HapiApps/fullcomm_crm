@@ -66,7 +66,9 @@ class CustomLeadTile extends StatefulWidget {
   final String? expectedBillingValue;
   final String? visitType;
   final String? points;
+  final String? detailsOfServiceReq;
   String updatedTs;
+
 
    CustomLeadTile({super.key,
      this.id,
@@ -117,7 +119,7 @@ class CustomLeadTile extends StatefulWidget {
     this.prospectEnrollmentDate,
     this.sourceDetails,
     this.statusUpdate,
-     required this.updatedTs, this.visitType, this.points
+     required this.updatedTs, this.visitType, this.points,this.detailsOfServiceReq
   });
 
   @override
@@ -202,7 +204,8 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
               5: FlexColumnWidth(2),
               6: FlexColumnWidth(3),
               7: FlexColumnWidth(2),
-              8: FlexColumnWidth(3),
+              8: FlexColumnWidth(2),
+              9: FlexColumnWidth(3),
               // 9: FlexColumnWidth(3),
               // 10: FlexColumnWidth(3),
             },
@@ -345,22 +348,28 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                     //     colors:colorsConst.textColor,
                     //   ),
                     // ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 25),
-                      child: CustomText(
-                        textAlign: TextAlign.center,
-                        text: widget.city.toString()=="null"?"":widget.city.toString(),
-                        size: 14,
-                        colors:colorsConst.textColor,
+                    Tooltip(
+                      message: widget.city.toString(),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 25),
+                        child: CustomText(
+                          textAlign: TextAlign.center,
+                          text: widget.city.toString()=="null"?"":widget.city.toString(),
+                          size: 14,
+                          colors:colorsConst.textColor,
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 25),
-                      child: CustomText(
-                        textAlign: TextAlign.center,
-                        text: widget.companyName.toString()=="null"?"":widget.companyName.toString(),
-                        size: 14,
-                        colors:colorsConst.textColor,
+                    Tooltip(
+                      message: widget.companyName.toString(),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 25),
+                        child: CustomText(
+                          textAlign: TextAlign.center,
+                          text: widget.companyName.toString()=="null"?"":widget.companyName.toString(),
+                          size: 14,
+                          colors:colorsConst.textColor,
+                        ),
                       ),
                     ),
                     // Padding(
@@ -382,13 +391,28 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         colors:colorsConst.textColor,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 25),
-                      child: CustomText(
-                        textAlign: TextAlign.center,
-                        text: widget.sourceDetails.toString(),
-                        size: 14,
-                        colors:colorsConst.textColor,
+                    Tooltip(
+                      message: widget.detailsOfServiceReq.toString(),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 25),
+                        child: CustomText(
+                          textAlign: TextAlign.center,
+                          text: widget.detailsOfServiceReq.toString(),
+                          size: 14,
+                          colors:colorsConst.textColor,
+                        ),
+                      ),
+                    ),
+                    Tooltip(
+                      message: widget.source.toString(),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 25),
+                        child: CustomText(
+                          textAlign: TextAlign.center,
+                          text: widget.source.toString(),
+                          size: 14,
+                          colors:colorsConst.textColor,
+                        ),
                       ),
                     ),
                     Padding(

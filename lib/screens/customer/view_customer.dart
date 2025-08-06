@@ -36,6 +36,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
     // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero,(){
+      controllers.search.clear();
       controllers.selectedIndex.value=4;
       controllers.groupController.selectIndex(0);
     });

@@ -27,22 +27,39 @@ class Prospects extends StatefulWidget {
 
 class _ProspectsState extends State<Prospects> {
   final ScrollController _controller = ScrollController();
+  final LayerLink _layerLink = LayerLink();
+  OverlayEntry? _overlayPEntry;
+  final LayerLink _dateLayerLink = LayerLink();
+  OverlayEntry? _dateOverlayEntry;
+  void _hideFilterPopup() {
+    if (_overlayPEntry != null) {
+      _overlayPEntry?.remove();
+      _overlayPEntry = null;
+      print("Overlay removed");
+    } else {
+      print("No overlay to remove");
+    }
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _hideSortPopup();
     Future.delayed(Duration.zero,(){
       controllers.selectedIndex.value=2;
       controllers.groupController.selectIndex(0);
+      setState(() {
+        controllers.search.clear();
+        apiService.qualifiedList = [];
+        apiService.qualifiedList.clear();
+      });
+      controllers.searchProspects.value = "";
     });
   }
-  final LayerLink _layerLink = LayerLink();
-  OverlayEntry? _overlayEntry;
-  final LayerLink _dateLayerLink = LayerLink();
-  OverlayEntry? _dateOverlayEntry;
+
 
   void _showFilterPopup() {
-    _overlayEntry = OverlayEntry(
+    _overlayPEntry = OverlayEntry(
       builder: (context) => Positioned(
         width: 200,
         child: CompositedTransformFollower(
@@ -116,98 +133,217 @@ class _ProspectsState extends State<Prospects> {
         ),
       ),
     );
-    Overlay.of(context).insert(_overlayEntry!);
+    Overlay.of(context).insert(_overlayPEntry!);
   }
 
   void _showDateWisePopup() {
+    _hideSortPopup(); // ensure any existing overlay is removed
+
     _dateOverlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        width: 200,
-        child: CompositedTransformFollower(
-          link: _dateLayerLink,
-          offset: const Offset(0.0, 50.0),
-          child: Material(
-            elevation: 4.0,
-            color: colorsConst.secondary,
+      builder: (context) => GestureDetector(
+        behavior: HitTestBehavior.translucent, // detects taps on transparent areas
+        onTap: () {
+          _hideSortPopup(); // close when tapped outside
+        },
+        child: Stack(
+          children: [
+            Positioned(
+              width: 200,
+              child: CompositedTransformFollower(
+                link: _dateLayerLink,
+                offset: const Offset(0.0, 50.0),
+                showWhenUnlinked: false,
+                child: GestureDetector(
+                  onTap: () {}, // to prevent tap from bubbling up to parent
+                  child: Material(
+                    elevation: 4.0,
+                    color: colorsConst.secondary,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Obx(() => RadioListTile<String>(
+                          title: CustomText(
+                            text: "Today",
+                            colors: colorsConst.textColor,
+                            textAlign: TextAlign.start,
+                          ),
+                          value: "Today",
+                          activeColor: colorsConst.third,
+                          groupValue: controllers.selectedProspectSortBy.value,
+                          onChanged: (value) {
+                            controllers.selectedProspectSortBy.value = value!;
+                          },
+                        )),
+                        Obx(() => RadioListTile<String>(
+                          title: CustomText(
+                              text: "Last 7 Days",
+                              colors: colorsConst.textColor,
+                              textAlign: TextAlign.start),
+                          value: "Last 7 Days",
+                          activeColor: colorsConst.third,
+                          groupValue: controllers.selectedProspectSortBy.value,
+                          onChanged: (value) {
+                            controllers.selectedProspectSortBy.value = value!;
+                          },
+                        )),
+                        Obx(() => RadioListTile<String>(
+                          title: CustomText(
+                              text: "Last 30 Days",
+                              colors: colorsConst.textColor,
+                              textAlign: TextAlign.start),
+                          value: "Last 30 Days",
+                          activeColor: colorsConst.third,
+                          groupValue: controllers.selectedProspectSortBy.value,
+                          onChanged: (value) {
+                            controllers.selectedProspectSortBy.value = value!;
+                          },
+                        )),
+                        Obx(() => RadioListTile<String>(
+                          title: CustomText(
+                              text: "All",
+                              colors: colorsConst.textColor,
+                              textAlign: TextAlign.start),
+                          value: "All",
+                          activeColor: colorsConst.third,
+                          groupValue: controllers.selectedProspectSortBy.value,
+                          onChanged: (value) {
+                            controllers.selectedProspectSortBy.value = "";
+                          },
+                        )),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.grey),
+                                onPressed: () {
+                                  _hideSortPopup();
+                                },
+                                child: const CustomText(
+                                  text: "Clear",
+                                  colors: Colors.white,
+                                )),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_dateOverlayEntry!);
+  }
+  void _showSortPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent, // optional: no dark background
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          insetPadding: const EdgeInsets.only(top: 80, left: 20),
+          content: Container(
+            width: 200,
+            decoration: BoxDecoration(
+              color: colorsConst.secondary,
+              borderRadius: BorderRadius.circular(6),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 6,
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(10),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Obx(()=>   RadioListTile<String>(
-                  title: CustomText(text: "Today", colors: colorsConst.textColor,textAlign: TextAlign.start,),
+                Obx(() => RadioListTile<String>(
+                  title: CustomText(
+                    text: "Today",
+                    colors: colorsConst.textColor,
+                  ),
                   value: "Today",
-                  activeColor: colorsConst.third,
                   groupValue: controllers.selectedProspectSortBy.value,
                   onChanged: (value) {
-                    controllers.selectedProspectSortBy.value = value.toString();
+                    controllers.selectedProspectSortBy.value = value!;
+                    Navigator.pop(context); // close popup
                   },
-                ),),
-                Obx(()=>   RadioListTile<String>(
-                  title: CustomText(text: "Last 7 Days", colors: colorsConst.textColor,textAlign: TextAlign.start),
+                  activeColor: colorsConst.third,
+                )),
+                Obx(() => RadioListTile<String>(
+                  title: CustomText(
+                      text: "Last 7 Days", colors: colorsConst.textColor),
                   value: "Last 7 Days",
-                  activeColor: colorsConst.third,
                   groupValue: controllers.selectedProspectSortBy.value,
                   onChanged: (value) {
-                    controllers.selectedProspectSortBy.value = value.toString();
+                    controllers.selectedProspectSortBy.value = value!;
+                    Navigator.pop(context);
                   },
-                ),),
-                Obx(()=>  RadioListTile<String>(
-                  title: CustomText(text: "Last 30 Days", colors: colorsConst.textColor,textAlign: TextAlign.start),
+                  activeColor: colorsConst.third,
+                )),
+                Obx(() => RadioListTile<String>(
+                  title: CustomText(
+                      text: "Last 30 Days", colors: colorsConst.textColor),
                   value: "Last 30 Days",
-                  activeColor: colorsConst.third,
                   groupValue: controllers.selectedProspectSortBy.value,
                   onChanged: (value) {
-                    controllers.selectedProspectSortBy.value = value.toString();
+                    controllers.selectedProspectSortBy.value = value!;
+                    Navigator.pop(context);
                   },
-                ),),
-                Obx(()=>  RadioListTile<String>(
-                  title: CustomText(text: "All", colors: colorsConst.textColor,textAlign: TextAlign.start),
-                  value: "All",
                   activeColor: colorsConst.third,
+                )),
+                Obx(() => RadioListTile<String>(
+                  title:
+                  CustomText(text: "All", colors: colorsConst.textColor),
+                  value: "All",
                   groupValue: controllers.selectedProspectSortBy.value,
                   onChanged: (value) {
                     controllers.selectedProspectSortBy.value = "";
+                    Navigator.pop(context);
                   },
-                ),),
+                  activeColor: colorsConst.third,
+                )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey
-                        ),
-                        onPressed: () {
-                          _hideSortPopup();
-                        }, child: const CustomText(text: "Clear",colors: Colors.white,)),
-                    // ElevatedButton(
-                    //   style: ElevatedButton.styleFrom(
-                    //     backgroundColor: colorsConst.third
-                    //   ),
-                    //     onPressed: () {
-                    //       _hideFilterPopup();
-                    // },
-                    //     child: const CustomText(text: "Filter",colors: Colors.black,)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                      ),
+                      onPressed: () {
+                        controllers.selectedProspectSortBy.value = "";
+                        Navigator.pop(context);
+                      },
+                      child: const CustomText(text: "Clear", colors: Colors.white),
+                    ),
                   ],
-                )
+                ),
               ],
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
-    Overlay.of(context).insert(_dateOverlayEntry!);
   }
 
-  void _hideFilterPopup() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-  }
   void _hideSortPopup() {
-    _dateOverlayEntry?.remove();
-    _dateOverlayEntry = null;
+    if (_dateOverlayEntry != null) {
+      _dateOverlayEntry?.remove();
+      _dateOverlayEntry = null;
+      print("Popup closed");
+    }
   }
+
   @override
   void dispose() {
     _controller.dispose();
+    _hideSortPopup();
     super.dispose();
   }
   @override
@@ -435,79 +571,149 @@ class _ProspectsState extends State<Prospects> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children:[
                       CustomSearchTextField(controller: controllers.search,
+                        hintText: "Search Name, Company, Mobile No.",
                         onChanged: (value){
                           controllers.searchProspects.value = value.toString();
                         },
                       ),
                       Row(
                         children:[
-                          SizedBox(
-                            height:40,
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: colorsConst.secondary,
-                                    shape:  RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5)
-                                    )
-                                ),
-                                onPressed: (){},
-                                child:Row(
-                                  children:[
-                                    CompositedTransformTarget(
-                                      link: _layerLink,
-                                      child: SizedBox(
-                                        height: 40,
-                                        child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                                backgroundColor: colorsConst.secondary,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                    BorderRadius.circular(5))),
-                                            onPressed: _showFilterPopup,
-                                            child: Row(
-                                              children: [
-                                                SvgPicture.asset(
-                                                    "assets/images/filter.svg"),
-                                                5.width,
-                                                CustomText(
-                                                  text: "Filter",
-                                                  colors: colorsConst.textColor,
-                                                  size: 15,
-                                                ),
-                                              ],
-                                            )
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                            ),
-                          ),
+                          // SizedBox(
+                          //   height:40,
+                          //   child: ElevatedButton(
+                          //       style: ElevatedButton.styleFrom(
+                          //           backgroundColor: colorsConst.secondary,
+                          //           shape:  RoundedRectangleBorder(
+                          //               borderRadius: BorderRadius.circular(5)
+                          //           )
+                          //       ),
+                          //       onPressed: (){},
+                          //       child:Row(
+                          //         children:[
+                          //           CompositedTransformTarget(
+                          //             link: _layerLink,
+                          //             child: SizedBox(
+                          //               height: 40,
+                          //               child: ElevatedButton(
+                          //                   style: ElevatedButton.styleFrom(
+                          //                       backgroundColor: colorsConst.secondary,
+                          //                       shape: RoundedRectangleBorder(
+                          //                           borderRadius:
+                          //                           BorderRadius.circular(5))),
+                          //                   onPressed: _showFilterPopup,
+                          //                   child: Row(
+                          //                     children: [
+                          //                       SvgPicture.asset(
+                          //                           "assets/images/filter.svg"),
+                          //                       5.width,
+                          //                       CustomText(
+                          //                         text: "Filter",
+                          //                         colors: colorsConst.textColor,
+                          //                         size: 15,
+                          //                       ),
+                          //                     ],
+                          //                   )
+                          //               ),
+                          //             ),
+                          //           ),
+                          //         ],
+                          //       )
+                          //   ),
+                          // ),
                           10.width,
-                          CompositedTransformTarget(
-                            link: _dateLayerLink,
-                            child: SizedBox(
-                              height: 40,
-                              child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: colorsConst.secondary,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(5))),
-                                  onPressed: _showDateWisePopup,
-                                  child: Row(
-                                    children: [
-                                      SvgPicture.asset("assets/images/sort.svg"),
-                                      6.width,
-                                      CustomText(
-                                        text: "Sort by",
-                                        colors: colorsConst.textColor,
-                                        size: 15,
-                                      ),
-                                    ],
-                                  )),
+                          PopupMenuButton<String>(
+                            offset: const Offset(0, 40), // position below button
+                            color: colorsConst.secondary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            onSelected: (value) {
+                              controllers.selectedProspectSortBy.value = value;
+                            },
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: "Today",
+                                child: Text("Today", style: TextStyle(color: colorsConst.textColor)),
+                              ),
+                              PopupMenuItem(
+                                value: "Last 7 Days",
+                                child: Text("Last 7 Days", style: TextStyle(color: colorsConst.textColor)),
+                              ),
+                              PopupMenuItem(
+                                value: "Last 30 Days",
+                                child: Text("Last 30 Days", style: TextStyle(color: colorsConst.textColor)),
+                              ),
+                              PopupMenuItem(
+                                value: "All",
+                                child: Text("All", style: TextStyle(color: colorsConst.textColor)),
+                              ),
+                            ],
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: colorsConst.secondary,
+                              ),
+                              onPressed: null, // must be null when using PopupMenuButton as child
+                              child: Row(
+                                children: [
+                                  SvgPicture.asset("assets/images/sort.svg"),
+                                  const SizedBox(width: 6),
+                                  Obx(()=> CustomText(
+                                      text: controllers.selectedProspectSortBy.value.isEmpty?"Sort by":controllers.selectedProspectSortBy.value,
+                                      colors: colorsConst.textColor,
+                                      size: 15),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
+
+                          // ElevatedButton(
+                          //   onPressed: () {
+                          //     _showSortPopup(context);
+                          //   },
+                          //   style: ElevatedButton.styleFrom(
+                          //     backgroundColor: colorsConst.secondary,
+                          //     shape: RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.circular(5),
+                          //     ),
+                          //   ),
+                          //   child: Row(
+                          //     children: [
+                          //       SvgPicture.asset("assets/images/sort.svg"),
+                          //       const SizedBox(width: 6),
+                          //       CustomText(
+                          //         text: "Sort by",
+                          //         colors: colorsConst.textColor,
+                          //         size: 15,
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+
+                          // CompositedTransformTarget(
+                          //   link: _dateLayerLink,
+                          //   child: SizedBox(
+                          //     height: 40,
+                          //     child: ElevatedButton(
+                          //         style: ElevatedButton.styleFrom(
+                          //             backgroundColor: colorsConst.secondary,
+                          //             shape: RoundedRectangleBorder(
+                          //                 borderRadius:
+                          //                 BorderRadius.circular(5))),
+                          //         onPressed: _showDateWisePopup,
+                          //         child: Row(
+                          //           children: [
+                          //             SvgPicture.asset("assets/images/sort.svg"),
+                          //             6.width,
+                          //             CustomText(
+                          //               text: "Sort by",
+                          //               colors: colorsConst.textColor,
+                          //               size: 15,
+                          //             ),
+                          //           ],
+                          //         )),
+                          //   ),
+                          // ),
                         ],
                       ),
 

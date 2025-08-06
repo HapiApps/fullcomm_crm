@@ -39,186 +39,118 @@ class _SuspectsState extends State<Suspects> {
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
+
     });
     Future.delayed(Duration.zero, () {
       controllers.selectedIndex.value = 1;
       controllers.groupController.selectIndex(0);
       setState(() {
         apiService.prospectsList = [];
+        apiService.prospectsList.clear();
+        controllers.search.clear();
       });
+      controllers.searchQuery.value = "";
     });
   }
 
-  // Inside your widget
-  final LayerLink _layerLink = LayerLink();
-  OverlayEntry? _overlayEntry;
-  final LayerLink _dateLayerLink = LayerLink();
-  OverlayEntry? _dateOverlayEntry;
 
-  void _showFilterPopup() {
-    _overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        width: 200,
-        child: CompositedTransformFollower(
-          link: _layerLink,
-          offset: const Offset(0.0, 50.0),
-          child: Material(
-            elevation: 4.0,
-            color: colorsConst.secondary,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-             Obx(()=>   RadioListTile<String>(
-               title: CustomText(text: "Warm", colors: colorsConst.textColor),
-               value: "Warm",
-               activeColor: colorsConst.third,
-               groupValue: controllers.selectedTemperature.value,
-               onChanged: (value) {
-                 controllers.selectedTemperature.value = value.toString();
-               },
-             ),),
-             Obx(()=>   RadioListTile<String>(
-               title: CustomText(text: "Cold", colors: colorsConst.textColor),
-               value: "Cold",
-               activeColor: colorsConst.third,
-               groupValue: controllers.selectedTemperature.value,
-               onChanged: (value) {
-                 controllers.selectedTemperature.value = value.toString();
-               },
-             ),),
-              Obx(()=>  RadioListTile<String>(
-                title: CustomText(text: "Hot", colors: colorsConst.textColor),
-                value: "Hot",
-                activeColor: colorsConst.third,
-                groupValue: controllers.selectedTemperature.value,
-                onChanged: (value) {
-                  controllers.selectedTemperature.value = value.toString();
-                },
-              ),),
-                Obx(()=>  RadioListTile<String>(
-                  title: CustomText(text: "All", colors: colorsConst.textColor),
-                  value: "All",
-                  activeColor: colorsConst.third,
-                  groupValue: controllers.selectedTemperature.value,
-                  onChanged: (value) {
-                    controllers.selectedTemperature.value = "";
-                  },
-                ),),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton(
+  void _showSortPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent, // optional: no dark background
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          insetPadding: const EdgeInsets.only(top: 200, right: 200),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: Container(
+              width: 200,
+              decoration: BoxDecoration(
+                color: colorsConst.secondary,
+                borderRadius: BorderRadius.circular(6),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 6,
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Obx(() => RadioListTile<String>(
+                    title: CustomText(
+                      text: "Today",
+                      colors: colorsConst.textColor,
+                    ),
+                    value: "Today",
+                    groupValue: controllers.selectedProspectSortBy.value,
+                    onChanged: (value) {
+                      controllers.selectedProspectSortBy.value = value!;
+                      Navigator.pop(context); // close popup
+                    },
+                    activeColor: colorsConst.third,
+                  )),
+                  Obx(() => RadioListTile<String>(
+                    title: CustomText(
+                        text: "Last 7 Days", colors: colorsConst.textColor),
+                    value: "Last 7 Days",
+                    groupValue: controllers.selectedProspectSortBy.value,
+                    onChanged: (value) {
+                      controllers.selectedProspectSortBy.value = value!;
+                      Navigator.pop(context);
+                    },
+                    activeColor: colorsConst.third,
+                  )),
+                  Obx(() => RadioListTile<String>(
+                    title: CustomText(
+                        text: "Last 30 Days", colors: colorsConst.textColor),
+                    value: "Last 30 Days",
+                    groupValue: controllers.selectedProspectSortBy.value,
+                    onChanged: (value) {
+                      controllers.selectedProspectSortBy.value = value!;
+                      Navigator.pop(context);
+                    },
+                    activeColor: colorsConst.third,
+                  )),
+                  Obx(() => RadioListTile<String>(
+                    title:
+                    CustomText(text: "All", colors: colorsConst.textColor),
+                    value: "All",
+                    groupValue: controllers.selectedProspectSortBy.value,
+                    onChanged: (value) {
+                      controllers.selectedProspectSortBy.value = "";
+                      Navigator.pop(context);
+                    },
+                    activeColor: colorsConst.third,
+                  )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey
+                          backgroundColor: Colors.grey,
                         ),
                         onPressed: () {
-                      _hideFilterPopup();
-                    }, child: const CustomText(text: "Clear",colors: Colors.white,)),
-                    // ElevatedButton(
-                    //   style: ElevatedButton.styleFrom(
-                    //     backgroundColor: colorsConst.third
-                    //   ),
-                    //     onPressed: () {
-                    //       _hideFilterPopup();
-                    // },
-                    //     child: const CustomText(text: "Filter",colors: Colors.black,)),
-                  ],
-                )
-              ],
+                          controllers.selectedProspectSortBy.value = "";
+                          Navigator.pop(context);
+                        },
+                        child: const CustomText(text: "Clear", colors: Colors.white),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
-    Overlay.of(context).insert(_overlayEntry!);
   }
 
-  void _showDateWisePopup() {
-    _dateOverlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        width: 200,
-        child: CompositedTransformFollower(
-          link: _dateLayerLink,
-          offset: const Offset(0.0, 50.0),
-          child: Material(
-            elevation: 4.0,
-            color: colorsConst.secondary,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-             Obx(()=>   RadioListTile<String>(
-               title: CustomText(text: "Today", colors: colorsConst.textColor,textAlign: TextAlign.start,),
-               value: "Today",
-               activeColor: colorsConst.third,
-               groupValue: controllers.selectedSortBy.value,
-               onChanged: (value) {
-                 controllers.selectedSortBy.value = value.toString();
-               },
-             ),),
-             Obx(()=>   RadioListTile<String>(
-               title: CustomText(text: "Last 7 Days", colors: colorsConst.textColor,textAlign: TextAlign.start),
-               value: "Last 7 Days",
-               activeColor: colorsConst.third,
-               groupValue: controllers.selectedSortBy.value,
-               onChanged: (value) {
-                 controllers.selectedSortBy.value = value.toString();
-               },
-             ),),
-              Obx(()=>  RadioListTile<String>(
-                title: CustomText(text: "Last 30 Days", colors: colorsConst.textColor,textAlign: TextAlign.start),
-                value: "Last 30 Days",
-                activeColor: colorsConst.third,
-                groupValue: controllers.selectedSortBy.value,
-                onChanged: (value) {
-                  controllers.selectedSortBy.value = value.toString();
-                },
-              ),),
-                Obx(()=>  RadioListTile<String>(
-                  title: CustomText(text: "All", colors: colorsConst.textColor,textAlign: TextAlign.start),
-                  value: "All",
-                  activeColor: colorsConst.third,
-                  groupValue: controllers.selectedSortBy.value,
-                  onChanged: (value) {
-                    controllers.selectedSortBy.value = "";
-                  },
-                ),),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey
-                        ),
-                        onPressed: () {
-                      _hideSortPopup();
-                    }, child: const CustomText(text: "Clear",colors: Colors.white,)),
-                    // ElevatedButton(
-                    //   style: ElevatedButton.styleFrom(
-                    //     backgroundColor: colorsConst.third
-                    //   ),
-                    //     onPressed: () {
-                    //       _hideFilterPopup();
-                    // },
-                    //     child: const CustomText(text: "Filter",colors: Colors.black,)),
-                  ],
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-    Overlay.of(context).insert(_dateOverlayEntry!);
-  }
-
-  void _hideFilterPopup() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-  }
-  void _hideSortPopup() {
-    _dateOverlayEntry?.remove();
-    _dateOverlayEntry = null;
-  }
 
   @override
   void dispose() {
@@ -630,7 +562,9 @@ class _SuspectsState extends State<Suspects> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CustomSearchTextField(controller: controllers.search,
+                      CustomSearchTextField(
+                        hintText: "Search Name, Company, Mobile No.",
+                        controller: controllers.search,
                         onChanged: (value){
                         controllers.searchQuery.value = value.toString();
                         },
@@ -660,57 +594,124 @@ class _SuspectsState extends State<Suspects> {
                           //       )
                           //       ),
                           // ),
-                          CompositedTransformTarget(
-                            link: _layerLink,
-                            child: SizedBox(
-                              height: 40,
-                              child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: colorsConst.secondary,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(5))),
-                                onPressed: _showFilterPopup,
-                                      child: Row(
-                                        children: [
-                                          SvgPicture.asset(
-                                              "assets/images/filter.svg"),
-                                          5.width,
-                                          CustomText(
-                                            text: "Filter",
-                                            colors: colorsConst.textColor,
-                                            size: 15,
-                                          ),
-                                        ],
-                                      )
+                          // CompositedTransformTarget(
+                          //   link: _layerLink,
+                          //   child: SizedBox(
+                          //     height: 40,
+                          //     child: ElevatedButton(
+                          //             style: ElevatedButton.styleFrom(
+                          //                 backgroundColor: colorsConst.secondary,
+                          //                 shape: RoundedRectangleBorder(
+                          //                     borderRadius:
+                          //                     BorderRadius.circular(5))),
+                          //       onPressed: _showFilterPopup,
+                          //             child: Row(
+                          //               children: [
+                          //                 SvgPicture.asset(
+                          //                     "assets/images/filter.svg"),
+                          //                 5.width,
+                          //                 CustomText(
+                          //                   text: "Filter",
+                          //                   colors: colorsConst.textColor,
+                          //                   size: 15,
+                          //                 ),
+                          //               ],
+                          //             )
+                          //     ),
+                          //   ),
+                          // ),
+                          10.width,
+                          PopupMenuButton<String>(
+                            offset: const Offset(0, 40), // position below button
+                            color: colorsConst.secondary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            onSelected: (value) {
+                              controllers.selectedProspectSortBy.value = value;
+                            },
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: "Today",
+                                child: Text("Today", style: TextStyle(color: colorsConst.textColor)),
+                              ),
+                              PopupMenuItem(
+                                value: "Last 7 Days",
+                                child: Text("Last 7 Days", style: TextStyle(color: colorsConst.textColor)),
+                              ),
+                              PopupMenuItem(
+                                value: "Last 30 Days",
+                                child: Text("Last 30 Days", style: TextStyle(color: colorsConst.textColor)),
+                              ),
+                              PopupMenuItem(
+                                value: "All",
+                                child: Text("All", style: TextStyle(color: colorsConst.textColor)),
+                              ),
+                            ],
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: colorsConst.secondary,
+                              ),
+                              onPressed: null, // must be null when using PopupMenuButton as child
+                              child: Row(
+                                children: [
+                                  SvgPicture.asset("assets/images/sort.svg"),
+                                  const SizedBox(width: 6),
+                                  Obx(()=> CustomText(
+                                      text: controllers.selectedProspectSortBy.value.isEmpty?"Sort by":controllers.selectedProspectSortBy.value,
+                                      colors: colorsConst.textColor,
+                                      size: 15),
+                                  )
+                                ],
                               ),
                             ),
                           ),
-                          10.width,
-                          CompositedTransformTarget(
-                            link: _dateLayerLink,
-                            child: SizedBox(
-                              height: 40,
-                              child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: colorsConst.secondary,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(5))),
-                                  onPressed: _showDateWisePopup,
-                                  child: Row(
-                                    children: [
-                                      SvgPicture.asset("assets/images/sort.svg"),
-                                      6.width,
-                                      CustomText(
-                                        text: "Sort by",
-                                        colors: colorsConst.textColor,
-                                        size: 15,
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ),
+                          // ElevatedButton(
+                          //   onPressed: () {
+                          //     _showSortPopup(context);
+                          //   },
+                          //   style: ElevatedButton.styleFrom(
+                          //     backgroundColor: colorsConst.secondary,
+                          //     shape: RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.circular(5),
+                          //     ),
+                          //   ),
+                          //   child: Row(
+                          //     children: [
+                          //       SvgPicture.asset("assets/images/sort.svg"),
+                          //       const SizedBox(width: 6),
+                          //       CustomText(
+                          //         text: "Sort by",
+                          //         colors: colorsConst.textColor,
+                          //         size: 15,
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+                          // CompositedTransformTarget(
+                          //   link: _dateLayerLink,
+                          //   child: SizedBox(
+                          //     height: 40,
+                          //     child: ElevatedButton(
+                          //         style: ElevatedButton.styleFrom(
+                          //             backgroundColor: colorsConst.secondary,
+                          //             shape: RoundedRectangleBorder(
+                          //                 borderRadius:
+                          //                 BorderRadius.circular(5))),
+                          //         onPressed: _showDateWisePopup,
+                          //         child: Row(
+                          //           children: [
+                          //             SvgPicture.asset("assets/images/sort.svg"),
+                          //             6.width,
+                          //             CustomText(
+                          //               text: "Sort by",
+                          //               colors: colorsConst.textColor,
+                          //               size: 15,
+                          //             ),
+                          //           ],
+                          //         )),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],
@@ -830,7 +831,8 @@ class _SuspectsState extends State<Suspects> {
                       5: FlexColumnWidth(2),
                       6: FlexColumnWidth(3),
                       7: FlexColumnWidth(2),
-                      8: FlexColumnWidth(3),
+                      8: FlexColumnWidth(2),
+                      9: FlexColumnWidth(3),
                       // 9: FlexColumnWidth(3),
                       // 10: FlexColumnWidth(3),
                     },
@@ -856,8 +858,7 @@ class _SuspectsState extends State<Suspects> {
                                         () => CustomCheckBox(
                                         text: "",
                                         onChanged: (value) {
-                                          if (controllers.isAllSelected.value ==
-                                              true) {
+                                          if (controllers.isAllSelected.value == true) {
                                             controllers.isAllSelected.value = false;
                                             for (int j = 0;
                                             j < controllers.isNewLeadList.length;
@@ -964,6 +965,16 @@ class _SuspectsState extends State<Suspects> {
                               padding: const EdgeInsets.all(8.0),
                               child: CustomText(
                                 textAlign: TextAlign.center,
+                                text: "Source Of \nProspect",
+                                size: 15,
+                                isBold: true,
+                                colors: colorsConst.textColor,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CustomText(
+                                textAlign: TextAlign.center,
                                 text: "Added\nDateTime",
                                 size: 15,
                                 isBold: true,
@@ -1000,102 +1011,110 @@ class _SuspectsState extends State<Suspects> {
                           () => controllers.isLead.value == false
                           ? const Center(child: CircularProgressIndicator())
                           : controllers.paginatedLeads.isNotEmpty?
-                          RawKeyboardListener(
-                            focusNode: _focusNode,
-                            onKey: (event) {
-                              if (event.runtimeType.toString() == 'RawKeyDownEvent') {
-                                if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                                  _controller.animateTo(
-                                    _controller.offset + 100,
-                                    duration: const Duration(milliseconds: 200),
-                                    curve: Curves.easeInOut,
-                                  );
-                                } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                                  _controller.animateTo(
-                                    _controller.offset - 100,
-                                    duration: const Duration(milliseconds: 200),
-                                    curve: Curves.easeInOut,
-                                  );
-                                }
-                              }
+                          GestureDetector(
+                            onTap: () {
+                              _focusNode.requestFocus();
                             },
-                            child:  ScrollbarTheme(
-                              data: ScrollbarThemeData(
-                                thumbColor: MaterialStateProperty.all(const Color(0xff2C3557)),
-                                trackColor: MaterialStateProperty.all(const Color(0xff465271)),
-                                radius: const Radius.circular(10),
-                                thickness: MaterialStateProperty.all(20),
-                              ),
-                              child: Scrollbar(
-                                thumbVisibility: true,
-                                thickness: 10,
-                                trackVisibility: true,
-                                radius: const Radius.circular(10),
-                                controller: _controller,
-                                child: ListView.builder(
-                                  controller: _controller,
-                                  shrinkWrap: true,
-                                  physics: const ScrollPhysics(),
-                                  itemCount: controllers.paginatedLeads.length,
-                                  itemBuilder: (context, index) {
-                                    final data = controllers.paginatedLeads[index];
-                                    return CustomLeadTile(
-                                      visitType: data.visitType.toString(),
-                                      statusUpdate: data.statusUpdate.toString(),
-                                      index: index,
-                                      points: data.points.toString(),
-                                      quotationStatus: data.quotationStatus.toString(),
-                                      quotationRequired: data.quotationRequired.toString(),
-                                      productDiscussion: data.productDiscussion.toString(),
-                                      discussionPoint: data.discussionPoint.toString(),
-                                      notes: data.notes.toString(),
-                                      linkedin: "",
-                                      x: "",
-                                      name: data.firstname.toString().split("||")[0],
-                                      mobileNumber: data.mobileNumber.toString().split("||")[0],
-                                      email: data.emailId.toString().split("||")[0],
-                                      companyName: data.companyName.toString(),
-                                      mainWhatsApp: data.mobileNumber.toString().split("||")[0],
-                                      emailUpdate: data.quotationUpdate.toString(),
-                                      id: data.userId.toString(),
-                                      status: data.leadStatus ?? "UnQualified",
-                                      rating: data.rating ?? "Warm",
-                                      mainName: data.firstname.toString().split("||")[0],
-                                      mainMobile: data.mobileNumber.toString().split("||")[0],
-                                      mainEmail: data.emailId.toString().split("||")[0],
-                                      title: "",
-                                      whatsappNumber: data.mobileNumber.toString().split("||")[0],
-                                      mainTitle: "",
-                                      addressId: data.addressId ?? "",
-                                      companyWebsite: "",
-                                      companyNumber: "",
-                                      companyEmail: "",
-                                      industry: "",
-                                      productServices: "",
-                                      source: "",
-                                      owner: "",
-                                      budget: "",
-                                      timelineDecision: "",
-                                      serviceInterest: "",
-                                      description: "",
-                                      leadStatus: data.quotationStatus ?? "",
-                                      active: data.active ?? "",
-                                      addressLine1: data.doorNo ?? "",
-                                      addressLine2: data.landmark1 ?? "",
-                                      area: data.area ?? "",
-                                      city: data.city ?? "",
-                                      state: data.state ?? "",
-                                      country: data.country ?? "",
-                                      pinCode: data.pincode ?? "",
-                                      prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
-                                      expectedConvertionDate: data.expectedConvertionDate ?? "",
-                                      numOfHeadcount: data.numOfHeadcount ?? "",
-                                      expectedBillingValue: data.expectedBillingValue ?? "",
-                                      arpuValue: data.arpuValue ?? "",
-                                      updatedTs: data.createdTs ?? "",
-                                      sourceDetails: data.sourceDetails ?? "",
+                            child: KeyboardListener(
+                              focusNode: _focusNode,
+                              autofocus: true,
+                              onKeyEvent: (event) {
+                                if (event is RawKeyDownEvent) {
+                                  if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                                    _controller.animateTo(
+                                      _controller.offset + 100,
+                                      duration: const Duration(milliseconds: 200),
+                                      curve: Curves.easeInOut,
                                     );
-                                  },
+                                  } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                                    _controller.animateTo(
+                                      _controller.offset - 100,
+                                      duration: const Duration(milliseconds: 200),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  }
+                                }
+                              },
+                              child:  ScrollbarTheme(
+                                data: ScrollbarThemeData(
+                                  thumbColor: MaterialStateProperty.all(const Color(0xff2C3557)),
+                                  trackColor: MaterialStateProperty.all(const Color(0xff465271)),
+                                  radius: const Radius.circular(10),
+                                  thickness: MaterialStateProperty.all(20),
+                                ),
+                                child: Scrollbar(
+                                  thumbVisibility: true,
+                                  thickness: 10,
+                                  trackVisibility: true,
+                                  radius: const Radius.circular(10),
+                                  controller: _controller,
+                                  child: ListView.builder(
+                                    controller: _controller,
+                                    shrinkWrap: true,
+                                    physics: const ScrollPhysics(),
+                                    itemCount: controllers.paginatedLeads.length,
+                                    itemBuilder: (context, index) {
+                                      final data = controllers.paginatedLeads[index];
+                                      return CustomLeadTile(
+                                        visitType: data.visitType.toString(),
+                                        detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
+                                        statusUpdate: data.statusUpdate.toString(),
+                                        index: index,
+                                        points: data.points.toString(),
+                                        quotationStatus: data.quotationStatus.toString(),
+                                        quotationRequired: data.quotationRequired.toString(),
+                                        productDiscussion: data.productDiscussion.toString(),
+                                        discussionPoint: data.discussionPoint.toString(),
+                                        notes: data.notes.toString(),
+                                        linkedin: "",
+                                        x: "",
+                                        name: data.firstname.toString().split("||")[0],
+                                        mobileNumber: data.mobileNumber.toString().split("||")[0],
+                                        email: data.emailId.toString().split("||")[0],
+                                        companyName: data.companyName.toString(),
+                                        mainWhatsApp: data.mobileNumber.toString().split("||")[0],
+                                        emailUpdate: data.quotationUpdate.toString(),
+                                        id: data.userId.toString(),
+                                        status: data.leadStatus ?? "UnQualified",
+                                        rating: data.rating ?? "Warm",
+                                        mainName: data.firstname.toString().split("||")[0],
+                                        mainMobile: data.mobileNumber.toString().split("||")[0],
+                                        mainEmail: data.emailId.toString().split("||")[0],
+                                        title: "",
+                                        whatsappNumber: data.mobileNumber.toString().split("||")[0],
+                                        mainTitle: "",
+                                        addressId: data.addressId ?? "",
+                                        companyWebsite: "",
+                                        companyNumber: "",
+                                        companyEmail: "",
+                                        industry: "",
+                                        productServices: "",
+                                        source:data.source ?? "",
+                                        owner: "",
+                                        budget: "",
+                                        timelineDecision: "",
+                                        serviceInterest: "",
+                                        description: "",
+                                        leadStatus: data.quotationStatus ?? "",
+                                        active: data.active ?? "",
+                                        addressLine1: data.doorNo ?? "",
+                                        addressLine2: data.landmark1 ?? "",
+                                        area: data.area ?? "",
+                                        city: data.city ?? "",
+                                        state: data.state ?? "",
+                                        country: data.country ?? "",
+                                        pinCode: data.pincode ?? "",
+
+                                        prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
+                                        expectedConvertionDate: data.expectedConvertionDate ?? "",
+                                        numOfHeadcount: data.numOfHeadcount ?? "",
+                                        expectedBillingValue: data.expectedBillingValue ?? "",
+                                        arpuValue: data.arpuValue ?? "",
+                                        updatedTs: data.createdTs ?? "",
+                                        sourceDetails: data.sourceDetails ?? "",
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ),

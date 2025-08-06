@@ -46,6 +46,13 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
               onPressed: null,
               icon:SvgPicture.asset(assets.search,
                   width: 15,height: 15)),
+          suffixIcon: IconButton(
+              onPressed: (){
+                widget.controller.clear();
+                if(widget.onChanged != null) {
+                  widget.onChanged!(null);
+                }
+              }, icon: Icon(Icons.clear,color: Colors.white,)),
           fillColor:colorsConst.secondary,
           filled: true,
           enabledBorder: OutlineInputBorder(

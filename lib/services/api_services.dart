@@ -671,7 +671,7 @@ class ApiService {
       if (request.statusCode == 200 && response["message"]=="ok"){
          print("success");
           apiService.allLeadsDetails();
-         apiService.allNewLeadsDetails();
+          apiService.allNewLeadsDetails();
          controllers.allGoodLeadFuture=apiService.allGoodLeadsDetails();
          Navigator.pop(context);
          Get.to(const Prospects(),duration: Duration.zero);
@@ -756,7 +756,7 @@ class ApiService {
       if (request.statusCode == 200 && response["message"]=="ok"){
          print("success");
           apiService.allLeadsDetails();
-         apiService.allNewLeadsDetails();
+          apiService.allNewLeadsDetails();
          controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
          prospectsList.clear();
          qualifiedList.clear();
@@ -877,7 +877,7 @@ class ApiService {
         "user_id": controllers.storage.read("id"),
         "company_name": controllers.leadCoNameCrt.text.trim(),
         "product_discussion": controllers.prodDescriptionController.text.trim(),
-        "discussion_point": controllers.leadDisPointsCrt.text.trim(),
+        "source": controllers.leadDisPointsCrt.text.trim(),
         "points": controllers.leadActions.text.trim(),
         "quotation_status": "",
         "door_no": controllers.doorNumberController.text.trim(),
@@ -909,9 +909,9 @@ class ApiService {
         'num_of_headcount': controllers.noOfHeadCountCrt.text.trim(),
         'expected_billing_value': controllers.expectedConversionDateCrt.text.trim(),
         'arpu_value':controllers.arpuCrt.text.trim(),
-        'source_details':controllers.sourceCrt.text.trim(),
-        'prospect_grading':controllers.prospectGradingCrt.text.trim(),
-        'account_manager':controllers.leadTitleCrt[0].text.trim()
+        'details_of_service_required':controllers.sourceCrt.text.trim(),
+        'rating':controllers.prospectGradingCrt.text.trim(),
+        'owner':controllers.leadTitleCrt[0].text.trim()
       };
       print("insert lead $data");
       final request = await http.post(Uri.parse(scriptApi),
@@ -1149,6 +1149,7 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      //print("Login Res ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 ){
         controllers.storage.write("f_name",response["firstname"]);
@@ -1167,11 +1168,11 @@ class ApiService {
        apiService.allNewLeadsDetails();
         controllers.allGoodLeadFuture=apiService.allGoodLeadsDetails();
         controllers.allCustomerFuture=apiService.allCustomerDetails();
-        utils.snackBar(context: Get.context!, msg: "Login Successful",color:Colors.green,);
+        utils.snackBar(context: Get.context!, msg: "Login Successfully",color:Colors.green,);
         Get.to(const Dashboard(),duration: Duration.zero);
         controllers.loginCtr.reset();
       } else {
-        errorDialog(Get.context!,'Login failed: ${request.body}');
+        errorDialog(Get.context!,'No Account Found');
         controllers.loginCtr.reset();
       }
     }catch(e){
@@ -1897,6 +1898,8 @@ class ApiService {
       print('Server error: ${e.toString()}');
       throw Exception('Server error: ${e.toString()}'); // Handle HTTP errors
     } catch (e) {
+      controllers.allLeadFuture.value = [];
+      controllers.allLeads.value = [];
       print('Unexpected error lead: ${e.toString()}');
       throw Exception('Unexpected error lead: ${e.toString()}'); // Catch other exceptions
 
@@ -1983,6 +1986,7 @@ class ApiService {
       print('Server error: ${e.toString()}');
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
+      controllers.allNewLeadFuture.value = [];
       print('Unexpected error: ${e.toString()}');
       throw Exception('Unexpected error: ${e.toString()}');
     }

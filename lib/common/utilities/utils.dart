@@ -1118,12 +1118,85 @@ class Utils {
                       : colorsConst.textColor,
                   text: "LogOut",
                   onClicked: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    prefs.setBool("loginScreen", false);
-                    prefs.setBool("isAdmin", false);
-                    Get.to(const LoginPage(), duration: Duration.zero);
-                    //controllers.isEmployee.value=true;
-                    controllers.selectedIndex.value = 7;
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor: colorsConst.primary,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Do you want to log out?",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: colorsConst.primary,
+                                      side: BorderSide(color: colorsConst.secondary),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      "No",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      prefs.setBool("loginScreen", false);
+                                      prefs.setBool("isAdmin", false);
+                                      Get.to(const LoginPage(), duration: Duration.zero);
+                                      //controllers.isEmployee.value=true;
+                                      controllers.selectedIndex.value = 7;
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: colorsConst.primary,
+                                      side: BorderSide(color: colorsConst.secondary),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      "Yes",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+
                   }),
             ),
             100.height
@@ -1932,22 +2005,13 @@ class Utils {
   void parseExcelFile(Uint8List bytes, BuildContext context) async {
     customerData = [];
     var excelD = excel.Excel.decodeBytes(bytes);
-    for (var table in excelD.tables.keys) {
-      var sheet = excelD.tables[table];
-      print('Sheet Name: $table'); // 🔥 Sheet name
-
-      for (var row in sheet!.rows) {
-        // Each row
-        print(row.map((cell) => cell?.value).toList());
-      }
-    }
 
     Map<String, String> keyMapping = {
       "SITE LOCATION DETAILS": "city",
       "LEAD / PROSPECT": "lead_status",
       "CURRENT STATUS": "status",
       "NAME OF THE CUSTOMER": "company_name",
-      "DETAILS OF SERVICES REQUIRED": "points",
+      "DETAILS OF SERVICES REQUIRED": "details_of_service_required",
       "NAME OF THE ACCOUNT MANAGER": "owner",
       "PROSPECT ENROLLMENT DATE": "prospect_enrollment_date",
       "EXPECTED CONVERSION DATE": "expected_convertion_date",
@@ -1979,7 +2043,7 @@ class Utils {
       print("missingColumns: $missingColumns");
 
       if (missingColumns.isNotEmpty) {
-        Navigator.of(context).pop(); // Close loader if any
+        Navigator.of(context).pop();
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -2015,29 +2079,31 @@ class Utils {
         Map<String, dynamic> rowData = {};
         Map<String, dynamic> formattedData = {};
         bool isRowEmpty = row.every((cell) =>
-            cell == null ||
-            cell.value == null ||
-            cell.value.toString().trim().isEmpty);
+        cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
 
-        if (isRowEmpty) {
-          continue; // Skip this empty row
-        }
+        if (isRowEmpty) continue;
+
         for (var j = 0; j < headers.length; j++) {
-          String header =
-              rows.first[j]?.value.toString().trim().toUpperCase() ?? "";
+          String header = headers[j];
           rowData[header] = row[j]?.value;
         }
 
+        // ✅ Fix mapping with proper casing match
         rowData.forEach((key, value) {
-          if (keyMapping.containsKey(key)) {
-            if (keyMapping[key] == "rating") {
-              formattedData[keyMapping[key]!] =
-                  value.toString().isNotEmpty && value != null ? value : "WARM";
+          String matchedKey = keyMapping.keys.firstWhere(
+                (mappedKey) => mappedKey.toUpperCase().trim() == key.toUpperCase().trim(),
+            orElse: () => "",
+          );
+          if (matchedKey.isNotEmpty) {
+            String mappedField = keyMapping[matchedKey]!;
+            if (mappedField == "rating") {
+              formattedData[mappedField] = value != null && value.toString().isNotEmpty ? value : "WARM";
             } else {
-              formattedData[keyMapping[key]!] = value;
+              formattedData[mappedField] = value;
             }
           }
         });
+
         if (rowData.containsKey("CONTACT NUMBER")) {
           formattedData["whatsapp_no"] = rowData["CONTACT NUMBER"];
         }
@@ -2058,29 +2124,25 @@ class Utils {
         if (!formattedData.containsKey("source")) {
           formattedData["source"] = "";
         }
-        if ((formattedData["phone_no"].toString().isNotEmpty &&
-            formattedData["phone_no"] != null) ||
-            (formattedData["name"].toString().isNotEmpty &&
-            formattedData["name"] != null)) {
+
+        if ((formattedData["phone_no"] != null && formattedData["phone_no"].toString().isNotEmpty) ||
+            (formattedData["name"] != null && formattedData["name"].toString().isNotEmpty)) {
           customerData.add(formattedData);
-        }else{
-          if(formattedData["email"].toString().isNotEmpty && formattedData["email"] != null){
+        } else {
+          if (formattedData["email"] != null && formattedData["email"].toString().isNotEmpty) {
             customerData.add(formattedData);
-          }else{
+          } else {
             mCustomerData.add(formattedData);
           }
         }
-        // if (formattedData["phone_no"].toString().isNotEmpty &&
-        //     formattedData["phone_no"] != null) {
-          //customerData.add(formattedData);
-        //}
       }
     }
+
     print("mCustomerData ${mCustomerData.length}");
-    //print("customerData $customerData");
     print("customerData ${customerData.length}");
+
     if (customerData.isEmpty) {
-      Navigator.of(context).pop(); // Close loader if any
+      Navigator.of(context).pop();
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -2107,6 +2169,7 @@ class Utils {
       await apiService.insertCustomersAPI(context, customerData);
     }
   }
+
 
   Future<void> showImportDialog(BuildContext context) async {
     return showDialog<void>(
