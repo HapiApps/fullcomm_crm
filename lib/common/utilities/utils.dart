@@ -1328,7 +1328,7 @@ class Utils {
 
   Widget funnelContainer(BuildContext context) {
     return Obx(()=>controllers.isRightOpen.value?SizedBox(
-      width: 300,
+      width: 250,
       height: MediaQuery.of(context).size.height,
       child: Row(
         children: [
@@ -1340,7 +1340,7 @@ class Utils {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 230, 0),
+                padding: const EdgeInsets.fromLTRB(0, 10, 180, 0),
                 child: Tooltip(
                   message: "Click to close the side panel.",
                   child: Obx(()=>InkWell(
@@ -1351,7 +1351,8 @@ class Utils {
                       // icon: Icon(controllers.isRightOpen.value?Icons.arrow_forward_ios:Icons.arrow_back_ios,
                       //   color: colorsConst.third,)
                     child: SvgPicture.asset(
-                      controllers.isRightOpen.value?"assets/images/right.svg":"assets/images/left.svg",width: 50,height: 50,),
+                      controllers.isRightOpen.value?
+                      "assets/images/right.svg":"assets/images/left.svg",width: 50,height: 50,),
                   ),
                   ),
                 ),
@@ -1363,10 +1364,11 @@ class Utils {
                       controllers.selectedIndex.value == 1
                           ? "assets/images/sSuspects.svg"
                           : "assets/images/suspects.svg",
+                          width: 220,
                     ),
                   ),
                   Positioned(
-                      left: 105,
+                      left: 85,
                       bottom: 15,
                       child: Obx(() => CustomText(
                           text:
@@ -1387,10 +1389,11 @@ class Utils {
                       controllers.selectedIndex.value == 2
                           ? "assets/images/sProspects.svg"
                           : "assets/images/prospects.svg",
+
                     ),
                   ),
                   Positioned(
-                      left: 70,
+                      left: 75,
                       bottom: 15,
                       child: Obx(
                             () => CustomText(
@@ -1412,11 +1415,12 @@ class Utils {
                       controllers.selectedIndex.value == 3
                           ? "assets/images/sQualified.svg"
                           : "assets/images/qualified.svg",
+                          width: 200,
                     ),
                   ),
                   Positioned(
-                      left: 50,
-                      bottom: 15,
+                      left: 70,
+                      bottom: 30,
                       child: Obx(
                             () => CustomText(
                           text:
@@ -1445,7 +1449,7 @@ class Utils {
                       child: Obx(
                             () => CustomText(
                           text:
-                          "CUSTOMERS\n${controllers.allCustomerLength.value}",
+                          "Customers\n${controllers.allCustomerLength.value}",
                           colors: controllers.selectedIndex.value == 4
                               ? Colors.black
                               : colorsConst.textColor,
