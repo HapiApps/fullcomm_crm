@@ -1,8 +1,5 @@
-
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
 
 final SharedPref sharedPref = SharedPref._();
 
@@ -21,9 +18,8 @@ class SharedPref {
     //prefs.setString(key,value);
   }
 
-  remove(String key)async {
+  remove(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove(key);
   }
-
 }

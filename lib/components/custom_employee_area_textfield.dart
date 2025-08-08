@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,36 +37,58 @@ class CustomAreaTextField extends StatefulWidget {
   final TextEditingController? countryC;
   final TextEditingController? pinCodeC;
 
-  const CustomAreaTextField({Key? key, required this.text, this.height=70, this.width=270,
-    required this.controller, this.focusNode, this.onChanged, this.onTap, this.keyboardType=TextInputType.text,
-    this.textInputAction=TextInputAction.next, this.textCapitalization=TextCapitalization.words, this.validator,
-    this.inputFormatters,
-    this.hintText, this.isIcon, this.iconData,
-    this.isShadow=false, this.isLogin=false,this.image,
-    this.onPressed,this.prefixText,this.areaC,this.cityC,this.countryC,this.dNoC,this.pinCodeC,this.stateC,
-    this.streetC,this.name
-  }) : super(key: key);
+  const CustomAreaTextField(
+      {Key? key,
+      required this.text,
+      this.height = 70,
+      this.width = 270,
+      required this.controller,
+      this.focusNode,
+      this.onChanged,
+      this.onTap,
+      this.keyboardType = TextInputType.text,
+      this.textInputAction = TextInputAction.next,
+      this.textCapitalization = TextCapitalization.words,
+      this.validator,
+      this.inputFormatters,
+      this.hintText,
+      this.isIcon,
+      this.iconData,
+      this.isShadow = false,
+      this.isLogin = false,
+      this.image,
+      this.onPressed,
+      this.prefixText,
+      this.areaC,
+      this.cityC,
+      this.countryC,
+      this.dNoC,
+      this.pinCodeC,
+      this.stateC,
+      this.streetC,
+      this.name})
+      : super(key: key);
 
   @override
   State<CustomAreaTextField> createState() => _CustomAreaTextFieldState();
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties){
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(ObjectFlagProperty<VoidCallback?>.has('onPressed', onPressed));
+    properties
+        .add(ObjectFlagProperty<VoidCallback?>.has('onPressed', onPressed));
   }
 }
 
 class _CustomAreaTextFieldState extends State<CustomAreaTextField> {
-
-  Future<void> getAddressFromLatLng () async{
+  Future<void> getAddressFromLatLng() async {
     var position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-   // List<Placemark> placeMark=await placemarkFromCoordinates(position.latitude, position.longitude);
+    // List<Placemark> placeMark=await placemarkFromCoordinates(position.latitude, position.longitude);
     //Placemark place = placeMark[0];
     //print("place..............${place}");
 
     setState(() {
-      controllers.lng.value=position.longitude;
+      controllers.lng.value = position.longitude;
       // controllers.etAreaController.text="${place.subLocality}";
       // controllers.etPinCodeController.text="${place.postalCode}";
       // controllers.etCityController.text="${place.locality}";
@@ -76,18 +97,16 @@ class _CustomAreaTextFieldState extends State<CustomAreaTextField> {
       // controllers.etStreetController.text="${place.street}";
       // controllers.etAreaController.text="${place.subLocality},${place.thoroughfare}";
     });
-
   }
 
-
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:[
+      children: [
         CustomText(
-          text:widget.text,
-          colors:colorsConst.secondary,
+          text: widget.text,
+          colors: colorsConst.secondary,
           size: 15,
         ),
         25.width,
@@ -97,82 +116,79 @@ class _CustomAreaTextFieldState extends State<CustomAreaTextField> {
           child: Center(
             child: TextFormField(
                 style: const TextStyle(
-                    color:Colors.black,fontSize: 14,
-                    fontFamily:"Lato"
-                ),
+                    color: Colors.black, fontSize: 14, fontFamily: "Lato"),
                 // readOnly: widget.controller==controllers.upDOBController||widget.controller==controllers.upDOBController?true:false,
                 // obscureText: widget.controller==controllers.loginPassword||widget.controller==controllers.signupPasswordController?!controllers.isEyeOpen.value:false,
                 // focusNode: FocusNode(),
                 cursorColor: Colors.white,
-                onChanged:widget.onChanged,
-                onTap:widget.onTap,
+                onChanged: widget.onChanged,
+                onTap: widget.onTap,
                 inputFormatters: widget.inputFormatters,
                 textCapitalization: widget.textCapitalization!,
                 textInputAction: widget.textInputAction,
                 keyboardType: widget.keyboardType,
                 validator: widget.validator,
                 controller: widget.controller,
-                decoration:InputDecoration(
-                  hoverColor:Colors.white,
-                 // focusColor: Colors.transparent,
-                  hintText:"",
+                decoration: InputDecoration(
+                  hoverColor: Colors.white,
+                  // focusColor: Colors.transparent,
+                  hintText: "",
                   hintStyle: TextStyle(
-                      color:Colors.grey.shade400,
+                      color: Colors.grey.shade400,
                       fontSize: 15,
-                      fontFamily:"Lato"
-                  ),
+                      fontFamily: "Lato"),
                   // fillColor:Colors.white,
                   // filled: true,
-                  suffixIcon:Row(
+                  suffixIcon: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children:[
+                    children: [
                       // Obx(()=>
                       IconButton(
-                          onPressed:(){
-
-                          },
-                          icon:const Icon(Icons.location_on,color: Colors.red,size: 15,)
-                      ),
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.location_on,
+                            color: Colors.red,
+                            size: 15,
+                          )),
                       //),
                       IconButton(
-                          onPressed:(){
-                            setState((){
+                          onPressed: () {
+                            setState(() {
                               widget.dNoC!.clear();
                               widget.streetC!.clear();
                               widget.areaC!.clear();
                               widget.cityC!.clear();
-                              widget.stateC!=null;
+                              widget.stateC != null;
                               widget.countryC!.clear();
                               widget.pinCodeC!.clear();
                             });
                           },
-                          icon:const Icon(Icons.refresh,color:Colors.grey,size:15,)),
+                          icon: const Icon(
+                            Icons.refresh,
+                            color: Colors.grey,
+                            size: 15,
+                          )),
                     ],
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide:  BorderSide(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(10)
-                  ),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(10)),
                   focusedBorder: OutlineInputBorder(
-                      borderSide:  BorderSide(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(10)
-                  ),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(10)),
                   focusedErrorBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(10)
-                  ),
+                      borderRadius: BorderRadius.circular(10)),
                   // errorStyle: const TextStyle(height:0.05,fontSize: 12),
-                  contentPadding:const EdgeInsets.symmetric(vertical:10.0, horizontal: 10.0),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10.0),
                   errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color:Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(10)
-                  ),
-                )
-            ),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(10)),
+                )),
           ),
         ),
       ],
     );
   }
-
 }

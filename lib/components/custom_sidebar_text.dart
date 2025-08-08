@@ -1,4 +1,3 @@
-
 import 'package:fullcomm_crm/common/extentions/lib_extensions.dart';
 import 'package:flutter/material.dart';
 import 'custom_text.dart';
@@ -7,26 +6,29 @@ class CustomSideBarText extends StatelessWidget {
   final String text;
   final VoidCallback onClicked;
   final Color textColor;
-  const CustomSideBarText({super.key,required this.text,required this.onClicked,required this.textColor});
+  const CustomSideBarText(
+      {super.key,
+      required this.text,
+      required this.onClicked,
+      required this.textColor});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return InkWell(
-      onTap:onClicked,
+      onTap: onClicked,
       child: SizedBox(
         height: 80,
         child: Row(
-          children:[
+          children: [
             20.width,
             Text(
               text,
               textAlign: TextAlign.start,
-              style:TextStyle(
+              style: TextStyle(
                   color: textColor,
                   fontSize: 15,
-                  fontFamily:"Lato",
-                fontWeight: FontWeight.bold
-              ),
+                  fontFamily: "Lato",
+                  fontWeight: FontWeight.bold),
             ),
           ],
         ),

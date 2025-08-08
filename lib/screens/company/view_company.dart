@@ -17,8 +17,6 @@ import '../../common/constant/colors_constant.dart';
 import '../../common/constant/default_constant.dart';
 import '../../components/custom_appbar.dart';
 
-
-
 class ViewCompany extends StatefulWidget {
   const ViewCompany({super.key});
 
@@ -27,20 +25,20 @@ class ViewCompany extends StatefulWidget {
 }
 
 class _ViewCompanyState extends State<ViewCompany> {
-
-
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-    double minPartWidth = screenSize.width-380.0;
+    double minPartWidth = screenSize.width - 380.0;
     final double partWidth = minPartWidth / 9;
     final double adjustedPartWidth = partWidth;
     return SelectionArea(
       child: Scaffold(
-          backgroundColor:Colors.grey.shade100,
+          backgroundColor: Colors.grey.shade100,
           appBar: const PreferredSize(
-            preferredSize:  Size.fromHeight(60),
-            child:  CustomAppbar(text: appName,),
+            preferredSize: Size.fromHeight(60),
+            child: CustomAppbar(
+              text: appName,
+            ),
           ),
           // body: SfDataGrid(
           //   source: employeeDataSource,
@@ -118,13 +116,15 @@ class _ViewCompanyState extends State<ViewCompany> {
           //     ),
           //   ],
           // ),
-          body:Stack(
-            children:[
+          body: Stack(
+            children: [
               utils.sideBarFunction(context),
               Positioned(
                 left: 130,
                 child: Container(
-                  width: 1349>MediaQuery.of(context).size.width-130?1349:MediaQuery.of(context).size.width-130,
+                  width: 1349 > MediaQuery.of(context).size.width - 130
+                      ? 1349
+                      : MediaQuery.of(context).size.width - 130,
                   alignment: Alignment.center,
                   child: SingleChildScrollView(
                     // keyboardDismissBehavior:ScrollViewKeyboardDismissBehavior.onDrag,
@@ -132,37 +132,49 @@ class _ViewCompanyState extends State<ViewCompany> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     child: SizedBox(
-                      width: 1230>MediaQuery.of(context).size.width-250?1230:MediaQuery.of(context).size.width-250,
+                      width: 1230 > MediaQuery.of(context).size.width - 250
+                          ? 1230
+                          : MediaQuery.of(context).size.width - 250,
                       height: MediaQuery.of(context).size.height,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children:[
+                        children: [
                           30.height,
-                          Obx(() =>  CustomText(
-                            text: "Companies(${controllers.allCompanyLength.value})",
-                            colors: colorsConst.primary,
-                            size:23,isBold: true,
-                          ),),
+                          Obx(
+                            () => CustomText(
+                              text:
+                                  "Companies(${controllers.allCompanyLength.value})",
+                              colors: colorsConst.primary,
+                              size: 23,
+                              isBold: true,
+                            ),
+                          ),
                           20.height,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children:[
+                            children: [
                               SizedBox(
                                 child: Row(
                                   children: [
-                                    SvgPicture.asset(assets.delete,width: 25,height: 25,),
+                                    SvgPicture.asset(
+                                      assets.delete,
+                                      width: 25,
+                                      height: 25,
+                                    ),
                                     10.width,
-                                    SvgPicture.asset(assets.edit,width: 18,height: 18,),
+                                    SvgPicture.asset(
+                                      assets.edit,
+                                      width: 18,
+                                      height: 18,
+                                    ),
                                   ],
                                 ),
-
                               ),
                               SizedBox(
-                                child:
-                                Row(
-                                  children:[
+                                child: Row(
+                                  children: [
                                     InkWell(
-                                      onTap:(){
+                                      onTap: () {
                                         // void sendEmail(
                                         //     {required String email,
                                         //       required String subject,
@@ -189,31 +201,38 @@ class _ViewCompanyState extends State<ViewCompany> {
                                         // );
                                         //utils.sendEmail(email: "ponrohinirohini@gmail.com", subject: "Test email", name: "Manju");
                                         //controllers.isLead.value=false;
-                                        Navigator.push(context,
+                                        Navigator.push(
+                                          context,
                                           PageRouteBuilder(
-                                            pageBuilder:(context, animation1, animation2) => const AddCompany(),
+                                            pageBuilder: (context, animation1,
+                                                    animation2) =>
+                                                const AddCompany(),
                                             transitionDuration: Duration.zero,
-                                            reverseTransitionDuration: Duration.zero,
+                                            reverseTransitionDuration:
+                                                Duration.zero,
                                           ),
                                         );
                                         //Get.to(const AddLead());
                                       },
                                       child: MouseRegion(
                                           cursor: SystemMouseCursors.click,
-                                          onHover: (PointerEvent details){
-                                            controllers.isCoAdd.value=true;
+                                          onHover: (PointerEvent details) {
+                                            controllers.isCoAdd.value = true;
                                           },
-                                          onExit: (PointerEvent details){
-                                            controllers.isCoAdd.value=false;
+                                          onExit: (PointerEvent details) {
+                                            controllers.isCoAdd.value = false;
                                           },
-                                          child: Obx(() => CustomText(
-                                            text: "Add Company",
-                                            decoration: controllers.isCoAdd.value?TextDecoration.underline:TextDecoration.none,
-                                            colors: colorsConst.primary,
-                                            size: 20,
-                                          ),
-                                          )
-                                      ),
+                                          child: Obx(
+                                            () => CustomText(
+                                              text: "Add Company",
+                                              decoration:
+                                                  controllers.isCoAdd.value
+                                                      ? TextDecoration.underline
+                                                      : TextDecoration.none,
+                                              colors: colorsConst.primary,
+                                              size: 20,
+                                            ),
+                                          )),
                                     ),
                                     5.width,
                                     CustomText(
@@ -229,104 +248,115 @@ class _ViewCompanyState extends State<ViewCompany> {
                                     )
                                   ],
                                 ),
-
                               ),
                             ],
                           ),
                           20.height,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
-                            children:[
+                            children: [
                               SvgPicture.asset(assets.manageColumn),
                               20.width,
                               SizedBox(
-                                width: 1230>MediaQuery.of(context).size.width-250?1100:MediaQuery.of(context).size.width-300,
+                                width: 1230 >
+                                        MediaQuery.of(context).size.width - 250
+                                    ? 1100
+                                    : MediaQuery.of(context).size.width - 300,
                                 height: 50,
                                 child: TextField(
-
-                                  textCapitalization:TextCapitalization.words,
-                                  keyboardType:TextInputType.text,
-                                  onChanged: (value){
+                                  textCapitalization: TextCapitalization.words,
+                                  keyboardType: TextInputType.text,
+                                  onChanged: (value) {
                                     setState(() {
-                                      controllers.searchText=value.trim();
+                                      controllers.searchText = value.trim();
                                     });
                                   },
                                   decoration: InputDecoration(
-                                    hoverColor:Colors.white,
+                                    hoverColor: Colors.white,
                                     hintText: "Search",
                                     hintStyle: TextStyle(
-                                      color:colorsConst.secondary,
+                                      color: colorsConst.secondary,
                                       fontSize: 15,
-                                      fontFamily:"Lato",
+                                      fontFamily: "Lato",
                                     ),
                                     //prefixIcon: SvgPicture.asset(assets.search,width: 1,height: 1,),
                                     prefixIcon: IconButton(
-                                        onPressed: (){},
-                                        icon:SvgPicture.asset(assets.search,width: 15,height: 15)),
-                                    fillColor:Colors.white,
+                                        onPressed: () {},
+                                        icon: SvgPicture.asset(assets.search,
+                                            width: 15, height: 15)),
+                                    fillColor: Colors.white,
                                     filled: true,
                                     enabledBorder: OutlineInputBorder(
-                                        borderSide:  BorderSide(color:Colors.grey.shade300,),
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
                                     focusedBorder: OutlineInputBorder(
-                                        borderSide:  BorderSide(color:Colors.grey.shade300,),
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    contentPadding:const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 10.0, horizontal: 10.0),
                                   ),
                                 ),
                               )
                             ],
                           ),
                           Divider(
-                            color:Colors.grey.shade300,
+                            color: Colors.grey.shade300,
                             thickness: 1,
                           ),
                           10.height,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
-                            children:[
+                            children: [
                               SizedBox(
-                                width:1230>MediaQuery.of(context).size.width-250?1000:MediaQuery.of(context).size.width-380,
+                                width: 1230 >
+                                        MediaQuery.of(context).size.width - 250
+                                    ? 1000
+                                    : MediaQuery.of(context).size.width - 380,
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
                                     SizedBox(
-                                      width:adjustedPartWidth,
+                                      width: adjustedPartWidth,
                                       child: CustomText(
                                         textAlign: TextAlign.start,
-                                        text:"Name",
+                                        text: "Name",
                                         size: 15,
                                         colors: colorsConst.primary,
                                         isBold: true,
                                       ),
                                     ),
                                     SizedBox(
-                                      width:adjustedPartWidth,
+                                      width: adjustedPartWidth,
                                       child: CustomText(
                                         textAlign: TextAlign.start,
-                                        text:"Mobile no.",
+                                        text: "Mobile no.",
                                         size: 15,
                                         colors: colorsConst.primary,
                                         isBold: true,
                                       ),
                                     ),
                                     SizedBox(
-                                      width:adjustedPartWidth,
+                                      width: adjustedPartWidth,
                                       child: CustomText(
                                         textAlign: TextAlign.start,
-                                        text:"Email",
+                                        text: "Email",
                                         size: 15,
                                         colors: colorsConst.primary,
                                         isBold: true,
                                       ),
                                     ),
                                     SizedBox(
-                                      width:adjustedPartWidth,
+                                      width: adjustedPartWidth,
                                       child: CustomText(
                                         textAlign: TextAlign.center,
-                                        text:"City",
+                                        text: "City",
                                         size: 15,
                                         colors: colorsConst.primary,
                                         isBold: true,
@@ -337,7 +367,7 @@ class _ViewCompanyState extends State<ViewCompany> {
                                       child: Center(
                                         child: CustomText(
                                           textAlign: TextAlign.start,
-                                          text:"Industry",
+                                          text: "Industry",
                                           size: 15,
                                           colors: colorsConst.primary,
                                           isBold: true,
@@ -349,7 +379,7 @@ class _ViewCompanyState extends State<ViewCompany> {
                                       child: Center(
                                         child: CustomText(
                                           textAlign: TextAlign.start,
-                                          text:"Product",
+                                          text: "Product",
                                           size: 15,
                                           colors: colorsConst.primary,
                                           isBold: true,
@@ -363,31 +393,44 @@ class _ViewCompanyState extends State<ViewCompany> {
                           ),
                           Expanded(
                             child: FutureBuilder<List<CompanyObj>>(
-                              future:controllers.allCompanyFuture,
-                              builder:(context, snapshot){
-                                if(snapshot.hasData){
+                              future: controllers.allCompanyFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
                                   return ListView.builder(
                                       itemCount: snapshot.data!.length,
-                                      itemBuilder:(context, index){
-
-                                        if (snapshot.data![index].coName.toString().toLowerCase().contains(controllers.searchText.toLowerCase())){
+                                      itemBuilder: (context, index) {
+                                        if (snapshot.data![index].coName
+                                            .toString()
+                                            .toLowerCase()
+                                            .contains(controllers.searchText
+                                                .toLowerCase())) {
                                           return CustomCompanyTile(
-                                            name: snapshot.data![index].coName.toString(),
-                                            mobileNumber:snapshot.data![index].phoneMap.toString(),
-                                            emailId:snapshot.data![index].emailMap.toString(),
-                                            product:snapshot.data![index].product.toString(),
-                                            city: snapshot.data![index].city.toString(),
-                                            industry: snapshot.data![index].coIndustry.toString(),
+                                            name: snapshot.data![index].coName
+                                                .toString(),
+                                            mobileNumber: snapshot
+                                                .data![index].phoneMap
+                                                .toString(),
+                                            emailId: snapshot
+                                                .data![index].emailMap
+                                                .toString(),
+                                            product: snapshot
+                                                .data![index].product
+                                                .toString(),
+                                            city: snapshot.data![index].city
+                                                .toString(),
+                                            industry: snapshot
+                                                .data![index].coIndustry
+                                                .toString(),
                                           );
                                         }
                                         return const SizedBox();
-
-                                      }
-                                  );
-                                }else if(snapshot.hasError){
-                                  return const Center(child: Text("No Company"));
+                                      });
+                                } else if (snapshot.hasError) {
+                                  return const Center(
+                                      child: Text("No Company"));
                                 }
-                                return const Center(child:CircularProgressIndicator());
+                                return const Center(
+                                    child: CircularProgressIndicator());
                               },
                             ),
                           ),
@@ -399,9 +442,7 @@ class _ViewCompanyState extends State<ViewCompany> {
                 ),
               ),
             ],
-          )
-      ),
+          )),
     );
   }
-
 }

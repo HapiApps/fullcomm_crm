@@ -8,7 +8,6 @@ import 'package:fullcomm_crm/components/custom_checkbox.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
-import 'package:fullcomm_crm/screens/mail_comments.dart';
 import '../common/constant/api.dart';
 import '../services/api_services.dart';
 
@@ -128,10 +127,21 @@ class CustomLeadTile extends StatefulWidget {
 
 class _CustomLeadTileState extends State<CustomLeadTile> {
   String formatDateTime(String inputDateTime) {
-    final inputFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
-    final outputFormat = DateFormat('yyyy-MM-dd hh:mm a');
+    DateTime dateTime;
+    try {
+      dateTime = DateFormat('yyyy-MM-dd HH:mm:ss').parseStrict(inputDateTime);
+    } catch (_) {
+      try {
+        dateTime = DateFormat('dd.MM.yyyy').parseStrict(inputDateTime);
+      } catch (_) {
+        return 'Invalid date';
+      }
+    }
 
-    final dateTime = inputFormat.parse(inputDateTime);
+    bool hasTime = inputDateTime.contains(':');
+    final outputFormat = hasTime
+        ? DateFormat('yyyy-MM-dd hh:mm a')
+        : DateFormat('yyyy-MM-dd');
     return outputFormat.format(dateTime);
   }
   @override
@@ -196,16 +206,15 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
           },
           child: Table(
             columnWidths:const {
-              0: FlexColumnWidth(1),
-              1: FlexColumnWidth(2),
-              2: FlexColumnWidth(2),
-              3: FlexColumnWidth(1.5),
-              4: FlexColumnWidth(2.5),
-              5: FlexColumnWidth(2),
-              6: FlexColumnWidth(3),
-              7: FlexColumnWidth(2),
-              8: FlexColumnWidth(2),
-              9: FlexColumnWidth(3),
+              0: FlexColumnWidth(1),//check box
+              1: FlexColumnWidth(2),//N
+              2: FlexColumnWidth(2.5),//CN
+              3: FlexColumnWidth(2),//MN
+              4: FlexColumnWidth(3),//Details of Service Required
+              5: FlexColumnWidth(2),//Source of Prospect
+              6: FlexColumnWidth(2),// Added DateTime
+              7: FlexColumnWidth(1.5),// Added DateTime
+              8: FlexColumnWidth(3),
               // 9: FlexColumnWidth(3),
               // 10: FlexColumnWidth(3),
             },
@@ -329,39 +338,8 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         colors: colorsConst.textColor,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 25),
-                      child: CustomText(
-                        textAlign: TextAlign.center,
-                        text:widget.mainMobile.toString()=="null"?"":widget.mainMobile.toString(),
-                        size: 14,
-                        colors: colorsConst.textColor,
-                      ),
-                    ),
-
-                    // Padding(
-                    //   padding: const EdgeInsets.only(top: 25),
-                    //   child: CustomText(
-                    //     textAlign: TextAlign.center,
-                    //     text:widget.mainEmail.toString()=="null"?"":widget.mainEmail.toString(),
-                    //     size: 14,
-                    //     colors:colorsConst.textColor,
-                    //   ),
-                    // ),
                     Tooltip(
-                      message: widget.city.toString(),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 25),
-                        child: CustomText(
-                          textAlign: TextAlign.center,
-                          text: widget.city.toString()=="null"?"":widget.city.toString(),
-                          size: 14,
-                          colors:colorsConst.textColor,
-                        ),
-                      ),
-                    ),
-                    Tooltip(
-                      message: widget.companyName.toString(),
+                      message: widget.companyName.toString()=="null"?"":widget.companyName.toString(),
                       child: Padding(
                         padding: const EdgeInsets.only(top: 25),
                         child: CustomText(
@@ -372,23 +350,13 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         ),
                       ),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(top: 25),
-                    //   child: CustomText(
-                    //     textAlign: TextAlign.center,
-                    //     text:widget.status.toString(),
-                    //     size: 14,
-                    //     colors: colorsConst.textColor,
-                    //   ),
-                    // ),
-
                     Padding(
                       padding: const EdgeInsets.only(top: 25),
                       child: CustomText(
                         textAlign: TextAlign.center,
-                        text: widget.visitType.toString(),
+                        text:widget.mainMobile.toString()=="null"?"":widget.mainMobile.toString(),
                         size: 14,
-                        colors:colorsConst.textColor,
+                        colors: colorsConst.textColor,
                       ),
                     ),
                     Tooltip(
@@ -403,6 +371,37 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         ),
                       ),
                     ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(top: 25),
+                    //   child: CustomText(
+                    //     textAlign: TextAlign.center,
+                    //     text:widget.mainEmail.toString()=="null"?"":widget.mainEmail.toString(),
+                    //     size: 14,
+                    //     colors:colorsConst.textColor,
+                    //   ),
+                    // ),
+
+
+                    // Padding(
+                    //   padding: const EdgeInsets.only(top: 25),
+                    //   child: CustomText(
+                    //     textAlign: TextAlign.center,
+                    //     text:widget.status.toString(),
+                    //     size: 14,
+                    //     colors: colorsConst.textColor,
+                    //   ),
+                    // ),
+
+                    // Padding(
+                    //   padding: const EdgeInsets.only(top: 25),
+                    //   child: CustomText(
+                    //     textAlign: TextAlign.center,
+                    //     text: widget.visitType.toString(),
+                    //     size: 14,
+                    //     colors:colorsConst.textColor,
+                    //   ),
+                    // ),
+
                     Tooltip(
                       message: widget.source.toString(),
                       child: Padding(
@@ -419,9 +418,21 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                       padding: const EdgeInsets.only(top: 25,right: 5),
                       child: CustomText(
                         textAlign: TextAlign.center,
-                        text: formatDateTime(widget.updatedTs.toString()),
+                        text: controllers.formatDateTime(widget.prospectEnrollmentDate.toString().isEmpty||widget.prospectEnrollmentDate.toString()=="null"?widget.updatedTs.toString():widget.prospectEnrollmentDate.toString()),
                         size: 14,
                         colors:colorsConst.textColor,
+                      ),
+                    ),
+                    Tooltip(
+                      message: widget.city.toString(),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 25),
+                        child: CustomText(
+                          textAlign: TextAlign.center,
+                          text: widget.city.toString()=="null"?"":widget.city.toString(),
+                          size: 14,
+                          colors:colorsConst.textColor,
+                        ),
                       ),
                     ),
                     Tooltip(

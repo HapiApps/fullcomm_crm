@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -8,14 +7,15 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import '../../components/custom_text.dart';
 import '../constant/colors_constant.dart';
 
-
 List<CameraDescription> cameras = <CameraDescription>[];
-enum CameraType { front, back}
+
+enum CameraType { front, back }
+
 class CameraWidget extends StatefulWidget {
   final CameraType cameraPosition;
   final bool? isSelfie;
-  const CameraWidget({super.key,required this.cameraPosition,this.isSelfie=false});
-
+  const CameraWidget(
+      {super.key, required this.cameraPosition, this.isSelfie = false});
 
   @override
   CameraWidgetState createState() => CameraWidgetState();
@@ -28,7 +28,7 @@ class CameraWidgetState extends State<CameraWidget> {
   @override
   void initState() {
     super.initState();
-    selectedCameraIndex = widget.cameraPosition==CameraType.front?1:0;
+    selectedCameraIndex = widget.cameraPosition == CameraType.front ? 1 : 0;
     _controller = CameraController(
       cameras[selectedCameraIndex],
       ResolutionPreset.medium,
@@ -37,6 +37,7 @@ class CameraWidgetState extends State<CameraWidget> {
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
   }
+
   int selectedCameraIndex = 0;
   @override
   void dispose() {
@@ -44,6 +45,7 @@ class CameraWidgetState extends State<CameraWidget> {
     _controller.dispose();
     super.dispose();
   }
+
   Future<void> toggleCamera() async {
     // Get available cameras
     cameras = await availableCameras();
@@ -64,20 +66,29 @@ class CameraWidgetState extends State<CameraWidget> {
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar(
+      appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0.8,
         toolbarHeight: 70,
-        title:CustomText(text: "Camera",colors: colorsConst.primary,size: 18,isBold: true,),
+        title: CustomText(
+          text: "Camera",
+          colors: colorsConst.primary,
+          size: 18,
+          isBold: true,
+        ),
         centerTitle: true,
         leading: IconButton(
-          onPressed:(){
+          onPressed: () {
             Get.back();
           },
-          icon: Icon(Icons.arrow_back_ios_sharp,color: colorsConst.primary,size: 15,),
+          icon: Icon(
+            Icons.arrow_back_ios_sharp,
+            color: colorsConst.primary,
+            size: 15,
+          ),
         ),
       ),
       body: Container(
@@ -85,8 +96,8 @@ class CameraWidgetState extends State<CameraWidget> {
         child: SizedBox.expand(
           child: FutureBuilder<void>(
             future: _initializeControllerFuture,
-            builder: (context, snapshot){
-              if (snapshot.connectionState == ConnectionState.done){
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
                 // If the Future is complete, display the preview.
                 return CameraPreview(_controller);
               } else {
@@ -100,12 +111,14 @@ class CameraWidgetState extends State<CameraWidget> {
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          widget.isSelfie==false?FloatingActionButton(
-            onPressed: () async {
-              toggleCamera();
-            },
-            child: const Icon(Icons.repeat_sharp),
-          ):0.width,
+          widget.isSelfie == false
+              ? FloatingActionButton(
+                  onPressed: () async {
+                    toggleCamera();
+                  },
+                  child: const Icon(Icons.repeat_sharp),
+                )
+              : 0.width,
           10.width,
           FloatingActionButton(
             onPressed: () async {

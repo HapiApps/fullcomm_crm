@@ -164,7 +164,8 @@ class TableCellHeader extends StatelessWidget {
       alignment: Alignment.center,
       padding: const EdgeInsets.all(8.0),
       child: Text(text,
-          style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center),
     );
   }
 }

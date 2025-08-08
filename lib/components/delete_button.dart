@@ -11,21 +11,21 @@ import 'custom_text.dart';
 class DeleteButton extends StatelessWidget {
   final List leadList;
   final VoidCallback callback;
-  const DeleteButton({super.key, required this.leadList, required this.callback});
+  const DeleteButton(
+      {super.key, required this.leadList, required this.callback});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      tooltip: "Click here to delete the customer details",
+        tooltip: "Click here to delete the customer details",
         onPressed: () {
-          if(leadList.isNotEmpty){
+          if (leadList.isNotEmpty) {
             showDialog(
                 context: context,
                 barrierDismissible: false,
                 builder: (context) {
                   return AlertDialog(
-                    backgroundColor:
-                    colorsConst.secondary,
+                    backgroundColor: colorsConst.secondary,
                     content: CustomText(
                       text: "Are you sure delete this customers?",
                       size: 16,
@@ -38,8 +38,7 @@ class DeleteButton extends StatelessWidget {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: colorsConst.third),
+                                border: Border.all(color: colorsConst.third),
                                 color: colorsConst.primary),
                             width: 80,
                             height: 25,
@@ -63,15 +62,13 @@ class DeleteButton extends StatelessWidget {
                             callback: callback,
                             height: 35,
                             isLoading: true,
-                            backgroundColor:
-                            colorsConst.third,
+                            backgroundColor: colorsConst.third,
                             radius: 2,
                             width: 80,
                             controller: controllers.productCtr,
                             isImage: false,
                             text: "Delete",
-                            textColor:
-                            colorsConst.primary,
+                            textColor: colorsConst.primary,
                           ),
                           5.width
                         ],
@@ -79,11 +76,9 @@ class DeleteButton extends StatelessWidget {
                     ],
                   );
                 });
-          }else{
-            apiService.errorDialog(
-                context, "Please select customers");
+          } else {
+            apiService.errorDialog(context, "Please select customers");
           }
-
         },
         icon: SvgPicture.asset("assets/images/delete.svg"));
   }

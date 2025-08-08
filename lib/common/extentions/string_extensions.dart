@@ -8,7 +8,7 @@ int getExtendedVersionNumber(String version) {
   return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
 }
 
-extension StringExtension on String{
+extension StringExtension on String {
   int versionNumber() => getExtendedVersionNumber(this);
 }
 

@@ -13,8 +13,6 @@ import '../../common/constant/key_constant.dart';
 import '../../components/custom_textfield.dart';
 import '../../controller/controller.dart';
 
-
-
 class UpdateLead extends StatefulWidget {
   final String? id;
   final String? mainName;
@@ -67,59 +65,65 @@ class UpdateLead extends StatefulWidget {
   final String? numOfHeadcount;
   final String? expectedBillingValue;
   String updateTs;
-   UpdateLead({super.key,
-    this.id,
-    this.mainName,
-    this.mainMobile,
-    this.mainEmail,
-    this.companyName,
-    this.status,
-    this.rating,
-    this.mainWhatsApp,
-    this.emailUpdate,
-    this.name,
-    this.title,
-    this.mobileNumber,
-    this.whatsappNumber,
-    this.email,
-    this.mainTitle,
-    this.addressId,
-    this.companyWebsite,
-    this.companyNumber,
-    this.companyEmail,
-    this.industry,
-    this.productServices,
-    this.source,
-    this.owner,
-    this.budget,
-    this.timelineDecision,
-    this.serviceInterest,
-    this.description,
-    this.leadStatus,
-    this.active,
-    this.addressLine1,
-    this.addressLine2,
-    this.area,
-    this.city,
-    this.state,
-    this.country,
-    this.pinCode,
-    this.linkedin,
-    this.x, this.quotationStatus,
-    this.productDiscussion, this.discussionPoint,
-    this.quotationRequired, this.arpuValue,
-    this.prospectEnrollmentDate, this.expectedConvertionDate,
-    this.statusUpdate, this.numOfHeadcount, this.expectedBillingValue,
-     required this.notes,required this.sourceDetails,required this.updateTs
-  });
-
+  UpdateLead(
+      {super.key,
+      this.id,
+      this.mainName,
+      this.mainMobile,
+      this.mainEmail,
+      this.companyName,
+      this.status,
+      this.rating,
+      this.mainWhatsApp,
+      this.emailUpdate,
+      this.name,
+      this.title,
+      this.mobileNumber,
+      this.whatsappNumber,
+      this.email,
+      this.mainTitle,
+      this.addressId,
+      this.companyWebsite,
+      this.companyNumber,
+      this.companyEmail,
+      this.industry,
+      this.productServices,
+      this.source,
+      this.owner,
+      this.budget,
+      this.timelineDecision,
+      this.serviceInterest,
+      this.description,
+      this.leadStatus,
+      this.active,
+      this.addressLine1,
+      this.addressLine2,
+      this.area,
+      this.city,
+      this.state,
+      this.country,
+      this.pinCode,
+      this.linkedin,
+      this.x,
+      this.quotationStatus,
+      this.productDiscussion,
+      this.discussionPoint,
+      this.quotationRequired,
+      this.arpuValue,
+      this.prospectEnrollmentDate,
+      this.expectedConvertionDate,
+      this.statusUpdate,
+      this.numOfHeadcount,
+      this.expectedBillingValue,
+      required this.notes,
+      required this.sourceDetails,
+      required this.updateTs});
 
   @override
   State<UpdateLead> createState() => _UpdateLeadState();
 }
 
 class _UpdateLeadState extends State<UpdateLead> {
-
   Future<void> setDefaults() async {
     setState(() => controllers.selectedCountry.value = "India");
     await utils.getStates();
@@ -127,75 +131,116 @@ class _UpdateLeadState extends State<UpdateLead> {
     // setState(() =>controllers.selectedState.value = "Tamil Nadu");
     // await utils.getCities();
 
-    setState(() => controllers.selectedCity.value = controllers.coCityController.text);
-
+    setState(() =>
+        controllers.selectedCity.value = controllers.coCityController.text);
   }
 
-  Future<void> getStringValue()async{
-    setState((){
-      final whatsApp=widget.mainWhatsApp??"";
-      final companyName=widget.companyName ?? "";
-      final companyPhone=widget.companyNumber ?? "";
-      final webSite=widget.companyWebsite ?? "";
-      final coEmail=widget.companyEmail ?? "";
-      final product=widget.productServices ?? "";
-      final ownerName= widget.owner?? "";
-      final industry=widget.industry;
-      final source=widget.source;
-      final status=widget.status;
-      final rating=widget.rating;
-      final service=widget.serviceInterest;
-      final doorNo=widget.addressLine1 ?? "";
-      final street=widget.addressLine2 ?? "";
-      final area=widget.area ?? "";
-      final city=widget.city ?? "";
-      final pinCode=widget.pinCode ?? "";
-      final budget=widget.budget ?? "";
-      final state=widget.state ?? "Tamil Nadu";
-      final country=widget.country ?? "India";
-      final twitter=widget.x=="null"?"":widget.x;
-      final linkedin=widget.linkedin=="null"?"":widget.linkedin;
-      final time=widget.timelineDecision ?? "";
-      final leadDescription=widget.description ?? "";
+  Future<void> getStringValue() async {
+    setState(() {
+      final whatsApp = widget.mainWhatsApp ?? "";
+      final companyName = widget.companyName ?? "";
+      final companyPhone = widget.companyNumber ?? "";
+      final webSite = widget.companyWebsite ?? "";
+      final coEmail = widget.companyEmail ?? "";
+      final product = widget.productServices ?? "";
+      final ownerName = widget.owner ?? "";
+      final industry = widget.industry;
+      final source = widget.source;
+      final status = widget.status;
+      final rating = widget.rating;
+      final service = widget.serviceInterest;
+      final doorNo = widget.addressLine1 ?? "";
+      final street = widget.addressLine2 ?? "";
+      final area = widget.area ?? "";
+      final city = widget.city ?? "";
+      final pinCode = widget.pinCode ?? "";
+      final budget = widget.budget ?? "";
+      final state = widget.state ?? "Tamil Nadu";
+      final country = widget.country ?? "India";
+      final twitter = widget.x == "null" ? "" : widget.x;
+      final linkedin = widget.linkedin == "null" ? "" : widget.linkedin;
+      final time = widget.timelineDecision ?? "";
+      final leadDescription = widget.description ?? "";
 
-      controllers.leadCoNameCrt.text=companyName.toString();
-      controllers.leadCoMobileCrt.text=companyPhone.toString();
-      controllers.leadWebsite.text=webSite.toString();
-      controllers.leadCoEmailCrt.text=coEmail.toString();
-      controllers.leadProduct.text=product.toString();
-      controllers.leadOwnerNameCrt.text=ownerName.toString();
-      controllers.prodDescriptionController.text = widget.productDiscussion.toString()=="null"?"":widget.productDiscussion.toString();
-      controllers.statusCrt.text = widget.status .toString()=="null"?"":widget.status.toString();
-      controllers.exMonthBillingValCrt.text = widget.expectedBillingValue.toString()=="null"?"":widget.expectedBillingValue.toString();
-      controllers.noOfHeadCountCrt.text = widget.numOfHeadcount.toString()=="null"?"":widget.numOfHeadcount.toString();
-      controllers.sourceCrt.text = widget.sourceDetails.toString()=="null"?"":widget.sourceDetails.toString();
-      controllers.additionalNotesCrt.text = widget.notes.toString()=="null"?"":widget.notes.toString();
-      controllers.arpuCrt.text = widget.arpuValue.toString()=="null"?"":widget.arpuValue.toString();
-      controllers.expectedConversionDateCrt.text = widget.expectedConvertionDate.toString()=="null"?"":widget.expectedConvertionDate.toString();
-      controllers.prospectEnrollmentDateCrt.text = widget.prospectEnrollmentDate.toString()=="null"?"":widget.prospectEnrollmentDate.toString();
-      controllers.industry = (industry == null || industry == "null" || industry.toString().trim().isEmpty) ? null : industry;
-      controllers.source = (source == null || source == "null" || source.toString().trim().isEmpty) ? null : source;
-      controllers.status = (status == null || status == "null" || status.toString().trim().isEmpty) ? null : status;
-      controllers.rating = (rating == null || rating == "null" || rating.toString().trim().isEmpty) ? null : rating;
-      controllers.service = (service == null || service == "null" || service.toString().trim().isEmpty) ? null : service;
-      controllers.doorNumberController.text=doorNo.toString();
-      controllers.leadDescription.text=leadDescription.toString();
-      controllers.leadTime.text=time.toString();
-      controllers.budgetCrt.text=budget.toString();
-      controllers.streetNameController.text=street.toString();
-      controllers.areaController.text=area.toString();
-      controllers.selectedCity.value=city.toString();
-      controllers.cityController.text=city.toString();
-      controllers.pinCode=pinCode.toString();
-      controllers.selectedState.value=state.toString();
-      controllers.countryController.text=country.toString();
-      controllers.leadXCrt.text=twitter.toString();
-      controllers.leadLinkedinCrt.text=linkedin.toString();
-      controllers.selectPinCodeList=[];
+      controllers.leadCoNameCrt.text = companyName.toString();
+      controllers.leadCoMobileCrt.text = companyPhone.toString();
+      controllers.leadWebsite.text = webSite.toString();
+      controllers.leadCoEmailCrt.text = coEmail.toString();
+      controllers.leadProduct.text = product.toString();
+      controllers.leadOwnerNameCrt.text = ownerName.toString();
+      controllers.prodDescriptionController.text =
+          widget.productDiscussion.toString() == "null"
+              ? ""
+              : widget.productDiscussion.toString();
+      controllers.statusCrt.text =
+          widget.status.toString() == "null" ? "" : widget.status.toString();
+      controllers.exMonthBillingValCrt.text =
+          widget.expectedBillingValue.toString() == "null"
+              ? ""
+              : widget.expectedBillingValue.toString();
+      controllers.noOfHeadCountCrt.text =
+          widget.numOfHeadcount.toString() == "null"
+              ? ""
+              : widget.numOfHeadcount.toString();
+      controllers.sourceCrt.text = widget.sourceDetails.toString() == "null"
+          ? ""
+          : widget.sourceDetails.toString();
+      controllers.additionalNotesCrt.text =
+          widget.notes.toString() == "null" ? "" : widget.notes.toString();
+      controllers.arpuCrt.text = widget.arpuValue.toString() == "null"
+          ? ""
+          : widget.arpuValue.toString();
+      controllers.expectedConversionDateCrt.text =
+          widget.expectedConvertionDate.toString() == "null"
+              ? ""
+              : widget.expectedConvertionDate.toString();
+      controllers.prospectEnrollmentDateCrt.text =
+          widget.prospectEnrollmentDate.toString() == "null"
+              ? ""
+              : widget.prospectEnrollmentDate.toString();
+      controllers.industry = (industry == null ||
+              industry == "null" ||
+              industry.toString().trim().isEmpty)
+          ? null
+          : industry;
+      controllers.source = (source == null ||
+              source == "null" ||
+              source.toString().trim().isEmpty)
+          ? null
+          : source;
+      controllers.status = (status == null ||
+              status == "null" ||
+              status.toString().trim().isEmpty)
+          ? null
+          : status;
+      controllers.rating = (rating == null ||
+              rating == "null" ||
+              rating.toString().trim().isEmpty)
+          ? null
+          : rating;
+      controllers.service = (service == null ||
+              service == "null" ||
+              service.toString().trim().isEmpty)
+          ? null
+          : service;
+      controllers.doorNumberController.text = doorNo.toString();
+      controllers.leadDescription.text = leadDescription.toString();
+      controllers.leadTime.text = time.toString();
+      controllers.budgetCrt.text = budget.toString();
+      controllers.streetNameController.text = street.toString();
+      controllers.areaController.text = area.toString();
+      controllers.selectedCity.value = city.toString();
+      controllers.cityController.text = city.toString();
+      controllers.pinCode = pinCode.toString();
+      controllers.selectedState.value = state.toString();
+      controllers.countryController.text = country.toString();
+      controllers.leadXCrt.text = twitter.toString();
+      controllers.leadLinkedinCrt.text = linkedin.toString();
+      controllers.selectPinCodeList = [];
       controllers.selectPinCodeList = controllers.pinCodeList
           .where((location) =>
-      location["STATE"] == controllers.selectedState &&
-          location["DISTRICT"] == controllers.selectedCity)
+              location["STATE"] == controllers.selectedState &&
+              location["DISTRICT"] == controllers.selectedCity)
           .map((location) => location["PINCODE"].toString())
           .toList();
       controllers.leadNameCrt.clear();
@@ -235,24 +280,25 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.leadMobileCrt.add(TextEditingController());
       controllers.leadTitleCrt.add(TextEditingController());
       controllers.leadEmailCrt.add(TextEditingController());
-      controllers.leadNameCrt[0].text=widget.mainName.toString();
-      controllers.leadMobileCrt[0].text=widget.mainMobile.toString();
-      controllers.leadEmailCrt[0].text=widget.mainEmail.toString();
-      controllers.leadTitleCrt[0].text=widget.mainTitle.toString();
-      controllers.leadWhatsCrt[0].text=whatsApp.toString();
+      controllers.leadNameCrt[0].text = widget.mainName.toString();
+      controllers.leadMobileCrt[0].text = widget.mainMobile.toString();
+      controllers.leadEmailCrt[0].text = widget.mainEmail.toString();
+      controllers.leadTitleCrt[0].text = widget.mainTitle.toString();
+      controllers.leadWhatsCrt[0].text = whatsApp.toString();
     });
   }
 
   @override
-  void initState(){
+  void initState() {
     // TODO: implement initState
     super.initState();
     getStringValue();
     //setDefaults();
   }
+
   @override
-  Widget build(BuildContext context){
-    double textFieldSize=(MediaQuery.of(context).size.width-400)/3.5;
+  Widget build(BuildContext context) {
+    double textFieldSize = (MediaQuery.of(context).size.width - 400) / 3.5;
     return SelectionArea(
       child: Scaffold(
           backgroundColor: colorsConst.primary,
@@ -261,21 +307,21 @@ class _UpdateLeadState extends State<UpdateLead> {
           //   child:  CustomAppbar(text: appName,),
           // ),
           body: Row(
-            children:[
+            children: [
               utils.sideBarFunction(context),
               20.width,
               Container(
-                width:MediaQuery.of(context).size.width-180,
+                width: MediaQuery.of(context).size.width - 180,
                 alignment: Alignment.center,
                 child: Column(
-                  children:[
+                  children: [
                     30.height,
                     Row(
                       children: [
                         CustomText(
                           text: "New Leads - Suspects",
                           colors: colorsConst.textColor,
-                          size:23,
+                          size: 23,
                           isBold: true,
                         ),
                       ],
@@ -286,13 +332,13 @@ class _UpdateLeadState extends State<UpdateLead> {
                         CustomText(
                           text: "Add your Suspects Information",
                           colors: colorsConst.textColor,
-                          size:12,
+                          size: 12,
                         ),
                       ],
                     ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height-80,
-                      width: MediaQuery.of(context).size.width-180,
+                      height: MediaQuery.of(context).size.height - 80,
+                      width: MediaQuery.of(context).size.width - 180,
                       child: SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         child: Column(
@@ -300,31 +346,36 @@ class _UpdateLeadState extends State<UpdateLead> {
                             30.height,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children:[
+                              children: [
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children:[
-                                    utils.textFieldNearText('Name',true),
+                                  children: [
+                                    utils.textFieldNearText('Name', true),
                                     30.height,
-                                    utils.textFieldNearText('Mobile Number',true),
+                                    utils.textFieldNearText(
+                                        'Mobile Number', true),
                                   ],
                                 ),
                                 1.width,
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                  children:[
+                                  children: [
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"Name",
+                                      hintText: "",
+                                      text: "Name",
                                       isOptional: false,
                                       controller: controllers.leadNameCrt[0],
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      textCapitalization: TextCapitalization.words,
-                                      inputFormatters: constInputFormatters.textInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                      textCapitalization:
+                                          TextCapitalization.words,
+                                      inputFormatters:
+                                          constInputFormatters.textInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
                                         //sharedPref.setString("leadName$index", value.toString().trim());
                                       },
                                       // validator:(value){
@@ -336,7 +387,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     // Row(
                                     //   children: [
@@ -360,37 +410,45 @@ class _UpdateLeadState extends State<UpdateLead> {
                                     // ),
 
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children:[
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
                                         20.width,
                                         SizedBox(
-                                          width:textFieldSize,
+                                          width: textFieldSize,
                                           height: 50,
                                           child: TextFormField(
                                               style: const TextStyle(
-                                                  color:Colors.white,fontSize: 14,
-                                                  fontFamily:"Lato"
-                                              ),
+                                                  color: Colors.white,
+                                                  fontSize: 14,
+                                                  fontFamily: "Lato"),
                                               cursorColor: Colors.white,
-                                              onChanged:(value) async {
-                                                SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                              onChanged: (value) async {
+                                                SharedPreferences sharedPref =
+                                                    await SharedPreferences
+                                                        .getInstance();
                                                 //sharedPref.setString("leadMobileNumber$index", value.toString().trim());
                                               },
-                                              onTap:(){},
-                                              keyboardType: TextInputType.number,
-                                              inputFormatters: constInputFormatters.mobileNumberInput,
-                                              textCapitalization: TextCapitalization.none,
-
-                                              controller: controllers.leadMobileCrt[0],
-                                              textInputAction: TextInputAction.next,
-                                              decoration:InputDecoration(
+                                              onTap: () {},
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              inputFormatters:
+                                                  constInputFormatters
+                                                      .mobileNumberInput,
+                                              textCapitalization:
+                                                  TextCapitalization.none,
+                                              controller:
+                                                  controllers.leadMobileCrt[0],
+                                              textInputAction:
+                                                  TextInputAction.next,
+                                              decoration: InputDecoration(
                                                 // hintText:"Mobile No.",
                                                 // hintStyle: TextStyle(
                                                 //     color:Colors.grey.shade400,
                                                 //     fontSize: 13,
                                                 //     fontFamily:"Lato"
                                                 // ),
-                                                fillColor:Colors.transparent,
+                                                fillColor: Colors.transparent,
                                                 filled: true,
                                                 //prefixIcon:IconButton(onPressed: (){}, icon: SvgPicture.asset(assets.gPhone,width:15,height:15) ),
 
@@ -415,26 +473,45 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 //       //});
                                                 //     }),
                                                 // ),
-                                                enabledBorder: OutlineInputBorder(
-                                                    borderSide:  BorderSide(color:Colors.grey.shade200,),
-                                                    borderRadius: BorderRadius.circular(5)
-                                                ),
-                                                focusedBorder: OutlineInputBorder(
-                                                    borderSide:  BorderSide(color:Colors.grey.shade200,),
-                                                    borderRadius: BorderRadius.circular(5)
-                                                ),
-                                                focusedErrorBorder: OutlineInputBorder(
-                                                    borderSide: BorderSide(color:Colors.grey.shade200),
-                                                    borderRadius: BorderRadius.circular(5)
-                                                ),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                          color: Colors
+                                                              .grey.shade200,
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5)),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                          color: Colors
+                                                              .grey.shade200,
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5)),
+                                                focusedErrorBorder:
+                                                    OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: Colors
+                                                                .grey.shade200),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5)),
                                                 // errorStyle: const TextStyle(height:0.05,fontSize: 12),
-                                                contentPadding:const EdgeInsets.symmetric(vertical:10.0, horizontal: 10.0),
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10.0,
+                                                        horizontal: 10.0),
                                                 errorBorder: OutlineInputBorder(
-                                                    borderSide:  BorderSide(color:Colors.grey.shade200),
-                                                    borderRadius: BorderRadius.circular(5)
-                                                ),
-                                              )
-                                          ),
+                                                    borderSide: BorderSide(
+                                                        color: Colors
+                                                            .grey.shade200),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5)),
+                                              )),
                                         ),
                                       ],
                                     ),
@@ -462,36 +539,40 @@ class _UpdateLeadState extends State<UpdateLead> {
                                     //
                                     // ),
                                     15.height,
-
                                   ],
                                 ),
                                 SizedBox(
-                                  width: (MediaQuery.of(context).size.width-400)/4.5,
+                                  width: (MediaQuery.of(context).size.width -
+                                          400) /
+                                      4.5,
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children:[
-                                    utils.textFieldNearText('City',false),
+                                  children: [
+                                    utils.textFieldNearText('City', false),
                                     30.height,
-                                    utils.textFieldNearText('Email Id',false),
+                                    utils.textFieldNearText('Email Id', false),
                                   ],
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   mainAxisAlignment: MainAxisAlignment.start,
-                                  children:[
+                                  children: [
                                     15.height,
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"Title",
+                                      hintText: "",
+                                      text: "Title",
                                       isOptional: false,
                                       controller: controllers.cityController,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.textInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                      inputFormatters:
+                                          constInputFormatters.textInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
                                         //sharedPref.setString("leadTitle$index", value.toString().trim());
                                       },
                                       // validator:(value){
@@ -503,21 +584,23 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     //20.height,
 
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"Email Id",
+                                      hintText: "",
+                                      text: "Email Id",
                                       controller: controllers.leadEmailCrt[0],
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       isOptional: false,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.emailInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                      inputFormatters:
+                                          constInputFormatters.emailInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
                                         //sharedPref.setString("leadEmail$index", value.toString().trim());
                                       },
                                       // validator:(value){
@@ -529,7 +612,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     15.height,
                                   ],
@@ -672,12 +754,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                             //     }),),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children:[
+                              children: [
                                 CustomText(
                                   text: constValue.companyInfo,
                                   colors: colorsConst.textColor,
                                   size: 20,
-
                                 ),
                                 // GestureDetector(
                                 //   onTap:(){
@@ -708,37 +789,44 @@ class _UpdateLeadState extends State<UpdateLead> {
                             20.height,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children:[
+                              children: [
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children:[
+                                  children: [
                                     20.height,
-                                    utils.textFieldNearText('Company Name',false),
+                                    utils.textFieldNearText(
+                                        'Company Name', false),
                                     60.height,
-                                    utils.textFieldNearText('Company Phone No',false),
+                                    utils.textFieldNearText(
+                                        'Company Phone No', false),
                                     60.height,
-                                    utils.textFieldNearText('Industry',false),
+                                    utils.textFieldNearText('Industry', false),
                                     50.height,
-                                    utils.textFieldNearText('Linkedin(Optional)',false),
+                                    utils.textFieldNearText(
+                                        'Linkedin(Optional)', false),
                                     50.height,
                                   ],
                                 ),
                                 5.width,
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                  children:[
+                                  children: [
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"Company Name",
+                                      hintText: "",
+                                      text: "Company Name",
                                       controller: controllers.leadCoNameCrt,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       isOptional: false,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.textInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("leadCoName", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.textInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString("leadCoName",
+                                            value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -749,20 +837,23 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"Company\n Phone No.",
+                                      hintText: "",
+                                      text: "Company\n Phone No.",
                                       controller: controllers.leadCoMobileCrt,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       isOptional: false,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.mobileNumberInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("leadCoMobile", value.toString().trim());
+                                      inputFormatters: constInputFormatters
+                                          .mobileNumberInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString("leadCoMobile",
+                                            value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -773,21 +864,23 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     CustomDropDown(
                                       saveValue: controllers.industry,
                                       valueList: controllers.industryList,
-                                      text:"Industry",
-                                      width:textFieldSize,
+                                      text: "Industry",
+                                      width: textFieldSize,
 
                                       //inputFormatters: constInputFormatters.textInput,
-                                      onChanged:(value) async {
-                                        setState((){
-                                          controllers.industry= value;
+                                      onChanged: (value) async {
+                                        setState(() {
+                                          controllers.industry = value;
                                         });
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("industry", value.toString().trim());
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString("industry",
+                                            value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -798,21 +891,24 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     25.height,
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"Linkedin(Optional)",
+                                      hintText: "",
+                                      text: "Linkedin(Optional)",
                                       isOptional: false,
                                       controller: controllers.leadLinkedinCrt,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.socialInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("leadLinkedin", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.socialInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString("leadLinkedin",
+                                            value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -823,45 +919,52 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     15.height,
-
                                   ],
                                 ),
                                 SizedBox(
-                                  width: (MediaQuery.of(context).size.width-400)/4.5,
+                                  width: (MediaQuery.of(context).size.width -
+                                          400) /
+                                      4.5,
                                 ),
                                 Column(
                                   //crossAxisAlignment: CrossAxisAlignment.start,
-                                  children:[
+                                  children: [
                                     20.height,
-                                    utils.textFieldNearText('Company Email',false),
+                                    utils.textFieldNearText(
+                                        'Company Email', false),
                                     60.height,
-                                    utils.textFieldNearText('Product/Services',false),
+                                    utils.textFieldNearText(
+                                        'Product/Services', false),
                                     60.height,
-                                    utils.textFieldNearText('Website(Optional)',false),
+                                    utils.textFieldNearText(
+                                        'Website(Optional)', false),
                                     80.height,
-                                    utils.textFieldNearText('X(Optional)',false),
+                                    utils.textFieldNearText(
+                                        'X(Optional)', false),
                                     50.height
                                   ],
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                  children:[
-
+                                  children: [
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"Company Email",
+                                      hintText: "",
+                                      text: "Company Email",
                                       controller: controllers.leadCoEmailCrt,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       isOptional: false,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.emailInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("leadCoEmail", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.emailInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString("leadCoEmail",
+                                            value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -872,21 +975,24 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     13.height,
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"Product/Services",
+                                      hintText: "",
+                                      text: "Product/Services",
                                       isOptional: false,
                                       controller: controllers.leadProduct,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.textInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("leadProduct", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.textInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString("leadProduct",
+                                            value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -897,21 +1003,24 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     13.height,
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"Website(Optional)",
+                                      hintText: "",
+                                      text: "Website(Optional)",
                                       isOptional: false,
                                       controller: controllers.leadWebsite,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.textInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("leadWebsite", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.textInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString("leadWebsite",
+                                            value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -922,21 +1031,24 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     13.height,
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"X(Optional)",
+                                      hintText: "",
+                                      text: "X(Optional)",
                                       controller: controllers.leadXCrt,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       isOptional: false,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.socialInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("leadX", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.socialInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString(
+                                            "leadX", value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -947,7 +1059,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     15.height,
                                   ],
@@ -1467,7 +1578,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                             // ),
                             20.height,
                             Row(
-                              children:[
+                              children: [
                                 CustomText(
                                   text: constValue.customFields,
                                   colors: colorsConst.textColor,
@@ -1483,38 +1594,48 @@ class _UpdateLeadState extends State<UpdateLead> {
                             20.height,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children:[
+                              children: [
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children:[
+                                  children: [
                                     10.height,
-                                    utils.textFieldNearText('Product Discussed',false),
+                                    utils.textFieldNearText(
+                                        'Product Discussed', false),
                                     50.height,
-                                    utils.textFieldNearText('Status',false),
+                                    utils.textFieldNearText('Status', false),
                                     50.height,
-                                    utils.textFieldNearText('Expected Monthly Billing Value',false),
+                                    utils.textFieldNearText(
+                                        'Expected Monthly Billing Value',
+                                        false),
                                     50.height,
-                                    utils.textFieldNearText('Total Number Of Head Count',false),
+                                    utils.textFieldNearText(
+                                        'Total Number Of Head Count', false),
                                     50.height,
-                                    utils.textFieldNearText('Prospect Source Details',false),
+                                    utils.textFieldNearText(
+                                        'Prospect Source Details', false),
                                     30.height
                                   ],
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                  children:[
+                                  children: [
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"",
+                                      hintText: "",
+                                      text: "",
                                       isOptional: false,
-                                      controller: controllers.prodDescriptionController,
-                                      width:textFieldSize,
+                                      controller:
+                                          controllers.prodDescriptionController,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.numberInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("budget", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.numberInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString(
+                                            "budget", value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -1525,20 +1646,23 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"",
+                                      hintText: "",
+                                      text: "",
                                       isOptional: false,
                                       controller: controllers.statusCrt,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.numberInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("budget", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.numberInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString(
+                                            "budget", value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -1549,20 +1673,24 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"",
+                                      hintText: "",
+                                      text: "",
                                       isOptional: false,
-                                      controller: controllers.exMonthBillingValCrt,
-                                      width:textFieldSize,
+                                      controller:
+                                          controllers.exMonthBillingValCrt,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.numberInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("budget", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.numberInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString(
+                                            "budget", value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -1573,20 +1701,23 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"",
+                                      hintText: "",
+                                      text: "",
                                       isOptional: false,
                                       controller: controllers.noOfHeadCountCrt,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.numberInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("budget", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.numberInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString(
+                                            "budget", value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -1597,20 +1728,23 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"",
+                                      hintText: "",
+                                      text: "",
                                       isOptional: false,
                                       controller: controllers.sourceCrt,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.numberInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("budget", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.numberInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString(
+                                            "budget", value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -1621,7 +1755,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     // CustomDropDown(
                                     //   saveValue: controllers.service,
@@ -1648,42 +1781,51 @@ class _UpdateLeadState extends State<UpdateLead> {
                                     //   // }
                                     //
                                     // ),
-
                                   ],
                                 ),
                                 SizedBox(
-                                  width: (MediaQuery.of(context).size.width-400)/4.5,
+                                  width: (MediaQuery.of(context).size.width -
+                                          400) /
+                                      4.5,
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children:[
-                                    utils.textFieldNearText('Additional Notes',false),
+                                  children: [
+                                    utils.textFieldNearText(
+                                        'Additional Notes', false),
                                     50.height,
-                                    utils.textFieldNearText('Response Priority',false),
+                                    utils.textFieldNearText(
+                                        'Response Priority', false),
                                     50.height,
-                                    utils.textFieldNearText('ARPU Value',false),
+                                    utils.textFieldNearText(
+                                        'ARPU Value', false),
                                     50.height,
-                                    utils.textFieldNearText('Expected Conversion Date',false),
+                                    utils.textFieldNearText(
+                                        'Expected Conversion Date', false),
                                     50.height,
-                                    utils.textFieldNearText('Prospect Enrollment Date',false),
-
+                                    utils.textFieldNearText(
+                                        'Prospect Enrollment Date', false),
                                   ],
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                  children:[
+                                  children: [
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"",
-                                      controller: controllers.additionalNotesCrt,
-                                      width:textFieldSize,
+                                      hintText: "",
+                                      text: "",
+                                      controller:
+                                          controllers.additionalNotesCrt,
+                                      width: textFieldSize,
                                       isOptional: false,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
                                       //inputFormatters: constInputFormatters.textInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("leadTime", value.toString().trim());
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString("leadTime",
+                                            value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -1694,20 +1836,23 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"",
+                                      hintText: "",
+                                      text: "",
                                       isOptional: false,
                                       controller: controllers.responsePriCrt,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.textInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("leadDescription", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.textInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString("leadDescription",
+                                            value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -1718,20 +1863,23 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"",
+                                      hintText: "",
+                                      text: "",
                                       isOptional: false,
                                       controller: controllers.arpuCrt,
-                                      width:textFieldSize,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.textInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("leadDescription", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.textInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString("leadDescription",
+                                            value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -1742,20 +1890,24 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"",
+                                      hintText: "",
+                                      text: "",
                                       isOptional: false,
-                                      controller: controllers.expectedConversionDateCrt,
-                                      width:textFieldSize,
+                                      controller:
+                                          controllers.expectedConversionDateCrt,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.textInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("leadDescription", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.textInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString("leadDescription",
+                                            value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -1766,20 +1918,24 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                     CustomTextField(
-                                      hintText:"",
-                                      text:"",
+                                      hintText: "",
+                                      text: "",
                                       isOptional: false,
-                                      controller: controllers.prospectEnrollmentDateCrt,
-                                      width:textFieldSize,
+                                      controller:
+                                          controllers.prospectEnrollmentDateCrt,
+                                      width: textFieldSize,
                                       keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
-                                      inputFormatters: constInputFormatters.textInput,
-                                      onChanged:(value) async {
-                                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                        sharedPref.setString("leadDescription", value.toString().trim());
+                                      inputFormatters:
+                                          constInputFormatters.textInput,
+                                      onChanged: (value) async {
+                                        SharedPreferences sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setString("leadDescription",
+                                            value.toString().trim());
                                       },
                                       // validator:(value){
                                       //   if(value.toString().isEmpty){
@@ -1790,7 +1946,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     return null;
                                       //   }
                                       // }
-
                                     ),
                                   ],
                                 ),
@@ -1798,7 +1953,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                             ),
                             20.height,
                             CustomLoadingButton(
-                                callback: (){
+                                callback: () {
                                   // if(controllers.leadNameCrt[0].text.isEmpty){
                                   //   utils.snackBar(msg: "Please add name",
                                   //       color: colorsConst.primary,context:context);
@@ -1848,7 +2003,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                   //     if(controllers.leadCoEmailCrt.text.isEmail){
                                   print("lead id ${widget.id.toString()}");
                                   //controllers.leadCtr.reset();
-                                        apiService.updateLeadAPI(context,widget.id.toString(),widget.addressId.toString());
+                                  apiService.updateLeadAPI(
+                                      context,
+                                      widget.id.toString(),
+                                      widget.addressId.toString());
                                   //     }else{
                                   //       utils.snackBar(msg: "Invalid Company Email",
                                   //           color: colorsConst.primary,context:context);
@@ -1861,12 +2019,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                                   //     controllers.leadCtr.reset();
                                   //   }
                                   // }
-
                                 },
                                 text: "Save Lead",
                                 height: 60,
                                 controller: controllers.leadCtr,
-                                isLoading:true,
+                                isLoading: true,
                                 textColor: Colors.black,
                                 backgroundColor: colorsConst.third,
                                 radius: 10,
@@ -1876,13 +2033,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                         ),
                       ),
                     ),
-
                   ],
                 ),
               )
             ],
-          )
-      ),
+          )),
     );
   }
 }

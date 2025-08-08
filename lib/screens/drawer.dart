@@ -15,7 +15,6 @@ class SideBarDrawer extends StatefulWidget {
 }
 
 class _SideBarDrawerState extends State<SideBarDrawer> {
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -23,11 +22,13 @@ class _SideBarDrawerState extends State<SideBarDrawer> {
         child: NavigationRail(
           backgroundColor: colorsConst.primary,
           selectedIndex: controllers.selectedIndex.value,
-
           destinations: [
             NavigationRailDestination(
-              icon: Icon(Icons.home,color: colorsConst.primary,),
-              label:  Container(
+              icon: Icon(
+                Icons.home,
+                color: colorsConst.primary,
+              ),
+              label: Container(
                 color: colorsConst.primary,
                 height: 130,
                 child: Center(
@@ -40,13 +41,14 @@ class _SideBarDrawerState extends State<SideBarDrawer> {
                 ),
               ),
             ),
-
             NavigationRailDestination(
-              icon: Icon(Icons.favorite,color: colorsConst.primary,),
-              label:GestureDetector(
-                onTap: (){
-
-                 // Get.to(const ViewLead(),duration: Duration.zero);
+              icon: Icon(
+                Icons.favorite,
+                color: colorsConst.primary,
+              ),
+              label: GestureDetector(
+                onTap: () {
+                  // Get.to(const ViewLead(),duration: Duration.zero);
                 },
                 child: SizedBox(
                   height: 130,
@@ -72,7 +74,6 @@ class _SideBarDrawerState extends State<SideBarDrawer> {
               controllers.selectedIndex.value = index;
             });
           },
-
         ),
       ),
     );

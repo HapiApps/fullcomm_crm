@@ -1,4 +1,3 @@
-
 //SELECT id, name, brand, compare_price, discount, product_price FROM product
 class ProductObj {
   String? id;
@@ -8,13 +7,13 @@ class ProductObj {
   String? discount;
   String? productPrice;
 
-  ProductObj({
-    this.id,
-    this.name,
-    this.brand,
-    this.comparePrice,
-    this.discount,
-    this.productPrice});
+  ProductObj(
+      {this.id,
+      this.name,
+      this.brand,
+      this.comparePrice,
+      this.discount,
+      this.productPrice});
 
   factory ProductObj.fromJson(Map<String, dynamic> json) => ProductObj(
       id: json["id"],
@@ -22,6 +21,5 @@ class ProductObj {
       brand: json["brand"],
       comparePrice: json["compare_price"],
       discount: json["discount"],
-      productPrice: json["product_price"]
-  );
+      productPrice: json["product_price"]);
 }

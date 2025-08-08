@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,19 +25,21 @@ class TFSAddProducts extends StatefulWidget {
 
 class _TFSAddProductsState extends State<TFSAddProducts> {
   @override
-  Widget build(BuildContext context){
-    double textFieldSize=(MediaQuery.of(context).size.width-350)/3.5;
+  Widget build(BuildContext context) {
+    double textFieldSize = (MediaQuery.of(context).size.width - 350) / 3.5;
     return SelectionArea(
       child: Scaffold(
           appBar: const PreferredSize(
-            preferredSize:  Size.fromHeight(60),
-            child:  CustomAppbar(text: appName,),
+            preferredSize: Size.fromHeight(60),
+            child: CustomAppbar(
+              text: appName,
+            ),
           ),
           body: Stack(
-            children:[
+            children: [
               utils.sideBarFunction(context),
               Positioned(
-                left:130,
+                left: 130,
                 top: 0,
                 bottom: 0,
                 right: 0,
@@ -46,7 +47,9 @@ class _TFSAddProductsState extends State<TFSAddProducts> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   child: Container(
-                    width: 1349>MediaQuery.of(context).size.width-130?1349:MediaQuery.of(context).size.width-130,
+                    width: 1349 > MediaQuery.of(context).size.width - 130
+                        ? 1349
+                        : MediaQuery.of(context).size.width - 130,
                     alignment: Alignment.center,
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -56,30 +59,29 @@ class _TFSAddProductsState extends State<TFSAddProducts> {
                           CustomText(
                             text: "Add Product",
                             colors: colorsConst.primary,
-                            size:23,isBold: true,
+                            size: 23,
+                            isBold: true,
                           ),
                           30.height,
                           Center(
                             child: Container(
                               alignment: Alignment.center,
-                              width:MediaQuery.of(context).size.width-300,
-                              height:500,
-                              decoration:BoxDecoration(
+                              width: MediaQuery.of(context).size.width - 300,
+                              height: 500,
+                              decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10)
-                              ),
+                                  borderRadius: BorderRadius.circular(10)),
                               child: SizedBox(
-                                width:MediaQuery.of(context).size.width-400,
+                                width: MediaQuery.of(context).size.width - 400,
                                 child: Column(
-                                  children:[
+                                  children: [
                                     50.height,
                                     const Row(
-                                      children:[
+                                      children: [
                                         CustomText(
-                                          text:"Product Details",
+                                          text: "Product Details",
                                           colors: Colors.black,
                                           size: 20,
-
                                         ),
                                       ],
                                     ),
@@ -90,24 +92,30 @@ class _TFSAddProductsState extends State<TFSAddProducts> {
                                     ),
                                     20.height,
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children:[
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                          children:[
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
                                             CustomDropDown(
                                               saveValue: controllers.category,
-                                              valueList: controllers.categoryList,
-                                              text:"Category",
-                                              width:textFieldSize,
+                                              valueList:
+                                                  controllers.categoryList,
+                                              text: "Category",
+                                              width: textFieldSize,
 
                                               //inputFormatters: constInputFormatters.textInput,
-                                              onChanged:(value) async {
+                                              onChanged: (value) async {
                                                 setState(() {
-                                                  controllers.category= value;
+                                                  controllers.category = value;
                                                 });
-                                                SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                sharedPref.setString("category", value.toString().trim());
+                                                SharedPreferences sharedPref =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                sharedPref.setString("category",
+                                                    value.toString().trim());
                                               },
                                               // validator:(value){
                                               //   if(value.toString().isEmpty){
@@ -118,21 +126,28 @@ class _TFSAddProductsState extends State<TFSAddProducts> {
                                               //     return null;
                                               //   }
                                               // }
-
                                             ),
                                             25.height,
                                             CustomTextField(
-                                              hintText:"Quantity Range",
-                                              text:"Quantity Range",
-                                              controller: controllers.comparePriceController,
-                                              width:textFieldSize,
+                                              hintText: "Quantity Range",
+                                              text: "Quantity Range",
+                                              controller: controllers
+                                                  .comparePriceController,
+                                              width: textFieldSize,
                                               keyboardType: TextInputType.text,
-                                              textInputAction: TextInputAction.next,
-                                              inputFormatters: constInputFormatters.numberInput,
+                                              textInputAction:
+                                                  TextInputAction.next,
+                                              inputFormatters:
+                                                  constInputFormatters
+                                                      .numberInput,
                                               //inputFormatters: constInputFormatters.textInput,
-                                              onChanged:(value) async {
-                                                SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                sharedPref.setString("quantityRange", value.toString().trim());
+                                              onChanged: (value) async {
+                                                SharedPreferences sharedPref =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                sharedPref.setString(
+                                                    "quantityRange",
+                                                    value.toString().trim());
                                               },
                                               // validator:(value){
                                               //   if(value.toString().isEmpty){
@@ -143,20 +158,25 @@ class _TFSAddProductsState extends State<TFSAddProducts> {
                                               //     return null;
                                               //   }
                                               // }
-
                                             ),
                                             25.height,
                                             CustomTextField(
-                                              hintText:"Amount",
-                                              text:"Amount",
-                                              controller: controllers.productPriceController,
-                                              width:textFieldSize,
+                                              hintText: "Amount",
+                                              text: "Amount",
+                                              controller: controllers
+                                                  .productPriceController,
+                                              width: textFieldSize,
                                               keyboardType: TextInputType.text,
 
-                                              inputFormatters: constInputFormatters.numberInput,
-                                              onChanged:(value) async {
-                                                SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                sharedPref.setString("amount", value.toString().trim());
+                                              inputFormatters:
+                                                  constInputFormatters
+                                                      .numberInput,
+                                              onChanged: (value) async {
+                                                SharedPreferences sharedPref =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                sharedPref.setString("amount",
+                                                    value.toString().trim());
                                               },
                                               // validator:(value){
                                               //   if(value.toString().isEmpty){
@@ -167,29 +187,36 @@ class _TFSAddProductsState extends State<TFSAddProducts> {
                                               //     return null;
                                               //   }
                                               // }
-
                                             ),
                                             25.height,
-
                                           ],
                                         ),
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children:[
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
                                             15.height,
                                             CustomDropDown(
-                                              saveValue: controllers.designation,
-                                              valueList: controllers.designationList,
-                                              text:"Designation",
-                                              width:textFieldSize,
+                                              saveValue:
+                                                  controllers.designation,
+                                              valueList:
+                                                  controllers.designationList,
+                                              text: "Designation",
+                                              width: textFieldSize,
                                               //inputFormatters: constInputFormatters.textInput,
-                                              onChanged:(value) async {
+                                              onChanged: (value) async {
                                                 setState(() {
-                                                  controllers.designation= value;
+                                                  controllers.designation =
+                                                      value;
                                                 });
-                                                SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                sharedPref.setString("designation", value.toString().trim());
+                                                SharedPreferences sharedPref =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                sharedPref.setString(
+                                                    "designation",
+                                                    value.toString().trim());
                                               },
                                               // validator:(value){
                                               //   if(value.toString().isEmpty){
@@ -200,21 +227,24 @@ class _TFSAddProductsState extends State<TFSAddProducts> {
                                               //     return null;
                                               //   }
                                               // }
-
                                             ),
-
-
                                             20.height,
                                             CustomTextField(
-                                              hintText:"Location",
-                                              text:"Location",
-                                              controller: controllers.discountOnMRPController,
-                                              width:textFieldSize,
+                                              hintText: "Location",
+                                              text: "Location",
+                                              controller: controllers
+                                                  .discountOnMRPController,
+                                              width: textFieldSize,
                                               keyboardType: TextInputType.text,
-                                              inputFormatters: constInputFormatters.numberInput,
-                                              onChanged:(value) async {
-                                                SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                sharedPref.setString("location", value.toString().trim());
+                                              inputFormatters:
+                                                  constInputFormatters
+                                                      .numberInput,
+                                              onChanged: (value) async {
+                                                SharedPreferences sharedPref =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                sharedPref.setString("location",
+                                                    value.toString().trim());
                                               },
                                               // validator:(value){
                                               //   if(value.toString().isEmpty){
@@ -225,60 +255,107 @@ class _TFSAddProductsState extends State<TFSAddProducts> {
                                               //     return null;
                                               //   }
                                               // }
-
                                             ),
                                             125.height
                                           ],
                                         ),
                                       ],
                                     ),
-
                                     10.height,
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
-                                      children:[
+                                      children: [
                                         CustomLoadingButton(
-                                            callback: (){
-                                              if(controllers.prodNameController.text.isEmpty){
-                                                utils.snackBar(msg: "Please add product name",
-                                                    color: colorsConst.primary,context:Get.context!);
-                                              }else if(controllers.categoryController.text.isEmpty){
-                                                utils.snackBar(msg: "Please add category",
-                                                    color: colorsConst.primary,context:Get.context!);
-                                              }else if(controllers.comparePriceController.text.isEmpty){
-                                                utils.snackBar(msg: "Please add compare price",
-                                                    color: colorsConst.primary,context:Get.context!);
-                                              }else if(controllers.productPriceController.text.isEmpty){
-                                                utils.snackBar(msg: "Please add product price",
-                                                    color: colorsConst.primary,context:Get.context!);
-                                              }else if(controllers.netPriceController.text.isEmpty){
-                                                utils.snackBar(msg: "Please add net price",
-                                                    color: colorsConst.primary,context:Get.context!);
-                                              }else if(controllers.hsnController.text.isEmpty){
-                                                utils.snackBar(msg: "Please add HSN/SAC code",
-                                                    color: colorsConst.primary,context:Get.context!);
-                                              }else if(controllers.prodBrandController.text.isEmpty){
-                                                utils.snackBar(msg: "Please add brand",
-                                                    color: colorsConst.primary,context:Get.context!);
-                                              }else if(controllers.subCategory==null){
-                                                utils.snackBar(msg: "Please add sub category",
-                                                    color: colorsConst.primary,context:Get.context!);
-                                              }else if(controllers.tax==null){
-                                                utils.snackBar(msg: "Please add tax",
-                                                    color: colorsConst.primary,context:Get.context!);
-                                              }else if(controllers.discountController.text.isEmpty){
-                                                utils.snackBar(msg: "Please add discount",
-                                                    color: colorsConst.primary,context:Get.context!);
-                                              }else{
-                                                apiService.insertProductAPI(context);
+                                            callback: () {
+                                              if (controllers.prodNameController
+                                                  .text.isEmpty) {
+                                                utils.snackBar(
+                                                    msg:
+                                                        "Please add product name",
+                                                    color: colorsConst.primary,
+                                                    context: Get.context!);
+                                              } else if (controllers
+                                                  .categoryController
+                                                  .text
+                                                  .isEmpty) {
+                                                utils.snackBar(
+                                                    msg: "Please add category",
+                                                    color: colorsConst.primary,
+                                                    context: Get.context!);
+                                              } else if (controllers
+                                                  .comparePriceController
+                                                  .text
+                                                  .isEmpty) {
+                                                utils.snackBar(
+                                                    msg:
+                                                        "Please add compare price",
+                                                    color: colorsConst.primary,
+                                                    context: Get.context!);
+                                              } else if (controllers
+                                                  .productPriceController
+                                                  .text
+                                                  .isEmpty) {
+                                                utils.snackBar(
+                                                    msg:
+                                                        "Please add product price",
+                                                    color: colorsConst.primary,
+                                                    context: Get.context!);
+                                              } else if (controllers
+                                                  .netPriceController
+                                                  .text
+                                                  .isEmpty) {
+                                                utils.snackBar(
+                                                    msg: "Please add net price",
+                                                    color: colorsConst.primary,
+                                                    context: Get.context!);
+                                              } else if (controllers
+                                                  .hsnController.text.isEmpty) {
+                                                utils.snackBar(
+                                                    msg:
+                                                        "Please add HSN/SAC code",
+                                                    color: colorsConst.primary,
+                                                    context: Get.context!);
+                                              } else if (controllers
+                                                  .prodBrandController
+                                                  .text
+                                                  .isEmpty) {
+                                                utils.snackBar(
+                                                    msg: "Please add brand",
+                                                    color: colorsConst.primary,
+                                                    context: Get.context!);
+                                              } else if (controllers
+                                                      .subCategory ==
+                                                  null) {
+                                                utils.snackBar(
+                                                    msg:
+                                                        "Please add sub category",
+                                                    color: colorsConst.primary,
+                                                    context: Get.context!);
+                                              } else if (controllers.tax ==
+                                                  null) {
+                                                utils.snackBar(
+                                                    msg: "Please add tax",
+                                                    color: colorsConst.primary,
+                                                    context: Get.context!);
+                                              } else if (controllers
+                                                  .discountController
+                                                  .text
+                                                  .isEmpty) {
+                                                utils.snackBar(
+                                                    msg: "Please add discount",
+                                                    color: colorsConst.primary,
+                                                    context: Get.context!);
+                                              } else {
+                                                apiService
+                                                    .insertProductAPI(context);
                                               }
-
                                             },
                                             text: "Save Product",
                                             height: 60,
                                             controller: controllers.productCtr,
-                                            isLoading:true,
-                                            backgroundColor: colorsConst.primary,
+                                            isLoading: true,
+                                            backgroundColor:
+                                                colorsConst.primary,
                                             radius: 10,
                                             width: 200),
                                         30.width
@@ -297,8 +374,7 @@ class _TFSAddProductsState extends State<TFSAddProducts> {
                 ),
               )
             ],
-          )
-      ),
+          )),
     );
   }
 }

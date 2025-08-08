@@ -142,9 +142,10 @@ class Utils {
                             // ),
                             IconButton(
                                 onPressed: () {
-                                  utils.chooseFile(mediaDataV:imageController.empMediaData,
-                                      fileName:imageController.empFileName,
-                                      pathName:imageController.photo1);
+                                  utils.chooseFile(
+                                      mediaDataV: imageController.empMediaData,
+                                      fileName: imageController.empFileName,
+                                      pathName: imageController.photo1);
                                 },
                                 icon: SvgPicture.asset(assets.file)),
                             IconButton(
@@ -163,7 +164,8 @@ class Utils {
                       Obx(
                         () => CustomLoadingButton(
                           callback: () {
-                            apiService.insertEmailAPI(context, id.toString(),imageController.photo1.value);
+                            apiService.insertEmailAPI(context, id.toString(),
+                                imageController.photo1.value);
                           },
                           controller: controllers.emailCtr,
                           isImage: false,
@@ -283,36 +285,51 @@ class Utils {
                                 Obx(
                                   () => controllers.isTemplate.value == false
                                       ? SingleChildScrollView(
-                                        child: Column(
-                                          children: [
-                                            Obx(()=>imageController.photo1.value.isEmpty?0.height:
-                                            Image.memory(base64Decode(imageController.photo1.value),
-                                              fit: BoxFit.cover,width: 80,height: 80,),),
-                                            SizedBox(
-                                              width: 600,
-                                              height: 223,
-                                              child: TextField(
-                                                textInputAction: TextInputAction.newline,
-                                                controller: controllers.emailMessageCtr,
-                                                keyboardType: TextInputType.multiline,
-                                                maxLines: 21,
-                                                expands: false,
-                                                style: TextStyle(
-                                                  color: colorsConst.textColor,
-                                                ),
-                                                decoration: InputDecoration(
-                                                  hintText: "Message",
-                                                  hintStyle: TextStyle(
-                                                      color: colorsConst.textColor,
-                                                      fontSize: 14,
-                                                      fontFamily: "Lato"),
-                                                  border: InputBorder.none,
+                                          child: Column(
+                                            children: [
+                                              Obx(
+                                                () => imageController
+                                                        .photo1.value.isEmpty
+                                                    ? 0.height
+                                                    : Image.memory(
+                                                        base64Decode(
+                                                            imageController
+                                                                .photo1.value),
+                                                        fit: BoxFit.cover,
+                                                        width: 80,
+                                                        height: 80,
+                                                      ),
+                                              ),
+                                              SizedBox(
+                                                width: 600,
+                                                height: 223,
+                                                child: TextField(
+                                                  textInputAction:
+                                                      TextInputAction.newline,
+                                                  controller: controllers
+                                                      .emailMessageCtr,
+                                                  keyboardType:
+                                                      TextInputType.multiline,
+                                                  maxLines: 21,
+                                                  expands: false,
+                                                  style: TextStyle(
+                                                    color:
+                                                        colorsConst.textColor,
+                                                  ),
+                                                  decoration: InputDecoration(
+                                                    hintText: "Message",
+                                                    hintStyle: TextStyle(
+                                                        color: colorsConst
+                                                            .textColor,
+                                                        fontSize: 14,
+                                                        fontFamily: "Lato"),
+                                                    border: InputBorder.none,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
+                                            ],
+                                          ),
+                                        )
                                       : UnconstrainedBox(
                                           child: Container(
                                             width: 500,
@@ -342,18 +359,20 @@ class Utils {
                                                                   .circular(10),
                                                           width: 1),
                                                       children: [
-                                                        TableRow(
-                                                            children: [
-                                                              CustomText(
-                                                                textAlign: TextAlign.center,
-                                                                text: "\nTemplate Name\n",
-                                                                colors: colorsConst.textColor,
-                                                                size: 15,
-                                                                isBold: true,
-                                                              ),
+                                                        TableRow(children: [
                                                           CustomText(
-                                                            textAlign:
-                                                                TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            text:
+                                                                "\nTemplate Name\n",
+                                                            colors: colorsConst
+                                                                .textColor,
+                                                            size: 15,
+                                                            isBold: true,
+                                                          ),
+                                                          CustomText(
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             text: "\nSubject\n",
                                                             colors: colorsConst
                                                                 .textColor,
@@ -361,26 +380,29 @@ class Utils {
                                                             isBold: true,
                                                           ),
                                                         ]),
-                                                        utils.emailRow(
-                                                            context,
-                                                            isCheck: controllers.isAdd,
+                                                        utils.emailRow(context,
+                                                            isCheck: controllers
+                                                                .isAdd,
                                                             templateName:
                                                                 "Promotional",
                                                             msg:
                                                                 "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
                                                             subject:
                                                                 "Exclusive Promotion for You - \nLimited Time Offer!"),
-                                                        utils.emailRow(
-                                                            context,
-                                                            isCheck: controllers.isAdd,
-                                                            templateName: "Follow-Up",
-                                                            msg: "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
-                                                            subject: "Follow-up on Recent Service Interaction"),
+                                                        utils.emailRow(context,
+                                                            isCheck: controllers
+                                                                .isAdd,
+                                                            templateName:
+                                                                "Follow-Up",
+                                                            msg:
+                                                                "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+                                                            subject:
+                                                                "Follow-up on Recent Service Interaction"),
                                                         utils.emailRow(context,
                                                             msg:
                                                                 "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
-                                                            isCheck:
-                                                                controllers.isAdd,
+                                                            isCheck: controllers
+                                                                .isAdd,
                                                             templateName:
                                                                 "Service Update",
                                                             subject:
@@ -655,6 +677,7 @@ class Utils {
     await file.writeAsBytes(bytes, flush: true);
     return file;
   }
+
   // String? selectedTime;
   // void displayTimeDialog(BuildContext context,{TextEditingController? controller}) async {
   //   TimeOfDay? time =await showTimePicker(
@@ -910,316 +933,336 @@ class Utils {
   // }
 
   Widget sideBarFunction(BuildContext context) {
-    return Obx(()=>controllers.isLeftOpen.value?Container(
-      width: 130,
-      height: MediaQuery.of(context).size.height,
-      color: colorsConst.secondary,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            5.height,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Tooltip(
-                  message: "Click to close the side panel.",
-                  child: InkWell(
-                      focusColor: Colors.transparent,
-                      onTap: (){
-                        controllers.isLeftOpen.value=!controllers.isLeftOpen.value;
-                      },
-                    child: SvgPicture.asset("assets/images/left.svg",width: 40,height: 40,),
-                      // icon: Icon(controllers.isLeftOpen.value?Icons.arrow_back_ios:Icons.arrow_forward_ios,
-                      //   color: colorsConst.third,)
+    return Obx(() => controllers.isLeftOpen.value
+        ? Container(
+            width: 130,
+            height: MediaQuery.of(context).size.height,
+            color: colorsConst.secondary,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  5.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Tooltip(
+                        message: "Click to close the side panel.",
+                        child: InkWell(
+                          focusColor: Colors.transparent,
+                          onTap: () {
+                            controllers.isLeftOpen.value =
+                                !controllers.isLeftOpen.value;
+                          },
+                          child: SvgPicture.asset(
+                            "assets/images/left.svg",
+                            width: 40,
+                            height: 40,
+                          ),
+                          // icon: Icon(controllers.isLeftOpen.value?Icons.arrow_back_ios:Icons.arrow_forward_ios,
+                          //   color: colorsConst.third,)
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            const Text(
-              "$appName CRM",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                fontFamily: "Lato",
-              ),
-            ),
-            10.height,
-            Text(
-              controllers.storage.read("f_name"),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontFamily: "Lato",
-                //fontStyle: FontStyle.italic
-              ),
-            ),
-            20.height,
-            Obx(
-                  () => CustomSideBarText(
-                  text: constValue.dashboard,
-                  textColor: controllers.selectedIndex.value == 0
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
-                  onClicked: () {
-                    controllers.selectedIndex.value = 0;
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Dashboard(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                    //Get.to(const Dashboard());
-                  }),
-            ),
+                  const Text(
+                    "$appName CRM",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      fontFamily: "Lato",
+                    ),
+                  ),
+                  10.height,
+                  Text(
+                    controllers.storage.read("f_name"),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontFamily: "Lato",
+                      //fontStyle: FontStyle.italic
+                    ),
+                  ),
+                  20.height,
+                  Obx(
+                    () => CustomSideBarText(
+                        text: constValue.dashboard,
+                        textColor: controllers.selectedIndex.value == 0
+                            ? const Color(0xffF5CB39)
+                            : colorsConst.textColor,
+                        onClicked: () {
+                          controllers.selectedIndex.value = 0;
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) =>
+                                  const Dashboard(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
+                            ),
+                          );
+                          //Get.to(const Dashboard());
+                        }),
+                  ),
 
-            // const Divider(
-            //   color: Colors.white,
-            //   thickness: 0.5,
-            // ),
-            Obx(
-                  () => CustomSideBarText(
-                  textColor: controllers.selectedIndex.value == 1
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
-                  text: constValue.newLead,
-                  onClicked: () {
-                    controllers.isLead.value = true;
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Suspects(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                    controllers.selectedIndex.value = 1;
-                  }),
-            ),
+                  // const Divider(
+                  //   color: Colors.white,
+                  //   thickness: 0.5,
+                  // ),
+                  Obx(
+                    () => CustomSideBarText(
+                        textColor: controllers.selectedIndex.value == 1
+                            ? const Color(0xffF5CB39)
+                            : colorsConst.textColor,
+                        text: constValue.newLead,
+                        onClicked: () {
+                          controllers.isLead.value = true;
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) =>
+                                  const Suspects(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
+                            ),
+                          );
+                          controllers.selectedIndex.value = 1;
+                        }),
+                  ),
 
-            // const Divider(
-            //   color: Colors.white,
-            //   thickness: 0.5,
-            // ),
-            Obx(
-                  () => CustomSideBarText(
-                  textColor: controllers.selectedIndex.value == 2
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
-                  text: constValue.leads,
-                  onClicked: () {
-                    //controllers.isLead.value=true;
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Prospects(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
+                  // const Divider(
+                  //   color: Colors.white,
+                  //   thickness: 0.5,
+                  // ),
+                  Obx(
+                    () => CustomSideBarText(
+                        textColor: controllers.selectedIndex.value == 2
+                            ? const Color(0xffF5CB39)
+                            : colorsConst.textColor,
+                        text: constValue.leads,
+                        onClicked: () {
+                          //controllers.isLead.value=true;
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) =>
+                                  const Prospects(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
+                            ),
+                          );
 
-                    controllers.selectedIndex.value = 2;
-                  }),
-            ),
+                          controllers.selectedIndex.value = 2;
+                        }),
+                  ),
 
-            // const Divider(
-            //   color: Colors.white,
-            //   thickness: 0.5,
-            // ),
-            Obx(
-                  () => CustomSideBarText(
-                  textColor: controllers.selectedIndex.value == 3
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
-                  text: constValue.goodLead,
-                  onClicked: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Qualified(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                    controllers.isEmployee.value = true;
-                    controllers.selectedIndex.value = 3;
-                  }),
-            ),
-            Obx(
-                  () => CustomSideBarText(
-                  textColor: controllers.selectedIndex.value == 4
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
-                  text: constValue.customer,
-                  onClicked: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const ViewCustomer(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                    controllers.isCustomer.value = true;
-                    controllers.selectedIndex.value = 4;
-                  }),
-            ),
+                  // const Divider(
+                  //   color: Colors.white,
+                  //   thickness: 0.5,
+                  // ),
+                  Obx(
+                    () => CustomSideBarText(
+                        textColor: controllers.selectedIndex.value == 3
+                            ? const Color(0xffF5CB39)
+                            : colorsConst.textColor,
+                        text: constValue.goodLead,
+                        onClicked: () {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) =>
+                                  const Qualified(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
+                            ),
+                          );
+                          controllers.isEmployee.value = true;
+                          controllers.selectedIndex.value = 3;
+                        }),
+                  ),
+                  Obx(
+                    () => CustomSideBarText(
+                        textColor: controllers.selectedIndex.value == 4
+                            ? const Color(0xffF5CB39)
+                            : colorsConst.textColor,
+                        text: constValue.customer,
+                        onClicked: () {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) =>
+                                  const ViewCustomer(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
+                            ),
+                          );
+                          controllers.isCustomer.value = true;
+                          controllers.selectedIndex.value = 4;
+                        }),
+                  ),
 
-            // const Divider(
-            //   color: Colors.white,
-            //   thickness: 0.5,
-            // ),
+                  // const Divider(
+                  //   color: Colors.white,
+                  //   thickness: 0.5,
+                  // ),
 
-            // const Divider(
-            //   color: Colors.white,
-            //   thickness: 0.5,
-            // ),
-            // Obx(() => CustomSideBarText(
-            //     textColor:controllers.selectedIndex.value==5?const Color(0xffF5CB39):colorsConst.textColor,
-            //
-            //     text: constValue.products,
-            //     onClicked: (){
-            //       Navigator.push(context,
-            //         PageRouteBuilder(
-            //           pageBuilder: (context, animation1, animation2) => const ViewProduct(),
-            //           transitionDuration: Duration.zero,
-            //           reverseTransitionDuration: Duration.zero,
-            //         ),
-            //       );
-            //       controllers.isProduct.value=true;
-            //       controllers.selectedIndex.value=5;
-            //     }),
-            // ),
-            // Obx(() => controllers.isAdmin.value?CustomSideBarText(
-            //     textColor:controllers.selectedIndex.value==6?const Color(0xffF5CB39):colorsConst.textColor,
-            //     text: "Add Profile",
-            //     onClicked:(){
-            //       Navigator.push(context,
-            //         PageRouteBuilder(
-            //           pageBuilder: (context, animation1, animation2) => const SignUp(),
-            //           transitionDuration: Duration.zero,
-            //           reverseTransitionDuration: Duration.zero,
-            //         ),
-            //       );
-            //       //controllers.isEmployee.value=true;
-            //       //controllers.selectedIndex.value=6;
-            //     }):0.height,),
-            Obx(
-                  () => CustomSideBarText(
-                  textColor: controllers.selectedIndex.value == 7
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
-                  text: "LogOut",
-                  onClicked: () async {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          backgroundColor: colorsConst.primary,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Do you want to log out?",
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                  // const Divider(
+                  //   color: Colors.white,
+                  //   thickness: 0.5,
+                  // ),
+                  // Obx(() => CustomSideBarText(
+                  //     textColor:controllers.selectedIndex.value==5?const Color(0xffF5CB39):colorsConst.textColor,
+                  //
+                  //     text: constValue.products,
+                  //     onClicked: (){
+                  //       Navigator.push(context,
+                  //         PageRouteBuilder(
+                  //           pageBuilder: (context, animation1, animation2) => const ViewProduct(),
+                  //           transitionDuration: Duration.zero,
+                  //           reverseTransitionDuration: Duration.zero,
+                  //         ),
+                  //       );
+                  //       controllers.isProduct.value=true;
+                  //       controllers.selectedIndex.value=5;
+                  //     }),
+                  // ),
+                  // Obx(() => controllers.isAdmin.value?CustomSideBarText(
+                  //     textColor:controllers.selectedIndex.value==6?const Color(0xffF5CB39):colorsConst.textColor,
+                  //     text: "Add Profile",
+                  //     onClicked:(){
+                  //       Navigator.push(context,
+                  //         PageRouteBuilder(
+                  //           pageBuilder: (context, animation1, animation2) => const SignUp(),
+                  //           transitionDuration: Duration.zero,
+                  //           reverseTransitionDuration: Duration.zero,
+                  //         ),
+                  //       );
+                  //       //controllers.isEmployee.value=true;
+                  //       //controllers.selectedIndex.value=6;
+                  //     }):0.height,),
+                  Obx(
+                    () => CustomSideBarText(
+                        textColor: controllers.selectedIndex.value == 7
+                            ? const Color(0xffF5CB39)
+                            : colorsConst.textColor,
+                        text: "LogOut",
+                        onClicked: () async {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                backgroundColor: colorsConst.primary,
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 24),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: colorsConst.primary,
-                                      side: BorderSide(color: colorsConst.secondary),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      "No",
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Do you want to log out?",
                                       style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      final prefs = await SharedPreferences.getInstance();
-                                      prefs.setBool("loginScreen", false);
-                                      prefs.setBool("isAdmin", false);
-                                      Get.to(const LoginPage(), duration: Duration.zero);
-                                      //controllers.isEmployee.value=true;
-                                      controllers.selectedIndex.value = 7;
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: colorsConst.primary,
-                                      side: BorderSide(color: colorsConst.secondary),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      "Yes",
-                                      style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-
-                  }),
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                colorsConst.primary,
+                                            side: BorderSide(
+                                                color: colorsConst.secondary),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            "No",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            final prefs =
+                                                await SharedPreferences
+                                                    .getInstance();
+                                            prefs.setBool("loginScreen", false);
+                                            prefs.setBool("isAdmin", false);
+                                            Get.to(const LoginPage(),
+                                                duration: Duration.zero);
+                                            //controllers.isEmployee.value=true;
+                                            controllers.selectedIndex.value = 7;
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                colorsConst.primary,
+                                            side: BorderSide(
+                                                color: colorsConst.secondary),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            "Yes",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        }),
+                  ),
+                  100.height
+                ],
+              ),
             ),
-            100.height
-          ],
-        ),
-      ),
-    ):Container(
-      width: 60,
-      height: MediaQuery.of(context).size.height,
-      padding: const EdgeInsets.fromLTRB(6, 8, 0, 0),
-      color: colorsConst.primary,
-      alignment: Alignment.topCenter,
-      child:Tooltip(
-        message: "Click to view the side panel",
-        child: InkWell(
-            focusColor: Colors.transparent,
-            onTap: (){
-              controllers.isLeftOpen.value=!controllers.isLeftOpen.value;
-            },
-          child: SvgPicture.asset("assets/images/new_menu.svg",width: 40,height: 40,),
-        ),
-      ),
-    ));
+          )
+        : Container(
+            width: 60,
+            height: MediaQuery.of(context).size.height,
+            padding: const EdgeInsets.fromLTRB(6, 8, 0, 0),
+            color: colorsConst.primary,
+            alignment: Alignment.topCenter,
+            child: Tooltip(
+              message: "Click to view the side panel",
+              child: InkWell(
+                focusColor: Colors.transparent,
+                onTap: () {
+                  controllers.isLeftOpen.value = !controllers.isLeftOpen.value;
+                },
+                child: SvgPicture.asset(
+                  "assets/images/new_menu.svg",
+                  width: 40,
+                  height: 40,
+                ),
+              ),
+            ),
+          ));
   }
 
   Widget leadFirstCon(String image, String count, String day) {
@@ -1241,7 +1284,8 @@ class Utils {
                 decoration: BoxDecoration(
                     color: colorsConst.primary,
                     borderRadius: BorderRadius.circular(50),
-                    border: Border.all(color: const Color(0xff5D5FEF), width: 2.4)),
+                    border:
+                        Border.all(color: const Color(0xff5D5FEF), width: 2.4)),
                 child: CustomText(
                   text: count,
                   colors: colorsConst.textColor,
@@ -1926,10 +1970,12 @@ class Utils {
                   onChanged: (value) {
                     controllers.isTemplate.value = false;
                     //Navigator.pop(context);
-                    controllers.emailSubjectCtr.text = subject.toString().replaceAll('\n', ' ');
+                    controllers.emailSubjectCtr.text =
+                        subject.toString().replaceAll('\n', ' ');
                     //controllers.emailMessageCtr.text += "\n${msg.toString()}";
                     controllers.emailMessageCtr.text = msg.toString();
-                    controllers.emailQuotationCtr.text = templateName.toString();
+                    controllers.emailQuotationCtr.text =
+                        templateName.toString();
                   },
                 ),
               ),
@@ -1947,7 +1993,8 @@ class Utils {
             ],
           ),
           Container(
-            alignment: Alignment.center,padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
             height: 50,
             child: CustomText(
               textAlign: TextAlign.center,
@@ -2034,7 +2081,9 @@ class Utils {
     for (var table in excelD.tables.keys) {
       var rows = excelD.tables[table]!.rows;
 
-      List<String> headers = rows.first.map((cell) => (cell?.value.toString().trim().toUpperCase()) ?? "").toList();
+      List<String> headers = rows.first
+          .map((cell) => (cell?.value.toString().trim().toUpperCase()) ?? "")
+          .toList();
 
       List<String> missingColumns = [];
 
@@ -2059,7 +2108,8 @@ class Utils {
               isBold: true,
             ),
             content: CustomText(
-              text: "The following columns are missing:\n\n${missingColumns.join(", ")}",
+              text:
+                  "The following columns are missing:\n\n${missingColumns.join(", ")}",
               colors: colorsConst.textColor,
               size: 16,
             ),
@@ -2083,7 +2133,9 @@ class Utils {
         Map<String, dynamic> rowData = {};
         Map<String, dynamic> formattedData = {};
         bool isRowEmpty = row.every((cell) =>
-        cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
+            cell == null ||
+            cell.value == null ||
+            cell.value.toString().trim().isEmpty);
 
         if (isRowEmpty) continue;
 
@@ -2095,13 +2147,15 @@ class Utils {
         // ✅ Fix mapping with proper casing match
         rowData.forEach((key, value) {
           String matchedKey = keyMapping.keys.firstWhere(
-                (mappedKey) => mappedKey.toUpperCase().trim() == key.toUpperCase().trim(),
+            (mappedKey) =>
+                mappedKey.toUpperCase().trim() == key.toUpperCase().trim(),
             orElse: () => "",
           );
           if (matchedKey.isNotEmpty) {
             String mappedField = keyMapping[matchedKey]!;
             if (mappedField == "rating") {
-              formattedData[mappedField] = value != null && value.toString().isNotEmpty ? value : "WARM";
+              formattedData[mappedField] =
+                  value != null && value.toString().isNotEmpty ? value : "WARM";
             } else {
               formattedData[mappedField] = value;
             }
@@ -2129,11 +2183,14 @@ class Utils {
           formattedData["source"] = "";
         }
 
-        if ((formattedData["phone_no"] != null && formattedData["phone_no"].toString().isNotEmpty) ||
-            (formattedData["name"] != null && formattedData["name"].toString().isNotEmpty)) {
+        if ((formattedData["phone_no"] != null &&
+                formattedData["phone_no"].toString().isNotEmpty) ||
+            (formattedData["name"] != null &&
+                formattedData["name"].toString().isNotEmpty)) {
           customerData.add(formattedData);
         } else {
-          if (formattedData["email"] != null && formattedData["email"].toString().isNotEmpty) {
+          if (formattedData["email"] != null &&
+              formattedData["email"].toString().isNotEmpty) {
             customerData.add(formattedData);
           } else {
             mCustomerData.add(formattedData);
@@ -2152,7 +2209,8 @@ class Utils {
         builder: (context) => AlertDialog(
           backgroundColor: colorsConst.primary,
           content: CustomText(
-            text: "Some entries under KEY CONTACT PERSON and CONTACT NUMBER are empty in your Excel sheet. Please check and re-upload.",
+            text:
+                "Some entries under KEY CONTACT PERSON and CONTACT NUMBER are empty in your Excel sheet. Please check and re-upload.",
             colors: colorsConst.textColor,
             size: 16,
           ),
@@ -2174,7 +2232,6 @@ class Utils {
     }
   }
 
-
   Future<void> showImportDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
@@ -2182,7 +2239,8 @@ class Utils {
         return AlertDialog(
           insetPadding: const EdgeInsets.all(5),
           backgroundColor: colorsConst.secondary,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           content: SizedBox(
             width: 350,
             height: 500,
@@ -2192,7 +2250,8 @@ class Utils {
                 children: [
                   CustomText(
                     colors: colorsConst.third,
-                    text: "Your uploaded Excel file should have columns matching the required fields exactly as listed below to ensure correct data insertion:",
+                    text:
+                        "Your uploaded Excel file should have columns matching the required fields exactly as listed below to ensure correct data insertion:",
                     isBold: true,
                     size: 15,
                     textAlign: TextAlign.start,
@@ -2303,6 +2362,7 @@ class Utils {
   }
 
   final ImagePicker _picker = ImagePicker();
+
   Future<void> takePhoto(
       ImageSource source, XFile? fileName, RxString? pathName) async {
     XFile? pickedFile = await _picker.pickImage(source: source);

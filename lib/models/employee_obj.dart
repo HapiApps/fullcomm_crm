@@ -1,6 +1,3 @@
-
-
-
 // emp.id,emp.name, emp.emp_id, emp.email, emp.phone_number, emp.address_id,emp.position,emp.doj,emp.manager_name,emp.salary,
 // emp.department,
 // a.address_line_1,a.address_line_2,a.area,a.city,a.state,a.country,a.pincode,emp.active
@@ -23,25 +20,24 @@ class EmployeeObj {
   String? pinCode;
   String? country;
 
-  EmployeeObj({
-    this.id,
-    this.name,
-    this.empId,
-    this.email,
-    this.phoneNumber,
-    this.position,
-    this.department,
-    this.doj,
-    this.salary,
-    this.managerName,
-    this.doorNo,
-    this.streetName,
-    this.area,
-    this.state,
-    this.city,
-    this.pinCode,
-    this.country
-  });
+  EmployeeObj(
+      {this.id,
+      this.name,
+      this.empId,
+      this.email,
+      this.phoneNumber,
+      this.position,
+      this.department,
+      this.doj,
+      this.salary,
+      this.managerName,
+      this.doorNo,
+      this.streetName,
+      this.area,
+      this.state,
+      this.city,
+      this.pinCode,
+      this.country});
 
   factory EmployeeObj.fromJson(Map<String, dynamic> json) => EmployeeObj(
       id: json["id"],
@@ -60,13 +56,8 @@ class EmployeeObj {
       city: json["city"],
       state: json["state"],
       pinCode: json["pincode"],
-      country: json["country"]
-  );
+      country: json["country"]);
 }
-
-
-
-
 
 //
 // import 'package:flutter/material.dart';

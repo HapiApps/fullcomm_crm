@@ -16,9 +16,10 @@ class _DemoMapState extends State<DemoMap> {
   final Set<Marker> _markers = {};
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    _currentPosition = LatLng(double.parse(mapController.latitude.value), double.parse(mapController.longitude.value));
+    _currentPosition = LatLng(double.parse(mapController.latitude.value),
+        double.parse(mapController.longitude.value));
   }
 
   Future<void> _getCurrentLocation() async {
@@ -50,7 +51,6 @@ class _DemoMapState extends State<DemoMap> {
     // Get the current position
     Position position = await Geolocator.getCurrentPosition();
     setState(() {
-
       _markers.add(Marker(
         markerId: MarkerId('currentLocation'),
         position: _currentPosition!,
@@ -60,12 +60,12 @@ class _DemoMapState extends State<DemoMap> {
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Google Maps Current Location'),
       ),
-      body:GoogleMap(
+      body: GoogleMap(
         initialCameraPosition: CameraPosition(
           target: _currentPosition!,
           zoom: 14,

@@ -8,13 +8,18 @@ class CustomDateBox extends StatelessWidget {
   final String value;
   final double? width;
   final void Function()? onTap;
-   const CustomDateBox({super.key,this.width,required this.text,required this.value,this.onTap});
+  const CustomDateBox(
+      {super.key,
+      this.width,
+      required this.text,
+      required this.value,
+      this.onTap});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:[
+      children: [
         // CustomText(
         //   text:text,
         //   colors:colorsConst.secondary,
@@ -25,21 +30,19 @@ class CustomDateBox extends StatelessWidget {
           onTap: onTap,
           child: Container(
             alignment: Alignment.centerLeft,
-            width:width,
+            width: width,
             height: 50,
             decoration: BoxDecoration(
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(5),
-                border: Border.all(
-                    color: colorsConst.textColor
-                )
-            ),
+                border: Border.all(color: colorsConst.textColor)),
             child: Row(
-              children:[
+              children: [
                 15.width,
                 CustomText(
-                  text:value,
-                  colors:colorsConst.textColor,size:15,
+                  text: value,
+                  colors: colorsConst.textColor,
+                  size: 15,
                 ),
               ],
             ),

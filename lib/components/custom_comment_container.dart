@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 class CustomContainer extends StatelessWidget {
   final double? width;
   final double? height;
@@ -15,10 +14,6 @@ class CustomContainer extends StatelessWidget {
   final Decoration? decoration;
   final double? size;
 
-
-
-
-
   const CustomContainer({
     super.key,
     this.width,
@@ -28,13 +23,11 @@ class CustomContainer extends StatelessWidget {
     this.fontWeight = FontWeight.bold,
     this.onTap,
     this.tColor,
-    required this.borderRadius, this.child,
+    required this.borderRadius,
+    this.child,
     this.decoration,
     this.size,
-
   });
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +36,9 @@ class CustomContainer extends StatelessWidget {
       child: Container(
         width: width,
         height: height,
-
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(borderRadius ?? 0),
-
-
         ),
         alignment: Alignment.center,
         child: Row(
@@ -59,14 +49,12 @@ class CustomContainer extends StatelessWidget {
               style: TextStyle(
                 fontWeight: fontWeight,
                 fontSize: size,
-                color:tColor,
+                color: tColor,
               ),
             ),
           ],
         ),
-
       ),
-
     );
   }
 }

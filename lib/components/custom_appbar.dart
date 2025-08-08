@@ -1,4 +1,3 @@
-
 import 'package:fullcomm_crm/common/widgets/log_in.dart';
 import 'package:fullcomm_crm/common/widgets/sign_up.dart';
 import 'package:flutter/material.dart';
@@ -26,24 +25,23 @@ class _CustomAppbarState extends State<CustomAppbar> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration.zero,()async{
-      final prefs =await SharedPreferences.getInstance();
-      controllers.isAdmin.value=prefs.getBool("isAdmin")??false;
+    Future.delayed(Duration.zero, () async {
+      final prefs = await SharedPreferences.getInstance();
+      controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
     });
   }
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return AppBar(
       key: const ValueKey("App Bar"),
       automaticallyImplyLeading: false,
-      backgroundColor:colorsConst.primary,
+      backgroundColor: colorsConst.primary,
       leadingWidth: 150,
       elevation: 0.0,
       //centerTitle: true,
-      title:const CustomText(
-          text:appName,
-          colors:Colors.white,size:30,
-          isBold:true),
+      title: const CustomText(
+          text: appName, colors: Colors.white, size: 30, isBold: true),
       // leading: const Center(
       //   child:  CustomText(
       //     text:"Zengraf",
@@ -57,35 +55,47 @@ class _CustomAppbarState extends State<CustomAppbar> {
         // ),
         5.width,
 
-         Center(
+        Center(
           child: CustomText(
             text: controllers.storage.read("f_name"),
             colors: Colors.white,
-            size:18,
+            size: 18,
             isBold: true,
           ),
         ),
         15.width,
-       Obx(() =>  controllers.isAdmin.value?Center(
-         child: IconButton(onPressed:(){
-           Get.to(const SignUp(),duration: Duration.zero);
-         },
-             icon:SvgPicture.asset(assets.add,width:20,height:20,)),
-       ):0.width,),
+        Obx(
+          () => controllers.isAdmin.value
+              ? Center(
+                  child: IconButton(
+                      onPressed: () {
+                        Get.to(const SignUp(), duration: Duration.zero);
+                      },
+                      icon: SvgPicture.asset(
+                        assets.add,
+                        width: 20,
+                        height: 20,
+                      )),
+                )
+              : 0.width,
+        ),
         5.width,
         Center(
-          child: IconButton(onPressed:() async {
-            final prefs =await SharedPreferences.getInstance();
-            prefs.setBool("loginScreen", false);
-            prefs.setBool("isAdmin", false);
-            Get.to(const LoginPage(),duration: Duration.zero);
-          },
-              icon:const Icon(Icons.logout,color: Colors.white,size: 25,)
-          ),
+          child: IconButton(
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                prefs.setBool("loginScreen", false);
+                prefs.setBool("isAdmin", false);
+                Get.to(const LoginPage(), duration: Duration.zero);
+              },
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.white,
+                size: 25,
+              )),
         ),
         5.width,
       ],
-      
     );
   }
 }

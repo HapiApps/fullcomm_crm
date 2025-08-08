@@ -4,9 +4,6 @@ import '../common/constant/default_constant.dart';
 import 'custom_text.dart';
 import 'custom_textbutton.dart';
 
-
-
-
 class CustomAlertDialog extends StatelessWidget {
   final Color? bgColor;
   final String? title;
@@ -18,22 +15,22 @@ class CustomAlertDialog extends StatelessWidget {
   final VoidCallback onPressed;
   final VoidCallback cancelOnPressed;
 
-
-  const CustomAlertDialog({super.key,
-  this.title,
-  this.title1,
-  this.message,
-  this.circularBorderRadius = 15.0,
-  this.bgColor = Colors.white,
-  this.positiveBtnText,
-  this.negativeBtnText,
-  required this.onPressed, required this.cancelOnPressed,
+  const CustomAlertDialog({
+    super.key,
+    this.title,
+    this.title1,
+    this.message,
+    this.circularBorderRadius = 15.0,
+    this.bgColor = Colors.white,
+    this.positiveBtnText,
+    this.negativeBtnText,
+    required this.onPressed,
+    required this.cancelOnPressed,
   })  : assert(bgColor != null),
-  assert(circularBorderRadius != null);
-
+        assert(circularBorderRadius != null);
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return AlertDialog(
       insetPadding: const EdgeInsets.all(5),
       backgroundColor: colorsConst.axis,
@@ -46,11 +43,18 @@ class CustomAlertDialog extends StatelessWidget {
         size: 15,
       ),
       actions: <Widget>[
-        ButtonWidget(text:constValue.camera, onClicked:onPressed, isIcon: false,width: 120,),
-        ButtonWidget(text: constValue.gallery, onClicked: cancelOnPressed, isIcon: false,width: 120),
+        ButtonWidget(
+          text: constValue.camera,
+          onClicked: onPressed,
+          isIcon: false,
+          width: 120,
+        ),
+        ButtonWidget(
+            text: constValue.gallery,
+            onClicked: cancelOnPressed,
+            isIcon: false,
+            width: 120),
       ],
     );
   }
 }
-
-

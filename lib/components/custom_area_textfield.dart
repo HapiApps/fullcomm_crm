@@ -1,4 +1,3 @@
-
 import 'package:fullcomm_crm/common/widgets/demoMap.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -34,64 +33,84 @@ class CustomAreaTextField extends StatefulWidget {
   final String? name;
   final String? prefixText;
   final VoidCallback? onPressed;
-   final TextEditingController? dNoC;
-   final TextEditingController? streetC;
-   final TextEditingController? areaC;
-   final TextEditingController? cityC;
-   final String? stateC;
-   final TextEditingController? countryC;
-   final TextEditingController? pinCodeC;
+  final TextEditingController? dNoC;
+  final TextEditingController? streetC;
+  final TextEditingController? areaC;
+  final TextEditingController? cityC;
+  final String? stateC;
+  final TextEditingController? countryC;
+  final TextEditingController? pinCodeC;
 
-   const CustomAreaTextField({Key? key, required this.text, this.height=70, this.width=270,
-    required this.controller, this.focusNode, this.onChanged, this.onTap, this.keyboardType=TextInputType.text,
-    this.textInputAction=TextInputAction.next, this.textCapitalization=TextCapitalization.words, this.validator,
-    this.inputFormatters,
-    this.hintText, this.isIcon, this.iconData,
-    this.isShadow=false, this.isLogin=false,this.image,
-    this.onPressed,this.prefixText,this.areaC,this.cityC,this.countryC,this.dNoC,this.pinCodeC,this.stateC,
-     this.streetC,this.name
-  }) : super(key: key);
+  const CustomAreaTextField(
+      {Key? key,
+      required this.text,
+      this.height = 70,
+      this.width = 270,
+      required this.controller,
+      this.focusNode,
+      this.onChanged,
+      this.onTap,
+      this.keyboardType = TextInputType.text,
+      this.textInputAction = TextInputAction.next,
+      this.textCapitalization = TextCapitalization.words,
+      this.validator,
+      this.inputFormatters,
+      this.hintText,
+      this.isIcon,
+      this.iconData,
+      this.isShadow = false,
+      this.isLogin = false,
+      this.image,
+      this.onPressed,
+      this.prefixText,
+      this.areaC,
+      this.cityC,
+      this.countryC,
+      this.dNoC,
+      this.pinCodeC,
+      this.stateC,
+      this.streetC,
+      this.name})
+      : super(key: key);
 
   @override
   State<CustomAreaTextField> createState() => _CustomAreaTextFieldState();
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties){
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(ObjectFlagProperty<VoidCallback?>.has('onPressed', onPressed));
+    properties
+        .add(ObjectFlagProperty<VoidCallback?>.has('onPressed', onPressed));
   }
 }
 
 class _CustomAreaTextFieldState extends State<CustomAreaTextField> {
-
-  Future<void> getAddressFromLatLng () async{
+  Future<void> getAddressFromLatLng() async {
     var position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     //  PlaceMark This text changed to small latter m;
-   // List<PlaceMark> placeMark=await placeMarkFromCoordinates(position.latitude, position.longitude);
-   // PlaceMark place = placeMark[0];
+    // List<PlaceMark> placeMark=await placeMarkFromCoordinates(position.latitude, position.longitude);
+    // PlaceMark place = placeMark[0];
     //print("place..............${place}");
 
-  setState(() {
-    controllers.lng.value=position.longitude;
-    // controllers.etAreaController.text="${place.subLocality}";
-    // controllers.etPinCodeController.text="${place.postalCode}";
-    // controllers.etCityController.text="${place.locality}";
-    // //controllers.eventState="${place.administrativeArea}";
-    // controllers.etCountryController.text="${place.country}";
-    // controllers.etStreetController.text="${place.street}";
-    // controllers.etAreaController.text="${place.subLocality},${place.thoroughfare}";
-  });
-
+    setState(() {
+      controllers.lng.value = position.longitude;
+      // controllers.etAreaController.text="${place.subLocality}";
+      // controllers.etPinCodeController.text="${place.postalCode}";
+      // controllers.etCityController.text="${place.locality}";
+      // //controllers.eventState="${place.administrativeArea}";
+      // controllers.etCountryController.text="${place.country}";
+      // controllers.etStreetController.text="${place.street}";
+      // controllers.etAreaController.text="${place.subLocality},${place.thoroughfare}";
+    });
   }
 
-
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children:[
+      children: [
         CustomText(
-          text:widget.text,
+          text: widget.text,
           colors: colorsConst.headColor,
           size: 15,
         ),
@@ -102,29 +121,26 @@ class _CustomAreaTextFieldState extends State<CustomAreaTextField> {
           child: Center(
             child: TextFormField(
                 style: const TextStyle(
-                    color:Colors.white,fontSize: 14,
-                    fontFamily:"Lato"
-                ),
+                    color: Colors.white, fontSize: 14, fontFamily: "Lato"),
                 // readOnly: widget.controller==controllers.upDOBController||widget.controller==controllers.upDOBController?true:false,
                 // obscureText: widget.controller==controllers.loginPassword||widget.controller==controllers.signupPasswordController?!controllers.isEyeOpen.value:false,
                 // focusNode: FocusNode(),
                 cursorColor: Colors.white,
-                onChanged:widget.onChanged,
-                onTap:widget.onTap,
+                onChanged: widget.onChanged,
+                onTap: widget.onTap,
                 inputFormatters: widget.inputFormatters,
                 textCapitalization: widget.textCapitalization!,
                 textInputAction: widget.textInputAction,
                 keyboardType: widget.keyboardType,
                 validator: widget.validator,
                 controller: widget.controller,
-                decoration:InputDecoration(
-                  hintText:"",
+                decoration: InputDecoration(
+                  hintText: "",
                   hintStyle: TextStyle(
-                      color:Colors.grey.shade400,
+                      color: Colors.grey.shade400,
                       fontSize: 15,
-                      fontFamily:"Lato"
-                  ),
-                  fillColor:Colors.transparent,
+                      fontFamily: "Lato"),
+                  fillColor: Colors.transparent,
                   filled: true,
                   // suffixIcon:Row(
                   //   mainAxisSize: MainAxisSize.min,
@@ -166,29 +182,24 @@ class _CustomAreaTextFieldState extends State<CustomAreaTextField> {
                   //   ],
                   // ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide:  BorderSide(color: Colors.grey.shade200),
-                      borderRadius: BorderRadius.circular(10)
-                  ),
+                      borderSide: BorderSide(color: Colors.grey.shade200),
+                      borderRadius: BorderRadius.circular(10)),
                   focusedBorder: OutlineInputBorder(
-                      borderSide:  BorderSide(color: Colors.grey.shade200),
-                      borderRadius: BorderRadius.circular(10)
-                  ),
+                      borderSide: BorderSide(color: Colors.grey.shade200),
+                      borderRadius: BorderRadius.circular(10)),
                   focusedErrorBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey.shade200),
-                      borderRadius: BorderRadius.circular(10)
-                  ),
+                      borderRadius: BorderRadius.circular(10)),
                   // errorStyle: const TextStyle(height:0.05,fontSize: 12),
-                  contentPadding:const EdgeInsets.symmetric(vertical:10.0, horizontal: 10.0),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10.0),
                   errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color:Colors.grey.shade200),
-                      borderRadius: BorderRadius.circular(10)
-                  ),
-                )
-            ),
+                      borderSide: BorderSide(color: Colors.grey.shade200),
+                      borderRadius: BorderRadius.circular(10)),
+                )),
           ),
         ),
       ],
     );
   }
-
 }

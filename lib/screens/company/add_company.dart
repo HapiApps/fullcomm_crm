@@ -24,36 +24,35 @@ class AddCompany extends StatefulWidget {
 }
 
 class _AddCompanyState extends State<AddCompany> {
-
-  Future<void> getStringValue()async{
+  Future<void> getStringValue() async {
     SharedPreferences sharedPref = await SharedPreferences.getInstance();
-    setState((){
-      final companyName=sharedPref.getString("coName") ?? "";
-      final companyPhone=sharedPref.getString("coMobile") ?? "";
-      final webSite=sharedPref.getString("coWebsite") ?? "";
-      final coEmail=sharedPref.getString("coEmail") ?? "";
-      final product=sharedPref.getString("coProduct") ?? "";
-      final industry=sharedPref.getString("coIndustry");
+    setState(() {
+      final companyName = sharedPref.getString("coName") ?? "";
+      final companyPhone = sharedPref.getString("coMobile") ?? "";
+      final webSite = sharedPref.getString("coWebsite") ?? "";
+      final coEmail = sharedPref.getString("coEmail") ?? "";
+      final product = sharedPref.getString("coProduct") ?? "";
+      final industry = sharedPref.getString("coIndustry");
 
-      final doorNo=sharedPref.getString("coDNo") ?? "";
-      final street=sharedPref.getString("coStreet") ?? "";
-      final area=sharedPref.getString("coArea") ?? "";
-      final pinCode=sharedPref.getString("leadPinCode") ?? "";
-      final twitter=sharedPref.getString("coX") ?? "";
-      final linkedin=sharedPref.getString("coLinkedin") ?? "";
+      final doorNo = sharedPref.getString("coDNo") ?? "";
+      final street = sharedPref.getString("coStreet") ?? "";
+      final area = sharedPref.getString("coArea") ?? "";
+      final pinCode = sharedPref.getString("leadPinCode") ?? "";
+      final twitter = sharedPref.getString("coX") ?? "";
+      final linkedin = sharedPref.getString("coLinkedin") ?? "";
 
-      controllers.coNameController.text=companyName.toString();
-      controllers.coMobileController.text=companyPhone.toString();
-      controllers.coWebSiteController.text=webSite.toString();
-      controllers.coEmailController.text=coEmail.toString();
-      controllers.coProductController.text=product.toString();
-      controllers.coIndustry=industry;
-      controllers.coDNoController.text=doorNo.toString();
-      controllers.coStreetController.text=street.toString();
-      controllers.coAreaController.text=area.toString();
-      controllers.coPinCodeController.text=pinCode.toString();
-      controllers.coXController.text=twitter.toString();
-      controllers.coLinkedinController.text=linkedin.toString();
+      controllers.coNameController.text = companyName.toString();
+      controllers.coMobileController.text = companyPhone.toString();
+      controllers.coWebSiteController.text = webSite.toString();
+      controllers.coEmailController.text = coEmail.toString();
+      controllers.coProductController.text = product.toString();
+      controllers.coIndustry = industry;
+      controllers.coDNoController.text = doorNo.toString();
+      controllers.coStreetController.text = street.toString();
+      controllers.coAreaController.text = area.toString();
+      controllers.coPinCodeController.text = pinCode.toString();
+      controllers.coXController.text = twitter.toString();
+      controllers.coLinkedinController.text = linkedin.toString();
     });
   }
 
@@ -64,35 +63,38 @@ class _AddCompanyState extends State<AddCompany> {
     // setState(() =>controllers.selectedState.value = "Tamil Nadu");
     // await utils.getCities();
 
-    setState(() => controllers.selectedCity.value = controllers.coCityController.text);
-
+    setState(() =>
+        controllers.selectedCity.value = controllers.coCityController.text);
   }
+
   @override
-  void initState(){
+  void initState() {
     // TODO: implement initState
     super.initState();
     getStringValue();
-    Future.delayed(Duration.zero,(){
+    Future.delayed(Duration.zero, () {
       setDefaults();
       utils.getCountries();
-      controllers.lng.value=78.1312452;
+      controllers.lng.value = 78.1312452;
     });
-
   }
+
   @override
-  Widget build(BuildContext context){
-    double textFieldSize=(MediaQuery.of(context).size.width-400)/3.5;
+  Widget build(BuildContext context) {
+    double textFieldSize = (MediaQuery.of(context).size.width - 400) / 3.5;
     return SelectionArea(
       child: Scaffold(
           appBar: const PreferredSize(
             preferredSize: Size.fromHeight(60),
-            child:  CustomAppbar(text: appName,),
+            child: CustomAppbar(
+              text: appName,
+            ),
           ),
           body: Stack(
-            children:[
+            children: [
               utils.sideBarFunction(context),
               Positioned(
-                left:130,
+                left: 130,
                 top: 0,
                 bottom: 0,
                 right: 0,
@@ -102,7 +104,9 @@ class _AddCompanyState extends State<AddCompany> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   child: Container(
-                    width: 1349>MediaQuery.of(context).size.width-130?1349:MediaQuery.of(context).size.width-130,
+                    width: 1349 > MediaQuery.of(context).size.width - 130
+                        ? 1349
+                        : MediaQuery.of(context).size.width - 130,
                     alignment: Alignment.center,
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -112,27 +116,28 @@ class _AddCompanyState extends State<AddCompany> {
                           CustomText(
                             text: "Add Company",
                             colors: colorsConst.primary,
-                            size:23,isBold: true,
+                            size: 23,
+                            isBold: true,
                           ),
                           30.height,
                           Center(
                             child: Container(
                               alignment: Alignment.center,
-                              width:MediaQuery.of(context).size.width-350,
-                              height:1000,
-                              decoration:BoxDecoration(
+                              width: MediaQuery.of(context).size.width - 350,
+                              height: 1000,
+                              decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10)
-                              ),
+                                  borderRadius: BorderRadius.circular(10)),
                               child: SizedBox(
-                                width:MediaQuery.of(context).size.width-450,
+                                width: MediaQuery.of(context).size.width - 450,
                                 child: SingleChildScrollView(
                                   child: Column(
-                                    children:[
+                                    children: [
                                       20.height,
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children:[
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
                                           CustomText(
                                             text: constValue.companyInfo,
                                             colors: Colors.black,
@@ -161,22 +166,32 @@ class _AddCompanyState extends State<AddCompany> {
                                       ),
                                       10.height,
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children:[
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
                                           Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children:[
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
                                               CustomTextField(
-                                                hintText:"Company Name",
-                                                text:"Company Name",
-                                                controller: controllers.coNameController,
-                                                width:textFieldSize,
-                                                keyboardType: TextInputType.text,
-                                                textInputAction: TextInputAction.next,
-                                                inputFormatters: constInputFormatters.textInput,
-                                                onChanged:(value) async {
-                                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                  sharedPref.setString("coName", value.toString().trim());
+                                                hintText: "Company Name",
+                                                text: "Company Name",
+                                                controller: controllers
+                                                    .coNameController,
+                                                width: textFieldSize,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                inputFormatters:
+                                                    constInputFormatters
+                                                        .textInput,
+                                                onChanged: (value) async {
+                                                  SharedPreferences sharedPref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  sharedPref.setString("coName",
+                                                      value.toString().trim());
                                                 },
                                                 // validator:(value){
                                                 //   if(value.toString().isEmpty){
@@ -187,20 +202,28 @@ class _AddCompanyState extends State<AddCompany> {
                                                 //     return null;
                                                 //   }
                                                 // }
-
                                               ),
                                               20.height,
                                               CustomTextField(
-                                                hintText:"Company\n Phone No.",
-                                                text:"Company\n Phone No.",
-                                                controller: controllers.coMobileController,
-                                                width:textFieldSize,
-                                                keyboardType: TextInputType.text,
-                                                textInputAction: TextInputAction.next,
-                                                inputFormatters: constInputFormatters.mobileNumberInput,
-                                                onChanged:(value) async {
-                                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                  sharedPref.setString("coMobile", value.toString().trim());
+                                                hintText: "Company\n Phone No.",
+                                                text: "Company\n Phone No.",
+                                                controller: controllers
+                                                    .coMobileController,
+                                                width: textFieldSize,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                inputFormatters:
+                                                    constInputFormatters
+                                                        .mobileNumberInput,
+                                                onChanged: (value) async {
+                                                  SharedPreferences sharedPref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  sharedPref.setString(
+                                                      "coMobile",
+                                                      value.toString().trim());
                                                 },
                                                 // validator:(value){
                                                 //   if(value.toString().isEmpty){
@@ -211,22 +234,28 @@ class _AddCompanyState extends State<AddCompany> {
                                                 //     return null;
                                                 //   }
                                                 // }
-
                                               ),
                                               20.height,
                                               CustomDropDown(
-                                                saveValue: controllers.coIndustry,
-                                                valueList: controllers.industryList,
-                                                text:"Industry",
-                                                width:textFieldSize,
+                                                saveValue:
+                                                    controllers.coIndustry,
+                                                valueList:
+                                                    controllers.industryList,
+                                                text: "Industry",
+                                                width: textFieldSize,
 
                                                 //inputFormatters: constInputFormatters.textInput,
-                                                onChanged:(value) async {
-                                                  setState((){
-                                                    controllers.coIndustry= value;
+                                                onChanged: (value) async {
+                                                  setState(() {
+                                                    controllers.coIndustry =
+                                                        value;
                                                   });
-                                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                  sharedPref.setString("coIndustry", value.toString().trim());
+                                                  SharedPreferences sharedPref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  sharedPref.setString(
+                                                      "coIndustry",
+                                                      value.toString().trim());
                                                 },
                                                 // validator:(value){
                                                 //   if(value.toString().isEmpty){
@@ -237,27 +266,34 @@ class _AddCompanyState extends State<AddCompany> {
                                                 //     return null;
                                                 //   }
                                                 // }
-
                                               ),
                                               15.height,
-
                                             ],
                                           ),
                                           Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children:[
-
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
                                               CustomTextField(
-                                                hintText:"Company Email",
-                                                text:"Company Email",
-                                                controller: controllers.coEmailController,
-                                                width:textFieldSize,
-                                                keyboardType: TextInputType.text,
-                                                textInputAction: TextInputAction.next,
-                                                inputFormatters: constInputFormatters.emailInput,
-                                                onChanged:(value) async {
-                                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                  sharedPref.setString("coEmail", value.toString().trim());
+                                                hintText: "Company Email",
+                                                text: "Company Email",
+                                                controller: controllers
+                                                    .coEmailController,
+                                                width: textFieldSize,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                inputFormatters:
+                                                    constInputFormatters
+                                                        .emailInput,
+                                                onChanged: (value) async {
+                                                  SharedPreferences sharedPref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  sharedPref.setString(
+                                                      "coEmail",
+                                                      value.toString().trim());
                                                 },
                                                 // validator:(value){
                                                 //   if(value.toString().isEmpty){
@@ -268,20 +304,28 @@ class _AddCompanyState extends State<AddCompany> {
                                                 //     return null;
                                                 //   }
                                                 // }
-
                                               ),
                                               20.height,
                                               CustomTextField(
-                                                hintText:"Product/Services",
-                                                text:"Product/Services",
-                                                controller: controllers.coProductController,
-                                                width:textFieldSize,
-                                                keyboardType: TextInputType.text,
-                                                textInputAction: TextInputAction.next,
-                                                inputFormatters: constInputFormatters.textInput,
-                                                onChanged:(value) async {
-                                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                  sharedPref.setString("coProduct", value.toString().trim());
+                                                hintText: "Product/Services",
+                                                text: "Product/Services",
+                                                controller: controllers
+                                                    .coProductController,
+                                                width: textFieldSize,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                inputFormatters:
+                                                    constInputFormatters
+                                                        .textInput,
+                                                onChanged: (value) async {
+                                                  SharedPreferences sharedPref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  sharedPref.setString(
+                                                      "coProduct",
+                                                      value.toString().trim());
                                                 },
                                                 // validator:(value){
                                                 //   if(value.toString().isEmpty){
@@ -292,22 +336,19 @@ class _AddCompanyState extends State<AddCompany> {
                                                 //     return null;
                                                 //   }
                                                 // }
-
                                               ),
                                               100.height,
-
                                             ],
                                           ),
                                         ],
                                       ),
                                       20.height,
                                       Row(
-                                        children:[
+                                        children: [
                                           CustomText(
                                             text: constValue.addressInfo,
                                             colors: Colors.black,
                                             size: 20,
-
                                           ),
                                         ],
                                       ),
@@ -318,22 +359,32 @@ class _AddCompanyState extends State<AddCompany> {
                                       ),
                                       20.height,
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children:[
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
                                           Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children:[
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
                                               CustomTextField(
-                                                hintText:"Door No(Optional)",
-                                                text:"Door No(Optional)",
-                                                controller: controllers.coDNoController,
-                                                width:textFieldSize,
-                                                keyboardType: TextInputType.text,
-                                                textInputAction: TextInputAction.next,
-                                                inputFormatters: constInputFormatters.addressInput,
-                                                onChanged:(value) async {
-                                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                  sharedPref.setString("coDNo", value.toString().trim());
+                                                hintText: "Door No(Optional)",
+                                                text: "Door No(Optional)",
+                                                controller:
+                                                    controllers.coDNoController,
+                                                width: textFieldSize,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                inputFormatters:
+                                                    constInputFormatters
+                                                        .addressInput,
+                                                onChanged: (value) async {
+                                                  SharedPreferences sharedPref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  sharedPref.setString("coDNo",
+                                                      value.toString().trim());
                                                 },
                                                 // validator:(value){
                                                 //   if(value.toString().isEmpty){
@@ -344,26 +395,38 @@ class _AddCompanyState extends State<AddCompany> {
                                                 //     return null;
                                                 //   }
                                                 // }
-
                                               ),
                                               20.height,
                                               CustomAreaTextField(
-                                                hintText:"Area(Optional)",
-                                                text:"Area(Optional)",
-                                                controller: controllers.coAreaController,
-                                                width:textFieldSize,
-                                                dNoC: controllers.areaController,
-                                                streetC: controllers.streetNameController,
-                                                areaC: controllers.areaController,
+                                                hintText: "Area(Optional)",
+                                                text: "Area(Optional)",
+                                                controller: controllers
+                                                    .coAreaController,
+                                                width: textFieldSize,
+                                                dNoC:
+                                                    controllers.areaController,
+                                                streetC: controllers
+                                                    .streetNameController,
+                                                areaC:
+                                                    controllers.areaController,
                                                 stateC: controllers.states,
-                                                countryC: controllers.countryController,
-                                                pinCodeC: controllers.pinCodeController,
-                                                keyboardType: TextInputType.text,
-                                                textInputAction: TextInputAction.next,
-                                                inputFormatters: constInputFormatters.addressInput,
-                                                onChanged:(value) async {
-                                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                  sharedPref.setString("coArea", value.toString().trim());
+                                                countryC: controllers
+                                                    .countryController,
+                                                pinCodeC: controllers
+                                                    .pinCodeController,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                inputFormatters:
+                                                    constInputFormatters
+                                                        .addressInput,
+                                                onChanged: (value) async {
+                                                  SharedPreferences sharedPref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  sharedPref.setString("coArea",
+                                                      value.toString().trim());
                                                 },
                                                 // validator:(value){
                                                 //   if(value.toString().isEmpty){
@@ -374,10 +437,14 @@ class _AddCompanyState extends State<AddCompany> {
                                                 //     return null;
                                                 //   }
                                                 // }
-
                                               ),
                                               20.height,
-                                              utils.stateDropdown(textFieldSize,controllers.cityController, controllers.stateController, controllers.countryController),
+                                              utils.stateDropdown(
+                                                  textFieldSize,
+                                                  controllers.cityController,
+                                                  controllers.stateController,
+                                                  controllers
+                                                      .countryController),
                                               // CustomDropDown(
                                               //   saveValue: controllers.coState,
                                               //   valueList: controllers.stateList,
@@ -393,16 +460,25 @@ class _AddCompanyState extends State<AddCompany> {
                                               // ),
                                               20.height,
                                               CustomTextField(
-                                                hintText:"PIN",
-                                                text:"PIN",
-                                                controller: controllers.coPinCodeController,
-                                                width:textFieldSize,
-                                                keyboardType: TextInputType.number,
-                                                textInputAction: TextInputAction.next,
-                                                inputFormatters: constInputFormatters.pinCodeInput,
-                                                onChanged:(value) async {
-                                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                  sharedPref.setString("coPinCode", value.toString().trim());
+                                                hintText: "PIN",
+                                                text: "PIN",
+                                                controller: controllers
+                                                    .coPinCodeController,
+                                                width: textFieldSize,
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                inputFormatters:
+                                                    constInputFormatters
+                                                        .pinCodeInput,
+                                                onChanged: (value) async {
+                                                  SharedPreferences sharedPref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  sharedPref.setString(
+                                                      "coPinCode",
+                                                      value.toString().trim());
                                                 },
                                                 // validator:(value){
                                                 //   if(value.toString().isEmpty){
@@ -413,24 +489,33 @@ class _AddCompanyState extends State<AddCompany> {
                                                 //     return null;
                                                 //   }
                                                 // }
-
                                               ),
                                             ],
                                           ),
                                           Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children:[
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
                                               CustomTextField(
-                                                hintText:"Street(Optional)",
-                                                text:"Street(Optional)",
-                                                controller: controllers.coStreetController,
-                                                width:textFieldSize,
-                                                keyboardType: TextInputType.text,
-                                                textInputAction: TextInputAction.next,
-                                                inputFormatters: constInputFormatters.addressInput,
-                                                onChanged:(value) async {
-                                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                  sharedPref.setString("coStreet", value.toString().trim());
+                                                hintText: "Street(Optional)",
+                                                text: "Street(Optional)",
+                                                controller: controllers
+                                                    .coStreetController,
+                                                width: textFieldSize,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                inputFormatters:
+                                                    constInputFormatters
+                                                        .addressInput,
+                                                onChanged: (value) async {
+                                                  SharedPreferences sharedPref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  sharedPref.setString(
+                                                      "coStreet",
+                                                      value.toString().trim());
                                                 },
                                                 // validator:(value){
                                                 //   if(value.toString().isEmpty){
@@ -441,17 +526,26 @@ class _AddCompanyState extends State<AddCompany> {
                                                 //     return null;
                                                 //   }
                                                 // }
-
                                               ),
                                               20.height,
                                               utils.cityDropdown(
-                                                  textFieldSize,controllers.cityController,
-                                                  controllers.stateController,
-                                                  controllers.countryController,
-                                                    (value){
+                                                textFieldSize,
+                                                controllers.cityController,
+                                                controllers.stateController,
+                                                controllers.countryController,
+                                                (value) {
                                                   //print("cityChanged $value $_selectedCity");
-                                                  value != null ? utils.onSelectedCity(value,controllers.cityController)
-                                                      : utils.onSelectedCity(controllers.selectedCity.value,controllers.cityController);
+                                                  value != null
+                                                      ? utils.onSelectedCity(
+                                                          value,
+                                                          controllers
+                                                              .cityController)
+                                                      : utils.onSelectedCity(
+                                                          controllers
+                                                              .selectedCity
+                                                              .value,
+                                                          controllers
+                                                              .cityController);
                                                 },
                                               ),
                                               // CustomTextField(
@@ -483,7 +577,8 @@ class _AddCompanyState extends State<AddCompany> {
                                                   textFieldSize,
                                                   controllers.coCityController,
                                                   controllers.coStateController,
-                                                  controllers.coCountryController),
+                                                  controllers
+                                                      .coCountryController),
                                               // CustomTextField(
                                               //   hintText:"Country",
                                               //   text:"Country",
@@ -537,12 +632,11 @@ class _AddCompanyState extends State<AddCompany> {
                                       ),
                                       20.height,
                                       Row(
-                                        children:[
+                                        children: [
                                           CustomText(
                                             text: constValue.socialInfo,
                                             colors: Colors.black,
                                             size: 20,
-
                                           ),
                                         ],
                                       ),
@@ -553,23 +647,33 @@ class _AddCompanyState extends State<AddCompany> {
                                       ),
                                       20.height,
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children:[
-
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
                                           Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children:[
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
                                               CustomTextField(
-                                                hintText:"Website(Optional)",
-                                                text:"Website(Optional)",
-                                                controller: controllers.coWebSiteController,
-                                                width:textFieldSize,
-                                                keyboardType: TextInputType.text,
-                                                textInputAction: TextInputAction.next,
-                                                inputFormatters: constInputFormatters.textInput,
-                                                onChanged:(value) async {
-                                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                  sharedPref.setString("coWebsite", value.toString().trim());
+                                                hintText: "Website(Optional)",
+                                                text: "Website(Optional)",
+                                                controller: controllers
+                                                    .coWebSiteController,
+                                                width: textFieldSize,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                inputFormatters:
+                                                    constInputFormatters
+                                                        .textInput,
+                                                onChanged: (value) async {
+                                                  SharedPreferences sharedPref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  sharedPref.setString(
+                                                      "coWebsite",
+                                                      value.toString().trim());
                                                 },
                                                 // validator:(value){
                                                 //   if(value.toString().isEmpty){
@@ -580,20 +684,27 @@ class _AddCompanyState extends State<AddCompany> {
                                                 //     return null;
                                                 //   }
                                                 // }
-
                                               ),
                                               20.height,
                                               CustomTextField(
-                                                hintText:"X(Optional)",
-                                                text:"X(Optional)",
-                                                controller: controllers.coXController,
-                                                width:textFieldSize,
-                                                keyboardType: TextInputType.text,
-                                                textInputAction: TextInputAction.next,
-                                                inputFormatters: constInputFormatters.socialInput,
-                                                onChanged:(value) async {
-                                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                  sharedPref.setString("coX", value.toString().trim());
+                                                hintText: "X(Optional)",
+                                                text: "X(Optional)",
+                                                controller:
+                                                    controllers.coXController,
+                                                width: textFieldSize,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                inputFormatters:
+                                                    constInputFormatters
+                                                        .socialInput,
+                                                onChanged: (value) async {
+                                                  SharedPreferences sharedPref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  sharedPref.setString("coX",
+                                                      value.toString().trim());
                                                 },
                                                 // validator:(value){
                                                 //   if(value.toString().isEmpty){
@@ -604,25 +715,34 @@ class _AddCompanyState extends State<AddCompany> {
                                                 //     return null;
                                                 //   }
                                                 // }
-
                                               ),
                                               20.height,
                                             ],
                                           ),
                                           Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children:[
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
                                               CustomTextField(
-                                                hintText:"Linkedin(Optional)",
-                                                text:"Linkedin(Optional)",
-                                                controller: controllers.coLinkedinController,
-                                                width:textFieldSize,
-                                                keyboardType: TextInputType.text,
-                                                textInputAction: TextInputAction.next,
-                                                inputFormatters: constInputFormatters.socialInput,
-                                                onChanged:(value) async {
-                                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                                  sharedPref.setString("coLinkedin", value.toString().trim());
+                                                hintText: "Linkedin(Optional)",
+                                                text: "Linkedin(Optional)",
+                                                controller: controllers
+                                                    .coLinkedinController,
+                                                width: textFieldSize,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                inputFormatters:
+                                                    constInputFormatters
+                                                        .socialInput,
+                                                onChanged: (value) async {
+                                                  SharedPreferences sharedPref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  sharedPref.setString(
+                                                      "coLinkedin",
+                                                      value.toString().trim());
                                                 },
                                                 // validator:(value){
                                                 //   if(value.toString().isEmpty){
@@ -633,62 +753,91 @@ class _AddCompanyState extends State<AddCompany> {
                                                 //     return null;
                                                 //   }
                                                 // }
-
                                               ),
                                               80.height,
-
                                             ],
                                           ),
                                         ],
                                       ),
                                       20.height,
                                       CustomLoadingButton(
-                                          callback: (){
-                                            if(controllers.coNameController.text.isEmpty){
-                                              utils.snackBar(msg: "Please add company name",
-                                                  color: colorsConst.primary,context:Get.context!);
+                                          callback: () {
+                                            if (controllers.coNameController
+                                                .text.isEmpty) {
+                                              utils.snackBar(
+                                                  msg:
+                                                      "Please add company name",
+                                                  color: colorsConst.primary,
+                                                  context: Get.context!);
                                               controllers.leadCtr.reset();
-                                            }else if(controllers.coMobileController.text.length!=10){
-                                              utils.snackBar(msg: "Invalid Company Mobile Number",
-                                                  color: colorsConst.primary,context:Get.context!);
+                                            } else if (controllers
+                                                    .coMobileController
+                                                    .text
+                                                    .length !=
+                                                10) {
+                                              utils.snackBar(
+                                                  msg:
+                                                      "Invalid Company Mobile Number",
+                                                  color: colorsConst.primary,
+                                                  context: Get.context!);
                                               controllers.leadCtr.reset();
-                                            }else if(controllers.coIndustry==null){
-                                              utils.snackBar(msg: "Please add company industry",
-                                                  color: colorsConst.primary,context:Get.context!);
+                                            } else if (controllers.coIndustry ==
+                                                null) {
+                                              utils.snackBar(
+                                                  msg:
+                                                      "Please add company industry",
+                                                  color: colorsConst.primary,
+                                                  context: Get.context!);
                                               controllers.leadCtr.reset();
-                                            }else if(controllers.coProductController.text.isEmpty){
-                                              utils.snackBar(msg: "Please add product/services",
-                                                  color: colorsConst.primary,context:Get.context!);
+                                            } else if (controllers
+                                                .coProductController
+                                                .text
+                                                .isEmpty) {
+                                              utils.snackBar(
+                                                  msg:
+                                                      "Please add product/services",
+                                                  color: colorsConst.primary,
+                                                  context: Get.context!);
                                               controllers.leadCtr.reset();
-                                            }else if(controllers.coPinCodeController.text.isEmpty){
-                                              utils.snackBar(msg: "Please add pin code",
-                                                  color: colorsConst.primary,context:Get.context!);
+                                            } else if (controllers
+                                                .coPinCodeController
+                                                .text
+                                                .isEmpty) {
+                                              utils.snackBar(
+                                                  msg: "Please add pin code",
+                                                  color: colorsConst.primary,
+                                                  context: Get.context!);
                                               controllers.leadCtr.reset();
-                                            }else if(controllers.selectedCity.isEmpty){
-                                              utils.snackBar(msg: "Please add city",
-                                                  color: colorsConst.primary,context:Get.context!);
+                                            } else if (controllers
+                                                .selectedCity.isEmpty) {
+                                              utils.snackBar(
+                                                  msg: "Please add city",
+                                                  color: colorsConst.primary,
+                                                  context: Get.context!);
                                               controllers.leadCtr.reset();
-                                            }else{
-                                              if(controllers.coEmailController.text.isEmail){
-                                                  apiService.insertCompanyAPI(context);
-                                                }else{
-                                                  utils.snackBar(msg: "Invalid Company Email",
-                                                      color: colorsConst.primary,context:Get.context!);
-                                                  controllers.leadCtr.reset();
-                                                }
-
+                                            } else {
+                                              if (controllers.coEmailController
+                                                  .text.isEmail) {
+                                                apiService
+                                                    .insertCompanyAPI(context);
+                                              } else {
+                                                utils.snackBar(
+                                                    msg:
+                                                        "Invalid Company Email",
+                                                    color: colorsConst.primary,
+                                                    context: Get.context!);
+                                                controllers.leadCtr.reset();
+                                              }
                                             }
-
                                           },
                                           text: "Save Company",
                                           height: 60,
                                           controller: controllers.leadCtr,
-                                          isLoading:true,
+                                          isLoading: true,
                                           backgroundColor: colorsConst.primary,
                                           radius: 10,
                                           width: 180),
                                       50.height,
-
                                     ],
                                   ),
                                 ),
@@ -703,8 +852,7 @@ class _AddCompanyState extends State<AddCompany> {
                 ),
               )
             ],
-          )
-      ),
+          )),
     );
   }
 }

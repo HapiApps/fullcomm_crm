@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import '../common/constant/colors_constant.dart';
@@ -6,9 +5,13 @@ import '../common/styles/decoration.dart';
 import 'custom_text.dart';
 
 class CustomDropDown<T> extends StatefulWidget {
-  const CustomDropDown({super.key, required this.text,
-    required this.valueList, required this.saveValue,
-    required this.onChanged, required this.width});
+  const CustomDropDown(
+      {super.key,
+      required this.text,
+      required this.valueList,
+      required this.saveValue,
+      required this.onChanged,
+      required this.width});
   final String text;
   final List valueList;
   final T saveValue;
@@ -21,10 +24,10 @@ class CustomDropDown<T> extends StatefulWidget {
 
 class _CustomDropDownState extends State<CustomDropDown> {
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Row(
       //mainAxisAlignment: MainAxisAlignment.end,
-      children:[
+      children: [
         // CustomText(
         //   text:widget.text,
         //   colors: colorsConst.headColor,
@@ -35,38 +38,41 @@ class _CustomDropDownState extends State<CustomDropDown> {
           width: widget.width,
           height: 50,
           decoration: customDecoration.baseBackgroundDecoration(
-              radius:8,
-              color:Colors.transparent,
-              borderColor: const Color(0xffE1E5FA)
-          ),
+              radius: 8,
+              color: Colors.transparent,
+              borderColor: const Color(0xffE1E5FA)),
           child: DropdownButtonHideUnderline(
-            child:ButtonTheme(
-              alignedDropdown:true,
+            child: ButtonTheme(
+              alignedDropdown: true,
               child: DropdownButton(
-                hint: CustomText(text:"",colors:Colors.grey.shade400,
-                    size: 13,isBold:false),
+                hint: CustomText(
+                    text: "",
+                    colors: Colors.grey.shade400,
+                    size: 13,
+                    isBold: false),
                 underline: const SizedBox(),
                 isExpanded: true,
-                value:widget.saveValue,
-                dropdownColor:colorsConst.secondary,
+                value: widget.saveValue,
+                dropdownColor: colorsConst.secondary,
                 iconEnabledColor: Colors.white,
                 iconSize: 22,
                 icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items:widget.valueList.map((list){
+                items: widget.valueList.map((list) {
                   return DropdownMenuItem(
                     value: list,
                     child: CustomText(
-                      isCopy: false,
+                        isCopy: false,
                         text: list,
-                        colors:list.toString().isEmpty?Colors.black:Colors.white,
-                        size:15,
-                        isBold:false),
+                        colors: list.toString().isEmpty
+                            ? Colors.black
+                            : Colors.white,
+                        size: 15,
+                        isBold: false),
                   );
-                }
-                ).toList(),
+                }).toList(),
                 onChanged: widget.onChanged,
               ),
-            ) ,
+            ),
           ),
         ),
       ],

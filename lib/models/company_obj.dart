@@ -1,4 +1,3 @@
-
 //SELECT id, name,mobile_number,email,company_name,status, rating FROM lead
 class CompanyObj {
   String? id;
@@ -9,15 +8,14 @@ class CompanyObj {
   String? phoneMap;
   String? city;
 
-  CompanyObj({
-    this.id,
-    this.city,
-    this.phoneMap,
-    this.coName,
-    this.emailMap,
-    this.coIndustry,
-    this.product
-  });
+  CompanyObj(
+      {this.id,
+      this.city,
+      this.phoneMap,
+      this.coName,
+      this.emailMap,
+      this.coIndustry,
+      this.product});
 
   factory CompanyObj.fromJson(Map<String, dynamic> json) => CompanyObj(
       id: json["id"],
@@ -26,6 +24,5 @@ class CompanyObj {
       coName: json["co_name"],
       emailMap: json["email_map"],
       product: json["product"],
-      city: json["city"]
-  );
+      city: json["city"]);
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
@@ -16,10 +15,14 @@ class CustomCompanyTile extends StatefulWidget {
   final String? product;
   final String? industry;
 
-  const CustomCompanyTile({super.key,
-    this.city,this.name,
-    this.mobileNumber,this.emailId,this.product,this.industry
-  });
+  const CustomCompanyTile(
+      {super.key,
+      this.city,
+      this.name,
+      this.mobileNumber,
+      this.emailId,
+      this.product,
+      this.industry});
 
   @override
   State<CustomCompanyTile> createState() => _CustomCompanyTileState();
@@ -29,17 +32,24 @@ class _CustomCompanyTileState extends State<CustomCompanyTile> {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-    double minPartWidth = 1230>screenSize.width-250?980:screenSize.width-380.0;
+    double minPartWidth =
+        1230 > screenSize.width - 250 ? 980 : screenSize.width - 380.0;
     return Column(
       children: [
         20.height,
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            SvgPicture.asset(assets.list,width: 23,height: 23,),
+            SvgPicture.asset(
+              assets.list,
+              width: 23,
+              height: 23,
+            ),
             10.width,
             Container(
-              width: 1230>MediaQuery.of(context).size.width-250?1100:MediaQuery.of(context).size.width-290,
+              width: 1230 > MediaQuery.of(context).size.width - 250
+                  ? 1100
+                  : MediaQuery.of(context).size.width - 290,
               height: 50,
               decoration: BoxDecoration(
                   color: Colors.white,
@@ -49,80 +59,81 @@ class _CustomCompanyTileState extends State<CustomCompanyTile> {
                   boxShadow: [
                     BoxShadow(
                       color: colorsConst.secondary,
-                      blurRadius:1,
+                      blurRadius: 1,
                     )
                   ],
-                  borderRadius: BorderRadius.circular(5)
-              ),
-              child:Row(
+                  borderRadius: BorderRadius.circular(5)),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children:[
+                children: [
                   Container(
-                    width:minPartWidth/16,
+                    width: minPartWidth / 16,
                     alignment: Alignment.center,
                     child: CustomCheckBox(
                         text: "",
-                        onChanged: (value){
-                          controllers.isMainPerson.value=!controllers.isMainPerson.value;
+                        onChanged: (value) {
+                          controllers.isMainPerson.value =
+                              !controllers.isMainPerson.value;
                         },
                         saveValue: controllers.isMainPerson.value),
                   ),
-
                   SizedBox(
-                    width:1230>screenSize.width-260?980:screenSize.width-400.0,
+                    width: 1230 > screenSize.width - 260
+                        ? 980
+                        : screenSize.width - 400.0,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         SizedBox(
-                          width:minPartWidth / 8,
+                          width: minPartWidth / 8,
                           child: CustomText(
                             textAlign: TextAlign.start,
-                            text:widget.name.toString(),
+                            text: widget.name.toString(),
                             colors: Colors.black,
                             size: 14,
                           ),
                         ),
                         SizedBox(
-                          width:minPartWidth / 8,
+                          width: minPartWidth / 8,
                           child: CustomText(
                             textAlign: TextAlign.start,
-                            text:widget.mobileNumber.toString(),
+                            text: widget.mobileNumber.toString(),
                             colors: Colors.black,
                             size: 14,
                           ),
                         ),
                         SizedBox(
-                          width:minPartWidth / 8,
+                          width: minPartWidth / 8,
                           child: CustomText(
                             textAlign: TextAlign.start,
-                            text:widget.emailId.toString(),
+                            text: widget.emailId.toString(),
                             colors: Colors.black,
                             size: 14,
                           ),
                         ),
                         SizedBox(
-                          width:minPartWidth / 8,
+                          width: minPartWidth / 8,
                           child: CustomText(
                             textAlign: TextAlign.center,
-                            text:widget.city.toString(),
+                            text: widget.city.toString(),
                             colors: Colors.black,
                             size: 14,
                           ),
                         ),
                         SizedBox(
-                          width:minPartWidth / 8,
+                          width: minPartWidth / 8,
                           child: CustomText(
                             textAlign: TextAlign.center,
-                            text:widget.industry.toString(),
+                            text: widget.industry.toString(),
                             colors: Colors.black,
                             size: 14,
                           ),
                         ),
                         SizedBox(
-                          width:minPartWidth / 8,
+                          width: minPartWidth / 8,
                           child: CustomText(
                             textAlign: TextAlign.center,
-                            text:widget.product.toString(),
+                            text: widget.product.toString(),
                             colors: Colors.black,
                             size: 14,
                           ),
@@ -130,14 +141,11 @@ class _CustomCompanyTileState extends State<CustomCompanyTile> {
                       ],
                     ),
                   ),
-
                 ],
               ),
             ),
           ],
         ),
-
-
       ],
     );
   }

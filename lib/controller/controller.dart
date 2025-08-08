@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:group_button/group_button.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import '../models/comments_obj.dart';
 import '../models/employee_obj.dart';
@@ -16,9 +17,8 @@ import '../models/product_obj.dart';
 final controllers = Get.put(Controller());
 
 class Controller extends GetxController {
-
-  var version = "Version 0.0.2";
-  var versionNum = "0.0.2";
+  var version = "Version 0.0.14";
+  var versionNum = "0.0.14";
   // var version = "Version 0.0.14";
   //  var versionNum = "0.0.14";
   String countryDial = "+91";
@@ -30,63 +30,107 @@ class Controller extends GetxController {
   Future<List<NewLeadObj>>? allCustomerFuture;
   Future<List<EmployeeObj>>? allEmployeeFuture;
   Future<List<ProductObj>>? allProductFuture;
-  //Future<List<NewLeadObj>>? allLeadFuture;
   Future<List<NewLeadObj>>? leadFuture;
   Future<List<CommentsObj>>? customCommentsFuture;
   Future<List<MailReceiveObj>>? customMailFuture;
-  //Future<List<NewLeadObj>>? allNewLeadFuture;
   Future<List<NewLeadObj>>? allGoodLeadFuture;
   Future<List<CompanyObj>>? allCompanyFuture;
 
-   var allNewLeadFuture = <NewLeadObj>[].obs;
-   var allLeadFuture = <NewLeadObj>[].obs;
+  var allNewLeadFuture = <NewLeadObj>[].obs;
+  var allLeadFuture = <NewLeadObj>[].obs;
   RxString selectedTemperature = "".obs;
   RxString selectedProspectTemperature = "".obs;
   RxString selectedQualifiedTemperature = "".obs;
   RxString selectedSortBy = "".obs;
   RxString selectedProspectSortBy = "".obs;
   RxString selectedQualifiedSortBy = "".obs;
-   var allLeads = <NewLeadObj>[].obs;
+  var allLeads = <NewLeadObj>[].obs;
+  final Rxn<DateTime> selectedMonth = Rxn<DateTime>();
+  final Rxn<DateTime> selectedPMonth = Rxn<DateTime>();
+
+  void selectMonth(BuildContext context, RxString sortByKey,
+      Rxn<DateTime> selectedMonthTarget) async {
+    showMonthPicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    ).then((selected) {
+      if (selected != null) {
+        sortByKey.value = 'Custom Month';
+        selectedMonthTarget.value = selected;
+      }
+    });
+  }
 
   String formatDateTime(String inputDateTime) {
-    final inputFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
-    final outputFormat = DateFormat('yyyy-MM-dd hh:mm a');
+    DateTime dateTime;
 
-    final dateTime = inputFormat.parse(inputDateTime);
-    return outputFormat.format(dateTime);
+    try {
+      dateTime = DateFormat('yyyy-MM-dd HH:mm:ss').parseStrict(inputDateTime);
+    } catch (_) {
+      try {
+        dateTime = DateFormat('dd.MM.yyyy').parseStrict(inputDateTime);
+      } catch (_) {
+        try {
+          dateTime = DateTime.parse(inputDateTime);
+        } catch (_) {
+          return 'Invalid date';
+        }
+      }
+    }
+    final hasTime = inputDateTime.contains(':');
+
+    final outputFormat =
+        hasTime ? DateFormat('yyyy-MM-dd hh:mm a') : DateFormat('yyyy-MM-dd');
+
+    return outputFormat.format(dateTime.toLocal());
   }
 
   var currentPage = 1.obs;
   final itemsPerPage = 20; // Adjust based on your needs
   var currentProspectPage = 1.obs;
   final itemsProspectPerPage = 20;
+  bool isSameDate(DateTime d1, DateTime d2) {
+    return d1.year == d2.year && d1.month == d2.month && d1.day == d2.day;
+  }
+
   List<NewLeadObj> get paginatedLeads {
     final query = searchQuery.value.toLowerCase();
     final ratingFilter = selectedTemperature.value;
-    final sortBy = selectedSortBy.value; // 'Today', 'Last 7 Days', etc.
-
+    final sortBy = selectedProspectSortBy.value; // 'Today', 'Last 7 Days', etc.
     final now = DateTime.now();
-
     final filteredLeads = allNewLeadFuture.where((lead) {
-      final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
-          (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
-          (lead.emailId ?? '').toLowerCase().contains(query);
+      final matchesQuery =
+          (lead.firstname ?? '').toLowerCase().contains(query) ||
+              (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+              (lead.emailId ?? '').toLowerCase().contains(query);
 
       final matchesRating = ratingFilter.isEmpty ||
           (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
 
       bool matchesSort = true;
 
-      if (lead.updatedTs != null) {
-        final updatedDate = DateTime.tryParse(lead.updatedTs!);
+      if (lead.prospectEnrollmentDate != null) {
+        DateTime? updatedDate;
+        try {
+          updatedDate =
+              DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
+        } catch (_) {
+          try {
+            updatedDate = DateTime.tryParse(lead.prospectEnrollmentDate!);
+          } catch (_) {
+            updatedDate = null;
+            matchesSort = false;
+          }
+        }
+
         if (updatedDate != null) {
           final diff = now.difference(updatedDate).inDays;
 
           switch (sortBy) {
             case 'Today':
-              matchesSort = updatedDate.year == now.year &&
-                  updatedDate.month == now.month &&
-                  updatedDate.day == now.day;
+              matchesSort = isSameDate(updatedDate, now);
               break;
 
             case 'Last 7 Days':
@@ -97,12 +141,21 @@ class Controller extends GetxController {
               matchesSort = diff <= 30;
               break;
 
+            case 'Custom Month':
+              if (selectedMonth.value != null) {
+                matchesSort = updatedDate.year == selectedMonth.value!.year &&
+                    updatedDate.month == selectedMonth.value!.month;
+              } else {
+                matchesSort = true;
+              }
+              break;
+
             case 'All':
             default:
               matchesSort = true;
           }
         } else {
-          matchesSort = false; // If date parsing fails, exclude
+          matchesSort = false;
         }
       } else {
         matchesSort = false;
@@ -121,34 +174,44 @@ class Controller extends GetxController {
     return filteredLeads.sublist(start, end);
   }
 
-
   List<NewLeadObj> get paginatedProspectsLeads {
     final query = searchProspects.value.toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;
-    final sortBy = selectedProspectSortBy.value; // 'Today', 'Last 7 Days', etc.
+    final sortBy =
+        selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
 
     final now = DateTime.now();
 
     final filteredLeads = allLeadFuture.where((lead) {
-      final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
-          (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
-          (lead.emailId ?? '').toLowerCase().contains(query);
+      final matchesQuery =
+          (lead.firstname ?? '').toLowerCase().contains(query) ||
+              (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+              (lead.emailId ?? '').toLowerCase().contains(query);
 
       final matchesRating = ratingFilter.isEmpty ||
           (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
 
       bool matchesSort = true;
+      if (lead.prospectEnrollmentDate != null) {
+        DateTime? updatedDate;
+        try {
+          updatedDate =
+              DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
+        } catch (_) {
+          try {
+            updatedDate = DateTime.tryParse(lead.prospectEnrollmentDate!);
+          } catch (_) {
+            updatedDate = null;
+            matchesSort = false;
+          }
+        }
 
-      if (lead.updatedTs != null) {
-        final updatedDate = DateTime.tryParse(lead.updatedTs!);
         if (updatedDate != null) {
           final diff = now.difference(updatedDate).inDays;
 
           switch (sortBy) {
             case 'Today':
-              matchesSort = updatedDate.year == now.year &&
-                  updatedDate.month == now.month &&
-                  updatedDate.day == now.day;
+              matchesSort = isSameDate(updatedDate, now);
               break;
 
             case 'Last 7 Days':
@@ -157,6 +220,15 @@ class Controller extends GetxController {
 
             case 'Last 30 Days':
               matchesSort = diff <= 30;
+              break;
+
+            case 'Custom Month':
+              if (selectedPMonth.value != null) {
+                matchesSort = updatedDate.year == selectedPMonth.value!.year &&
+                    updatedDate.month == selectedPMonth.value!.month;
+              } else {
+                matchesSort = true;
+              }
               break;
 
             case 'All':
@@ -183,95 +255,165 @@ class Controller extends GetxController {
     return filteredLeads.sublist(start, end);
   }
 
-
-
-  // List<NewLeadObj> get paginatedLeads {
-  //
-  //   int start = (currentPage.value - 1) * itemsPerPage;
-  //   int end = start + itemsPerPage;
-  //   end = end > allNewLeadFuture.length ? allNewLeadFuture.length : end;
-  //   return allNewLeadFuture.sublist(start, end);
-  // }
-
   int get totalPages => (allNewLeadFuture.length / itemsPerPage).ceil();
   int get totalProspectPages => (allLeadFuture.length / itemsPerPage).ceil();
 
   final groupController = GroupButtonController();
-  final RoundedLoadingButtonController btnController = RoundedLoadingButtonController();
-  final ScrollController suspectsScrollController  = ScrollController();
+  final RoundedLoadingButtonController btnController =
+      RoundedLoadingButtonController();
+  final ScrollController suspectsScrollController = ScrollController();
   final ScrollController prospectsScrollController = ScrollController();
   final ScrollController qualifiedScrollController = ScrollController();
 
-var ratingLis=["Cold","Warm","Hot"];
-var directVisit = "".obs, telephoneCalls = "".obs,allDirectVisit = "0".obs, allTelephoneCalls = "0".obs,
-    shortBy = "All".obs,isCommentsLoading=true.obs;
-var roleNameList=[];
-var callNameList=[];
-var roleList=[].obs;
-var stDate="${DateTime.now().day.toString().padLeft(2,"0")}"
-    "-${DateTime.now().month.toString().padLeft(2,"0")}"
-    "-${DateTime.now().year.toString()}".obs;
+  var ratingLis = ["Cold", "Warm", "Hot"];
+  var directVisit = "".obs,
+      telephoneCalls = "".obs,
+      allDirectVisit = "0".obs,
+      allTelephoneCalls = "0".obs,
+      shortBy = "All".obs,
+      isCommentsLoading = true.obs;
+  var roleNameList = [];
+  var callNameList = [];
+  var roleList = [].obs;
+  var stDate = "${DateTime.now().day.toString().padLeft(2, "0")}"
+          "-${DateTime.now().month.toString().padLeft(2, "0")}"
+          "-${DateTime.now().year.toString()}"
+      .obs;
 //var callList=["Order Follow - up","Payment Follow - up","Cold Calling","Self generated Leads","Reference Leads","Service Call"];
-var callListC=["Order Follow - up","Payment Follow - up","Cold Calling","Self generated Leads","Reference Leads","Service Call"];
-RxList callList=[].obs;
-var quotationStatus=["Normal","Urgent","Critical"];
-var categoryList=["BUILDING / APARTMENTS","INDUSTRIES","CORPORATES"];
-var statusList=["Qualified","UnQualified","Nurturing","Contacted"];
-var sourceList=[
-  "Website Forms","Social Media",
-  "Email Campaigns","Referrals","Events","Advertising","Organic Search",
-  "Content Marketing","Direct Outreach","Partnerships",
-  "Customer" "Reviews","Inbound Calls","Walk-Ins","Chat bots",
-  "Networking","Offline" "Marketing","Customer Events","Purchased Leads",
-  "Customer Service Inquiries","Word of Mouth"
-];
+  var callListC = [
+    "Order Follow - up",
+    "Payment Follow - up",
+    "Cold Calling",
+    "Self generated Leads",
+    "Reference Leads",
+    "Service Call"
+  ];
+  RxList callList = [].obs;
+  var quotationStatus = ["Normal", "Urgent", "Critical"];
+  var categoryList = ["BUILDING / APARTMENTS", "INDUSTRIES", "CORPORATES"];
+  var statusList = ["Qualified", "UnQualified", "Nurturing", "Contacted"];
 
-var serviceList=[
-  "Consultation",
-  "Product Demo",
-  "Training",
-  "Maintenance",
-  "Support",
-  "Customization",
-  "Upgrades",
-  "Integration",
-  "Implementation",
-  "Troubleshooting",
-  "Renewals",
-  "Add-ons",
-  "Expansion",
-  "Partnership"];
+  var designationList = [
+    "Security Guard",
+    "Security Officer",
+    "Assistant Security Officer",
+    "Lady Guard",
+    "Property Manager",
+    "Property Manager",
+    "Property Executive",
+    "House Keeping Supervisor",
+    "House Keeping Supervisor",
+    "House Keeping Male",
+    "House Keeping Female",
+    "Multi Skill Technician"
+  ];
+  var designDepList = [
+    "Graphic Designer",
+    "Senior Designer",
+    "Design Director",
+    "Illustrator",
+    "Textile Designer"
+  ];
 
-var designationList=["Security Guard","Security Officer","Assistant Security Officer","Lady Guard","Property Manager","Property Manager","Property Executive","House Keeping Supervisor","House Keeping Supervisor","House Keeping Male","House Keeping Female","Multi Skill Technician"];
-var designDepList=["Graphic Designer","Senior Designer","Design Director","Illustrator","Textile Designer"];
-
-var productionDepList=["Production Manager","Quality Control Inspector","Pattern Maker","Cutter","Sewing Machine Operator","Printer"];
-var salesDepList=["Sales Representative",
-  "Account Manager","Sales Manager","Retail Store Manager",
-  "E-commerce Manager","Wholesale Manager"];
-var financeDepList=["Chief Financial Officer (CFO)",
-    "Accountant","Inventory Manager","Logistics Coordinator",
-    "Distribution Manager","Warehouse Supervisor"] ;
-  var hrDepList=["Human Resources Manager",
-    "Recruitment Specialist","Training Coordinator",
+  var productionDepList = [
+    "Production Manager",
+    "Quality Control Inspector",
+    "Pattern Maker",
+    "Cutter",
+    "Sewing Machine Operator",
+    "Printer"
+  ];
+  var salesDepList = [
+    "Sales Representative",
+    "Account Manager",
+    "Sales Manager",
+    "Retail Store Manager",
+    "E-commerce Manager",
+    "Wholesale Manager"
+  ];
+  var financeDepList = [
+    "Chief Financial Officer (CFO)",
+    "Accountant",
+    "Inventory Manager",
+    "Logistics Coordinator",
+    "Distribution Manager",
+    "Warehouse Supervisor"
+  ];
+  var hrDepList = [
+    "Human Resources Manager",
+    "Recruitment Specialist",
+    "Training Coordinator",
     "HR Generalist",
-    "Employee Relations Manager","Compensation and Benefits Specialist"];
-  var chainManagementDepList=["Supply Chain Manager",
-    "Procurement Officer","Financial Analyst","Bookkeeper",
-    "Payroll Administrator","Budget Analyst"];
-  var customerServiceDepList=["Customer Service Representative",
-    "Customer Service Manager","Support Specialist","Returns and Exchanges Coordinator",
-    "Complaints Resolution Specialist"];
-var marketingDepList=["Marketing Manager",
-  "Brand Manager","Social Media Specialist","Marketing Coordinator",
-  "Content Creator","Advertising Manager"];
-var employmentList=["Full-time","Part-time","Contract","Temporary","Freelance","Internship","Consulting","Seasonal"];
-var benefitsList=["Health Insurance","Dental Insurance","Vision Insurance","Retirement Plans","Life Insurance","Disability Insurance","Paid Time Off","FSA or HSA","Wellness Programs","Education Assistance","Employee Assistance Programs(EAPs)","Commuter Benefits","Stock Options or Equity Grants"];
-var departmentList=["Design","Production","Marketing","Sales",
-  "Finance","Human Resources","Customer Service",
-  "Supply Chain Management"];
-var industryList=["Manufacturing","HealthCare","Retail","Financial Services","Education","Information Technology"];
-  var topProductList=[
+    "Employee Relations Manager",
+    "Compensation and Benefits Specialist"
+  ];
+  var chainManagementDepList = [
+    "Supply Chain Manager",
+    "Procurement Officer",
+    "Financial Analyst",
+    "Bookkeeper",
+    "Payroll Administrator",
+    "Budget Analyst"
+  ];
+  var customerServiceDepList = [
+    "Customer Service Representative",
+    "Customer Service Manager",
+    "Support Specialist",
+    "Returns and Exchanges Coordinator",
+    "Complaints Resolution Specialist"
+  ];
+  var marketingDepList = [
+    "Marketing Manager",
+    "Brand Manager",
+    "Social Media Specialist",
+    "Marketing Coordinator",
+    "Content Creator",
+    "Advertising Manager"
+  ];
+  var employmentList = [
+    "Full-time",
+    "Part-time",
+    "Contract",
+    "Temporary",
+    "Freelance",
+    "Internship",
+    "Consulting",
+    "Seasonal"
+  ];
+  var benefitsList = [
+    "Health Insurance",
+    "Dental Insurance",
+    "Vision Insurance",
+    "Retirement Plans",
+    "Life Insurance",
+    "Disability Insurance",
+    "Paid Time Off",
+    "FSA or HSA",
+    "Wellness Programs",
+    "Education Assistance",
+    "Employee Assistance Programs(EAPs)",
+    "Commuter Benefits",
+    "Stock Options or Equity Grants"
+  ];
+  var departmentList = [
+    "Design",
+    "Production",
+    "Marketing",
+    "Sales",
+    "Finance",
+    "Human Resources",
+    "Customer Service",
+    "Supply Chain Management"
+  ];
+  var industryList = [
+    "Manufacturing",
+    "HealthCare",
+    "Retail",
+    "Financial Services",
+    "Education",
+    "Information Technology"
+  ];
+  var topProductList = [
     "Graphic Tees",
     "Basic Tees",
     "Printed Tees",
@@ -289,7 +431,7 @@ var industryList=["Manufacturing","HealthCare","Retail","Financial Services","Ed
     "Ethnic Tees"
   ];
 
-var taxList=[
+  var taxList = [
     "Sales Tax",
     "Value Added Tax (VAT)",
     "Goods and Services Tax (GST)",
@@ -301,209 +443,316 @@ var taxList=[
     "Sin Tax",
     "Use Tax"
   ];
-var stateList = [
-    "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh",
-    "Jharkhand","Karnataka","Kerala","Madhya Pradesh ","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab",
-    "Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura",
-    "Uttarakhand","West Bengal","Uttar Pradesh","Andaman and Nicobar Islands",
-    "Chandigarh","Dadra and Nagar Haveli and Daman & Diu",
-    "Delhi NCT","Jammu & Kashmir","Ladakh","Lakshadweep",
+  var stateList = [
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh ",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttarakhand",
+    "West Bengal",
+    "Uttar Pradesh",
+    "Andaman and Nicobar Islands",
+    "Chandigarh",
+    "Dadra and Nagar Haveli and Daman & Diu",
+    "Delhi NCT",
+    "Jammu & Kashmir",
+    "Ladakh",
+    "Lakshadweep",
     "Puducherry"
-
   ];
 
   final FocusNode focusNode = FocusNode();
 
-  var storage=GetStorage();
-   var isAdd=false.obs;
-   var isCoAdd=false.obs;
-  RxString employeeHeading="Employee Information".obs,le="Employee Information".obs,attachmentImage="".obs;
-  String selectedGender = 'Male',selectedMarital='Single',selectedRelationShip='Spouse',selectedRating="Warm";
+  var storage = GetStorage();
+  var isAdd = false.obs;
+  var isCoAdd = false.obs;
+  RxString employeeHeading = "Employee Information".obs,
+      le = "Employee Information".obs,
+      attachmentImage = "".obs;
+  String selectedGender = 'Male',
+      selectedMarital = 'Single',
+      selectedRelationShip = 'Spouse',
+      selectedRating = "Warm";
   RxList contacts = [].obs;
   List<String?> allCities = [];
   List<String?> allCountry = [];
   List<String?> allStates = [];
-  var allLeadsLength=0.obs,allNewLeadsLength=0.obs,allGoodLeadsLength=0.obs,allCompanyLength=0.obs,allCustomerLength=0.obs,allProductLength=0.obs,allEmployeeLength=0.obs;
+  var allLeadsLength = 0.obs,
+      allNewLeadsLength = 0.obs,
+      allGoodLeadsLength = 0.obs,
+      allCompanyLength = 0.obs,
+      allCustomerLength = 0.obs,
+      allProductLength = 0.obs,
+      allEmployeeLength = 0.obs;
 
-  var states,upState,upCoState,category,source,status,rating,industry,visitType,qStatus,coIndustry,
-      benefits,department,position,employeeType,emState,cusState,cusFieldOfficer,
-      subCategory,tax,topProduct,service,coState,designation,role,pinCode,roleId;
+  var states,
+      upState,
+      upCoState,
+      category,
+      source,
+      status,
+      rating,
+      industry,
+      visitType,
+      qStatus,
+      coIndustry,
+      benefits,
+      department,
+      position,
+      employeeType,
+      emState,
+      cusState,
+      cusFieldOfficer,
+      subCategory,
+      tax,
+      topProduct,
+      service,
+      coState,
+      designation,
+      role,
+      pinCode,
+      roleId;
 
-  String upRegistration="No",upInvitation="No",upEventState="Tamil Nadu",leadCategory="Suspects";
-//List leadCategoryList=["NEW LEAD", "INPIPELINE", "DEAD LEAD","CUSTOMERS"];
-RxList leadCategoryList=[].obs;
-RxList leadCategoryGrList=[].obs;
-// List leadCategoryList=["Suspects","Prospects","Qualified","Customers"];
-List eventImages=[
-  "assets/image/event_logo1.jpeg",
-  "assets/image/event_logo2.jpeg",
-  "assets/image/itinerary2.jpeg",
-  "assets/image/itinerary1.jpeg"
-];
-
+  String upRegistration = "No",
+      upInvitation = "No",
+      upEventState = "Tamil Nadu",
+      leadCategory = "Suspects";
+  RxList leadCategoryList = [].obs;
+  RxList leadCategoryGrList = [].obs;
+  List eventImages = [
+    "assets/image/event_logo1.jpeg",
+    "assets/image/event_logo2.jpeg",
+    "assets/image/itinerary2.jpeg",
+    "assets/image/itinerary1.jpeg"
+  ];
 
   final picker = ImagePicker();
-   Future<List>? imageListFuture;
-  late List<String> userdata=[];
-  List contactsID=[];
-  var allCate=[];
-  List attendanceMark=[];
-  var emailCount=0.obs;
-  var isTemplate=false.obs,isAllSelected=false.obs,isLeadLoading = false.obs;
+  Future<List>? imageListFuture;
+  late List<String> userdata = [];
+  List contactsID = [];
+  var allCate = [];
+  List attendanceMark = [];
+  var emailCount = 0.obs;
+  var isTemplate = false.obs,
+      isAllSelected = false.obs,
+      isLeadLoading = false.obs;
 
-  var dateList=[].obs,isMainPersonList=[].obs,isNewLeadList=[].obs,isLeadsList=[].obs,isGoodLeadList=[].obs,isCoMobileNumberList=[].obs,mailReceivesList=[].obs;
-  var empName="".obs,empId="".obs,empEmail="".obs,empPhone="".obs,empDOB="".obs,leadDOR="".obs,empDoorNo="".obs,empStreet="".obs,
-      empArea="".obs,empCity="".obs,
-  empCountry="".obs,empPinCode="".obs,empDOJ="".obs,empManagerName="".obs,empSalary="".obs,empBonus="".obs,empDegree="".obs,empInstitution="".obs,empGraYear="".obs;
-  var isMainPerson=false.obs,light=false.obs,isImageLoaded=false.obs,isLead=true.obs,isCustomer=true.obs,isProduct=true.obs,isEmployee=true.obs;
-  var lng=0.0.obs,lat=0.0.obs;
-  var isMobileNumber=false.obs,isCoMobileNumber=true.obs,isProfileBasicInfo=false.obs,isEventLoaded=false.obs,isWhatsApp=false.obs;
-  var cate="",cateDes="",categoryId="",cateId="";
+  var dateList = [].obs,
+      isMainPersonList = [].obs,
+      isNewLeadList = [].obs,
+      isLeadsList = [].obs,
+      isGoodLeadList = [].obs,
+      isCoMobileNumberList = [].obs,
+      mailReceivesList = [].obs;
+  var empName = "".obs,
+      empId = "".obs,
+      empEmail = "".obs,
+      empPhone = "".obs,
+      empDOB = "".obs,
+      leadDOR = "".obs,
+      empDoorNo = "".obs,
+      empStreet = "".obs,
+      empArea = "".obs,
+      empCity = "".obs,
+      empCountry = "".obs,
+      empPinCode = "".obs,
+      empDOJ = "".obs,
+      empManagerName = "".obs,
+      empSalary = "".obs,
+      empBonus = "".obs,
+      empDegree = "".obs,
+      empInstitution = "".obs,
+      empGraYear = "".obs;
+  var isMainPerson = false.obs,
+      light = false.obs,
+      isImageLoaded = false.obs,
+      isLead = true.obs,
+      isCustomer = true.obs,
+      isProduct = true.obs,
+      isEmployee = true.obs;
+  var lng = 0.0.obs, lat = 0.0.obs;
+  var isMobileNumber = false.obs,
+      isCoMobileNumber = true.obs,
+      isProfileBasicInfo = false.obs,
+      isEventLoaded = false.obs,
+      isWhatsApp = false.obs;
+  var cate = "", cateDes = "", categoryId = "", cateId = "";
 
   ScrollController scrollController = ScrollController();
-  TextEditingController loginNumber        = TextEditingController();
-  TextEditingController loginPassword      = TextEditingController();
-  TextEditingController signFirstName      = TextEditingController();
-  TextEditingController signLastName       = TextEditingController();
-  TextEditingController signMobileNumber   = TextEditingController();
-  TextEditingController signEmailID        = TextEditingController();
+  TextEditingController loginNumber = TextEditingController();
+  TextEditingController loginPassword = TextEditingController();
+  TextEditingController signFirstName = TextEditingController();
+  TextEditingController signLastName = TextEditingController();
+  TextEditingController signMobileNumber = TextEditingController();
+  TextEditingController signEmailID = TextEditingController();
   TextEditingController signWhatsappNumber = TextEditingController();
-  TextEditingController signPassword       = TextEditingController();
-  TextEditingController signReferBy        = TextEditingController();
+  TextEditingController signPassword = TextEditingController();
+  TextEditingController signReferBy = TextEditingController();
 
   // TODO: leadControllersName
   TextEditingController signupPasswordController = TextEditingController();
-  List<TextEditingController> leadNameCrt    = <TextEditingController>[].obs;
-  List<TextEditingController> leadMobileCrt  = <TextEditingController>[].obs;
-  List<TextEditingController> leadWhatsCrt   = <TextEditingController>[].obs;
-  List<TextEditingController> leadEmailCrt   = <TextEditingController>[].obs;
-  List<TextEditingController> leadTitleCrt   = <TextEditingController>[].obs;
-  List<TextEditingController> leadFieldName  = <TextEditingController>[];
+  List<TextEditingController> leadNameCrt = <TextEditingController>[].obs;
+  List<TextEditingController> leadMobileCrt = <TextEditingController>[].obs;
+  List<TextEditingController> leadWhatsCrt = <TextEditingController>[].obs;
+  List<TextEditingController> leadEmailCrt = <TextEditingController>[].obs;
+  List<TextEditingController> leadTitleCrt = <TextEditingController>[].obs;
+  List<TextEditingController> leadFieldName = <TextEditingController>[];
   List<TextEditingController> leadFieldValue = <TextEditingController>[];
   //TextEditingController leadNameCrt = TextEditingController();
-  TextEditingController leadOwnerNameCrt   = TextEditingController();
-  TextEditingController leadSourceCrt      = TextEditingController();
-  TextEditingController leadGstNumCrt      = TextEditingController();
+  TextEditingController leadOwnerNameCrt = TextEditingController();
+  TextEditingController leadSourceCrt = TextEditingController();
+  TextEditingController leadGstNumCrt = TextEditingController();
   TextEditingController leadGstLocationCrt = TextEditingController();
-  TextEditingController leadGstDORCrt      = TextEditingController();
-  TextEditingController leadDisPointsCrt   = TextEditingController();
-  TextEditingController leadPointsCrt      = TextEditingController();
- // TextEditingController leadWhatsCrt = TextEditingController();
-  TextEditingController leadCoNameCrt   = TextEditingController();
+  TextEditingController leadGstDORCrt = TextEditingController();
+  TextEditingController leadDisPointsCrt = TextEditingController();
+  TextEditingController leadPointsCrt = TextEditingController();
+  // TextEditingController leadWhatsCrt = TextEditingController();
+  TextEditingController leadCoNameCrt = TextEditingController();
   TextEditingController leadCoMobileCrt = TextEditingController();
-  TextEditingController leadCoEmailCrt  = TextEditingController();
-  TextEditingController leadInduCrt     = TextEditingController();
-  TextEditingController leadWebsite     = TextEditingController();
-  TextEditingController leadProduct     = TextEditingController();
-  TextEditingController leadActions     = TextEditingController();
+  TextEditingController leadCoEmailCrt = TextEditingController();
+  TextEditingController leadInduCrt = TextEditingController();
+  TextEditingController leadWebsite = TextEditingController();
+  TextEditingController leadProduct = TextEditingController();
+  TextEditingController leadActions = TextEditingController();
   //TextEditingController leadNotes = TextEditingController();
   TextEditingController leadSecondaryEmailCrt = TextEditingController();
-  TextEditingController sourceCrt             = TextEditingController();
-  TextEditingController prospectGradingCrt             = TextEditingController();
-  TextEditingController statusCrt             = TextEditingController();
-  TextEditingController budgetCrt             = TextEditingController();
-  TextEditingController pDiscussedCrt         = TextEditingController();
-  TextEditingController exMonthBillingValCrt         = TextEditingController();
-  TextEditingController noOfHeadCountCrt         = TextEditingController();
-  TextEditingController additionalNotesCrt         = TextEditingController();
-  TextEditingController responsePriCrt         = TextEditingController();
-  TextEditingController arpuCrt         = TextEditingController();
-  TextEditingController expectedConversionDateCrt         = TextEditingController();
-  TextEditingController prospectEnrollmentDateCrt         = TextEditingController();
-  TextEditingController leadXCrt              = TextEditingController();
-  TextEditingController leadLinkedinCrt       = TextEditingController();
-  TextEditingController doorNumberController  = TextEditingController();
-  TextEditingController streetNameController  = TextEditingController();
-  TextEditingController areaController        = TextEditingController();
-  TextEditingController cityController        = TextEditingController();
-  TextEditingController stateController       = TextEditingController();
-  TextEditingController pinCodeController     = TextEditingController();
-  TextEditingController countryController     = TextEditingController(text: "India");
-  TextEditingController leadTime              = TextEditingController();
-  TextEditingController leadDescription       = TextEditingController();
-  TextEditingController dateOfConCtr          = TextEditingController();
-  TextEditingController emailToCtr            = TextEditingController();
-  TextEditingController emailSubjectCtr       = TextEditingController();
-  TextEditingController emailMessageCtr       = TextEditingController();
-  TextEditingController emailQuotationCtr     = TextEditingController();
+  TextEditingController sourceCrt = TextEditingController();
+  TextEditingController prospectGradingCrt = TextEditingController();
+  TextEditingController statusCrt = TextEditingController();
+  TextEditingController budgetCrt = TextEditingController();
+  TextEditingController pDiscussedCrt = TextEditingController();
+  TextEditingController exMonthBillingValCrt = TextEditingController();
+  TextEditingController noOfHeadCountCrt = TextEditingController();
+  TextEditingController additionalNotesCrt = TextEditingController();
+  TextEditingController responsePriCrt = TextEditingController();
+  TextEditingController arpuCrt = TextEditingController();
+  TextEditingController expectedConversionDateCrt = TextEditingController();
+  TextEditingController prospectEnrollmentDateCrt = TextEditingController();
+  TextEditingController leadXCrt = TextEditingController();
+  TextEditingController leadLinkedinCrt = TextEditingController();
+  TextEditingController doorNumberController = TextEditingController();
+  TextEditingController streetNameController = TextEditingController();
+  TextEditingController areaController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController stateController = TextEditingController();
+  TextEditingController pinCodeController = TextEditingController();
+  TextEditingController countryController =
+      TextEditingController(text: "India");
+  TextEditingController leadTime = TextEditingController();
+  TextEditingController leadDescription = TextEditingController();
+  TextEditingController dateOfConCtr = TextEditingController();
+  TextEditingController emailToCtr = TextEditingController();
+  TextEditingController emailSubjectCtr = TextEditingController();
+  TextEditingController emailMessageCtr = TextEditingController();
+  TextEditingController emailQuotationCtr = TextEditingController();
 
   // TODO: productControllersName
-  TextEditingController prodNameController        = TextEditingController();
-  TextEditingController categoryController        = TextEditingController();
-  TextEditingController comparePriceController    = TextEditingController();
-  TextEditingController productPriceController    = TextEditingController();
-  TextEditingController netPriceController        = TextEditingController();
-  TextEditingController hsnController             = TextEditingController();
-  TextEditingController prodBrandController       = TextEditingController();
-  TextEditingController discountOnMRPController   = TextEditingController();
-  TextEditingController discountController        = TextEditingController();
+  TextEditingController prodNameController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
+  TextEditingController comparePriceController = TextEditingController();
+  TextEditingController productPriceController = TextEditingController();
+  TextEditingController netPriceController = TextEditingController();
+  TextEditingController hsnController = TextEditingController();
+  TextEditingController prodBrandController = TextEditingController();
+  TextEditingController discountOnMRPController = TextEditingController();
+  TextEditingController discountController = TextEditingController();
   TextEditingController prodDescriptionController = TextEditingController();
 
   // TODO: customerControllersName
-  TextEditingController customerIdController           = TextEditingController();
-  TextEditingController customerMobileController       = TextEditingController();
-  TextEditingController customerCoNameController       = TextEditingController();
-  TextEditingController customerNameController         = TextEditingController();
-  TextEditingController customerEmailController        = TextEditingController();
-  TextEditingController customerUnitNameController     = TextEditingController();
-  TextEditingController customerAreaController         = TextEditingController();
-  TextEditingController customerPinCodeController      = TextEditingController();
-  TextEditingController customerStreetController       = TextEditingController();
-  TextEditingController customerCountryController      = TextEditingController();
-  TextEditingController customerCityController         = TextEditingController();
-  TextEditingController customerLocationLinkController = TextEditingController();
-  TextEditingController customerNoUnitController       = TextEditingController();
-  TextEditingController customerFieldOfficerController = TextEditingController();
-  TextEditingController noOfEmpController              = TextEditingController();
-  TextEditingController customerDescriptionController  = TextEditingController();
+  TextEditingController customerIdController = TextEditingController();
+  TextEditingController customerMobileController = TextEditingController();
+  TextEditingController customerCoNameController = TextEditingController();
+  TextEditingController customerNameController = TextEditingController();
+  TextEditingController customerEmailController = TextEditingController();
+  TextEditingController customerUnitNameController = TextEditingController();
+  TextEditingController customerAreaController = TextEditingController();
+  TextEditingController customerPinCodeController = TextEditingController();
+  TextEditingController customerStreetController = TextEditingController();
+  TextEditingController customerCountryController = TextEditingController();
+  TextEditingController customerCityController = TextEditingController();
+  TextEditingController customerLocationLinkController =
+      TextEditingController();
+  TextEditingController customerNoUnitController = TextEditingController();
+  TextEditingController customerFieldOfficerController =
+      TextEditingController();
+  TextEditingController noOfEmpController = TextEditingController();
+  TextEditingController customerDescriptionController = TextEditingController();
 
   // TODO: employeeControllersName
-  TextEditingController emNameController           = TextEditingController();
-  TextEditingController emIDController             = TextEditingController();
-  TextEditingController emEmailController          = TextEditingController();
-  TextEditingController emPhoneController          = TextEditingController();
-  TextEditingController emDOBController            = TextEditingController();
-  TextEditingController emDepartmentController     = TextEditingController();
-  TextEditingController emPositionController       = TextEditingController();
-  TextEditingController emDoorNoController         = TextEditingController();
-  TextEditingController emStreetController         = TextEditingController();
-  TextEditingController emAreaController           = TextEditingController();
-  TextEditingController emCityController           = TextEditingController();
-  TextEditingController emStateController          = TextEditingController();
-  TextEditingController emPinCodeController        = TextEditingController();
-  TextEditingController emManagerController        = TextEditingController();
-  TextEditingController emCountryController        = TextEditingController(text: "India");
-  TextEditingController emDOJController            = TextEditingController();
-  TextEditingController emSalaryController         = TextEditingController();
-  TextEditingController emBonusController          = TextEditingController();
-  TextEditingController emDegreeController         = TextEditingController();
-  TextEditingController emInstitutionController    = TextEditingController();
+  TextEditingController emNameController = TextEditingController();
+  TextEditingController emIDController = TextEditingController();
+  TextEditingController emEmailController = TextEditingController();
+  TextEditingController emPhoneController = TextEditingController();
+  TextEditingController emDOBController = TextEditingController();
+  TextEditingController emDepartmentController = TextEditingController();
+  TextEditingController emPositionController = TextEditingController();
+  TextEditingController emDoorNoController = TextEditingController();
+  TextEditingController emStreetController = TextEditingController();
+  TextEditingController emAreaController = TextEditingController();
+  TextEditingController emCityController = TextEditingController();
+  TextEditingController emStateController = TextEditingController();
+  TextEditingController emPinCodeController = TextEditingController();
+  TextEditingController emManagerController = TextEditingController();
+  TextEditingController emCountryController =
+      TextEditingController(text: "India");
+  TextEditingController emDOJController = TextEditingController();
+  TextEditingController emSalaryController = TextEditingController();
+  TextEditingController emBonusController = TextEditingController();
+  TextEditingController emDegreeController = TextEditingController();
+  TextEditingController emInstitutionController = TextEditingController();
   TextEditingController emGraduationYearController = TextEditingController();
-
 
   TextEditingController search = TextEditingController();
 
-  RxList<TextEditingController> mailControllers    = <TextEditingController>[].obs;
-  RxList<TextEditingController> phoneControllers   = <TextEditingController>[].obs;
-  RxList<TextEditingController> webSiteControllers = <TextEditingController>[].obs;
-  TextEditingController stallNameController        = TextEditingController();
-  TextEditingController stallSizeController        = TextEditingController();
-  TextEditingController convenienceController      = TextEditingController();
-  TextEditingController tagController              = TextEditingController();
-  TextEditingController employeeName               = TextEditingController();
-  TextEditingController employeeMobile             = TextEditingController();
-  TextEditingController employeeEmail              = TextEditingController();
-  TextEditingController fbMediaController          = TextEditingController();
-  TextEditingController inController               = TextEditingController();
+  RxList<TextEditingController> mailControllers = <TextEditingController>[].obs;
+  RxList<TextEditingController> phoneControllers =
+      <TextEditingController>[].obs;
+  RxList<TextEditingController> webSiteControllers =
+      <TextEditingController>[].obs;
+  TextEditingController stallNameController = TextEditingController();
+  TextEditingController stallSizeController = TextEditingController();
+  TextEditingController convenienceController = TextEditingController();
+  TextEditingController tagController = TextEditingController();
+  TextEditingController employeeName = TextEditingController();
+  TextEditingController employeeMobile = TextEditingController();
+  TextEditingController employeeEmail = TextEditingController();
+  TextEditingController fbMediaController = TextEditingController();
+  TextEditingController inController = TextEditingController();
 
-
-  List<TextEditingController> eventLtiDateControllers = <TextEditingController>[].obs;
-  List<TextEditingController> eventLtiStTimeController = <TextEditingController>[].obs;
-  List<TextEditingController> eventLtiEndTimeController = <TextEditingController>[].obs;
-  List<TextEditingController> eventCorporateControllers = <TextEditingController>[].obs;
-  List<TextEditingController> stallPriceControllers = <TextEditingController>[].obs;
+  List<TextEditingController> eventLtiDateControllers =
+      <TextEditingController>[].obs;
+  List<TextEditingController> eventLtiStTimeController =
+      <TextEditingController>[].obs;
+  List<TextEditingController> eventLtiEndTimeController =
+      <TextEditingController>[].obs;
+  List<TextEditingController> eventCorporateControllers =
+      <TextEditingController>[].obs;
+  List<TextEditingController> stallPriceControllers =
+      <TextEditingController>[].obs;
   List<TextEditingController> thingsControllers = <TextEditingController>[].obs;
-  List<TextEditingController> powerToolsControllers = <TextEditingController>[].obs;
+  List<TextEditingController> powerToolsControllers =
+      <TextEditingController>[].obs;
 
   // TODO: companyControllersName
   TextEditingController coNameController = TextEditingController();
@@ -517,45 +766,66 @@ List eventImages=[
   TextEditingController coStreetController = TextEditingController();
   TextEditingController coAreaController = TextEditingController();
   TextEditingController coCityController = TextEditingController();
-  TextEditingController coStateController = TextEditingController(text: "Tamil Nadu");
+  TextEditingController coStateController =
+      TextEditingController(text: "Tamil Nadu");
   TextEditingController coPinCodeController = TextEditingController();
-  TextEditingController coCountryController = TextEditingController(text: "India");
+  TextEditingController coCountryController =
+      TextEditingController(text: "India");
 
-  var leadPersonalItems=1.obs,leadFieldItems=1.obs,leadSocialItems=1.obs,fbItems=1.obs,inItems=1.obs,stallItems=1.obs;
-  var leadMobiles = "".obs,leadNames= "".obs,leadTitles= "".obs,leadEmails= "".obs,leadWhatsApps= "".obs;
-  var mainLeadName="".obs,mainLeadMobile="".obs,mainLeadTitle="".obs,mainLeadEmail="".obs,mainLeadWhatsApp="".obs;
+  var leadPersonalItems = 1.obs,
+      leadFieldItems = 1.obs,
+      leadSocialItems = 1.obs,
+      fbItems = 1.obs,
+      inItems = 1.obs,
+      stallItems = 1.obs;
+  var leadMobiles = "".obs,
+      leadNames = "".obs,
+      leadTitles = "".obs,
+      leadEmails = "".obs,
+      leadWhatsApps = "".obs;
+  var mainLeadName = "".obs,
+      mainLeadMobile = "".obs,
+      mainLeadTitle = "".obs,
+      mainLeadEmail = "".obs,
+      mainLeadWhatsApp = "".obs;
   var emailMsg = "".obs;
   var fbMsg = "".obs;
-  var inMsg = "".obs,isAdmin=false.obs, isPanel = false.obs;
-RxString selectedCity='Chennai'.obs;
-RxString selectedState='Tamil Nadu'.obs;
+  var inMsg = "".obs, isAdmin = false.obs, isPanel = false.obs;
+  RxString selectedCity = 'Chennai'.obs;
+  RxString selectedState = 'Tamil Nadu'.obs;
 //selectedCity = 'Chennai'.obs,
   //,selectedState = 'State'.obs
-  RxString selectedCountry='India'.obs;
+  RxString selectedCountry = 'India'.obs;
 
   // TODO: DateTimeFunction
 
-  DateTime selectedDate = DateTime(DateTime.now().year,
-      DateTime.now().month, DateTime.now().day);
+  DateTime selectedDate =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   // TODO: imagePickerFunction
 
-  var count=1.obs;
-  final RoundedLoadingButtonController leadCtr = RoundedLoadingButtonController();
-  final RoundedLoadingButtonController productCtr =RoundedLoadingButtonController();
-  final RoundedLoadingButtonController emailCtr =RoundedLoadingButtonController();
-  final RoundedLoadingButtonController customerCtr =RoundedLoadingButtonController();
-  final RoundedLoadingButtonController employeeCtr =RoundedLoadingButtonController();
-  final RoundedLoadingButtonController loginCtr =RoundedLoadingButtonController();
+  var count = 1.obs;
+  final RoundedLoadingButtonController leadCtr =
+      RoundedLoadingButtonController();
+  final RoundedLoadingButtonController productCtr =
+      RoundedLoadingButtonController();
+  final RoundedLoadingButtonController emailCtr =
+      RoundedLoadingButtonController();
+  final RoundedLoadingButtonController customerCtr =
+      RoundedLoadingButtonController();
+  final RoundedLoadingButtonController employeeCtr =
+      RoundedLoadingButtonController();
+  final RoundedLoadingButtonController loginCtr =
+      RoundedLoadingButtonController();
 
+  DateTime dateTime =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
-  DateTime dateTime =DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  var selectPinCodeList = [];
+  var selectStateList = [];
+  var selectCityList = [];
 
-  var selectPinCodeList=[];
-  var selectStateList=[];
-  var selectCityList=[];
-
-  var pinCodeList=[
+  var pinCodeList = [
     {
       "PINCODE": 110001,
       "STATE": "Delhi",
@@ -1138,12 +1408,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "New Delhi",
       "LOCATION": "Delhi NCR"
     },
-    {
-      "PINCODE": 110099,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 110099, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 121001,
       "STATE": "Haryana",
@@ -1324,18 +1589,8 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Gurgaon",
       "LOCATION": "Delhi NCR"
     },
-    {
-      "PINCODE": 122021,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 122022,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 122021, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 122022, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 122050,
       "STATE": "Haryana",
@@ -1918,12 +2173,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Ghaziabad",
       "LOCATION": "Delhi NCR"
     },
-    {
-      "PINCODE": 201109,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 201109, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 201301,
       "STATE": "Uttar Pradesh",
@@ -2608,12 +2858,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Jaipur",
       "LOCATION": "Jaipur"
     },
-    {
-      "PINCODE": 302030,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 302030, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 302031,
       "STATE": "Rajasthan",
@@ -2686,12 +2931,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Jaipur",
       "LOCATION": "Jaipur"
     },
-    {
-      "PINCODE": 302043,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 302043, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 303007,
       "STATE": "Rajasthan",
@@ -2920,12 +3160,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Ajmer",
       "LOCATION": "Ajmer"
     },
-    {
-      "PINCODE": 305631,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 305631, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 305801,
       "STATE": "Rajasthan",
@@ -3472,12 +3707,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Gandhi Nagar",
       "LOCATION": "Gandhi Nagar"
     },
-    {
-      "PINCODE": 382027,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 382027, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 382030,
       "STATE": "Gujarat",
@@ -3592,12 +3822,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Gandhi Nagar",
       "LOCATION": "Gandhi Nagar"
     },
-    {
-      "PINCODE": 382325,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 382325, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 382330,
       "STATE": "Gujarat",
@@ -3616,12 +3841,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Ahmedabad",
       "LOCATION": "Ahmedabad"
     },
-    {
-      "PINCODE": 382346,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 382346, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 382350,
       "STATE": "Gujarat",
@@ -3814,12 +4034,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Gandhi Nagar",
       "LOCATION": "Gandhi Nagar"
     },
-    {
-      "PINCODE": 382722,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 382722, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 382725,
       "STATE": "Gujarat",
@@ -3910,30 +4125,10 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Mahesana",
       "LOCATION": "Mahesana"
     },
-    {
-      "PINCODE": 384441,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 384445,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 384470,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 384550,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 384441, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 384445, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 384470, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 384550, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 387001,
       "STATE": "Gujarat",
@@ -4600,12 +4795,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Bharuch",
       "LOCATION": "Bharuch"
     },
-    {
-      "PINCODE": 392002,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 392002, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 392011,
       "STATE": "Gujarat",
@@ -5134,12 +5324,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Mumbai",
       "LOCATION": "Mumbai MR"
     },
-    {
-      "PINCODE": 400045,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 400045, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 400047,
       "STATE": "Maharashtra",
@@ -5290,12 +5475,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Mumbai",
       "LOCATION": "Mumbai MR"
     },
-    {
-      "PINCODE": 400073,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 400073, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 400074,
       "STATE": "Maharashtra",
@@ -5452,12 +5632,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Mumbai",
       "LOCATION": "Mumbai MR"
     },
-    {
-      "PINCODE": 400100,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 400100, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 400101,
       "STATE": "Maharashtra",
@@ -5488,12 +5663,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Mumbai",
       "LOCATION": "Mumbai MR"
     },
-    {
-      "PINCODE": 400106,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 400106, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 400601,
       "STATE": "Maharashtra",
@@ -5830,12 +6000,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Pune",
       "LOCATION": "Pune"
     },
-    {
-      "PINCODE": 411000,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 411000, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 411001,
       "STATE": "Maharashtra",
@@ -5890,12 +6055,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Pune",
       "LOCATION": "Pune"
     },
-    {
-      "PINCODE": 411010,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 411010, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 411011,
       "STATE": "Maharashtra",
@@ -6166,12 +6326,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Pune",
       "LOCATION": "Pune"
     },
-    {
-      "PINCODE": 411056,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 411056, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 411057,
       "STATE": "Maharashtra",
@@ -6184,12 +6339,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Pune",
       "LOCATION": "Pune"
     },
-    {
-      "PINCODE": 411059,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 411059, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 411060,
       "STATE": "Maharashtra",
@@ -6208,90 +6358,25 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Pune",
       "LOCATION": "Pune"
     },
-    {
-      "PINCODE": 411063,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 411064,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 411066,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 411063, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 411064, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 411066, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 411067,
       "STATE": "Maharashtra",
       "DISTRICT": "Pune",
       "LOCATION": "Pune"
     },
-    {
-      "PINCODE": 411070,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 411074,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 411101,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 411103,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 411109,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 411201,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 411207,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 411208,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 411501,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 412035,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 411070, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 411074, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 411101, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 411103, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 411109, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 411201, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 411207, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 411208, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 411501, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 412035, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 412101,
       "STATE": "Maharashtra",
@@ -6484,18 +6569,8 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Ahmed Nagar",
       "LOCATION": "Ahmed Nagar"
     },
-    {
-      "PINCODE": 414404,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 414410,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 414404, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 414410, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 414601,
       "STATE": "Maharashtra",
@@ -6508,12 +6583,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Aurangabad",
       "LOCATION": "Aurangabad"
     },
-    {
-      "PINCODE": 420003,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 420003, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 421001,
       "STATE": "Maharashtra",
@@ -6526,12 +6596,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Thane",
       "LOCATION": "Mumbai MR"
     },
-    {
-      "PINCODE": 421003,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 421003, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 421004,
       "STATE": "Maharashtra",
@@ -6580,12 +6645,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Thane",
       "LOCATION": "Mumbai MR"
     },
-    {
-      "PINCODE": 421206,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 421206, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 421301,
       "STATE": "Maharashtra",
@@ -8440,12 +8500,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Hyderabad",
       "LOCATION": "Hyderabad"
     },
-    {
-      "PINCODE": 500105,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 500105, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 500107,
       "STATE": "Telangana",
@@ -8644,12 +8699,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Warangal",
       "LOCATION": "Warangal"
     },
-    {
-      "PINCODE": 506010,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 506010, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 506011,
       "STATE": "Telangana",
@@ -8668,12 +8718,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Warangal",
       "LOCATION": "Warangal"
     },
-    {
-      "PINCODE": 506063,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 506063, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 506151,
       "STATE": "Telangana",
@@ -8686,12 +8731,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Warangal",
       "LOCATION": "Warangal"
     },
-    {
-      "PINCODE": 506234,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 506234, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 506310,
       "STATE": "Telangana",
@@ -8722,36 +8762,16 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Warangal",
       "LOCATION": "Warangal"
     },
-    {
-      "PINCODE": 506333,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 506333, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 506342,
       "STATE": "Telangana",
       "DISTRICT": "Warangal",
       "LOCATION": "Warangal"
     },
-    {
-      "PINCODE": 506350,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 506359,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 506360,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 506350, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 506359, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 506360, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 506365,
       "STATE": "Telangana",
@@ -10258,12 +10278,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Guntur",
       "LOCATION": "Guntur"
     },
-    {
-      "PINCODE": 522203,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 522203, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 522212,
       "STATE": "Andhra Pradesh",
@@ -11002,12 +11017,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Visakhapatnam",
       "LOCATION": "Visakhapatnam"
     },
-    {
-      "PINCODE": 530010,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 530010, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 530011,
       "STATE": "Andhra Pradesh",
@@ -11056,48 +11066,28 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Visakhapatnam",
       "LOCATION": "Visakhapatnam"
     },
-    {
-      "PINCODE": 530019,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 530019, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 530020,
       "STATE": "Andhra Pradesh",
       "DISTRICT": "Visakhapatnam",
       "LOCATION": "Visakhapatnam"
     },
-    {
-      "PINCODE": 530021,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 530021, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 530022,
       "STATE": "Andhra Pradesh",
       "DISTRICT": "Visakhapatnam",
       "LOCATION": "Visakhapatnam"
     },
-    {
-      "PINCODE": 530023,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 530023, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 530024,
       "STATE": "Andhra Pradesh",
       "DISTRICT": "Visakhapatnam",
       "LOCATION": "Visakhapatnam"
     },
-    {
-      "PINCODE": 530025,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 530025, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 530026,
       "STATE": "Andhra Pradesh",
@@ -11122,12 +11112,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Visakhapatnam",
       "LOCATION": "Visakhapatnam"
     },
-    {
-      "PINCODE": 530030,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 530030, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 530031,
       "STATE": "Andhra Pradesh",
@@ -11140,48 +11125,18 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Visakhapatnam",
       "LOCATION": "Visakhapatnam"
     },
-    {
-      "PINCODE": 530033,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 530034,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 530033, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 530034, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 530035,
       "STATE": "Andhra Pradesh",
       "DISTRICT": "Visakhapatnam",
       "LOCATION": "Visakhapatnam"
     },
-    {
-      "PINCODE": 530036,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 530037,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 530038,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 530039,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 530036, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 530037, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 530038, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 530039, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 530040,
       "STATE": "Andhra Pradesh",
@@ -11194,12 +11149,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Visakhapatnam",
       "LOCATION": "Visakhapatnam"
     },
-    {
-      "PINCODE": 530042,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 530042, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 530043,
       "STATE": "Andhra Pradesh",
@@ -11242,12 +11192,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Visakhapatnam",
       "LOCATION": "Visakhapatnam"
     },
-    {
-      "PINCODE": 530050,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 530050, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 530051,
       "STATE": "Andhra Pradesh",
@@ -11416,12 +11361,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "East Godavari",
       "LOCATION": "East Godavari"
     },
-    {
-      "PINCODE": 533007,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 533007, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 533016,
       "STATE": "Andhra Pradesh",
@@ -12844,12 +12784,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Bengaluru",
       "LOCATION": "Bangalore"
     },
-    {
-      "PINCODE": 560101,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 560101, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 560102,
       "STATE": "Karnataka",
@@ -12874,12 +12809,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Bengaluru",
       "LOCATION": "Bangalore"
     },
-    {
-      "PINCODE": 560106,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 560106, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 560108,
       "STATE": "Karnataka",
@@ -13180,12 +13110,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Mysuru",
       "LOCATION": "Mysuru"
     },
-    {
-      "PINCODE": 570013,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 570013, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 570014,
       "STATE": "Karnataka",
@@ -14404,12 +14329,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Dharwad",
       "LOCATION": "Dharwad"
     },
-    {
-      "PINCODE": 580201,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 580201, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 581103,
       "STATE": "Karnataka",
@@ -17146,12 +17066,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Theni",
       "LOCATION": "Theni"
     },
-    {
-      "PINCODE": 625566,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 625566, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 625577,
       "STATE": "Tamil Nadu",
@@ -18094,24 +18009,9 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Vellore",
       "LOCATION": "Vellore"
     },
-    {
-      "PINCODE": 632052,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 632053,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
-    {
-      "PINCODE": 632054,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 632052, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 632053, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
+    {"PINCODE": 632054, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 632055,
       "STATE": "Tamil Nadu",
@@ -19696,12 +19596,7 @@ RxString selectedState='Tamil Nadu'.obs;
       "DISTRICT": "Coimbatore",
       "LOCATION": "Coimbatore"
     },
-    {
-      "PINCODE": 652005,
-      "STATE": 0,
-      "DISTRICT": 0,
-      "LOCATION": 0
-    },
+    {"PINCODE": 652005, "STATE": 0, "DISTRICT": 0, "LOCATION": 0},
     {
       "PINCODE": 700001,
       "STATE": "West Bengal",
@@ -28001,6 +27896,4 @@ RxString selectedState='Tamil Nadu'.obs;
       "LOCATION": "Medak"
     }
   ];
-
-
 }

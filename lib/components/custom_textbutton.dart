@@ -8,43 +8,44 @@ class ButtonWidget extends StatelessWidget {
   final VoidCallback onClicked;
   final IconData? icon;
   final bool isIcon;
-  final  double? width;
+  final double? width;
 
   const ButtonWidget({
     super.key,
     required this.text,
-    required this.onClicked, required this.isIcon, this.icon, this.width,
+    required this.onClicked,
+    required this.isIcon,
+    this.icon,
+    this.width,
   });
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    width: width,
-    child: OutlinedButton(
-      style: ElevatedButton.styleFrom(
-        minimumSize: const Size.fromHeight(40),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: BorderSide(
-            color: colorsConst.third
-          )
-        )
-      ),
-      onPressed: onClicked,
-      child: isIcon==true?Wrap(
-        spacing:8.0,
-        children: [
-          CustomText(
-            text: text,
-            size: 12,
-          ),
-          Icon(icon)
-        ],
-      ): FittedBox(
-        child: CustomText(
-          text: text,
-          colors: colorsConst.textColor,
+        width: width,
+        child: OutlinedButton(
+          style: ElevatedButton.styleFrom(
+              minimumSize: const Size.fromHeight(40),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  side: BorderSide(color: colorsConst.third))),
+          onPressed: onClicked,
+          child: isIcon == true
+              ? Wrap(
+                  spacing: 8.0,
+                  children: [
+                    CustomText(
+                      text: text,
+                      size: 12,
+                    ),
+                    Icon(icon)
+                  ],
+                )
+              : FittedBox(
+                  child: CustomText(
+                    text: text,
+                    colors: colorsConst.textColor,
+                  ),
+                ),
         ),
-      ),
-    ),
-  );
+      );
 }

@@ -1,4 +1,3 @@
-
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:fullcomm_crm/common/constant/default_constant.dart';
 import 'package:fullcomm_crm/common/extentions/int_extensions.dart';
@@ -16,18 +15,20 @@ import 'common/widgets/log_in.dart';
 import 'components/custom_text.dart';
 import 'controller/controller.dart';
 
-
 Future<void> main() async {
   await GetStorage.init();
-  final prefs =await SharedPreferences.getInstance();
-  final loginScreen= prefs.getBool("loginScreen")??false;
-  runApp(MyApp(loginScreen: loginScreen,));
+  final prefs = await SharedPreferences.getInstance();
+  final loginScreen = prefs.getBool("loginScreen") ?? false;
+  runApp(MyApp(
+    loginScreen: loginScreen,
+  ));
 }
 
 class MyInheritedWidget extends InheritedWidget {
   final int data;
 
-  const MyInheritedWidget({super.key, required this.data, required super.child});
+  const MyInheritedWidget(
+      {super.key, required this.data, required super.child});
 
   @override
   bool updateShouldNotify(MyInheritedWidget oldWidget) {
@@ -41,10 +42,10 @@ class MyInheritedWidget extends InheritedWidget {
 
 class MyApp extends StatelessWidget {
   final bool loginScreen;
-  const MyApp({super.key,required this.loginScreen});
+  const MyApp({super.key, required this.loginScreen});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return MyInheritedWidget(
       data: 42,
       child: GetMaterialApp(
@@ -62,16 +63,17 @@ class MyApp extends StatelessWidget {
             trackColor: MaterialStateProperty.all(const Color(0xff2C3557)),
             thickness: MaterialStateProperty.all(5),
             radius: const Radius.circular(10),
-
           ),
         ),
 
-        home:  SelectionArea(child: SplashScreen(loginScreen: loginScreen,)),
+        home: SelectionArea(
+            child: SplashScreen(
+          loginScreen: loginScreen,
+        )),
       ),
     );
   }
 }
-
 
 // class ZengrafDashboard extends StatelessWidget {
 //   @override
@@ -339,13 +341,13 @@ class LineChartWidget extends StatelessWidget {
   const LineChartWidget({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return LineChart(
       LineChartData(
         gridData: FlGridData(
           show: true,
           drawVerticalLine: true,
-          getDrawingHorizontalLine:(value) {
+          getDrawingHorizontalLine: (value) {
             return const FlLine(
               color: Colors.white24,
               strokeWidth: 1,
@@ -370,12 +372,10 @@ class LineChartWidget extends StatelessWidget {
               showTitles: true,
               interval: 50,
               reservedSize: 40,
-              getTitlesWidget: (value, meta){
+              getTitlesWidget: (value, meta) {
                 return Text(
                   value.toInt().toString(),
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12),
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
                 );
               },
             ),
@@ -386,13 +386,14 @@ class LineChartWidget extends StatelessWidget {
               interval: 1,
               getTitlesWidget: (value, meta) {
                 //var conData="";
-                Widget text(String text){
+                Widget text(String text) {
                   return CustomText(
-                    text:text,
+                    text: text,
                     colors: const Color(0xffE1E5FA),
                     size: 12,
                   );
                 }
+
                 switch (value.toInt()) {
                   case 1:
                     return text('Jan');
@@ -434,7 +435,7 @@ class LineChartWidget extends StatelessWidget {
         maxY: 250,
         lineBarsData: [
           LineChartBarData(
-            spots:[
+            spots: [
               FlSpot(1, 40),
               FlSpot(2, 40),
               FlSpot(3, 20),
@@ -466,14 +467,15 @@ class RatingCard extends StatelessWidget {
   final String title;
   final String value;
 
-  const RatingCard({super.key,
+  const RatingCard({
+    super.key,
     required this.color,
     required this.title,
     required this.value,
   });
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Expanded(
       child: Card(
         child: Padding(
@@ -510,20 +512,22 @@ class RatingCard extends StatelessWidget {
     );
   }
 }
+
 //
 class InfoCard extends StatelessWidget {
   final String title;
   final String value;
   final String? additionalInfo;
 
-  const InfoCard({super.key,
+  const InfoCard({
+    super.key,
     required this.title,
     required this.value,
     this.additionalInfo,
   });
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -554,11 +558,9 @@ class InfoCard extends StatelessWidget {
   }
 }
 
-
-
 class SplashScreen extends StatefulWidget {
   final bool loginScreen;
-  const SplashScreen({super.key,required this.loginScreen});
+  const SplashScreen({super.key, required this.loginScreen});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -566,73 +568,73 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState(){
+  void initState() {
     super.initState();
     apiService.getRoles();
     apiService.getLeadCategory();
     apiService.getVisitType();
-    //mapController.determinePosition();
-    //controllers.allProductFuture=apiService.allProductDetails();
-    apiService.allLeadsDetails();
-    apiService.allNewLeadsDetails();
-    controllers.allGoodLeadFuture=apiService.allGoodLeadsDetails();
-    controllers.allCustomerFuture=apiService.allCustomerDetails();
-
-   //  Future.delayed(Duration.zero,(){
-   //    setState(() {
-   //    controllers.selectStateList=[];
-   //    for (var entry in controllers.pinCodeList){
-   //      if (entry['STATE'] is String && !controllers.selectStateList.contains(entry['STATE'])) {
-   //        controllers.selectStateList.add(entry['STATE']);
-   //      }
-   //    }
-   //    for (var item in controllers.stateList){
-   //      if (!controllers.selectStateList.contains(item)){
-   //        print(item);
-   //      }
-   //    }
-   //   controllers.selectCityList=[];
-   //   for (var entry in controllers.pinCodeList){
-   //     if (entry['STATE'] == "Tamil Nadu" && entry['DISTRICT'] is String){
-   //       if (!controllers.selectCityList.contains(entry['DISTRICT'])) {
-   //         controllers.selectCityList.add(entry['DISTRICT'].toString().trim());
-   //       }
-   //     }
-   //   }
-   // });
-   //
-   //  });
+    if (widget.loginScreen) {
+      apiService.allLeadsDetails();
+      apiService.allNewLeadsDetails();
+      controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
+      controllers.allCustomerFuture = apiService.allCustomerDetails();
+    }
+    //  Future.delayed(Duration.zero,(){
+    //    setState(() {
+    //    controllers.selectStateList=[];
+    //    for (var entry in controllers.pinCodeList){
+    //      if (entry['STATE'] is String && !controllers.selectStateList.contains(entry['STATE'])) {
+    //        controllers.selectStateList.add(entry['STATE']);
+    //      }
+    //    }
+    //    for (var item in controllers.stateList){
+    //      if (!controllers.selectStateList.contains(item)){
+    //        print(item);
+    //      }
+    //    }
+    //   controllers.selectCityList=[];
+    //   for (var entry in controllers.pinCodeList){
+    //     if (entry['STATE'] == "Tamil Nadu" && entry['DISTRICT'] is String){
+    //       if (!controllers.selectCityList.contains(entry['DISTRICT'])) {
+    //         controllers.selectCityList.add(entry['DISTRICT'].toString().trim());
+    //       }
+    //     }
+    //   }
+    // });
+    //
+    //  });
     //controllers.allCompanyFuture=apiService.allCompanyDetails();
     //controllers.allEmployeeFuture=apiService.allEmployeeDetails();
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       duration: 300,
       splashIconSize: 800,
       splashTransition: SplashTransition.fadeTransition,
-      splash:Container(
-        color:Colors.white,
-        width:double.infinity,
-        height:double.infinity,
-        child:Column(
+      splash: Container(
+        color: Colors.white,
+        width: double.infinity,
+        height: double.infinity,
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children:[
+          children: [
             //Image.asset("assets/images/app_logo.png",fit: BoxFit.fill,),
-            CustomText(text:"$appName CRM",
-              size: 30,colors: colorsConst.primary,
-              isBold: true,)
+            CustomText(
+              text: "$appName CRM",
+              size: 30,
+              colors: colorsConst.primary,
+              isBold: true,
+            )
           ],
         ),
       ),
       pageTransitionType: PageTransitionType.fade,
-      nextScreen:widget.loginScreen==false?
-      const LoginPage():const Dashboard(),
+      nextScreen:
+          widget.loginScreen == false ? const LoginPage() : const Dashboard(),
       //nextScreen:widget.loginScreen?const BottomPage():const LoginPage(),
       //nextScreen:const BottomPage(),
     );
   }
 }
-
-

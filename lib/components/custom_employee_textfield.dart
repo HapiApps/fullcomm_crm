@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -31,70 +30,81 @@ class CustomEmployeeTextField extends StatefulWidget {
   final void Function()? onPressed;
   final void Function()? onEdit;
 
-  const CustomEmployeeTextField({Key? key, required this.text, this.height=70, this.width=270,
-    required this.controller, this.focusNode, this.onChanged, this.onTap, this.keyboardType=TextInputType.text,
-    this.textInputAction=TextInputAction.next, this.textCapitalization=TextCapitalization.words, this.validator,
-    this.inputFormatters,
-    this.hintText, this.isIcon, this.iconData,
-    this.isShadow=false, this.isLogin=false,this.image,
-    this.onPressed,this.prefixText,this.onEdit
-  }) : super(key: key);
+  const CustomEmployeeTextField(
+      {Key? key,
+      required this.text,
+      this.height = 70,
+      this.width = 270,
+      required this.controller,
+      this.focusNode,
+      this.onChanged,
+      this.onTap,
+      this.keyboardType = TextInputType.text,
+      this.textInputAction = TextInputAction.next,
+      this.textCapitalization = TextCapitalization.words,
+      this.validator,
+      this.inputFormatters,
+      this.hintText,
+      this.isIcon,
+      this.iconData,
+      this.isShadow = false,
+      this.isLogin = false,
+      this.image,
+      this.onPressed,
+      this.prefixText,
+      this.onEdit})
+      : super(key: key);
 
   @override
-  State<CustomEmployeeTextField> createState() => _CustomEmployeeTextFieldState();
-
+  State<CustomEmployeeTextField> createState() =>
+      _CustomEmployeeTextFieldState();
 }
 
 class _CustomEmployeeTextFieldState extends State<CustomEmployeeTextField> {
-
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:[
-            CustomText(
-              text:widget.text,
-              colors:colorsConst.secondary,
-              size:15,
-            ),
-            SizedBox(
-              width: widget.width,
-              height: 50,
-              child: Obx(() => TextFormField(
+      children: [
+        CustomText(
+          text: widget.text,
+          colors: colorsConst.secondary,
+          size: 15,
+        ),
+        SizedBox(
+            width: widget.width,
+            height: 50,
+            child: Obx(
+              () => TextFormField(
                   style: const TextStyle(
-                      color:Colors.black,fontSize:15,
-                      fontFamily:"Lato"
-                  ),
+                      color: Colors.black, fontSize: 15, fontFamily: "Lato"),
                   // readOnly: widget.controller==controllers.upDOBController||widget.controller==controllers.upDOBController?true:false,
-                  obscureText: widget.controller==controllers.loginPassword||widget.controller==controllers.signPassword?!controllers.isEyeOpen.value:controllers.isPanel.value,
+                  obscureText: widget.controller == controllers.loginPassword ||
+                          widget.controller == controllers.signPassword
+                      ? !controllers.isEyeOpen.value
+                      : controllers.isPanel.value,
                   // focusNode: FocusNode(),
                   cursorColor: Colors.black,
-                  cursorHeight:20,
-
-                  onChanged:widget.onChanged,
-                  onTap:widget.onTap,
+                  cursorHeight: 20,
+                  onChanged: widget.onChanged,
+                  onTap: widget.onTap,
                   inputFormatters: widget.inputFormatters,
                   textCapitalization: widget.textCapitalization!,
                   textInputAction: widget.textInputAction,
                   keyboardType: widget.keyboardType,
                   validator: widget.validator,
                   controller: widget.controller,
-                  onEditingComplete:widget.onEdit,
+                  onEditingComplete: widget.onEdit,
                   decoration: customStyle.inputDecoration(
                       text: widget.hintText,
                       iconData: widget.iconData,
                       image: widget.image,
                       isIcon: widget.isIcon,
                       isLogin: widget.isLogin,
-                      onPressed: widget.onPressed
-                  )
-              ),
-              )
-            ),
-
+                      onPressed: widget.onPressed)),
+            )),
         25.height
       ],
     );
   }
-
 }

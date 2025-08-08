@@ -36,7 +36,6 @@
 //   return base64UrlEncode(keyBytes);
 // }
 
-
 import 'dart:convert';
 
 Codec<String, String> stringToBase64 = utf8.fuse(base64);

@@ -16,7 +16,8 @@ class Quotations extends StatefulWidget {
   final String? mainEmail;
   final String? city;
   final String? companyName;
-  const Quotations({super.key,
+  const Quotations({
+    super.key,
     this.id,
     this.mainName,
     this.mainMobile,
@@ -31,45 +32,44 @@ class Quotations extends StatefulWidget {
 
 class _QuotationsState extends State<Quotations> {
   @override
-  void initState(){
+  void initState() {
     // TODO: implement initState
     super.initState();
-    controllers.mailReceivesList.value=[];
+    controllers.mailReceivesList.value = [];
     apiService.mailReceiveDetails(widget.id.toString());
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return SelectionArea(
       child: Scaffold(
         backgroundColor: colorsConst.primary,
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children:[
+          children: [
             utils.sideBarFunction(context),
             Container(
-                width:MediaQuery.of(context).size.width-490,
+                width: MediaQuery.of(context).size.width - 490,
                 height: MediaQuery.of(context).size.height,
                 alignment: Alignment.center,
-                child:SingleChildScrollView(
+                child: SingleChildScrollView(
                   child: Column(
-                    children:[
+                    children: [
                       20.height,
                       Row(
-                        children:[
+                        children: [
                           CustomText(
                             text: "Quotations",
                             colors: colorsConst.textColor,
                             size: 20,
                             isBold: true,
                           ),
-
                         ],
                       ),
                       40.height,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children:[
+                        children: [
                           CustomText(
                             text: widget.mainName.toString(),
                             colors: colorsConst.textColor,
@@ -104,44 +104,53 @@ class _QuotationsState extends State<Quotations> {
                       ),
                       20.height,
                       SizedBox(
-                        height: MediaQuery.of(context).size.height-200,
-                        child: Obx(() => ListView.builder(
-                            itemCount: controllers.mailReceivesList.length,
-                            itemBuilder:(context,index){
-                              return Column(
-                                children:[
-                                  Row(
+                          height: MediaQuery.of(context).size.height - 200,
+                          child: Obx(
+                            () => ListView.builder(
+                                itemCount: controllers.mailReceivesList.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
                                     children: [
-                                      CircleAvatar(
-                                        backgroundColor: const Color(0xffAFC8D9),
-                                        radius: 15,
-                                        child: Icon(Icons.email,color: colorsConst.primary,size: 15,),
-
-                                      ),
-                                      8.width,
-                                      Container(
-                                        width: 150,
-                                        height: 30,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            color:const Color(0xffAFC8D9),
-                                            borderRadius: BorderRadius.circular(15)
-                                        ),
-                                        child: CustomText(
-                                          //textAlign: TextAlign.start,
-                                          text:controllers.mailReceivesList[index]['sent_date'],
-                                          colors:colorsConst.primary,
-                                          size: 13,
-                                          isBold: true,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-      30.height,
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children:[
+                                        children: [
+                                          CircleAvatar(
+                                            backgroundColor:
+                                                const Color(0xffAFC8D9),
+                                            radius: 15,
+                                            child: Icon(
+                                              Icons.email,
+                                              color: colorsConst.primary,
+                                              size: 15,
+                                            ),
+                                          ),
+                                          8.width,
+                                          Container(
+                                            width: 150,
+                                            height: 30,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                                color: const Color(0xffAFC8D9),
+                                                borderRadius:
+                                                    BorderRadius.circular(15)),
+                                            child: CustomText(
+                                              //textAlign: TextAlign.start,
+                                              text: controllers
+                                                      .mailReceivesList[index]
+                                                  ['sent_date'],
+                                              colors: colorsConst.primary,
+                                              size: 13,
+                                              isBold: true,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      30.height,
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
                                           CustomText(
                                             text: "Comment",
                                             colors: colorsConst.headColor,
@@ -149,19 +158,21 @@ class _QuotationsState extends State<Quotations> {
                                           ),
                                           60.width,
                                           Container(
-
                                             decoration: BoxDecoration(
-                                                color:colorsConst.secondary,
-                                              borderRadius: BorderRadius.circular(15)
-                                            ),
+                                                color: colorsConst.secondary,
+                                                borderRadius:
+                                                    BorderRadius.circular(15)),
                                             alignment: Alignment.center,
-
                                             width: 520,
-
                                             child: Padding(
-                                              padding: const EdgeInsets.all(20.0),
+                                              padding:
+                                                  const EdgeInsets.all(20.0),
                                               child: CustomText(
-                                                text:controllers.mailReceivesList[index]['message'].toString().trim(),
+                                                text: controllers
+                                                    .mailReceivesList[index]
+                                                        ['message']
+                                                    .toString()
+                                                    .trim(),
                                                 size: 15,
                                                 textAlign: TextAlign.start,
                                                 colors: colorsConst.textColor,
@@ -171,16 +182,14 @@ class _QuotationsState extends State<Quotations> {
                                           ),
                                         ],
                                       ),
-                                  30.height,
-
-                                ],
-                              );
-                            }),)
-                      ),
+                                      30.height,
+                                    ],
+                                  );
+                                }),
+                          )),
                     ],
                   ),
-                )
-            ),
+                )),
             utils.funnelContainer(context)
           ],
         ),

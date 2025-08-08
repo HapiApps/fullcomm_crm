@@ -1,4 +1,3 @@
-
 class GoodLeadObj {
   final String? userId;
   final String? addressId;
@@ -38,47 +37,45 @@ class GoodLeadObj {
   final String? numOfHeadcount;
   final String? expectedBillingValue;
 
-  GoodLeadObj({
-    this.userId,
-    this.addressId,
-    this.firstname,
-    this.lineId,
-    this.mobileNumber,
-    this.emergencyName,
-    this.emergencyNumber,
-    this.emailId,
-    this.type,
-    this.referredBy,
-    this.img1,
-    this.img2,
-    this.doorNo,
-    this.area,
-    this.landmark1,
-    this.city,
-    this.country,
-    this.state,
-    this.pincode,
-    this.tier,
-    this.lat,
-    this.lng,
-    this.companyName,
-    this.quotationUpdate,
-    this.rating,
-    this.status,
-    this.active,
-    this.leadStatus,
-    this.arpuValue,
-    this.expectedBillingValue,
-    this.expectedConvertionDate,
-    this.numOfHeadcount,
-    this.owner,
-    this.prospectEnrollmentDate,
-    this.source,
-    this.sourceDetails,
-    this.statusUpdate
-
-  });
-  factory GoodLeadObj.fromJson(Map<String, dynamic> json){
+  GoodLeadObj(
+      {this.userId,
+      this.addressId,
+      this.firstname,
+      this.lineId,
+      this.mobileNumber,
+      this.emergencyName,
+      this.emergencyNumber,
+      this.emailId,
+      this.type,
+      this.referredBy,
+      this.img1,
+      this.img2,
+      this.doorNo,
+      this.area,
+      this.landmark1,
+      this.city,
+      this.country,
+      this.state,
+      this.pincode,
+      this.tier,
+      this.lat,
+      this.lng,
+      this.companyName,
+      this.quotationUpdate,
+      this.rating,
+      this.status,
+      this.active,
+      this.leadStatus,
+      this.arpuValue,
+      this.expectedBillingValue,
+      this.expectedConvertionDate,
+      this.numOfHeadcount,
+      this.owner,
+      this.prospectEnrollmentDate,
+      this.source,
+      this.sourceDetails,
+      this.statusUpdate});
+  factory GoodLeadObj.fromJson(Map<String, dynamic> json) {
     return GoodLeadObj(
       userId: json["user_id"],
       addressId: json["address_id"],
@@ -118,5 +115,4 @@ class GoodLeadObj {
       expectedBillingValue: json['expected_billing_value'],
     );
   }
-
 }

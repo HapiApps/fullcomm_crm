@@ -1,11 +1,12 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import '../common/constant/colors_constant.dart';
 import '../common/styles/styles.dart';
 import '../common/utilities/utils.dart';
 import '../controller/controller.dart';
+import 'custom_text.dart';
 
 class CustomPasswordTextField extends StatefulWidget {
   final String text;
@@ -31,26 +32,43 @@ class CustomPasswordTextField extends StatefulWidget {
   final VoidCallback? onPressed;
   final VoidCallback? onEdit;
 
-  const CustomPasswordTextField({super.key, required this.text, this.height=70, this.width=270,
-    required this.controller, this.focusNode, this.onChanged, this.onTap, this.keyboardType=TextInputType.text,
-    this.textInputAction=TextInputAction.next, this.textCapitalization=TextCapitalization.words, this.validator,
-    this.inputFormatters,
-    this.hintText, this.isIcon, this.iconData,
-    this.isShadow=false, this.isLogin=false,this.image,
-    this.onPressed,this.prefixText,this.onEdit,required this.isOptional
-  });
+  const CustomPasswordTextField(
+      {super.key,
+      required this.text,
+      this.height = 70,
+      this.width = 270,
+      required this.controller,
+      this.focusNode,
+      this.onChanged,
+      this.onTap,
+      this.keyboardType = TextInputType.text,
+      this.textInputAction = TextInputAction.next,
+      this.textCapitalization = TextCapitalization.words,
+      this.validator,
+      this.inputFormatters,
+      this.hintText,
+      this.isIcon,
+      this.iconData,
+      this.isShadow = false,
+      this.isLogin = false,
+      this.image,
+      this.onPressed,
+      this.prefixText,
+      this.onEdit,
+      required this.isOptional});
 
   @override
-  State<CustomPasswordTextField> createState() => _CustomPasswordTextFieldState();
+  State<CustomPasswordTextField> createState() =>
+      _CustomPasswordTextFieldState();
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties){
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(ObjectFlagProperty<VoidCallback?>.has('onPressed', onPressed));
+    properties
+        .add(ObjectFlagProperty<VoidCallback?>.has('onPressed', onPressed));
   }
 }
 
 class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
-
   // late FocusNode _focusNode;
   // @override
   // void initState() {
@@ -64,50 +82,65 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
   // }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
-      children:[
-        utils.textFieldNearText(widget.text,widget.isOptional),
+      children: [
+        Row(
+          children: [
+            CustomText(
+              text: widget.text,
+              textAlign: TextAlign.start,
+              colors: colorsConst.headColor,
+              size: 15,
+            ),
+            widget.isOptional == true
+                ? const CustomText(
+                    text: "*",
+                    colors: Colors.red,
+                    size: 25,
+                  )
+                : 0.width
+          ],
+        ),
         SizedBox(
           width: widget.width,
-         // height:80,
+          // height:80,
           child: Center(
             child: TextFormField(
+                key: ValueKey(widget.text),
                 style: const TextStyle(
-                    color:Colors.white,
-                    fontSize:15,
-                    fontFamily:"Lato"
-                ),
+                    color: Colors.white, fontSize: 15, fontFamily: "Lato"),
                 // readOnly: widget.controller==controllers.upDOBController||widget.controller==controllers.upDOBController?true:false,
-                obscureText: widget.controller==controllers.loginPassword||widget.controller==controllers.signupPasswordController?!controllers.isEyeOpen.value:false,
+                obscureText: widget.controller == controllers.loginPassword ||
+                        widget.controller ==
+                            controllers.signupPasswordController
+                    ? !controllers.isEyeOpen.value
+                    : false,
                 // focusNode: FocusNode(),
                 cursorColor: Colors.white,
-                focusNode:widget.focusNode,
-                onChanged:widget.onChanged,
-                onTap:widget.onTap,
+                focusNode: widget.focusNode,
+                onChanged: widget.onChanged,
+                onTap: widget.onTap,
                 inputFormatters: widget.inputFormatters,
                 textCapitalization: widget.textCapitalization!,
                 textInputAction: widget.textInputAction,
                 keyboardType: widget.keyboardType,
                 validator: widget.validator,
                 controller: widget.controller,
-                onEditingComplete:widget.onEdit,
+                onEditingComplete: widget.onEdit,
                 decoration: customStyle.inputDecoration(
                     text: widget.hintText,
                     iconData: widget.iconData,
                     image: widget.image,
                     isIcon: widget.isIcon,
                     isLogin: widget.isLogin,
-                    onPressed: widget.onPressed
-                )
-            ),
+                    onPressed: widget.onPressed)),
           ),
         ),
         20.height
       ],
     );
   }
-
 }
