@@ -20,12 +20,12 @@ class CustomDateBox extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // CustomText(
-        //   text:text,
-        //   colors:colorsConst.secondary,
-        //   size:13,
-        //   isBold: true,
-        // ),
+        CustomText(
+          text:text,
+          colors:colorsConst.textColor,
+          size:13,
+          isBold: true,
+        ),
         InkWell(
           onTap: onTap,
           child: Container(

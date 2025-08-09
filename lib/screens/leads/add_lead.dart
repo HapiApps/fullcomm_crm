@@ -394,10 +394,8 @@ class _AddLeadState extends State<AddLead> {
                                                                 .third,
                                                             size: 16,
                                                             isBold: true),
-                                                    selectedBorderColor:
-                                                        Colors.transparent,
-                                                    selectedColor:
-                                                        Colors.transparent,
+                                                    selectedBorderColor: Colors.transparent,
+                                                    selectedColor: Colors.transparent,
                                                     unselectedBorderColor:
                                                         Colors.transparent,
                                                     unselectedColor:
@@ -533,35 +531,30 @@ class _AddLeadState extends State<AddLead> {
                                             ),
                                       15.height,
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: [
+                                          // Column(
+                                          //   crossAxisAlignment: CrossAxisAlignment.start,
+                                          //   mainAxisAlignment: MainAxisAlignment.start,
+                                          //   children: [
+                                          //     utils.textFieldNearText(
+                                          //         'Name', true),
+                                          //     30.height,
+                                          //     utils.textFieldNearText(
+                                          //         'Mobile Number', true),
+                                          //     10.height,
+                                          //     utils.textFieldNearText(
+                                          //         'Whatsapp Number', true),
+                                          //     10.height,
+                                          //   ],
+                                          // ),
+                                          // 1.width,
                                           Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              utils.textFieldNearText(
-                                                  'Name', true),
-                                              30.height,
-                                              utils.textFieldNearText(
-                                                  'Mobile Number', true),
-                                              10.height,
-                                              utils.textFieldNearText(
-                                                  'Whatsapp Number', true),
-                                              10.height,
-                                            ],
-                                          ),
-                                          1.width,
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            mainAxisAlignment: MainAxisAlignment.end,
                                             children: [
                                               CustomTextField(
-                                                hintText: "",
+                                                hintText: "Name",
                                                 text: "Name",
                                                 isOptional: false,
                                                 controller: controllers
@@ -781,7 +774,7 @@ class _AddLeadState extends State<AddLead> {
                                               ),
                                               10.height,
                                               CustomTextField(
-                                                hintText: "",
+                                                hintText: "Whatsapp No",
                                                 text: "Whats",
                                                 controller: controllers
                                                     .leadWhatsCrt[index],
@@ -839,37 +832,30 @@ class _AddLeadState extends State<AddLead> {
                                             ],
                                           ),
                                           SizedBox(
-                                            width: (MediaQuery.of(context)
-                                                        .size
-                                                        .width -
-                                                    400) /
-                                                4.5,
+                                            width: (MediaQuery.of(context).size.width - 500) / 4.5,
                                           ),
+                                          // Column(
+                                          //   crossAxisAlignment:
+                                          //       CrossAxisAlignment.start,
+                                          //   children: [
+                                          //     utils.textFieldNearText(
+                                          //         'Account Manager (Optional)',
+                                          //         false),
+                                          //     utils.textFieldNearText(
+                                          //         'Email Id (Optional)', false),
+                                          //     10.height,
+                                          //     utils.textFieldNearText(
+                                          //         'Date Of Connection', false),
+                                          //     10.height,
+                                          //   ],
+                                          // ),
                                           Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              utils.textFieldNearText(
-                                                  'Account Manager (Optional)',
-                                                  false),
-                                              utils.textFieldNearText(
-                                                  'Email Id (Optional)', false),
-                                              10.height,
-                                              utils.textFieldNearText(
-                                                  'Date Of Connection', false),
-                                              10.height,
-                                            ],
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
                                               CustomTextField(
-                                                hintText: "",
-                                                text:
-                                                    "Account Manager (Optional)",
+                                                hintText: "Account Manager (Optional)",
+                                                text: "Account Manager (Optional)",
                                                 controller: controllers
                                                     .leadTitleCrt[index],
                                                 width: textFieldSize,
@@ -900,7 +886,7 @@ class _AddLeadState extends State<AddLead> {
                                                 // }
                                               ),
                                               CustomTextField(
-                                                hintText: "",
+                                                hintText: "Email Id (Optional)",
                                                 text: "Email Id (Optional)",
                                                 controller: controllers
                                                     .leadEmailCrt[index],
@@ -943,8 +929,7 @@ class _AddLeadState extends State<AddLead> {
                                                         textEditingController:
                                                             controllers
                                                                 .dateOfConCtr,
-                                                        pathVal:
-                                                            controllers.empDOB);
+                                                        pathVal: controllers.empDOB);
                                                   },
                                                 ),
                                               ),
@@ -977,23 +962,23 @@ class _AddLeadState extends State<AddLead> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  utils.textFieldNearText(
-                                      'Company Name', false),
-                                  utils.textFieldNearText(
-                                      'Company Phone No', false),
-                                  utils.textFieldNearText('Industry', false),
-                                  utils.textFieldNearText('Linkedin', false),
-                                ],
-                              ),
-                              5.width,
+                              // Column(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: [
+                              //     utils.textFieldNearText(
+                              //         'Company Name', false),
+                              //     utils.textFieldNearText(
+                              //         'Company Phone No', false),
+                              //     utils.textFieldNearText('Industry', false),
+                              //     utils.textFieldNearText('Linkedin', false),
+                              //   ],
+                              // ),
+                              // 5.width,
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   CustomTextField(
-                                    hintText: "",
+                                    hintText: "Company Name",
                                     text: "Company Name",
                                     controller: controllers.leadCoNameCrt,
                                     width: textFieldSize,
@@ -1010,7 +995,7 @@ class _AddLeadState extends State<AddLead> {
                                     },
                                   ),
                                   CustomTextField(
-                                    hintText: "",
+                                    hintText: "Company Phone No.",
                                     text: "Company\n Phone No.",
                                     controller: controllers.leadCoMobileCrt,
                                     width: textFieldSize,
@@ -1045,7 +1030,7 @@ class _AddLeadState extends State<AddLead> {
                                   ),
                                   10.height,
                                   CustomTextField(
-                                    hintText: "",
+                                    hintText: "Linkedin (Optional)",
                                     text: "Linkedin (Optional)",
                                     controller: controllers.leadLinkedinCrt,
                                     width: textFieldSize,
@@ -1068,22 +1053,22 @@ class _AddLeadState extends State<AddLead> {
                                     (MediaQuery.of(context).size.width - 400) /
                                         4.5,
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  utils.textFieldNearText(
-                                      'Company Email', false),
-                                  utils.textFieldNearText(
-                                      'Product/Services', false),
-                                  utils.textFieldNearText('Website', false),
-                                  utils.textFieldNearText('X', false),
-                                ],
-                              ),
+                              // Column(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: [
+                              //     utils.textFieldNearText(
+                              //         'Company Email', false),
+                              //     utils.textFieldNearText(
+                              //         'Product/Services', false),
+                              //     utils.textFieldNearText('Website', false),
+                              //     utils.textFieldNearText('X', false),
+                              //   ],
+                              // ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   CustomTextField(
-                                    hintText: "",
+                                    hintText: "Company Email",
                                     text: "Company Email",
                                     controller: controllers.leadCoEmailCrt,
                                     width: textFieldSize,
@@ -1109,7 +1094,7 @@ class _AddLeadState extends State<AddLead> {
                                     // }
                                   ),
                                   CustomTextField(
-                                    hintText: "",
+                                    hintText: "Product/Services (Optional)",
                                     text: "Product/Services (Optional)",
                                     controller: controllers.leadProduct,
                                     width: textFieldSize,
@@ -1124,7 +1109,7 @@ class _AddLeadState extends State<AddLead> {
                                     },
                                   ),
                                   CustomTextField(
-                                    hintText: "",
+                                    hintText: "Website (Optional)",
                                     text: "Website (Optional)",
                                     controller: controllers.leadWebsite,
                                     width: textFieldSize,
@@ -1150,7 +1135,7 @@ class _AddLeadState extends State<AddLead> {
                                     // }
                                   ),
                                   CustomTextField(
-                                    hintText: "",
+                                    hintText: "X (Optional)",
                                     text: "X (Optional)",
                                     controller: controllers.leadXCrt,
                                     width: textFieldSize,
@@ -1204,32 +1189,32 @@ class _AddLeadState extends State<AddLead> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  utils.textFieldNearText(
-                                      'Actions to be taken', false),
-                                  10.height,
-                                  utils.textFieldNearText(
-                                      'Source Of Prospect', false),
-                                  10.height,
-                                  utils.textFieldNearText(
-                                      'Product Discussed', false),
-                                  10.height,
-                                  utils.textFieldNearText(
-                                      'Expected Monthly Billing Value', false),
-                                  10.height,
-                                  utils.textFieldNearText('ARPU Value', false),
-                                  // 10.height,
-                                  // utils.textFieldNearText('Source Of Details',false),
-                                  10.height,
-                                  utils.textFieldNearText(
-                                      'Prospect Grading', false),
-                                ],
-                              ),
-                              5.width,
+                              //     utils.textFieldNearText(
+                              //         'Actions to be taken', false),
+                              //     10.height,
+                              //     utils.textFieldNearText(
+                              //         'Source Of Prospect', false),
+                              //     10.height,
+                              //     utils.textFieldNearText(
+                              //         'Product Discussed', false),
+                              //     10.height,
+                              //     utils.textFieldNearText(
+                              //         'Expected Monthly Billing Value', false),
+                              //     10.height,
+                              //     utils.textFieldNearText('ARPU Value', false),
+                              //     // 10.height,
+                              //     // utils.textFieldNearText('Source Of Details',false),
+                              //     10.height,
+                              //     utils.textFieldNearText(
+                              //         'Prospect Grading', false),
+                              //   ],
+                              // ),
+                              // 5.width,
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   CustomTextField(
-                                    hintText: "",
+                                    hintText: "Actions to be taken",
                                     text: "Actions to be taken",
                                     controller: controllers.leadActions,
                                     width: textFieldSize,
@@ -1246,7 +1231,7 @@ class _AddLeadState extends State<AddLead> {
                                     },
                                   ),
                                   CustomTextField(
-                                    hintText: "",
+                                    hintText: "Source Of Prospect",
                                     text: "Source Of Prospect",
                                     controller: controllers.leadDisPointsCrt,
                                     width: textFieldSize,
@@ -1262,7 +1247,7 @@ class _AddLeadState extends State<AddLead> {
                                     // }
                                   ),
                                   CustomTextField(
-                                    hintText: "",
+                                    hintText: "Product Discussed",
                                     text: "Product Discussed",
                                     controller:
                                         controllers.prodDescriptionController,
@@ -1279,7 +1264,7 @@ class _AddLeadState extends State<AddLead> {
                                     // }
                                   ),
                                   CustomTextField(
-                                    hintText: "",
+                                    hintText: "Expected Monthly Billing Value",
                                     text: "Expected Monthly Billing Value",
                                     controller:
                                         controllers.exMonthBillingValCrt,
@@ -1297,7 +1282,7 @@ class _AddLeadState extends State<AddLead> {
                                     // }
                                   ),
                                   CustomTextField(
-                                    hintText: "",
+                                    hintText: "ARPU Value",
                                     text: "ARPU Value",
                                     controller: controllers.arpuCrt,
                                     width: textFieldSize,

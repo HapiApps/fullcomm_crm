@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/styles/styles.dart';
-import '../common/utilities/utils.dart';
 import 'custom_text.dart';
 
 class CustomTextField extends StatefulWidget {
