@@ -270,7 +270,7 @@ class _SuspectsState extends State<Suspects> {
                             10.height,
                             // Table Body
                             SizedBox(
-                              height: MediaQuery.of(context).size.height - 350,
+                              height: MediaQuery.of(context).size.height - 400,
                               width: controllers.isLeftOpen.value == false &&
                                   controllers.isRightOpen.value == false
                                   ? MediaQuery.of(context).size.width - 200
@@ -343,7 +343,6 @@ class _SuspectsState extends State<Suspects> {
                   ),
 
                   // Pagination
-                  const SizedBox(height: 10),
                   Obx(() {
                     final totalPages = controllers.totalPages == 0 ? 1 : controllers.totalPages;
                     final currentPage = controllers.currentPage.value;
@@ -362,7 +361,6 @@ class _SuspectsState extends State<Suspects> {
                     );
                   }),
 
-                  const SizedBox(height: 20),
                 ],
               ),
             )),
