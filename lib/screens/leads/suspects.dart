@@ -288,48 +288,50 @@ class _SuspectsState extends State<Suspects> {
                                   itemCount: controllers.paginatedLeads.length,
                                   itemBuilder: (context, index) {
                                     final data = controllers.paginatedLeads[index];
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 10),
-                                        decoration: BoxDecoration(
-                                            color: colorsConst.secondary,
-                                           ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            height: 70,
-                                            width: 40,
-                                            alignment: Alignment.center,
-                                            child: Obx(() =>  CustomCheckBox(
-                                                text: "",
-                                                onChanged: (value){
-                                                  setState(() {
-                                                    if(controllers.isNewLeadList[index]["isSelect"]==true){
-                                                      controllers.isNewLeadList[index]["isSelect"]=false;
-                                                      var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                                      apiService.prospectsList.removeAt(i);
-                                                    }else{
-                                                      controllers.isNewLeadList[index]["isSelect"]=true;
-                                                      apiService.prospectsList.add({
-                                                        "lead_id":data.userId.toString(),
-                                                        "user_id":controllers.storage.read("id"),
-                                                        "rating":data.rating.toString(),
-                                                        "cos_id":cosId,
-                                                      });
-                                                    }
-                                                  });
-                                                },
-                                                saveValue: controllers.isNewLeadList[index]["isSelect"]),
+                                    return GestureDetector(
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(vertical: 10),
+                                          decoration: BoxDecoration(
+                                              color: colorsConst.secondary,
+                                             ),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              height: 70,
+                                              width: 40,
+                                              alignment: Alignment.center,
+                                              child: Obx(() =>  CustomCheckBox(
+                                                  text: "",
+                                                  onChanged: (value){
+                                                    setState(() {
+                                                      if(controllers.isNewLeadList[index]["isSelect"]==true){
+                                                        controllers.isNewLeadList[index]["isSelect"]=false;
+                                                        var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                                        apiService.prospectsList.removeAt(i);
+                                                      }else{
+                                                        controllers.isNewLeadList[index]["isSelect"]=true;
+                                                        apiService.prospectsList.add({
+                                                          "lead_id":data.userId.toString(),
+                                                          "user_id":controllers.storage.read("id"),
+                                                          "rating":data.rating.toString(),
+                                                          "cos_id":cosId,
+                                                        });
+                                                      }
+                                                    });
+                                                  },
+                                                  saveValue: controllers.isNewLeadList[index]["isSelect"]),
+                                              ),
                                             ),
-                                          ),
-                                          dataCell(width: 150, text: data.firstname ?? ""),
-                                          dataCell(width: 180, text: data.companyName ?? ""),
-                                          dataCell(width: 80, text: data.mobileNumber ?? ""),
-                                          dataCell(width: 250, text: data.detailsOfServiceRequired ?? ""),
-                                          dataCell(width: 200, text: data.source ?? ""),
-                                          dataCell(width: 200, text: controllers.formatDateTime(data.updatedTs.toString())),
-                                          dataCell(width: 150, text: data.city ?? ""),
-                                          dataCell(width: 200, text: data.statusUpdate ?? ""),
-                                        ],
+                                            dataCell(width: 150, text: data.firstname ?? ""),
+                                            dataCell(width: 180, text: data.companyName ?? ""),
+                                            dataCell(width: 80, text: data.mobileNumber ?? ""),
+                                            dataCell(width: 250, text: data.detailsOfServiceRequired ?? ""),
+                                            dataCell(width: 200, text: data.source ?? ""),
+                                            dataCell(width: 200, text: controllers.formatDateTime(data.updatedTs.toString())),
+                                            dataCell(width: 150, text: data.city ?? ""),
+                                            dataCell(width: 200, text: data.statusUpdate ?? ""),
+                                          ],
+                                        ),
                                       ),
                                     );
                                   },

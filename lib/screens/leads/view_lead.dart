@@ -1624,7 +1624,7 @@ class _ViewLeadState extends State<ViewLead> {
                       },
                     )),
             ),
-            utils.funnelContainer(context)
+            // utils.funnelContainer(context),
           ],
         ),
       ),

@@ -25,20 +25,21 @@ class CustomDropDown<T> extends StatefulWidget {
 class _CustomDropDownState extends State<CustomDropDown> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      //mainAxisAlignment: MainAxisAlignment.end,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // CustomText(
-        //   text:widget.text,
-        //   colors: colorsConst.headColor,
-        //   size: 15,
-        // ),
+        CustomText(
+          text:widget.text,
+          colors: colorsConst.textColor,
+          size: 15,
+        ),
         25.width,
         Container(
           width: widget.width,
           height: 50,
           decoration: customDecoration.baseBackgroundDecoration(
-              radius: 8,
+              radius: 5,
               color: Colors.transparent,
               borderColor: const Color(0xffE1E5FA)),
           child: DropdownButtonHideUnderline(
@@ -75,6 +76,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
             ),
           ),
         ),
+        10.height,
       ],
     );
   }

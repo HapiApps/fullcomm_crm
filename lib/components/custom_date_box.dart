@@ -23,8 +23,7 @@ class CustomDateBox extends StatelessWidget {
         CustomText(
           text:text,
           colors:colorsConst.textColor,
-          size:13,
-          isBold: true,
+          size:15,
         ),
         InkWell(
           onTap: onTap,
@@ -48,6 +47,7 @@ class CustomDateBox extends StatelessWidget {
             ),
           ),
         ),
+        10.height,
       ],
     );
   }

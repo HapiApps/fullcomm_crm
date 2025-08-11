@@ -91,7 +91,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   CustomText(
                     text: widget.text,
                     textAlign: TextAlign.start,
-                    colors: colorsConst.headColor,
+                    colors: colorsConst.textColor,
+                    // colors: colorsConst.headColor,
                     size: 15,
                   ),
                   widget.isOptional! == true
