@@ -2593,12 +2593,16 @@ class _AddLeadState extends State<AddLead> {
                           50.height,
                         ],
                       ),
+                        ]
                     ),
                   ),
-                ],
+
               ),
+                ]
             )
-          ],
-        ));
+            ),
+      ]
+        )
+    );
   }
 }
