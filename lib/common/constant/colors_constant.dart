@@ -12,5 +12,6 @@ class ColorsConst {
   final Color headColor = const Color(0xff97CBFF);
   final Color third = const Color(0xffFFC700);
   final Color axis = Colors.grey.shade200;
+  final Color hintTextColor =const Color(0xffFFFFFF);
 }
 //
