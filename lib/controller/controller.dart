@@ -17,8 +17,8 @@ import '../models/product_obj.dart';
 final controllers = Get.put(Controller());
 
 class Controller extends GetxController {
-  var version = "Version 0.0.14";
-  var versionNum = "0.0.14";
+  var version = "Version 0.0.2";
+  var versionNum = "0.0.2";
   // var version = "Version 0.0.14";
   //  var versionNum = "0.0.14";
   String countryDial = "+91";

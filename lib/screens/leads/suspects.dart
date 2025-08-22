@@ -6,6 +6,7 @@ import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:fullcomm_crm/components/custom_search_textfield.dart';
 import 'package:fullcomm_crm/components/delete_button.dart';
 import 'package:fullcomm_crm/components/promote_button.dart';
+import 'package:fullcomm_crm/screens/leads/view_lead.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -212,48 +213,46 @@ class _SuspectsState extends State<Suspects> {
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               child: Row(
                                 children: [
-                                  Container(
-                                    width: 40,
-                                    height: 50,
-                                    alignment: Alignment.center,
-                                    child: Obx(
-                                          () => CustomCheckBox(
-                                          text: "",
-                                          onChanged: (value) {
-                                            if (controllers.isAllSelected.value ==
-                                                true) {
-                                              controllers.isAllSelected.value = false;
-                                              for (int j = 0;
-                                              j < controllers.isNewLeadList.length;
-                                              j++) {
-                                                controllers.isNewLeadList[j]
-                                                ["isSelect"] = false;
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: Container(
+                                      width: 40,
+                                      height: 50,
+                                      alignment: Alignment.center,
+                                      child: Obx(
+                                            () => CustomCheckBox(
+                                            text: "",
+                                            onChanged: (value) {
+                                              if (controllers.isAllSelected.value == true) {
+                                                controllers.isAllSelected.value = false;
+                                                for (int j = 0; j < controllers.isNewLeadList.length; j++) {
+                                                  controllers.isNewLeadList[j]["isSelect"] = false;
+                                                  setState(() {
+                                                    var i = apiService.prospectsList.indexWhere((element) =>
+                                                    element["lead_id"] == controllers.isNewLeadList[j]["lead_id"]);
+                                                    apiService.prospectsList.removeAt(i);
+                                                  });
+                                                }
+                                              } else {
+                                                controllers.isAllSelected.value = true;
                                                 setState(() {
-                                                  var i = apiService.prospectsList
-                                                      .indexWhere((element) =>
-                                                  element["lead_id"] == controllers.isNewLeadList[j]["lead_id"]);
-                                                  apiService.prospectsList.removeAt(i);
+                                                  for (int j = 0; j < controllers.isNewLeadList.length; j++) {
+                                                    controllers.isNewLeadList[j]["isSelect"] = true;
+                                                    apiService.prospectsList.add(
+                                                        {
+                                                          "lead_id": controllers.isNewLeadList[j]["lead_id"],
+                                                          "user_id": controllers.storage.read("id"),
+                                                          "rating": controllers.isNewLeadList[j]["rating"],
+                                                          "cos_id": cosId,
+                                                        });
+                                                    print(apiService.prospectsList);
+                                                  }
                                                 });
                                               }
-                                            } else {
-                                              controllers.isAllSelected.value = true;
-                                              setState(() {
-                                                for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                                  controllers.isNewLeadList[j]["isSelect"] = true;
-                                                  apiService.prospectsList.add(
-                                                      {
-                                                        "lead_id": controllers.isNewLeadList[j]["lead_id"],
-                                                        "user_id": controllers.storage.read("id"),
-                                                        "rating": controllers.isNewLeadList[j]["rating"],
-                                                        "cos_id": cosId,
-                                                      });
-                                                  print(apiService.prospectsList);
-                                                }
-                                              });
-                                            }
-                                            //controllers.isMainPerson.value=!controllers.isMainPerson.value;
-                                          },
-                                          saveValue: controllers.isAllSelected.value),
+                                              //controllers.isMainPerson.value=!controllers.isMainPerson.value;
+                                            },
+                                            saveValue: controllers.isAllSelected.value),
+                                      ),
                                     ),
                                   ),
                                   headerCell(width: 150, text: "Name"),
@@ -271,10 +270,11 @@ class _SuspectsState extends State<Suspects> {
                             // Table Body
                             SizedBox(
                               height: MediaQuery.of(context).size.height - 400,
-                              width: controllers.isLeftOpen.value == false &&
-                                  controllers.isRightOpen.value == false
-                                  ? MediaQuery.of(context).size.width - 200
-                                  : MediaQuery.of(context).size.width - 445,
+                              width: 1460,
+                              // width: controllers.isLeftOpen.value == false &&
+                              //     controllers.isRightOpen.value == false
+                              //     ? MediaQuery.of(context).size.width - 200
+                              //     : MediaQuery.of(context).size.width - 445,
                               child: Scrollbar(
                                 controller: _verticalController,
                                 thumbVisibility: true,
@@ -288,48 +288,107 @@ class _SuspectsState extends State<Suspects> {
                                   itemCount: controllers.paginatedLeads.length,
                                   itemBuilder: (context, index) {
                                     final data = controllers.paginatedLeads[index];
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 10),
-                                        decoration: BoxDecoration(
-                                            color: colorsConst.secondary,
-                                           ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            height: 70,
-                                            width: 40,
-                                            alignment: Alignment.center,
-                                            child: Obx(() =>  CustomCheckBox(
-                                                text: "",
-                                                onChanged: (value){
-                                                  setState(() {
-                                                    if(controllers.isNewLeadList[index]["isSelect"]==true){
-                                                      controllers.isNewLeadList[index]["isSelect"]=false;
-                                                      var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                                      apiService.prospectsList.removeAt(i);
-                                                    }else{
-                                                      controllers.isNewLeadList[index]["isSelect"]=true;
-                                                      apiService.prospectsList.add({
-                                                        "lead_id":data.userId.toString(),
-                                                        "user_id":controllers.storage.read("id"),
-                                                        "rating":data.rating.toString(),
-                                                        "cos_id":cosId,
+                                    return InkWell(
+                                      onTap: () {
+                                        Get.to(ViewLead(
+                                          id:data.userId.toString(),
+                                          linkedin: "",
+                                          x: "",
+                                          mainName:data.firstname.toString().split("||")[0],
+                                          mainMobile:data.mobileNumber.toString().split("||")[0],
+                                          mainEmail:data.emailId.toString().split("||")[0],
+                                          mainWhatsApp: data.mobileNumber.toString().split("||")[0],
+                                          companyName:data.companyName.toString(),
+                                          status:data.leadStatus ?? "UnQualified",
+                                          rating:data.rating ?? "Warm",
+                                          emailUpdate:data.quotationUpdate.toString(),
+                                          name:data.firstname.toString().split("||")[0],
+                                          title:"",
+                                          mobileNumber:data.mobileNumber.toString().split("||")[0],
+                                          whatsappNumber:data.mobileNumber.toString().split("||")[0],
+                                          email:data.emailId.toString().split("||")[0],
+                                          mainTitle:"",
+                                          addressId:data.addressId ?? "",
+                                          companyWebsite:"",
+                                          companyNumber:"",
+                                          companyEmail:"",
+                                          industry:"",
+                                          productServices:"",
+                                          source:"",
+                                          owner:"",
+                                          budget:"",
+                                          timelineDecision:"",
+                                          serviceInterest:"",
+                                          description:"",
+                                          leadStatus:data.quotationStatus ?? "",
+                                          active:data.active ?? "",
+                                          addressLine1:data.doorNo ?? "",
+                                          addressLine2:data.landmark1 ?? "",
+                                          area:data.area ?? "",
+                                          city: data.city ?? "",
+                                          state: data.state ?? "",
+                                          country: data.country ?? "",
+                                          pinCode: data.pincode ?? "",
+                                          quotationStatus:data.quotationStatus.toString(),
+                                          productDiscussion:data.productDiscussion.toString(),
+                                          discussionPoint:data.discussionPoint.toString(),
+                                          notes:data.notes.toString(),
+                                          prospectEnrollmentDate:data.prospectEnrollmentDate ?? "",
+                                          expectedConvertionDate: data.expectedConvertionDate ?? "",
+                                          numOfHeadcount: data.numOfHeadcount ?? "",
+                                          expectedBillingValue: data.expectedBillingValue ?? "",
+                                          arpuValue: data.arpuValue ?? "",
+                                          updateTs: data.createdTs ?? "",
+                                          sourceDetails: data.sourceDetails ?? "",
+                                        ),duration: Duration.zero
+                                        );
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(vertical: 10),
+                                          decoration: BoxDecoration(
+                                              color: colorsConst.secondary,
+                                             ),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 10),
+                                              child: Container(
+                                                height: 70,
+                                                width: 40,
+                                                alignment: Alignment.center,
+                                                child: Obx(() =>  CustomCheckBox(
+                                                    text: "",
+                                                    onChanged: (value){
+                                                      setState(() {
+                                                        if(controllers.isNewLeadList[index]["isSelect"]==true){
+                                                          controllers.isNewLeadList[index]["isSelect"]=false;
+                                                          var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                                          apiService.prospectsList.removeAt(i);
+                                                        }else{
+                                                          controllers.isNewLeadList[index]["isSelect"]=true;
+                                                          apiService.prospectsList.add({
+                                                            "lead_id":data.userId.toString(),
+                                                            "user_id":controllers.storage.read("id"),
+                                                            "rating":data.rating.toString(),
+                                                            "cos_id":cosId,
+                                                          });
+                                                        }
                                                       });
-                                                    }
-                                                  });
-                                                },
-                                                saveValue: controllers.isNewLeadList[index]["isSelect"]),
+                                                    },
+                                                    saveValue: controllers.isNewLeadList[index]["isSelect"]),
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                          dataCell(width: 150, text: data.firstname ?? ""),
-                                          dataCell(width: 180, text: data.companyName ?? ""),
-                                          dataCell(width: 80, text: data.mobileNumber ?? ""),
-                                          dataCell(width: 250, text: data.detailsOfServiceRequired ?? ""),
-                                          dataCell(width: 200, text: data.source ?? ""),
-                                          dataCell(width: 200, text: controllers.formatDateTime(data.updatedTs.toString())),
-                                          dataCell(width: 150, text: data.city ?? ""),
-                                          dataCell(width: 200, text: data.statusUpdate ?? ""),
-                                        ],
+                                            dataCell(width: 150, text: data.firstname ?? ""),
+                                            dataCell(width: 180, text: data.companyName ?? ""),
+                                            dataCell(width: 80, text: data.mobileNumber ?? ""),
+                                            dataCell(width: 250, text: data.detailsOfServiceRequired ?? ""),
+                                            dataCell(width: 200, text: data.source ?? ""),
+                                            dataCell(width: 200, text: controllers.formatDateTime(data.updatedTs.toString())),
+                                            dataCell(width: 150, text: data.city ?? ""),
+                                            dataCell(width: 200, text: data.statusUpdate ?? ""),
+                                          ],
+                                        ),
                                       ),
                                     );
                                   },

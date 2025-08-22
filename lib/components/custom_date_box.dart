@@ -22,9 +22,8 @@ class CustomDateBox extends StatelessWidget {
       children: [
         CustomText(
           text:text,
-          colors:colorsConst.textColor,
-          size:13,
-          isBold: true,
+          colors:colorsConst.headColor,
+          size:15,
         ),
         InkWell(
           onTap: onTap,

@@ -25,15 +25,15 @@ class CustomDropDown<T> extends StatefulWidget {
 class _CustomDropDownState extends State<CustomDropDown> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      //mainAxisAlignment: MainAxisAlignment.end,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // CustomText(
-        //   text:widget.text,
-        //   colors: colorsConst.headColor,
-        //   size: 15,
-        // ),
-        25.width,
+        CustomText(
+          text:widget.text,
+          colors: colorsConst.headColor,
+          size: 15,
+        ),
         Container(
           width: widget.width,
           height: 50,
@@ -75,6 +75,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
             ),
           ),
         ),
+        20.height
       ],
     );
   }

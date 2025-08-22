@@ -188,9 +188,7 @@ class _AddLeadState extends State<AddLead> {
                                 controllers.countryController.text = "";
                                 controllers.leadXCrt.text = "";
                                 controllers.leadLinkedinCrt.text = "";
-                                for (int i = 0;
-                                i < controllers.leadPersonalItems.value;
-                                i++) {
+                                for (int i = 0; i < controllers.leadPersonalItems.value; i++) {
                                   controllers.leadNameCrt[i].text = "";
                                   controllers.leadMobileCrt[i].text = "";
                                   controllers.leadEmailCrt[i].text = "";
@@ -324,27 +322,20 @@ class _AddLeadState extends State<AddLead> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: Column(children: [
                       30.height,
-                      Obx(
-                            () => ListView.builder(
+                      Obx(() => ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: controllers.leadPersonalItems.value,
                             itemBuilder: (context, index) {
-                              controllers.leadNameCrt
-                                  .add(TextEditingController());
-                              controllers.leadMobileCrt
-                                  .add(TextEditingController());
-                              controllers.leadTitleCrt
-                                  .add(TextEditingController());
-                              controllers.leadEmailCrt
-                                  .add(TextEditingController());
-                              controllers.leadWhatsCrt
-                                  .add(TextEditingController());
+                              controllers.leadNameCrt.add(TextEditingController());
+                              controllers.leadMobileCrt.add(TextEditingController());
+                              controllers.leadTitleCrt.add(TextEditingController());
+                              controllers.leadEmailCrt.add(TextEditingController());
+                              controllers.leadWhatsCrt.add(TextEditingController());
                               return Column(
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       // index==0?CustomText(
                                       //   text: constValue.newLead,
@@ -419,8 +410,7 @@ class _AddLeadState extends State<AddLead> {
                                       )
                                           : 0.width,
                                       index !=
-                                          controllers
-                                              .leadPersonalItems.value -
+                                          controllers.leadPersonalItems.value -
                                               1
                                           ? 0.width
                                           : InkWell(
@@ -554,7 +544,6 @@ class _AddLeadState extends State<AddLead> {
                                             TextCapitalization.words,
                                             inputFormatters:
                                             constInputFormatters.textInput,
-
                                             onChanged: (value) async {
                                               SharedPreferences sharedPref =
                                               await SharedPreferences
@@ -593,17 +582,20 @@ class _AddLeadState extends State<AddLead> {
                                           //   ],
                                           // ),
                                           Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               CustomText(
                                                 text: "Phone No",
-                                                colors: colorsConst.hintTextColor,
+                                                colors: colorsConst.headColor,
                                                 size: 15,
                                                 textAlign: TextAlign.start,
                                               ),
-                                              150.width,
+                                              SizedBox(
+                                                width: textFieldSize-160,
+                                              ),
                                               CustomText(
                                                 text: "Whatsapp No",
-                                                colors: colorsConst.hintTextColor,
+                                                colors: colorsConst.headColor,
                                                 size: 15,
                                                 textAlign: TextAlign.end,
                                               ),
@@ -643,10 +635,8 @@ class _AddLeadState extends State<AddLead> {
                                                             .mobileNumberInput,
                                                         textCapitalization:
                                                         TextCapitalization.none,
-                                                        controller: controllers
-                                                            .leadMobileCrt[index],
-                                                        textInputAction:
-                                                        TextInputAction.next,
+                                                        controller: controllers.leadMobileCrt[index],
+                                                        textInputAction: TextInputAction.next,
                                                         decoration: InputDecoration(
                                                           // hintText:"Mobile No.",
                                                           // hintStyle: TextStyle(
@@ -654,8 +644,7 @@ class _AddLeadState extends State<AddLead> {
                                                           //     fontSize: 13,
                                                           //     fontFamily:"Lato"
                                                           // ),
-                                                          fillColor:
-                                                          Colors.transparent,
+                                                          fillColor: Colors.transparent,
                                                           filled: true,
                                                           //prefixIcon:IconButton(onPressed: (){}, icon: SvgPicture.asset(assets.gPhone,width:15,height:15) ),
 
@@ -710,13 +699,9 @@ class _AddLeadState extends State<AddLead> {
                                                                   });
                                                                 }),
                                                           ),
-                                                          enabledBorder:
-                                                          OutlineInputBorder(
-                                                              borderSide:
-                                                              BorderSide(
-                                                                color: Colors
-                                                                    .grey
-                                                                    .shade200,
+                                                          enabledBorder: OutlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                color: Colors.grey.shade200,
                                                               ),
                                                               borderRadius:
                                                               BorderRadius
@@ -745,21 +730,14 @@ class _AddLeadState extends State<AddLead> {
                                                                   .circular(
                                                                   5)),
                                                           // errorStyle: const TextStyle(height:0.05,fontSize: 12),
-                                                          contentPadding:
-                                                          const EdgeInsets
-                                                              .symmetric(
+                                                          contentPadding: const EdgeInsets.symmetric(
                                                               vertical: 10.0,
                                                               horizontal: 10.0),
                                                           errorBorder:
                                                           OutlineInputBorder(
                                                               borderSide: BorderSide(
-                                                                  color: Colors
-                                                                      .grey
-                                                                      .shade200),
-                                                              borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                  5)),
+                                                                  color: Colors.grey.shade200),
+                                                              borderRadius: BorderRadius.circular(5)),
                                                         )),
                                                   ),
                                                   15.height,
@@ -1462,10 +1440,8 @@ class _AddLeadState extends State<AddLead> {
                                 textInputAction: TextInputAction.next,
                                 isOptional: false,
                                 onChanged: (value) async {
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
-                                  sharedPref.setString(
-                                      "leadDNo", value.toString().trim());
+                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                  sharedPref.setString("leadDNo", value.toString().trim());
                                 },
                                 // validator:(value){
                                 //   if(value.toString().isEmpty){
@@ -1535,7 +1511,7 @@ class _AddLeadState extends State<AddLead> {
                                     children: [
                                       CustomText(
                                         text:"Country",
-                                        colors: colorsConst.textColor,
+                                        colors: colorsConst.headColor,
                                         size: 15,
                                       ),
                                       Container(
@@ -1550,8 +1526,7 @@ class _AddLeadState extends State<AddLead> {
                                                   color: Colors.grey.shade200)),
                                           child: Obx(
                                                 () => CustomText(
-                                              text:
-                                              "    ${controllers.selectedCountry.value}",
+                                              text: "    ${controllers.selectedCountry.value}",
                                               colors: Colors.white,
                                               size: 15,
                                             ),
