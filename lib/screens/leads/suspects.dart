@@ -16,7 +16,6 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/constant/api.dart';
 import '../../components/custom_checkbox.dart';
-import '../../components/custom_lead_tile.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
 import 'add_lead.dart';
@@ -52,105 +51,6 @@ class _SuspectsState extends State<Suspects> {
       });
       controllers.searchQuery.value = "";
     });
-  }
-
-  void _showSortPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierColor: Colors.transparent, // optional: no dark background
-      builder: (context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          insetPadding: const EdgeInsets.only(top: 200, right: 200),
-          child: Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              width: 200,
-              decoration: BoxDecoration(
-                color: colorsConst.secondary,
-                borderRadius: BorderRadius.circular(6),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 6,
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Obx(() => RadioListTile<String>(
-                        title: CustomText(
-                          text: "Today",
-                          colors: colorsConst.textColor,
-                        ),
-                        value: "Today",
-                        groupValue: controllers.selectedProspectSortBy.value,
-                        onChanged: (value) {
-                          controllers.selectedProspectSortBy.value = value!;
-                          Navigator.pop(context); // close popup
-                        },
-                        activeColor: colorsConst.third,
-                      )),
-                  Obx(() => RadioListTile<String>(
-                        title: CustomText(
-                            text: "Last 7 Days", colors: colorsConst.textColor),
-                        value: "Last 7 Days",
-                        groupValue: controllers.selectedProspectSortBy.value,
-                        onChanged: (value) {
-                          controllers.selectedProspectSortBy.value = value!;
-                          Navigator.pop(context);
-                        },
-                        activeColor: colorsConst.third,
-                      )),
-                  Obx(() => RadioListTile<String>(
-                        title: CustomText(
-                            text: "Last 30 Days",
-                            colors: colorsConst.textColor),
-                        value: "Last 30 Days",
-                        groupValue: controllers.selectedProspectSortBy.value,
-                        onChanged: (value) {
-                          controllers.selectedProspectSortBy.value = value!;
-                          Navigator.pop(context);
-                        },
-                        activeColor: colorsConst.third,
-                      )),
-                  Obx(() => RadioListTile<String>(
-                        title: CustomText(
-                            text: "All", colors: colorsConst.textColor),
-                        value: "All",
-                        groupValue: controllers.selectedProspectSortBy.value,
-                        onChanged: (value) {
-                          controllers.selectedProspectSortBy.value = "";
-                          Navigator.pop(context);
-                        },
-                        activeColor: colorsConst.third,
-                      )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey,
-                        ),
-                        onPressed: () {
-                          controllers.selectedProspectSortBy.value = "";
-                          Navigator.pop(context);
-                        },
-                        child: const CustomText(
-                            text: "Clear", colors: Colors.white),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
   }
 
   @override
