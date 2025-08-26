@@ -35,6 +35,7 @@ import '../../components/custom_text.dart';
 import '../../components/custom_textbutton.dart';
 import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
+import '../../screens/leads/disqualified_lead.dart';
 import '../../services/api_services.dart';
 import '../constant/api.dart';
 import '../constant/assets_constant.dart';
@@ -85,6 +86,364 @@ class Utils {
         text: text.toString(),
       ),
     );
+  }
+  void bulkEmailDialog( FocusNode focusNode,
+      {required List<Map<String, String>> list}) {
+    int total = list.length;
+    int withMail = list.where((e) => (e["mail"] != null && e["mail"]!.trim().isNotEmpty && e["mail"]!.trim() != "null")).length;
+    int withoutMail = total - withMail;
+
+    showDialog(
+        context: Get.context!,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: colorsConst.primary,
+            actions: [
+              Column(
+                children: [
+                  Divider(
+                    color: Colors.grey.shade300,
+                    thickness: 1,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        child: Row(
+                          children: [
+                            IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(assets.b,
+                                    width: 17, height: 17)),
+                            IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(
+                                  assets.i,
+                                  width: 15,
+                                  height: 15,
+                                )),
+                            IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(
+                                  assets.u,
+                                  width: 19,
+                                  height: 19,
+                                )),
+                            IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(
+                                  assets.fileFilter,
+                                  width: 17,
+                                  height: 17,
+                                )),
+                            // IconButton(
+                            //     onPressed: (){},
+                            //     icon:SvgPicture.asset(assets.textFilter,width: 17,height: 17,)
+                            // ),
+                            IconButton(
+                                onPressed: () {
+                                  utils.chooseFile(mediaDataV:imageController.empMediaData,
+                                      fileName:imageController.empFileName,
+                                      pathName:imageController.photo1);
+                                },
+                                icon: SvgPicture.asset(assets.file)),
+                            IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(
+                                  assets.layer,
+                                  width: 17,
+                                  height: 17,
+                                )),
+                            IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(assets.a)),
+                          ],
+                        ),
+                      ),
+                      Obx(
+                            () => CustomLoadingButton(
+                          callback: () {
+                            List<Map<String, String>> withMail = list.where((e) {
+                              final mail = e["mail"];
+                              return mail != null && mail.trim().isNotEmpty && mail.trim() != "null";
+                            }).toList();
+                            apiService.bulkEmailAPI(context, withMail, imageController.photo1.value);
+                            focusNode.requestFocus();
+                          },
+                          controller: controllers.emailCtr,
+                          isImage: false,
+                          isLoading: true,
+                          backgroundColor: colorsConst.primary,
+                          radius: 5,
+                          width: controllers.emailCount.value == 0 ||
+                              controllers.emailCount.value == 1
+                              ? 90
+                              : 200,
+                          height: 50,
+                          text: controllers.emailCount.value == 0
+                              ? "Quotation"
+                              : controllers.emailCount.value == 1
+                              ? "Reply"
+                              : "Reply & Quotation",
+                          textColor: Colors.white,
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ],
+            content: SizedBox(
+                width: 600,
+                height: 400,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Align(
+                          alignment: Alignment.topRight,
+                          child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Icon(
+                                Icons.clear,
+                                size: 18,
+                                color: colorsConst.textColor,
+                              ))),
+                      // Align(
+                      //   alignment: Alignment.topRight,
+                      //   child: TextButton(
+                      //       onPressed: () {
+                      //         controllers.isTemplate.value =
+                      //         !controllers.isTemplate.value;
+                      //       },
+                      //       child: CustomText(
+                      //         text: "Get Form Template",
+                      //         colors: colorsConst.third,
+                      //         size: 18,
+                      //         isBold: true,
+                      //       )),
+                      // ),
+                      // Row(
+                      //   children: [
+                      //     CustomText(
+                      //       textAlign: TextAlign.center,
+                      //       text: "To",
+                      //       colors: colorsConst.textColor,
+                      //       size: 15,
+                      //     ),
+                      //     50.width,
+                      //     SizedBox(
+                      //       width: 500,
+                      //       child: TextField(
+                      //         controller: controllers.emailToCtr,
+                      //         style: TextStyle(
+                      //             fontSize: 15, color: colorsConst.textColor),
+                      //         decoration: const InputDecoration(
+                      //           border: InputBorder.none,
+                      //         ),
+                      //       ),
+                      //     )
+                      //   ],
+                      // ),
+
+                      SizedBox(
+                          width: 600,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    CustomText(
+                                      text: "Total Selected Customers: $total",
+                                      colors: colorsConst.textColor,
+                                      size: 16,
+                                      isBold: true,
+                                    ),
+                                    CustomText(
+                                      text: "Customers with Mail: $withMail",
+                                      colors: colorsConst.textColor,
+                                      size: 16,
+                                      isBold: true,
+                                    ),
+                                    CustomText(
+                                      text: "Customers without Mail: $withoutMail",
+                                      colors: colorsConst.textColor,
+                                      size: 16,
+                                      isBold: true,
+                                    ),
+                                  ],
+                                ),
+
+                                Divider(
+                                  color: Colors.grey.shade300,
+                                  thickness: 1,
+                                ),
+                                Row(
+                                  children: [
+                                    15.height,
+                                    CustomText(
+                                      text: "Subject",
+                                      colors: colorsConst.textColor,
+                                      size: 14,
+                                    ),
+                                    20.width,
+                                    SizedBox(
+                                      width: 500,
+                                      height: 50,
+                                      child: TextField(
+                                        controller: controllers.emailSubjectCtr,
+                                        maxLines: null,
+                                        minLines: 1,
+                                        style: TextStyle(
+                                          color: colorsConst.textColor,
+                                        ),
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Divider(
+                                  color: Colors.grey.shade300,
+                                  thickness: 1,
+                                ),
+                                SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Obx(()=>imageController.photo1.value.isEmpty?0.height:
+                                      Image.memory(base64Decode(imageController.photo1.value),
+                                        fit: BoxFit.cover,width: 80,height: 80,),),
+                                      SizedBox(
+                                        width: 600,
+                                        height: 223,
+                                        child: TextField(
+                                          textInputAction: TextInputAction.newline,
+                                          controller: controllers.emailMessageCtr,
+                                          keyboardType: TextInputType.multiline,
+                                          maxLines: 21,
+                                          expands: false,
+                                          style: TextStyle(
+                                            color: colorsConst.textColor,
+                                          ),
+                                          decoration: InputDecoration(
+                                            hintText: "Message",
+                                            hintStyle: TextStyle(
+                                                color: colorsConst.textColor,
+                                                fontSize: 14,
+                                                fontFamily: "Lato"),
+                                            border: InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                                //     : UnconstrainedBox(
+                                //   child: Container(
+                                //     width: 500,
+                                //     alignment: Alignment.center,
+                                //     decoration: BoxDecoration(
+                                //       color: colorsConst.secondary,
+                                //       borderRadius:
+                                //       BorderRadius.circular(10),
+                                //     ),
+                                //     child: SingleChildScrollView(
+                                //       child: Column(
+                                //         children: [
+                                //           SizedBox(
+                                //             width: 500,
+                                //             height: 210,
+                                //             child: Table(
+                                //               defaultColumnWidth:
+                                //               const FixedColumnWidth(
+                                //                   120.0),
+                                //               border: TableBorder.all(
+                                //                   color: Colors
+                                //                       .grey.shade300,
+                                //                   style:
+                                //                   BorderStyle.solid,
+                                //                   borderRadius:
+                                //                   BorderRadius
+                                //                       .circular(10),
+                                //                   width: 1),
+                                //               children: [
+                                //                 TableRow(
+                                //                     children: [
+                                //                       CustomText(
+                                //                         textAlign: TextAlign.center,
+                                //                         text: "\nTemplate Name\n",
+                                //                         colors: colorsConst.textColor,
+                                //                         size: 15,
+                                //                         isBold: true,
+                                //                       ),
+                                //                       CustomText(
+                                //                         textAlign:
+                                //                         TextAlign.center,
+                                //                         text: "\nSubject\n",
+                                //                         colors: colorsConst
+                                //                             .textColor,
+                                //                         size: 15,
+                                //                         isBold: true,
+                                //                       ),
+                                //                     ]),
+                                //                 utils.emailRow(
+                                //                     context,
+                                //                     isCheck: controllers.isAdd,
+                                //                     templateName:
+                                //                     "Promotional",
+                                //                     msg:
+                                //                     "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
+                                //                     subject:
+                                //                     "Exclusive Promotion for You - \nLimited Time Offer!"),
+                                //                 utils.emailRow(
+                                //                     context,
+                                //                     isCheck: controllers.isAdd,
+                                //                     templateName: "Follow-Up",
+                                //                     msg: "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+                                //                     subject: "Follow-up on Recent Service Interaction"),
+                                //                 utils.emailRow(context,
+                                //                     msg:
+                                //                     "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+                                //                     isCheck:
+                                //                     controllers.isAdd,
+                                //                     templateName:
+                                //                     "Service Update",
+                                //                     subject:
+                                //                     "Service Update - [Brief Description]"),
+                                //               ],
+                                //             ),
+                                //           ),
+                                //           // 10.height,
+                                //           // CustomLoadingButton(
+                                //           //   callback: (){},
+                                //           //   isImage: false,
+                                //           //   isLoading: false,
+                                //           //   backgroundColor: colorsConst.primary,
+                                //           //   radius: 20,
+                                //           //   width: 70,
+                                //           //   height: 30,
+                                //           //   text: "Done",
+                                //           //   textColor: Colors.white,
+                                //           //
+                                //           // ),
+                                //         ],
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+
+                              ],
+                            ),
+                          )),
+                    ],
+                  ),
+                )),
+          );
+        });
   }
 
   void sendEmailDialog(
@@ -935,313 +1294,325 @@ class Utils {
   Widget sideBarFunction(BuildContext context) {
     return Obx(() => controllers.isLeftOpen.value
         ? Container(
-            width: 130,
-            height: MediaQuery.of(context).size.height,
-            color: colorsConst.secondary,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  5.height,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Tooltip(
-                        message: "Click to close the side panel.",
-                        child: InkWell(
-                          focusColor: Colors.transparent,
-                          onTap: () {
-                            controllers.isLeftOpen.value =
-                                !controllers.isLeftOpen.value;
-                          },
-                          child: SvgPicture.asset(
-                            "assets/images/left.svg",
-                            width: 40,
-                            height: 40,
-                          ),
-                          // icon: Icon(controllers.isLeftOpen.value?Icons.arrow_back_ios:Icons.arrow_forward_ios,
-                          //   color: colorsConst.third,)
-                        ),
-                      ),
-                    ],
+      width: 130,
+      height: MediaQuery.of(context).size.height,
+      color: colorsConst.secondary,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            5.height,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Tooltip(
+                  message: "Click to close the side panel.",
+                  child: InkWell(
+                    focusColor: Colors.transparent,
+                    onTap: (){
+                      controllers.isLeftOpen.value=!controllers.isLeftOpen.value;
+                    },
+                    child: SvgPicture.asset("assets/images/left.svg",width: 40,height: 40,),
+                    // icon: Icon(controllers.isLeftOpen.value?Icons.arrow_back_ios:Icons.arrow_forward_ios,
+                    //   color: colorsConst.third,)
                   ),
-                  const Text(
-                    "$appName CRM",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      fontFamily: "Lato",
-                    ),
-                  ),
-                  10.height,
-                  Text(
-                    controllers.storage.read("f_name"),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontFamily: "Lato",
-                      //fontStyle: FontStyle.italic
-                    ),
-                  ),
-                  20.height,
-                  Obx(
-                    () => CustomSideBarText(
-                        text: constValue.dashboard,
-                        textColor: controllers.selectedIndex.value == 0
-                            ? const Color(0xffF5CB39)
-                            : colorsConst.textColor,
-                        onClicked: () {
-                          controllers.selectedIndex.value = 0;
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) =>
-                                  const Dashboard(),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero,
-                            ),
-                          );
-                          //Get.to(const Dashboard());
-                        }),
-                  ),
-
-                  // const Divider(
-                  //   color: Colors.white,
-                  //   thickness: 0.5,
-                  // ),
-                  Obx(
-                    () => CustomSideBarText(
-                        textColor: controllers.selectedIndex.value == 1
-                            ? const Color(0xffF5CB39)
-                            : colorsConst.textColor,
-                        text: constValue.newLead,
-                        onClicked: () {
-                          controllers.isLead.value = true;
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) =>
-                                  const Suspects(),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero,
-                            ),
-                          );
-                          controllers.selectedIndex.value = 1;
-                        }),
-                  ),
-
-                  // const Divider(
-                  //   color: Colors.white,
-                  //   thickness: 0.5,
-                  // ),
-                  Obx(
-                    () => CustomSideBarText(
-                        textColor: controllers.selectedIndex.value == 2
-                            ? const Color(0xffF5CB39)
-                            : colorsConst.textColor,
-                        text: constValue.leads,
-                        onClicked: () {
-                          //controllers.isLead.value=true;
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) =>
-                                  const Prospects(),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero,
-                            ),
-                          );
-
-                          controllers.selectedIndex.value = 2;
-                        }),
-                  ),
-
-                  // const Divider(
-                  //   color: Colors.white,
-                  //   thickness: 0.5,
-                  // ),
-                  Obx(
-                    () => CustomSideBarText(
-                        textColor: controllers.selectedIndex.value == 3
-                            ? const Color(0xffF5CB39)
-                            : colorsConst.textColor,
-                        text: constValue.goodLead,
-                        onClicked: () {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) =>
-                                  const Qualified(),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero,
-                            ),
-                          );
-                          controllers.isEmployee.value = true;
-                          controllers.selectedIndex.value = 3;
-                        }),
-                  ),
-                  Obx(
-                    () => CustomSideBarText(
-                        textColor: controllers.selectedIndex.value == 4
-                            ? const Color(0xffF5CB39)
-                            : colorsConst.textColor,
-                        text: constValue.customer,
-                        onClicked: () {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) =>
-                                  const ViewCustomer(),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero,
-                            ),
-                          );
-                          controllers.isCustomer.value = true;
-                          controllers.selectedIndex.value = 4;
-                        }),
-                  ),
-
-                  // const Divider(
-                  //   color: Colors.white,
-                  //   thickness: 0.5,
-                  // ),
-
-                  // const Divider(
-                  //   color: Colors.white,
-                  //   thickness: 0.5,
-                  // ),
-                  // Obx(() => CustomSideBarText(
-                  //     textColor:controllers.selectedIndex.value==5?const Color(0xffF5CB39):colorsConst.textColor,
-                  //
-                  //     text: constValue.products,
-                  //     onClicked: (){
-                  //       Navigator.push(context,
-                  //         PageRouteBuilder(
-                  //           pageBuilder: (context, animation1, animation2) => const ViewProduct(),
-                  //           transitionDuration: Duration.zero,
-                  //           reverseTransitionDuration: Duration.zero,
-                  //         ),
-                  //       );
-                  //       controllers.isProduct.value=true;
-                  //       controllers.selectedIndex.value=5;
-                  //     }),
-                  // ),
-                  // Obx(() => controllers.isAdmin.value?CustomSideBarText(
-                  //     textColor:controllers.selectedIndex.value==6?const Color(0xffF5CB39):colorsConst.textColor,
-                  //     text: "Add Profile",
-                  //     onClicked:(){
-                  //       Navigator.push(context,
-                  //         PageRouteBuilder(
-                  //           pageBuilder: (context, animation1, animation2) => const SignUp(),
-                  //           transitionDuration: Duration.zero,
-                  //           reverseTransitionDuration: Duration.zero,
-                  //         ),
-                  //       );
-                  //       //controllers.isEmployee.value=true;
-                  //       //controllers.selectedIndex.value=6;
-                  //     }):0.height,),
-                  Obx(
-                    () => CustomSideBarText(
-                        textColor: controllers.selectedIndex.value == 7
-                            ? const Color(0xffF5CB39)
-                            : colorsConst.textColor,
-                        text: "LogOut",
-                        onClicked: () async {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                backgroundColor: colorsConst.primary,
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 20, horizontal: 24),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Do you want to log out?",
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 20),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                colorsConst.primary,
-                                            side: BorderSide(
-                                                color: colorsConst.secondary),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                            ),
-                                          ),
-                                          child: const Text(
-                                            "No",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        ElevatedButton(
-                                          onPressed: () async {
-                                            final prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
-                                            prefs.setBool("loginScreen", false);
-                                            prefs.setBool("isAdmin", false);
-                                            Get.to(const LoginPage(),
-                                                duration: Duration.zero);
-                                            //controllers.isEmployee.value=true;
-                                            controllers.selectedIndex.value = 7;
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                colorsConst.primary,
-                                            side: BorderSide(
-                                                color: colorsConst.secondary),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                            ),
-                                          ),
-                                          child: const Text(
-                                            "Yes",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        }),
-                  ),
-                  100.height
-                ],
+                ),
+              ],
+            ),
+            const Text(
+              "$appName CRM",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                fontFamily: "Lato",
               ),
             ),
-          )
+            10.height,
+            Text(
+              controllers.storage.read("f_name"),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontFamily: "Lato",
+                //fontStyle: FontStyle.italic
+              ),
+            ),
+            20.height,
+            Obx(
+                  () => CustomSideBarText(
+                  text: constValue.dashboard,
+                  textColor: controllers.selectedIndex.value == 0
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  onClicked: () {
+                    controllers.selectedIndex.value = 0;
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Dashboard(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                    //Get.to(const Dashboard());
+                  }),
+            ),
+
+            // const Divider(
+            //   color: Colors.white,
+            //   thickness: 0.5,
+            // ),
+            Obx(
+                  () => CustomSideBarText(
+                  textColor: controllers.selectedIndex.value == 1
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  text: "Suspects",
+                  onClicked: () {
+                    controllers.isLead.value = true;
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Suspects(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                    controllers.selectedIndex.value = 1;
+                  }),
+            ),
+
+            // const Divider(
+            //   color: Colors.white,
+            //   thickness: 0.5,
+            // ),
+            Obx(
+                  () => CustomSideBarText(
+                  textColor: controllers.selectedIndex.value == 2
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  text: "Prospects",
+                  onClicked: () {
+                    //controllers.isLead.value=true;
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Prospects(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+
+                    controllers.selectedIndex.value = 2;
+                  }),
+            ),
+
+            // const Divider(
+            //   color: Colors.white,
+            //   thickness: 0.5,
+            // ),
+            Obx(
+                  () => CustomSideBarText(
+                  textColor: controllers.selectedIndex.value == 3
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  text: "Qualified",
+                  onClicked: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Qualified(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                    controllers.isEmployee.value = true;
+                    controllers.selectedIndex.value = 3;
+                  }),
+            ),
+            Obx(
+                  () => CustomSideBarText(
+                  textColor: controllers.selectedIndex.value == 4
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  text: constValue.customer,
+                  onClicked: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const ViewCustomer(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                    controllers.isCustomer.value = true;
+                    controllers.selectedIndex.value = 4;
+                  }),
+            ),
+            Obx(
+                  () => CustomSideBarText(
+                  textColor: controllers.selectedIndex.value == 5
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  text: "Disqualified",
+                  onClicked: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const DisqualifiedLead(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                    //controllers.isDisqualified.value = true;
+                    controllers.selectedIndex.value = 5;
+                  }),
+            ),
+
+            // const Divider(
+            //   color: Colors.white,
+            //   thickness: 0.5,
+            // ),
+
+            // const Divider(
+            //   color: Colors.white,
+            //   thickness: 0.5,
+            // ),
+            // Obx(() => CustomSideBarText(
+            //     textColor:controllers.selectedIndex.value==5?const Color(0xffF5CB39):colorsConst.textColor,
+            //
+            //     text: constValue.products,
+            //     onClicked: (){
+            //       Navigator.push(context,
+            //         PageRouteBuilder(
+            //           pageBuilder: (context, animation1, animation2) => const ViewProduct(),
+            //           transitionDuration: Duration.zero,
+            //           reverseTransitionDuration: Duration.zero,
+            //         ),
+            //       );
+            //       controllers.isProduct.value=true;
+            //       controllers.selectedIndex.value=5;
+            //     }),
+            // ),
+            // Obx(() => controllers.isAdmin.value?CustomSideBarText(
+            //     textColor:controllers.selectedIndex.value==6?const Color(0xffF5CB39):colorsConst.textColor,
+            //     text: "Add Profile",
+            //     onClicked:(){
+            //       Navigator.push(context,
+            //         PageRouteBuilder(
+            //           pageBuilder: (context, animation1, animation2) => const SignUp(),
+            //           transitionDuration: Duration.zero,
+            //           reverseTransitionDuration: Duration.zero,
+            //         ),
+            //       );
+            //       //controllers.isEmployee.value=true;
+            //       //controllers.selectedIndex.value=6;
+            //     }):0.height,),
+            Obx(
+                  () => CustomSideBarText(
+                  textColor: controllers.selectedIndex.value == 7
+                      ? const Color(0xffF5CB39)
+                      : colorsConst.textColor,
+                  text: "LogOut",
+                  onClicked: () async {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor: colorsConst.primary,
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 24),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Do you want to log out?",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                      colorsConst.primary,
+                                      side: BorderSide(
+                                          color: colorsConst.secondary),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(5),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      "No",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      final prefs = await SharedPreferences.getInstance();
+                                      prefs.setBool("loginScreen", false);
+                                      prefs.setBool("isAdmin", false);
+                                      Get.to(const LoginPage(), duration: Duration.zero);
+                                      //controllers.isEmployee.value=true;
+                                      controllers.selectedIndex.value = 7;
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                      colorsConst.primary,
+                                      side: BorderSide(
+                                          color: colorsConst.secondary),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(5),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      "Yes",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }),
+            ),
+            100.height
+          ],
+        ),
+      ),
+    )
         : Container(
             width: 60,
             height: MediaQuery.of(context).size.height,

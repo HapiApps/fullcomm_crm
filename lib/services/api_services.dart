@@ -212,7 +212,7 @@ class ApiService {
       print("result ${output.body}");
       print("fields ${request.fields}");
       if (response.statusCode == 200 &&
-          output.body == "{\"status_code\":200,\"message\":\"ok\"}") {
+          output.body == "{\"status_code\":200,\"message\":\"OK\"}") {
         print("success");
 
         controllers.empName.value = "";
@@ -427,7 +427,7 @@ class ApiService {
       );
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200 && response["message"] == "ok") {
+      if (request.statusCode == 200 && response["message"] == "OK") {
         utils.snackBar(
             msg: "Your Lead is created successfully !",
             color: colorsConst.primary,
@@ -704,10 +704,11 @@ class ApiService {
           encoding: Encoding.getByName("utf-8"));
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200 && response["message"] == "ok") {
+      if (request.statusCode == 200 && response["message"] == "OK") {
         print("success");
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
+        allQualifiedDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         Navigator.pop(context);
         Get.to(const Prospects(), duration: Duration.zero);
@@ -729,7 +730,85 @@ class ApiService {
       controllers.productCtr.reset();
     }
   }
+  Future disqualifiedCustomersAPI(BuildContext context,List<Map<String, String>> list) async {
+    try{
+      print("data ${list.toString()}");
+      Map data = {
+        "action": "disqualified",
+        "active": "2",
+        "cusList": list
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"]=="OK"){
+        print("success");
+        apiService.allLeadsDetails();
+        apiService.allNewLeadsDetails();
+        apiService.allQualifiedDetails();
+        controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
+        prospectsList.clear();
+        qualifiedList.clear();
+        customerList.clear();
+        Navigator.pop(context);
+        //Get.to(const Prospects(),duration: Duration.zero);
+        controllers.productCtr.reset();
+      } else {
+        errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
 
+  Future qualifiedCustomersAPI(BuildContext context,List<Map<String, String>> list) async {
+    try{
+      print("data ${list.toString()}");
+      Map data = {
+        "action": "disqualified",
+        "active": "1",
+        "cusList": list
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"]=="OK"){
+        print("success");
+        apiService.allLeadsDetails();
+        apiService.allNewLeadsDetails();
+        apiService.allQualifiedDetails();
+        controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
+        prospectsList.clear();
+        qualifiedList.clear();
+        customerList.clear();
+        Navigator.pop(context);
+        //Get.to(const Prospects(),duration: Duration.zero);
+        controllers.productCtr.reset();
+      } else {
+        errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
   Future insertSuspectsAPI(BuildContext context) async {
     try {
       print("data ${qualifiedList.toString()}");
@@ -743,10 +822,10 @@ class ApiService {
           encoding: Encoding.getByName("utf-8"));
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200 && response["message"] == "ok") {
-        print("success");
-        apiService.allLeadsDetails();
-        apiService.allNewLeadsDetails();
+      if (request.statusCode == 200 && response["message"] == "OK") {
+        allLeadsDetails();
+        allQualifiedDetails();
+        allNewLeadsDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         Navigator.pop(context);
         Get.to(const Suspects(), duration: Duration.zero);
@@ -769,6 +848,107 @@ class ApiService {
     }
   }
 
+  Future<void> allQualifiedDetails() async {
+    controllers.isLead.value = false;
+    final url = Uri.parse(scriptApi);
+    controllers.allDisqualifiedLength.value = 0;
+    try {
+      final response = await http.post(
+        url,
+        body: jsonEncode({
+          "search_type": "disqualified",
+          "cos_id": cosId,
+          "role": controllers.storage.read("role"),
+          "id": controllers.storage.read("id"),
+          "action": "get_data"
+        }),
+      );
+      controllers.isLead.value=true;
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as List;
+        controllers.allDisqualifiedLength.value = data.length;
+        controllers.isDisqualifiedList.clear();
+        for (int i = 0; i < controllers.allDisqualifiedLength.value; i++) {
+          controllers.isDisqualifiedList.add({
+            "isSelect": false,
+            "lead_id": data[i]["user_id"].toString(),
+            "rating": data[i]["rating"].toString(),
+            "mail_id": data[i]["email_id"].toString(),
+          });
+        }
+        // Update the observable list with the fetched data
+        controllers.disqualifiedFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load leads: Status code ${response.body}');
+      }
+    } on SocketException {
+      print('No internet connection');
+      throw Exception('No internet connection');
+    } on HttpException catch (e) {
+      print('Server error: ${e.toString()}');
+      throw Exception('Server error: ${e.toString()}');
+    } catch (e) {
+      print('Unexpected error: ${e.toString()}');
+      throw Exception('Unexpected error: ${e.toString()}');
+    }
+  }
+
+  Future bulkEmailAPI(BuildContext context, List<Map<String, String>> list, String image) async {
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
+
+      request.fields['subject']        = controllers.emailSubjectCtr.text;
+      request.fields['cos_id']         = cosId.toString();
+      request.fields['count']          = '${controllers.emailCount.value + 1}';
+      request.fields['quotation_name'] = controllers.emailQuotationCtr.text;
+      request.fields['body']           = controllers.emailMessageCtr.text;
+      request.fields['user_id']        = controllers.storage.read("id").toString();
+      request.fields['date']           =
+      "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
+      request.fields['action']         = 'bulk_mail_receive';
+      List<String> ids    = list.map((e) => e['lead_id'] ?? '').toList();
+      List<String> emails = list.map((e) => e['mail'] ?? '').toList();
+
+      request.fields['clientMail'] = emails.join(",");
+      request.fields['id']         = ids.join(",");
+
+      if (imageController.empFileName.value.isNotEmpty) {
+        var picture1 = http.MultipartFile.fromBytes(
+          "attachment",
+          imageController.empMediaData,
+          filename: imageController.empFileName.value,
+        );
+        request.files.add(picture1);
+      }
+
+      var response = await request.send();
+      var body = await response.stream.bytesToString();
+      print("Response: $body");
+      print("Response: ${request.fields}");
+
+      if (response.statusCode == 200 && body.trim()== "Mail process completed.") {
+        utils.snackBar(msg: "Mail has been sent", color: Colors.green, context: Get.context!);
+        controllers.emailMessageCtr.clear();
+        controllers.emailToCtr.clear();
+        controllers.emailSubjectCtr.clear();
+        prospectsList.clear();
+        // apiService.allLeadsDetails();
+        apiService.allNewLeadsDetails();
+        // controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
+        await Future.delayed(const Duration(milliseconds: 100));
+        Navigator.pop(Get.context!);
+        Get.off(const Suspects(), duration: Duration.zero);
+        controllers.emailCtr.reset();
+      } else {
+        controllers.emailCtr.reset();
+        errorDialog(Get.context!, "Mail has not been sent");
+      }
+    } catch (e) {
+      errorDialog(Get.context!, e.toString());
+      controllers.emailCtr.reset();
+    }
+  }
+
   Future deleteCustomersAPI(
       BuildContext context, List<Map<String, String>> list) async {
     try {
@@ -783,7 +963,7 @@ class ApiService {
           encoding: Encoding.getByName("utf-8"));
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200 && response["message"] == "ok") {
+      if (request.statusCode == 200 && response["message"] == "OK") {
         print("success");
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
@@ -1028,7 +1208,7 @@ class ApiService {
           encoding: Encoding.getByName("utf-8"));
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200 && response["message"] == "ok") {
+      if (request.statusCode == 200 && response["message"] == "OK") {
         print("success");
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
@@ -1070,7 +1250,7 @@ class ApiService {
           encoding: Encoding.getByName("utf-8"));
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200 && response["message"] == "ok") {
+      if (request.statusCode == 200 && response["message"] == "OK") {
         print("success");
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
@@ -1132,7 +1312,7 @@ class ApiService {
       print("request ${request.body}");
       // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 &&
-          request.body == "{\"status_code\":200,\"message\":\"ok\"}") {
+          request.body == "{\"status_code\":200,\"message\":\"OK\"}") {
         utils.snackBar(
             msg: "Your company created successfully",
             color: colorsConst.primary,
@@ -1181,14 +1361,14 @@ class ApiService {
         "unit_login": "0",
         "action": "sign_on"
       };
-      final request = await http.post(Uri.parse(login),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      //print("Login Res ${request.body}");
+      print("Login Res ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200) {
         controllers.storage.write("f_name", response["firstname"]);
@@ -1241,7 +1421,7 @@ class ApiService {
         "platform": "3",
         "action": "sign_on"
       };
-      final request = await http.post(Uri.parse(login),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
@@ -1287,7 +1467,7 @@ class ApiService {
     try {
       Map data = {
         "search_type": "category",
-        "cat_id": cosId == '202410' ? "1" : "3",
+        "cat_id": cosId == '202410' ? "1" : "4",
         "cos_id": cosId,
         "action": "get_data"
       };
@@ -1298,6 +1478,7 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      print("Category res ${request.body}");
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         controllers.leadCategoryList.clear();
@@ -2215,8 +2396,7 @@ class ApiService {
         "role": controllers.storage.read("role"),
         "cos_id": cosId,
         "action": "get_data",
-        "date":
-            "${DateTime.now().day.toString().padLeft(2, "0")}-${DateTime.now().month.toString().padLeft(2, "0")}-${DateTime.now().year.toString()}"
+        "date": "${DateTime.now().day.toString().padLeft(2, "0")}-${DateTime.now().month.toString().padLeft(2, "0")}-${DateTime.now().year.toString()}"
       };
       log("main ${data.toString()}");
       final request = await http.post(Uri.parse(scriptApi),

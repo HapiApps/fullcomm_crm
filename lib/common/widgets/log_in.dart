@@ -6,6 +6,7 @@ import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_text.dart';
@@ -58,34 +59,56 @@ class _LoginPageState extends State<LoginPage> {
             width: MediaQuery.of(context).size.width / 2,
             height: MediaQuery.of(context).size.height,
             alignment: Alignment.center,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft, // gradient start
+                end: Alignment.bottomRight, // gradient end
+                colors: [
+                  Color(0xFF1B2D50), // #1B2D50
+                  Color(0xFF142140), // #142140
+                ],
+              ),
+            ),
             //color: Colors.orange[50],
-            color: colorsConst.secondary,
+            //color: colorsConst.secondary,
             child: SvgPicture.asset("assets/images/login.svg"),
           ),
           Container(
             alignment: Alignment.center,
             width: MediaQuery.of(context).size.width / 2,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft, // gradient start
+                end: Alignment.bottomRight, // gradient end
+                colors: [
+                  Color(0xFF1B2D50), // #1B2D50
+                  Color(0xFF142140), // #142140
+                ],
+              ),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                //Image.asset("assets/images/homeLogo.png",width: 150,height: 150,),
+                Image.asset("assets/images/ARUU.png"),
+                50.height,
                 //50.height,
                 //SvgPicture.asset("assets/images/Loader-3.svg"),
-                CustomText(
-                  text: "Login",
-                  colors: colorsConst.textColor,
-                  size: 25,
-                  isBold: true,
+                Text("Login",
+                    style: GoogleFonts.poppins(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: colorsConst.textColor,
+                    )
                 ),
-                70.height,
+
+                20.height,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CustomTextField(
                       onChanged: (value) async {
-                        SharedPreferences sharedPref =
-                            await SharedPreferences.getInstance();
+                        SharedPreferences sharedPref = await SharedPreferences.getInstance();
                         sharedPref.setString(
                             "loginNumber", value.toString().trim());
                       },
@@ -158,8 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                           controllers.loginPassword.text.length > 16) {
                         utils.snackBar(
                             context: Get.context!,
-                            msg:
-                                "Password must be at least 8 characters and no more than 16 characters.",
+                            msg: "Password must be at least 8 characters and no more than 16 characters.",
                             color: Colors.red);
                         controllers.loginCtr.reset();
                       } else {

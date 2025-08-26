@@ -4,9 +4,6 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:fullcomm_crm/components/custom_search_textfield.dart';
-import 'package:fullcomm_crm/components/delete_button.dart';
-import 'package:fullcomm_crm/components/disqualified_button.dart';
-import 'package:fullcomm_crm/components/promote_button.dart';
 import 'package:fullcomm_crm/screens/leads/view_lead.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
@@ -14,21 +11,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:group_button/group_button.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/constant/api.dart';
 import '../../components/custom_checkbox.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
-import 'add_lead.dart';
 
-class Suspects extends StatefulWidget {
-  const Suspects({super.key});
+class DisqualifiedLead extends StatefulWidget {
+  const DisqualifiedLead({super.key});
 
   @override
-  State<Suspects> createState() => _SuspectsState();
+  State<DisqualifiedLead> createState() => _DisqualifiedLeadState();
 }
 
-class _SuspectsState extends State<Suspects> {
+class _DisqualifiedLeadState extends State<DisqualifiedLead> {
   final ScrollController _controller = ScrollController();
   final ScrollController _horizontalController = ScrollController();
   final ScrollController _verticalController = ScrollController();
@@ -43,7 +38,7 @@ class _SuspectsState extends State<Suspects> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero, () {
-      controllers.selectedIndex.value = 1;
+      controllers.selectedIndex.value = 5;
       controllers.groupController.selectIndex(0);
       setState(() {
         apiService.prospectsList = [];
@@ -172,25 +167,25 @@ class _SuspectsState extends State<Suspects> {
                                               onChanged: (value) {
                                                 if (controllers.isAllSelected.value == true) {
                                                   controllers.isAllSelected.value = false;
-                                                  for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                                    controllers.isNewLeadList[j]["isSelect"] = false;
+                                                  for (int j = 0; j < controllers.isDisqualifiedList.length; j++) {
+                                                    controllers.isDisqualifiedList[j]["isSelect"] = false;
                                                     setState(() {
                                                       var i = apiService.prospectsList.indexWhere((element) =>
-                                                      element["lead_id"] == controllers.isNewLeadList[j]["lead_id"]);
+                                                      element["lead_id"] == controllers.isDisqualifiedList[j]["lead_id"]);
                                                       apiService.prospectsList.removeAt(i);
                                                     });
                                                   }
                                                 } else {
                                                   controllers.isAllSelected.value = true;
                                                   setState(() {
-                                                    for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                                      controllers.isNewLeadList[j]["isSelect"] = true;
+                                                    for (int j = 0; j < controllers.isDisqualifiedList.length; j++) {
+                                                      controllers.isDisqualifiedList[j]["isSelect"] = true;
                                                       apiService.prospectsList.add({
-                                                        "lead_id": controllers.isNewLeadList[j]["lead_id"],
+                                                        "lead_id": controllers.isDisqualifiedList[j]["lead_id"],
                                                         "user_id": controllers.storage.read("id"),
-                                                        "rating": controllers.isNewLeadList[j]["rating"],
+                                                        "rating": controllers.isDisqualifiedList[j]["rating"],
                                                         "cos_id": cosId,
-                                                        "mail": controllers.isNewLeadList[j]["mail_id"],
+                                                        "mail": controllers.isDisqualifiedList[j]["mail_id"],
                                                       });
                                                     }
                                                   });
@@ -334,9 +329,9 @@ class _SuspectsState extends State<Suspects> {
                                       return 5.height;
                                     },
                                     controller: _verticalController,
-                                    itemCount: controllers.paginatedLeads.length,
+                                    itemCount: controllers.paginatedDisqualified.length,
                                     itemBuilder: (context, index) {
-                                      final data = controllers.paginatedLeads[index];
+                                      final data = controllers.paginatedDisqualified[index];
                                       return InkWell(
                                         onTap: () {
                                           Get.to(ViewLead(
@@ -409,12 +404,12 @@ class _SuspectsState extends State<Suspects> {
                                                       text: "",
                                                       onChanged: (value){
                                                         setState(() {
-                                                          if(controllers.isNewLeadList[index]["isSelect"]==true){
-                                                            controllers.isNewLeadList[index]["isSelect"]=false;
+                                                          if(controllers.isDisqualifiedList[index]["isSelect"]==true){
+                                                            controllers.isDisqualifiedList[index]["isSelect"]=false;
                                                             var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
                                                             apiService.prospectsList.removeAt(i);
                                                           }else{
-                                                            controllers.isNewLeadList[index]["isSelect"]=true;
+                                                            controllers.isDisqualifiedList[index]["isSelect"]=true;
                                                             apiService.prospectsList.add({
                                                               "lead_id":data.userId.toString(),
                                                               "user_id":controllers.storage.read("id"),
@@ -425,7 +420,7 @@ class _SuspectsState extends State<Suspects> {
                                                           }
                                                         });
                                                       },
-                                                      saveValue: controllers.isNewLeadList[index]["isSelect"]),
+                                                      saveValue: controllers.isDisqualifiedList[index]["isSelect"]),
                                                   ),
                                                 ),
                                               ),
@@ -494,80 +489,31 @@ class _SuspectsState extends State<Suspects> {
         highlightColor: Colors.transparent,
         icon: Icon(icon, color: colorsConst.textColor),
         onPressed: isEnabled ? onPressed : null,
-        onLongPress: (){
-          _focusNode.requestFocus();
-        },
+        // onLongPress: (){
+        //   _focusNode.requestFocus();
+        // },
       ),
     );
   }
 
   Widget buildHeaderSection() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Obx(() => CustomText(
-              text: "New Leads - ${controllers.leadCategoryList[0]["value"]}",
+            CustomText(
+              text: "Disqualified",
               colors: colorsConst.textColor,
               size: 25,
               isBold: true,
-            )),
+            ),
             10.height,
-            Obx(() => CustomText(
-              text: "View all of your ${controllers.leadCategoryList[0]["value"]} Information",
+            CustomText(
+              text: "View all of your Disqualified Information",
               colors: colorsConst.textColor,
               size: 14,
-            )),
-          ],
-        ),
-        Row(
-          children: [
-            CustomLoadingButton(
-              callback: () async {
-                SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                setState(() {
-                  final leadPersonalCount = sharedPref.getInt("leadCount") ?? 1;
-                  controllers.leadPersonalItems.value = leadPersonalCount;
-                  controllers.isMainPersonList.value = [];
-                  controllers.isCoMobileNumberList.value = [];
-                  for (int i = 0; i < leadPersonalCount; i++) {
-                    controllers.isMainPersonList.add(false);
-                    controllers.isCoMobileNumberList.add(false);
-                  }
-                  controllers.leadCoNameCrt.text = sharedPref.getString("leadCoName") ?? "";
-                  controllers.leadCoMobileCrt.text = sharedPref.getString("leadCoMobile") ?? "";
-                });
-                _focusNode.requestFocus();
-                Get.to(const AddLead(), duration: Duration.zero);
-              },
-              isLoading: false,
-              height: 35,
-              backgroundColor: colorsConst.third,
-              radius: 2,
-              width: 100,
-              isImage: false,
-              text: "Add Lead",
-              textColor: Colors.black,
             ),
-            15.width,
-            CustomLoadingButton(
-              callback: () {
-                _focusNode.requestFocus();
-                utils.showImportDialog(context);
-              },
-              height: 35,
-              isLoading: false,
-              backgroundColor: colorsConst.third,
-              radius: 2,
-              width: 100,
-              isImage: false,
-              text: "Import",
-              textColor: Colors.black,
-            ),
-          ],
-        ),
+
       ],
     );
   }
@@ -594,62 +540,92 @@ class _SuspectsState extends State<Suspects> {
                 controllers.employeeHeading.value = name;
               },
               buttons: [
-                "All ${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[0]["value"]} ${controllers.allNewLeadsLength.value}"
+                "All Disqualified ${controllers.allDisqualifiedLength.value}"
               ],
             )),
             Row(
               children: [
-                GestureDetector(
-                  onTap: (){
-                    _focusNode.requestFocus();
-                  },
-                  child: DeleteButton(
-                    leadList: apiService.prospectsList,
-                    callback: () {
-                      _focusNode.requestFocus();
-                      apiService.deleteCustomersAPI(context, apiService.prospectsList);
-                    },
+                Tooltip(
+                  message: "Click here to qualified the customer details",
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: colorsConst.primary,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              side: BorderSide(color: colorsConst.third)
+                          )
+                      ),
+                      onPressed: () {
+                        if(apiService.prospectsList.isNotEmpty){
+                          showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (context) {
+                                return AlertDialog(
+                                  backgroundColor:
+                                  colorsConst.secondary,
+                                  content: CustomText(
+                                    text: "Are you sure qualified this customers?",
+                                    size: 16,
+                                    isBold: true,
+                                    colors: colorsConst.textColor,
+                                  ),
+                                  actions: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: colorsConst.third),
+                                              color: colorsConst.primary),
+                                          width: 80,
+                                          height: 25,
+                                          child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.zero),
+                                                backgroundColor: colorsConst.primary,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const CustomText(
+                                                text: "Cancel",
+                                                colors: Colors.white,
+                                                size: 14,
+                                              )),
+                                        ),
+                                        10.width,
+                                        CustomLoadingButton(
+                                          callback: (){
+                                            apiService.qualifiedCustomersAPI(context, apiService.prospectsList);
+                                          },
+                                          height: 35,
+                                          isLoading: true,
+                                          backgroundColor:
+                                          colorsConst.third,
+                                          radius: 2,
+                                          width: 80,
+                                          controller: controllers.productCtr,
+                                          isImage: false,
+                                          text: "Qualified",
+                                          textColor:
+                                          colorsConst.primary,
+                                        ),
+                                        5.width
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              });
+                        }else{
+                          apiService.errorDialog(
+                              context, "Please select customers");
+                        }
+                      },
+                      child: CustomText(text: "Qualified",colors: colorsConst.textColor,)
                   ),
-                ),
-                5.width,
-                IconButton(
-                    onPressed: (){
-                      _focusNode.requestFocus();
-                      if(apiService.prospectsList.isEmpty){
-                        apiService.errorDialog(
-                            context, "Please select customers");
-                      }else{
-                        utils.bulkEmailDialog(_focusNode,list:apiService.prospectsList);
-                      }
-                    },
-                    icon: SvgPicture.asset("assets/images/email.svg")),
-                GestureDetector(
-                  onTap: (){
-                    _focusNode.requestFocus();
-                  },
-                  child: DisqualifiedButton(
-                    leadList: apiService.prospectsList,
-                    focusNode: _focusNode,
-                    callback: () {
-                      _focusNode.requestFocus();
-                      apiService.disqualifiedCustomersAPI(context, apiService.prospectsList);
-                    },
-                  ),
-                ),
-                5.width,
-                GestureDetector(
-                  onTap: (){
-                    _focusNode.requestFocus();
-                  },
-                  child: Obx(() => PromoteButton(
-                    headText: controllers.leadCategoryList[1]["value"],
-                    leadList: apiService.prospectsList,
-                    callback: () {
-                      _focusNode.requestFocus();
-                      apiService.insertProspectsAPI(context, apiService.prospectsList);
-                    },
-                    text: "Promote",
-                  )),
                 ),
                 5.width,
               ],
@@ -673,11 +649,8 @@ class _SuspectsState extends State<Suspects> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colorsConst.secondary,
                   ),
-                  onPressed: (){
-                    controllers.selectMonth(
-                        context, controllers.selectedProspectSortBy, controllers.selectedMonth);
-                    _focusNode.requestFocus();
-                  },
+                  onPressed: () => controllers.selectMonth(
+                      context, controllers.selectedProspectSortBy, controllers.selectedMonth),
                   child: Text(
                     controllers.selectedMonth.value != null
                         ? DateFormat('MMMM yyyy').format(controllers.selectedMonth.value!)
@@ -693,7 +666,6 @@ class _SuspectsState extends State<Suspects> {
                   ),
                   onSelected: (value) {
                     controllers.selectedProspectSortBy.value = value;
-                    _focusNode.requestFocus();
                   },
                   itemBuilder: (context) => [
                     PopupMenuItem(value: "Today", child: Text("Today", style: TextStyle(color: colorsConst.textColor))),

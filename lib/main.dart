@@ -575,6 +575,7 @@ class _SplashScreenState extends State<SplashScreen> {
     apiService.getVisitType();
     if (widget.loginScreen) {
       apiService.allLeadsDetails();
+      apiService.allQualifiedDetails();
       apiService.allNewLeadsDetails();
       controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
       controllers.allCustomerFuture = apiService.allCustomerDetails();
