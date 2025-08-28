@@ -9,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/custom_loading_button.dart';
-import '../../components/custom_text.dart';
 import '../../components/custom_textfield.dart';
 import '../../controller/controller.dart';
 import '../constant/key_constant.dart';
@@ -52,40 +51,20 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     //print("width ${MediaQuery.of(context).size.width}");
     return Scaffold(
-      backgroundColor: colorsConst.primary,
       body: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: MediaQuery.of(context).size.width / 2,
+            width: MediaQuery.of(context).size.width / 2.3,
             height: MediaQuery.of(context).size.height,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft, // gradient start
-                end: Alignment.bottomRight, // gradient end
-                colors: [
-                  Color(0xFF1B2D50), // #1B2D50
-                  Color(0xFF142140), // #142140
-                ],
-              ),
-            ),
             //color: Colors.orange[50],
             //color: colorsConst.secondary,
             child: SvgPicture.asset("assets/images/login.svg"),
           ),
           Container(
             alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width / 2,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft, // gradient start
-                end: Alignment.bottomRight, // gradient end
-                colors: [
-                  Color(0xFF1B2D50), // #1B2D50
-                  Color(0xFF142140), // #142140
-                ],
-              ),
-            ),
+            width: MediaQuery.of(context).size.width / 2.3,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -98,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                     style: GoogleFonts.poppins(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
-                      color: colorsConst.textColor,
+                      color: Colors.black,
                     )
                 ),
 
@@ -123,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                           : 'Mobile Number',
                       hintText: MediaQuery.of(context).size.width <= 987
                           ? 'Mobile'
-                          : 'Mobile Number',
+                          : 'Enter Your Mobile Number',
                       isOptional: true,
                     ),
                   ],
@@ -149,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                         keyboardType: TextInputType.visiblePassword,
                         controller: controllers.loginPassword,
                         text: 'Password',
-                        hintText: 'Password',
+                        hintText: 'Enter Your Password',
                         isOptional: true,
                       ),
                     ),
@@ -189,13 +168,14 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     isLoading: true,
-                    text: "Log In",
+                    text: "Login",
+                    textSize: 20,
                     textColor: Colors.white,
                     controller: controllers.loginCtr,
                     backgroundColor: colorsConst.primary,
                     radius: 5,
-                    height: 50,
-                    width: 100),
+                    height: 60,
+                    width: 170),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.center,
                 //   children:[

@@ -271,7 +271,6 @@ class _UpdateLeadState extends State<UpdateLead> {
     double textFieldSize=(MediaQuery.of(context).size.width-400)/3.5;
     return SelectionArea(
       child: Scaffold(
-          backgroundColor: colorsConst.primary,
           // appBar: PreferredSize(
           //   preferredSize: const Size.fromHeight(60),
           //   child:  CustomAppbar(text: appName,),

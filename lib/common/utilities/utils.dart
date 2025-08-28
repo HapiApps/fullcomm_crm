@@ -33,6 +33,7 @@ import '../../components/custom_loading_button.dart';
 import '../../components/custom_sidebar_text.dart';
 import '../../components/custom_text.dart';
 import '../../components/custom_textbutton.dart';
+import '../../components/funnel_container.dart';
 import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
 import '../../screens/leads/disqualified_lead.dart';
@@ -1293,10 +1294,9 @@ class Utils {
 
   Widget sideBarFunction(BuildContext context) {
     return Obx(() => controllers.isLeftOpen.value
-        ? Container(
+        ? SizedBox(
       width: 130,
       height: MediaQuery.of(context).size.height,
-      color: colorsConst.secondary,
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -1318,10 +1318,10 @@ class Utils {
                 ),
               ],
             ),
-            const Text(
+           Text(
               "$appName CRM",
               style: TextStyle(
-                color: Colors.white,
+                color: colorsConst.primary,
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
                 fontFamily: "Lato",
@@ -1330,8 +1330,8 @@ class Utils {
             10.height,
             Text(
               controllers.storage.read("f_name"),
-              style: const TextStyle(
-                color: Colors.white,
+              style:  TextStyle(
+                color: colorsConst.primary,
                 fontSize: 18,
                 fontFamily: "Lato",
                 //fontStyle: FontStyle.italic
@@ -1581,13 +1581,11 @@ class Utils {
                                       controllers.selectedIndex.value = 7;
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                      colorsConst.primary,
+                                      backgroundColor: colorsConst.primary,
                                       side: BorderSide(
                                           color: colorsConst.secondary),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(5),
+                                        borderRadius: BorderRadius.circular(5),
                                       ),
                                     ),
                                     child: const Text(
@@ -1617,8 +1615,8 @@ class Utils {
             width: 60,
             height: MediaQuery.of(context).size.height,
             padding: const EdgeInsets.fromLTRB(6, 8, 0, 0),
-            color: colorsConst.primary,
             alignment: Alignment.topCenter,
+            color: Colors.white,
             child: Tooltip(
               message: "Click to view the side panel",
               child: InkWell(
@@ -1774,8 +1772,7 @@ class Utils {
               ),
               Stack(
                 children: [
-                  Obx(
-                        () => SvgPicture.asset(
+                  Obx(() => SvgPicture.asset(
                       controllers.selectedIndex.value == 1
                           ? "assets/images/sSuspects.svg"
                           : "assets/images/suspects.svg",
@@ -1786,8 +1783,7 @@ class Utils {
                       left: 85,
                       bottom: 15,
                       child: Obx(() => CustomText(
-                          text:
-                          "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[0]["value"]}\n${controllers.allNewLeadsLength.value}",
+                          text: "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[0]["value"]}\n${controllers.allNewLeadsLength.value}",
                           colors: controllers.selectedIndex.value == 1
                               ? Colors.black
                               : colorsConst.textColor,

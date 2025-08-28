@@ -43,7 +43,6 @@ class _QuotationsState extends State<Quotations> {
   Widget build(BuildContext context) {
     return SelectionArea(
       child: Scaffold(
-        backgroundColor: colorsConst.primary,
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

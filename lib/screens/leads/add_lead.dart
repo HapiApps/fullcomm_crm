@@ -124,7 +124,6 @@ class _AddLeadState extends State<AddLead> {
   Widget build(BuildContext context) {
     double textFieldSize = (MediaQuery.of(context).size.width - 400) / 2.5;
     return Scaffold(
-        backgroundColor: colorsConst.primary,
         // appBar: PreferredSize(
         //   preferredSize: const Size.fromHeight(60),
         //   child:  CustomAppbar(text: appName,),

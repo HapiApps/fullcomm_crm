@@ -190,7 +190,6 @@ class _ViewLeadState extends State<ViewLead> {
     double screenWidth=MediaQuery.of(context).size.width;
     return SelectionArea(
       child: Scaffold(
-        backgroundColor: colorsConst.primary,
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children:[

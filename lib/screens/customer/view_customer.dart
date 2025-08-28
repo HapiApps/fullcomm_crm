@@ -55,7 +55,6 @@ class _ViewCustomerState extends State<ViewCustomer> {
     final double adjustedPartWidth = partWidth;
     return SelectionArea(
       child: Scaffold(
-        backgroundColor: colorsConst.primary,
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

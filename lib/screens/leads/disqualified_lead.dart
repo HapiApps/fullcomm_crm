@@ -64,7 +64,6 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
   Widget build(BuildContext context) {
     return SelectionArea(
       child: Scaffold(
-        backgroundColor: colorsConst.primary,
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

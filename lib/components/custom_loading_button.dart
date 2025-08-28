@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import '../common/constant/colors_constant.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -47,18 +48,17 @@ class _CustomLoadingButtonState extends State<CustomLoadingButton> {
             width: widget.width,
             height: widget.height,
             borderRadius: 3,
-            color: colorsConst.third,
+            color: widget.backgroundColor,
             successColor: colorsConst.primary,
             valueColor: Colors.white,
             onPressed: widget.callback,
             controller: widget.controller!,
             child: Text(
               widget.text.toString(),
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "Lato",
-                  fontSize: 15),
+              style: GoogleFonts.libreFranklin(
+                  color: widget.textColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: widget.textSize),
             ),
           )
         : SizedBox(

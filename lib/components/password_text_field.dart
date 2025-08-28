@@ -92,7 +92,7 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
             CustomText(
               text: widget.text,
               textAlign: TextAlign.start,
-              colors: colorsConst.headColor,
+              colors: Color(0xff4B5563),
               size: 15,
             ),
             widget.isOptional == true
@@ -111,7 +111,7 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
             child: TextFormField(
                 key: ValueKey(widget.text),
                 style: const TextStyle(
-                    color: Colors.white, fontSize: 15, fontFamily: "Lato"),
+                    color: Colors.black, fontSize: 15, fontFamily: "Lato"),
                 // readOnly: widget.controller==controllers.upDOBController||widget.controller==controllers.upDOBController?true:false,
                 obscureText: widget.controller == controllers.loginPassword ||
                         widget.controller ==
@@ -119,10 +119,11 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
                     ? !controllers.isEyeOpen.value
                     : false,
                 // focusNode: FocusNode(),
-                cursorColor: Colors.white,
+                cursorColor: colorsConst.primary,
                 focusNode: widget.focusNode,
                 onChanged: widget.onChanged,
                 onTap: widget.onTap,
+                obscuringCharacter: "*",
                 inputFormatters: widget.inputFormatters,
                 textCapitalization: widget.textCapitalization!,
                 textInputAction: widget.textInputAction,

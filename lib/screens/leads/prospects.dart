@@ -59,7 +59,6 @@ class _ProspectsState extends State<Prospects> {
     final double adjustedPartWidth = partWidth;
     return SelectionArea(
       child: Scaffold(
-        backgroundColor: colorsConst.primary,
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

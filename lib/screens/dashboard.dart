@@ -95,7 +95,6 @@ class _DashboardState extends State<Dashboard> {
     double screenWidth = MediaQuery.of(context).size.width;
     return SelectionArea(
       child: Scaffold(
-          backgroundColor: colorsConst.primary,
           // appBar:   PreferredSize(
           //   preferredSize:  const Size.fromHeight(60),
           //   child:  CustomAppbar(text: appName,),
@@ -104,9 +103,7 @@ class _DashboardState extends State<Dashboard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               utils.sideBarFunction(context),
-              Obx(
-                () => Container(
-
+              Obx(() => Container(
                     width: controllers.isLeftOpen.value == false &&
                             controllers.isRightOpen.value == false
                         ? screenWidth - 200
@@ -499,8 +496,7 @@ class _DashboardState extends State<Dashboard> {
                           ],
                         ),
                       ),
-                    )),
-              ),
+                    )),),
               utils.funnelContainer(context)
             ],
           )),

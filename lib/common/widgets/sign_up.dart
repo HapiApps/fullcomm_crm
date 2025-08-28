@@ -58,7 +58,6 @@ class _SignUpState extends State<SignUp> {
         return true;
       },
       child: Scaffold(
-        backgroundColor: colorsConst.primary,
         body: Row(
           children: [
             utils.sideBarFunction(context),

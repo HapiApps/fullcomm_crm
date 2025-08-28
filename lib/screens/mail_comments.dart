@@ -40,7 +40,6 @@ class _MailCommentsState extends State<MailComments> {
     screenWidth > screenHeight ? screenWidth * 0.30 : screenWidth * 0.90;
     return SelectionArea(
       child: Scaffold(
-        backgroundColor: colorsConst.primary,
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

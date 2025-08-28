@@ -30,8 +30,8 @@ class CustomStyle {
     return InputDecoration(
       hoverColor: Colors.transparent,
       focusColor: Colors.transparent,
-      // hintText:text,
-      hintText: "",
+       hintText:text,
+      //hintText: "",
       hintStyle: TextStyle(
           color: Colors.grey.shade400, fontSize: 13, fontFamily: "Lato"),
       fillColor:
