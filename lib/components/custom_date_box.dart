@@ -22,7 +22,7 @@ class CustomDateBox extends StatelessWidget {
       children: [
         CustomText(
           text:text,
-          colors:colorsConst.headColor,
+          colors:colorsConst.textColor,
           size:15,
         ),
         InkWell(

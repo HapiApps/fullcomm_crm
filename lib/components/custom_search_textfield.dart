@@ -36,7 +36,7 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
         ),
         onChanged: widget.onChanged,
         decoration: InputDecoration(
-          hoverColor: colorsConst.secondary,
+          hoverColor: Colors.white,
           hintText: widget.hintText,
           hintStyle: TextStyle(
             color: colorsConst.textColor,
@@ -56,9 +56,9 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
               },
               icon: Icon(
                 Icons.clear,
-                color: Colors.white,
+                color: Colors.black,
               )),
-          fillColor: colorsConst.secondary,
+          fillColor: Colors.transparent,
           filled: true,
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: colorsConst.secondary),

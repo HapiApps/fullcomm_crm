@@ -421,7 +421,10 @@ class _ViewLeadState extends State<ViewLead> {
                                   Container(
                                     height:190,
                                     decoration: BoxDecoration(
-                                        color: colorsConst.secondary,
+                                        color: Colors.white,
+                                        border: Border.all(
+                                          color: Colors.black
+                                        ),
                                         borderRadius: BorderRadius.circular(10)
                                     ),
                                     child: Column(
@@ -649,7 +652,10 @@ class _ViewLeadState extends State<ViewLead> {
                                   Container(
                                     height: 180,
                                     decoration: BoxDecoration(
-                                        color: colorsConst.secondary,
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            color: Colors.black
+                                        ),
                                         borderRadius: BorderRadius.circular(10)
                                     ),
                                     child: Column(
@@ -734,7 +740,8 @@ class _ViewLeadState extends State<ViewLead> {
                                                       20.height,
                                                       utils.leadText(text: leadData.landmark1.toString()=="null"?"":leadData.landmark1,color:colorsConst.textColor),
                                                       20.height,
-                                                      utils.leadText(text: leadData.city.toString()=="null"?"":leadData.city,color: colorsConst.textColor),
+                                                      utils.leadText(text: leadData.city.toString()=="null"?"":
+                                                      leadData.city,color: colorsConst.textColor),
                                                       20.height,
                                                       utils.leadText(text: leadData.country.toString()=="null"?"":leadData.country,color: colorsConst.textColor),
                                                     ],
@@ -752,7 +759,10 @@ class _ViewLeadState extends State<ViewLead> {
                                   Container(
                                     height: 200,
                                     decoration: BoxDecoration(
-                                        color: colorsConst.secondary,
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            color: Colors.black
+                                        ),
                                         borderRadius: BorderRadius.circular(10)
                                     ),
                                     child: Column(
@@ -953,7 +963,10 @@ class _ViewLeadState extends State<ViewLead> {
                                   Container(
                                     height: 380,
                                     decoration: BoxDecoration(
-                                        color: colorsConst.secondary,
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            color: Colors.black
+                                        ),
                                         borderRadius: BorderRadius.circular(10)
                                     ),
                                     child: Column(

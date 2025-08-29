@@ -56,11 +56,7 @@ class _QualifiedState extends State<Qualified> {
     final double adjustedPartWidth = partWidth;
     return SelectionArea(
       child: Scaffold(
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            utils.sideBarFunction(context),
-            Obx(
+        body: Obx(
               () => Container(
                 width: controllers.isLeftOpen.value == false &&
                         controllers.isRightOpen.value == false
@@ -613,9 +609,6 @@ class _QualifiedState extends State<Qualified> {
                 ),
               ),
             ),
-            utils.funnelContainer(context)
-          ],
-        ),
       ),
     );
   }

@@ -827,7 +827,7 @@ class Utils {
                 Widget text(String text) {
                   return CustomText(
                     text: text,
-                    colors: const Color(0xffE1E5FA),
+                    colors: Colors.black,
                     size: 12,
                   );
                 }
@@ -1327,59 +1327,58 @@ class Utils {
                 fontFamily: "Lato",
               ),
             ),
-            10.height,
-            Text(
-              controllers.storage.read("f_name"),
-              style:  TextStyle(
-                color: colorsConst.primary,
-                fontSize: 18,
-                fontFamily: "Lato",
-                //fontStyle: FontStyle.italic
-              ),
-            ),
+            // 10.height,
+            // Text(
+            //   controllers.storage.read("f_name"),
+            //   style:  TextStyle(
+            //     color: colorsConst.primary,
+            //     fontSize: 18,
+            //     fontFamily: "Lato",
+            //     //fontStyle: FontStyle.italic
+            //   ),
+            // ),
             20.height,
-            Obx(
-                  () => CustomSideBarText(
+            Obx(() => CustomSideBarText(
                   text: constValue.dashboard,
+                  boxColor: controllers.selectedIndex.value == 0
+                    ? const Color(0xffF3F8FD)
+                    : Colors.white,
                   textColor: controllers.selectedIndex.value == 0
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
+                      ? colorsConst.primary
+                      : Colors.black,
                   onClicked: () {
                     controllers.selectedIndex.value = 0;
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Dashboard(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   PageRouteBuilder(
+                    //     pageBuilder: (context, animation1, animation2) =>
+                    //     const Dashboard(),
+                    //     transitionDuration: Duration.zero,
+                    //     reverseTransitionDuration: Duration.zero,
+                    //   ),
+                    // );
                     //Get.to(const Dashboard());
                   }),
             ),
-
-            // const Divider(
-            //   color: Colors.white,
-            //   thickness: 0.5,
-            // ),
-            Obx(
-                  () => CustomSideBarText(
+            Obx(() => CustomSideBarText(
+                boxColor: controllers.selectedIndex.value == 1
+                    ? const Color(0xffF3F8FD)
+                    : Colors.white,
                   textColor: controllers.selectedIndex.value == 1
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
+                      ? colorsConst.primary
+                      : Colors.black,
                   text: "Suspects",
                   onClicked: () {
                     controllers.isLead.value = true;
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Suspects(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   PageRouteBuilder(
+                    //     pageBuilder: (context, animation1, animation2) =>
+                    //     const Suspects(),
+                    //     transitionDuration: Duration.zero,
+                    //     reverseTransitionDuration: Duration.zero,
+                    //   ),
+                    // );
                     controllers.selectedIndex.value = 1;
                   }),
             ),
@@ -1388,24 +1387,25 @@ class Utils {
             //   color: Colors.white,
             //   thickness: 0.5,
             // ),
-            Obx(
-                  () => CustomSideBarText(
+            Obx(() => CustomSideBarText(
+                boxColor: controllers.selectedIndex.value == 2
+                    ? const Color(0xffF3F8FD)
+                    : Colors.white,
                   textColor: controllers.selectedIndex.value == 2
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
+                      ? colorsConst.primary
+                      : Colors.black,
                   text: "Prospects",
                   onClicked: () {
                     //controllers.isLead.value=true;
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Prospects(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-
+                    // Navigator.push(
+                    //   context,
+                    //   PageRouteBuilder(
+                    //     pageBuilder: (context, animation1, animation2) =>
+                    //     const Prospects(),
+                    //     transitionDuration: Duration.zero,
+                    //     reverseTransitionDuration: Duration.zero,
+                    //   ),
+                    // );
                     controllers.selectedIndex.value = 2;
                   }),
             ),
@@ -1414,62 +1414,68 @@ class Utils {
             //   color: Colors.white,
             //   thickness: 0.5,
             // ),
-            Obx(
-                  () => CustomSideBarText(
+            Obx(() => CustomSideBarText(
+                      boxColor: controllers.selectedIndex.value == 3
+                          ? const Color(0xffF3F8FD)
+                          : Colors.white,
                   textColor: controllers.selectedIndex.value == 3
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
+                      ? colorsConst.primary
+                      : Colors.black,
                   text: "Qualified",
                   onClicked: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Qualified(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   PageRouteBuilder(
+                    //     pageBuilder: (context, animation1, animation2) =>
+                    //     const Qualified(),
+                    //     transitionDuration: Duration.zero,
+                    //     reverseTransitionDuration: Duration.zero,
+                    //   ),
+                    // );
                     controllers.isEmployee.value = true;
                     controllers.selectedIndex.value = 3;
                   }),
             ),
-            Obx(
-                  () => CustomSideBarText(
+            Obx(() => CustomSideBarText(
+                boxColor: controllers.selectedIndex.value == 4
+                    ? const Color(0xffF3F8FD)
+                    : Colors.white,
                   textColor: controllers.selectedIndex.value == 4
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
+                      ? colorsConst.primary
+                      : Colors.black,
                   text: constValue.customer,
                   onClicked: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const ViewCustomer(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   PageRouteBuilder(
+                    //     pageBuilder: (context, animation1, animation2) =>
+                    //     const ViewCustomer(),
+                    //     transitionDuration: Duration.zero,
+                    //     reverseTransitionDuration: Duration.zero,
+                    //   ),
+                    // );
                     controllers.isCustomer.value = true;
                     controllers.selectedIndex.value = 4;
                   }),
             ),
-            Obx(
-                  () => CustomSideBarText(
+            Obx(() => CustomSideBarText(
+                      boxColor: controllers.selectedIndex.value == 5
+                          ? const Color(0xffF3F8FD)
+                          : Colors.white,
                   textColor: controllers.selectedIndex.value == 5
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
+                      ? colorsConst.primary
+                      : Colors.black,
                   text: "Disqualified",
                   onClicked: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const DisqualifiedLead(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   PageRouteBuilder(
+                    //     pageBuilder: (context, animation1, animation2) =>
+                    //     const DisqualifiedLead(),
+                    //     transitionDuration: Duration.zero,
+                    //     reverseTransitionDuration: Duration.zero,
+                    //   ),
+                    // );
                     //controllers.isDisqualified.value = true;
                     controllers.selectedIndex.value = 5;
                   }),
@@ -1516,9 +1522,12 @@ class Utils {
             //     }):0.height,),
             Obx(
                   () => CustomSideBarText(
+                      boxColor: controllers.selectedIndex.value == 7
+                          ? const Color(0xffF3F8FD)
+                          : Colors.white,
                   textColor: controllers.selectedIndex.value == 7
-                      ? const Color(0xffF5CB39)
-                      : colorsConst.textColor,
+                      ? colorsConst.primary
+                      : Colors.black,
                   text: "LogOut",
                   onClicked: () async {
                     showDialog(

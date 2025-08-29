@@ -80,6 +80,7 @@ dependencies:
   flutter_staggered_grid_view: ^0.7.0
   month_picker_dialog:
   google_fonts:
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_test:

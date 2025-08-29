@@ -31,7 +31,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
       children: [
         CustomText(
           text:widget.text,
-          colors: colorsConst.headColor,
+          colors: colorsConst.textColor,
           size: 15,
         ),
         Container(

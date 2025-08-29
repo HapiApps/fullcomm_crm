@@ -2,6 +2,8 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:fullcomm_crm/common/constant/default_constant.dart';
 import 'package:fullcomm_crm/common/extentions/int_extensions.dart';
 import 'package:fullcomm_crm/screens/dashboard.dart';
+import 'package:fullcomm_crm/screens/home.dart';
+import 'package:fullcomm_crm/screens/zoom_blocker.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,7 @@ Future<void> main() async {
   await GetStorage.init();
   final prefs = await SharedPreferences.getInstance();
   final loginScreen = prefs.getBool("loginScreen") ?? false;
+
   runApp(MyApp(
     loginScreen: loginScreen,
   ));
@@ -46,32 +49,33 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MyInheritedWidget(
-      data: 42,
-      child: GetMaterialApp(
-        scrollBehavior: MyCustomScrollBehavior(),
-        // scrollBehavior: const MaterialScrollBehavior().copyWith(
-        //   dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown},
-        // ),
-        debugShowCheckedModeBanner: false,
-        title: appName,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: false,
-          scaffoldBackgroundColor: Colors.white,
-          scrollbarTheme: ScrollbarThemeData(
-
-            thumbColor: MaterialStateProperty.all(const Color(0xffC1C0E0)),
-            trackColor: MaterialStateProperty.all(const Color(0xff2C3557)),
-            thickness: MaterialStateProperty.all(5),
-            radius: const Radius.circular(10),
+    return ZoomBlocker(
+      child: MyInheritedWidget(
+        data: 42,
+        child: GetMaterialApp(
+          scrollBehavior: MyCustomScrollBehavior(),
+          // scrollBehavior: const MaterialScrollBehavior().copyWith(
+          //   dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown},
+          // ),
+          debugShowCheckedModeBanner: false,
+          title: appName,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: false,
+            scaffoldBackgroundColor: Colors.white,
+            scrollbarTheme: ScrollbarThemeData(
+              thumbColor: MaterialStateProperty.all(const Color(0xffC1C0E0)),
+              trackColor: MaterialStateProperty.all(const Color(0xff2C3557)),
+              thickness: MaterialStateProperty.all(5),
+              radius: const Radius.circular(10),
+            ),
           ),
-        ),
 
-        home: SelectionArea(
-            child: SplashScreen(
-          loginScreen: loginScreen,
-        )),
+          home: SelectionArea(
+              child: SplashScreen(
+            loginScreen: loginScreen,
+          )),
+        ),
       ),
     );
   }
@@ -351,13 +355,13 @@ class LineChartWidget extends StatelessWidget {
           drawVerticalLine: true,
           getDrawingHorizontalLine: (value) {
             return const FlLine(
-              color: Colors.white24,
+              color: Colors.black,
               strokeWidth: 1,
             );
           },
           getDrawingVerticalLine: (value) {
             return const FlLine(
-              color: Colors.white24,
+              color: Colors.black,
               strokeWidth: 1,
             );
           },
@@ -377,7 +381,7 @@ class LineChartWidget extends StatelessWidget {
               getTitlesWidget: (value, meta) {
                 return Text(
                   value.toInt().toString(),
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                  style: const TextStyle(color: Colors.black, fontSize: 12),
                 );
               },
             ),
@@ -391,7 +395,7 @@ class LineChartWidget extends StatelessWidget {
                 Widget text(String text) {
                   return CustomText(
                     text: text,
-                    colors: const Color(0xffE1E5FA),
+                    colors: colorsConst.textColor,
                     size: 12,
                   );
                 }
@@ -634,8 +638,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
       pageTransitionType: PageTransitionType.fade,
-      nextScreen:
-          widget.loginScreen == false ? const LoginPage() : const Dashboard(),
+      nextScreen: widget.loginScreen == false ? const LoginPage() : const Home(),
       //nextScreen:widget.loginScreen?const BottomPage():const LoginPage(),
       //nextScreen:const BottomPage(),
     );

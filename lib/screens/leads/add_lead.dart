@@ -585,7 +585,7 @@ class _AddLeadState extends State<AddLead> {
                                             children: [
                                               CustomText(
                                                 text: "Phone No",
-                                                colors: colorsConst.headColor,
+                                                colors: colorsConst.textColor,
                                                 size: 15,
                                                 textAlign: TextAlign.start,
                                               ),
@@ -594,7 +594,7 @@ class _AddLeadState extends State<AddLead> {
                                               ),
                                               CustomText(
                                                 text: "Whatsapp No",
-                                                colors: colorsConst.headColor,
+                                                colors: colorsConst.textColor,
                                                 size: 15,
                                                 textAlign: TextAlign.end,
                                               ),
@@ -1510,7 +1510,7 @@ class _AddLeadState extends State<AddLead> {
                                     children: [
                                       CustomText(
                                         text:"Country",
-                                        colors: colorsConst.headColor,
+                                        colors: colorsConst.textColor,
                                         size: 15,
                                       ),
                                       Container(

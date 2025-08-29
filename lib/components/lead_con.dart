@@ -186,7 +186,8 @@ class _LeadConState extends State<LeadCon> {
           //height: 245,
           padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
           decoration: BoxDecoration(
-              color: colorsConst.secondary,
+              color: Colors.white,
+              border: Border.all(color: Colors.black),
               borderRadius: BorderRadius.circular(2)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

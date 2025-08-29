@@ -8,7 +8,7 @@ class ColorsConst {
   // final Color primary=  const Color(0xffC81719);//background: #001E464D;
   final Color primary = const Color(0xff0078D7);
   final Color secondary = const Color(0xff2C3557);
-  final Color textColor = const Color(0xffE1E5FA);
+  final Color textColor = const Color(0xff000000);
   final Color headColor = const Color(0xff97CBFF);
   final Color third = const Color(0xffFFC700);
   final Color axis = Colors.grey.shade200;

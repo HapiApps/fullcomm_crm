@@ -6,17 +6,19 @@ class CustomSideBarText extends StatelessWidget {
   final String text;
   final VoidCallback onClicked;
   final Color textColor;
+  final Color boxColor;
   const CustomSideBarText(
       {super.key,
       required this.text,
       required this.onClicked,
-      required this.textColor});
+      required this.textColor,required this.boxColor});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onClicked,
-      child: SizedBox(
+      child: Container(
+        color: boxColor,
         height: 80,
         child: Row(
           children: [
