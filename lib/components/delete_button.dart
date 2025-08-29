@@ -25,7 +25,6 @@ class DeleteButton extends StatelessWidget {
                 barrierDismissible: false,
                 builder: (context) {
                   return AlertDialog(
-                    backgroundColor: colorsConst.secondary,
                     content: CustomText(
                       text: "Are you sure delete this customers?",
                       size: 16,
@@ -38,22 +37,23 @@ class DeleteButton extends StatelessWidget {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                                border: Border.all(color: colorsConst.third),
-                                color: colorsConst.primary),
+                                border: Border.all(color: colorsConst.primary),
+                                color: Colors.white),
                             width: 80,
                             height: 25,
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.zero),
-                                  backgroundColor: colorsConst.primary,
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                  backgroundColor: Colors.white,
                                 ),
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: const CustomText(
+                                child: CustomText(
                                   text: "Cancel",
-                                  colors: Colors.white,
+                                  colors: colorsConst.primary,
                                   size: 14,
                                 )),
                           ),
@@ -62,13 +62,13 @@ class DeleteButton extends StatelessWidget {
                             callback: callback,
                             height: 35,
                             isLoading: true,
-                            backgroundColor: colorsConst.third,
+                            backgroundColor: colorsConst.primary,
                             radius: 2,
                             width: 80,
                             controller: controllers.productCtr,
                             isImage: false,
                             text: "Delete",
-                            textColor: colorsConst.primary,
+                            textColor: Colors.white,
                           ),
                           5.width
                         ],

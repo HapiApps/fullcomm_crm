@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-
 import '../common/constant/colors_constant.dart';
 import '../controller/controller.dart';
 import '../services/api_services.dart';
@@ -35,7 +34,6 @@ class PromoteButton extends StatelessWidget {
                 barrierDismissible: false,
                 builder: (context) {
                   return AlertDialog(
-                    backgroundColor: colorsConst.secondary,
                     content: CustomText(
                       text: "Are you moving to the next level?",
                       size: 16,
@@ -48,22 +46,23 @@ class PromoteButton extends StatelessWidget {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                                border: Border.all(color: colorsConst.third),
-                                color: colorsConst.primary),
+                                border: Border.all(color: colorsConst.primary),
+                                color: Colors.white),
                             width: 80,
                             height: 25,
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.zero),
-                                  backgroundColor: colorsConst.primary,
+                                      borderRadius: BorderRadius.zero,
+                                  ),
+                                  backgroundColor: Colors.white,
                                 ),
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: const CustomText(
+                                child: CustomText(
                                   text: "Cancel",
-                                  colors: Colors.white,
+                                  colors: colorsConst.primary,
                                   size: 14,
                                 )),
                           ),
@@ -72,13 +71,13 @@ class PromoteButton extends StatelessWidget {
                             callback: callback,
                             height: 35,
                             isLoading: true,
-                            backgroundColor: colorsConst.third,
+                            backgroundColor: colorsConst.primary,
                             radius: 2,
                             width: 80,
                             controller: controllers.productCtr,
                             isImage: false,
                             text: "Move",
-                            textColor: colorsConst.primary,
+                            textColor: Colors.white,
                           ),
                           5.width
                         ],
@@ -92,7 +91,7 @@ class PromoteButton extends StatelessWidget {
           width: 100,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-              color: colorsConst.secondary,
+              color: colorsConst.primary,
               borderRadius: BorderRadius.circular(10)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -111,7 +110,6 @@ class PromoteButton extends StatelessWidget {
                               barrierDismissible: false,
                               builder: (context) {
                                 return AlertDialog(
-                                  backgroundColor: colorsConst.secondary,
                                   content: CustomText(
                                     text: "Are you moving to the next level?",
                                     size: 16,
@@ -125,25 +123,22 @@ class PromoteButton extends StatelessWidget {
                                         Container(
                                           decoration: BoxDecoration(
                                               border: Border.all(
-                                                  color: colorsConst.third),
-                                              color: colorsConst.primary),
+                                                  color: colorsConst.primary),
+                                              color: Colors.white),
                                           width: 80,
                                           height: 25,
                                           child: ElevatedButton(
                                               style: ElevatedButton.styleFrom(
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.zero),
-                                                backgroundColor:
-                                                    colorsConst.primary,
+                                                shape: const RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.zero),
+                                                backgroundColor: Colors.white,
                                               ),
                                               onPressed: () {
                                                 Navigator.pop(context);
                                               },
-                                              child: const CustomText(
+                                              child: CustomText(
                                                 text: "Cancel",
-                                                colors: Colors.white,
+                                                colors: colorsConst.primary,
                                                 size: 14,
                                               )),
                                         ),
@@ -152,13 +147,13 @@ class PromoteButton extends StatelessWidget {
                                           callback: callback,
                                           height: 35,
                                           isLoading: true,
-                                          backgroundColor: colorsConst.third,
+                                          backgroundColor: colorsConst.primary,
                                           radius: 2,
                                           width: 80,
                                           controller: controllers.productCtr,
                                           isImage: false,
                                           text: "Move",
-                                          textColor: colorsConst.primary,
+                                          textColor: Colors.white,
                                         ),
                                         5.width
                                       ],
@@ -199,7 +194,6 @@ class PromoteButton extends StatelessWidget {
                               barrierDismissible: false,
                               builder: (context) {
                                 return AlertDialog(
-                                  backgroundColor: colorsConst.secondary,
                                   content: CustomText(
                                     text: "Are you moving to the next level?",
                                     size: 16,
@@ -213,25 +207,22 @@ class PromoteButton extends StatelessWidget {
                                         Container(
                                           decoration: BoxDecoration(
                                               border: Border.all(
-                                                  color: colorsConst.third),
-                                              color: colorsConst.primary),
+                                                  color: colorsConst.primary),
+                                              color: Colors.white),
                                           width: 80,
                                           height: 25,
                                           child: ElevatedButton(
                                               style: ElevatedButton.styleFrom(
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.zero),
-                                                backgroundColor:
-                                                    colorsConst.primary,
+                                                shape: const RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.zero),
+                                                backgroundColor: Colors.white,
                                               ),
                                               onPressed: () {
                                                 Navigator.pop(context);
                                               },
-                                              child: const CustomText(
+                                              child: CustomText(
                                                 text: "Cancel",
-                                                colors: Colors.white,
+                                                colors: colorsConst.primary,
                                                 size: 14,
                                               )),
                                         ),
@@ -240,13 +231,13 @@ class PromoteButton extends StatelessWidget {
                                           callback: callback,
                                           height: 35,
                                           isLoading: true,
-                                          backgroundColor: colorsConst.third,
+                                          backgroundColor: colorsConst.primary,
                                           radius: 2,
                                           width: 80,
                                           controller: controllers.productCtr,
                                           isImage: false,
                                           text: "Move",
-                                          textColor: colorsConst.primary,
+                                          textColor: Colors.white,
                                         ),
                                         5.width
                                       ],

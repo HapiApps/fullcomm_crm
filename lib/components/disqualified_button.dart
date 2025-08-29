@@ -34,8 +34,6 @@ class DisqualifiedButton extends StatelessWidget {
                   barrierDismissible: true,
                   builder: (context) {
                     return AlertDialog(
-                      backgroundColor:
-                      colorsConst.secondary,
                       content: CustomText(
                         text: "Are you sure disqualified this customers?",
                         size: 16,
@@ -48,24 +46,23 @@ class DisqualifiedButton extends StatelessWidget {
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: colorsConst.third),
-                                  color: colorsConst.primary),
+                                  border: Border.all(color: colorsConst.primary),
+                                  color: Colors.white),
                               width: 80,
                               height: 25,
                               child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.zero),
-                                    backgroundColor: colorsConst.primary,
+                                      borderRadius: BorderRadius.zero,
+                                    ),
+                                    backgroundColor: Colors.white,
                                   ),
                                   onPressed: () {
-                                    focusNode.requestFocus();
                                     Navigator.pop(context);
                                   },
-                                  child: const CustomText(
+                                  child: CustomText(
                                     text: "Cancel",
-                                    colors: Colors.white,
+                                    colors: colorsConst.primary,
                                     size: 14,
                                   )),
                             ),
@@ -75,14 +72,13 @@ class DisqualifiedButton extends StatelessWidget {
                               height: 35,
                               isLoading: true,
                               backgroundColor:
-                              colorsConst.third,
+                              colorsConst.primary,
                               radius: 2,
                               width: 100,
                               controller: controllers.productCtr,
                               isImage: false,
                               text: "Disqualified",
-                              textColor:
-                              colorsConst.primary,
+                              textColor:Colors.white,
                             ),
                             5.width
                           ],

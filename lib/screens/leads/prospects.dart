@@ -77,20 +77,16 @@ class _ProspectsState extends State<Prospects> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Obx(
-                          () => CustomText(
-                            text:
-                                "Leads - ${controllers.leadCategoryList[1]["value"]}",
+                        Obx(() => CustomText(
+                            text: "Leads - ${controllers.leadCategoryList[1]["value"]}",
                             colors: colorsConst.textColor,
                             size: 25,
                             isBold: true,
                           ),
                         ),
                         10.height,
-                        Obx(
-                          () => CustomText(
-                            text:
-                                "View all of your ${controllers.leadCategoryList[1]["value"]} Information",
+                        Obx(() => CustomText(
+                            text: "View all of your ${controllers.leadCategoryList[1]["value"]} Information",
                             colors: colorsConst.textColor,
                             size: 14,
                           ),
@@ -971,7 +967,7 @@ class _ProspectsState extends State<Prospects> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: colorsConst.secondary,
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: IconButton(
@@ -986,7 +982,7 @@ class _ProspectsState extends State<Prospects> {
                       ...buildPagination(totalPages, currentPage),
                       Container(
                         decoration: BoxDecoration(
-                          color: colorsConst.secondary,
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: IconButton(

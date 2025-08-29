@@ -1347,6 +1347,7 @@ class Utils {
                       ? colorsConst.primary
                       : Colors.black,
                   onClicked: () {
+                    controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 0;
                     // Navigator.push(
                     //   context,
@@ -1379,6 +1380,7 @@ class Utils {
                     //     reverseTransitionDuration: Duration.zero,
                     //   ),
                     // );
+                    controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 1;
                   }),
             ),
@@ -1406,6 +1408,7 @@ class Utils {
                     //     reverseTransitionDuration: Duration.zero,
                     //   ),
                     // );
+                    controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 2;
                   }),
             ),
@@ -1433,6 +1436,7 @@ class Utils {
                     //   ),
                     // );
                     controllers.isEmployee.value = true;
+                    controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 3;
                   }),
             ),
@@ -1455,6 +1459,7 @@ class Utils {
                     //   ),
                     // );
                     controllers.isCustomer.value = true;
+                    controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 4;
                   }),
             ),
@@ -1477,6 +1482,7 @@ class Utils {
                     //   ),
                     // );
                     //controllers.isDisqualified.value = true;
+                    controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 5;
                   }),
             ),
@@ -1534,7 +1540,6 @@ class Utils {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          backgroundColor: colorsConst.primary,
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 20, horizontal: 24),
                           shape: RoundedRectangleBorder(
@@ -1544,12 +1549,12 @@ class Utils {
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                               Text(
                                 "Do you want to log out?",
                                 style: TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: colorsConst.textColor,
                                 ),
                               ),
                               const SizedBox(height: 20),
@@ -1561,19 +1566,17 @@ class Utils {
                                       Navigator.pop(context);
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                      colorsConst.primary,
+                                      backgroundColor: Colors.white,
                                       side: BorderSide(
-                                          color: colorsConst.secondary),
+                                          color: colorsConst.primary),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(5),
+                                        borderRadius: BorderRadius.circular(5),
                                       ),
                                     ),
-                                    child: const Text(
+                                    child: Text(
                                       "No",
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: colorsConst.primary,
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -1591,8 +1594,6 @@ class Utils {
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: colorsConst.primary,
-                                      side: BorderSide(
-                                          color: colorsConst.secondary),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5),
                                       ),

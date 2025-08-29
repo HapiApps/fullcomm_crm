@@ -32,6 +32,7 @@ import '../models/customer_obj.dart';
 import '../models/employee_obj.dart';
 import '../models/lead_obj.dart';
 import '../models/mail_receive_obj.dart';
+import '../screens/home.dart';
 
 final ApiService apiService = ApiService._();
 
@@ -1392,7 +1393,7 @@ class ApiService {
           msg: "Login Successfully",
           color: Colors.green,
         );
-        Get.to(const Dashboard(), duration: Duration.zero);
+        Get.to(const Home(), duration: Duration.zero);
         controllers.loginCtr.reset();
       } else {
         errorDialog(Get.context!, 'No Account Found');
@@ -1451,7 +1452,7 @@ class ApiService {
         apiService.allNewLeadsDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         controllers.allCustomerFuture = apiService.allCustomerDetails();
-        Get.to(const Dashboard(), duration: Duration.zero);
+        Get.to(const Home(), duration: Duration.zero);
         controllers.loginCtr.reset();
       } else {
         errorDialog(Get.context!, 'Login failed');
@@ -1829,7 +1830,6 @@ class ApiService {
         barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
-            backgroundColor: colorsConst.primary,
             iconPadding: const EdgeInsets.fromLTRB(0, 0.5, 1, 0),
             icon: Align(
                 alignment: Alignment.topRight,
@@ -1853,7 +1853,7 @@ class ApiService {
               textAlign: TextAlign.center,
               size: 14,
               isBold: true,
-              colors: Colors.white,
+              colors: colorsConst.textColor,
             ),
           );
         });

@@ -1,8 +1,13 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:fullcomm_crm/common/constant/default_constant.dart';
 import 'package:fullcomm_crm/common/extentions/int_extensions.dart';
+import 'package:fullcomm_crm/screens/customer/view_customer.dart';
 import 'package:fullcomm_crm/screens/dashboard.dart';
 import 'package:fullcomm_crm/screens/home.dart';
+import 'package:fullcomm_crm/screens/leads/disqualified_lead.dart';
+import 'package:fullcomm_crm/screens/leads/prospects.dart';
+import 'package:fullcomm_crm/screens/leads/qualified.dart';
+import 'package:fullcomm_crm/screens/leads/suspects.dart';
 import 'package:fullcomm_crm/screens/zoom_blocker.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:fl_chart/fl_chart.dart';

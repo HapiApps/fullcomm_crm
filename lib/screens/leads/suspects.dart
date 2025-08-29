@@ -476,7 +476,7 @@ class _SuspectsState extends State<Suspects> {
   Widget paginationButton(IconData icon, bool isEnabled, VoidCallback onPressed) {
     return Container(
       decoration: BoxDecoration(
-        color: colorsConst.secondary,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(10),
       ),
       child: IconButton(
@@ -486,9 +486,9 @@ class _SuspectsState extends State<Suspects> {
         highlightColor: Colors.transparent,
         icon: Icon(icon, color: colorsConst.textColor),
         onPressed: isEnabled ? onPressed : null,
-        onLongPress: (){
-          _focusNode.requestFocus();
-        },
+        // onLongPress: (){
+        //   _focusNode.requestFocus();
+        // },
       ),
     );
   }
