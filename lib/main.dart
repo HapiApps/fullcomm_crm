@@ -584,6 +584,11 @@ class _SplashScreenState extends State<SplashScreen> {
     apiService.getRoles();
     apiService.getLeadCategory();
     apiService.getVisitType();
+    apiService.getAllCustomers();
+    apiService.getAllCallActivity();
+    apiService.getAllMailActivity();
+    apiService.getAllMeetingActivity();
+    apiService.getAllNoteActivity();
     if (widget.loginScreen) {
       apiService.allLeadsDetails();
       apiService.allQualifiedDetails();

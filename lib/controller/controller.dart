@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/models/company_obj.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import '../models/comments_obj.dart';
+import '../models/customer_activity.dart';
 import '../models/employee_obj.dart';
 import '../models/mail_receive_obj.dart';
 import '../models/new_lead_obj.dart';
@@ -493,6 +495,32 @@ class Controller extends GetxController {
       isCommentsLoading = true.obs;
   var roleNameList = [];
   var callNameList = [];
+  var customers = <AllCustomersObj>[].obs;
+  var callActivity = <CustomerActivity>[].obs;
+  var mailActivity = <CustomerActivity>[].obs;
+  var meetingActivity = <CustomerActivity>[].obs;
+  var noteActivity = <CustomerActivity>[].obs;
+
+  void selectCustomer(AllCustomersObj c) {
+    selectedCustomerId.value = c.id;
+    selectedCustomerName.value = c.name;
+    selectedCustomerMobile.value = c.phoneNo;
+    selectedCustomerEmail.value = c.email;
+  }
+  void clearSelectedCustomer() {
+    selectedCustomerId.value = '';
+    selectedCustomerName.value = '';
+    selectedCustomerMobile.value = '';
+    selectedCustomerEmail.value = '';
+  }
+
+  RxString selectedCustomerId = ''.obs;
+  RxString selectedCustomerName = ''.obs;
+  RxString selectedCustomerMobile = ''.obs;
+  RxString selectedCustomerEmail = ''.obs;
+
+  TextEditingController cusController   = TextEditingController();
+  TextEditingController callCommentCont = TextEditingController();
   var roleList = [].obs;
   var stDate = "${DateTime.now().day.toString().padLeft(2, "0")}"
           "-${DateTime.now().month.toString().padLeft(2, "0")}"

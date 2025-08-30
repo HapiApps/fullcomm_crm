@@ -51,10 +51,11 @@ class _CustomDropDownState extends State<CustomDropDown> {
                     size: 13,
                     isBold: false),
                 underline: const SizedBox(),
+                focusColor: Colors.transparent,
+
                 isExpanded: true,
                 value: widget.saveValue,
-                dropdownColor: colorsConst.secondary,
-                iconEnabledColor: Colors.white,
+                iconEnabledColor: Colors.black,
                 iconSize: 22,
                 icon: const Icon(Icons.keyboard_arrow_down_rounded),
                 items: widget.valueList.map((list) {
@@ -65,7 +66,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
                         text: list,
                         colors: list.toString().isEmpty
                             ? Colors.black
-                            : Colors.white,
+                            : colorsConst.textColor,
                         size: 15,
                         isBold: false),
                   );

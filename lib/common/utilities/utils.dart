@@ -1295,7 +1295,7 @@ class Utils {
   Widget sideBarFunction(BuildContext context) {
     return Obx(() => controllers.isLeftOpen.value
         ? SizedBox(
-      width: 130,
+      width: 135,
       height: MediaQuery.of(context).size.height,
       child: SingleChildScrollView(
         child: Column(
@@ -1486,52 +1486,63 @@ class Utils {
                     controllers.selectedIndex.value = 5;
                   }),
             ),
-
-            // const Divider(
-            //   color: Colors.white,
-            //   thickness: 0.5,
-            // ),
-
-            // const Divider(
-            //   color: Colors.white,
-            //   thickness: 0.5,
-            // ),
-            // Obx(() => CustomSideBarText(
-            //     textColor:controllers.selectedIndex.value==5?const Color(0xffF5CB39):colorsConst.textColor,
-            //
-            //     text: constValue.products,
-            //     onClicked: (){
-            //       Navigator.push(context,
-            //         PageRouteBuilder(
-            //           pageBuilder: (context, animation1, animation2) => const ViewProduct(),
-            //           transitionDuration: Duration.zero,
-            //           reverseTransitionDuration: Duration.zero,
-            //         ),
-            //       );
-            //       controllers.isProduct.value=true;
-            //       controllers.selectedIndex.value=5;
-            //     }),
-            // ),
-            // Obx(() => controllers.isAdmin.value?CustomSideBarText(
-            //     textColor:controllers.selectedIndex.value==6?const Color(0xffF5CB39):colorsConst.textColor,
-            //     text: "Add Profile",
-            //     onClicked:(){
-            //       Navigator.push(context,
-            //         PageRouteBuilder(
-            //           pageBuilder: (context, animation1, animation2) => const SignUp(),
-            //           transitionDuration: Duration.zero,
-            //           reverseTransitionDuration: Duration.zero,
-            //         ),
-            //       );
-            //       //controllers.isEmployee.value=true;
-            //       //controllers.selectedIndex.value=6;
-            //     }):0.height,),
-            Obx(
-                  () => CustomSideBarText(
-                      boxColor: controllers.selectedIndex.value == 7
+            Obx(() => CustomSideBarText(
+                boxColor: controllers.selectedIndex.value == 6
+                    ? const Color(0xffF3F8FD)
+                    : Colors.white,
+                textColor: controllers.selectedIndex.value == 6
+                    ? colorsConst.primary
+                    : Colors.black,
+                text: "Call Records",
+                onClicked: () {
+                  controllers.oldIndex.value = controllers.selectedIndex.value;
+                  controllers.selectedIndex.value = 6;
+                }),
+            ),
+            Obx(() => CustomSideBarText(
+                boxColor: controllers.selectedIndex.value == 7
+                    ? const Color(0xffF3F8FD)
+                    : Colors.white,
+                textColor: controllers.selectedIndex.value == 7
+                    ? colorsConst.primary
+                    : Colors.black,
+                text: "Mail Records",
+                onClicked: () {
+                  controllers.oldIndex.value = controllers.selectedIndex.value;
+                  controllers.selectedIndex.value = 7;
+                }),
+            ),
+            Obx(() => CustomSideBarText(
+                boxColor: controllers.selectedIndex.value == 8
+                    ? const Color(0xffF3F8FD)
+                    : Colors.white,
+                textColor: controllers.selectedIndex.value == 8
+                    ? colorsConst.primary
+                    : Colors.black,
+                text: "Meeting Records",
+                onClicked: () {
+                  controllers.oldIndex.value = controllers.selectedIndex.value;
+                  controllers.selectedIndex.value = 8;
+                }),
+            ),
+            Obx(() => CustomSideBarText(
+                boxColor: controllers.selectedIndex.value == 9
+                    ? const Color(0xffF3F8FD)
+                    : Colors.white,
+                textColor: controllers.selectedIndex.value == 9
+                    ? colorsConst.primary
+                    : Colors.black,
+                text: "Notes Records",
+                onClicked: () {
+                  controllers.oldIndex.value = controllers.selectedIndex.value;
+                  controllers.selectedIndex.value = 9;
+                }),
+            ),
+            Obx(() => CustomSideBarText(
+                      boxColor: controllers.selectedIndex.value == 10
                           ? const Color(0xffF3F8FD)
                           : Colors.white,
-                  textColor: controllers.selectedIndex.value == 7
+                  textColor: controllers.selectedIndex.value == 10
                       ? colorsConst.primary
                       : Colors.black,
                   text: "LogOut",
@@ -1782,10 +1793,10 @@ class Utils {
               ),
               Stack(
                 children: [
-                  Obx(() => SvgPicture.asset(
+                  Obx(() => Image.asset(
                       controllers.selectedIndex.value == 1
-                          ? "assets/images/sSuspects.svg"
-                          : "assets/images/suspects.svg",
+                          ? "assets/images/sSuspects.png"
+                          : "assets/images/suspects.png",
                           width: 220,
                     ),
                   ),
@@ -1805,11 +1816,10 @@ class Utils {
               ),
               Stack(
                 children: [
-                  Obx(
-                        () => SvgPicture.asset(
+                  Obx(() => Image.asset(
                       controllers.selectedIndex.value == 2
-                          ? "assets/images/sProspects.svg"
-                          : "assets/images/prospects.svg",
+                          ? "assets/images/sProspects.png"
+                          : "assets/images/prospects.png",
 
                     ),
                   ),
@@ -1832,10 +1842,10 @@ class Utils {
               Stack(
                 children: [
                   Obx(
-                        () => SvgPicture.asset(
+                        () => Image.asset(
                       controllers.selectedIndex.value == 3
-                          ? "assets/images/sQualified.svg"
-                          : "assets/images/qualified.svg",
+                          ? "assets/images/sQualified.png"
+                          : "assets/images/qualified.png",
                           width: 200,
                     ),
                   ),
@@ -1857,11 +1867,10 @@ class Utils {
               ),
               Stack(
                 children: [
-                  Obx(
-                        () => SvgPicture.asset(
+                  Obx(() => Image.asset(
                       controllers.selectedIndex.value == 4
-                          ? "assets/images/sCustomer.svg"
-                          : "assets/images/customer.svg",
+                          ? "assets/images/sCustomer.png"
+                          : "assets/images/customer.png",
                     ),
                   ),
                   Positioned(
@@ -2159,6 +2168,73 @@ class Utils {
     }
   }
 
+  Widget headerCell({
+    required double width,
+    required String text,
+    required bool isSortable,
+    required String fieldName,
+    void Function()? onSortAsc,
+    void Function()? onSortDesc,
+    required RxString sortField,
+    required RxString sortOrder,
+  }) {
+    return Container(
+      width: width,
+      height: 50,
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CustomText(
+            text: text,
+            size: 15,
+            isBold: true,
+            colors: Colors.white,
+          ),
+          if (isSortable) ...[
+            Obx(() => GestureDetector(
+              onTap: onSortAsc,
+              child: Icon(
+                Icons.arrow_upward,
+                size: 16,
+                color: (sortField.value == fieldName &&
+                    sortOrder.value == 'asc')
+                    ? colorsConst.third // highlight color
+                    : Colors.grey, // default color
+              ),
+            )),
+            Obx(() => GestureDetector(
+              onTap: onSortDesc,
+              child: Icon(
+                Icons.arrow_downward,
+                size: 16,
+                color: (sortField.value == fieldName &&
+                    sortOrder.value == 'desc')
+                    ? colorsConst.third
+                    : Colors.grey,
+              ),
+            )),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget dataCell({required double width, required String text}) {
+    return Tooltip(
+      message: text=="null"?"":text,
+      child: Container(
+        width: width,
+        height: 50,
+        alignment: Alignment.center,
+        child: CustomText(
+          text: text,
+          size: 14,
+          colors: colorsConst.textColor,
+        ),
+      ),
+    );
+  }
   ///Country Dropdown Widget
 
   Widget countryDropdown(

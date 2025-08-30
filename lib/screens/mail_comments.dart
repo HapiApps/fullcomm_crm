@@ -40,12 +40,7 @@ class _MailCommentsState extends State<MailComments> {
     screenWidth > screenHeight ? screenWidth * 0.30 : screenWidth * 0.90;
     return SelectionArea(
       child: Scaffold(
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            utils.sideBarFunction(context),
-            Obx(
-              () => Container(
+        body: Obx(() => Container(
                 width: controllers.isLeftOpen.value == false &&
                         controllers.isRightOpen.value == false
                     ? MediaQuery.of(context).size.width - 200
@@ -57,165 +52,138 @@ class _MailCommentsState extends State<MailComments> {
                   children: [
                     10.height,
                     const CustomText(
-                      text: "New Leads - Suspects",
+                      text: "Mail Activity Report",
                       colors: Color(0xffE1E5FA),
                       isBold: true,
                       size: 20,
                     ),
                     20.height,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        CustomText(
-                          text: widget.mainName.toString(),
-                          colors: colorsConst.textColor,
-                          isBold: true,
-                        ),
-                        CustomText(
-                          text: widget.mainMobile.toString(),
-                          colors: colorsConst.textColor,
-                          isBold: true,
-                        ),
-                        CustomText(
-                          text: widget.mainEmail.toString(),
-                          colors: colorsConst.textColor,
-                          isBold: true,
-                        ),
-                        CustomText(
-                          text: widget.city.toString(),
-                          colors: colorsConst.textColor,
-                          isBold: true,
-                        ),
-                        CustomText(
-                          text: widget.companyName.toString(),
-                          colors: colorsConst.textColor,
-                          isBold: true,
-                        ),
-                      ],
+                    CustomText(
+                      text: "View all Mail Activity Report ",
+                      colors: colorsConst.textColor,
+                      size: 14,
                     ),
-                    20.height,
-                    const Divider(
-                      color: Color(0xffE1E5FA),
-                      thickness: 1,
-                      height: 25,
-                      indent: 16,
-                      endIndent: 16,
-                    ),
-                    Expanded(
-                      child: Expanded(
-                        child: FutureBuilder<List<MailReceiveObj>>(
-                          future: controllers.customMailFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  150.height,
-                                  Center(
-                                      child: SvgPicture.asset(
-                                          "assets/images/noDataFound.svg")),
-                                ],
-                              );
-                            } else if (snapshot.hasData &&
-                                snapshot.data!.isNotEmpty) {
-                              final mailList = snapshot.data!;
-                              return MasonryGridView.count(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 12,
-                                crossAxisSpacing: 12,
-                                itemCount: mailList.length,
-                                itemBuilder: (context, index) {
-                                  final data = mailList[index];
-                                  final formattedDate =
-                                      DateFormat('MMM dd, yyyy hh:mm a').format(
-                                          DateTime.parse(data.fromData ?? ''));
-
-                                  return Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: colorsConst.secondary,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 25,
-                                              height: 25,
-                                              decoration: BoxDecoration(
-                                                color: colorsConst.headColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(27),
-                                              ),
-                                              child: const Icon(Icons.mail,
-                                                  size: 15),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            CustomContainer(
-                                              width: 140,
-                                              height: 35,
-                                              borderRadius: 30,
-                                              text: formattedDate,
-                                              color: colorsConst.headColor,
-                                              size: 12,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            CustomText(
-                                              text: "Command",
-                                              colors: colorsConst.headColor,
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Expanded(
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                decoration: BoxDecoration(
-                                                  color: colorsConst.secondary,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                child: CustomText(
-                                                  text: data.message ?? '',
-                                                  colors: colorsConst.textColor,
-                                                  size: 13,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            } else {
-                              return const Center(child: Text("No data found"));
-                            }
-                          },
-                        ),
+                    15.height,
+                    // Table Header
+                    Container(
+                      decoration: BoxDecoration(
+                          color: colorsConst.primary,
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20))
                       ),
-                    )
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
+                        children: [
+                          utils.headerCell(
+                            width: 150, text: "Customer Name",
+                            isSortable: true,
+                            fieldName: 'name',
+                            sortField: controllers.sortField,
+                            sortOrder: controllers.sortOrder,
+                            onSortAsc: () {
+                              controllers.sortField.value = 'name';
+                              controllers.sortOrder.value = 'asc';
+                            },
+                            onSortDesc: () {
+                              controllers.sortField.value = 'name';
+                              controllers.sortOrder.value = 'desc';
+                            },
+                          ),
+                          utils.headerCell(width: 180, text: "To data",
+                            fieldName: 'companyName',
+                            sortField: controllers.sortField,
+                            sortOrder: controllers.sortOrder,
+                            isSortable: true,
+                            onSortAsc: () {
+                              controllers.sortField.value = 'companyName';
+                              controllers.sortOrder.value = 'asc';
+                            },
+                            onSortDesc: () {
+                              controllers.sortField.value = 'companyName';
+                              controllers.sortOrder.value = 'desc';
+                            },
+                          ),
+                          utils.headerCell(width: 180, text: "From Data",
+                            fieldName: 'companyName',
+                            sortField: controllers.sortField,
+                            sortOrder: controllers.sortOrder,
+                            isSortable: true,
+                            onSortAsc: () {
+                              controllers.sortField.value = 'companyName';
+                              controllers.sortOrder.value = 'asc';
+                            },
+                            onSortDesc: () {
+                              controllers.sortField.value = 'companyName';
+                              controllers.sortOrder.value = 'desc';
+                            },
+                          ),
+                          utils.headerCell(width: 260, text: "Comments",
+                            isSortable: true,
+                            fieldName: 'serviceRequired',
+                            sortField: controllers.sortField,
+                            sortOrder: controllers.sortOrder,
+                            onSortAsc: () {
+                              controllers.sortField.value = 'serviceRequired';
+                              controllers.sortOrder.value = 'asc';
+                            },
+                            onSortDesc: () {
+                              controllers.sortField.value = 'serviceRequired';
+                              controllers.sortOrder.value = 'desc';
+                            },
+                          ),
+                          utils.headerCell(width: 200, text: "Added Date",
+                            isSortable: true,
+                            fieldName: 'sourceOfProspect',
+                            sortField: controllers.sortField,
+                            sortOrder: controllers.sortOrder,
+                            onSortAsc: () {
+                              controllers.sortField.value = 'sourceOfProspect';
+                              controllers.sortOrder.value = 'asc';
+                            },
+                            onSortDesc: () {
+                              controllers.sortField.value = 'sourceOfProspect';
+                              controllers.sortOrder.value = 'desc';
+                            },
+                          ),
+
+                        ],
+                      ),
+                    ),
+                    10.height,
+                    // Table Body
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height - 400,
+                      child: ListView.separated(
+                        separatorBuilder: (context, index) {
+                          return 5.height;
+                        },
+                        itemCount: controllers.mailActivity.length,
+                        itemBuilder: (context, index) {
+                          final data = controllers.mailActivity[index];
+                          return Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            decoration: BoxDecoration(
+                              color: index % 2 == 0 ? Colors.white : const Color(0xffD9EEFF),
+                            ),
+                            child: Row(
+                              children: [
+                                utils.dataCell(width: 150, text: data.customerName),
+                                utils.dataCell(width: 180, text: data.toData),
+                                utils.dataCell(width: 180, text: data.fromData),
+                                utils.dataCell(width: 260, text: data.message),
+                                utils.dataCell(width: 200, text: data.sentDate)
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
-            utils.funnelContainer(context)
-          ],
-        ),
+
       ),
     );
   }

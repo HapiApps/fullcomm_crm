@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fullcomm_crm/models/all_customers_obj.dart';
+import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/models/comments_obj.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
+import '../components/custom_loading_button.dart';
 import '../components/custom_search_textfield.dart';
 import '../components/custom_text.dart';
+import '../components/keyboard_search.dart';
 import '../controller/controller.dart';
 
 class CallComments extends StatefulWidget {
@@ -30,11 +34,7 @@ class _CallCommentsState extends State<CallComments> {
   Widget build(BuildContext context) {
     return SelectionArea(
       child: Scaffold(
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            utils.sideBarFunction(context),
-            Container(
+        body: Container(
               width: MediaQuery.of(context).size.width - 490,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
@@ -65,7 +65,6 @@ class _CallCommentsState extends State<CallComments> {
                   10.height,
                   Row(
                     children: [
-                      //
                       Container(
                         width: 130,
                         height: 50,
@@ -112,8 +111,7 @@ class _CallCommentsState extends State<CallComments> {
                             ),
                             10.width,
                             CircleAvatar(
-                                backgroundColor:
-                                    const Color(0xffFFC700).withOpacity(0.10),
+                                backgroundColor: const Color(0xffFFC700).withOpacity(0.10),
                                 radius: 15,
                                 child: Obx(
                                   () => CustomText(
@@ -124,7 +122,143 @@ class _CallCommentsState extends State<CallComments> {
                                 ))
                           ],
                         ),
-                      )
+                      ),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            side: BorderSide(color: colorsConst.primary),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          onPressed: (){
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: CustomText(
+                                      text: "Add Your Call Comments",
+                                      size: 16,
+                                      isBold: true,
+                                      colors: colorsConst.textColor,
+                                    ),
+                                    content: SizedBox(
+                                      width: 500,
+                                      height: 400,
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            width: 300,
+                                            height: 50,
+                                            child: KeyboardDropdownField<AllCustomersObj>(
+                                              items: controllers.customers,
+                                              borderRadius: 5,
+                                              borderColor: Colors.grey.shade300,
+                                              hintText: "Customers",
+                                              labelText: "",
+                                              labelBuilder: (customer) =>'${customer.name} - ${customer.phoneNo}',
+                                              itemBuilder: (customer) =>
+                                                  Container(
+                                                    width: 300,
+                                                    alignment: Alignment.topLeft,
+                                                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                    child: CustomText(
+                                                      text: '${customer.name} - ${customer.phoneNo}',
+                                                      colors: Colors.black,
+                                                      size: 14,
+                                                      textAlign: TextAlign.start,
+                                                    ),
+                                                  ),
+                                              textEditingController: controllers.cusController,
+                                              onSelected: (value) {
+                                                controllers.selectCustomer(value);
+                                              },
+                                              onClear: () {
+                                                controllers.clearSelectedCustomer();
+                                              },
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 300,
+                                            height: 200,
+                                            child: TextField(
+                                              controller: controllers.callCommentCont,
+                                              maxLines: null,
+                                              expands: true,
+                                              decoration: InputDecoration(
+                                                hintText: "Enter your comments here",
+                                                border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  borderSide: BorderSide(
+                                                    color: colorsConst.textColor,
+                                                  ),
+                                                ),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  borderSide: BorderSide(
+                                                    color: colorsConst.textColor,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    actions: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: colorsConst.primary),
+                                                color: Colors.white),
+                                            width: 80,
+                                            height: 25,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.zero,
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: CustomText(
+                                                  text: "Cancel",
+                                                  colors: colorsConst.primary,
+                                                  size: 14,
+                                                )),
+                                          ),
+                                          10.width,
+                                          CustomLoadingButton(
+                                            callback: (){
+                                              apiService.insertCallCommentAPI(context, "7");
+                                            },
+                                            height: 35,
+                                            isLoading: true,
+                                            backgroundColor: colorsConst.primary,
+                                            radius: 2,
+                                            width: 80,
+                                            controller: controllers.productCtr,
+                                            isImage: false,
+                                            text: "Save",
+                                            textColor: Colors.white,
+                                          ),
+                                          5.width
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                          child: CustomText(
+                            text: "Add Call Comment",
+                            colors: colorsConst.textColor,
+                            size: 14,
+                          ),)
                     ],
                   ),
                   5.height,
@@ -138,8 +272,7 @@ class _CallCommentsState extends State<CallComments> {
                     children: [
                       CustomSearchTextField(
                         controller: controllers.search,
-                        hintText:
-                            "Search Name, Customer Name, Company Name, Mobile",
+                        hintText: "Search Name, Customer Name, Company Name, Mobile",
                         onChanged: (value) {
                           setState(() {
                             searchText = value.toString().trim();
@@ -347,317 +480,111 @@ class _CallCommentsState extends State<CallComments> {
                     ],
                   ),
                   15.height,
-                  Table(
-                    columnWidths: const {
-                      0: FlexColumnWidth(2.5),
-                      1: FlexColumnWidth(2),
-                      2: FlexColumnWidth(2.5),
-                      3: FlexColumnWidth(2.5),
-                      4: FlexColumnWidth(2.5),
-                      5: FlexColumnWidth(2.5),
-                      6: FlexColumnWidth(2.5),
-                      7: FlexColumnWidth(3),
-                    },
-                    // border:TableBorder.all(
-                    //     color: colorsConst.primary,
-                    //     width: 5
-                    // ),
-                    children: [
-                      TableRow(
-                          decoration: BoxDecoration(
-                              color: colorsConst.secondary,
-                              borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20))),
+                      // Table Header
+                      Container(
+                        decoration: BoxDecoration(
+                            color: colorsConst.primary,
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20))
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Row(
                           children: [
-                            CustomText(
-                              textAlign: TextAlign.center,
-                              text: "\nReport Date\n",
-                              size: 15,
-                              isBold: true,
-                              colors: colorsConst.textColor,
-                            ),
-                            CustomText(
-                              textAlign: TextAlign.center,
-                              text: "\nName\n",
-                              size: 15,
-                              isBold: true,
-                              colors: colorsConst.textColor,
-                            ),
-                            CustomText(
-                              textAlign: TextAlign.center,
-                              text: "\nCompany Name.\n",
-                              size: 15,
-                              isBold: true,
-                              colors: colorsConst.textColor,
-                            ),
-                            CustomText(
-                              textAlign: TextAlign.center,
-                              text: "\nCustomer Name\n",
-                              size: 15,
-                              isBold: true,
-                              colors: colorsConst.textColor,
-                            ),
-                            CustomText(
-                              textAlign: TextAlign.center,
-                              text: "\nMobile Number\n",
-                              size: 15,
-                              isBold: true,
-                              colors: colorsConst.textColor,
-                            ),
-                            CustomText(
-                              textAlign: TextAlign.center,
-                              text: "\nComments\n",
-                              size: 15,
-                              isBold: true,
-                              colors: colorsConst.textColor,
-                            ),
-                          ]),
-                    ],
-                  ),
-                  8.height,
-                  Obx(
-                    () => controllers.isCommentsLoading.value == false
-                        ? Center(
-                            child: CircularProgressIndicator(
-                            color: colorsConst.third,
-                          ))
-                        : Expanded(
-                            //height: MediaQuery.of(context).size.height/1.5,
-                            child: FutureBuilder<List<CommentsObj>>(
-                              future: controllers.customCommentsFuture,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  DateTime startDate = DateFormat('dd-MM-yyyy')
-                                      .parse(controllers.stDate.value);
-                                  DateTime currentDate = DateTime.now();
-                                  List<CommentsObj> filteredComments = [];
-                                  filteredComments = snapshot.data!.toList();
-                                  // if(controllers.shortBy.value=="All"){
-                                  //   filteredComments = filteredComments;
-                                  // }else{
-                                  //   if(controllers.shortBy.value=="Name"){
-                                  //     filteredComments = List.from(filteredComments)
-                                  //       ..sort((a, b) => b.firstname.toString().compareTo(a.name.toString()));
-                                  //   }else if(controllers.shortBy.value=="Company Name"){
-                                  //     filteredComments = List.from(filteredComments)
-                                  //       ..sort((a, b) => b.companyName.toString().compareTo(a.name.toString()));
-                                  //   }else{
-                                  //     filteredComments = List.from(filteredComments)
-                                  //       ..sort((a, b) => b.name.toString().compareTo(a.name.toString()));
-                                  //   }
-                                  // }
-                                  if (controllers.stDate.value ==
-                                      "${currentDate.day.toString().padLeft(2, "0")}"
-                                          "-${currentDate.month.toString().padLeft(2, "0")}"
-                                          "-${currentDate.year.toString()}") {
-                                    filteredComments = filteredComments;
-                                  } else {
-                                    filteredComments =
-                                        filteredComments.where((contact) {
-                                      DateTime contactDate =
-                                          DateFormat('yyyy-MM-dd').parse(contact
-                                              .updateTs
-                                              .toString()
-                                              .split(' ')[0]);
-                                      return contactDate.isAfter(startDate) &&
-                                          contactDate.isBefore(currentDate) &&
-                                          _isContactMatchingSearch(
-                                              contact, searchText);
-                                    }).toList();
-                                  }
-
-                                  // if(filteredComments.isNotEmpty){
-                                  filteredComments =
-                                      filteredComments.where((contact) {
-                                    return _isContactMatchingSearch(
-                                        contact, searchText);
-                                  }).toList();
-                                  //}
-                                  //countCheck(filteredComments);
-
-                                  return ListView.separated(
-                                      separatorBuilder: (context, index) {
-                                        return 8.height;
-                                      },
-                                      shrinkWrap: true,
-                                      physics: const ScrollPhysics(),
-                                      itemCount: filteredComments.length,
-                                      itemBuilder: (context, index) {
-                                        var data = filteredComments[index];
-                                        String inputDate =
-                                            data.createdTs.toString();
-                                        DateTime parsedDate =
-                                            DateTime.parse(inputDate);
-
-                                        String formattedDate =
-                                            DateFormat("MMM d, yyyy  hh:mm a")
-                                                .format(parsedDate.toLocal());
-
-                                        return Table(
-                                          columnWidths: const {
-                                            0: FlexColumnWidth(2.5),
-                                            1: FlexColumnWidth(2),
-                                            2: FlexColumnWidth(2.5),
-                                            3: FlexColumnWidth(2.5),
-                                            4: FlexColumnWidth(2.5),
-                                            5: FlexColumnWidth(2.5),
-                                            6: FlexColumnWidth(2.5),
-                                            7: FlexColumnWidth(3),
-                                          },
-                                          // border:TableBorder.all(
-                                          //     color: colorsConst.primary,
-                                          //     width: 5
-                                          // ),
-                                          children: [
-                                            TableRow(
-                                                decoration: BoxDecoration(
-                                                  color: colorsConst.secondary,
-                                                ),
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      CircleAvatar(
-                                                        backgroundColor:
-                                                            const Color(
-                                                                0xffAFC8D9),
-                                                        radius: 13,
-                                                        child: Icon(
-                                                          data.type == "1"
-                                                              ? Icons
-                                                                  .person_outline
-                                                              : Icons.call,
-                                                          color: colorsConst
-                                                              .primary,
-                                                          size: 13,
-                                                        ),
-                                                      ),
-                                                      60.height,
-                                                      8.width,
-                                                      Container(
-                                                        height: 30,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .fromLTRB(
-                                                                5, 5, 5, 5),
-                                                        alignment:
-                                                            Alignment.center,
-                                                        decoration: BoxDecoration(
-                                                            color: const Color(
-                                                                0xffAFC8D9),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15)),
-                                                        child: CustomText(
-                                                          //textAlign: TextAlign.start,
-                                                          text: formattedDate,
-                                                          colors: colorsConst
-                                                              .primary,
-                                                          size: 12,
-                                                          isBold: true,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  CustomText(
-                                                    textAlign: TextAlign.center,
-                                                    text:
-                                                        "\n${data.firstname}\n",
-                                                    size: 14,
-                                                    colors:
-                                                        const Color(0xffE1E5FA),
-                                                  ),
-                                                  CustomText(
-                                                    textAlign: TextAlign.center,
-                                                    text:
-                                                        "\n${data.companyName}\n",
-                                                    size: 14,
-                                                    colors:
-                                                        const Color(0xffE1E5FA),
-                                                  ),
-                                                  CustomText(
-                                                    textAlign: TextAlign.center,
-                                                    text: "\n${data.name}\n",
-                                                    size: 14,
-                                                    colors:
-                                                        const Color(0xffE1E5FA),
-                                                  ),
-                                                  CustomText(
-                                                    textAlign: TextAlign.center,
-                                                    text: "\n${data.phoneNo}\n",
-                                                    size: 14,
-                                                    colors:
-                                                        const Color(0xffE1E5FA),
-                                                  ),
-                                                  Tooltip(
-                                                    message: data.comments,
-                                                    padding:
-                                                        const EdgeInsets.all(8),
-                                                    margin: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 20),
-                                                    verticalOffset: -50,
-                                                    textStyle: TextStyle(
-                                                        color: colorsConst
-                                                            .textColor,
-                                                        fontSize: 12),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.black,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8),
-                                                    ),
-                                                    child: Text(
-                                                      "\n${data.comments}\n",
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: const TextStyle(
-                                                        fontSize: 14,
-                                                        color:
-                                                            Color(0xffE1E5FA),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ]),
-                                          ],
-                                        );
-                                      });
-                                } else if (snapshot.hasError) {
-                                  print("error ${snapshot.error}");
-                                  return Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      150.height,
-                                      Center(
-                                          child: SvgPicture.asset(
-                                              "assets/images/noDataFound.svg")),
-                                    ],
-                                  );
-                                }
-                                return Center(
-                                    child: CircularProgressIndicator(
-                                  color: colorsConst.third,
-                                ));
+                            utils.headerCell(
+                              width: 150, text: "Customer Name",
+                              isSortable: true,
+                              fieldName: 'name',
+                              sortField: controllers.sortField,
+                              sortOrder: controllers.sortOrder,
+                              onSortAsc: () {
+                                controllers.sortField.value = 'name';
+                                controllers.sortOrder.value = 'asc';
+                              },
+                              onSortDesc: () {
+                                controllers.sortField.value = 'name';
+                                controllers.sortOrder.value = 'desc';
                               },
                             ),
-                          ),
-                  ),
+                            utils.headerCell(width: 180, text: "Customer Mobile No.",
+                              fieldName: 'companyName',
+                              sortField: controllers.sortField,
+                              sortOrder: controllers.sortOrder,
+                              isSortable: true,
+                              onSortAsc: () {
+                                controllers.sortField.value = 'companyName';
+                                controllers.sortOrder.value = 'asc';
+                              },
+                              onSortDesc: () {
+                                controllers.sortField.value = 'companyName';
+                                controllers.sortOrder.value = 'desc';
+                              },
+                            ),
+                            utils.headerCell(width: 260, text: "Comments",
+                              isSortable: true,
+                              fieldName: 'serviceRequired',
+                              sortField: controllers.sortField,
+                              sortOrder: controllers.sortOrder,
+                              onSortAsc: () {
+                                controllers.sortField.value = 'serviceRequired';
+                                controllers.sortOrder.value = 'asc';
+                              },
+                              onSortDesc: () {
+                                controllers.sortField.value = 'serviceRequired';
+                                controllers.sortOrder.value = 'desc';
+                              },
+                            ),
+                            utils.headerCell(width: 200, text: "Added Date",
+                              isSortable: true,
+                              fieldName: 'sourceOfProspect',
+                              sortField: controllers.sortField,
+                              sortOrder: controllers.sortOrder,
+                              onSortAsc: () {
+                                controllers.sortField.value = 'sourceOfProspect';
+                                controllers.sortOrder.value = 'asc';
+                              },
+                              onSortDesc: () {
+                                controllers.sortField.value = 'sourceOfProspect';
+                                controllers.sortOrder.value = 'desc';
+                              },
+                            ),
+
+                          ],
+                        ),
+                      ),
+                      10.height,
+                      // Table Body
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height - 400,
+                        child: ListView.separated(
+                          separatorBuilder: (context, index) {
+                            return 5.height;
+                          },
+                          itemCount: controllers.callActivity.length,
+                          itemBuilder: (context, index) {
+                            final data = controllers.callActivity[index];
+                            return Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              decoration: BoxDecoration(
+                                color: index % 2 == 0 ? Colors.white : const Color(0xffD9EEFF),
+                              ),
+                              child: Row(
+                                children: [
+                                  utils.dataCell(width: 150, text: data.customerName),
+                                  utils.dataCell(width: 180, text: data.toData),
+                                  utils.dataCell(width: 260, text: data.message),
+                                  utils.dataCell(width: 200, text: data.sentDate)
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+
                   20.height,
                 ],
               ),
             ),
-            utils.funnelContainer(context)
-          ],
-        ),
       ),
     );
   }

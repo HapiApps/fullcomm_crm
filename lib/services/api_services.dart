@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:fullcomm_crm/common/constant/default_constant.dart';
+import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:fullcomm_crm/models/comments_obj.dart';
 import 'package:fullcomm_crm/models/company_obj.dart';
 import 'package:fullcomm_crm/models/good_lead_obj.dart';
@@ -13,6 +14,7 @@ import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/screens/mail_comments.dart';
@@ -28,6 +30,7 @@ import '../common/utilities/utils.dart';
 import '../components/custom_text.dart';
 import '../controller/controller.dart';
 import '../controller/image_controller.dart';
+import '../models/customer_activity.dart';
 import '../models/customer_obj.dart';
 import '../models/employee_obj.dart';
 import '../models/lead_obj.dart';
@@ -849,6 +852,49 @@ class ApiService {
     }
   }
 
+  Future insertCallCommentAPI(BuildContext context,String type) async {
+    try {
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode({
+                "action": "insert_call_comments",
+                "customer_id": controllers.selectedCustomerId.value,
+                "mobile_number": controllers.selectedCustomerMobile.value,
+                "customer_name": controllers.selectedCustomerName.value,
+                "type": type,
+                 "cos_id": cosId,
+                "date":"${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}",
+                "created_by": controllers.storage.read("id"),
+                "comments": controllers.callCommentCont.text.trim(),
+              }),
+          encoding: Encoding.getByName("utf-8"));
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"] == "OK") {
+        getAllCallActivity();
+        Navigator.pop(context);
+        controllers.productCtr.reset();
+      } else {
+        errorDialog(Get.context!, request.body);
+        controllers.productCtr.reset();
+      }
+    } on SocketException {
+      controllers.productCtr.reset();
+      errorDialog(Get.context!, 'No internet connection');
+      //throw Exception('No internet connection'); // Handle network errors
+    } on HttpException catch (e) {
+      controllers.productCtr.reset();
+      errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
+      //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
+    } catch (e) {
+      errorDialog(Get.context!, e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+
   Future<void> allQualifiedDetails() async {
     controllers.isLead.value = false;
     final url = Uri.parse(scriptApi);
@@ -1529,6 +1575,140 @@ class ApiService {
     }
   }
 
+  Future getAllCustomers() async {
+    try {
+      Map data = {
+        "search_type": "allCustomers",
+        "cos_id": cosId,
+        "action": "get_data"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.customers.clear();
+        controllers.customers.value = response.map((e) => AllCustomersObj.fromJson(e)).toList();
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future getAllCallActivity() async {
+    try {
+      Map data = {
+        "search_type": "records",
+        "cos_id": cosId,
+        "action": "get_data",
+        "type":"7"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.callActivity.clear();
+        controllers.callActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future getAllMailActivity() async {
+    try {
+      Map data = {
+        "search_type": "records",
+        "cos_id": cosId,
+        "action": "get_data",
+        "type":"8"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.mailActivity.clear();
+        controllers.mailActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future getAllMeetingActivity() async {
+    try {
+      Map data = {
+        "search_type": "records",
+        "cos_id": cosId,
+        "action": "get_data",
+        "type":"9"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.meetingActivity.clear();
+        controllers.meetingActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future getAllNoteActivity() async {
+    try {
+      Map data = {
+        "search_type": "records",
+        "cos_id": cosId,
+        "action": "get_data",
+        "type":"10"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.noteActivity.clear();
+        controllers.noteActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
   Future insertUsersPHP(BuildContext context) async {
     try {
       var roleId;
@@ -1608,95 +1788,6 @@ class ApiService {
     }
   }
 
-  // Future insertEmailAPI(BuildContext context,String id) async {
-  //   try{
-  //     final uri=Uri.parse('https://crm.hapirides.in/$version1/mail_receive.php');
-  //     var request=http.MultipartRequest("POST",uri);
-  //     //request.fields["clientMail"]=controllers.emailToCtr.text.trim();
-  //     request.fields["clientMail"]="butterscotch1902@gmail.com";
-  //     request.fields["subject"]=controllers.emailSubjectCtr.text;
-  //     request.fields["cos_id"]=cosId;
-  //     request.fields["count"]='${controllers.emailCount.value+1}';
-  //     request.fields["quotation_name"]=controllers.emailQuotationCtr.text;
-  //     request.fields["body"]=controllers.emailMessageCtr.text;
-  //     request.fields["user_id"]="1";
-  //     request.fields["id"]=id;
-  //     request.fields["date"]="${(controllers.dateTime.day.toString().padLeft(2,"0"))}-${(controllers.dateTime.month.toString().padLeft(2,"0"))}-${(controllers.dateTime.year.toString())} ${DateFormat('hh:mm a').format(DateTime.now()).toString()}";
-  //     request.fields["dates"]="${(controllers.dateTime.day.toString().padLeft(2,"0"))}-${(controllers.dateTime.month.toString().padLeft(2,"0"))}-${(controllers.dateTime.year.toString())} ${DateFormat('hh:mm a').format(DateTime.now()).toString()}";
-  //
-  //     var response =await request.send();
-  //     var output=await http.Response.fromStream(response);
-  //     print("result ${output.body}");
-  //     print("fields ${request.fields}");
-  //     if(response.statusCode==200){
-  //
-  //     }else{
-  //       print("Failed");
-  //       utils.snackBar(msg: "Mail has not sent ${output.body}",color: colorsConst.primary,context:Get.context!);
-  //       controllers.emailCtr.reset();
-  //     }
-  //
-  //   } on SocketException {
-  //     controllers.emailCtr.reset();
-  //     errorDialog(Get.context!,'No internet connection');
-  //     //throw Exception('No internet connection'); // Handle network errors
-  //   } on HttpException catch (e) {
-  //     controllers.emailCtr.reset();
-  //     errorDialog(Get.context!,'Server error email: ${e.toString()}');
-  //     //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
-  //   } catch (e) {
-  //     controllers.emailCtr.reset();
-  //     errorDialog(Get.context!,'Unexpected error email: ${e.toString()}');
-  //     //throw Exception('Unexpected error employee: ${e.toString()}'); // Catch other exceptions
-  //   }
-  // }
-
-  // Future insertEmailAPI(BuildContext context,String id) async {
-  //   try{
-  //     Map data ={
-  //     "clientMail":controllers.emailToCtr.text,
-  //     "subject":controllers.emailSubjectCtr.text,
-  //     "cos_id":cosId,
-  //     "count":'${controllers.emailCount.value+1}',
-  //     "quotation_name":controllers.emailQuotationCtr.text,
-  //     "body":controllers.emailMessageCtr.text,
-  //     "user_id":controllers.storage.read("id"),
-  //     "id":id,
-  //     "date":"${(controllers.dateTime.day.toString().padLeft(2,"0"))}-${(controllers.dateTime.month.toString().padLeft(2,"0"))}-${(controllers.dateTime.year.toString())} ${DateFormat('hh:mm a').format(DateTime.now()).toString()}",
-  //       "action":"mail_receive"
-  //     };
-  //
-  //     print("data ${data.toString()}");
-  //     final request = await http.post(Uri.parse(scriptApi),
-  //       // headers: {
-  //       //   "Accept": "application/text",
-  //       //   "Content-Type": "application/x-www-form-urlencoded"
-  //       // },
-  //       body: jsonEncode(data),
-  //       // encoding: Encoding.getByName("utf-8")
-  //     );
-  //     print("request ${request.body}");
-  //     // Map<String, dynamic> response = json.decode(request.body);
-  //     if (request.statusCode == 200 && request.body == "Message has been sent"){
-  //       utils.snackBar(msg: "Mail has been sent",color: Colors.green,context:Get.context!);
-  //       controllers.emailMessageCtr.clear();
-  //       controllers.emailToCtr.clear();
-  //       controllers.emailSubjectCtr.clear();
-  //        apiService.allLeadsDetails();
-  //       controllers.allNewLeadFuture=apiService.allNewLeadsDetails();
-  //       controllers.allGoodLeadFuture=apiService.allGoodLeadsDetails();
-  //       await Future.delayed(const Duration(milliseconds: 100));
-  //       Navigator.pop(Get.context!);
-  //       controllers.emailCtr.reset();
-  //     } else {
-  //       controllers.emailCtr.reset();
-  //       errorDialog(Get.context!,"Mail has been not sent");
-  //     }
-  //   }catch(e){
-  //     errorDialog(Get.context!,e.toString());
-  //     controllers.emailCtr.reset();
-  //   }
-  // }
   Future insertEmailAPI(BuildContext context, String id, String image) async {
     try {
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
@@ -1858,51 +1949,7 @@ class ApiService {
           );
         });
   }
-  // void errorDialog(BuildContext context,String text){
-  //   showDialog(context: context,
-  //       barrierDismissible: false,
-  //       builder:(context){
-  //         return AlertDialog(
-  //           // backgroundColor: colorsConst.primary,
-  //             title: const Center(
-  //               child: Column(
-  //                 children:[
-  //                   Icon(Icons.error_outline,size: 30,color: Colors.red,)
-  //                 ],
-  //               ),
-  //             ),
-  //             content:CustomText(
-  //               text: text,
-  //               size: 14,
-  //               isBold: true,
-  //             ),
-  //           actions: [
-  //             SizedBox(
-  //               width: 80,
-  //               height: 35,
-  //               child: ElevatedButton(
-  //                   style: ElevatedButton.styleFrom(
-  //                     shape: const RoundedRectangleBorder(
-  //                         borderRadius: BorderRadius.zero
-  //                     ),
-  //                     backgroundColor: colorsConst.primary,
-  //                   ),
-  //                   onPressed: (){
-  //                     Navigator.pop(context);
-  //
-  //                   },
-  //                   child: const CustomText(
-  //                     text: "Close",
-  //                     colors: Colors.white,
-  //                     size: 14,
-  //                     isBold: true,
-  //                   )),
-  //             ),
-  //           ],
-  //         );
-  //       }
-  //   );
-  // }
+
 
   Future<List<ProductObj>> allProductDetails() async {
     final url = Uri.parse(scriptApi);

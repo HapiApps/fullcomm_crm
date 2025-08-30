@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fullcomm_crm/screens/call_comments.dart';
+import 'package:fullcomm_crm/screens/mail_comments.dart';
+import 'package:fullcomm_crm/screens/meeting_comments.dart';
+import 'package:fullcomm_crm/screens/notes_comment.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/colors_constant.dart';
@@ -55,7 +59,15 @@ class _HomeState extends State<Home> {
                       return ViewCustomer();
                     case 5:
                       return DisqualifiedLead();
-                    case 7: // logout
+                    case 6:
+                      return CallComments();
+                    case 7:
+                      return MailComments();
+                    case 8:
+                      return MeetingComments();
+                    case 9:
+                      return NotesComment();
+                    case 10: // logout
                       Future.microtask(() {
                         showDialog(
                           context: context,

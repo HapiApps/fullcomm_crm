@@ -19,7 +19,7 @@ class CustomSideBarText extends StatelessWidget {
       onTap: onClicked,
       child: Container(
         color: boxColor,
-        height: 80,
+        height: 60,
         child: Row(
           children: [
             20.width,
