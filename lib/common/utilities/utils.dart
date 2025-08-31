@@ -2226,6 +2226,7 @@ class Utils {
       child: Container(
         width: width,
         height: 50,
+        padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
         alignment: Alignment.center,
         child: CustomText(
           text: text,
