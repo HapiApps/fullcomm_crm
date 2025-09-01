@@ -1629,6 +1629,7 @@ class ApiService {
   }
 
   Future getAllMailActivity() async {
+    controllers.isSent.value = true;
     try {
       Map data = {
         "search_type": "records",
@@ -1647,6 +1648,63 @@ class ApiService {
         List response = json.decode(request.body);
         controllers.mailActivity.clear();
         controllers.mailActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+        controllers.allSentMails.value = controllers.mailActivity.length.toString();
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future getReplyMailActivity() async {
+    controllers.mailActivity.clear();
+    controllers.isReplied.value = true;
+    try {
+      Map data = {
+        "cos_id": cosId,
+        "action": "fetch_mails",
+        "type":"reply"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.mailActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+        controllers.allReplyMails.value = controllers.mailActivity.length.toString();
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future getOpenedMailActivity() async {
+    controllers.mailActivity.clear();
+    controllers.isOpened.value = true;
+    try {
+      Map data = {
+        "cos_id": cosId,
+        "action": "fetch_mails",
+        "type":"reply_seen"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.mailActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+        controllers.allOpenedMails.value = controllers.mailActivity.length.toString();
       } else {
         throw Exception('Failed to load album');
       }
@@ -1828,6 +1886,7 @@ class ApiService {
         controllers.emailSubjectCtr.clear();
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
+        getAllMailActivity();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         await Future.delayed(const Duration(milliseconds: 100));
         Navigator.pop(Get.context!);

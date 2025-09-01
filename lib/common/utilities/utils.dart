@@ -457,7 +457,6 @@ class Utils {
         barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
-            backgroundColor: colorsConst.primary,
             actions: [
               Column(
                 children: [
@@ -514,6 +513,7 @@ class Utils {
                                   assets.layer,
                                   width: 17,
                                   height: 17,
+
                                 )),
                             IconButton(
                                 onPressed: () {},
@@ -1342,7 +1342,7 @@ class Utils {
                   text: constValue.dashboard,
                   boxColor: controllers.selectedIndex.value == 0
                     ? const Color(0xffF3F8FD)
-                    : Colors.white,
+                    : colorsConst.backgroundColor,
                   textColor: controllers.selectedIndex.value == 0
                       ? colorsConst.primary
                       : Colors.black,
@@ -1364,7 +1364,7 @@ class Utils {
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 1
                     ? const Color(0xffF3F8FD)
-                    : Colors.white,
+                    : colorsConst.backgroundColor,
                   textColor: controllers.selectedIndex.value == 1
                       ? colorsConst.primary
                       : Colors.black,
@@ -1392,7 +1392,7 @@ class Utils {
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 2
                     ? const Color(0xffF3F8FD)
-                    : Colors.white,
+                    : colorsConst.backgroundColor,
                   textColor: controllers.selectedIndex.value == 2
                       ? colorsConst.primary
                       : Colors.black,
@@ -1420,7 +1420,7 @@ class Utils {
             Obx(() => CustomSideBarText(
                       boxColor: controllers.selectedIndex.value == 3
                           ? const Color(0xffF3F8FD)
-                          : Colors.white,
+                          : colorsConst.backgroundColor,
                   textColor: controllers.selectedIndex.value == 3
                       ? colorsConst.primary
                       : Colors.black,
@@ -1443,7 +1443,7 @@ class Utils {
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 4
                     ? const Color(0xffF3F8FD)
-                    : Colors.white,
+                    : colorsConst.backgroundColor,
                   textColor: controllers.selectedIndex.value == 4
                       ? colorsConst.primary
                       : Colors.black,
@@ -1466,7 +1466,7 @@ class Utils {
             Obx(() => CustomSideBarText(
                       boxColor: controllers.selectedIndex.value == 5
                           ? const Color(0xffF3F8FD)
-                          : Colors.white,
+                          : colorsConst.backgroundColor,
                   textColor: controllers.selectedIndex.value == 5
                       ? colorsConst.primary
                       : Colors.black,
@@ -1489,7 +1489,7 @@ class Utils {
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 6
                     ? const Color(0xffF3F8FD)
-                    : Colors.white,
+                    : colorsConst.backgroundColor,
                 textColor: controllers.selectedIndex.value == 6
                     ? colorsConst.primary
                     : Colors.black,
@@ -1502,7 +1502,7 @@ class Utils {
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 7
                     ? const Color(0xffF3F8FD)
-                    : Colors.white,
+                    : colorsConst.backgroundColor,
                 textColor: controllers.selectedIndex.value == 7
                     ? colorsConst.primary
                     : Colors.black,
@@ -1515,7 +1515,7 @@ class Utils {
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 8
                     ? const Color(0xffF3F8FD)
-                    : Colors.white,
+                    : colorsConst.backgroundColor,
                 textColor: controllers.selectedIndex.value == 8
                     ? colorsConst.primary
                     : Colors.black,
@@ -1528,7 +1528,7 @@ class Utils {
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 9
                     ? const Color(0xffF3F8FD)
-                    : Colors.white,
+                    : colorsConst.backgroundColor,
                 textColor: controllers.selectedIndex.value == 9
                     ? colorsConst.primary
                     : Colors.black,
@@ -1541,7 +1541,7 @@ class Utils {
             Obx(() => CustomSideBarText(
                       boxColor: controllers.selectedIndex.value == 10
                           ? const Color(0xffF3F8FD)
-                          : Colors.white,
+                          : colorsConst.backgroundColor,
                   textColor: controllers.selectedIndex.value == 10
                       ? colorsConst.primary
                       : Colors.black,
@@ -1653,6 +1653,39 @@ class Utils {
               ),
             ),
           ));
+  }
+
+  Widget selectHeatingType(String text, bool isSelected, VoidCallback onTap,bool isLast) {
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        children: [
+          CustomText(
+            text: text,
+            colors: isSelected?colorsConst.primary:colorsConst.textColor,
+            isBold: true,
+            size: 15,
+          ),
+          10.width,
+          CircleAvatar(
+              backgroundColor: isSelected?colorsConst.primary:colorsConst.secondary,
+              radius: 15,
+              child: Obx(
+                    () => CustomText(
+                  text: controllers.allDirectVisit.value,
+                  colors: isSelected?Colors.white:colorsConst.primary,
+                  size: 15,
+                ),
+              )),
+          10.width,
+          isLast?0.height:Container(
+            width: 1,
+            height: 22,
+            color: Colors.grey,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget leadFirstCon(String image, String count, String day) {

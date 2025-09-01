@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: false,
-            scaffoldBackgroundColor: Colors.white,
+            scaffoldBackgroundColor: colorsConst.backgroundColor,
             scrollbarTheme: ScrollbarThemeData(
               thumbColor: MaterialStateProperty.all(const Color(0xffC1C0E0)),
               trackColor: MaterialStateProperty.all(const Color(0xff2C3557)),

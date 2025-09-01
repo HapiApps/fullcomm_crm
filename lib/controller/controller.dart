@@ -480,8 +480,7 @@ class Controller extends GetxController {
   int get totalProspectPages => (allLeadFuture.length / itemsPerPage).ceil();
 
   final groupController = GroupButtonController();
-  final RoundedLoadingButtonController btnController =
-      RoundedLoadingButtonController();
+  final RoundedLoadingButtonController btnController = RoundedLoadingButtonController();
   final ScrollController suspectsScrollController = ScrollController();
   final ScrollController prospectsScrollController = ScrollController();
   final ScrollController qualifiedScrollController = ScrollController();
@@ -491,8 +490,11 @@ class Controller extends GetxController {
       telephoneCalls = "".obs,
       allDirectVisit = "0".obs,
       allTelephoneCalls = "0".obs,
+      allSentMails = "0".obs,
+      allOpenedMails = "0".obs,
+      allReplyMails = "0".obs,
       shortBy = "All".obs,
-      isCommentsLoading = true.obs;
+      isCommentsLoading = true.obs,isSent = false.obs,isOpened= false.obs,isReplied = false.obs;
   var roleNameList = [];
   var callNameList = [];
   var customers = <AllCustomersObj>[].obs;

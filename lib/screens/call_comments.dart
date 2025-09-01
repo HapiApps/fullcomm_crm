@@ -646,7 +646,7 @@ class _CallCommentsState extends State<CallComments> {
                             return Container(
                               height: 60,
                               decoration: BoxDecoration(
-                                color: index % 2 == 0 ? Colors.white : const Color(0xffD9EEFF),
+                                color: index % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                               ),
                               child: Row(
                                 children: [

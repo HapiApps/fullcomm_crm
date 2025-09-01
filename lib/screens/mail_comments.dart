@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -51,88 +52,80 @@ class _MailCommentsState extends State<MailComments> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     10.height,
-                    const CustomText(
-                      text: "Mail Activity Report",
-                      colors: Color(0xffE1E5FA),
-                      isBold: true,
-                      size: 20,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                             CustomText(
+                              text: "All Mails",
+                              colors: colorsConst.textColor,
+                              isBold: true,
+                              size: 25,
+                            ),
+                            10.height,
+                            CustomText(
+                              text: "View all Mail Activity Report ",
+                              colors: colorsConst.textColor,
+                              size: 14,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 40,
+                          child: ElevatedButton.icon(
+                            icon: Icon(Icons.add,color: Colors.white,),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorsConst.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            onPressed: (){
+                              utils.sendEmailDialog(id: "1", name: "Customer",
+                                  mobile:"Customer", coName: "Customer");
+                            },
+                            label: CustomText(
+                              text: "Compose Mail",
+                              colors: Colors.white,
+                              isBold :true,
+                              size: 14,
+                            ),),
+                        )
+                      ],
                     ),
                     20.height,
-                    CustomText(
-                      text: "View all Mail Activity Report ",
-                      colors: colorsConst.textColor,
-                      size: 14,
+                    Row(
+                      children: [
+                        utils.selectHeatingType("Sent", true, (){
+                          apiService.getAllMailActivity();
+                        }, false),
+                        10.width,
+                        utils.selectHeatingType("Opened", false, (){
+                          apiService.getOpenedMailActivity();
+                        }, false),
+                        10.width,
+                        utils.selectHeatingType("Replied", false, (){
+                          apiService.getReplyMailActivity();
+                        }, true),
+                      ],
                     ),
+                    15.height,
+                    Divider(color: Colors.grey, height: 1,),
                     15.height,
                     // Table Header
                     Container(
+                      height: 40,
                       decoration: BoxDecoration(
                           color: colorsConst.primary,
                           borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20))
+                              topLeft: Radius.circular(5),
+                              topRight: Radius.circular(5))
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Row(
                         children: [
-                          utils.headerCell(
-                            width: 150, text: "Customer Name",
-                            isSortable: true,
-                            fieldName: 'name',
-                            sortField: controllers.sortField,
-                            sortOrder: controllers.sortOrder,
-                            onSortAsc: () {
-                              controllers.sortField.value = 'name';
-                              controllers.sortOrder.value = 'asc';
-                            },
-                            onSortDesc: () {
-                              controllers.sortField.value = 'name';
-                              controllers.sortOrder.value = 'desc';
-                            },
-                          ),
-                          utils.headerCell(width: 180, text: "To data",
-                            fieldName: 'companyName',
-                            sortField: controllers.sortField,
-                            sortOrder: controllers.sortOrder,
-                            isSortable: true,
-                            onSortAsc: () {
-                              controllers.sortField.value = 'companyName';
-                              controllers.sortOrder.value = 'asc';
-                            },
-                            onSortDesc: () {
-                              controllers.sortField.value = 'companyName';
-                              controllers.sortOrder.value = 'desc';
-                            },
-                          ),
-                          utils.headerCell(width: 180, text: "From Data",
-                            fieldName: 'companyName',
-                            sortField: controllers.sortField,
-                            sortOrder: controllers.sortOrder,
-                            isSortable: true,
-                            onSortAsc: () {
-                              controllers.sortField.value = 'companyName';
-                              controllers.sortOrder.value = 'asc';
-                            },
-                            onSortDesc: () {
-                              controllers.sortField.value = 'companyName';
-                              controllers.sortOrder.value = 'desc';
-                            },
-                          ),
-                          utils.headerCell(width: 260, text: "Comments",
-                            isSortable: true,
-                            fieldName: 'serviceRequired',
-                            sortField: controllers.sortField,
-                            sortOrder: controllers.sortOrder,
-                            onSortAsc: () {
-                              controllers.sortField.value = 'serviceRequired';
-                              controllers.sortOrder.value = 'asc';
-                            },
-                            onSortDesc: () {
-                              controllers.sortField.value = 'serviceRequired';
-                              controllers.sortOrder.value = 'desc';
-                            },
-                          ),
-                          utils.headerCell(width: 200, text: "Added Date",
+                          utils.headerCell(width: 155, text: "Date",
                             isSortable: true,
                             fieldName: 'sourceOfProspect',
                             sortField: controllers.sortField,
@@ -146,33 +139,134 @@ class _MailCommentsState extends State<MailComments> {
                               controllers.sortOrder.value = 'desc';
                             },
                           ),
+                          VerticalDivider(
+                            color: Colors.grey,
+                            width: 0.5,
+                          ),
+                          utils.headerCell(
+                            width: 160, text: "Customer Name",
+                            isSortable: true,
+                            fieldName: 'name',
+                            sortField: controllers.sortField,
+                            sortOrder: controllers.sortOrder,
+                            onSortAsc: () {
+                              controllers.sortField.value = 'name';
+                              controllers.sortOrder.value = 'asc';
+                            },
+                            onSortDesc: () {
+                              controllers.sortField.value = 'name';
+                              controllers.sortOrder.value = 'desc';
+                            },
+                          ),
+                          VerticalDivider(
+                            color: Colors.grey,
+                            width: 0.5,
+                          ),
+                          utils.headerCell(width: 160, text: "Sent Mail",
+                            fieldName: 'companyName',
+                            sortField: controllers.sortField,
+                            sortOrder: controllers.sortOrder,
+                            isSortable: true,
+                            onSortAsc: () {
+                              controllers.sortField.value = 'companyName';
+                              controllers.sortOrder.value = 'asc';
+                            },
+                            onSortDesc: () {
+                              controllers.sortField.value = 'companyName';
+                              controllers.sortOrder.value = 'desc';
+                            },
+                          ),
+                          VerticalDivider(
+                            color: Colors.grey,
+                            width: 0.5,
+                          ),
+                          utils.headerCell(width: 160, text: "Subject",
+                            fieldName: 'companyName',
+                            sortField: controllers.sortField,
+                            sortOrder: controllers.sortOrder,
+                            isSortable: true,
+                            onSortAsc: () {
+                              controllers.sortField.value = 'companyName';
+                              controllers.sortOrder.value = 'asc';
+                            },
+                            onSortDesc: () {
+                              controllers.sortField.value = 'companyName';
+                              controllers.sortOrder.value = 'desc';
+                            },
+                          ),
+                          VerticalDivider(
+                            color: Colors.grey,
+                            width: 0.5,
+                          ),
+                          utils.headerCell(width: 230, text: "Message",
+                            isSortable: true,
+                            fieldName: 'serviceRequired',
+                            sortField: controllers.sortField,
+                            sortOrder: controllers.sortOrder,
+                            onSortAsc: () {
+                              controllers.sortField.value = 'serviceRequired';
+                              controllers.sortOrder.value = 'asc';
+                            },
+                            onSortDesc: () {
+                              controllers.sortField.value = 'serviceRequired';
+                              controllers.sortOrder.value = 'desc';
+                            },
+                          ),
+                          VerticalDivider(
+                            color: Colors.grey,
+                            width: 0.5,
+                          ),
 
+                          CustomText(
+                            text: "Actions",
+                            size: 15,
+                            isBold: true,
+                            textAlign: TextAlign.center,
+                            colors: Colors.white,
+                          ),
                         ],
                       ),
                     ),
-                    10.height,
                     // Table Body
                     SizedBox(
                       height: MediaQuery.of(context).size.height - 400,
-                      child: ListView.separated(
-                        separatorBuilder: (context, index) {
-                          return 5.height;
-                        },
+                      child: ListView.builder(
                         itemCount: controllers.mailActivity.length,
                         itemBuilder: (context, index) {
                           final data = controllers.mailActivity[index];
                           return Container(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            height: 60,
                             decoration: BoxDecoration(
-                              color: index % 2 == 0 ? Colors.white : const Color(0xffD9EEFF),
+                              color: index % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                             ),
                             child: Row(
                               children: [
-                                utils.dataCell(width: 150, text: data.customerName),
-                                utils.dataCell(width: 180, text: data.toData),
-                                utils.dataCell(width: 180, text: data.fromData),
-                                utils.dataCell(width: 260, text: data.message),
-                                utils.dataCell(width: 200, text: data.sentDate)
+                                utils.dataCell(width: 155, text: data.sentDate),
+                                VerticalDivider(
+                                  color: Colors.grey,
+                                  width: 0.5,
+                                ),
+                                utils.dataCell(width: 160, text: data.customerName),
+                                VerticalDivider(
+                                  color: Colors.grey,
+                                  width: 0.5,
+                                ),
+                                utils.dataCell(width: 160, text: data.toData),
+                                VerticalDivider(
+                                  color: Colors.grey,
+                                  width: 0.5,
+                                ),
+                                utils.dataCell(width: 160, text: data.subject),
+                                VerticalDivider(
+                                  color: Colors.grey,
+                                  width: 0.5,
+                                ),
+                                utils.dataCell(width: 230, text: data.message),
+                                VerticalDivider(
+                                  color: Colors.grey,
+                                  width: 0.5,
+                                ),
+                                utils.dataCell(width: 160, text: data.sentDate)
                               ],
                             ),
                           );

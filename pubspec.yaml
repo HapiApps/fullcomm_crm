@@ -83,7 +83,6 @@ dependencies:
   web: ^1.1.1
 
 dev_dependencies:
-  dwds:
   flutter_test:
     sdk: flutter
 

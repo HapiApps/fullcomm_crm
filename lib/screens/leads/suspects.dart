@@ -390,7 +390,7 @@ class _SuspectsState extends State<Suspects> {
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(vertical: 10),
                                       decoration: BoxDecoration(
-                                        color: index % 2 == 0 ? Colors.white : const Color(0xffD9EEFF),
+                                        color: index % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                       ),
                                       child: Row(
                                         children: [

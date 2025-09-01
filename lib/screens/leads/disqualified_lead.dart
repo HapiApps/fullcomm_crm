@@ -383,7 +383,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(vertical: 10),
                                       decoration: BoxDecoration(
-                                        color: index % 2 == 0 ? Colors.white : const Color(0xffD9EEFF),
+                                        color: index % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                       ),
                                       child: Row(
                                         children: [
