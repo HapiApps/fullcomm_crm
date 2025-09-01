@@ -23,18 +23,18 @@ class CustomDateBox extends StatelessWidget {
         CustomText(
           text:text,
           colors:colorsConst.textColor,
-          size:15,
+          size:13,
         ),
         InkWell(
           onTap: onTap,
           child: Container(
             alignment: Alignment.centerLeft,
             width: width,
-            height: 50,
+            height: 40,
             decoration: BoxDecoration(
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(5),
-                border: Border.all(color: colorsConst.textColor)),
+                border: Border.all(color:Color(0xffE1E5FA))),
             child: Row(
               children: [
                 15.width,

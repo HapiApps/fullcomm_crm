@@ -1655,30 +1655,40 @@ class Utils {
           ));
   }
 
-  Widget selectHeatingType(String text, bool isSelected, VoidCallback onTap,bool isLast) {
+  Widget selectHeatingType(
+      String text,
+      bool isSelected,
+      VoidCallback onTap,
+      bool isLast,
+      RxString count,
+      ) {
     return InkWell(
       onTap: onTap,
       child: Row(
         children: [
           CustomText(
             text: text,
-            colors: isSelected?colorsConst.primary:colorsConst.textColor,
+            colors: isSelected ? colorsConst.primary : colorsConst.textColor,
             isBold: true,
             size: 15,
           ),
           10.width,
           CircleAvatar(
-              backgroundColor: isSelected?colorsConst.primary:colorsConst.secondary,
-              radius: 15,
-              child: Obx(
-                    () => CustomText(
-                  text: controllers.allDirectVisit.value,
-                  colors: isSelected?Colors.white:colorsConst.primary,
-                  size: 15,
-                ),
-              )),
+            backgroundColor:
+            isSelected ? colorsConst.primary : colorsConst.secondary,
+            radius: 15,
+            child: Obx(
+                  () => CustomText(
+                text: count.value,
+                colors: isSelected ? Colors.white : colorsConst.primary,
+                size: 15,
+              ),
+            ),
+          ),
           10.width,
-          isLast?0.height:Container(
+          isLast
+              ? 0.height
+              : Container(
             width: 1,
             height: 22,
             color: Colors.grey,
@@ -1687,6 +1697,7 @@ class Utils {
       ),
     );
   }
+
 
   Widget leadFirstCon(String image, String count, String day) {
     return Container(
@@ -1969,6 +1980,28 @@ class Utils {
       ],
     );
   }
+  Future<void> timePicker({
+    BuildContext? context,
+    TextEditingController? textEditingController,
+    RxString? pathVal,
+  }) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context!,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (pickedTime != null) {
+      final String formattedTime =
+      MaterialLocalizations.of(context).formatTimeOfDay(
+        pickedTime,
+        alwaysUse24HourFormat: false,
+      );
+
+      textEditingController?.text = formattedTime;
+      pathVal?.value = formattedTime;
+    }
+  }
+
 
   Future<void> datePicker(
       {BuildContext? context,

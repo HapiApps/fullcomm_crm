@@ -7,6 +7,8 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/models/comments_obj.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
+import '../components/custom_date_box.dart';
+import '../components/custom_dropdown.dart';
 import '../components/custom_loading_button.dart';
 import '../components/custom_search_textfield.dart';
 import '../components/custom_text.dart';
@@ -104,61 +106,140 @@ class _CallCommentsState extends State<CallComments> {
                                       height: 400,
                                       child: Column(
                                         children: [
-                                          Divider(),
-                                          SizedBox(
-                                            width: 300,
-                                            height: 50,
-                                            child: KeyboardDropdownField<AllCustomersObj>(
-                                              items: controllers.customers,
-                                              borderRadius: 5,
-                                              borderColor: Colors.grey.shade300,
-                                              hintText: "Customers",
-                                              labelText: "",
-                                              labelBuilder: (customer) =>'${customer.name} - ${customer.phoneNo}',
-                                              itemBuilder: (customer) =>
-                                                  Container(
-                                                    width: 300,
-                                                    alignment: Alignment.topLeft,
-                                                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                                    child: CustomText(
-                                                      text: '${customer.name} - ${customer.phoneNo}',
-                                                      colors: Colors.black,
-                                                      size: 14,
-                                                      textAlign: TextAlign.start,
-                                                    ),
-                                                  ),
-                                              textEditingController: controllers.cusController,
-                                              onSelected: (value) {
-                                                controllers.selectCustomer(value);
-                                              },
-                                              onClear: () {
-                                                controllers.clearSelectedCustomer();
-                                              },
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 300,
-                                            height: 200,
-                                            child: TextField(
-                                              controller: controllers.callCommentCont,
-                                              maxLines: null,
-                                              expands: true,
-                                              decoration: InputDecoration(
-                                                hintText: "Enter your comments here",
-                                                border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  borderSide: BorderSide(
-                                                    color: colorsConst.textColor,
-                                                  ),
+                                         // Divider(),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              CustomText(
+                                                text:"Customer Name",
+                                                colors: colorsConst.textColor,
+                                                size: 13,
+                                              ),
+                                              SizedBox(
+                                                width: 480,
+                                                height: 50,
+                                                child: KeyboardDropdownField<AllCustomersObj>(
+                                                  items: controllers.customers,
+                                                  borderRadius: 5,
+                                                  borderColor: Colors.grey.shade300,
+                                                  hintText: "Customers",
+                                                  labelText: "",
+                                                  labelBuilder: (customer) =>'${customer.name} - ${customer.phoneNo}',
+                                                  itemBuilder: (customer) =>
+                                                      Container(
+                                                        width: 300,
+                                                        alignment: Alignment.topLeft,
+                                                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                        child: CustomText(
+                                                          text: '${customer.name} - ${customer.phoneNo}',
+                                                          colors: Colors.black,
+                                                          size: 14,
+                                                          textAlign: TextAlign.start,
+                                                        ),
+                                                      ),
+                                                  textEditingController: controllers.cusController,
+                                                  onSelected: (value) {
+                                                    controllers.selectCustomer(value);
+                                                  },
+                                                  onClear: () {
+                                                    controllers.clearSelectedCustomer();
+                                                  },
                                                 ),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  borderSide: BorderSide(
-                                                    color: colorsConst.textColor,
+                                              ),
+                                            ],
+                                          ),
+                                          10.height,
+                                          CustomDropDown(
+                                            saveValue: controllers.callType,
+                                            valueList: controllers.callTypeList,
+                                            text: "Call Type",
+                                            width: 480,
+                                            //inputFormatters: constInputFormatters.textInput,
+                                            onChanged: (value) async {
+                                              setState(() {
+                                                controllers.callType = value;
+                                              });
+                                              print("Value ${controllers.callType}");
+                                            },
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Obx(() => CustomDateBox(
+                                                  text: "Date",
+                                                  value: controllers.empDOB.value,
+                                                  width: 230,
+                                                  onTap: () {
+                                                    utils.datePicker(
+                                                        context: context,
+                                                        textEditingController:
+                                                        controllers.dateOfConCtr,
+                                                        pathVal: controllers.empDOB);
+                                                  },
+                                                ),
+                                              ),
+                                              15.width,
+                                              Obx(() => CustomDateBox(
+                                                  text: "Time",
+                                                  value: controllers.callTime.value,
+                                                  width: 230,
+                                                  onTap: () {
+                                                    utils.timePicker(
+                                                        context: context,
+                                                        textEditingController:
+                                                        controllers.timeOfConCtr,
+                                                        pathVal: controllers.callTime);
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          10.height,
+                                          CustomDropDown(
+                                            saveValue: controllers.callStatus,
+                                            valueList: controllers.callStatusList,
+                                            text: "Status",
+                                            width: 480,
+                                            onChanged: (value) async {
+                                              setState(() {
+                                                controllers.callStatus = value;
+                                              });
+                                            },
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              CustomText(
+                                                text:"Notes",
+                                                colors: colorsConst.textColor,
+                                                size: 13,
+                                              ),
+                                              SizedBox(
+                                                width: 480,
+                                                height: 80,
+                                                child: TextField(
+                                                  controller: controllers.callCommentCont,
+                                                  maxLines: null,
+                                                  expands: true,
+                                                  textAlign: TextAlign.start,
+                                                  decoration: InputDecoration(
+                                                    hintText: "Notes",
+                                                    border: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(5),
+                                                      borderSide: BorderSide(
+                                                        color: Color(0xffE1E5FA),
+                                                      ),
+                                                    ),
+                                                    focusedBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(5),
+                                                      borderSide: BorderSide(
+                                                        color: Color(0xffE1E5FA),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
+                                            ],
                                           )
                                         ],
                                       ),

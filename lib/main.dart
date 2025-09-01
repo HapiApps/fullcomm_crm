@@ -586,6 +586,8 @@ class _SplashScreenState extends State<SplashScreen> {
     apiService.getVisitType();
     apiService.getAllCustomers();
     apiService.getAllCallActivity();
+    apiService.getOpenedMailActivity();
+    apiService.getReplyMailActivity();
     apiService.getAllMailActivity();
     apiService.getAllMeetingActivity();
     apiService.getAllNoteActivity();

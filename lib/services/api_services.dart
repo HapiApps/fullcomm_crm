@@ -866,7 +866,10 @@ class ApiService {
                 "customer_name": controllers.selectedCustomerName.value,
                 "type": type,
                  "cos_id": cosId,
-                "date":"${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}",
+            "call_type":controllers.callType,
+            "call_status":controllers.callStatus,
+                //"date":"${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}",
+                "date":"${controllers.empDOB.value} ${controllers.callTime.value}",
                 "created_by": controllers.storage.read("id"),
                 "comments": controllers.callCommentCont.text.trim(),
               }),
@@ -1630,6 +1633,8 @@ class ApiService {
 
   Future getAllMailActivity() async {
     controllers.isSent.value = true;
+    controllers.isOpened.value = false;
+    controllers.isReplied.value = false;
     try {
       Map data = {
         "search_type": "records",
@@ -1660,6 +1665,8 @@ class ApiService {
   Future getReplyMailActivity() async {
     controllers.mailActivity.clear();
     controllers.isReplied.value = true;
+    controllers.isOpened.value = false;
+    controllers.isSent.value = false;
     try {
       Map data = {
         "cos_id": cosId,
@@ -1688,6 +1695,8 @@ class ApiService {
   Future getOpenedMailActivity() async {
     controllers.mailActivity.clear();
     controllers.isOpened.value = true;
+    controllers.isSent.value = false;
+    controllers.isReplied.value = false;
     try {
       Map data = {
         "cos_id": cosId,

@@ -32,11 +32,11 @@ class _CustomDropDownState extends State<CustomDropDown> {
         CustomText(
           text:widget.text,
           colors: colorsConst.textColor,
-          size: 15,
+          size: 13,
         ),
         Container(
           width: widget.width,
-          height: 50,
+          height: 40,
           decoration: customDecoration.baseBackgroundDecoration(
               radius: 8,
               color: Colors.transparent,
@@ -52,7 +52,9 @@ class _CustomDropDownState extends State<CustomDropDown> {
                     isBold: false),
                 underline: const SizedBox(),
                 focusColor: Colors.transparent,
-
+                style: TextStyle(
+                  color: colorsConst.textColor
+                ),
                 isExpanded: true,
                 value: widget.saveValue,
                 iconEnabledColor: Colors.black,
@@ -64,9 +66,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
                     child: CustomText(
                         isCopy: false,
                         text: list,
-                        colors: list.toString().isEmpty
-                            ? Colors.black
-                            : colorsConst.textColor,
+                        colors:colorsConst.textColor,
                         size: 15,
                         isBold: false),
                   );

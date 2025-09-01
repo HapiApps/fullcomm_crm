@@ -662,6 +662,16 @@ class Controller extends GetxController {
     "Education",
     "Information Technology"
   ];
+  var callTypeList = [
+    "Incoming",
+    "Outgoing",
+    "Missed"
+  ];
+  var callStatusList = [
+    "Completed",
+    "Pending",
+    "Missed"
+  ];
   var topProductList = [
     "Graphic Tees",
     "Basic Tees",
@@ -764,6 +774,8 @@ class Controller extends GetxController {
       status,
       rating,
       industry,
+  callType,
+      callStatus,
       visitType,
       qStatus,
       coIndustry,
@@ -820,6 +832,7 @@ class Controller extends GetxController {
       empEmail = "".obs,
       empPhone = "".obs,
       empDOB = "".obs,
+      callTime = "".obs,
       leadDOR = "".obs,
       empDoorNo = "".obs,
       empStreet = "".obs,
@@ -912,6 +925,7 @@ class Controller extends GetxController {
   TextEditingController leadTime = TextEditingController();
   TextEditingController leadDescription = TextEditingController();
   TextEditingController dateOfConCtr = TextEditingController();
+  TextEditingController timeOfConCtr = TextEditingController();
   TextEditingController emailToCtr = TextEditingController();
   TextEditingController emailSubjectCtr = TextEditingController();
   TextEditingController emailMessageCtr = TextEditingController();

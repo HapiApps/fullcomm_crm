@@ -98,17 +98,17 @@ class _MailCommentsState extends State<MailComments> {
                     20.height,
                     Row(
                       children: [
-                        utils.selectHeatingType("Sent", true, (){
+                        Obx(()=> utils.selectHeatingType("Sent", controllers.isSent.value, (){
                           apiService.getAllMailActivity();
-                        }, false),
+                        }, false,controllers.allSentMails),),
                         10.width,
-                        utils.selectHeatingType("Opened", false, (){
+                        Obx(()=>utils.selectHeatingType("Opened", controllers.isOpened.value, (){
                           apiService.getOpenedMailActivity();
-                        }, false),
+                        }, false,controllers.allOpenedMails),),
                         10.width,
-                        utils.selectHeatingType("Replied", false, (){
-                          apiService.getReplyMailActivity();
-                        }, true),
+                      Obx(()=> utils.selectHeatingType("Replied", controllers.isReplied.value, (){
+                        apiService.getReplyMailActivity();
+                      }, true,controllers.allReplyMails),)
                       ],
                     ),
                     15.height,
