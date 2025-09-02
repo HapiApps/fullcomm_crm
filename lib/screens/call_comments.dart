@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
@@ -656,12 +657,16 @@ class _CallCommentsState extends State<CallComments> {
                               color: Colors.grey,
                               width: 1,
                             ),
-                            CustomText(
-                              text: "Actions",
-                              size: 15,
-                              isBold: true,
-                              textAlign: TextAlign.center,
-                              colors: Colors.white,
+                            Container(
+                              width: 160,
+                              alignment: Alignment.center,
+                              child: CustomText(
+                                text: "Actions",
+                                size: 15,
+                                isBold: true,
+                                textAlign: TextAlign.center,
+                                colors: Colors.white,
+                              ),
                             ),
                           ],
                         ),
@@ -706,6 +711,27 @@ class _CallCommentsState extends State<CallComments> {
                                     width: 1,
                                   ),
                                   utils.dataCell(width: 90, text: data.callStatus),
+                                  VerticalDivider(
+                                    color: Colors.grey,
+                                    width: 1,
+                                  ),
+                                  SizedBox(
+                                    width: 160,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                            onPressed: (){},
+                                            icon: Icon(Icons.edit,color: Colors.green,)),
+                                        IconButton(
+                                            onPressed: (){},
+                                            icon: SvgPicture.asset("assets/images/add_note.svg")),
+                                        IconButton(
+                                            onPressed: (){},
+                                            icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
+                                      ],
+                                    ),
+                                  )
 
                                 ],
                               ),

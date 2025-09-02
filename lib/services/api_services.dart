@@ -1623,6 +1623,17 @@ class ApiService {
         List response = json.decode(request.body);
         controllers.callActivity.clear();
         controllers.callActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+        final incoming = controllers.callActivity.where((e) => e.callType.isNotEmpty && e.callType.trim() == "Incoming").toList();
+        final outgoing = controllers.callActivity
+            .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Outgoing")
+            .toList();
+        final missed = controllers.callActivity
+            .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Missed")
+            .toList();
+
+        controllers.allIncomingCalls.value = incoming.length.toString();
+        controllers.allOutgoingCalls.value = outgoing.length.toString();
+        controllers.allMissedCalls.value = missed.length.toString();
       } else {
         throw Exception('Failed to load album');
       }
@@ -1631,47 +1642,50 @@ class ApiService {
     }
   }
 
-  Future getAllMailActivity() async {
+  Future<void> getAllMailActivity() async {
     controllers.isSent.value = true;
     controllers.isMailLoading.value = true;
     controllers.isOpened.value = false;
     controllers.isReplied.value = false;
+
     try {
-      Map data = {
+      final data = {
         "search_type": "records",
         "cos_id": cosId,
         "action": "get_data",
-        "type":"8"
+        "type": "8",
       };
-      final request = await http.post(Uri.parse(scriptApi),
-          headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: jsonEncode(data),
-          encoding: Encoding.getByName("utf-8"));
+      final request = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(data),
+      );
       controllers.isMailLoading.value = false;
+
       if (request.statusCode == 200) {
-        List response = json.decode(request.body);
+        final List response = json.decode(request.body);
         controllers.mailActivity.clear();
-        final activities = response.map((e) => CustomerActivity.fromJson(e)).toList();
-        controllers.mailActivity.value = activities;
-        final incoming = activities.where((e) => e.callType.trim() == "Incoming").toList();
-        final outgoing = activities.where((e) => e.callType.trim() == "Outgoing").toList();
-        final missed   = activities.where((e) => e.callType.trim() == "Missed").toList();
-        controllers.allIncomingCalls.value = incoming.length.toString();
-        controllers.allOutgoingCalls.value = outgoing.length.toString();
-        controllers.allMissedCalls.value   = missed.length.toString();
-        print("Incoming Activity: ${controllers.allIncomingCalls.value}");
-        controllers.allSentMails.value = controllers.mailActivity.length.toString();
+
+        final activities = response
+            .map((e) => CustomerActivity.fromJson(e))
+            .toList();
+
+        controllers.mailActivity.assignAll(activities);
+        controllers.allSentMails.value =
+            controllers.mailActivity.length.toString();
       } else {
-        throw Exception('Failed to load album');
+        throw Exception('Failed to load mail activity');
       }
     } catch (e) {
       controllers.isMailLoading.value = false;
-      throw Exception('Failed to load album');
+      print("Error in getAllMailActivity: $e");
+      rethrow;
     }
   }
+
 
   Future getReplyMailActivity(bool isMain) async {
     controllers.mailActivity.clear();

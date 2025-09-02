@@ -63,7 +63,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                     ],
                   ),
                   ElevatedButton.icon(
-                    icon: Icon(Icons.add,color: Colors.white,),
+                    icon: Icon(Icons.calendar_today,color: Colors.white,),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: colorsConst.primary,
                       shape: RoundedRectangleBorder(
@@ -218,7 +218,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                     },
                     label: CustomText(
                       text: "New Meeting",
-                      colors: colorsConst.textColor,
+                      colors: Colors.white,
                       size: 14,
                     ),)
                 ],
@@ -226,63 +226,17 @@ class _MeetingCommentsState extends State<MeetingComments> {
               10.height,
               Row(
                 children: [
-                  Container(
-                    width: 130,
-                    height: 50,
-                    color: Colors.transparent,
-                    child: Row(
-                      children: [
-                        CustomText(
-                          text: "Direct Visit",
-                          colors: colorsConst.third,
-                          size: 15,
-                        ),
-                        10.width,
-                        CircleAvatar(
-                            backgroundColor: const Color(0xffFFC700).withOpacity(0.10),
-                            radius: 15,
-                            child: Obx(
-                                  () => CustomText(
-                                text: controllers.allDirectVisit.value,
-                                colors: colorsConst.third,
-                                size: 15,
-                              ),
-                            ))
-                      ],
-                    ),
-                  ),
+                  Obx(()=> utils.selectHeatingType("Scheduled", controllers.isIncoming.value, (){
+                    apiService.getAllMailActivity();
+                  }, false,controllers.allIncomingCalls),),
                   10.width,
-                  Container(
-                    width: 1,
-                    height: 30,
-                    color: colorsConst.secondary,
-                  ),
-                  20.width,
-                  Container(
-                    width: 150,
-                    height: 50,
-                    color: Colors.transparent,
-                    child: Row(
-                      children: [
-                        CustomText(
-                          text: "Telephonic Call",
-                          colors: colorsConst.third,
-                          size: 15,
-                        ),
-                        10.width,
-                        CircleAvatar(
-                            backgroundColor: const Color(0xffFFC700).withOpacity(0.10),
-                            radius: 15,
-                            child: Obx(() => CustomText(
-                                text: controllers.allTelephoneCalls.value,
-                                colors: colorsConst.third,
-                                size: 15,
-                              ),
-                            ))
-                      ],
-                    ),
-                  ),
-
+                  Obx(()=>utils.selectHeatingType("Completed", controllers.isOutgoing.value, (){
+                    apiService.getOpenedMailActivity(false);
+                  }, false,controllers.allOutgoingCalls),),
+                  10.width,
+                  Obx(()=> utils.selectHeatingType("Cancelled", controllers.isMissed.value, (){
+                    apiService.getReplyMailActivity(false);
+                  }, true,controllers.allMissedCalls),)
                 ],
               ),
               5.height,
@@ -304,259 +258,146 @@ class _MeetingCommentsState extends State<MeetingComments> {
                     },
                   ),
                   10.width,
-                  Obx(
-                        () => Radio(
-                        activeColor: colorsConst.third,
-                        value: "All",
-                        fillColor: WidgetStateProperty.resolveWith<Color?>(
-                                (states) {
-                              return colorsConst.third;
-                            }),
-                        groupValue: controllers.shortBy.value,
-                        onChanged: (value) {
-                          controllers.shortBy.value =
-                              value.toString().trim();
-                        }),
-                  ),
-                  CustomText(
-                    text: "All",
-                    colors: colorsConst.textColor,
-                  ),
-                  Obx(
-                        () => Radio(
-                        activeColor: colorsConst.third,
-                        value: "Name",
-                        fillColor: WidgetStateProperty.resolveWith<Color?>(
-                                (states) {
-                              return colorsConst.third;
-                            }),
-                        groupValue: controllers.shortBy.value,
-                        onChanged: (value) {
-                          controllers.shortBy.value =
-                              value.toString().trim();
-                        }),
-                  ),
-                  CustomText(
-                    text: "Name",
-                    colors: colorsConst.textColor,
-                  ),
-                  Obx(
-                        () => Radio(
-                        activeColor: colorsConst.third,
-                        value: "Company Name",
-                        fillColor: WidgetStateProperty.resolveWith<Color?>(
-                                (states) {
-                              return colorsConst.third;
-                            }),
-                        groupValue: controllers.shortBy.value,
-                        onChanged: (value) {
-                          controllers.shortBy.value =
-                              value.toString().trim();
-                        }),
-                  ),
-                  CustomText(
-                    text: "Company Name",
-                    colors: colorsConst.textColor,
-                  ),
-                  Obx(
-                        () => Radio(
-                        activeColor: colorsConst.third,
-                        value: "Customer Name",
-                        fillColor: WidgetStateProperty.resolveWith<Color?>(
-                                (states) {
-                              return colorsConst.third;
-                            }),
-                        groupValue: controllers.shortBy.value,
-                        onChanged: (value) {
-                          controllers.shortBy.value =
-                              value.toString().trim();
-                        }),
-                  ),
-                  CustomText(
-                    text: "Customer Name",
-                    colors: colorsConst.textColor,
-                  ),
-                  20.width,
-                  Container(
-                    decoration: BoxDecoration(
-                        color: colorsConst.secondary,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              // controllers.isAllContacts.value=true;
-                              controllers.isCommentsLoading.value = false;
-                              var data = DateTime.parse(
-                                  "${controllers.stDate.value.split("-").last}-${controllers.stDate.value.split("-")[1]}-${controllers.stDate.value.split("-").first}")
-                                  .subtract(const Duration(days: 1));
-                              controllers.stDate.value =
-                              "${data.day.toString().padLeft(2, "0")}"
-                                  "-${data.month.toString().padLeft(2, "0")}"
-                                  "-${data.year.toString()}";
-                              controllers.isCommentsLoading.value = true;
-                              if (controllers.shortBy.value == "all") {
-                                controllers.shortBy.value = "";
-                              }
-                            },
-                            hoverColor: Colors.transparent,
-                            icon: Icon(Icons.arrow_back_ios,
-                                size: 17, color: colorsConst.third)),
-                        // ),
-                        Icon(
-                          Icons.calendar_today_outlined,
-                          size: 13,
-                          color: colorsConst.textColor,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            if (context.mounted) {
-                              DateFormat inputFormat = DateFormat("dd-MM-yyyy");
-                              DateTime parsedDate = inputFormat.parse(controllers.stDate.value);
-                              controllers.dateTime = parsedDate;
-                              showDatePicker(
-                                context: context,
-                                initialDate: controllers.dateTime,
-                                firstDate: DateTime(2021),
-                                lastDate: DateTime.now(),
-                              ).then((value) {
-                                //controllers.isAllContacts.value=true;
-                                controllers.dateTime = value!;
-                                controllers.isCommentsLoading.value = false;
-                                controllers.stDate.value =
-                                "${controllers.dateTime.day.toString().padLeft(2, "0")}"
-                                    "-${controllers.dateTime.month.toString().padLeft(2, "0")}"
-                                    "-${controllers.dateTime.year.toString()}";
-                                controllers.isCommentsLoading.value = true;
-                                if (controllers.shortBy.value == "all") {
-                                  controllers.shortBy.value = "";
-                                }
-                              });
-                            }
-                          },
-                          child: Container(
-                            height: 30,
-                            padding: const EdgeInsets.fromLTRB(6, 2, 4, 2),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: colorsConst.secondary,
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                    color: colorsConst.secondary)),
-                            child: Obx(
-                                  () => CustomText(
-                                text: " ${controllers.stDate.value}  ",
-                                colors: colorsConst.textColor,
-                                size: 12,
-                                isBold: true,
-                              ),
-                            ),
-                          ),
-                        ),
-                        // Container(
-                        //   width:30,
-                        //   height: 30,
-                        //   alignment: Alignment.center,
-                        //   decoration: BoxDecoration(
-                        //       color: dateCheck()?colorsConst.secondary:colorsConst.primary,
-                        //       borderRadius: BorderRadius.circular(8),
-                        //       border: Border.all(
-                        //           color: colorsConst.secondary
-                        //       )
-                        //   ),
-                        //   child:
-                        Obx(
-                              () => IconButton(
-                              onPressed: () {
-                                if (dateCheck()) {
-                                  // controllers.isAllContacts.value=true;
-                                  controllers.isCommentsLoading.value =
-                                  false;
-                                  var data = DateTime.parse(
-                                      "${controllers.stDate.value.split("-").last}-${controllers.stDate.value.split("-")[1]}-${controllers.stDate.value.split("-").first}")
-                                      .add(const Duration(days: 1));
-                                  controllers.stDate.value =
-                                  "${data.day.toString().padLeft(2, "0")}"
-                                      "-${data.month.toString().padLeft(2, "0")}"
-                                      "-${data.year.toString()}";
-                                  controllers.isCommentsLoading.value =
-                                  true;
-                                  if (controllers.shortBy.value == "all") {
-                                    controllers.shortBy.value = "";
-                                  }
-                                }
-                              },
-                              hoverColor: Colors.transparent,
-                              icon: Icon(
-                                Icons.arrow_forward_ios,
-                                size: 16,
-                                color: dateCheck()
-                                    ? colorsConst.third
-                                    : Colors.grey,
-                              )),
-                        ),
-                        //)
-                      ],
-                    ),
-                  ),
+                  // Container(
+                  //   decoration: BoxDecoration(
+                  //       color: colorsConst.secondary,
+                  //       borderRadius: BorderRadius.circular(10)),
+                  //   child: Row(
+                  //     children: [
+                  //       IconButton(
+                  //           onPressed: () {
+                  //             // controllers.isAllContacts.value=true;
+                  //             controllers.isCommentsLoading.value = false;
+                  //             var data = DateTime.parse(
+                  //                     "${controllers.stDate.value.split("-").last}-${controllers.stDate.value.split("-")[1]}-${controllers.stDate.value.split("-").first}")
+                  //                 .subtract(const Duration(days: 1));
+                  //             controllers.stDate.value =
+                  //                 "${data.day.toString().padLeft(2, "0")}"
+                  //                 "-${data.month.toString().padLeft(2, "0")}"
+                  //                 "-${data.year.toString()}";
+                  //             controllers.isCommentsLoading.value = true;
+                  //             if (controllers.shortBy.value == "all") {
+                  //               controllers.shortBy.value = "";
+                  //             }
+                  //           },
+                  //           hoverColor: Colors.transparent,
+                  //           icon: Icon(Icons.arrow_back_ios,
+                  //               size: 17, color: colorsConst.third)),
+                  //       // ),
+                  //       Icon(
+                  //         Icons.calendar_today_outlined,
+                  //         size: 13,
+                  //         color: colorsConst.textColor,
+                  //       ),
+                  //       InkWell(
+                  //         onTap: () {
+                  //           if (context.mounted) {
+                  //             DateFormat inputFormat =
+                  //                 DateFormat("dd-MM-yyyy");
+                  //             DateTime parsedDate = inputFormat
+                  //                 .parse(controllers.stDate.value);
+                  //             controllers.dateTime = parsedDate;
+                  //             showDatePicker(
+                  //               context: context,
+                  //               initialDate: controllers.dateTime,
+                  //               firstDate: DateTime(2021),
+                  //               lastDate: DateTime.now(),
+                  //             ).then((value) {
+                  //               //controllers.isAllContacts.value=true;
+                  //               controllers.dateTime = value!;
+                  //               controllers.isCommentsLoading.value = false;
+                  //               controllers.stDate.value =
+                  //                   "${controllers.dateTime.day.toString().padLeft(2, "0")}"
+                  //                   "-${controllers.dateTime.month.toString().padLeft(2, "0")}"
+                  //                   "-${controllers.dateTime.year.toString()}";
+                  //               controllers.isCommentsLoading.value = true;
+                  //               if (controllers.shortBy.value == "all") {
+                  //                 controllers.shortBy.value = "";
+                  //               }
+                  //             });
+                  //           }
+                  //         },
+                  //         child: Container(
+                  //           height: 30,
+                  //           padding: const EdgeInsets.fromLTRB(6, 2, 4, 2),
+                  //           alignment: Alignment.center,
+                  //           decoration: BoxDecoration(
+                  //               color: colorsConst.secondary,
+                  //               borderRadius: BorderRadius.circular(8),
+                  //               border: Border.all(
+                  //                   color: colorsConst.secondary)),
+                  //           child: Obx(
+                  //             () => CustomText(
+                  //               text: " ${controllers.stDate.value}  ",
+                  //               colors: colorsConst.textColor,
+                  //               size: 12,
+                  //               isBold: true,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       // Container(
+                  //       //   width:30,
+                  //       //   height: 30,
+                  //       //   alignment: Alignment.center,
+                  //       //   decoration: BoxDecoration(
+                  //       //       color: dateCheck()?colorsConst.secondary:colorsConst.primary,
+                  //       //       borderRadius: BorderRadius.circular(8),
+                  //       //       border: Border.all(
+                  //       //           color: colorsConst.secondary
+                  //       //       )
+                  //       //   ),
+                  //       //   child:
+                  //       Obx(
+                  //         () => IconButton(
+                  //             onPressed: () {
+                  //               if (dateCheck()) {
+                  //                 // controllers.isAllContacts.value=true;
+                  //                 controllers.isCommentsLoading.value =
+                  //                     false;
+                  //                 var data = DateTime.parse(
+                  //                         "${controllers.stDate.value.split("-").last}-${controllers.stDate.value.split("-")[1]}-${controllers.stDate.value.split("-").first}")
+                  //                     .add(const Duration(days: 1));
+                  //                 controllers.stDate.value =
+                  //                     "${data.day.toString().padLeft(2, "0")}"
+                  //                     "-${data.month.toString().padLeft(2, "0")}"
+                  //                     "-${data.year.toString()}";
+                  //                 controllers.isCommentsLoading.value =
+                  //                     true;
+                  //                 if (controllers.shortBy.value == "all") {
+                  //                   controllers.shortBy.value = "";
+                  //                 }
+                  //               }
+                  //             },
+                  //             hoverColor: Colors.transparent,
+                  //             icon: Icon(
+                  //               Icons.arrow_forward_ios,
+                  //               size: 16,
+                  //               color: dateCheck()
+                  //                   ? colorsConst.third
+                  //                   : Colors.grey,
+                  //             )),
+                  //       ),
+                  //       //)
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
               15.height,
               // Table Header
               Container(
+                height: 60,
                 decoration: BoxDecoration(
                     color: colorsConst.primary,
                     borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20))
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(5))
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                //padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Row(
                   children: [
-                    utils.headerCell(
-                      width: 150, text: "Customer Name",
-                      isSortable: true,
-                      fieldName: 'name',
-                      sortField: controllers.sortField,
-                      sortOrder: controllers.sortOrder,
-                      onSortAsc: () {
-                        controllers.sortField.value = 'name';
-                        controllers.sortOrder.value = 'asc';
-                      },
-                      onSortDesc: () {
-                        controllers.sortField.value = 'name';
-                        controllers.sortOrder.value = 'desc';
-                      },
-                    ),
-                    utils.headerCell(width: 180, text: "Customer Mobile No.",
-                      fieldName: 'companyName',
-                      sortField: controllers.sortField,
-                      sortOrder: controllers.sortOrder,
-                      isSortable: true,
-                      onSortAsc: () {
-                        controllers.sortField.value = 'companyName';
-                        controllers.sortOrder.value = 'asc';
-                      },
-                      onSortDesc: () {
-                        controllers.sortField.value = 'companyName';
-                        controllers.sortOrder.value = 'desc';
-                      },
-                    ),
-                    utils.headerCell(width: 260, text: "Comments",
-                      isSortable: true,
-                      fieldName: 'serviceRequired',
-                      sortField: controllers.sortField,
-                      sortOrder: controllers.sortOrder,
-                      onSortAsc: () {
-                        controllers.sortField.value = 'serviceRequired';
-                        controllers.sortOrder.value = 'asc';
-                      },
-                      onSortDesc: () {
-                        controllers.sortField.value = 'serviceRequired';
-                        controllers.sortOrder.value = 'desc';
-                      },
-                    ),
-                    utils.headerCell(width: 200, text: "Added Date",
+                    utils.headerCell(width: 155, text: "Date",
                       isSortable: true,
                       fieldName: 'sourceOfProspect',
                       sortField: controllers.sortField,
@@ -570,32 +411,177 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         controllers.sortOrder.value = 'desc';
                       },
                     ),
-
+                    VerticalDivider(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                    utils.headerCell(
+                      width: 160, text: "Customer Name",
+                      isSortable: true,
+                      fieldName: 'name',
+                      sortField: controllers.sortField,
+                      sortOrder: controllers.sortOrder,
+                      onSortAsc: () {
+                        controllers.sortField.value = 'name';
+                        controllers.sortOrder.value = 'asc';
+                      },
+                      onSortDesc: () {
+                        controllers.sortField.value = 'name';
+                        controllers.sortOrder.value = 'desc';
+                      },
+                    ),
+                    VerticalDivider(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                    utils.headerCell(width: 140, text: "Company name",
+                      fieldName: 'companyName',
+                      sortField: controllers.sortField,
+                      sortOrder: controllers.sortOrder,
+                      isSortable: true,
+                      onSortAsc: () {
+                        controllers.sortField.value = 'companyName';
+                        controllers.sortOrder.value = 'asc';
+                      },
+                      onSortDesc: () {
+                        controllers.sortField.value = 'companyName';
+                        controllers.sortOrder.value = 'desc';
+                      },
+                    ),
+                    VerticalDivider(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                    utils.headerCell(width: 122, text: "Meeting Title",
+                      fieldName: 'companyName',
+                      sortField: controllers.sortField,
+                      sortOrder: controllers.sortOrder,
+                      isSortable: true,
+                      onSortAsc: () {
+                        controllers.sortField.value = 'companyName';
+                        controllers.sortOrder.value = 'asc';
+                      },
+                      onSortDesc: () {
+                        controllers.sortField.value = 'companyName';
+                        controllers.sortOrder.value = 'desc';
+                      },
+                    ),
+                    VerticalDivider(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                    utils.headerCell(width: 200, text: "Notes",
+                      isSortable: true,
+                      fieldName: 'serviceRequired',
+                      sortField: controllers.sortField,
+                      sortOrder: controllers.sortOrder,
+                      onSortAsc: () {
+                        controllers.sortField.value = 'serviceRequired';
+                        controllers.sortOrder.value = 'asc';
+                      },
+                      onSortDesc: () {
+                        controllers.sortField.value = 'serviceRequired';
+                        controllers.sortOrder.value = 'desc';
+                      },
+                    ),
+                    VerticalDivider(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                    utils.headerCell(width: 90, text: "Status",
+                      fieldName: 'companyName',
+                      sortField: controllers.sortField,
+                      sortOrder: controllers.sortOrder,
+                      isSortable: true,
+                      onSortAsc: () {
+                        controllers.sortField.value = 'companyName';
+                        controllers.sortOrder.value = 'asc';
+                      },
+                      onSortDesc: () {
+                        controllers.sortField.value = 'companyName';
+                        controllers.sortOrder.value = 'desc';
+                      },
+                    ),
+                    VerticalDivider(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                    Container(
+                      width: 160,
+                      alignment: Alignment.center,
+                      child: CustomText(
+                        text: "Actions",
+                        size: 15,
+                        isBold: true,
+                        textAlign: TextAlign.center,
+                        colors: Colors.white,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              10.height,
               // Table Body
               SizedBox(
                 height: MediaQuery.of(context).size.height - 400,
-                child: ListView.separated(
-                  separatorBuilder: (context, index) {
-                    return 5.height;
-                  },
-                  itemCount: controllers.meetingActivity.length,
+                child: ListView.builder(
+                  itemCount: controllers.callActivity.length,
                   itemBuilder: (context, index) {
-                    final data = controllers.meetingActivity[index];
+                    final data = controllers.callActivity[index];
                     return Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      height: 60,
                       decoration: BoxDecoration(
-                        color: index % 2 == 0 ? Colors.white : const Color(0xffD9EEFF),
+                        color: index % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                       ),
                       child: Row(
                         children: [
-                          utils.dataCell(width: 150, text: data.customerName),
-                          utils.dataCell(width: 180, text: data.toData),
-                          utils.dataCell(width: 260, text: data.message),
-                          utils.dataCell(width: 200, text: data.sentDate)
+                          utils.dataCell(width: 155, text: data.sentDate),
+                          VerticalDivider(
+                            color: Colors.grey,
+                            width: 1,
+                          ),
+                          utils.dataCell(width: 160, text: data.customerName),
+                          VerticalDivider(
+                            color: Colors.grey,
+                            width: 1,
+                          ),
+                          utils.dataCell(width: 140, text: data.toData),
+                          VerticalDivider(
+                            color: Colors.grey,
+                            width: 1,
+                          ),
+                          utils.dataCell(width: 120, text: data.callType),
+                          VerticalDivider(
+                            color: Colors.grey,
+                            width: 1,
+                          ),
+                          utils.dataCell(width: 200, text: data.message),
+                          VerticalDivider(
+                            color: Colors.grey,
+                            width: 1,
+                          ),
+                          utils.dataCell(width: 90, text: data.callStatus),
+                          VerticalDivider(
+                            color: Colors.grey,
+                            width: 1,
+                          ),
+                          SizedBox(
+                            width: 160,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                    onPressed: (){},
+                                    icon: Icon(Icons.edit,color: Colors.green,)),
+                                IconButton(
+                                    onPressed: (){},
+                                    icon: SvgPicture.asset("assets/images/add_note.svg")),
+                                IconButton(
+                                    onPressed: (){},
+                                    icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
+                              ],
+                            ),
+                          )
+
                         ],
                       ),
                     );

@@ -217,12 +217,16 @@ class _MailCommentsState extends State<MailComments> {
                             width: 0.5,
                           ),
 
-                          CustomText(
-                            text: "Actions",
-                            size: 15,
-                            isBold: true,
-                            textAlign: TextAlign.center,
-                            colors: Colors.white,
+                          Container(
+                            width: 160,
+                            alignment: Alignment.center,
+                            child: CustomText(
+                              text: "Actions",
+                              size: 15,
+                              isBold: true,
+                              textAlign: TextAlign.center,
+                              colors: Colors.white,
+                            ),
                           ),
                         ],
                       ),
@@ -268,7 +272,23 @@ class _MailCommentsState extends State<MailComments> {
                                   color: Colors.grey,
                                   width: 0.5,
                                 ),
-                                utils.dataCell(width: 160, text: data.sentDate)
+                                SizedBox(
+                                  width: 160,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      IconButton(
+                                          onPressed: (){},
+                                          icon: SvgPicture.asset("assets/images/reply.svg")),
+                                      IconButton(
+                                          onPressed: (){},
+                                          icon: SvgPicture.asset("assets/images/forward.svg")),
+                                      IconButton(
+                                          onPressed: (){},
+                                          icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
                           );
