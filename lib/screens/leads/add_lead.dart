@@ -1230,8 +1230,7 @@ class _AddLeadState extends State<AddLead> {
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,
                                 onChanged: (value) async {
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
+                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
                                   sharedPref.setString(
                                       "leadARPU", value.toString().trim());
                                 },

@@ -103,11 +103,11 @@ class _MailCommentsState extends State<MailComments> {
                         }, false,controllers.allSentMails),),
                         10.width,
                         Obx(()=>utils.selectHeatingType("Opened", controllers.isOpened.value, (){
-                          apiService.getOpenedMailActivity();
+                          apiService.getOpenedMailActivity(false);
                         }, false,controllers.allOpenedMails),),
                         10.width,
                       Obx(()=> utils.selectHeatingType("Replied", controllers.isReplied.value, (){
-                        apiService.getReplyMailActivity();
+                        apiService.getReplyMailActivity(false);
                       }, true,controllers.allReplyMails),)
                       ],
                     ),
@@ -228,6 +228,8 @@ class _MailCommentsState extends State<MailComments> {
                       ),
                     ),
                     // Table Body
+                    Obx(()=>controllers.isMailLoading.value?
+                    Center(child:CircularProgressIndicator()):
                     SizedBox(
                       height: MediaQuery.of(context).size.height - 400,
                       child: ListView.builder(
@@ -272,7 +274,7 @@ class _MailCommentsState extends State<MailComments> {
                           );
                         },
                       ),
-                    ),
+                    ),)
                   ],
                 ),
               ),

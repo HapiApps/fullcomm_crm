@@ -1633,6 +1633,7 @@ class ApiService {
 
   Future getAllMailActivity() async {
     controllers.isSent.value = true;
+    controllers.isMailLoading.value = true;
     controllers.isOpened.value = false;
     controllers.isReplied.value = false;
     try {
@@ -1649,22 +1650,33 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      controllers.isMailLoading.value = false;
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         controllers.mailActivity.clear();
-        controllers.mailActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+        final activities = response.map((e) => CustomerActivity.fromJson(e)).toList();
+        controllers.mailActivity.value = activities;
+        final incoming = activities.where((e) => e.callType.trim() == "Incoming").toList();
+        final outgoing = activities.where((e) => e.callType.trim() == "Outgoing").toList();
+        final missed   = activities.where((e) => e.callType.trim() == "Missed").toList();
+        controllers.allIncomingCalls.value = incoming.length.toString();
+        controllers.allOutgoingCalls.value = outgoing.length.toString();
+        controllers.allMissedCalls.value   = missed.length.toString();
+        print("Incoming Activity: ${controllers.allIncomingCalls.value}");
         controllers.allSentMails.value = controllers.mailActivity.length.toString();
       } else {
         throw Exception('Failed to load album');
       }
     } catch (e) {
+      controllers.isMailLoading.value = false;
       throw Exception('Failed to load album');
     }
   }
 
-  Future getReplyMailActivity() async {
+  Future getReplyMailActivity(bool isMain) async {
     controllers.mailActivity.clear();
     controllers.isReplied.value = true;
+    controllers.isMailLoading.value = true;
     controllers.isOpened.value = false;
     controllers.isSent.value = false;
     try {
@@ -1680,21 +1692,26 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      controllers.isMailLoading.value = false;
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
-        controllers.mailActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
-        controllers.allReplyMails.value = controllers.mailActivity.length.toString();
+        if(isMain==false){
+          controllers.mailActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+        }
+        controllers.allReplyMails.value = response.length.toString();
       } else {
         throw Exception('Failed to load album');
       }
     } catch (e) {
+      controllers.isMailLoading.value = false;
       throw Exception('Failed to load album');
     }
   }
 
-  Future getOpenedMailActivity() async {
+  Future getOpenedMailActivity(bool isMain) async {
     controllers.mailActivity.clear();
     controllers.isOpened.value = true;
+    controllers.isMailLoading.value = true;
     controllers.isSent.value = false;
     controllers.isReplied.value = false;
     try {
@@ -1710,14 +1727,18 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      controllers.isMailLoading.value = false;
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
-        controllers.mailActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
-        controllers.allOpenedMails.value = controllers.mailActivity.length.toString();
+        if(isMain==false){
+          controllers.mailActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+        }
+        controllers.allOpenedMails.value = response.length.toString();
       } else {
         throw Exception('Failed to load album');
       }
     } catch (e) {
+      controllers.isMailLoading.value = false;
       throw Exception('Failed to load album');
     }
   }

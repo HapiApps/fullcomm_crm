@@ -304,68 +304,17 @@ class _CallCommentsState extends State<CallComments> {
                   10.height,
                   Row(
                     children: [
-                      CustomText(
-                        text: "Incoming",
-                        colors: colorsConst.primary,
-                        size: 15,
-                      ),
+                      Obx(()=> utils.selectHeatingType("Incoming", controllers.isIncoming.value, (){
+                        apiService.getAllMailActivity();
+                      }, false,controllers.allIncomingCalls),),
                       10.width,
-                      CircleAvatar(
-                          backgroundColor: colorsConst.primary,
-                          radius: 15,
-                          child: Obx(
-                                () => CustomText(
-                              text: controllers.allDirectVisit.value,
-                              colors: Colors.white,
-                              size: 15,
-                            ),
-                          )),
+                      Obx(()=>utils.selectHeatingType("Outgoing", controllers.isOutgoing.value, (){
+                        apiService.getOpenedMailActivity(false);
+                      }, false,controllers.allOutgoingCalls),),
                       10.width,
-                      Container(
-                        width: 1,
-                        height: 22,
-                        color: Colors.grey,
-                      ),
-                      10.width,
-                      CustomText(
-                        text: "Outgoing",
-                        colors: colorsConst.textColor,
-                        size: 15,
-                      ),
-                      10.width,
-                      CircleAvatar(
-                          backgroundColor: colorsConst.secondary,
-                          radius: 15,
-                          child: Obx(
-                                () => CustomText(
-                              text: controllers.allTelephoneCalls.value,
-                              colors: colorsConst.primary,
-                              size: 15,
-                            ),
-                          )),
-                      10.width,
-                      Container(
-                        width: 1,
-                        height: 22,
-                        color: Colors.grey,
-                      ),
-                      10.width,
-                      CustomText(
-                        text: "Missed",
-                        colors: colorsConst.textColor,
-                        size: 15,
-                      ),
-                      10.width,
-                      CircleAvatar(
-                          backgroundColor: colorsConst.secondary,
-                          radius: 15,
-                          child: Obx(
-                                () => CustomText(
-                              text: controllers.allTelephoneCalls.value,
-                              colors: colorsConst.primary,
-                              size: 15,
-                            ),
-                          ))
+                      Obx(()=> utils.selectHeatingType("Missed", controllers.isMissed.value, (){
+                        apiService.getReplyMailActivity(false);
+                      }, true,controllers.allMissedCalls),)
                     ],
                   ),
                   5.height,
@@ -746,7 +695,7 @@ class _CallCommentsState extends State<CallComments> {
                                     color: Colors.grey,
                                     width: 1,
                                   ),
-                                  utils.dataCell(width: 120, text: "Incoming"),
+                                  utils.dataCell(width: 120, text: data.callType),
                                   VerticalDivider(
                                     color: Colors.grey,
                                     width: 1,
@@ -756,7 +705,7 @@ class _CallCommentsState extends State<CallComments> {
                                     color: Colors.grey,
                                     width: 1,
                                   ),
-                                  utils.dataCell(width: 90, text: "Completed"),
+                                  utils.dataCell(width: 90, text: data.callStatus),
 
                                 ],
                               ),

@@ -7,6 +7,8 @@ class CustomerActivity {
   final String sentDate;
   final String message;
   final String sentCount;
+  final String callType;
+  final String callStatus;
   final String quotationName;
   final String customerName;
 
@@ -21,6 +23,8 @@ class CustomerActivity {
     required this.sentCount,
     required this.quotationName,
     required this.customerName,
+    required this.callType,
+    required this.callStatus
   });
 
   factory CustomerActivity.fromJson(Map<String, dynamic> json) {
@@ -35,6 +39,8 @@ class CustomerActivity {
       sentCount: json['sent_count'] ?? '',
       quotationName: json['quotation_name'] ?? '',
       customerName: json['customer_name'] ?? '',
+      callType: json['call_type'] ?? '',
+      callStatus: json['call_status'] ?? '',
     );
   }
 
@@ -50,6 +56,8 @@ class CustomerActivity {
       'sent_count': sentCount,
       'quotation_name': quotationName,
       'customer_name': customerName,
+      'call_type': callType,
+      'call_status': callStatus
     };
   }
 }

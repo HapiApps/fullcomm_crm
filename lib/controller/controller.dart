@@ -493,8 +493,11 @@ class Controller extends GetxController {
       allSentMails = "0".obs,
       allOpenedMails = "0".obs,
       allReplyMails = "0".obs,
+      allIncomingCalls = "0".obs,
+      allOutgoingCalls = "0".obs,
+      allMissedCalls = "0".obs,
       shortBy = "All".obs,
-      isCommentsLoading = true.obs,isSent = false.obs,isOpened= false.obs,isReplied = false.obs;
+      isCommentsLoading = true.obs,isSent = false.obs,isOpened= false.obs,isReplied = false.obs,isMailLoading = false.obs,isIncoming = false.obs,isOutgoing= false.obs,isMissed = false.obs,isCallLoading = false.obs;
   var roleNameList = [];
   var callNameList = [];
   var customers = <AllCustomersObj>[].obs;

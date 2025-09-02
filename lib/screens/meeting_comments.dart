@@ -43,11 +43,13 @@ class _MeetingCommentsState extends State<MeetingComments> {
             children: [
               20.height,
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomText(
-                        text: "Meeting Activity Report",
+                        text: "Meetings",
                         colors: colorsConst.textColor,
                         size: 20,
                         isBold: true,
@@ -60,71 +62,10 @@ class _MeetingCommentsState extends State<MeetingComments> {
                       ),
                     ],
                   ),
-                ],
-              ),
-              10.height,
-              Row(
-                children: [
-                  Container(
-                    width: 130,
-                    height: 50,
-                    color: Colors.transparent,
-                    child: Row(
-                      children: [
-                        CustomText(
-                          text: "Direct Visit",
-                          colors: colorsConst.third,
-                          size: 15,
-                        ),
-                        10.width,
-                        CircleAvatar(
-                            backgroundColor: const Color(0xffFFC700).withOpacity(0.10),
-                            radius: 15,
-                            child: Obx(
-                                  () => CustomText(
-                                text: controllers.allDirectVisit.value,
-                                colors: colorsConst.third,
-                                size: 15,
-                              ),
-                            ))
-                      ],
-                    ),
-                  ),
-                  10.width,
-                  Container(
-                    width: 1,
-                    height: 30,
-                    color: colorsConst.secondary,
-                  ),
-                  20.width,
-                  Container(
-                    width: 150,
-                    height: 50,
-                    color: Colors.transparent,
-                    child: Row(
-                      children: [
-                        CustomText(
-                          text: "Telephonic Call",
-                          colors: colorsConst.third,
-                          size: 15,
-                        ),
-                        10.width,
-                        CircleAvatar(
-                            backgroundColor: const Color(0xffFFC700).withOpacity(0.10),
-                            radius: 15,
-                            child: Obx(() => CustomText(
-                                text: controllers.allTelephoneCalls.value,
-                                colors: colorsConst.third,
-                                size: 15,
-                              ),
-                            ))
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
+                  ElevatedButton.icon(
+                    icon: Icon(Icons.add,color: Colors.white,),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      side: BorderSide(color: colorsConst.primary),
+                      backgroundColor: colorsConst.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5),
                       ),
@@ -135,48 +76,71 @@ class _MeetingCommentsState extends State<MeetingComments> {
                           barrierDismissible: false,
                           builder: (context) {
                             return AlertDialog(
-                              title: CustomText(
-                                text: "Add Your Call Comments",
-                                size: 16,
-                                isBold: true,
-                                colors: colorsConst.textColor,
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CustomText(
+                                    text: "New Meeting",
+                                    size: 16,
+                                    isBold: true,
+                                    colors: colorsConst.textColor,
+                                  ),
+                                  IconButton(
+                                      onPressed: (){
+                                        Navigator.of(context).pop();
+                                      },
+                                      icon: Icon(Icons.clear,
+                                        color: Colors.black,
+                                      ))
+                                ],
                               ),
                               content: SizedBox(
                                 width: 500,
                                 height: 400,
                                 child: Column(
                                   children: [
-                                    SizedBox(
-                                      width: 300,
-                                      height: 50,
-                                      child: KeyboardDropdownField<AllCustomersObj>(
-                                        items: controllers.customers,
-                                        borderRadius: 5,
-                                        borderColor: Colors.grey.shade300,
-                                        hintText: "Customers",
-                                        labelText: "",
-                                        labelBuilder: (customer) =>'${customer.name} - ${customer.phoneNo}',
-                                        itemBuilder: (customer) =>
-                                            Container(
-                                              width: 300,
-                                              alignment: Alignment.topLeft,
-                                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                              child: CustomText(
-                                                text: '${customer.name} - ${customer.phoneNo}',
-                                                colors: Colors.black,
-                                                size: 14,
-                                                textAlign: TextAlign.start,
-                                              ),
-                                            ),
-                                        textEditingController: controllers.cusController,
-                                        onSelected: (value) {
-                                          controllers.selectCustomer(value);
-                                        },
-                                        onClear: () {
-                                          controllers.clearSelectedCustomer();
-                                        },
-                                      ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CustomText(
+                                          text:"Customer Name",
+                                          colors: colorsConst.textColor,
+                                          size: 13,
+                                        ),
+                                        SizedBox(
+                                          width: 480,
+                                          height: 50,
+                                          child: KeyboardDropdownField<AllCustomersObj>(
+                                            items: controllers.customers,
+                                            borderRadius: 5,
+                                            borderColor: Colors.grey.shade300,
+                                            hintText: "Customers",
+                                            labelText: "",
+                                            labelBuilder: (customer) =>'${customer.name} - ${customer.phoneNo}',
+                                            itemBuilder: (customer) =>
+                                                Container(
+                                                  width: 300,
+                                                  alignment: Alignment.topLeft,
+                                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                  child: CustomText(
+                                                    text: '${customer.name} - ${customer.phoneNo}',
+                                                    colors: Colors.black,
+                                                    size: 14,
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                ),
+                                            textEditingController: controllers.cusController,
+                                            onSelected: (value) {
+                                              controllers.selectCustomer(value);
+                                            },
+                                            onClear: () {
+                                              controllers.clearSelectedCustomer();
+                                            },
+                                          ),
+                                        ),
+                                      ],
                                     ),
+                                    10.height,
                                     SizedBox(
                                       width: 300,
                                       height: 200,
@@ -252,11 +216,73 @@ class _MeetingCommentsState extends State<MeetingComments> {
                             );
                           });
                     },
-                    child: CustomText(
-                      text: "Add Meeting Comment",
+                    label: CustomText(
+                      text: "New Meeting",
                       colors: colorsConst.textColor,
                       size: 14,
                     ),)
+                ],
+              ),
+              10.height,
+              Row(
+                children: [
+                  Container(
+                    width: 130,
+                    height: 50,
+                    color: Colors.transparent,
+                    child: Row(
+                      children: [
+                        CustomText(
+                          text: "Direct Visit",
+                          colors: colorsConst.third,
+                          size: 15,
+                        ),
+                        10.width,
+                        CircleAvatar(
+                            backgroundColor: const Color(0xffFFC700).withOpacity(0.10),
+                            radius: 15,
+                            child: Obx(
+                                  () => CustomText(
+                                text: controllers.allDirectVisit.value,
+                                colors: colorsConst.third,
+                                size: 15,
+                              ),
+                            ))
+                      ],
+                    ),
+                  ),
+                  10.width,
+                  Container(
+                    width: 1,
+                    height: 30,
+                    color: colorsConst.secondary,
+                  ),
+                  20.width,
+                  Container(
+                    width: 150,
+                    height: 50,
+                    color: Colors.transparent,
+                    child: Row(
+                      children: [
+                        CustomText(
+                          text: "Telephonic Call",
+                          colors: colorsConst.third,
+                          size: 15,
+                        ),
+                        10.width,
+                        CircleAvatar(
+                            backgroundColor: const Color(0xffFFC700).withOpacity(0.10),
+                            radius: 15,
+                            child: Obx(() => CustomText(
+                                text: controllers.allTelephoneCalls.value,
+                                colors: colorsConst.third,
+                                size: 15,
+                              ),
+                            ))
+                      ],
+                    ),
+                  ),
+
                 ],
               ),
               5.height,
