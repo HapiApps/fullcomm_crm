@@ -35,6 +35,7 @@ import '../models/customer_obj.dart';
 import '../models/employee_obj.dart';
 import '../models/lead_obj.dart';
 import '../models/mail_receive_obj.dart';
+import '../models/meeting_obj.dart';
 import '../screens/home.dart';
 
 final ApiService apiService = ApiService._();
@@ -865,14 +866,62 @@ class ApiService {
                 "mobile_number": controllers.selectedCustomerMobile.value,
                 "customer_name": controllers.selectedCustomerName.value,
                 "type": type,
-                 "cos_id": cosId,
-            "call_type":controllers.callType,
-            "call_status":controllers.callStatus,
+                "cos_id": cosId,
+                "call_type":controllers.callType,
+                "call_status":controllers.callStatus,
                 //"date":"${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}",
                 "date":"${controllers.empDOB.value} ${controllers.callTime.value}",
                 "created_by": controllers.storage.read("id"),
                 "comments": controllers.callCommentCont.text.trim(),
               }),
+          encoding: Encoding.getByName("utf-8"));
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"] == "OK") {
+        getAllCallActivity();
+        Navigator.pop(context);
+        controllers.productCtr.reset();
+      } else {
+        errorDialog(Get.context!, request.body);
+        controllers.productCtr.reset();
+      }
+    } on SocketException {
+      controllers.productCtr.reset();
+      errorDialog(Get.context!, 'No internet connection');
+      //throw Exception('No internet connection'); // Handle network errors
+    } on HttpException catch (e) {
+      controllers.productCtr.reset();
+      errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
+      //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
+    } catch (e) {
+      errorDialog(Get.context!, e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+
+  Future insertMeetingDetailsAPI(BuildContext context) async {
+    try {
+      Map data = {
+        "action": "insert_meeting_details",
+        "cus_id": controllers.selectedCustomerId.value,
+        "com_name": controllers.selectedCompanyName.value,
+        "cus_name": controllers.selectedCustomerName.value,
+        "title": controllers.meetingTitleCrt.text.trim(),
+        "cos_id": cosId,
+        "venue":controllers.meetingVenueCrt.text.trim(),
+        //"date":"${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}",
+        "dates":"${controllers.fDate.value}||${controllers.toDate.value}",
+        "times":"${controllers.fTime.value}||${controllers.toTime.value}",
+        "created_by": controllers.storage.read("id"),
+        "notes": controllers.callCommentCont.text.trim(),
+      };
+      print("data lead ${data.toString()}");
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
@@ -1760,10 +1809,9 @@ class ApiService {
   Future getAllMeetingActivity() async {
     try {
       Map data = {
-        "search_type": "records",
+        "search_type": "meeting_details",
         "cos_id": cosId,
-        "action": "get_data",
-        "type":"9"
+        "action": "get_data"
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -1775,7 +1823,7 @@ class ApiService {
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         controllers.meetingActivity.clear();
-        controllers.meetingActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+        controllers.meetingActivity.value = response.map((e) => MeetingObj.fromJson(e)).toList();
       } else {
         throw Exception('Failed to load album');
       }

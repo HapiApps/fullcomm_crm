@@ -8,9 +8,11 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/models/comments_obj.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
+import '../components/custom_date_box.dart';
 import '../components/custom_loading_button.dart';
 import '../components/custom_search_textfield.dart';
 import '../components/custom_text.dart';
+import '../components/custom_textfield.dart';
 import '../components/keyboard_search.dart';
 import '../controller/controller.dart';
 
@@ -96,9 +98,99 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               ),
                               content: SizedBox(
                                 width: 500,
-                                height: 400,
+                                height: 460,
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: CustomTextField(
+                                        hintText: "Meeting Title",
+                                        text: "Meeting Title",
+                                        controller: controllers.meetingTitleCrt,
+                                        width: 480,
+                                        keyboardType: TextInputType.text,
+                                        textInputAction: TextInputAction.next,
+                                        isOptional: false,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: CustomTextField(
+                                        hintText: "Meeting Venue",
+                                        text: "Meeting Venue",
+                                        controller: controllers.meetingVenueCrt,
+                                        width: 480,
+                                        keyboardType: TextInputType.text,
+                                        textInputAction: TextInputAction.next,
+                                        isOptional: false,
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Obx(() => CustomDateBox(
+                                          text: "From Date",
+                                          value: controllers.fDate.value,
+                                          width: 230,
+                                          onTap: () {
+                                            utils.datePicker(
+                                                context: context,
+                                                textEditingController: controllers.dateOfConCtr,
+                                                pathVal: controllers.fDate);
+                                          },
+                                        ),
+                                        ),
+                                        15.width,
+                                        Obx(() => CustomDateBox(
+                                          text: "From Time",
+                                          value: controllers.fTime.value,
+                                          width: 230,
+                                          onTap: () {
+                                            utils.timePicker(
+                                                context: context,
+                                                textEditingController:
+                                                controllers.timeOfConCtr,
+                                                pathVal: controllers.fTime);
+                                          },
+                                        ),
+                                        ),
+                                      ],
+                                    ),
+                                    10.height,
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Obx(() => CustomDateBox(
+                                          text: "To Date",
+                                          value: controllers.toDate.value,
+                                          width: 230,
+                                          onTap: () {
+                                            utils.datePicker(
+                                                context: context,
+                                                textEditingController:
+                                                controllers.dateOfConCtr,
+                                                pathVal: controllers.toDate);
+                                          },
+                                        ),
+                                        ),
+                                        15.width,
+                                        Obx(() => CustomDateBox(
+                                          text: "To Time",
+                                          value: controllers.toTime.value,
+                                          width: 230,
+                                          onTap: () {
+                                            utils.timePicker(
+                                                context: context,
+                                                textEditingController:
+                                                controllers.timeOfConCtr,
+                                                pathVal: controllers.toTime);
+                                          },
+                                        ),
+                                        ),
+                                      ],
+                                    ),
+                                    10.height,
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -123,7 +215,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                   alignment: Alignment.topLeft,
                                                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                   child: CustomText(
-                                                    text: '${customer.name} - ${customer.phoneNo}',
+                                                    text: '${customer.name} - ${customer.companyName}',
                                                     colors: Colors.black,
                                                     size: 14,
                                                     textAlign: TextAlign.start,
@@ -141,29 +233,40 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       ],
                                     ),
                                     10.height,
-                                    SizedBox(
-                                      width: 300,
-                                      height: 200,
-                                      child: TextField(
-                                        controller: controllers.callCommentCont,
-                                        maxLines: null,
-                                        expands: true,
-                                        decoration: InputDecoration(
-                                          hintText: "Enter your comments here",
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(5),
-                                            borderSide: BorderSide(
-                                              color: colorsConst.textColor,
-                                            ),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(5),
-                                            borderSide: BorderSide(
-                                              color: colorsConst.textColor,
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CustomText(
+                                          text:"Notes",
+                                          colors: colorsConst.textColor,
+                                          size: 13,
+                                        ),
+                                        SizedBox(
+                                          width: 480,
+                                          height: 80,
+                                          child: TextField(
+                                            controller: controllers.callCommentCont,
+                                            maxLines: null,
+                                            expands: true,
+                                            textAlign: TextAlign.start,
+                                            decoration: InputDecoration(
+                                              hintText: "Notes",
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(5),
+                                                borderSide: BorderSide(
+                                                  color: Color(0xffE1E5FA),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(5),
+                                                borderSide: BorderSide(
+                                                  color: Color(0xffE1E5FA),
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     )
                                   ],
                                 ),
@@ -197,7 +300,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                     10.width,
                                     CustomLoadingButton(
                                       callback: (){
-                                        apiService.insertCallCommentAPI(context, "9");
+                                        apiService.insertMeetingDetailsAPI(context);
                                       },
                                       height: 35,
                                       isLoading: true,
@@ -524,9 +627,9 @@ class _MeetingCommentsState extends State<MeetingComments> {
               SizedBox(
                 height: MediaQuery.of(context).size.height - 400,
                 child: ListView.builder(
-                  itemCount: controllers.callActivity.length,
+                  itemCount: controllers.meetingActivity.length,
                   itemBuilder: (context, index) {
-                    final data = controllers.callActivity[index];
+                    final data = controllers.meetingActivity[index];
                     return Container(
                       height: 60,
                       decoration: BoxDecoration(
@@ -534,32 +637,32 @@ class _MeetingCommentsState extends State<MeetingComments> {
                       ),
                       child: Row(
                         children: [
-                          utils.dataCell(width: 155, text: data.sentDate),
+                          utils.dataCell(width: 155, text: data.dates.toString().split("||")[0]),
                           VerticalDivider(
                             color: Colors.grey,
                             width: 1,
                           ),
-                          utils.dataCell(width: 160, text: data.customerName),
+                          utils.dataCell(width: 160, text: data.cusName),
                           VerticalDivider(
                             color: Colors.grey,
                             width: 1,
                           ),
-                          utils.dataCell(width: 140, text: data.toData),
+                          utils.dataCell(width: 140, text: data.comName),
                           VerticalDivider(
                             color: Colors.grey,
                             width: 1,
                           ),
-                          utils.dataCell(width: 120, text: data.callType),
+                          utils.dataCell(width: 120, text: data.title),
                           VerticalDivider(
                             color: Colors.grey,
                             width: 1,
                           ),
-                          utils.dataCell(width: 200, text: data.message),
+                          utils.dataCell(width: 200, text: data.notes),
                           VerticalDivider(
                             color: Colors.grey,
                             width: 1,
                           ),
-                          utils.dataCell(width: 90, text: data.callStatus),
+                          utils.dataCell(width: 90, text: data.status),
                           VerticalDivider(
                             color: Colors.grey,
                             width: 1,
@@ -573,7 +676,253 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                     onPressed: (){},
                                     icon: Icon(Icons.edit,color: Colors.green,)),
                                 IconButton(
-                                    onPressed: (){},
+                                    onPressed: (){
+                                      showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  CustomText(
+                                                    text: "New Meeting",
+                                                    size: 16,
+                                                    isBold: true,
+                                                    colors: colorsConst.textColor,
+                                                  ),
+                                                  IconButton(
+                                                      onPressed: (){
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      icon: Icon(Icons.clear,
+                                                        color: Colors.black,
+                                                      ))
+                                                ],
+                                              ),
+                                              content: SizedBox(
+                                                width: 500,
+                                                height: 460,
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(left: 10),
+                                                      child: CustomTextField(
+                                                        hintText: "Meeting Title",
+                                                        text: "Meeting Title",
+                                                        controller: controllers.meetingTitleCrt,
+                                                        width: 480,
+                                                        keyboardType: TextInputType.text,
+                                                        textInputAction: TextInputAction.next,
+                                                        isOptional: false,
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(left: 10),
+                                                      child: CustomTextField(
+                                                        hintText: "Meeting Venue",
+                                                        text: "Meeting Venue",
+                                                        controller: controllers.meetingVenueCrt,
+                                                        width: 480,
+                                                        keyboardType: TextInputType.text,
+                                                        textInputAction: TextInputAction.next,
+                                                        isOptional: false,
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Obx(() => CustomDateBox(
+                                                          text: "From Date",
+                                                          value: controllers.fDate.value,
+                                                          width: 230,
+                                                          onTap: () {
+                                                            utils.datePicker(
+                                                                context: context,
+                                                                textEditingController: controllers.dateOfConCtr,
+                                                                pathVal: controllers.fDate);
+                                                          },
+                                                        ),
+                                                        ),
+                                                        15.width,
+                                                        Obx(() => CustomDateBox(
+                                                          text: "From Time",
+                                                          value: controllers.fTime.value,
+                                                          width: 230,
+                                                          onTap: () {
+                                                            utils.timePicker(
+                                                                context: context,
+                                                                textEditingController:
+                                                                controllers.timeOfConCtr,
+                                                                pathVal: controllers.fTime);
+                                                          },
+                                                        ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    10.height,
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Obx(() => CustomDateBox(
+                                                          text: "To Date",
+                                                          value: controllers.toDate.value,
+                                                          width: 230,
+                                                          onTap: () {
+                                                            utils.datePicker(
+                                                                context: context,
+                                                                textEditingController:
+                                                                controllers.dateOfConCtr,
+                                                                pathVal: controllers.toDate);
+                                                          },
+                                                        ),
+                                                        ),
+                                                        15.width,
+                                                        Obx(() => CustomDateBox(
+                                                          text: "To Time",
+                                                          value: controllers.toTime.value,
+                                                          width: 230,
+                                                          onTap: () {
+                                                            utils.timePicker(
+                                                                context: context,
+                                                                textEditingController:
+                                                                controllers.timeOfConCtr,
+                                                                pathVal: controllers.toTime);
+                                                          },
+                                                        ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    10.height,
+                                                    Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        CustomText(
+                                                          text:"Customer Name",
+                                                          colors: colorsConst.textColor,
+                                                          size: 13,
+                                                        ),
+                                                        SizedBox(
+                                                          width: 480,
+                                                          height: 50,
+                                                          child: KeyboardDropdownField<AllCustomersObj>(
+                                                            items: controllers.customers,
+                                                            borderRadius: 5,
+                                                            borderColor: Colors.grey.shade300,
+                                                            hintText: "Customers",
+                                                            labelText: "",
+                                                            labelBuilder: (customer) =>'${customer.name} - ${customer.phoneNo}',
+                                                            itemBuilder: (customer) =>
+                                                                Container(
+                                                                  width: 300,
+                                                                  alignment: Alignment.topLeft,
+                                                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                                  child: CustomText(
+                                                                    text: '${customer.name} - ${customer.companyName}',
+                                                                    colors: Colors.black,
+                                                                    size: 14,
+                                                                    textAlign: TextAlign.start,
+                                                                  ),
+                                                                ),
+                                                            textEditingController: controllers.cusController,
+                                                            onSelected: (value) {
+                                                              controllers.selectCustomer(value);
+                                                            },
+                                                            onClear: () {
+                                                              controllers.clearSelectedCustomer();
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    10.height,
+                                                    Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        CustomText(
+                                                          text:"Notes",
+                                                          colors: colorsConst.textColor,
+                                                          size: 13,
+                                                        ),
+                                                        SizedBox(
+                                                          width: 480,
+                                                          height: 80,
+                                                          child: TextField(
+                                                            controller: controllers.callCommentCont,
+                                                            maxLines: null,
+                                                            expands: true,
+                                                            textAlign: TextAlign.start,
+                                                            decoration: InputDecoration(
+                                                              hintText: "Notes",
+                                                              enabledBorder: OutlineInputBorder(
+                                                                borderRadius: BorderRadius.circular(5),
+                                                                borderSide: BorderSide(
+                                                                  color: Color(0xffE1E5FA),
+                                                                ),
+                                                              ),
+                                                              focusedBorder: OutlineInputBorder(
+                                                                borderRadius: BorderRadius.circular(5),
+                                                                borderSide: BorderSide(
+                                                                  color: Color(0xffE1E5FA),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(color: colorsConst.primary),
+                                                          color: Colors.white),
+                                                      width: 80,
+                                                      height: 25,
+                                                      child: ElevatedButton(
+                                                          style: ElevatedButton.styleFrom(
+                                                            shape: const RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.zero,
+                                                            ),
+                                                            backgroundColor: Colors.white,
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: CustomText(
+                                                            text: "Cancel",
+                                                            colors: colorsConst.primary,
+                                                            size: 14,
+                                                          )),
+                                                    ),
+                                                    10.width,
+                                                    CustomLoadingButton(
+                                                      callback: (){
+                                                        apiService.insertMeetingDetailsAPI(context);
+                                                      },
+                                                      height: 35,
+                                                      isLoading: true,
+                                                      backgroundColor: colorsConst.primary,
+                                                      radius: 2,
+                                                      width: 80,
+                                                      controller: controllers.productCtr,
+                                                      isImage: false,
+                                                      text: "Save",
+                                                      textColor: Colors.white,
+                                                    ),
+                                                    5.width
+                                                  ],
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                    },
                                     icon: SvgPicture.asset("assets/images/add_note.svg")),
                                 IconButton(
                                     onPressed: (){},

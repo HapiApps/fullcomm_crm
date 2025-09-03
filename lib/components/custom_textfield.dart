@@ -92,7 +92,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     text: widget.text,
                     textAlign: TextAlign.start,
                     colors: Color(0xff4B5563),
-                    size: 15,
+                    size: 13,
                   ),
                   widget.isOptional! == true
                       ? const CustomText(
@@ -105,7 +105,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               ),
         SizedBox(
           width: widget.width,
-          //height:80,
+          height:40,
           child: Center(
             child: TextFormField(
                 key: ValueKey(widget.text),

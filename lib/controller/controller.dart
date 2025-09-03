@@ -13,6 +13,7 @@ import '../models/comments_obj.dart';
 import '../models/customer_activity.dart';
 import '../models/employee_obj.dart';
 import '../models/mail_receive_obj.dart';
+import '../models/meeting_obj.dart';
 import '../models/new_lead_obj.dart';
 import '../models/product_obj.dart';
 
@@ -503,7 +504,7 @@ class Controller extends GetxController {
   var customers = <AllCustomersObj>[].obs;
   var callActivity = <CustomerActivity>[].obs;
   var mailActivity = <CustomerActivity>[].obs;
-  var meetingActivity = <CustomerActivity>[].obs;
+  var meetingActivity = <MeetingObj>[].obs;
   var noteActivity = <CustomerActivity>[].obs;
 
   void selectCustomer(AllCustomersObj c) {
@@ -511,18 +512,21 @@ class Controller extends GetxController {
     selectedCustomerName.value = c.name;
     selectedCustomerMobile.value = c.phoneNo;
     selectedCustomerEmail.value = c.email;
+    selectedCompanyName.value = c.companyName;
   }
   void clearSelectedCustomer() {
     selectedCustomerId.value = '';
     selectedCustomerName.value = '';
     selectedCustomerMobile.value = '';
     selectedCustomerEmail.value = '';
+    selectedCompanyName.value = '';
   }
 
   RxString selectedCustomerId = ''.obs;
   RxString selectedCustomerName = ''.obs;
   RxString selectedCustomerMobile = ''.obs;
   RxString selectedCustomerEmail = ''.obs;
+  RxString selectedCompanyName = ''.obs;
 
   TextEditingController cusController   = TextEditingController();
   TextEditingController callCommentCont = TextEditingController();
@@ -835,7 +839,11 @@ class Controller extends GetxController {
       empEmail = "".obs,
       empPhone = "".obs,
       empDOB = "".obs,
+      fDate = "".obs,
+      toDate = "".obs,
       callTime = "".obs,
+      fTime = "".obs,
+      toTime = "".obs,
       leadDOR = "".obs,
       empDoorNo = "".obs,
       empStreet = "".obs,
@@ -899,6 +907,8 @@ class Controller extends GetxController {
   TextEditingController leadCoEmailCrt = TextEditingController();
   TextEditingController leadInduCrt = TextEditingController();
   TextEditingController leadWebsite = TextEditingController();
+  TextEditingController meetingTitleCrt = TextEditingController();
+  TextEditingController meetingVenueCrt = TextEditingController();
   TextEditingController leadProduct = TextEditingController();
   TextEditingController leadActions = TextEditingController();
   //TextEditingController leadNotes = TextEditingController();
