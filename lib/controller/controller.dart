@@ -28,7 +28,7 @@ class Controller extends GetxController {
   var isEyeOpen = false.obs,isLeftOpen=true.obs,isRightOpen=true.obs;
   RxInt selectedIndex = 0.obs,oldIndex=0.obs;
   bool extended =false;
-  String searchText = '';
+  RxString searchText = ''.obs;
   final RxString searchQuery = ''.obs,searchProspects = ''.obs,searchQulified = ''.obs;
   Future<List<NewLeadObj>>? allCustomerFuture;
   Future<List<EmployeeObj>>? allEmployeeFuture;
@@ -399,8 +399,7 @@ class Controller extends GetxController {
   List<NewLeadObj> get paginatedProspectsLeads {
     final query = searchProspects.value.toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;
-    final sortBy =
-        selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
+    final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
 
     final now = DateTime.now();
 
@@ -506,6 +505,14 @@ class Controller extends GetxController {
   var mailActivity = <CustomerActivity>[].obs;
   var meetingActivity = <MeetingObj>[].obs;
   var noteActivity = <CustomerActivity>[].obs;
+  List<CustomerActivity> get filteredList {
+    if (controllers.selectCallType.value.isEmpty) {
+      return controllers.callActivity;
+    }
+    return controllers.callActivity
+        .where((activity) => activity.callType == controllers.selectCallType.value)
+        .toList();
+  }
 
   void selectCustomer(AllCustomersObj c) {
     selectedCustomerId.value = c.id;
@@ -771,7 +778,7 @@ class Controller extends GetxController {
       allCompanyLength = 0.obs,
       allCustomerLength = 0.obs,
       allProductLength = 0.obs,
-      allEmployeeLength = 0.obs;
+      allEmployeeLength = 0.obs, selectCallType = "".obs;
 
   var states,
       upState,

@@ -109,9 +109,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                   CustomSearchTextField(
                     controller: controllers.search,
                     onChanged: (value) {
-                      setState(() {
-                        controllers.searchText = value.toString().trim();
-                      });
+                        controllers.searchText.value = value.toString().trim();
                     },
                   )
                 ],

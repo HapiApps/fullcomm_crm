@@ -47,7 +47,7 @@ class RatingIndicator extends StatelessWidget {
           ),
           circularStrokeCap: CircularStrokeCap.square,
           progressColor: color,
-          backgroundColor: colorsConst.primary,
+          backgroundColor: Color(0xffF9FAFB),
         ),
         10.height,
         Text(
@@ -118,8 +118,7 @@ class _DashboardState extends State<Dashboard> {
                           duration: const Duration(milliseconds: 200),
                           curve: Curves.easeInOut,
                         );
-                      } else if (event.logicalKey ==
-                          LogicalKeyboardKey.arrowUp) {
+                      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
                         _controller.animateTo(
                           _controller.offset - 100,
                           duration: const Duration(milliseconds: 200),
@@ -167,7 +166,7 @@ class _DashboardState extends State<Dashboard> {
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     border: Border.all(
-                                      color: Colors.black
+                                      color: Colors.grey.shade400
                                     ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -175,18 +174,12 @@ class _DashboardState extends State<Dashboard> {
                                     children: [
                                       20.height,
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           CustomText(
                                             text: "       Rating",
                                             size: 16,
                                             isBold: true,
-                                            colors: colorsConst.textColor,
-                                          ),
-                                          CustomText(
-                                            text: "Month          ",
-                                            size: 13,
                                             colors: colorsConst.textColor,
                                           ),
                                         ],

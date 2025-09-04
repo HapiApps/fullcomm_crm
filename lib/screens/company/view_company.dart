@@ -267,9 +267,7 @@ class _ViewCompanyState extends State<ViewCompany> {
                                   textCapitalization: TextCapitalization.words,
                                   keyboardType: TextInputType.text,
                                   onChanged: (value) {
-                                    setState(() {
-                                      controllers.searchText = value.trim();
-                                    });
+                                      controllers.searchText.value = value.trim();
                                   },
                                   decoration: InputDecoration(
                                     hoverColor: Colors.white,
