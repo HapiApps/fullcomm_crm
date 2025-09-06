@@ -27,7 +27,7 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
           side: MaterialStateBorderSide.resolveWith(
             (states) => BorderSide(width: 1.0, color: colorsConst.textColor),
           ),
-          checkColor: Colors.black,
+          checkColor: Colors.white,
           activeColor: colorsConst.third,
           value: widget.saveValue,
           onChanged: widget.onChanged,

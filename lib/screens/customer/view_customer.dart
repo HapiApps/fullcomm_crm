@@ -56,9 +56,10 @@ class _ViewCustomerState extends State<ViewCustomer> {
     return SelectionArea(
       child: Scaffold(
         body: Container(
-          width: MediaQuery.of(context).size.width - 490,
+          width: MediaQuery.of(context).size.width -130,
           height: MediaQuery.of(context).size.height,
           alignment: Alignment.center,
+          padding: EdgeInsets.all(16),
           child: Column(
             //crossAxisAlignment: CrossAxisAlignment.start,
             children: [

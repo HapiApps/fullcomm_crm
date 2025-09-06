@@ -587,7 +587,8 @@ class _CallCommentsState extends State<CallComments> {
                               color: Colors.grey,
                               width: 1,
                             ),
-                            utils.headerCell(width: 120, text: "Call Type",
+                            utils.headerCell(
+                              width: 120, text: "Call Type",
                               fieldName: 'companyName',
                               sortField: controllers.sortField,
                               sortOrder: controllers.sortOrder,
@@ -605,7 +606,8 @@ class _CallCommentsState extends State<CallComments> {
                               color: Colors.grey,
                               width: 1,
                             ),
-                            utils.headerCell(width: 200, text: "Message",
+                            utils.headerCell(
+                              width: 200, text: "Message",
                               isSortable: true,
                               fieldName: 'serviceRequired',
                               sortField: controllers.sortField,

@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
@@ -11,6 +12,8 @@ import 'package:group_button/group_button.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import '../../common/constant/api.dart';
+import '../../components/custom_checkbox.dart';
+import '../../components/custom_lead_tile.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_text.dart';
 import '../../components/promote_button.dart';
@@ -28,11 +31,15 @@ class Prospects extends StatefulWidget {
 
 class _ProspectsState extends State<Prospects> {
   final ScrollController _controller = ScrollController();
-
+  late FocusNode _focusNode;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _focusNode = FocusNode();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
     Future.delayed(Duration.zero, () {
       controllers.selectedIndex.value = 2;
       controllers.groupController.selectIndex(0);
@@ -61,12 +68,10 @@ class _ProspectsState extends State<Prospects> {
       child: Scaffold(
         body: Obx(
           () => Container(
-            width: controllers.isLeftOpen.value == false &&
-                    controllers.isRightOpen.value == false
-                ? MediaQuery.of(context).size.width - 200
-                : MediaQuery.of(context).size.width - 490,
+            width: MediaQuery.of(context).size.width - 130,
             height: MediaQuery.of(context).size.height,
             alignment: Alignment.center,
+            padding: EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -178,96 +183,6 @@ class _ProspectsState extends State<Prospects> {
                             text: "Promote",
                           ),
                         ),
-                        // Container(
-                        //   width: 100,
-                        //   alignment: Alignment.center,
-                        //   decoration: BoxDecoration(
-                        //       color: colorsConst.secondary,
-                        //       borderRadius: BorderRadius.circular(10)),
-                        //   child: Row(
-                        //     children: [
-                        //       CustomText(
-                        //         text: "Promote",
-                        //         colors: colorsConst.textColor,
-                        //         size: 12,
-                        //         isBold: true,
-                        //       ),
-                        //       IconButton(
-                        //           tooltip: "Promote To ${controllers.leadCategoryList[2]["value"]}",
-                        //           onPressed:(){
-                        //             if(apiService.qualifiedList.isEmpty){
-                        //               apiService.errorDialog(context, "Please select lead");
-                        //               // utils.snackBar(context: Get.context!, msg: "Please select lead",color:Colors.green,);
-                        //             }else{
-                        //               showDialog(context: context,
-                        //                   barrierDismissible: false,
-                        //                   builder:(context){
-                        //                     return AlertDialog(
-                        //                       backgroundColor: colorsConst.secondary,
-                        //                       content:CustomText(
-                        //                         text: "Are you moving to the next level?",
-                        //                         size: 16,
-                        //                         isBold: true,
-                        //                         colors: colorsConst.textColor,
-                        //                       ),
-                        //                       actions:[
-                        //                         Row(
-                        //                           mainAxisAlignment: MainAxisAlignment.end,
-                        //                           children:[
-                        //                             Container(
-                        //                               decoration: BoxDecoration(
-                        //                                   border: Border.all(
-                        //                                       color: colorsConst.third
-                        //                                   ),
-                        //                                   color: colorsConst.primary
-                        //                               ),
-                        //                               width: 80,
-                        //                               height: 25,
-                        //                               child: ElevatedButton(
-                        //                                   style: ElevatedButton.styleFrom(
-                        //                                     shape: const RoundedRectangleBorder(
-                        //                                         borderRadius: BorderRadius.zero
-                        //                                     ),
-                        //                                     backgroundColor: colorsConst.primary,
-                        //                                   ),
-                        //                                   onPressed:(){
-                        //                                     Navigator.pop(context);
-                        //                                   },
-                        //                                   child: const CustomText(
-                        //                                     text: "Cancel",
-                        //                                     colors: Colors.white,
-                        //                                     size: 14,
-                        //                                   )
-                        //                               ),
-                        //                             ),
-                        //                             10.width,
-                        //                             CustomLoadingButton(
-                        //                               callback: (){
-                        //                                 apiService.insertQualifiedAPI(context);
-                        //                               },
-                        //                               height: 35,
-                        //                               isLoading: true,
-                        //                               backgroundColor: colorsConst.third,
-                        //                               radius: 2,
-                        //                               width: 80,
-                        //                               controller: controllers.productCtr,
-                        //                               isImage: false,
-                        //                               text: "Move",
-                        //                               textColor: colorsConst.primary,
-                        //                             ),
-                        //                             5.width
-                        //                           ],
-                        //                         ),
-                        //                       ],
-                        //                     );
-                        //                   }
-                        //               );
-                        //             }
-                        //           },
-                        //           icon: SvgPicture.asset("assets/images/move.svg")),
-                        //     ],
-                        //   ),
-                        // ),
                         5.width
                       ],
                     )
@@ -291,48 +206,6 @@ class _ProspectsState extends State<Prospects> {
                     ),
                     Row(
                       children: [
-                        // SizedBox(
-                        //   height:40,
-                        //   child: ElevatedButton(
-                        //       style: ElevatedButton.styleFrom(
-                        //           backgroundColor: colorsConst.secondary,
-                        //           shape:  RoundedRectangleBorder(
-                        //               borderRadius: BorderRadius.circular(5)
-                        //           )
-                        //       ),
-                        //       onPressed: (){},
-                        //       child:Row(
-                        //         children:[
-                        //           CompositedTransformTarget(
-                        //             link: _layerLink,
-                        //             child: SizedBox(
-                        //               height: 40,
-                        //               child: ElevatedButton(
-                        //                   style: ElevatedButton.styleFrom(
-                        //                       backgroundColor: colorsConst.secondary,
-                        //                       shape: RoundedRectangleBorder(
-                        //                           borderRadius:
-                        //                           BorderRadius.circular(5))),
-                        //                   onPressed: _showFilterPopup,
-                        //                   child: Row(
-                        //                     children: [
-                        //                       SvgPicture.asset(
-                        //                           "assets/images/filter.svg"),
-                        //                       5.width,
-                        //                       CustomText(
-                        //                         text: "Filter",
-                        //                         colors: colorsConst.textColor,
-                        //                         size: 15,
-                        //                       ),
-                        //                     ],
-                        //                   )
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ],
-                        //       )
-                        //   ),
-                        // ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: colorsConst.secondary,
@@ -350,15 +223,13 @@ class _ProspectsState extends State<Prospects> {
                         ),
                         10.width,
                         PopupMenuButton<String>(
-                          offset:
-                              const Offset(0, 40), // position below button
+                          offset: const Offset(0, 40), // position below button
                           color: colorsConst.secondary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(6),
                           ),
                           onSelected: (value) {
-                            controllers.selectedQualifiedSortBy.value =
-                                value;
+                            controllers.selectedQualifiedSortBy.value = value;
                           },
                           itemBuilder: (context) => [
                             PopupMenuItem(
@@ -407,548 +278,338 @@ class _ProspectsState extends State<Prospects> {
                           ),
                         ),
 
-                        // ElevatedButton(
-                        //   onPressed: () {
-                        //     _showSortPopup(context);
-                        //   },
-                        //   style: ElevatedButton.styleFrom(
-                        //     backgroundColor: colorsConst.secondary,
-                        //     shape: RoundedRectangleBorder(
-                        //       borderRadius: BorderRadius.circular(5),
-                        //     ),
-                        //   ),
-                        //   child: Row(
-                        //     children: [
-                        //       SvgPicture.asset("assets/images/sort.svg"),
-                        //       const SizedBox(width: 6),
-                        //       CustomText(
-                        //         text: "Sort by",
-                        //         colors: colorsConst.textColor,
-                        //         size: 15,
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-
-                        // CompositedTransformTarget(
-                        //   link: _dateLayerLink,
-                        //   child: SizedBox(
-                        //     height: 40,
-                        //     child: ElevatedButton(
-                        //         style: ElevatedButton.styleFrom(
-                        //             backgroundColor: colorsConst.secondary,
-                        //             shape: RoundedRectangleBorder(
-                        //                 borderRadius:
-                        //                 BorderRadius.circular(5))),
-                        //         onPressed: _showDateWisePopup,
-                        //         child: Row(
-                        //           children: [
-                        //             SvgPicture.asset("assets/images/sort.svg"),
-                        //             6.width,
-                        //             CustomText(
-                        //               text: "Sort by",
-                        //               colors: colorsConst.textColor,
-                        //               size: 15,
-                        //             ),
-                        //           ],
-                        //         )),
-                        //   ),
-                        // ),
                       ],
                     ),
                   ],
                 ),
                 10.height,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                Table(
+                  columnWidths: const {
+                    0: FlexColumnWidth(1),//check box
+                    1: FlexColumnWidth(1),//check box
+                    2: FlexColumnWidth(2),//N
+                    3: FlexColumnWidth(2.5),//CN
+                    4: FlexColumnWidth(2),//MN
+                    5: FlexColumnWidth(3),//Details of Service Required
+                    6: FlexColumnWidth(2),//Source of Prospect
+                    7: FlexColumnWidth(2.5),// Added DateTime
+                    8: FlexColumnWidth(1.5),// Added DateTime
+                    9: FlexColumnWidth(3),// Status Update
+                    // 9: FlexColumnWidth(3),
+                    // 10: FlexColumnWidth(3),
+                  },
+                  border: TableBorder(
+                    horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                    verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                    bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
+                    //left: const BorderSide(width: 1, color: Colors.grey),
+                    //right:  BorderSide(width: 1, color: Colors.grey),
+                  ),
                   children: [
-                    Tooltip(
-                      message:
-                          'All the leads in the ${controllers.leadCategoryList[1]["value"]} will be selected',
-                      child: TextButton(
-                        onPressed: () {
-                          if (controllers.isAllSelected.value == true) {
-                            controllers.isAllSelected.value = false;
-                            for (int j = 0;
-                                j < controllers.isLeadsList.length;
-                                j++) {
-                              controllers.isLeadsList[j]["isSelect"] =
-                                  false;
-                              setState(() {
-                                var i = apiService.qualifiedList.indexWhere(
-                                    (element) =>
-                                        element["lead_id"] ==
-                                        controllers.isLeadsList[j]
-                                            ["lead_id"]);
-                                apiService.qualifiedList.removeAt(i);
-                              });
-                            }
-                          } else {
-                            controllers.isAllSelected.value = true;
-                            setState(() {
-                              for (int j = 0; j < controllers.isLeadsList.length; j++) {
-                                controllers.isLeadsList[j]["isSelect"] = true;
-                                apiService.qualifiedList.add({
-                                  "lead_id": controllers.isLeadsList[j]
-                                      ["lead_id"],
-                                  "user_id": controllers.storage.read("id"),
-                                  "rating": controllers.isLeadsList[j]
-                                      ["rating"],
-                                  "cos_id": cosId,
-                                });
-                                print(apiService.qualifiedList);
-                              }
-                            });
-                          }
-                        },
-                        child: CustomText(
-                          text: "Select All",
-                          size: 16,
-                          colors: controllers.isAllSelected.value
-                              ? colorsConst.third
-                              : colorsConst.textColor,
-                        ),
-                      ),
-                    )
+                    TableRow(
+                        decoration: BoxDecoration(
+                            color: colorsConst.primary,
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(5),
+                                topRight: Radius.circular(5))),
+                        children: [
+                          Row(//0
+                            children: [
+                              5.width,
+                              Container(
+                                height: 50,
+                                alignment: Alignment.center,
+                                child: Obx(
+                                      () => CustomCheckBox(
+                                      text: "",
+                                      onChanged: (value) {
+                                        if(controllers.isAllSelected.value==true){
+                                          controllers.isAllSelected.value=false;
+                                          for(int j=0;j<controllers.isLeadsList.length;j++){
+                                            controllers.isLeadsList[j]["isSelect"]=false;
+                                            setState((){
+                                              var i=apiService.qualifiedList.indexWhere((element) => element["lead_id"]==controllers.isLeadsList[j]["lead_id"]);
+                                              apiService.qualifiedList.removeAt(i);
+                                            });
+                                          }
+                                        }else{
+                                          controllers.isAllSelected.value=true;
+                                          setState((){
+                                            for(int j=0;j<controllers.isLeadsList.length;j++){
+                                              controllers.isLeadsList[j]["isSelect"]=true;
+                                              apiService.qualifiedList.add({
+                                                "lead_id":controllers.isLeadsList[j]["lead_id"],
+                                                "user_id":controllers.storage.read("id"),
+                                                "rating":controllers.isLeadsList[j]["rating"],
+                                                "cos_id":cosId,
+                                              });
+                                            }
+                                          });
+                                        }
+                                        //controllers.isMainPerson.value=!controllers.isMainPerson.value;
+                                      },
+                                      saveValue: controllers.isAllSelected.value),
+                                ),
+                              ),
+                            ],
+                          ),
+                          CustomText(
+                            textAlign: TextAlign.center,
+                            text: "\nMail\n",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                          CustomText(//1
+                            textAlign: TextAlign.center,
+                            text: "\nName\n",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                          CustomText(//2
+                            textAlign: TextAlign.center,
+                            text: "\nCompany Name\n",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                          CustomText(//3
+                            textAlign: TextAlign.center,
+                            text: "\nMobile No.\n",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                          // CustomText(
+                          //   textAlign: TextAlign.center,
+                          //   text: "\nEmail\n",
+                          //   size: 15,
+                          //   isBold: true,
+                          //   colors: colorsConst.textColor,
+                          // ),
+                          Padding(//6
+                            padding: const EdgeInsets.all(8.0),
+                            child: CustomText(
+                              textAlign: TextAlign.center,
+                              text: "Details of Service\nRequired",
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
+                            ),
+                          ),
+                          Padding(//7
+                            padding: const EdgeInsets.all(8.0),
+                            child: CustomText(
+                              textAlign: TextAlign.center,
+                              text: "Source Of \nProspect",
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(//8
+                                padding: const EdgeInsets.all(8.0),
+                                child: CustomText(
+                                  textAlign: TextAlign.center,
+                                  text: "Added\nDateTime",
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Obx(() => GestureDetector(
+                                onTap: (){
+                                  controllers.sortField.value = 'date';
+                                  controllers.sortOrder.value = 'asc';
+                                },
+                                child: Icon(
+                                  Icons.arrow_upward,
+                                  size: 16,
+                                  color: (controllers.sortField.value == 'date' &&
+                                      controllers.sortOrder.value == 'asc')
+                                      ?Colors.white
+                                      : Colors.grey,
+                                ),
+                              )),
+                              Obx(() => GestureDetector(
+                                onTap: (){
+                                  controllers.sortField.value = 'date';
+                                  controllers.sortOrder.value = 'desc';
+                                },
+                                child: Icon(
+                                  Icons.arrow_downward,
+                                  size: 16,
+                                  color: (controllers.sortField.value == 'date' &&
+                                      controllers.sortOrder.value == 'desc')
+                                      ? Colors.white
+                                      : Colors.grey,
+                                ),
+                              )
+                              ),
+                            ],
+                          ),
+                          CustomText(//4
+                            textAlign: TextAlign.center,
+                            text: "\nCity\n",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                          CustomText(//9
+                            textAlign: TextAlign.center,
+                            text: "\nStatus Update\n",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                        ]),
                   ],
                 ),
-                // 10.height,
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //   children: [
-                //     Column(
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children:[
-                //         CustomText(
-                //           text: "   Warm",
-                //           size: 16,
-                //           colors: colorsConst.textColor,
-                //           isBold: true,
-                //         ),
-                //         10.height,
-                //         Row(
-                //           children: [
-                //             LinearPercentIndicator(
-                //                 width: MediaQuery.of(context).size.width/4.8,
-                //                 lineHeight: 30.0,
-                //                 percent:0.25,
-                //                 backgroundColor: const Color(0xffCFE9FE),
-                //                 progressColor: const Color(0xff0D9DDA)
-                //             ),
-                //             CustomText(
-                //               text: "25%",
-                //               colors: colorsConst.textColor,
-                //               size: 14,
-                //               isBold: true,
-                //             )
-                //           ],
-                //         ),
-                //
-                //       ],
-                //     ),
-                //     Column(
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children: [
-                //         CustomText(
-                //           text: "   Hot",
-                //           size: 16,
-                //           colors: colorsConst.textColor,
-                //           isBold: true,
-                //         ),
-                //         10.height,
-                //         Row(
-                //           children: [
-                //             LinearPercentIndicator(
-                //                 width:MediaQuery.of(context).size.width/4.8,
-                //                 lineHeight: 30.0,
-                //                 percent: 0.50,
-                //                 backgroundColor: const Color(0xffFEDED8),
-                //                 progressColor: const Color(0xffFE5C4C)
-                //             ),
-                //             CustomText(
-                //               text: "50%",
-                //               colors: colorsConst.textColor,
-                //               size: 14,
-                //               isBold: true,
-                //             )
-                //           ],
-                //         ),
-                //
-                //       ],
-                //     ),
-                //
-                //     Column(
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children:[
-                //         CustomText(
-                //           text: "   Cold",
-                //           size: 16,
-                //           colors: colorsConst.textColor,
-                //           isBold: true,
-                //         ),
-                //         10.height,
-                //         Row(
-                //           children:[
-                //             LinearPercentIndicator(
-                //                 width: MediaQuery.of(context).size.width/4.8,
-                //                 lineHeight: 30.0,
-                //                 percent: 0.25,
-                //                 backgroundColor: const Color(0xffACF3E4),
-                //                 progressColor: const Color(0xff06A59A)
-                //             ),
-                //             CustomText(
-                //               text: "25%",
-                //               colors: colorsConst.textColor,
-                //               size: 14,
-                //               isBold: true,
-                //             )
-                //           ],
-                //         ),
-                //
-                //       ],
-                //     ),
-                //   ],
-                // ),
-                10.height,
                 Expanded(
-                  child: Obx(() => controllers.isLead.value == false
-                      ? const Center(child: CircularProgressIndicator())
-                      : controllers.paginatedProspectsLeads.isNotEmpty
-                          ? ScrollbarTheme(
-                              data: ScrollbarThemeData(
-                                thumbColor: MaterialStateProperty.all(
-                                    const Color(0xff2C3557)),
-                                trackColor: MaterialStateProperty.all(
-                                    const Color(0xff465271)),
-                                radius: const Radius.circular(10),
-                                thickness: MaterialStateProperty.all(8),
-                              ),
-                              child: Scrollbar(
-                                thumbVisibility: true,
-                                thickness: 5,
-                                trackVisibility: true,
-                                radius: const Radius.circular(10),
+                  //height: MediaQuery.of(context).size.height/1.5,
+                  child: Obx(
+                          () => controllers.isLead.value == false
+                          ? const Center(child: CircularProgressIndicator())
+                          : controllers.paginatedProspectsLeads.isNotEmpty?
+                      GestureDetector(
+                        onTap: () {
+                          _focusNode.requestFocus();
+                        },
+                        child: RawKeyboardListener(
+                          focusNode: _focusNode,
+                          autofocus: true,
+                          onKey: (event) {
+                            if (event is RawKeyDownEvent) {
+                              if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                                _controller.animateTo(
+                                  _controller.offset + 100,
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeInOut,
+                                );
+                              } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                                _controller.animateTo(
+                                  _controller.offset - 100,
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeInOut,
+                                );
+                              }
+                            }
+                          },
+                          child:  ScrollbarTheme(
+                            data: ScrollbarThemeData(
+                              thumbColor: MaterialStateProperty.all(const Color(0xff2C3557)),
+                              trackColor: MaterialStateProperty.all(const Color(0xff465271)),
+                              radius: const Radius.circular(10),
+                              thickness: MaterialStateProperty.all(20),
+                            ),
+                            child: Scrollbar(
+                              thumbVisibility: true,
+                              thickness: 10,
+                              trackVisibility: true,
+                              radius: const Radius.circular(10),
+                              controller: _controller,
+                              child: ListView.builder(
                                 controller: _controller,
-                                child: GridView.builder(
-                                    //shrinkWrap: true,
-                                    controller: _controller,
-                                    physics: const AlwaysScrollableScrollPhysics(),
-                                    primary: false,
-                                    itemCount: controllers.paginatedProspectsLeads.length,
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3,
-                                            crossAxisSpacing: 10.0,
-                                            mainAxisSpacing: 10.0,
-                                            mainAxisExtent: 250),
-                                    // gridDelegate:  SliverGridDelegateWithMaxCrossAxisExtent(
-                                    //   //mainAxisExtent: 2,
-                                    //   maxCrossAxisExtent: 300,
-                                    //   crossAxisSpacing: 20.0,
-                                    //   mainAxisSpacing: 20.0,
-                                    // ),
-                                    itemBuilder: (context, index) {
-                                      final data = controllers.paginatedProspectsLeads[index];
-                                      return Center(
-                                          child: LeadCon(
-                                        index: index,
-                                        quotationStatus:
-                                            data.quotationStatus.toString(),
-                                        quotationRequired: data
-                                            .quotationRequired
-                                            .toString(),
-                                        productDiscussion: data
-                                            .productDiscussion
-                                            .toString(),
-                                        discussionPoint:
-                                            data.discussionPoint.toString(),
-                                        notes: data.notes.toString(),
-                                        linkedin: "",
-                                        x: "",
-                                        name: data.firstname
-                                            .toString()
-                                            .split("||")[0],
-                                        mobileNumber: data.mobileNumber
-                                            .toString()
-                                            .split("||")[0],
-                                        email: data.emailId
-                                            .toString()
-                                            .split("||")[0],
-                                        companyName:
-                                            data.companyName.toString(),
-                                        mainWhatsApp: data.mobileNumber
-                                            .toString()
-                                            .split("||")[0],
-                                        emailUpdate:
-                                            data.quotationUpdate.toString(),
-                                        id: data.userId.toString(),
-                                        status: data.leadStatus == null
-                                            ? "UnQualified"
-                                            : data.leadStatus.toString(),
-                                        rating: data.rating == null
-                                            ? "Warm"
-                                            : data.rating.toString(),
-                                        mainName: data.firstname
-                                            .toString()
-                                            .split("||")[0],
-                                        mainMobile: data.mobileNumber
-                                            .toString()
-                                            .split("||")[0],
-                                        mainEmail: data.emailId
-                                            .toString()
-                                            .split("||")[0],
-                                        title: "",
-                                        whatsappNumber: data.mobileNumber
-                                            .toString()
-                                            .split("||")[0],
-                                        mainTitle: "",
-                                        addressId: data.addressId ?? "",
-                                        companyWebsite: "",
-                                        companyNumber: "",
-                                        companyEmail: "",
-                                        industry: "",
-                                        productServices: "",
-                                        source: "",
-                                        owner: "",
-                                        budget: "",
-                                        timelineDecision: "",
-                                        serviceInterest: "",
-                                        description: "",
-                                        leadStatus: data.leadStatus ?? "",
-                                        active: data.active ?? "",
-                                        addressLine1: data.doorNo ?? "",
-                                        addressLine2: data.landmark1 ?? "",
-                                        area: data.area ?? "",
-                                        city: data.city ?? "",
-                                        state: data.state ?? "",
-                                        country: data.country ?? "",
-                                        pinCode: data.pincode ?? "",
-                                        prospectEnrollmentDate:
-                                            data.prospectEnrollmentDate ??
-                                                "",
-                                        expectedConvertionDate:
-                                            data.expectedConvertionDate ??
-                                                "",
-                                        numOfHeadcount:
-                                            data.numOfHeadcount ?? "",
-                                        expectedBillingValue:
-                                            data.expectedBillingValue ?? "",
-                                        arpuValue: data.arpuValue ?? "",
-                                        updateTs: data.updatedTs ?? "",
-                                        sourceDetails:
-                                            data.sourceDetails ?? "",
-                                      ));
-                                    }),
-                                // child: ListView.builder(
-                                //   //shrinkWrap: true,
-                                //     controller: _controller,
-                                //     physics: const AlwaysScrollableScrollPhysics(),
-                                //     itemCount: snapshot.data!.length,
-                                //     itemBuilder:(context, index){
-                                //       if (snapshot.data![index].firstname.toString().toLowerCase().contains(controllers.searchText.toLowerCase())){
-                                //         return Row(
-                                //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                //           children:[
-                                //             Column(
-                                //               children:[
-                                //                 snapshot.data![index].rating.toString().toLowerCase() == "warm"?
-                                //                 LeadCon(
-                                //                   index: index,
-                                //                   quotationStatus: snapshot.data![index].quotationStatus.toString(),
-                                //                   quotationRequired: snapshot.data![index].quotationRequired.toString(),
-                                //                   productDiscussion: snapshot.data![index].productDiscussion.toString(),
-                                //                   discussionPoint: snapshot.data![index].discussionPoint.toString(),
-                                //                   notes: snapshot.data![index].notes.toString(),
-                                //                   linkedin: "",
-                                //                   x: "",
-                                //                   name: snapshot.data![index].firstname.toString().split("||")[0],
-                                //                   mobileNumber: snapshot.data![index].mobileNumber.toString().split("||")[0],
-                                //                   email: snapshot.data![index].emailId.toString().split("||")[0],
-                                //                   companyName: snapshot.data![index].companyName.toString(),
-                                //                   mainWhatsApp: snapshot.data![index].mobileNumber.toString().split("||")[0],
-                                //                   emailUpdate: snapshot.data![index].quotationUpdate.toString(),
-                                //                   id: snapshot.data![index].userId.toString(),
-                                //                   status: snapshot.data![index].leadStatus == null ? "UnQualified" : snapshot.data![index].leadStatus.toString(),
-                                //                   rating: snapshot.data![index].rating == null ? "Warm" : snapshot.data![index].rating.toString(),
-                                //                   mainName: snapshot.data![index].firstname.toString().split("||")[0],
-                                //                   mainMobile: snapshot.data![index].mobileNumber.toString().split("||")[0],
-                                //                   mainEmail: snapshot.data![index].emailId.toString().split("||")[0],
-                                //                   title: "",
-                                //                   whatsappNumber: snapshot.data![index].mobileNumber.toString().split("||")[0],
-                                //                   mainTitle: "",
-                                //                   addressId: snapshot.data![index].addressId ?? "",
-                                //                   companyWebsite: "",
-                                //                   companyNumber: "",
-                                //                   companyEmail: "",
-                                //                   industry: "",
-                                //                   productServices: "",
-                                //                   source: "",
-                                //                   owner: "",
-                                //                   budget: "",
-                                //                   timelineDecision: "",
-                                //                   serviceInterest: "",
-                                //                   description: "",
-                                //                   leadStatus: snapshot.data![index].leadStatus ?? "",
-                                //                   active: snapshot.data![index].active ?? "",
-                                //                   addressLine1: snapshot.data![index].doorNo ?? "",
-                                //                   addressLine2: snapshot.data![index].landmark1 ?? "",
-                                //                   area: snapshot.data![index].area ?? "",
-                                //                   city: snapshot.data![index].city ?? "",
-                                //                   state: snapshot.data![index].state ?? "",
-                                //                   country: snapshot.data![index].country ?? "",
-                                //                   pinCode: snapshot.data![index].pincode ?? "",
-                                //                   prospectEnrollmentDate: snapshot.data![index].prospectEnrollmentDate ?? "",
-                                //                   expectedConvertionDate: snapshot.data![index].expectedConvertionDate ?? "",
-                                //                   numOfHeadcount: snapshot.data![index].numOfHeadcount ?? "",
-                                //                   expectedBillingValue: snapshot.data![index].expectedBillingValue ?? "",
-                                //                   arpuValue: snapshot.data![index].arpuValue ?? "",
-                                //                   updateTs: snapshot.data![index].updatedTs ?? "",
-                                //                   sourceDetails: snapshot.data![index].sourceDetails ?? "",
-                                //                 ):SizedBox(
-                                //                   width: MediaQuery.of(context).size.width/4.5,
-                                //                 ),
-                                //                 10.height,
-                                //               ],
-                                //             ),
-                                //             Column(
-                                //               children: [
-                                //                 snapshot.data![index].rating.toString().toLowerCase() == "hot"?
-                                //                 LeadCon(
-                                //                   index: index,
-                                //                   quotationStatus: snapshot.data![index].quotationStatus.toString(),
-                                //                   quotationRequired: snapshot.data![index].quotationRequired.toString(),
-                                //                   productDiscussion: snapshot.data![index].productDiscussion.toString(),
-                                //                   discussionPoint: snapshot.data![index].discussionPoint.toString(),
-                                //                   notes: snapshot.data![index].notes.toString(),
-                                //                   linkedin: "",
-                                //                   x: "",
-                                //                   name: snapshot.data![index].firstname.toString().split("||")[0],
-                                //                   mobileNumber: snapshot.data![index].mobileNumber.toString().split("||")[0],
-                                //                   email: snapshot.data![index].emailId.toString().split("||")[0],
-                                //                   companyName: snapshot.data![index].companyName.toString(),
-                                //                   mainWhatsApp: snapshot.data![index].mobileNumber.toString().split("||")[0],
-                                //                   emailUpdate: snapshot.data![index].quotationUpdate.toString(),
-                                //                   id: snapshot.data![index].userId.toString(),
-                                //                   status: snapshot.data![index].leadStatus == null ? "UnQualified" : snapshot.data![index].leadStatus.toString(),
-                                //                   rating: snapshot.data![index].rating == null ? "Warm" : snapshot.data![index].rating.toString(),
-                                //                   mainName: snapshot.data![index].firstname.toString().split("||")[0],
-                                //                   mainMobile: snapshot.data![index].mobileNumber.toString().split("||")[0],
-                                //                   mainEmail: snapshot.data![index].emailId.toString().split("||")[0],
-                                //                   title: "",
-                                //                   whatsappNumber: snapshot.data![index].mobileNumber.toString().split("||")[0],
-                                //                   mainTitle: "",
-                                //                   addressId: snapshot.data![index].addressId ?? "",
-                                //                   companyWebsite: "",
-                                //                   companyNumber: "",
-                                //                   companyEmail: "",
-                                //                   industry: "",
-                                //                   productServices: "",
-                                //                   source: "",
-                                //                   owner: "",
-                                //                   budget: "",
-                                //                   timelineDecision: "",
-                                //                   serviceInterest: "",
-                                //                   description: "",
-                                //                   leadStatus: snapshot.data![index].quotationStatus ?? "",
-                                //                   active: snapshot.data![index].active ?? "",
-                                //                   addressLine1: snapshot.data![index].doorNo ?? "",
-                                //                   addressLine2: snapshot.data![index].landmark1 ?? "",
-                                //                   area: snapshot.data![index].area ?? "",
-                                //                   city: snapshot.data![index].city ?? "",
-                                //                   state: snapshot.data![index].state ?? "",
-                                //                   country: snapshot.data![index].country ?? "",
-                                //                   pinCode: snapshot.data![index].pincode ?? "",
-                                //                   prospectEnrollmentDate: snapshot.data![index].prospectEnrollmentDate ?? "",
-                                //                   expectedConvertionDate: snapshot.data![index].expectedConvertionDate ?? "",
-                                //                   numOfHeadcount: snapshot.data![index].numOfHeadcount ?? "",
-                                //                   expectedBillingValue: snapshot.data![index].expectedBillingValue ?? "",
-                                //                   arpuValue: snapshot.data![index].arpuValue ?? "",
-                                //                   updateTs: snapshot.data![index].updatedTs ?? "",
-                                //                   sourceDetails: snapshot.data![index].sourceDetails ?? "",
-                                //                 ):SizedBox(
-                                //                   width: MediaQuery.of(context).size.width/4.5,
-                                //                 ),
-                                //                 10.height,
-                                //               ],
-                                //             ),
-                                //             Column(
-                                //               children:[
-                                //                 snapshot.data![index].rating.toString().toLowerCase() == "cold"?
-                                //                 LeadCon(
-                                //                   updateTs: snapshot.data![index].updatedTs ?? "",
-                                //                   index: index,
-                                //                   quotationStatus: snapshot.data![index].quotationStatus.toString(),
-                                //                   quotationRequired: snapshot.data![index].quotationRequired.toString(),
-                                //                   productDiscussion: snapshot.data![index].productDiscussion.toString(),
-                                //                   discussionPoint: snapshot.data![index].discussionPoint.toString(),
-                                //                   notes: snapshot.data![index].notes.toString(),
-                                //                   linkedin: "",
-                                //                   x: "",
-                                //                   name: snapshot.data![index].firstname.toString().split("||")[0],
-                                //                   mobileNumber: snapshot.data![index].mobileNumber.toString().split("||")[0],
-                                //                   email: snapshot.data![index].emailId.toString().split("||")[0],
-                                //                   companyName: snapshot.data![index].companyName.toString(),
-                                //                   mainWhatsApp: snapshot.data![index].mobileNumber.toString().split("||")[0],
-                                //                   emailUpdate: snapshot.data![index].quotationUpdate.toString(),
-                                //                   id: snapshot.data![index].userId.toString(),
-                                //                   status: snapshot.data![index].leadStatus == null ? "UnQualified" : snapshot.data![index].leadStatus.toString(),
-                                //                   rating: snapshot.data![index].rating == null ? "Warm" : snapshot.data![index].rating.toString(),
-                                //                   mainName: snapshot.data![index].firstname.toString().split("||")[0],
-                                //                   mainMobile: snapshot.data![index].mobileNumber.toString().split("||")[0],
-                                //                   mainEmail: snapshot.data![index].emailId.toString().split("||")[0],
-                                //                   title: "",
-                                //                   whatsappNumber: snapshot.data![index].mobileNumber.toString().split("||")[0],
-                                //                   mainTitle: "",
-                                //                   addressId: snapshot.data![index].addressId ?? "",
-                                //                   companyWebsite: "",
-                                //                   companyNumber: "",
-                                //                   companyEmail: "",
-                                //                   industry: "",
-                                //                   productServices: "",
-                                //                   source: "",
-                                //                   owner: "",
-                                //                   budget: "",
-                                //                   timelineDecision: "",
-                                //                   serviceInterest: "",
-                                //                   description: "",
-                                //                   leadStatus: snapshot.data![index].quotationStatus ?? "",
-                                //                   active: snapshot.data![index].active ?? "",
-                                //                   addressLine1: snapshot.data![index].doorNo ?? "",
-                                //                   addressLine2: snapshot.data![index].landmark1 ?? "",
-                                //                   area: snapshot.data![index].area ?? "",
-                                //                   city: snapshot.data![index].city ?? "",
-                                //                   state: snapshot.data![index].state ?? "",
-                                //                   country: snapshot.data![index].country ?? "",
-                                //                   pinCode: snapshot.data![index].pincode ?? "",
-                                //                   prospectEnrollmentDate: snapshot.data![index].prospectEnrollmentDate ?? "",
-                                //                   expectedConvertionDate: snapshot.data![index].expectedConvertionDate ?? "",
-                                //                   numOfHeadcount: snapshot.data![index].numOfHeadcount ?? "",
-                                //                   expectedBillingValue: snapshot.data![index].expectedBillingValue ?? "",
-                                //                   arpuValue: snapshot.data![index].arpuValue ?? "",
-                                //                   sourceDetails: snapshot.data![index].sourceDetails ?? "",
-                                //                 ):SizedBox(
-                                //                   width: MediaQuery.of(context).size.width/4.5,
-                                //                 ),
-                                //                 10.height,
-                                //               ],
-                                //             ),
-                                //           ],
-                                //         );
-                                //       }
-                                //       return const SizedBox();
-                                //     }
-                                // ),
+                                shrinkWrap: true,
+                                physics: const ScrollPhysics(),
+                                itemCount: controllers.paginatedProspectsLeads.length,
+                                itemBuilder: (context, index) {
+                                  final data = controllers.paginatedProspectsLeads[index];
+                                  return Obx(()=>CustomLeadTile(
+                                    saveValue: controllers.isLeadsList[index]["isSelect"],
+                                    onChanged: (value){
+                                      setState(() {
+                                        if(controllers.isLeadsList[index]["isSelect"]==true){
+                                          controllers.isLeadsList[index]["isSelect"]=false;
+                                          var i=apiService.qualifiedList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                          apiService.qualifiedList.removeAt(i);
+                                        }else{
+                                          controllers.isLeadsList[index]["isSelect"]=true;
+                                          apiService.qualifiedList.add({
+                                            "lead_id":data.userId.toString(),
+                                            "user_id":controllers.storage.read("id"),
+                                            "rating":data.rating ?? "Warm",
+                                            "cos_id":cosId,
+                                          });
+                                        }
+                                      });
+                                    },
+                                    visitType: data.visitType.toString(),
+                                    detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
+                                    statusUpdate: data.statusUpdate.toString(),
+                                    index: index,
+                                    points: data.points.toString(),
+                                    quotationStatus: data.quotationStatus.toString(),
+                                    quotationRequired: data.quotationRequired.toString(),
+                                    productDiscussion: data.productDiscussion.toString(),
+                                    discussionPoint: data.discussionPoint.toString(),
+                                    notes: data.notes.toString(),
+                                    linkedin: "",
+                                    x: "",
+                                    name: data.firstname.toString().split("||")[0],
+                                    mobileNumber: data.mobileNumber.toString().split("||")[0],
+                                    email: data.emailId.toString().split("||")[0],
+                                    companyName: data.companyName.toString(),
+                                    mainWhatsApp: data.mobileNumber.toString().split("||")[0],
+                                    emailUpdate: data.quotationUpdate.toString(),
+                                    id: data.userId.toString(),
+                                    status: data.leadStatus ?? "UnQualified",
+                                    rating: data.rating ?? "Warm",
+                                    mainName: data.firstname.toString().split("||")[0],
+                                    mainMobile: data.mobileNumber.toString().split("||")[0],
+                                    mainEmail: data.emailId.toString().split("||")[0],
+                                    title: "",
+                                    whatsappNumber: data.mobileNumber.toString().split("||")[0],
+                                    mainTitle: "",
+                                    addressId: data.addressId ?? "",
+                                    companyWebsite: "",
+                                    companyNumber: "",
+                                    companyEmail: "",
+                                    industry: "",
+                                    productServices: "",
+                                    source:data.source ?? "",
+                                    owner: "",
+                                    budget: "",
+                                    timelineDecision: "",
+                                    serviceInterest: "",
+                                    description: "",
+                                    leadStatus: data.quotationStatus ?? "",
+                                    active: data.active ?? "",
+                                    addressLine1: data.doorNo ?? "",
+                                    addressLine2: data.landmark1 ?? "",
+                                    area: data.area ?? "",
+                                    city: data.city ?? "",
+                                    state: data.state ?? "",
+                                    country: data.country ?? "",
+                                    pinCode: data.pincode ?? "",
+                                    prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
+                                    expectedConvertionDate: data.expectedConvertionDate ?? "",
+                                    numOfHeadcount: data.numOfHeadcount ?? "",
+                                    expectedBillingValue: data.expectedBillingValue ?? "",
+                                    arpuValue: data.arpuValue ?? "",
+                                    updatedTs: data.createdTs ?? "",
+                                    sourceDetails: data.sourceDetails ?? "",
+                                  ));
+                                },
                               ),
-                            )
-                          : Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                120.height,
-                                Center(
-                                    child: SvgPicture.asset(
-                                        "assets/images/noDataFound.svg")),
-                              ],
-                            )),
+                            ),
+                          ),
+                        ),
+                      ):
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          100.height,
+                          Center(
+                              child: SvgPicture.asset(
+                                  "assets/images/noDataFound.svg")),
+                        ],
+                      )
+                  ),
                 ),
                 Obx(() {
                   // Ensure totalPages is at least 1

@@ -1832,6 +1832,84 @@ class ApiService {
     }
   }
 
+  void showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(20),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 16),
+                Text("Loading..."),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+  Future updateLeadStatusUpdateAPI(BuildContext context,String leadId,String mobile,String status) async {
+    showLoadingDialog(context);
+    try{
+      Map data ={
+        "cos_id":cosId,
+        'status_update' : status.trim(),
+        "lead_id":leadId,
+        "phone_no":mobile,
+        "action":"status_update"
+      };
+
+      print("data lead ${data.toString()}");
+      final request = await http.post(Uri.parse(scriptApi),
+        // headers: {
+        //   "Accept": "application/text",
+        //   "Content-Type": "application/x-www-form-urlencoded"
+        // },
+        body: jsonEncode(data),
+        // encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${request.body}");
+      //Navigator.of(context).pop();
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"]=="Customer updated successfully."){
+        utils.snackBar(msg: "Your Lead is updated successfully !",
+            color: colorsConst.primary,context:Get.context!);
+        controllers.leadFuture = apiService.leadsDetails(leadId);
+        Get.back();
+        //Get.to(const CompanyCamera(),transition: Transition.downToUp,duration: const Duration(seconds: 2));
+        apiService.allNewLeadsDetails();
+        apiService.allLeadsDetails();
+        apiService.allGoodLeadsDetails();
+        // await Future.delayed(const Duration(milliseconds: 100));
+        // Get.to(const Suspects(),duration: Duration.zero);
+        // Navigator.push(context,
+        //   PageRouteBuilder(
+        //     pageBuilder: (context, animation1, animation2) => const ViewLead(),
+        //     transitionDuration: Duration.zero,
+        //     reverseTransitionDuration: Duration.zero,
+        //   ),
+        // );
+        //Get.to(const ViewLead());
+        controllers.leadCtr.reset();
+      } else {
+        errorDialog(Get.context!,request.body);
+        controllers.leadCtr.reset();
+      }
+    }catch(e){
+      errorDialog(Get.context!,e.toString());
+      controllers.leadCtr.reset();
+    }
+  }
+
+
   Future getAllNoteActivity() async {
     try {
       Map data = {

@@ -38,9 +38,10 @@ class Controller extends GetxController {
   Future<List<MailReceiveObj>>? customMailFuture;
   Future<List<NewLeadObj>>? allGoodLeadFuture;
   Future<List<CompanyObj>>? allCompanyFuture;
-  var disqualifiedFuture = <NewLeadObj>[].obs;
-  var allNewLeadFuture = <NewLeadObj>[].obs;
-  var allLeadFuture = <NewLeadObj>[].obs;
+  var disqualifiedFuture      = <NewLeadObj>[].obs;
+  var allNewLeadFuture        = <NewLeadObj>[].obs;
+  var allLeadFuture           = <NewLeadObj>[].obs;
+  var allQualifiedLeadFuture  = <NewLeadObj>[].obs;
   RxString selectedTemperature = "".obs;
   RxString selectedProspectTemperature = "".obs;
   RxString selectedQualifiedTemperature = "".obs;
@@ -391,6 +392,193 @@ class Controller extends GetxController {
     if (start >= filteredLeads.length) return [];
 
     int end = start + itemsPerPage;
+    end = end > filteredLeads.length ? filteredLeads.length : end;
+
+    return filteredLeads.sublist(start, end);
+  }
+  final int mailPerPage = 100;
+
+  List<String> get leadRanges {
+    final totalCount = allNewLeadFuture.length; // total leads count
+    if (totalCount == 0) return [];
+    List<String> ranges = [];
+    for (int i = 0; i < totalCount; i += mailPerPage) {
+      final start = i + 1;
+      final end = (i + mailPerPage) > totalCount ? totalCount : (i + mailPerPage);
+      ranges.add("$start - $end");
+    }
+    return ranges;
+  }
+
+  // to get leads of specific range
+  List<NewLeadObj> getLeadsByRange(int index) {
+    final startIndex = index * mailPerPage;
+    final endIndex = (startIndex + mailPerPage) > allNewLeadFuture.length
+        ? allNewLeadFuture.length
+        : startIndex + mailPerPage;
+
+    return allNewLeadFuture.sublist(startIndex, endIndex);
+  }
+  List<NewLeadObj> get paginatedQualifiedLeads {
+    final query = search.text.trim().toLowerCase();
+    final ratingFilter = selectedProspectTemperature.value;
+    final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
+
+    final now = DateTime.now();
+
+    final filteredLeads = allQualifiedLeadFuture.where((lead) {
+      final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
+          (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+          (lead.emailId ?? '').toLowerCase().contains(query);
+
+      final matchesRating = ratingFilter.isEmpty ||
+          (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
+
+      bool matchesSort = true;
+      if (lead.prospectEnrollmentDate != null) {
+        DateTime? updatedDate;
+        try {
+          updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
+        } catch (_) {
+          try {
+            updatedDate = DateTime.tryParse(lead.prospectEnrollmentDate!);
+          } catch (_) {
+            updatedDate = null;
+            matchesSort = false;
+          }
+        }
+
+        if (updatedDate != null) {
+          final diff = now.difference(updatedDate).inDays;
+
+          switch (sortBy) {
+            case 'Today':
+              matchesSort = isSameDate(updatedDate, now);
+              break;
+
+            case 'Last 7 Days':
+              matchesSort = diff <= 7;
+              break;
+
+            case 'Last 30 Days':
+              matchesSort = diff <= 30;
+              break;
+
+            case 'Custom Month':
+              if (selectedPMonth.value != null) {
+                matchesSort = updatedDate.year == selectedPMonth.value!.year &&
+                    updatedDate.month == selectedPMonth.value!.month;
+              } else {
+                matchesSort = true;
+              }
+              break;
+
+            case 'All':
+            default:
+              matchesSort = true;
+          }
+        } else {
+          matchesSort = false;
+        }
+      } else {
+        matchesSort = false;
+      }
+      return matchesQuery && matchesRating && matchesSort;
+    }).toList();
+
+    if (sortBy == 'Custom Month') {
+      DateTime parseDate(String? dateStr, String? fallback) {
+        if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+          dateStr = fallback;
+        }
+        DateTime? parsed;
+        try {
+          parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+        } catch (_) {
+          parsed = DateTime.tryParse(dateStr!);
+        }
+        return parsed ?? DateTime(1900);
+      }
+
+      filteredLeads.sort((a, b) {
+        final dateA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
+        final dateB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+        return dateB.compareTo(dateA); // reverse order
+      });
+    }
+
+    if (sortField.isNotEmpty) {
+      filteredLeads.sort((a, b) {
+        dynamic valA;
+        dynamic valB;
+
+        switch (sortField.value) {
+          case 'name':
+            valA = a.firstname ?? '';
+            valB = b.firstname ?? '';
+            break;
+          case 'companyName':
+            valA = a.companyName ?? '';
+            valB = b.companyName ?? '';
+            break;
+          case 'mobile':
+            valA = a.mobileNumber ?? '';
+            valB = b.mobileNumber ?? '';
+            break;
+          case 'serviceRequired':
+            valA = a.detailsOfServiceRequired ?? '';
+            valB = b.detailsOfServiceRequired ?? '';
+            break;
+          case 'sourceOfProspect':
+            valA = a.source ?? '';
+            valB = b.source ?? '';
+            break;
+          case 'city':
+            valA = a.city ?? '';
+            valB = b.city ?? '';
+            break;
+          case 'statusUpdate':
+            valA = a.statusUpdate ?? '';
+            valB = b.statusUpdate ?? '';
+            break;
+          case 'date':
+            DateTime parseDate(String? dateStr, String? fallback) {
+              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                dateStr = fallback;
+              }
+              DateTime? parsed;
+              try {
+                parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+              } catch (_) {
+                parsed = DateTime.tryParse(dateStr!);
+              }
+              return parsed ?? DateTime(1900);
+            }
+
+            valA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
+            valB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+            break;
+          default:
+            valA = '';
+            valB = '';
+        }
+
+        if (valA is DateTime && valB is DateTime) {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        } else {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        }
+      });
+    }
+    int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
+
+    if (start >= filteredLeads.length) return [];
+
+    int end = start + itemsProspectPerPage;
     end = end > filteredLeads.length ? filteredLeads.length : end;
 
     return filteredLeads.sublist(start, end);

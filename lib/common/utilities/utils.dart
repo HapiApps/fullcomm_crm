@@ -36,6 +36,7 @@ import '../../components/custom_textbutton.dart';
 import '../../components/funnel_container.dart';
 import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
+import '../../models/new_lead_obj.dart';
 import '../../screens/leads/disqualified_lead.dart';
 import '../../services/api_services.dart';
 import '../constant/api.dart';
@@ -88,364 +89,468 @@ class Utils {
       ),
     );
   }
-  void bulkEmailDialog( FocusNode focusNode,
-      {required List<Map<String, String>> list}) {
+  void bulkEmailDialog(FocusNode focusNode, {required List<Map<String, String>> list}) {
     int total = list.length;
-    int withMail = list.where((e) => (e["mail"] != null && e["mail"]!.trim().isNotEmpty && e["mail"]!.trim() != "null")).length;
+    int withMail = list.where((e) => (e["mail_id"] != null && e["mail_id"]!.trim().isNotEmpty && e["mail_id"]!.trim() != "null")).length;
     int withoutMail = total - withMail;
-
+    var selectedRange = "".obs;
+    void selectRange(String range, List<NewLeadObj> allLeads) {
+      selectedRange.value = range;
+      final parts = range.split("-");
+      final start = int.parse(parts[0].trim()) - 1; // index start
+      final end = int.parse(parts[1].trim());       // index end
+      final subList = allLeads.sublist(start, end);
+      total = subList.length;
+      withMail = subList.where((e) =>
+      e.emailId != null &&
+          e.emailId!.trim().isNotEmpty &&
+          e.emailId!.trim() != "null").length;
+      withoutMail = total - withMail;
+      apiService.prospectsList.addAll(
+        subList
+            .where((data) =>
+        data.emailId != null &&
+            data.emailId!.trim().isNotEmpty &&
+            data.emailId!.trim() != "null") // mail check
+            .map((data) => {
+          "lead_id": data.userId.toString(),
+          "user_id": controllers.storage.read("id"),
+          "rating": data.rating ?? "Warm",
+          "cos_id": cosId,
+          "mail_id": data.emailId!.split("||")[0]
+        }),
+      );
+    }
     showDialog(
         context: Get.context!,
         barrierDismissible: false,
         builder: (context) {
-          return AlertDialog(
-            backgroundColor: colorsConst.primary,
-            actions: [
-              Column(
-                children: [
-                  Divider(
-                    color: Colors.grey.shade300,
-                    thickness: 1,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        child: Row(
+          return StatefulBuilder(
+              builder: (context,setState){
+                return AlertDialog(
+                  backgroundColor: colorsConst.primary,
+                  actions: [
+                    Column(
+                      children: [
+                        Divider(
+                          color: Colors.grey.shade300,
+                          thickness: 1,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(assets.b,
-                                    width: 17, height: 17)),
-                            IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(
-                                  assets.i,
-                                  width: 15,
-                                  height: 15,
-                                )),
-                            IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(
-                                  assets.u,
-                                  width: 19,
-                                  height: 19,
-                                )),
-                            IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(
-                                  assets.fileFilter,
-                                  width: 17,
-                                  height: 17,
-                                )),
-                            // IconButton(
-                            //     onPressed: (){},
-                            //     icon:SvgPicture.asset(assets.textFilter,width: 17,height: 17,)
-                            // ),
-                            IconButton(
-                                onPressed: () {
-                                  utils.chooseFile(mediaDataV:imageController.empMediaData,
-                                      fileName:imageController.empFileName,
-                                      pathName:imageController.photo1);
-                                },
-                                icon: SvgPicture.asset(assets.file)),
-                            IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(
-                                  assets.layer,
-                                  width: 17,
-                                  height: 17,
-                                )),
-                            IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(assets.a)),
-                          ],
-                        ),
-                      ),
-                      Obx(
-                            () => CustomLoadingButton(
-                          callback: () {
-                            List<Map<String, String>> withMail = list.where((e) {
-                              final mail = e["mail"];
-                              return mail != null && mail.trim().isNotEmpty && mail.trim() != "null";
-                            }).toList();
-                            apiService.bulkEmailAPI(context, withMail, imageController.photo1.value);
-                            focusNode.requestFocus();
-                          },
-                          controller: controllers.emailCtr,
-                          isImage: false,
-                          isLoading: true,
-                          backgroundColor: colorsConst.primary,
-                          radius: 5,
-                          width: controllers.emailCount.value == 0 ||
-                              controllers.emailCount.value == 1
-                              ? 90
-                              : 200,
-                          height: 50,
-                          text: controllers.emailCount.value == 0
-                              ? "Quotation"
-                              : controllers.emailCount.value == 1
-                              ? "Reply"
-                              : "Reply & Quotation",
-                          textColor: Colors.white,
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ],
-            content: SizedBox(
-                width: 600,
-                height: 400,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Align(
-                          alignment: Alignment.topRight,
-                          child: InkWell(
-                              onTap: () {
-                                Navigator.pop(context);
+                            SizedBox(
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: SvgPicture.asset(assets.b,
+                                          width: 17, height: 17)),
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: SvgPicture.asset(
+                                        assets.i,
+                                        width: 15,
+                                        height: 15,
+                                      )),
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: SvgPicture.asset(
+                                        assets.u,
+                                        width: 19,
+                                        height: 19,
+                                      )),
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: SvgPicture.asset(
+                                        assets.fileFilter,
+                                        width: 17,
+                                        height: 17,
+                                      )),
+                                  // IconButton(
+                                  //     onPressed: (){},
+                                  //     icon:SvgPicture.asset(assets.textFilter,width: 17,height: 17,)
+                                  // ),
+                                  IconButton(
+                                      onPressed: () {
+                                        utils.chooseFile(mediaDataV:imageController.empMediaData,
+                                            fileName:imageController.empFileName,
+                                            pathName:imageController.photo1);
+                                      },
+                                      icon: SvgPicture.asset(assets.file)),
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: SvgPicture.asset(
+                                        assets.layer,
+                                        width: 17,
+                                        height: 17,
+                                      )),
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: SvgPicture.asset(assets.a)),
+                                ],
+                              ),
+                            ),
+                            Obx(() => CustomLoadingButton(
+                              callback: () {
+                                if(apiService.prospectsList.isEmpty){
+                                  apiService.errorDialog(
+                                      context, "Please Select range to send email.");
+                                  controllers.emailCtr.reset();
+                                  return;
+                                }
+                                List<Map<String, String>> withMail = apiService.prospectsList.where((e) {
+                                  final mail = e["mail_id"];
+                                  return mail != null && mail.trim().isNotEmpty && mail.trim() != "null";
+                                }).toList();
+                                // if(withMail.length>100){
+                                //   Navigator.of(context).pop();
+                                //   apiService.errorDialog(
+                                //       context, "Select only 100 customers at a time for email.");
+                                //   return;
+                                // }
+                                apiService.bulkEmailAPI(context, withMail, imageController.photo1.value);
+                                focusNode.requestFocus();
                               },
-                              child: Icon(
-                                Icons.clear,
-                                size: 18,
-                                color: colorsConst.textColor,
-                              ))),
-                      // Align(
-                      //   alignment: Alignment.topRight,
-                      //   child: TextButton(
-                      //       onPressed: () {
-                      //         controllers.isTemplate.value =
-                      //         !controllers.isTemplate.value;
-                      //       },
-                      //       child: CustomText(
-                      //         text: "Get Form Template",
-                      //         colors: colorsConst.third,
-                      //         size: 18,
-                      //         isBold: true,
-                      //       )),
-                      // ),
-                      // Row(
-                      //   children: [
-                      //     CustomText(
-                      //       textAlign: TextAlign.center,
-                      //       text: "To",
-                      //       colors: colorsConst.textColor,
-                      //       size: 15,
-                      //     ),
-                      //     50.width,
-                      //     SizedBox(
-                      //       width: 500,
-                      //       child: TextField(
-                      //         controller: controllers.emailToCtr,
-                      //         style: TextStyle(
-                      //             fontSize: 15, color: colorsConst.textColor),
-                      //         decoration: const InputDecoration(
-                      //           border: InputBorder.none,
-                      //         ),
-                      //       ),
-                      //     )
-                      //   ],
-                      // ),
+                              controller: controllers.emailCtr,
+                              isImage: false,
+                              isLoading: true,
+                              backgroundColor: colorsConst.primary,
+                              radius: 5,
+                              width: controllers.emailCount.value == 0 ||
+                                  controllers.emailCount.value == 1
+                                  ? 90
+                                  : 200,
+                              height: 50,
+                              text: controllers.emailCount.value == 0
+                                  ? "Quotation"
+                                  : controllers.emailCount.value == 1
+                                  ? "Reply"
+                                  : "Reply & Quotation",
+                              textColor: Colors.white,
+                            ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                  content: SizedBox(
+                      width: 650,
+                      height: 400,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Align(
+                                alignment: Alignment.topRight,
+                                child: InkWell(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Icon(
+                                      Icons.clear,
+                                      size: 18,
+                                      color: colorsConst.textColor,
+                                    ))),
+                            // Align(
+                            //   alignment: Alignment.topRight,
+                            //   child: TextButton(
+                            //       onPressed: () {
+                            //         controllers.isTemplate.value =
+                            //         !controllers.isTemplate.value;
+                            //       },
+                            //       child: CustomText(
+                            //         text: "Get Form Template",
+                            //         colors: colorsConst.third,
+                            //         size: 18,
+                            //         isBold: true,
+                            //       )),
+                            // ),
+                            // Row(
+                            //   children: [
+                            //     CustomText(
+                            //       textAlign: TextAlign.center,
+                            //       text: "To",
+                            //       colors: colorsConst.textColor,
+                            //       size: 15,
+                            //     ),
+                            //     50.width,
+                            //     SizedBox(
+                            //       width: 500,
+                            //       child: TextField(
+                            //         controller: controllers.emailToCtr,
+                            //         style: TextStyle(
+                            //             fontSize: 15, color: colorsConst.textColor),
+                            //         decoration: const InputDecoration(
+                            //           border: InputBorder.none,
+                            //         ),
+                            //       ),
+                            //     )
+                            //   ],
+                            // ),
 
-                      SizedBox(
-                          width: 600,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    CustomText(
-                                      text: "Total Selected Customers: $total",
-                                      colors: colorsConst.textColor,
-                                      size: 16,
-                                      isBold: true,
-                                    ),
-                                    CustomText(
-                                      text: "Customers with Mail: $withMail",
-                                      colors: colorsConst.textColor,
-                                      size: 16,
-                                      isBold: true,
-                                    ),
-                                    CustomText(
-                                      text: "Customers without Mail: $withoutMail",
-                                      colors: colorsConst.textColor,
-                                      size: 16,
-                                      isBold: true,
-                                    ),
-                                  ],
-                                ),
-
-                                Divider(
-                                  color: Colors.grey.shade300,
-                                  thickness: 1,
-                                ),
-                                Row(
-                                  children: [
-                                    15.height,
-                                    CustomText(
-                                      text: "Subject",
-                                      colors: colorsConst.textColor,
-                                      size: 14,
-                                    ),
-                                    20.width,
-                                    SizedBox(
-                                      width: 500,
-                                      height: 50,
-                                      child: TextField(
-                                        controller: controllers.emailSubjectCtr,
-                                        maxLines: null,
-                                        minLines: 1,
-                                        style: TextStyle(
-                                          color: colorsConst.textColor,
-                                        ),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Divider(
-                                  color: Colors.grey.shade300,
-                                  thickness: 1,
-                                ),
-                                SingleChildScrollView(
+                            SizedBox(
+                                width: 650,
+                                child: SingleChildScrollView(
                                   child: Column(
                                     children: [
-                                      Obx(()=>imageController.photo1.value.isEmpty?0.height:
-                                      Image.memory(base64Decode(imageController.photo1.value),
-                                        fit: BoxFit.cover,width: 80,height: 80,),),
                                       SizedBox(
-                                        width: 600,
-                                        height: 223,
-                                        child: TextField(
-                                          textInputAction: TextInputAction.newline,
-                                          controller: controllers.emailMessageCtr,
-                                          keyboardType: TextInputType.multiline,
-                                          maxLines: 21,
-                                          expands: false,
-                                          style: TextStyle(
-                                            color: colorsConst.textColor,
-                                          ),
-                                          decoration: InputDecoration(
-                                            hintText: "Message",
-                                            hintStyle: TextStyle(
-                                                color: colorsConst.textColor,
-                                                fontSize: 14,
-                                                fontFamily: "Lato"),
-                                            border: InputBorder.none,
-                                          ),
-                                        ),
+                                        height: 40,
+                                        width: 650,
+                                        child: Obx(() {
+                                          final ranges = controllers.leadRanges;
+                                          if (ranges.isEmpty) {
+                                            return const Center(child: Text("No leads found"));
+                                          }
+                                          return ListView.builder(
+                                            itemCount: ranges.length,
+                                            scrollDirection: Axis.horizontal,
+                                            itemBuilder: (context, index) {
+                                              final range = ranges[index];
+                                              final isSelected = selectedRange.value == range;
+                                              return InkWell(
+                                                onTap: () {
+                                                  print("In");
+                                                  setState((){
+                                                    selectRange(range, controllers.allNewLeadFuture);
+                                                  }
+                                                  );
+                                                  final leads = controllers.getLeadsByRange(index);
+                                                  // here open another dialog to show leads
+                                                  // showDialog(
+                                                  //   context: context,
+                                                  //   builder: (context) {
+                                                  //     return AlertDialog(
+                                                  //       title: Text("Leads in $range"),
+                                                  //       content: SizedBox(
+                                                  //         height: 300,
+                                                  //         width: 400,
+                                                  //         child: ListView.builder(
+                                                  //           itemCount: leads.length,
+                                                  //           itemBuilder: (context, i) {
+                                                  //             final lead = leads[i];
+                                                  //             return ListTile(
+                                                  //               title: Text(lead.firstname ?? ""),
+                                                  //               subtitle: Text(lead.mobileNumber ?? ""),
+                                                  //             );
+                                                  //           },
+                                                  //         ),
+                                                  //       ),
+                                                  //     );
+                                                  //   },
+                                                  // );
+                                                },
+                                                child: Container(
+                                                  height: 40,
+                                                  margin: const EdgeInsets.all(5),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                  decoration: BoxDecoration(
+                                                    color: isSelected ? Colors.blue : Colors.transparent,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    border: Border.all(color: Colors.blue),
+                                                  ),
+                                                  child: Center(child: CustomText(text: range,colors: colorsConst.textColor,)),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        }),
                                       ),
+                                      10.height,
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          CustomText(
+                                            text: "Total Selected Customers: $total",
+                                            colors: colorsConst.textColor,
+                                            size: 16,
+                                            isBold: true,
+                                          ),
+                                          CustomText(
+                                            text: "Customers with Mail: $withMail",
+                                            colors: colorsConst.textColor,
+                                            size: 16,
+                                            isBold: true,
+                                          ),
+                                          CustomText(
+                                            text: "Customers without Mail: $withoutMail",
+                                            colors: colorsConst.textColor,
+                                            size: 16,
+                                            isBold: true,
+                                          ),
+                                        ],
+                                      ),
+                                      10.height,
+                                      Divider(
+                                        color: Colors.grey.shade300,
+                                        thickness: 1,
+                                      ),
+                                      Row(
+                                        children: [
+                                          15.height,
+                                          CustomText(
+                                            text: "Subject",
+                                            colors: colorsConst.textColor,
+                                            size: 14,
+                                          ),
+                                          10.width,
+                                          SizedBox(
+                                            width: 500,
+                                            height: 50,
+                                            child: TextField(
+                                              controller: controllers.emailSubjectCtr,
+                                              maxLines: null,
+                                              minLines: 1,
+                                              style: TextStyle(
+                                                color: colorsConst.textColor,
+                                              ),
+                                              decoration: const InputDecoration(
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      Divider(
+                                        color: Colors.grey.shade300,
+                                        thickness: 1,
+                                      ),
+                                      SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            Obx(()=>imageController.photo1.value.isEmpty?0.height:
+                                            Image.memory(base64Decode(imageController.photo1.value),
+                                              fit: BoxFit.cover,width: 80,height: 80,),),
+                                            SizedBox(
+                                              width: 650,
+                                              height: 223,
+                                              child: TextField(
+                                                textInputAction: TextInputAction.newline,
+                                                controller: controllers.emailMessageCtr,
+                                                keyboardType: TextInputType.multiline,
+                                                maxLines: 21,
+                                                expands: false,
+                                                style: TextStyle(
+                                                  color: colorsConst.textColor,
+                                                ),
+                                                decoration: InputDecoration(
+                                                  hintText: "Message",
+                                                  hintStyle: TextStyle(
+                                                      color: colorsConst.textColor,
+                                                      fontSize: 14,
+                                                      fontFamily: "Lato"),
+                                                  border: InputBorder.none,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                      //     : UnconstrainedBox(
+                                      //   child: Container(
+                                      //     width: 500,
+                                      //     alignment: Alignment.center,
+                                      //     decoration: BoxDecoration(
+                                      //       color: colorsConst.secondary,
+                                      //       borderRadius:
+                                      //       BorderRadius.circular(10),
+                                      //     ),
+                                      //     child: SingleChildScrollView(
+                                      //       child: Column(
+                                      //         children: [
+                                      //           SizedBox(
+                                      //             width: 500,
+                                      //             height: 210,
+                                      //             child: Table(
+                                      //               defaultColumnWidth:
+                                      //               const FixedColumnWidth(
+                                      //                   120.0),
+                                      //               border: TableBorder.all(
+                                      //                   color: Colors
+                                      //                       .grey.shade300,
+                                      //                   style:
+                                      //                   BorderStyle.solid,
+                                      //                   borderRadius:
+                                      //                   BorderRadius
+                                      //                       .circular(10),
+                                      //                   width: 1),
+                                      //               children: [
+                                      //                 TableRow(
+                                      //                     children: [
+                                      //                       CustomText(
+                                      //                         textAlign: TextAlign.center,
+                                      //                         text: "\nTemplate Name\n",
+                                      //                         colors: colorsConst.textColor,
+                                      //                         size: 15,
+                                      //                         isBold: true,
+                                      //                       ),
+                                      //                       CustomText(
+                                      //                         textAlign:
+                                      //                         TextAlign.center,
+                                      //                         text: "\nSubject\n",
+                                      //                         colors: colorsConst
+                                      //                             .textColor,
+                                      //                         size: 15,
+                                      //                         isBold: true,
+                                      //                       ),
+                                      //                     ]),
+                                      //                 utils.emailRow(
+                                      //                     context,
+                                      //                     isCheck: controllers.isAdd,
+                                      //                     templateName:
+                                      //                     "Promotional",
+                                      //                     msg:
+                                      //                     "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
+                                      //                     subject:
+                                      //                     "Exclusive Promotion for You - \nLimited Time Offer!"),
+                                      //                 utils.emailRow(
+                                      //                     context,
+                                      //                     isCheck: controllers.isAdd,
+                                      //                     templateName: "Follow-Up",
+                                      //                     msg: "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+                                      //                     subject: "Follow-up on Recent Service Interaction"),
+                                      //                 utils.emailRow(context,
+                                      //                     msg:
+                                      //                     "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+                                      //                     isCheck:
+                                      //                     controllers.isAdd,
+                                      //                     templateName:
+                                      //                     "Service Update",
+                                      //                     subject:
+                                      //                     "Service Update - [Brief Description]"),
+                                      //               ],
+                                      //             ),
+                                      //           ),
+                                      //           // 10.height,
+                                      //           // CustomLoadingButton(
+                                      //           //   callback: (){},
+                                      //           //   isImage: false,
+                                      //           //   isLoading: false,
+                                      //           //   backgroundColor: colorsConst.primary,
+                                      //           //   radius: 20,
+                                      //           //   width: 70,
+                                      //           //   height: 30,
+                                      //           //   text: "Done",
+                                      //           //   textColor: Colors.white,
+                                      //           //
+                                      //           // ),
+                                      //         ],
+                                      //       ),
+                                      //     ),
+                                      //   ),
+                                      // ),
+
                                     ],
                                   ),
-                                )
-                                //     : UnconstrainedBox(
-                                //   child: Container(
-                                //     width: 500,
-                                //     alignment: Alignment.center,
-                                //     decoration: BoxDecoration(
-                                //       color: colorsConst.secondary,
-                                //       borderRadius:
-                                //       BorderRadius.circular(10),
-                                //     ),
-                                //     child: SingleChildScrollView(
-                                //       child: Column(
-                                //         children: [
-                                //           SizedBox(
-                                //             width: 500,
-                                //             height: 210,
-                                //             child: Table(
-                                //               defaultColumnWidth:
-                                //               const FixedColumnWidth(
-                                //                   120.0),
-                                //               border: TableBorder.all(
-                                //                   color: Colors
-                                //                       .grey.shade300,
-                                //                   style:
-                                //                   BorderStyle.solid,
-                                //                   borderRadius:
-                                //                   BorderRadius
-                                //                       .circular(10),
-                                //                   width: 1),
-                                //               children: [
-                                //                 TableRow(
-                                //                     children: [
-                                //                       CustomText(
-                                //                         textAlign: TextAlign.center,
-                                //                         text: "\nTemplate Name\n",
-                                //                         colors: colorsConst.textColor,
-                                //                         size: 15,
-                                //                         isBold: true,
-                                //                       ),
-                                //                       CustomText(
-                                //                         textAlign:
-                                //                         TextAlign.center,
-                                //                         text: "\nSubject\n",
-                                //                         colors: colorsConst
-                                //                             .textColor,
-                                //                         size: 15,
-                                //                         isBold: true,
-                                //                       ),
-                                //                     ]),
-                                //                 utils.emailRow(
-                                //                     context,
-                                //                     isCheck: controllers.isAdd,
-                                //                     templateName:
-                                //                     "Promotional",
-                                //                     msg:
-                                //                     "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
-                                //                     subject:
-                                //                     "Exclusive Promotion for You - \nLimited Time Offer!"),
-                                //                 utils.emailRow(
-                                //                     context,
-                                //                     isCheck: controllers.isAdd,
-                                //                     templateName: "Follow-Up",
-                                //                     msg: "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
-                                //                     subject: "Follow-up on Recent Service Interaction"),
-                                //                 utils.emailRow(context,
-                                //                     msg:
-                                //                     "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
-                                //                     isCheck:
-                                //                     controllers.isAdd,
-                                //                     templateName:
-                                //                     "Service Update",
-                                //                     subject:
-                                //                     "Service Update - [Brief Description]"),
-                                //               ],
-                                //             ),
-                                //           ),
-                                //           // 10.height,
-                                //           // CustomLoadingButton(
-                                //           //   callback: (){},
-                                //           //   isImage: false,
-                                //           //   isLoading: false,
-                                //           //   backgroundColor: colorsConst.primary,
-                                //           //   radius: 20,
-                                //           //   width: 70,
-                                //           //   height: 30,
-                                //           //   text: "Done",
-                                //           //   textColor: Colors.white,
-                                //           //
-                                //           // ),
-                                //         ],
-                                //       ),
-                                //     ),
-                                //   ),
-                                // ),
-
-                              ],
-                            ),
-                          )),
-                    ],
-                  ),
-                )),
-          );
+                                )),
+                          ],
+                        ),
+                      )),
+                );
+              });
         });
   }
+
 
   void sendEmailDialog(
       {required String id,
@@ -2601,9 +2706,7 @@ class Utils {
     for (var table in excelD.tables.keys) {
       var rows = excelD.tables[table]!.rows;
 
-      List<String> headers = rows.first
-          .map((cell) => (cell?.value.toString().trim().toUpperCase()) ?? "")
-          .toList();
+      List<String> headers = rows.first.map((cell) => (cell?.value.toString().trim().toUpperCase()) ?? "").toList();
 
       List<String> missingColumns = [];
 
@@ -2628,8 +2731,7 @@ class Utils {
               isBold: true,
             ),
             content: CustomText(
-              text:
-                  "The following columns are missing:\n\n${missingColumns.join(", ")}",
+              text: "The following columns are missing:\n\n${missingColumns.join(", ")}",
               colors: colorsConst.textColor,
               size: 16,
             ),
@@ -2653,9 +2755,7 @@ class Utils {
         Map<String, dynamic> rowData = {};
         Map<String, dynamic> formattedData = {};
         bool isRowEmpty = row.every((cell) =>
-            cell == null ||
-            cell.value == null ||
-            cell.value.toString().trim().isEmpty);
+        cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
 
         if (isRowEmpty) continue;
 
@@ -2667,15 +2767,13 @@ class Utils {
         // ✅ Fix mapping with proper casing match
         rowData.forEach((key, value) {
           String matchedKey = keyMapping.keys.firstWhere(
-            (mappedKey) =>
-                mappedKey.toUpperCase().trim() == key.toUpperCase().trim(),
+                (mappedKey) => mappedKey.toUpperCase().trim() == key.toUpperCase().trim(),
             orElse: () => "",
           );
           if (matchedKey.isNotEmpty) {
             String mappedField = keyMapping[matchedKey]!;
             if (mappedField == "rating") {
-              formattedData[mappedField] =
-                  value != null && value.toString().isNotEmpty ? value : "WARM";
+              formattedData[mappedField] = value != null && value.toString().isNotEmpty ? value : "WARM";
             } else {
               formattedData[mappedField] = value;
             }
@@ -2703,14 +2801,11 @@ class Utils {
           formattedData["source"] = "";
         }
 
-        if ((formattedData["phone_no"] != null &&
-                formattedData["phone_no"].toString().isNotEmpty) ||
-            (formattedData["name"] != null &&
-                formattedData["name"].toString().isNotEmpty)) {
+        if ((formattedData["phone_no"] != null && formattedData["phone_no"].toString().isNotEmpty) ||
+            (formattedData["name"] != null && formattedData["name"].toString().isNotEmpty)) {
           customerData.add(formattedData);
         } else {
-          if (formattedData["email"] != null &&
-              formattedData["email"].toString().isNotEmpty) {
+          if (formattedData["email"] != null && formattedData["email"].toString().isNotEmpty) {
             customerData.add(formattedData);
           } else {
             mCustomerData.add(formattedData);
@@ -2729,8 +2824,7 @@ class Utils {
         builder: (context) => AlertDialog(
           backgroundColor: colorsConst.primary,
           content: CustomText(
-            text:
-                "Some entries under KEY CONTACT PERSON and CONTACT NUMBER are empty in your Excel sheet. Please check and re-upload.",
+            text: "Some entries under KEY CONTACT PERSON and CONTACT NUMBER are empty in your Excel sheet. Please check and re-upload.",
             colors: colorsConst.textColor,
             size: 16,
           ),
