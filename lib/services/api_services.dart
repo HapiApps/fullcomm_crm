@@ -1086,25 +1086,28 @@ class ApiService {
   Future insertCustomersAPI(
       BuildContext context, List<Map<String, dynamic>> customerData) async {
     try {
-      print("data ${customerData.toString()}");
-
-      // Convert values to strings if necessary
       List<Map<String, dynamic>> formattedData = customerData.map((customer) {
         return customer.map((key, value) {
-          return MapEntry(
-              key, value.toString()); // Convert all values to String
+          // additional_fields is List, don't convert to string
+          if (key == "additional_fields" && value is List) {
+            return MapEntry(key, value);
+          }
+          return MapEntry(key, value.toString());
         });
       }).toList();
 
-      Map data = {"action": "create_customers", "cusList": formattedData};
+      Map data = {
+        "action": "create_customers",
+        "cusList": formattedData,
+      };
 
-      print("Final Data to be sent: ${jsonEncode(data)}"); // Debug JSON
+      print("Final Data to be sent: ${jsonEncode(data)}");
 
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {
           "Accept": "application/json",
-          "Content-Type": "application/json" // Change Content-Type to JSON
+          "Content-Type": "application/json"
         },
         body: jsonEncode(data),
       );
@@ -1112,8 +1115,7 @@ class ApiService {
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
 
-      if (request.statusCode == 200 &&
-          response["message"] == "Customer saved successfully.") {
+      if (request.statusCode == 200 && response["message"] == "Customer save process completed.") {
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
@@ -1124,15 +1126,24 @@ class ApiService {
         int failed = response["failed"];
         Navigator.pop(context);
         controllers.customerCtr.reset();
+
         if (failed == 0) {
           print("All customers saved successfully.");
+          utils.snackBar(context:Get.context!,
+              msg: "All $success customers saved successfully.",color: Colors.green);
         } else {
           print("⚠️ $success saved, $failed failed.");
+          // 👉 Build a readable string
+          StringBuffer failMsg = StringBuffer();
           for (var failure in response["failures"]) {
-            print("Failed Phone: ${failure["phone_no"]} — ${failure["error"]}");
+            failMsg.writeln(
+                "• ${failure["name"]} (${failure["phone_no"]}) → ${failure["error"]}");
           }
-          errorDialog(Get.context!,
-              "$success saved, $failed failed.\n Failed Phone: ${response["failures"]}");
+
+          cusErrorDialog(
+            Get.context!,
+            "$success saved, $failed failed.\n\nFailed List:\n$failMsg",
+          );
         }
       } else {
         print("insert customers error ${request.body}");
@@ -2178,6 +2189,49 @@ class ApiService {
           );
         });
   }
+  void cusErrorDialog(BuildContext context, String text) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          iconPadding: const EdgeInsets.fromLTRB(0, 0.5, 1, 0),
+          icon: Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+                controllers.leadCtr.reset();
+              },
+              icon: Icon(
+                Icons.close,
+                color: colorsConst.third,
+              ),
+            ),
+          ),
+          title: const Center(
+            child: Icon(
+              Icons.error,
+              color: Colors.red,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Text(
+              text,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: colorsConst.textColor,
+              ),
+
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 
 
   Future<List<ProductObj>> allProductDetails() async {

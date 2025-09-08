@@ -50,6 +50,7 @@ class NewLeadObj {
   final String? accountManager;
   final String? prospectGrading;
   final String? detailsOfServiceRequired;
+  final String? additionalInfo;
 
   NewLeadObj(
       {this.userId,
@@ -101,7 +102,9 @@ class NewLeadObj {
       this.createdTs,
       this.accountManager,
       this.prospectGrading,
-      this.detailsOfServiceRequired});
+      this.detailsOfServiceRequired,
+        this.additionalInfo
+      });
   factory NewLeadObj.fromJson(Map<String, dynamic> json) {
     return NewLeadObj(
         userId: json["user_id"],
@@ -152,6 +155,8 @@ class NewLeadObj {
         visitType: json['visit_type'],
         accountManager: json['account_manager'],
         prospectGrading: json['prospect_grading'],
-        detailsOfServiceRequired: json['details_of_service_required']);
+        detailsOfServiceRequired: json['details_of_service_required'],
+      additionalInfo: json["additional_info"]
+    );
   }
 }

@@ -80,6 +80,8 @@ class DeleteButton extends StatelessWidget {
             apiService.errorDialog(context, "Please select customers");
           }
         },
-        icon: SvgPicture.asset("assets/images/delete.svg"));
+        icon: SvgPicture.asset("assets/images/delete.svg",
+          color: colorsConst.primary,
+        ));
   }
 }

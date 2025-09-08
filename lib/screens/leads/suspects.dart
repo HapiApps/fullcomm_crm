@@ -81,11 +81,10 @@ class _SuspectsState extends State<Suspects> {
           child: Container(
             width:MediaQuery.of(context).size.width - 130,
             height: MediaQuery.of(context).size.height,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                20.height,
                 // Header Section
                 buildHeaderSection(),
                 20.height,
@@ -479,14 +478,14 @@ class _SuspectsState extends State<Suspects> {
           children: [
             Obx(() => CustomText(
               text: "New Leads - ${controllers.leadCategoryList[0]["value"]}",
-              colors: colorsConst.primary,
+              colors: colorsConst.textColor,
               size: 25,
               isBold: true,
             )),
             10.height,
             Obx(() => CustomText(
               text: "View all of your ${controllers.leadCategoryList[0]["value"]} Information",
-              colors: colorsConst.primary,
+              colors: colorsConst.textColor,
               size: 14,
             )),
           ],
@@ -513,12 +512,12 @@ class _SuspectsState extends State<Suspects> {
               },
               isLoading: false,
               height: 35,
-              backgroundColor: colorsConst.third,
+              backgroundColor: colorsConst.primary,
               radius: 2,
               width: 100,
               isImage: false,
               text: "Add Lead",
-              textColor: Colors.black,
+              textColor: Colors.white,
             ),
             15.width,
             CustomLoadingButton(
@@ -528,12 +527,12 @@ class _SuspectsState extends State<Suspects> {
               },
               height: 35,
               isLoading: false,
-              backgroundColor: colorsConst.third,
+              backgroundColor: colorsConst.primary,
               radius: 2,
               width: 100,
               isImage: false,
               text: "Import",
-              textColor: Colors.black,
+              textColor: Colors.white,
             ),
           ],
         ),
@@ -547,25 +546,30 @@ class _SuspectsState extends State<Suspects> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Obx(() => GroupButton(
-              controller: controllers.groupController,
-              options: GroupButtonOptions(
-                spacing: 1,
-                elevation: 0,
-                selectedTextStyle: TextStyle(color: colorsConst.third),
-                selectedBorderColor: Colors.transparent,
-                selectedColor: Colors.transparent,
-                unselectedBorderColor: Colors.transparent,
-                unselectedColor: Colors.transparent,
-                unselectedTextStyle: TextStyle(color: colorsConst.textColor),
-              ),
-              onSelected: (name, index, isSelected) {
-                controllers.employeeHeading.value = name;
-              },
-              buttons: [
-                "All ${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[0]["value"]} ${controllers.allNewLeadsLength.value}"
+            Row(
+              children: [
+                CustomText(
+                  text: "Suspects",
+                  colors: colorsConst.primary,
+                  isBold: true,
+                  size: 15,
+                ),
+                10.width,
+                CircleAvatar(
+                  backgroundColor:
+                  colorsConst.primary,
+                  radius: 17,
+                  child: Obx(
+                        () => CustomText(
+                      text: controllers.allNewLeadsLength.value.toString(),
+                      colors: Colors.white,
+                      size: 13,
+                    ),
+                  ),
+                ),
               ],
-            )),
+            ),
+
             Row(
               children: [
                 GestureDetector(
@@ -591,7 +595,7 @@ class _SuspectsState extends State<Suspects> {
                         utils.bulkEmailDialog(_focusNode,list:apiService.prospectsList);
                       }
                     },
-                    icon: SvgPicture.asset("assets/images/email.svg")),
+                    icon: SvgPicture.asset("assets/images/email.svg",color: colorsConst.primary,)),
                 GestureDetector(
                   onTap: (){
                     _focusNode.requestFocus();
@@ -647,10 +651,11 @@ class _SuspectsState extends State<Suspects> {
                         context, controllers.selectedProspectSortBy, controllers.selectedMonth);
                     _focusNode.requestFocus();
                   },
-                  child: Text(
-                    controllers.selectedMonth.value != null
+                  child: CustomText(
+                    text:controllers.selectedMonth.value != null
                         ? DateFormat('MMMM yyyy').format(controllers.selectedMonth.value!)
                         : 'Select Month',
+                    colors: colorsConst.textColor,
                   ),
                 ),
                 10.width,
@@ -677,13 +682,13 @@ class _SuspectsState extends State<Suspects> {
                     onPressed: null,
                     child: Row(
                       children: [
-                        SvgPicture.asset("assets/images/sort.svg"),
+                        SvgPicture.asset("assets/images/sort.svg",color: colorsConst.primary,),
                         const SizedBox(width: 6),
                         Obx(() => CustomText(
                           text: controllers.selectedProspectSortBy.value.isEmpty
                               ? "Sort by"
                               : controllers.selectedProspectSortBy.value,
-                          colors: colorsConst.textColor,
+                          colors: colorsConst.primary,
                           size: 15,
                         )),
                       ],
@@ -815,14 +820,14 @@ class _SuspectsState extends State<Suspects> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: isCurrent ? colorsConst.third : colorsConst.secondary,
+            color: isCurrent ? colorsConst.primary : colorsConst.secondary,
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
             //pageNum.toString().padLeft(2, '0'),
             pageNum.toString(),
             style: TextStyle(
-              color: isCurrent ? Colors.black : Colors.white,
+              color: isCurrent ? Colors.white : Colors.black,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -834,7 +839,7 @@ class _SuspectsState extends State<Suspects> {
   Widget ellipsis() {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 4),
-      child: Text('...', style: TextStyle(fontSize: 18, color: Colors.white)),
+      child: Text('...', style: TextStyle(fontSize: 18, color: Colors.black)),
     );
   }
 }

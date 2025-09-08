@@ -63,7 +63,7 @@ class _QualifiedState extends State<Qualified> {
                 width: MediaQuery.of(context).size.width - 130,
                 height: MediaQuery.of(context).size.height,
                 alignment: Alignment.center,
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -94,50 +94,47 @@ class _QualifiedState extends State<Qualified> {
                             ),
                           ],
                         ),
-                        CustomLoadingButton(
-                          callback: () {
-                            utils.showImportDialog(context);
-                          },
-                          height: 35,
-                          isLoading: false,
-                          backgroundColor: colorsConst.third,
-                          radius: 2,
-                          width: 100,
-                          isImage: false,
-                          text: "Import",
-                          textColor: Colors.black,
-                        ),
+                        // CustomLoadingButton(
+                        //   callback: () {
+                        //     utils.showImportDialog(context);
+                        //   },
+                        //   height: 35,
+                        //   isLoading: false,
+                        //   backgroundColor: colorsConst.third,
+                        //   radius: 2,
+                        //   width: 100,
+                        //   isImage: false,
+                        //   text: "Import",
+                        //   textColor: Colors.black,
+                        // ),
                       ],
                     ),
                     10.height,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Obx(
-                          () => GroupButton(
-                            //isRadio: true,
-                            controller: controllers.groupController,
-                            options: GroupButtonOptions(
-                                //borderRadius: BorderRadius.circular(20),
-                                spacing: 1,
-                                elevation: 0,
-                                selectedTextStyle:
-                                    TextStyle(color: colorsConst.third),
-                                selectedBorderColor: Colors.transparent,
-                                selectedColor: Colors.transparent,
-                                unselectedBorderColor: Colors.transparent,
-                                unselectedColor: Colors.transparent,
-                                unselectedTextStyle:
-                                    TextStyle(color: colorsConst.textColor)),
-                            onSelected: (name, index, isSelected) async {
-                              controllers.employeeHeading.value = name;
-                            },
-                            // buttons: ["All ${controllers.leadCategoryList.isEmpty?"":controllers.leadCategoryList[2]["value"]} ${controllers.allGoodLeadsLength.value}",
-                            //   "Contacted 10","Closed 10","UnHold 10","Follow-up 10","Engaged 10"],
-                            buttons: [
-                              "All ${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[2]["value"]} ${controllers.allGoodLeadsLength.value}"
-                            ],
-                          ),
+                        Row(
+                          children: [
+                            CustomText(
+                              text: "Qualified",
+                              colors: colorsConst.primary,
+                              isBold: true,
+                              size: 15,
+                            ),
+                            10.width,
+                            CircleAvatar(
+                              backgroundColor:
+                              colorsConst.primary,
+                              radius: 17,
+                              child: Obx(
+                                    () => CustomText(
+                                  text: controllers.allGoodLeadsLength.value.toString(),
+                                  colors: Colors.white,
+                                  size: 13,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,

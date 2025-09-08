@@ -170,12 +170,13 @@ class PromoteButton extends StatelessWidget {
                           "assets/images/move.svg",
                           height: 30,
                           width: 30,
+                          color: Colors.white,
                         ),
                       )),
               Text(
                 text,
                 style: TextStyle(
-                  color: colorsConst.textColor,
+                  color: Colors.white,
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
@@ -247,7 +248,7 @@ class PromoteButton extends StatelessWidget {
                               });
                         }
                       },
-                      icon: SvgPicture.asset("assets/images/move.svg")),
+                      icon: SvgPicture.asset("assets/images/move.svg",color: Colors.white,)),
             ],
           ),
         ),

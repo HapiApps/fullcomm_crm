@@ -20,8 +20,8 @@ import '../models/product_obj.dart';
 final controllers = Get.put(Controller());
 
 class Controller extends GetxController {
-  var version = "Version 0.0.3";
-  var versionNum = "0.0.3";
+  var version = "Version 0.0.4";
+  var versionNum = "0.0.4";
   // var version = "Version 0.0.14";
   //  var versionNum = "0.0.14";
   String countryDial = "+91";
@@ -237,12 +237,13 @@ class Controller extends GetxController {
     final now = DateTime.now();
 
     final filteredLeads = allNewLeadFuture.where((lead) {
-      final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
-          (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
-          (lead.emailId ?? '').toLowerCase().contains(query);
+      final matchesQuery = query.isEmpty ||
+          (lead.firstname?.toLowerCase().contains(query) ?? false) ||
+          (lead.mobileNumber?.toLowerCase().contains(query) ?? false) ||
+          (lead.emailId?.toLowerCase().contains(query) ?? false);
 
       final matchesRating = ratingFilter.isEmpty ||
-          (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
+          ((lead.rating ?? '').toLowerCase() == ratingFilter.toLowerCase());
 
       bool matchesSort = true;
 
@@ -387,7 +388,6 @@ class Controller extends GetxController {
         }
       });
     }
-
     int start = (currentPage.value - 1) * itemsPerPage;
     if (start >= filteredLeads.length) return [];
 
@@ -396,6 +396,7 @@ class Controller extends GetxController {
 
     return filteredLeads.sublist(start, end);
   }
+
   final int mailPerPage = 100;
 
   List<String> get leadRanges {

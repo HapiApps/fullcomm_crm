@@ -71,13 +71,12 @@ class _ProspectsState extends State<Prospects> {
             width: MediaQuery.of(context).size.width - 130,
             height: MediaQuery.of(context).size.height,
             alignment: Alignment.center,
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                20.height,
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,51 +97,49 @@ class _ProspectsState extends State<Prospects> {
                         )
                       ],
                     ),
-                    CustomLoadingButton(
-                      callback: () {
-                        utils.showImportDialog(context);
-                      },
-                      height: 35,
-                      isLoading: false,
-                      backgroundColor: colorsConst.third,
-                      radius: 2,
-                      width: 100,
-                      isImage: false,
-                      text: "Import",
-                      textColor: Colors.black,
-                    ),
+                    // CustomLoadingButton(
+                    //   callback: () {
+                    //     utils.showImportDialog(context);
+                    //   },
+                    //   height: 35,
+                    //   isLoading: false,
+                    //   backgroundColor: colorsConst.third,
+                    //   radius: 2,
+                    //   width: 100,
+                    //   isImage: false,
+                    //   text: "Import",
+                    //   textColor: Colors.black,
+                    // ),
                   ],
                 ),
                 10.height,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Obx(
-                      () => GroupButton(
-                        //isRadio: true,
-                        controller: controllers.groupController,
-                        options: GroupButtonOptions(
-                            //borderRadius: BorderRadius.circular(20),
-                            spacing: 1,
-                            elevation: 0,
-                            selectedTextStyle:
-                                TextStyle(color: colorsConst.third),
-                            selectedBorderColor: Colors.transparent,
-                            selectedColor: Colors.transparent,
-                            unselectedBorderColor: Colors.transparent,
-                            unselectedColor: Colors.transparent,
-                            unselectedTextStyle:
-                                TextStyle(color: colorsConst.textColor)),
-                        onSelected: (name, index, isSelected) async {
-                          controllers.employeeHeading.value = name;
-                        },
-                        // buttons: ["All ${controllers.leadCategoryList[1]["value"]} ${controllers.allLeadsLength.value}",
-                        //   "Contacted 10","Closed 10","UnHold 10","Follow-up 10","Engaged 10"],
-                        buttons: [
-                          "All ${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[1]["value"]} ${controllers.allLeadsLength.value}"
-                        ],
-                      ),
+                    Row(
+                      children: [
+                        CustomText(
+                          text: "Prospects",
+                          colors: colorsConst.primary,
+                          isBold: true,
+                          size: 15,
+                        ),
+                        10.width,
+                        CircleAvatar(
+                          backgroundColor:
+                          colorsConst.primary,
+                          radius: 17,
+                          child: Obx(
+                                () => CustomText(
+                              text: controllers.allLeadsLength.value.toString(),
+                              colors: Colors.white,
+                              size: 13,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+
                     Row(
                       children: [
                         // IconButton(
@@ -214,11 +211,12 @@ class _ProspectsState extends State<Prospects> {
                               context,
                               controllers.selectedQualifiedSortBy,
                               controllers.selectedPMonth),
-                          child: Text(
-                            controllers.selectedPMonth.value != null
+                          child: CustomText(
+                            text:controllers.selectedPMonth.value != null
                                 ? DateFormat('MMMM yyyy').format(
                                     controllers.selectedPMonth.value!)
                                 : 'Select Month',
+                            colors: Colors.black,
                           ),
                         ),
                         10.width,
@@ -264,7 +262,7 @@ class _ProspectsState extends State<Prospects> {
                             onPressed: null,
                             child: Row(
                               children: [
-                                SvgPicture.asset("assets/images/sort.svg"),
+                                SvgPicture.asset("assets/images/sort.svg",color: Colors.black,),
                                 const SizedBox(width: 6),
                                 Obx(() => CustomText(
                                       text: controllers.selectedQualifiedSortBy.value.isEmpty
@@ -705,13 +703,13 @@ class _ProspectsState extends State<Prospects> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: isCurrent ? colorsConst.third : colorsConst.secondary,
+            color: isCurrent ? colorsConst.primary : colorsConst.secondary,
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
             pageNum.toString().padLeft(2, '0'),
             style: TextStyle(
-              color: isCurrent ? Colors.black : Colors.white,
+              color: isCurrent ? Colors.white : Colors.black,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -723,7 +721,7 @@ class _ProspectsState extends State<Prospects> {
   Widget ellipsis() {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 4),
-      child: Text('...', style: TextStyle(fontSize: 18, color: Colors.white)),
+      child: Text('...', style: TextStyle(fontSize: 18, color: Colors.black)),
     );
   }
 }

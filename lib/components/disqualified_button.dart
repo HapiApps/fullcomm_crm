@@ -20,10 +20,10 @@ class DisqualifiedButton extends StatelessWidget {
       message: "Click here to disqualified the customer details",
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: colorsConst.primary,
+              backgroundColor: colorsConst.backgroundColor,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
-                  side: BorderSide(color: colorsConst.third)
+                  side: BorderSide(color: colorsConst.primary)
               )
           ),
           onPressed: () {
@@ -92,7 +92,7 @@ class DisqualifiedButton extends StatelessWidget {
                   context, "Please select customers");
             }
           },
-          child: CustomText(text: "Disqualified",colors: colorsConst.textColor,)
+          child: CustomText(text: "Disqualified",colors: colorsConst.primary,)
       ),
     );
   }
