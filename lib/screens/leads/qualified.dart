@@ -392,104 +392,89 @@ class _QualifiedState extends State<Qualified> {
                                   }
                                 }
                               },
-                              child:  ScrollbarTheme(
-                                data: ScrollbarThemeData(
-                                  thumbColor: MaterialStateProperty.all(const Color(0xff2C3557)),
-                                  trackColor: MaterialStateProperty.all(const Color(0xff465271)),
-                                  radius: const Radius.circular(10),
-                                  thickness: MaterialStateProperty.all(20),
-                                ),
-                                child: Scrollbar(
-                                  thumbVisibility: true,
-                                  thickness: 10,
-                                  trackVisibility: true,
-                                  radius: const Radius.circular(10),
-                                  controller: _controller,
-                                  child: ListView.builder(
-                                    controller: _controller,
-                                    shrinkWrap: true,
-                                    physics: const ScrollPhysics(),
-                                    itemCount: controllers.paginatedQualifiedLeads.length,
-                                    itemBuilder: (context, index) {
-                                      final data = controllers.paginatedQualifiedLeads[index];
-                                      return Obx(()=>CustomLeadTile(
-                                        saveValue: controllers.isGoodLeadList[index]["isSelect"],
-                                        onChanged: (value){
-                                          setState(() {
-                                            if(controllers.isGoodLeadList[index]["isSelect"]==true){
-                                              controllers.isGoodLeadList[index]["isSelect"]=false;
-                                              var i=apiService.customerList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                              apiService.customerList.removeAt(i);
-                                            }else{
-                                              controllers.isGoodLeadList[index]["isSelect"]=true;
-                                              apiService.customerList.add({
-                                                "lead_id":data.userId.toString(),
-                                                "user_id":controllers.storage.read("id"),
-                                                "rating":data.rating ?? "Warm",
-                                                "cos_id":cosId,
-                                              });
-                                            }
+                              child:  ListView.builder(
+                                controller: _controller,
+                                shrinkWrap: true,
+                                physics: const ScrollPhysics(),
+                                itemCount: controllers.paginatedQualifiedLeads.length,
+                                itemBuilder: (context, index) {
+                                  final data = controllers.paginatedQualifiedLeads[index];
+                                  return Obx(()=>CustomLeadTile(
+                                    saveValue: controllers.isGoodLeadList[index]["isSelect"],
+                                    onChanged: (value){
+                                      setState(() {
+                                        if(controllers.isGoodLeadList[index]["isSelect"]==true){
+                                          controllers.isGoodLeadList[index]["isSelect"]=false;
+                                          var i=apiService.customerList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                          apiService.customerList.removeAt(i);
+                                        }else{
+                                          controllers.isGoodLeadList[index]["isSelect"]=true;
+                                          apiService.customerList.add({
+                                            "lead_id":data.userId.toString(),
+                                            "user_id":controllers.storage.read("id"),
+                                            "rating":data.rating ?? "Warm",
+                                            "cos_id":cosId,
                                           });
-                                        },
-                                        visitType: data.visitType.toString(),
-                                        detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
-                                        statusUpdate: data.statusUpdate.toString(),
-                                        index: index,
-                                        points: data.points.toString(),
-                                        quotationStatus: data.quotationStatus.toString(),
-                                        quotationRequired: data.quotationRequired.toString(),
-                                        productDiscussion: data.productDiscussion.toString(),
-                                        discussionPoint: data.discussionPoint.toString(),
-                                        notes: data.notes.toString(),
-                                        linkedin: "",
-                                        x: "",
-                                        name: data.firstname.toString().split("||")[0],
-                                        mobileNumber: data.mobileNumber.toString().split("||")[0],
-                                        email: data.emailId.toString().split("||")[0],
-                                        companyName: data.companyName.toString(),
-                                        mainWhatsApp: data.mobileNumber.toString().split("||")[0],
-                                        emailUpdate: data.quotationUpdate.toString(),
-                                        id: data.userId.toString(),
-                                        status: data.leadStatus ?? "UnQualified",
-                                        rating: data.rating ?? "Warm",
-                                        mainName: data.firstname.toString().split("||")[0],
-                                        mainMobile: data.mobileNumber.toString().split("||")[0],
-                                        mainEmail: data.emailId.toString().split("||")[0],
-                                        title: "",
-                                        whatsappNumber: data.mobileNumber.toString().split("||")[0],
-                                        mainTitle: "",
-                                        addressId: data.addressId ?? "",
-                                        companyWebsite: "",
-                                        companyNumber: "",
-                                        companyEmail: "",
-                                        industry: "",
-                                        productServices: "",
-                                        source:data.source ?? "",
-                                        owner: "",
-                                        budget: "",
-                                        timelineDecision: "",
-                                        serviceInterest: "",
-                                        description: "",
-                                        leadStatus: data.quotationStatus ?? "",
-                                        active: data.active ?? "",
-                                        addressLine1: data.doorNo ?? "",
-                                        addressLine2: data.landmark1 ?? "",
-                                        area: data.area ?? "",
-                                        city: data.city ?? "",
-                                        state: data.state ?? "",
-                                        country: data.country ?? "",
-                                        pinCode: data.pincode ?? "",
-                                        prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
-                                        expectedConvertionDate: data.expectedConvertionDate ?? "",
-                                        numOfHeadcount: data.numOfHeadcount ?? "",
-                                        expectedBillingValue: data.expectedBillingValue ?? "",
-                                        arpuValue: data.arpuValue ?? "",
-                                        updatedTs: data.createdTs ?? "",
-                                        sourceDetails: data.sourceDetails ?? "",
-                                      ));
+                                        }
+                                      });
                                     },
-                                  ),
-                                ),
+                                    visitType: data.visitType.toString(),
+                                    detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
+                                    statusUpdate: data.statusUpdate.toString(),
+                                    index: index,
+                                    points: data.points.toString(),
+                                    quotationStatus: data.quotationStatus.toString(),
+                                    quotationRequired: data.quotationRequired.toString(),
+                                    productDiscussion: data.productDiscussion.toString(),
+                                    discussionPoint: data.discussionPoint.toString(),
+                                    notes: data.notes.toString(),
+                                    linkedin: "",
+                                    x: "",
+                                    name: data.firstname.toString().split("||")[0],
+                                    mobileNumber: data.mobileNumber.toString().split("||")[0],
+                                    email: data.emailId.toString().split("||")[0],
+                                    companyName: data.companyName.toString(),
+                                    mainWhatsApp: data.mobileNumber.toString().split("||")[0],
+                                    emailUpdate: data.quotationUpdate.toString(),
+                                    id: data.userId.toString(),
+                                    status: data.leadStatus ?? "UnQualified",
+                                    rating: data.rating ?? "Warm",
+                                    mainName: data.firstname.toString().split("||")[0],
+                                    mainMobile: data.mobileNumber.toString().split("||")[0],
+                                    mainEmail: data.emailId.toString().split("||")[0],
+                                    title: "",
+                                    whatsappNumber: data.mobileNumber.toString().split("||")[0],
+                                    mainTitle: "",
+                                    addressId: data.addressId ?? "",
+                                    companyWebsite: "",
+                                    companyNumber: "",
+                                    companyEmail: "",
+                                    industry: "",
+                                    productServices: "",
+                                    source:data.source ?? "",
+                                    owner: "",
+                                    budget: "",
+                                    timelineDecision: "",
+                                    serviceInterest: "",
+                                    description: "",
+                                    leadStatus: data.quotationStatus ?? "",
+                                    active: data.active ?? "",
+                                    addressLine1: data.doorNo ?? "",
+                                    addressLine2: data.landmark1 ?? "",
+                                    area: data.area ?? "",
+                                    city: data.city ?? "",
+                                    state: data.state ?? "",
+                                    country: data.country ?? "",
+                                    pinCode: data.pincode ?? "",
+                                    prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
+                                    expectedConvertionDate: data.expectedConvertionDate ?? "",
+                                    numOfHeadcount: data.numOfHeadcount ?? "",
+                                    expectedBillingValue: data.expectedBillingValue ?? "",
+                                    arpuValue: data.arpuValue ?? "",
+                                    updatedTs: data.createdTs ?? "",
+                                    sourceDetails: data.sourceDetails ?? "",
+                                  ));
+                                },
                               ),
                             ),
                           ):

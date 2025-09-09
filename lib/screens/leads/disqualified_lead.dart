@@ -13,6 +13,7 @@ import 'package:group_button/group_button.dart';
 import 'package:intl/intl.dart';
 import '../../common/constant/api.dart';
 import '../../components/custom_checkbox.dart';
+import '../../components/custom_lead_tile.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
 
@@ -71,16 +72,12 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
             _focusNode.requestFocus();
           },
           child: Container(
-            width: controllers.isLeftOpen.value == false &&
-                controllers.isRightOpen.value == false
-                ? MediaQuery.of(context).size.width - 200
-                : MediaQuery.of(context).size.width - 445,
+            width: MediaQuery.of(context).size.width - 130,
             height: MediaQuery.of(context).size.height,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                20.height,
                 // Header Section
                 buildHeaderSection(),
                 20.height,
@@ -89,74 +86,42 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                 10.height,
                 Divider(thickness: 2, color: colorsConst.secondary),
                 10.height,
-                // Table Section
-                Focus(
-                  autofocus: true,
-                  focusNode: _focusNode,
-                  onKey: (node, event) {
-                    if (event is RawKeyDownEvent) {
-                      if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                        _verticalController.animateTo(
-                          _verticalController.offset + 100,
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                        );
-                        return KeyEventResult.handled;
-                      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                        _verticalController.animateTo(
-                          _verticalController.offset - 100,
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                        );
-                        return KeyEventResult.handled;
-                      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-                        _horizontalController.animateTo(
-                          _horizontalController.offset + 100,
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                        );
-                        return KeyEventResult.handled;
-                      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-                        _horizontalController.animateTo(
-                          _horizontalController.offset - 100,
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                        );
-                        return KeyEventResult.handled;
-                      }
-                    }
-                    return KeyEventResult.ignored;
+                Table(
+                  columnWidths: const {
+                    0: FlexColumnWidth(1),//check box
+                    1: FlexColumnWidth(1),//mail
+                    2: FlexColumnWidth(2),//N
+                    3: FlexColumnWidth(2.5),//CN
+                    4: FlexColumnWidth(2),//MN
+                    5: FlexColumnWidth(3),//Details of Service Required
+                    6: FlexColumnWidth(2),//Source of Prospect
+                    7: FlexColumnWidth(2.5),// Added DateTime
+                    8: FlexColumnWidth(1.5),// Added DateTime
+                    9: FlexColumnWidth(3),// Status Update
+                    // 9: FlexColumnWidth(3),
+                    // 10: FlexColumnWidth(3),
                   },
-                  child: Scrollbar(
-                    controller: _horizontalController,
-                    thumbVisibility: true,
-                    thickness: 8,
-                    radius: const Radius.circular(4),
-                    child: SingleChildScrollView(
-                      controller: _horizontalController,
-                      scrollDirection: Axis.horizontal,
-                      child: Column(
+                  border: TableBorder(
+                    horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                    verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                  ),
+                  children: [
+                    TableRow(
+                        decoration: BoxDecoration(
+                            color: colorsConst.primary,
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(5),
+                                topRight: Radius.circular(5))),
                         children: [
-                          // Table Header
-                          Container(
-                            decoration: BoxDecoration(
-                                color: colorsConst.primary,
-                                borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(20),
-                                    topRight: Radius.circular(20))
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: Container(
-                                    width: 40,
-                                    height: 50,
-                                    alignment: Alignment.center,
-                                    child: Obx(
-                                          () => CustomCheckBox(
-                                          text: "",
+                          Row(//0
+                            children: [
+                              5.width,
+                              Container(
+                                height: 50,
+                                alignment: Alignment.center,
+                                child: Obx(
+                                      () => CustomCheckBox(
+                                      text: "",
                                           onChanged: (value) {
                                             if (controllers.isAllSelected.value == true) {
                                               controllers.isAllSelected.value = false;
@@ -185,260 +150,255 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                             }
                                             //controllers.isMainPerson.value=!controllers.isMainPerson.value;
                                           },
-                                          saveValue: controllers.isAllSelected.value),
-                                    ),
-                                  ),
+                                      saveValue: controllers.isAllSelected.value),
                                 ),
-                                headerCell(
-                                  width: 150, text: "Name",
-                                  isSortable: true,
-                                  fieldName: 'name',
-                                  sortField: controllers.sortField,
-                                  sortOrder: controllers.sortOrder,
-                                  onSortAsc: () {
-                                    controllers.sortField.value = 'name';
-                                    controllers.sortOrder.value = 'asc';
-                                  },
-                                  onSortDesc: () {
-                                    controllers.sortField.value = 'name';
-                                    controllers.sortOrder.value = 'desc';
-                                  },
-                                ),
-                                headerCell(width: 180, text: "Company Name",
-                                  fieldName: 'companyName',
-                                  sortField: controllers.sortField,
-                                  sortOrder: controllers.sortOrder,
-                                  isSortable: true,
-                                  onSortAsc: () {
-                                    controllers.sortField.value = 'companyName';
-                                    controllers.sortOrder.value = 'asc';
-                                  },
-                                  onSortDesc: () {
-                                    controllers.sortField.value = 'companyName';
-                                    controllers.sortOrder.value = 'desc';
-                                  },
-                                ),
-                                headerCell(width: 120, text: "Mobile No.",
-                                  isSortable: true,
-                                  fieldName: 'mobile',
-                                  sortField: controllers.sortField,
-                                  sortOrder: controllers.sortOrder,
-                                  onSortAsc: () {
-                                    controllers.sortField.value = 'mobile';
-                                    controllers.sortOrder.value = 'asc';
-                                  },
-                                  onSortDesc: () {
-                                    controllers.sortField.value = 'mobile';
-                                    controllers.sortOrder.value = 'desc';
-                                  },
-                                ),
-                                headerCell(width: 260, text: "Details of Service Required",
-                                  isSortable: true,
-                                  fieldName: 'serviceRequired',
-                                  sortField: controllers.sortField,
-                                  sortOrder: controllers.sortOrder,
-                                  onSortAsc: () {
-                                    controllers.sortField.value = 'serviceRequired';
-                                    controllers.sortOrder.value = 'asc';
-                                  },
-                                  onSortDesc: () {
-                                    controllers.sortField.value = 'serviceRequired';
-                                    controllers.sortOrder.value = 'desc';
-                                  },
-                                ),
-                                headerCell(width: 200, text: "Source Of Prospect",
-                                  isSortable: true,
-                                  fieldName: 'sourceOfProspect',
-                                  sortField: controllers.sortField,
-                                  sortOrder: controllers.sortOrder,
-                                  onSortAsc: () {
-                                    controllers.sortField.value = 'sourceOfProspect';
-                                    controllers.sortOrder.value = 'asc';
-                                  },
-                                  onSortDesc: () {
-                                    controllers.sortField.value = 'sourceOfProspect';
-                                    controllers.sortOrder.value = 'desc';
-                                  },
-                                ),
-                                headerCell(width: 200, text: "Added DateTime",
-                                  isSortable: true,
-                                  fieldName: 'date',
-                                  sortField: controllers.sortField,
-                                  sortOrder: controllers.sortOrder,
-                                  onSortAsc: () {
-                                    controllers.sortField.value = 'date';
-                                    controllers.sortOrder.value = 'asc';
-                                  },
-                                  onSortDesc: () {
-                                    controllers.sortField.value = 'date';
-                                    controllers.sortOrder.value = 'desc';
-                                  },
-                                ),
-                                headerCell(width: 150, text: "City",
-                                  fieldName: 'city',
-                                  sortField: controllers.sortField,
-                                  sortOrder: controllers.sortOrder,
-                                  isSortable: true,
-                                  onSortAsc: () {
-                                    controllers.sortField.value = 'city';
-                                    controllers.sortOrder.value = 'asc';
-                                  },
-                                  onSortDesc: () {
-                                    controllers.sortField.value = 'city';
-                                    controllers.sortOrder.value = 'desc';
-                                  },
-                                ),
-                                headerCell(width: 200, text: "Status Update",
-                                  fieldName: 'statusUpdate',
-                                  sortField: controllers.sortField,
-                                  sortOrder: controllers.sortOrder,
-                                  isSortable: true,
-                                  onSortAsc: () {
-                                    controllers.sortField.value = 'statusUpdate';
-                                    controllers.sortOrder.value = 'asc';
-                                  },
-                                  onSortDesc: () {
-                                    controllers.sortField.value = 'statusUpdate';
-                                    controllers.sortOrder.value = 'desc';
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          10.height,
-                          // Table Body
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height - 400,
-                            width: 1510,
-                            child: Scrollbar(
-                              controller: _verticalController,
-                              thumbVisibility: true,
-                              trackVisibility: true,
-                              interactive: true,
-                              thickness: 10,
-                              radius: const Radius.circular(10),
-                              child: ListView.separated(
-                                separatorBuilder: (context, index) {
-                                  return 5.height;
-                                },
-                                controller: _verticalController,
-                                itemCount: controllers.paginatedDisqualified.length,
-                                itemBuilder: (context, index) {
-                                  final data = controllers.paginatedDisqualified[index];
-                                  return InkWell(
-                                    onTap: () {
-                                      Get.to(ViewLead(
-                                        id:data.userId.toString(),
-                                        linkedin: "",
-                                        x: "",
-                                        mainName:data.firstname.toString().split("||")[0],
-                                        mainMobile:data.mobileNumber.toString().split("||")[0],
-                                        mainEmail:data.emailId.toString().split("||")[0],
-                                        mainWhatsApp: data.mobileNumber.toString().split("||")[0],
-                                        companyName:data.companyName.toString(),
-                                        status:data.leadStatus ?? "UnQualified",
-                                        rating:data.rating ?? "Warm",
-                                        emailUpdate:data.quotationUpdate.toString(),
-                                        name:data.firstname.toString().split("||")[0],
-                                        title:"",
-                                        mobileNumber:data.mobileNumber.toString().split("||")[0],
-                                        whatsappNumber:data.mobileNumber.toString().split("||")[0],
-                                        email:data.emailId.toString().split("||")[0],
-                                        mainTitle:"",
-                                        addressId:data.addressId ?? "",
-                                        companyWebsite:"",
-                                        companyNumber:"",
-                                        companyEmail:"",
-                                        industry:"",
-                                        productServices:"",
-                                        source:"",
-                                        owner:"",
-                                        budget:"",
-                                        timelineDecision:"",
-                                        serviceInterest:"",
-                                        description:"",
-                                        leadStatus:data.quotationStatus ?? "",
-                                        active:data.active ?? "",
-                                        addressLine1:data.doorNo ?? "",
-                                        addressLine2:data.landmark1 ?? "",
-                                        area:data.area ?? "",
-                                        city: data.city ?? "",
-                                        state: data.state ?? "",
-                                        country: data.country ?? "",
-                                        pinCode: data.pincode ?? "",
-                                        quotationStatus:data.quotationStatus.toString(),
-                                        productDiscussion:data.productDiscussion.toString(),
-                                        discussionPoint:data.discussionPoint.toString(),
-                                        notes:data.notes.toString(),
-                                        prospectEnrollmentDate:data.prospectEnrollmentDate ?? "",
-                                        expectedConvertionDate: data.expectedConvertionDate ?? "",
-                                        numOfHeadcount: data.numOfHeadcount ?? "",
-                                        expectedBillingValue: data.expectedBillingValue ?? "",
-                                        arpuValue: data.arpuValue ?? "",
-                                        updateTs: data.createdTs ?? "",
-                                        sourceDetails: data.sourceDetails ?? "",
-                                      ),duration: Duration.zero
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 10),
-                                      decoration: BoxDecoration(
-                                        color: index % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 10),
-                                            child: Container(
-                                              height: 70,
-                                              width: 40,
-                                              alignment: Alignment.center,
-                                              child: Obx(() =>  CustomCheckBox(
-                                                  text: "",
-                                                  onChanged: (value){
-                                                    setState(() {
-                                                      if(controllers.isDisqualifiedList[index]["isSelect"]==true){
-                                                        controllers.isDisqualifiedList[index]["isSelect"]=false;
-                                                        var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                                        apiService.prospectsList.removeAt(i);
-                                                      }else{
-                                                        controllers.isDisqualifiedList[index]["isSelect"]=true;
-                                                        apiService.prospectsList.add({
-                                                          "lead_id":data.userId.toString(),
-                                                          "user_id":controllers.storage.read("id"),
-                                                          "rating":data.rating.toString(),
-                                                          "cos_id":cosId,
-                                                          "mail":data.emailId.toString(),
-                                                        });
-                                                      }
-                                                    });
-                                                  },
-                                                  saveValue: controllers.isDisqualifiedList[index]["isSelect"]),
-                                              ),
-                                            ),
-                                          ),
-                                          dataCell(width: 150, text: data.firstname.toString().split("||")[0]),
-                                          dataCell(width: 180, text: data.companyName ?? ""),
-                                          dataCell(width: 120, text: data.mobileNumber.toString().split("||")[0]),
-                                          dataCell(width: 260, text: data.detailsOfServiceRequired ?? ""),
-                                          dataCell(width: 200, text: data.source ?? ""),
-                                          dataCell(width: 200, text: controllers.formatDateTime(data.prospectEnrollmentDate.toString().isEmpty||data.prospectEnrollmentDate.toString()=="null"?data.updatedTs.toString():data.prospectEnrollmentDate.toString())),
-                                          dataCell(width: 150, text: data.city ?? ""),
-                                          dataCell(width: 200, text: data.statusUpdate ?? ""),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
                               ),
+                            ],
+                          ),
+                          CustomText(
+                            textAlign: TextAlign.center,
+                            text: "\nMail\n",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                          CustomText(//1
+                            textAlign: TextAlign.center,
+                            text: "\nName\n",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                          CustomText(//2
+                            textAlign: TextAlign.center,
+                            text: "\nCompany Name\n",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                          CustomText(//3
+                            textAlign: TextAlign.center,
+                            text: "\nMobile No.\n",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                          // CustomText(
+                          //   textAlign: TextAlign.center,
+                          //   text: "\nEmail\n",
+                          //   size: 15,
+                          //   isBold: true,
+                          //   colors: colorsConst.textColor,
+                          // ),
+                          Padding(//6
+                            padding: const EdgeInsets.all(8.0),
+                            child: CustomText(
+                              textAlign: TextAlign.center,
+                              text: "Details of Service\nRequired",
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
                             ),
                           ),
+                          Padding(//7
+                            padding: const EdgeInsets.all(8.0),
+                            child: CustomText(
+                              textAlign: TextAlign.center,
+                              text: "Source Of \nProspect",
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(//8
+                                padding: const EdgeInsets.all(8.0),
+                                child: CustomText(
+                                  textAlign: TextAlign.center,
+                                  text: "Added\nDateTime",
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Obx(() => GestureDetector(
+                                onTap: (){
+                                  controllers.sortField.value = 'date';
+                                  controllers.sortOrder.value = 'asc';
+                                },
+                                child: Icon(
+                                  Icons.arrow_upward,
+                                  size: 16,
+                                  color: (controllers.sortField.value == 'date' &&
+                                      controllers.sortOrder.value == 'asc')
+                                      ? colorsConst.third
+                                      : Colors.grey,
+                                ),
+                              )),
+                              Obx(() => GestureDetector(
+                                onTap: (){
+                                  controllers.sortField.value = 'date';
+                                  controllers.sortOrder.value = 'desc';
+                                },
+                                child: Icon(
+                                  Icons.arrow_downward,
+                                  size: 16,
+                                  color: (controllers.sortField.value == 'date' &&
+                                      controllers.sortOrder.value == 'desc')
+                                      ? Colors.white
+                                      : Colors.grey,
+                                ),
+                              )
+                              ),
+                            ],
+                          ),
+                          CustomText(//4
+                            textAlign: TextAlign.center,
+                            text: "\nCity\n",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                          CustomText(//9
+                            textAlign: TextAlign.center,
+                            text: "\nStatus Update\n",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                        ]),
+                  ],
+                ),
+                Expanded(
+                  //height: MediaQuery.of(context).size.height/1.5,
+                  child: Obx(
+                          () => controllers.isLead.value == false
+                          ? const Center(child: CircularProgressIndicator())
+                          : controllers.paginatedDisqualified.isNotEmpty?
+                      GestureDetector(
+                        onTap: () {
+                          _focusNode.requestFocus();
+                        },
+                        child: RawKeyboardListener(
+                          focusNode: _focusNode,
+                          autofocus: true,
+                          onKey: (event) {
+                            if (event is RawKeyDownEvent) {
+                              if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                                _controller.animateTo(
+                                  _controller.offset + 100,
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeInOut,
+                                );
+                              } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                                _controller.animateTo(
+                                  _controller.offset - 100,
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeInOut,
+                                );
+                              }
+                            }
+                          },
+                          child:  ListView.builder(
+                            controller: _controller,
+                            shrinkWrap: true,
+                            physics: const ScrollPhysics(),
+                            itemCount: controllers.paginatedDisqualified.length,
+                            itemBuilder: (context, index) {
+                              final data = controllers.paginatedDisqualified[index];
+                              return Obx(()=>CustomLeadTile(
+                                  onChanged: (value){
+                                    setState(() {
+                                      if(controllers.isDisqualifiedList[index]["isSelect"]==true){
+                                        controllers.isDisqualifiedList[index]["isSelect"]=false;
+                                        var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                        apiService.prospectsList.removeAt(i);
+                                      }else{
+                                        controllers.isDisqualifiedList[index]["isSelect"]=true;
+                                        apiService.prospectsList.add({
+                                          "lead_id":data.userId.toString(),
+                                          "user_id":controllers.storage.read("id"),
+                                          "rating":data.rating.toString(),
+                                          "cos_id":cosId,
+                                          "mail":data.emailId.toString(),
+                                        });
+                                      }
+                                    });
+                                  },
+                                  saveValue: controllers.isDisqualifiedList[index]["isSelect"],
+                                visitType: data.visitType.toString(),
+                                detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
+                                statusUpdate: data.statusUpdate.toString(),
+                                index: index,
+                                points: data.points.toString(),
+                                quotationStatus: data.quotationStatus.toString(),
+                                quotationRequired: data.quotationRequired.toString(),
+                                productDiscussion: data.productDiscussion.toString(),
+                                discussionPoint: data.discussionPoint.toString(),
+                                notes: data.notes.toString(),
+                                linkedin: "",
+                                x: "",
+                                name: data.firstname.toString().split("||")[0],
+                                mobileNumber: data.mobileNumber.toString().split("||")[0],
+                                email: data.emailId.toString().split("||")[0],
+                                companyName: data.companyName.toString(),
+                                mainWhatsApp: data.mobileNumber.toString().split("||")[0],
+                                emailUpdate: data.quotationUpdate.toString(),
+                                id: data.userId.toString(),
+                                status: data.leadStatus ?? "UnQualified",
+                                rating: data.rating ?? "Warm",
+                                mainName: data.firstname.toString().split("||")[0],
+                                mainMobile: data.mobileNumber.toString().split("||")[0],
+                                mainEmail: data.emailId.toString().split("||")[0],
+                                title: "",
+                                whatsappNumber: data.mobileNumber.toString().split("||")[0],
+                                mainTitle: "",
+                                addressId: data.addressId ?? "",
+                                companyWebsite: "",
+                                companyNumber: "",
+                                companyEmail: "",
+                                industry: "",
+                                productServices: "",
+                                source:data.source ?? "",
+                                owner: "",
+                                budget: "",
+                                timelineDecision: "",
+                                serviceInterest: "",
+                                description: "",
+                                leadStatus: data.quotationStatus ?? "",
+                                active: data.active ?? "",
+                                addressLine1: data.doorNo ?? "",
+                                addressLine2: data.landmark1 ?? "",
+                                area: data.area ?? "",
+                                city: data.city ?? "",
+                                state: data.state ?? "",
+                                country: data.country ?? "",
+                                pinCode: data.pincode ?? "",
+                                prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
+                                expectedConvertionDate: data.expectedConvertionDate ?? "",
+                                numOfHeadcount: data.numOfHeadcount ?? "",
+                                expectedBillingValue: data.expectedBillingValue ?? "",
+                                arpuValue: data.arpuValue ?? "",
+                                updatedTs: data.createdTs ?? "",
+                                sourceDetails: data.sourceDetails ?? "",
+                              ));
+                            },
+                          ),
+                        ),
+                      ):
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          100.height,
+                          Center(
+                              child: SvgPicture.asset(
+                                  "assets/images/noDataFound.svg")),
                         ],
-                      ),
-                    ),
+                      )
                   ),
                 ),
-
                 // Pagination
                 Obx(() {
                   final totalPages = controllers.totalPages == 0 ? 1 : controllers.totalPages;
@@ -497,7 +457,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
               size: 25,
               isBold: true,
             ),
-            10.height,
+            5.height,
             CustomText(
               text: "View all of your Disqualified Information",
               colors: colorsConst.textColor,
@@ -514,35 +474,38 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Obx(() => GroupButton(
-              controller: controllers.groupController,
-              options: GroupButtonOptions(
-                spacing: 1,
-                elevation: 0,
-                selectedTextStyle: TextStyle(color: colorsConst.third),
-                selectedBorderColor: Colors.transparent,
-                selectedColor: Colors.transparent,
-                unselectedBorderColor: Colors.transparent,
-                unselectedColor: Colors.transparent,
-                unselectedTextStyle: TextStyle(color: colorsConst.textColor),
-              ),
-              onSelected: (name, index, isSelected) {
-                controllers.employeeHeading.value = name;
-              },
-              buttons: [
-                "All Disqualified ${controllers.allDisqualifiedLength.value}"
+            Row(
+              children: [
+                CustomText(
+                  text: "Disqualified",
+                  colors: colorsConst.primary,
+                  isBold: true,
+                  size: 15,
+                ),
+                10.width,
+                CircleAvatar(
+                  backgroundColor: colorsConst.primary,
+                  radius: 17,
+                  child: Obx(
+                        () => CustomText(
+                      text: controllers.allDisqualifiedLength.value.toString(),
+                      colors: Colors.white,
+                      size: 13,
+                    ),
+                  ),
+                ),
               ],
-            )),
+            ),
             Row(
               children: [
                 Tooltip(
                   message: "Click here to qualified the customer details",
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: colorsConst.primary,
+                          backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
-                              side: BorderSide(color: colorsConst.third)
+                              side: BorderSide(color: colorsConst.primary)
                           )
                       ),
                       onPressed: () {
@@ -614,7 +577,8 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                               context, "Please select customers");
                         }
                       },
-                      child: CustomText(text: "Qualified",colors: colorsConst.textColor,)
+                      child: CustomText(text: "Qualified",
+                        colors: colorsConst.primary,)
                   ),
                 ),
                 5.width,

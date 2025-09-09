@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
@@ -33,6 +34,24 @@ class MailComments extends StatefulWidget {
 }
 
 class _MailCommentsState extends State<MailComments> {
+  late FocusNode _focusNode;
+  final ScrollController _controller = ScrollController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _focusNode = FocusNode();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -41,17 +60,14 @@ class _MailCommentsState extends State<MailComments> {
     screenWidth > screenHeight ? screenWidth * 0.30 : screenWidth * 0.90;
     return SelectionArea(
       child: Scaffold(
-        body: Obx(() => Container(
-                width: controllers.isLeftOpen.value == false &&
-                        controllers.isRightOpen.value == false
-                    ? MediaQuery.of(context).size.width - 200
-                    : MediaQuery.of(context).size.width - 490,
+        body: Container(
+                width:MediaQuery.of(context).size.width - 130,
                 height: MediaQuery.of(context).size.height,
                 alignment: Alignment.center,
+                padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    10.height,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -64,7 +80,7 @@ class _MailCommentsState extends State<MailComments> {
                               isBold: true,
                               size: 25,
                             ),
-                            10.height,
+                            5.height,
                             CustomText(
                               text: "View all Mail Activity Report ",
                               colors: colorsConst.textColor,
@@ -114,191 +130,270 @@ class _MailCommentsState extends State<MailComments> {
                     15.height,
                     Divider(color: Colors.grey, height: 1,),
                     15.height,
-                    // Table Header
-                    Container(
-                      height: 40,
-                      decoration: BoxDecoration(
-                          color: colorsConst.primary,
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(5),
-                              topRight: Radius.circular(5))
+                    Table(
+                      columnWidths: const {
+                        0: FlexColumnWidth(3),//date
+                        1: FlexColumnWidth(3.5),//Customer Name
+                        2: FlexColumnWidth(2),//Mobile No.
+                        3: FlexColumnWidth(3),//Call Type
+                        4: FlexColumnWidth(3.5),//Message
+                        5: FlexColumnWidth(4.5),//Actions
+                      },
+                      border: TableBorder(
+                        horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                        verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                       ),
-                      child: Row(
-                        children: [
-                          utils.headerCell(width: 155, text: "Date",
-                            isSortable: true,
-                            fieldName: 'sourceOfProspect',
-                            sortField: controllers.sortField,
-                            sortOrder: controllers.sortOrder,
-                            onSortAsc: () {
-                              controllers.sortField.value = 'sourceOfProspect';
-                              controllers.sortOrder.value = 'asc';
-                            },
-                            onSortDesc: () {
-                              controllers.sortField.value = 'sourceOfProspect';
-                              controllers.sortOrder.value = 'desc';
-                            },
-                          ),
-                          VerticalDivider(
-                            color: Colors.grey,
-                            width: 0.5,
-                          ),
-                          utils.headerCell(
-                            width: 160, text: "Customer Name",
-                            isSortable: true,
-                            fieldName: 'name',
-                            sortField: controllers.sortField,
-                            sortOrder: controllers.sortOrder,
-                            onSortAsc: () {
-                              controllers.sortField.value = 'name';
-                              controllers.sortOrder.value = 'asc';
-                            },
-                            onSortDesc: () {
-                              controllers.sortField.value = 'name';
-                              controllers.sortOrder.value = 'desc';
-                            },
-                          ),
-                          VerticalDivider(
-                            color: Colors.grey,
-                            width: 0.5,
-                          ),
-                          utils.headerCell(width: 160, text: "Sent Mail",
-                            fieldName: 'companyName',
-                            sortField: controllers.sortField,
-                            sortOrder: controllers.sortOrder,
-                            isSortable: true,
-                            onSortAsc: () {
-                              controllers.sortField.value = 'companyName';
-                              controllers.sortOrder.value = 'asc';
-                            },
-                            onSortDesc: () {
-                              controllers.sortField.value = 'companyName';
-                              controllers.sortOrder.value = 'desc';
-                            },
-                          ),
-                          VerticalDivider(
-                            color: Colors.grey,
-                            width: 0.5,
-                          ),
-                          utils.headerCell(width: 160, text: "Subject",
-                            fieldName: 'companyName',
-                            sortField: controllers.sortField,
-                            sortOrder: controllers.sortOrder,
-                            isSortable: true,
-                            onSortAsc: () {
-                              controllers.sortField.value = 'companyName';
-                              controllers.sortOrder.value = 'asc';
-                            },
-                            onSortDesc: () {
-                              controllers.sortField.value = 'companyName';
-                              controllers.sortOrder.value = 'desc';
-                            },
-                          ),
-                          VerticalDivider(
-                            color: Colors.grey,
-                            width: 0.5,
-                          ),
-                          utils.headerCell(width: 230, text: "Message",
-                            isSortable: true,
-                            fieldName: 'serviceRequired',
-                            sortField: controllers.sortField,
-                            sortOrder: controllers.sortOrder,
-                            onSortAsc: () {
-                              controllers.sortField.value = 'serviceRequired';
-                              controllers.sortOrder.value = 'asc';
-                            },
-                            onSortDesc: () {
-                              controllers.sortField.value = 'serviceRequired';
-                              controllers.sortOrder.value = 'desc';
-                            },
-                          ),
-                          VerticalDivider(
-                            color: Colors.grey,
-                            width: 0.5,
-                          ),
-
-                          Container(
-                            width: 160,
-                            alignment: Alignment.center,
-                            child: CustomText(
-                              text: "Actions",
-                              size: 15,
-                              isBold: true,
-                              textAlign: TextAlign.center,
-                              colors: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Table Body
-                    Obx(()=>controllers.isMailLoading.value?
-                    Center(child:CircularProgressIndicator()):
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height - 400,
-                      child: ListView.builder(
-                        itemCount: controllers.mailActivity.length,
-                        itemBuilder: (context, index) {
-                          final data = controllers.mailActivity[index];
-                          return Container(
-                            height: 60,
+                      children: [
+                        TableRow(
                             decoration: BoxDecoration(
-                              color: index % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                            ),
-                            child: Row(
-                              children: [
-                                utils.dataCell(width: 155, text: data.sentDate),
-                                VerticalDivider(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                                utils.dataCell(width: 160, text: data.customerName),
-                                VerticalDivider(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                                utils.dataCell(width: 160, text: data.toData),
-                                VerticalDivider(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                                utils.dataCell(width: 160, text: data.subject),
-                                VerticalDivider(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                                utils.dataCell(width: 230, text: data.message),
-                                VerticalDivider(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                                SizedBox(
-                                  width: 160,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                          onPressed: (){},
-                                          icon: SvgPicture.asset("assets/images/reply.svg")),
-                                      IconButton(
-                                          onPressed: (){},
-                                          icon: SvgPicture.asset("assets/images/forward.svg")),
-                                      IconButton(
-                                          onPressed: (){},
-                                          icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
-                                    ],
+                                color: colorsConst.primary,
+                                borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(5),
+                                    topRight: Radius.circular(5))),
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: CustomText(
+                                      textAlign: TextAlign.center,
+                                      text: "Date",
+                                      size: 15,
+                                      isBold: true,
+                                      colors: Colors.white,
+                                    ),
                                   ),
-                                )
-                              ],
+                                  Obx(() => GestureDetector(
+                                    onTap: (){
+                                      controllers.sortField.value = 'date';
+                                      controllers.sortOrder.value = 'asc';
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_upward,
+                                      size: 16,
+                                      color: (controllers.sortField.value == 'date' &&
+                                          controllers.sortOrder.value == 'asc')
+                                          ? Colors.white
+                                          : Colors.grey,
+                                    ),
+                                  )),
+                                  Obx(() => GestureDetector(
+                                    onTap: (){
+                                      controllers.sortField.value = 'date';
+                                      controllers.sortOrder.value = 'desc';
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_downward,
+                                      size: 16,
+                                      color: (controllers.sortField.value == 'date' &&
+                                          controllers.sortOrder.value == 'desc')
+                                          ? Colors.white
+                                          : Colors.grey,
+                                    ),
+                                  )
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: CustomText(//1
+                                  textAlign: TextAlign.center,
+                                  text: "Customer Name",
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: CustomText(//2
+                                  textAlign: TextAlign.center,
+                                  text: "Sent Mail",
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: CustomText(
+                                  textAlign: TextAlign.center,
+                                  text: "Subject",
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: CustomText(
+                                  textAlign: TextAlign.center,
+                                  text: "Message",
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: CustomText(//9
+                                  textAlign: TextAlign.center,
+                                  text: "Actions",
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                            ]),
+                      ],
+                    ),
+                    Expanded(
+                        child: Obx((){
+                          return controllers.isMailLoading.value?
+                          Center(child:CircularProgressIndicator()):controllers.mailActivity.isEmpty?
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              100.height,
+                              Center(
+                                  child: SvgPicture.asset(
+                                      "assets/images/noDataFound.svg")),
+                            ],
+                          )
+                              :RawKeyboardListener(
+                            focusNode: _focusNode,
+                            autofocus: true,
+                            onKey: (event) {
+                              if (event is RawKeyDownEvent) {
+                                if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                                  _controller.animateTo(
+                                    _controller.offset + 100,
+                                    duration: const Duration(milliseconds: 200),
+                                    curve: Curves.easeInOut,
+                                  );
+                                } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                                  _controller.animateTo(
+                                    _controller.offset - 100,
+                                    duration: const Duration(milliseconds: 200),
+                                    curve: Curves.easeInOut,
+                                  );
+                                }
+                              }
+                            },
+                            child: ListView.builder(
+                              controller: _controller,
+                              shrinkWrap: true,
+                              physics: const ScrollPhysics(),
+                              itemCount: controllers.mailActivity.length,
+                              itemBuilder: (context, index) {
+                                final data = controllers.mailActivity[index];
+                                return Table(
+                                  columnWidths:const {
+                                    0: FlexColumnWidth(3),//date
+                                    1: FlexColumnWidth(3.5),//Customer Name
+                                    2: FlexColumnWidth(2),//Mobile No.
+                                    3: FlexColumnWidth(3),//Call Type
+                                    4: FlexColumnWidth(3.5),//Message
+                                    5: FlexColumnWidth(4.5),//Actions
+                                  },
+                                  border: TableBorder(
+                                    horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                    verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                    bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                  ),
+                                  children:[
+                                    TableRow(
+                                        decoration: BoxDecoration(
+                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                        ),
+                                        children:[
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.center,
+                                              text: data.sentDate.toString(),
+                                              size: 14,
+                                              colors: colorsConst.textColor,
+                                            ),
+                                          ),
+                                          Tooltip(
+                                            message: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                                size: 14,
+                                                colors:colorsConst.textColor,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.center,
+                                              text:data.toData.toString()=="null"?"":data.toData.toString(),
+                                              size: 14,
+                                              colors: colorsConst.textColor,
+                                            ),
+                                          ),
+                                          Tooltip(
+                                            message: data.subject.toString()=="null"?"":data.subject.toString(),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: data.subject.toString(),
+                                                size: 14,
+                                                colors:colorsConst.textColor,
+                                              ),
+                                            ),
+                                          ),
+                                          Tooltip(
+                                            message: data.message.toString()=="null"?"":data.message.toString(),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: data.message.toString(),
+                                                size: 14,
+                                                colors:colorsConst.textColor,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                IconButton(
+                                                    onPressed: (){},
+                                                    icon: Icon(Icons.edit,color: Colors.green,)),
+                                                IconButton(
+                                                    onPressed: (){},
+                                                    icon: SvgPicture.asset("assets/images/add_note.svg")),
+                                                IconButton(
+                                                    onPressed: (){},
+                                                    icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
+                                              ],
+                                            ),
+                                          ),
+
+                                        ]
+                                    ),
+
+                                  ],
+                                );
+                              },
                             ),
                           );
-                        },
-                      ),
-                    ),)
+                        })
+                    ),
+
                   ],
                 ),
               ),
-            ),
 
       ),
     );

@@ -1634,19 +1634,6 @@ class Utils {
                 }),
             ),
             Obx(() => CustomSideBarText(
-                boxColor: controllers.selectedIndex.value == 9
-                    ? const Color(0xffF3F8FD)
-                    : colorsConst.backgroundColor,
-                textColor: controllers.selectedIndex.value == 9
-                    ? colorsConst.primary
-                    : Colors.black,
-                text: "Notes Records",
-                onClicked: () {
-                  controllers.oldIndex.value = controllers.selectedIndex.value;
-                  controllers.selectedIndex.value = 9;
-                }),
-            ),
-            Obx(() => CustomSideBarText(
                       boxColor: controllers.selectedIndex.value == 10
                           ? const Color(0xffF3F8FD)
                           : colorsConst.backgroundColor,

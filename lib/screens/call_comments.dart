@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
@@ -24,30 +25,44 @@ class CallComments extends StatefulWidget {
 }
 
 class _CallCommentsState extends State<CallComments> {
+
   bool dateCheck() {
     return controllers.stDate.value !=
         "${DateTime.now().day.toString().padLeft(2, "0")}"
             "-${DateTime.now().month.toString().padLeft(2, "0")}"
             "-${DateTime.now().year.toString()}";
   }
+  late FocusNode _focusNode;
+  final ScrollController _controller = ScrollController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _focusNode = FocusNode();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
 
-
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return SelectionArea(
       child: Scaffold(
         body: Container(
-          width: controllers.isLeftOpen.value == false &&
-              controllers.isRightOpen.value == false
-              ? screenWidth - 200
-              : screenWidth - 440,
+          width: screenWidth - 130,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
+              padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  20.height,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -521,215 +536,289 @@ class _CallCommentsState extends State<CallComments> {
                   ),
                   15.height,
                       // Table Header
-                      Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                            color: colorsConst.primary,
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(5),
-                                topRight: Radius.circular(5))
-                        ),
-                        //padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Row(
+                  Table(
+                    columnWidths: const {
+                      0: FlexColumnWidth(3),//date
+                      1: FlexColumnWidth(3.5),//Customer Name
+                      2: FlexColumnWidth(2),//Mobile No.
+                      3: FlexColumnWidth(3),//Call Type
+                      4: FlexColumnWidth(3.5),//Message
+                      5: FlexColumnWidth(2.5),//Status
+                      6: FlexColumnWidth(4.5),//Actions
+                    },
+                    border: TableBorder(
+                      horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                      verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                    ),
+                    children: [
+                      TableRow(
+                          decoration: BoxDecoration(
+                              color: colorsConst.primary,
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(5),
+                                  topRight: Radius.circular(5))),
                           children: [
-                            utils.headerCell(width: 155, text: "Date",
-                              isSortable: true,
-                              fieldName: 'sourceOfProspect',
-                              sortField: controllers.sortField,
-                              sortOrder: controllers.sortOrder,
-                              onSortAsc: () {
-                                controllers.sortField.value = 'sourceOfProspect';
-                                controllers.sortOrder.value = 'asc';
-                              },
-                              onSortDesc: () {
-                                controllers.sortField.value = 'sourceOfProspect';
-                                controllers.sortOrder.value = 'desc';
-                              },
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: CustomText(
+                                    textAlign: TextAlign.center,
+                                    text: "Date",
+                                    size: 15,
+                                    isBold: true,
+                                    colors: Colors.white,
+                                  ),
+                                ),
+                                Obx(() => GestureDetector(
+                                  onTap: (){
+                                    controllers.sortField.value = 'date';
+                                    controllers.sortOrder.value = 'asc';
+                                  },
+                                  child: Icon(
+                                    Icons.arrow_upward,
+                                    size: 16,
+                                    color: (controllers.sortField.value == 'date' &&
+                                        controllers.sortOrder.value == 'asc')
+                                        ? Colors.white
+                                        : Colors.grey,
+                                  ),
+                                )),
+                                Obx(() => GestureDetector(
+                                  onTap: (){
+                                    controllers.sortField.value = 'date';
+                                    controllers.sortOrder.value = 'desc';
+                                  },
+                                  child: Icon(
+                                    Icons.arrow_downward,
+                                    size: 16,
+                                    color: (controllers.sortField.value == 'date' &&
+                                        controllers.sortOrder.value == 'desc')
+                                        ? Colors.white
+                                        : Colors.grey,
+                                  ),
+                                )
+                                ),
+                              ],
                             ),
-                            VerticalDivider(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            utils.headerCell(
-                              width: 160, text: "Customer Name",
-                              isSortable: true,
-                              fieldName: 'name',
-                              sortField: controllers.sortField,
-                              sortOrder: controllers.sortOrder,
-                              onSortAsc: () {
-                                controllers.sortField.value = 'name';
-                                controllers.sortOrder.value = 'asc';
-                              },
-                              onSortDesc: () {
-                                controllers.sortField.value = 'name';
-                                controllers.sortOrder.value = 'desc';
-                              },
-                            ),
-                            VerticalDivider(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            utils.headerCell(width: 140, text: "Mobile No.",
-                              fieldName: 'companyName',
-                              sortField: controllers.sortField,
-                              sortOrder: controllers.sortOrder,
-                              isSortable: true,
-                              onSortAsc: () {
-                                controllers.sortField.value = 'companyName';
-                                controllers.sortOrder.value = 'asc';
-                              },
-                              onSortDesc: () {
-                                controllers.sortField.value = 'companyName';
-                                controllers.sortOrder.value = 'desc';
-                              },
-                            ),
-                            VerticalDivider(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            utils.headerCell(
-                              width: 120, text: "Call Type",
-                              fieldName: 'companyName',
-                              sortField: controllers.sortField,
-                              sortOrder: controllers.sortOrder,
-                              isSortable: true,
-                              onSortAsc: () {
-                                controllers.sortField.value = 'companyName';
-                                controllers.sortOrder.value = 'asc';
-                              },
-                              onSortDesc: () {
-                                controllers.sortField.value = 'companyName';
-                                controllers.sortOrder.value = 'desc';
-                              },
-                            ),
-                            VerticalDivider(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            utils.headerCell(
-                              width: 200, text: "Message",
-                              isSortable: true,
-                              fieldName: 'serviceRequired',
-                              sortField: controllers.sortField,
-                              sortOrder: controllers.sortOrder,
-                              onSortAsc: () {
-                                controllers.sortField.value = 'serviceRequired';
-                                controllers.sortOrder.value = 'asc';
-                              },
-                              onSortDesc: () {
-                                controllers.sortField.value = 'serviceRequired';
-                                controllers.sortOrder.value = 'desc';
-                              },
-                            ),
-                            VerticalDivider(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            utils.headerCell(width: 90, text: "Status",
-                              fieldName: 'companyName',
-                              sortField: controllers.sortField,
-                              sortOrder: controllers.sortOrder,
-                              isSortable: true,
-                              onSortAsc: () {
-                                controllers.sortField.value = 'companyName';
-                                controllers.sortOrder.value = 'asc';
-                              },
-                              onSortDesc: () {
-                                controllers.sortField.value = 'companyName';
-                                controllers.sortOrder.value = 'desc';
-                              },
-                            ),
-                            VerticalDivider(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            Container(
-                              width: 160,
-                              alignment: Alignment.center,
-                              child: CustomText(
-                                text: "Actions",
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(//1
+                                textAlign: TextAlign.center,
+                                text: "Customer Name",
                                 size: 15,
                                 isBold: true,
-                                textAlign: TextAlign.center,
                                 colors: Colors.white,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      // Table Body
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height - 400,
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(//2
+                                textAlign: TextAlign.center,
+                                text: "Mobile No",
+                                size: 15,
+                                isBold: true,
+                                colors: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(
+                                textAlign: TextAlign.center,
+                                text: "Call Type",
+                                size: 15,
+                                isBold: true,
+                                colors: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(
+                                textAlign: TextAlign.center,
+                                text: "Message",
+                                size: 15,
+                                isBold: true,
+                                colors: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(//4
+                                textAlign: TextAlign.center,
+                                text: "Status",
+                                size: 15,
+                                isBold: true,
+                                colors: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(//9
+                                textAlign: TextAlign.center,
+                                text: "Actions",
+                                size: 15,
+                                isBold: true,
+                                colors: Colors.white,
+                              ),
+                            ),
+                          ]),
+                    ],
+                  ),
+
+                      Expanded(
                         child: Obx((){
                           final filteredList = controllers.callActivity
                               .where((activity) =>
                           controllers.selectCallType.value.isEmpty ||
-                              activity.callType == controllers.selectCallType.value)
-                              .toList();
-                          return ListView.builder(
-                            itemCount: filteredList.length,
-                            itemBuilder: (context, index) {
-                              final data = filteredList[index];
-                              return Container(
-                                height: 60,
-                                decoration: BoxDecoration(
-                                  color: index % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                ),
-                                child: Row(
-                                  children: [
-                                    utils.dataCell(width: 155, text: data.sentDate),
-                                    VerticalDivider(
-                                      color: Colors.grey,
-                                      width: 1,
-                                    ),
-                                    utils.dataCell(width: 160, text: data.customerName),
-                                    VerticalDivider(
-                                      color: Colors.grey,
-                                      width: 1,
-                                    ),
-                                    utils.dataCell(width: 140, text: data.toData),
-                                    VerticalDivider(
-                                      color: Colors.grey,
-                                      width: 1,
-                                    ),
-                                    utils.dataCell(width: 120, text: data.callType),
-                                    VerticalDivider(
-                                      color: Colors.grey,
-                                      width: 1,
-                                    ),
-                                    utils.dataCell(width: 200, text: data.message),
-                                    VerticalDivider(
-                                      color: Colors.grey,
-                                      width: 1,
-                                    ),
-                                    utils.dataCell(width: 90, text: data.callStatus),
-                                    VerticalDivider(
-                                      color: Colors.grey,
-                                      width: 1,
-                                    ),
-                                    SizedBox(
-                                      width: 160,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          IconButton(
-                                              onPressed: (){},
-                                              icon: Icon(Icons.edit,color: Colors.green,)),
-                                          IconButton(
-                                              onPressed: (){},
-                                              icon: SvgPicture.asset("assets/images/add_note.svg")),
-                                          IconButton(
-                                              onPressed: (){},
-                                              icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
-                                        ],
+                              activity.callType == controllers.selectCallType.value).toList();
+                          return filteredList.isEmpty?
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              100.height,
+                              Center(
+                                  child: SvgPicture.asset(
+                                      "assets/images/noDataFound.svg")),
+                            ],
+                          )
+                              :RawKeyboardListener(
+                            focusNode: _focusNode,
+                            autofocus: true,
+                            onKey: (event) {
+                              if (event is RawKeyDownEvent) {
+                                if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                                  _controller.animateTo(
+                                    _controller.offset + 100,
+                                    duration: const Duration(milliseconds: 200),
+                                    curve: Curves.easeInOut,
+                                  );
+                                } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                                  _controller.animateTo(
+                                    _controller.offset - 100,
+                                    duration: const Duration(milliseconds: 200),
+                                    curve: Curves.easeInOut,
+                                  );
+                                }
+                              }
+                            },
+                                child: ListView.builder(
+                                    controller: _controller,
+                                    shrinkWrap: true,
+                                    physics: const ScrollPhysics(),
+                                    itemCount: filteredList.length,
+                                    itemBuilder: (context, index) {
+                                final data = filteredList[index];
+                                return Table(
+                                  columnWidths:const {
+                                    0: FlexColumnWidth(3),//date
+                                    1: FlexColumnWidth(3.5),//Customer Name
+                                    2: FlexColumnWidth(2),//Mobile No.
+                                    3: FlexColumnWidth(3),//Call Type
+                                    4: FlexColumnWidth(3.5),//Message
+                                    5: FlexColumnWidth(2.5),//Status
+                                    6: FlexColumnWidth(4.5),//Actions
+                                  },
+                                  border: TableBorder(
+                                    horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                    verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                    bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                  ),
+                                  children:[
+                                    TableRow(
+                                        decoration: BoxDecoration(
+                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                        ),
+                                        children:[
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.center,
+                                              text: data.sentDate.toString(),
+                                              size: 14,
+                                              colors: colorsConst.textColor,
+                                            ),
+                                          ),
+                                          Tooltip(
+                                            message: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                                size: 14,
+                                                colors:colorsConst.textColor,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.center,
+                                              text:data.toData.toString()=="null"?"":data.toData.toString(),
+                                              size: 14,
+                                              colors: colorsConst.textColor,
+                                            ),
+                                          ),
+                                          Tooltip(
+                                            message: data.callType.toString()=="null"?"":data.callType.toString(),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: data.callType.toString(),
+                                                size: 14,
+                                                colors:colorsConst.textColor,
+                                              ),
+                                            ),
+                                          ),
+                                          Tooltip(
+                                            message: data.message.toString()=="null"?"":data.message.toString(),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: data.message.toString(),
+                                                size: 14,
+                                                colors:colorsConst.textColor,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.center,
+                                              text: data.callStatus.toString(),
+                                              size: 14,
+                                              colors:colorsConst.textColor,
+                                            ),
+                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(3.0),
+                                        child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    IconButton(
+                                                        onPressed: (){},
+                                                        icon: Icon(Icons.edit,color: Colors.green,)),
+                                                    IconButton(
+                                                        onPressed: (){},
+                                                        icon: SvgPicture.asset("assets/images/add_note.svg")),
+                                                    IconButton(
+                                                        onPressed: (){},
+                                                        icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
+                                                  ],
+                                                ),
                                       ),
-                                    )
+
+                                        ]
+                                    ),
 
                                   ],
-                                ),
+                                );
+                                                            },
+                                                          ),
                               );
-                            },
-                          );
                         })
                       ),
 

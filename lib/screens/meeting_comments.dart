@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
@@ -32,18 +33,36 @@ class _MeetingCommentsState extends State<MeetingComments> {
   }
 
   String searchText = "";
+  late FocusNode _focusNode;
+  final ScrollController _controller = ScrollController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _focusNode = FocusNode();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return SelectionArea(
       child: Scaffold(
         body: Container(
-          width: MediaQuery.of(context).size.width - 490,
+          width: MediaQuery.of(context).size.width - 130,
           height: MediaQuery.of(context).size.height,
           alignment: Alignment.center,
+          padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              20.height,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -56,7 +75,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         size: 20,
                         isBold: true,
                       ),
-                      10.height,
+                      5.height,
                       CustomText(
                         text: "View all Meeting Activity Report ",
                         colors: colorsConst.textColor,
@@ -349,7 +368,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
               ),
               5.height,
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   CustomSearchTextField(
                     controller: controllers.search,
@@ -488,454 +507,287 @@ class _MeetingCommentsState extends State<MeetingComments> {
                 ],
               ),
               15.height,
+
               // Table Header
-              Container(
-                height: 60,
-                decoration: BoxDecoration(
-                    color: colorsConst.primary,
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(5),
-                        topRight: Radius.circular(5))
+              Table(
+                columnWidths: const {
+                  0: FlexColumnWidth(3),//date
+                  1: FlexColumnWidth(3.5),//Customer Name
+                  2: FlexColumnWidth(2),//Mobile No.
+                  3: FlexColumnWidth(3),//Call Type
+                  4: FlexColumnWidth(3.5),//Message
+                  5: FlexColumnWidth(2.5),//Status
+                  6: FlexColumnWidth(4.5),//Actions
+                },
+                border: TableBorder(
+                  horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                  verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                 ),
-                //padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Row(
-                  children: [
-                    utils.headerCell(width: 155, text: "Date",
-                      isSortable: true,
-                      fieldName: 'sourceOfProspect',
-                      sortField: controllers.sortField,
-                      sortOrder: controllers.sortOrder,
-                      onSortAsc: () {
-                        controllers.sortField.value = 'sourceOfProspect';
-                        controllers.sortOrder.value = 'asc';
-                      },
-                      onSortDesc: () {
-                        controllers.sortField.value = 'sourceOfProspect';
-                        controllers.sortOrder.value = 'desc';
-                      },
-                    ),
-                    VerticalDivider(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
-                    utils.headerCell(
-                      width: 160, text: "Customer Name",
-                      isSortable: true,
-                      fieldName: 'name',
-                      sortField: controllers.sortField,
-                      sortOrder: controllers.sortOrder,
-                      onSortAsc: () {
-                        controllers.sortField.value = 'name';
-                        controllers.sortOrder.value = 'asc';
-                      },
-                      onSortDesc: () {
-                        controllers.sortField.value = 'name';
-                        controllers.sortOrder.value = 'desc';
-                      },
-                    ),
-                    VerticalDivider(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
-                    utils.headerCell(width: 140, text: "Company name",
-                      fieldName: 'companyName',
-                      sortField: controllers.sortField,
-                      sortOrder: controllers.sortOrder,
-                      isSortable: true,
-                      onSortAsc: () {
-                        controllers.sortField.value = 'companyName';
-                        controllers.sortOrder.value = 'asc';
-                      },
-                      onSortDesc: () {
-                        controllers.sortField.value = 'companyName';
-                        controllers.sortOrder.value = 'desc';
-                      },
-                    ),
-                    VerticalDivider(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
-                    utils.headerCell(width: 122, text: "Meeting Title",
-                      fieldName: 'companyName',
-                      sortField: controllers.sortField,
-                      sortOrder: controllers.sortOrder,
-                      isSortable: true,
-                      onSortAsc: () {
-                        controllers.sortField.value = 'companyName';
-                        controllers.sortOrder.value = 'asc';
-                      },
-                      onSortDesc: () {
-                        controllers.sortField.value = 'companyName';
-                        controllers.sortOrder.value = 'desc';
-                      },
-                    ),
-                    VerticalDivider(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
-                    utils.headerCell(width: 200, text: "Notes",
-                      isSortable: true,
-                      fieldName: 'serviceRequired',
-                      sortField: controllers.sortField,
-                      sortOrder: controllers.sortOrder,
-                      onSortAsc: () {
-                        controllers.sortField.value = 'serviceRequired';
-                        controllers.sortOrder.value = 'asc';
-                      },
-                      onSortDesc: () {
-                        controllers.sortField.value = 'serviceRequired';
-                        controllers.sortOrder.value = 'desc';
-                      },
-                    ),
-                    VerticalDivider(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
-                    utils.headerCell(width: 90, text: "Status",
-                      fieldName: 'companyName',
-                      sortField: controllers.sortField,
-                      sortOrder: controllers.sortOrder,
-                      isSortable: true,
-                      onSortAsc: () {
-                        controllers.sortField.value = 'companyName';
-                        controllers.sortOrder.value = 'asc';
-                      },
-                      onSortDesc: () {
-                        controllers.sortField.value = 'companyName';
-                        controllers.sortOrder.value = 'desc';
-                      },
-                    ),
-                    VerticalDivider(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
-                    Container(
-                      width: 160,
-                      alignment: Alignment.center,
-                      child: CustomText(
-                        text: "Actions",
-                        size: 15,
-                        isBold: true,
-                        textAlign: TextAlign.center,
-                        colors: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
+                children: [
+                  TableRow(
+                      decoration: BoxDecoration(
+                          color: colorsConst.primary,
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(5),
+                              topRight: Radius.circular(5))),
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(
+                                textAlign: TextAlign.center,
+                                text: "Date",
+                                size: 15,
+                                isBold: true,
+                                colors: Colors.white,
+                              ),
+                            ),
+                            Obx(() => GestureDetector(
+                              onTap: (){
+                                controllers.sortField.value = 'date';
+                                controllers.sortOrder.value = 'asc';
+                              },
+                              child: Icon(
+                                Icons.arrow_upward,
+                                size: 16,
+                                color: (controllers.sortField.value == 'date' &&
+                                    controllers.sortOrder.value == 'asc')
+                                    ? Colors.white
+                                    : Colors.grey,
+                              ),
+                            )),
+                            Obx(() => GestureDetector(
+                              onTap: (){
+                                controllers.sortField.value = 'date';
+                                controllers.sortOrder.value = 'desc';
+                              },
+                              child: Icon(
+                                Icons.arrow_downward,
+                                size: 16,
+                                color: (controllers.sortField.value == 'date' &&
+                                    controllers.sortOrder.value == 'desc')
+                                    ? Colors.white
+                                    : Colors.grey,
+                              ),
+                            )
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: CustomText(//1
+                            textAlign: TextAlign.center,
+                            text: "Customer Name",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: CustomText(//2
+                            textAlign: TextAlign.center,
+                            text: "Company name",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: CustomText(
+                            textAlign: TextAlign.center,
+                            text: "Meeting Title",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: CustomText(
+                            textAlign: TextAlign.center,
+                            text: "Notes",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: CustomText(//4
+                            textAlign: TextAlign.center,
+                            text: "Status",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: CustomText(//9
+                            textAlign: TextAlign.center,
+                            text: "Actions",
+                            size: 15,
+                            isBold: true,
+                            colors: Colors.white,
+                          ),
+                        ),
+                      ]),
+                ],
               ),
               // Table Body
-              SizedBox(
-                height: MediaQuery.of(context).size.height - 400,
-                child: ListView.builder(
-                  itemCount: controllers.meetingActivity.length,
-                  itemBuilder: (context, index) {
-                    final data = controllers.meetingActivity[index];
-                    return Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: index % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                      ),
-                      child: Row(
-                        children: [
-                          utils.dataCell(width: 155, text: data.dates.toString().split("||")[0]),
-                          VerticalDivider(
-                            color: Colors.grey,
-                            width: 1,
-                          ),
-                          utils.dataCell(width: 160, text: data.cusName),
-                          VerticalDivider(
-                            color: Colors.grey,
-                            width: 1,
-                          ),
-                          utils.dataCell(width: 140, text: data.comName),
-                          VerticalDivider(
-                            color: Colors.grey,
-                            width: 1,
-                          ),
-                          utils.dataCell(width: 120, text: data.title),
-                          VerticalDivider(
-                            color: Colors.grey,
-                            width: 1,
-                          ),
-                          utils.dataCell(width: 200, text: data.notes),
-                          VerticalDivider(
-                            color: Colors.grey,
-                            width: 1,
-                          ),
-                          utils.dataCell(width: 90, text: data.status),
-                          VerticalDivider(
-                            color: Colors.grey,
-                            width: 1,
-                          ),
-                          SizedBox(
-                            width: 160,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                    onPressed: (){},
-                                    icon: Icon(Icons.edit,color: Colors.green,)),
-                                IconButton(
-                                    onPressed: (){
-                                      showDialog(
-                                          context: context,
-                                          barrierDismissible: false,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  CustomText(
-                                                    text: "New Meeting",
-                                                    size: 16,
-                                                    isBold: true,
-                                                    colors: colorsConst.textColor,
-                                                  ),
-                                                  IconButton(
-                                                      onPressed: (){
-                                                        Navigator.of(context).pop();
-                                                      },
-                                                      icon: Icon(Icons.clear,
-                                                        color: Colors.black,
-                                                      ))
-                                                ],
-                                              ),
-                                              content: SizedBox(
-                                                width: 500,
-                                                height: 460,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left: 10),
-                                                      child: CustomTextField(
-                                                        hintText: "Meeting Title",
-                                                        text: "Meeting Title",
-                                                        controller: controllers.meetingTitleCrt,
-                                                        width: 480,
-                                                        keyboardType: TextInputType.text,
-                                                        textInputAction: TextInputAction.next,
-                                                        isOptional: false,
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left: 10),
-                                                      child: CustomTextField(
-                                                        hintText: "Meeting Venue",
-                                                        text: "Meeting Venue",
-                                                        controller: controllers.meetingVenueCrt,
-                                                        width: 480,
-                                                        keyboardType: TextInputType.text,
-                                                        textInputAction: TextInputAction.next,
-                                                        isOptional: false,
-                                                      ),
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Obx(() => CustomDateBox(
-                                                          text: "From Date",
-                                                          value: controllers.fDate.value,
-                                                          width: 230,
-                                                          onTap: () {
-                                                            utils.datePicker(
-                                                                context: context,
-                                                                textEditingController: controllers.dateOfConCtr,
-                                                                pathVal: controllers.fDate);
-                                                          },
-                                                        ),
-                                                        ),
-                                                        15.width,
-                                                        Obx(() => CustomDateBox(
-                                                          text: "From Time",
-                                                          value: controllers.fTime.value,
-                                                          width: 230,
-                                                          onTap: () {
-                                                            utils.timePicker(
-                                                                context: context,
-                                                                textEditingController:
-                                                                controllers.timeOfConCtr,
-                                                                pathVal: controllers.fTime);
-                                                          },
-                                                        ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    10.height,
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Obx(() => CustomDateBox(
-                                                          text: "To Date",
-                                                          value: controllers.toDate.value,
-                                                          width: 230,
-                                                          onTap: () {
-                                                            utils.datePicker(
-                                                                context: context,
-                                                                textEditingController:
-                                                                controllers.dateOfConCtr,
-                                                                pathVal: controllers.toDate);
-                                                          },
-                                                        ),
-                                                        ),
-                                                        15.width,
-                                                        Obx(() => CustomDateBox(
-                                                          text: "To Time",
-                                                          value: controllers.toTime.value,
-                                                          width: 230,
-                                                          onTap: () {
-                                                            utils.timePicker(
-                                                                context: context,
-                                                                textEditingController:
-                                                                controllers.timeOfConCtr,
-                                                                pathVal: controllers.toTime);
-                                                          },
-                                                        ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    10.height,
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        CustomText(
-                                                          text:"Customer Name",
-                                                          colors: colorsConst.textColor,
-                                                          size: 13,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 480,
-                                                          height: 50,
-                                                          child: KeyboardDropdownField<AllCustomersObj>(
-                                                            items: controllers.customers,
-                                                            borderRadius: 5,
-                                                            borderColor: Colors.grey.shade300,
-                                                            hintText: "Customers",
-                                                            labelText: "",
-                                                            labelBuilder: (customer) =>'${customer.name} - ${customer.phoneNo}',
-                                                            itemBuilder: (customer) =>
-                                                                Container(
-                                                                  width: 300,
-                                                                  alignment: Alignment.topLeft,
-                                                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                                                  child: CustomText(
-                                                                    text: '${customer.name} - ${customer.companyName}',
-                                                                    colors: Colors.black,
-                                                                    size: 14,
-                                                                    textAlign: TextAlign.start,
-                                                                  ),
-                                                                ),
-                                                            textEditingController: controllers.cusController,
-                                                            onSelected: (value) {
-                                                              controllers.selectCustomer(value);
-                                                            },
-                                                            onClear: () {
-                                                              controllers.clearSelectedCustomer();
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    10.height,
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        CustomText(
-                                                          text:"Notes",
-                                                          colors: colorsConst.textColor,
-                                                          size: 13,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 480,
-                                                          height: 80,
-                                                          child: TextField(
-                                                            controller: controllers.callCommentCont,
-                                                            maxLines: null,
-                                                            expands: true,
-                                                            textAlign: TextAlign.start,
-                                                            decoration: InputDecoration(
-                                                              hintText: "Notes",
-                                                              enabledBorder: OutlineInputBorder(
-                                                                borderRadius: BorderRadius.circular(5),
-                                                                borderSide: BorderSide(
-                                                                  color: Color(0xffE1E5FA),
-                                                                ),
-                                                              ),
-                                                              focusedBorder: OutlineInputBorder(
-                                                                borderRadius: BorderRadius.circular(5),
-                                                                borderSide: BorderSide(
-                                                                  color: Color(0xffE1E5FA),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              actions: [
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                  children: [
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(color: colorsConst.primary),
-                                                          color: Colors.white),
-                                                      width: 80,
-                                                      height: 25,
-                                                      child: ElevatedButton(
-                                                          style: ElevatedButton.styleFrom(
-                                                            shape: const RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.zero,
-                                                            ),
-                                                            backgroundColor: Colors.white,
-                                                          ),
-                                                          onPressed: () {
-                                                            Navigator.pop(context);
-                                                          },
-                                                          child: CustomText(
-                                                            text: "Cancel",
-                                                            colors: colorsConst.primary,
-                                                            size: 14,
-                                                          )),
-                                                    ),
-                                                    10.width,
-                                                    CustomLoadingButton(
-                                                      callback: (){
-                                                        apiService.insertMeetingDetailsAPI(context);
-                                                      },
-                                                      height: 35,
-                                                      isLoading: true,
-                                                      backgroundColor: colorsConst.primary,
-                                                      radius: 2,
-                                                      width: 80,
-                                                      controller: controllers.productCtr,
-                                                      isImage: false,
-                                                      text: "Save",
-                                                      textColor: Colors.white,
-                                                    ),
-                                                    5.width
-                                                  ],
-                                                ),
-                                              ],
-                                            );
-                                          });
-                                    },
-                                    icon: SvgPicture.asset("assets/images/add_note.svg")),
-                                IconButton(
-                                    onPressed: (){},
-                                    icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
-                              ],
+              Expanded(
+                  child: Obx((){
+                    return controllers.meetingActivity.isEmpty?
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        100.height,
+                        Center(
+                            child: SvgPicture.asset("assets/images/noDataFound.svg")),
+                      ],
+                    )
+                        :RawKeyboardListener(
+                      focusNode: _focusNode,
+                      autofocus: true,
+                      onKey: (event) {
+                        if (event is RawKeyDownEvent) {
+                          if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                            _controller.animateTo(
+                              _controller.offset + 100,
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.easeInOut,
+                            );
+                          } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                            _controller.animateTo(
+                              _controller.offset - 100,
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.easeInOut,
+                            );
+                          }
+                        }
+                      },
+                      child: ListView.builder(
+                        controller: _controller,
+                        shrinkWrap: true,
+                        physics: const ScrollPhysics(),
+                        itemCount: controllers.meetingActivity.length,
+                        itemBuilder: (context, index) {
+                          final data = controllers.meetingActivity[index];
+                          return Table(
+                            columnWidths:const {
+                              0: FlexColumnWidth(3),//date
+                              1: FlexColumnWidth(3.5),//Customer Name
+                              2: FlexColumnWidth(2),//Mobile No.
+                              3: FlexColumnWidth(3),//Call Type
+                              4: FlexColumnWidth(3.5),//Message
+                              5: FlexColumnWidth(2.5),//Status
+                              6: FlexColumnWidth(4.5),//Actions
+                            },
+                            border: TableBorder(
+                              horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                              verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                              bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
                             ),
-                          )
+                            children:[
+                              TableRow(
+                                  decoration: BoxDecoration(
+                                    color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                  ),
+                                  children:[
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: CustomText(
+                                        textAlign: TextAlign.center,
+                                        text: data.dates.toString(),
+                                        size: 14,
+                                        colors: colorsConst.textColor,
+                                      ),
+                                    ),
+                                    Tooltip(
+                                      message: data.cusName.toString()=="null"?"":data.cusName.toString(),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.center,
+                                          text: data.cusName.toString()=="null"?"":data.cusName.toString(),
+                                          size: 14,
+                                          colors:colorsConst.textColor,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: CustomText(
+                                        textAlign: TextAlign.center,
+                                        text:data.comName.toString()=="null"?"":data.comName.toString(),
+                                        size: 14,
+                                        colors: colorsConst.textColor,
+                                      ),
+                                    ),
+                                    Tooltip(
+                                      message: data.title.toString()=="null"?"":data.title.toString(),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.center,
+                                          text: data.title.toString(),
+                                          size: 14,
+                                          colors:colorsConst.textColor,
+                                        ),
+                                      ),
+                                    ),
+                                    Tooltip(
+                                      message: data.notes.toString()=="null"?"":data.notes.toString(),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.center,
+                                          text: data.notes.toString(),
+                                          size: 14,
+                                          colors:colorsConst.textColor,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: CustomText(
+                                        textAlign: TextAlign.center,
+                                        text: data.status.toString(),
+                                        size: 14,
+                                        colors:colorsConst.textColor,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          IconButton(
+                                              onPressed: (){},
+                                              icon: Icon(Icons.edit,color: Colors.green,)),
+                                          IconButton(
+                                              onPressed: (){},
+                                              icon: SvgPicture.asset("assets/images/add_note.svg")),
+                                          IconButton(
+                                              onPressed: (){},
+                                              icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
+                                        ],
+                                      ),
+                                    ),
 
-                        ],
+                                  ]
+                              ),
+
+                            ],
+                          );
+                        },
                       ),
                     );
-                  },
-                ),
+                  })
               ),
 
               20.height,

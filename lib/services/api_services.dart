@@ -2638,6 +2638,7 @@ class ApiService {
             "rating": data[i]["rating"].toString(),
           });
         }
+        controllers.allQualifiedLeadFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         return data.map((json) => NewLeadObj.fromJson(json)).toList();
       } else {
         throw Exception(

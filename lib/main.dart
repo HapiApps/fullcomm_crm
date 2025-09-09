@@ -69,10 +69,10 @@ class MyApp extends StatelessWidget {
             useMaterial3: false,
             scaffoldBackgroundColor: colorsConst.backgroundColor,
             scrollbarTheme: ScrollbarThemeData(
-              thumbColor: MaterialStateProperty.all(const Color(0xffC1C0E0)),
-              trackColor: MaterialStateProperty.all(const Color(0xff2C3557)),
-              thickness: MaterialStateProperty.all(5),
-              radius: const Radius.circular(10),
+              thumbColor: WidgetStateProperty.all(Colors.grey),
+              trackColor: WidgetStateProperty.all(Colors.white),
+              thickness: WidgetStateProperty.all(5),
+              radius: const Radius.circular(5),
             ),
           ),
 
@@ -595,7 +595,7 @@ class _SplashScreenState extends State<SplashScreen> {
       apiService.allLeadsDetails();
       apiService.allQualifiedDetails();
       apiService.allNewLeadsDetails();
-      controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
+      apiService.allGoodLeadsDetails();
       controllers.allCustomerFuture = apiService.allCustomerDetails();
     }
     //  Future.delayed(Duration.zero,(){
