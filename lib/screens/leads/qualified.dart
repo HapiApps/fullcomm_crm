@@ -123,8 +123,7 @@ class _QualifiedState extends State<Qualified> {
                             ),
                             10.width,
                             CircleAvatar(
-                              backgroundColor:
-                              colorsConst.primary,
+                              backgroundColor: colorsConst.primary,
                               radius: 17,
                               child: Obx(
                                     () => CustomText(

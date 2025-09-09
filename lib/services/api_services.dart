@@ -2762,6 +2762,45 @@ class ApiService {
     }
   }
 
+  Future getRatingReport() async {
+    try {
+      Map data = {
+        "search_type": "rating_report",
+        "cos_id": cosId,
+        "action": "get_data",
+      };
+      log("main ${data.toString()}");
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      log("view dashboard report");
+      log(request.body);
+      controllers.totalCold.value = "0";
+      controllers.totalHot.value = "0";
+      controllers.totalWarm.value = "0";
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.totalCold.value = response[0]["cold_total"];
+        controllers.totalHot.value = response[0]["hot_total"];
+        controllers.totalWarm.value = response[0]["warm_total"];
+      } else {
+        controllers.totalCold.value = "0";
+        controllers.totalHot.value = "0";
+        controllers.totalWarm.value = "0";
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      controllers.totalCold.value = "0";
+      controllers.totalHot.value = "0";
+      controllers.totalWarm.value = "0";
+      throw Exception('Failed to load album');
+    }
+  }
+
   Future<List<NewLeadObj>> allCustomerDetails() async {
     controllers.isLead.value = false;
     final url = Uri.parse(scriptApi);

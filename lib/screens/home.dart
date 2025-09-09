@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/screens/call_comments.dart';
 import 'package:fullcomm_crm/screens/mail_comments.dart';
 import 'package:fullcomm_crm/screens/meeting_comments.dart';
+import 'package:fullcomm_crm/screens/new_dashboard.dart';
 import 'package:fullcomm_crm/screens/notes_comment.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,13 +43,13 @@ class _HomeState extends State<Home> {
                width: controllers.selectedIndex.value==0?controllers.isLeftOpen.value == false &&
                    controllers.isRightOpen.value == false
                    ? screenWidth - 200
-                   : screenWidth - 450:screenWidth - 140,
+                   : screenWidth - 400:screenWidth - 140,
                height: MediaQuery.of(context).size.height,
                alignment: Alignment.topLeft,
                child: Obx(() {
                  switch (controllers.selectedIndex.value) {
                    case 0:
-                     return Dashboard();
+                     return NewDashboard();
                    case 1:
                      return Suspects();
                    case 2:
