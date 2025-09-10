@@ -1,5 +1,6 @@
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/screens/leads/view_lead.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,10 @@ import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:fullcomm_crm/screens/mail_comments.dart';
+import '../common/constant/api.dart';
+import '../screens/leads/update_lead.dart';
 import '../services/api_services.dart';
+import 'custom_loading_button.dart';
 
 class CustomLeadTile extends StatefulWidget {
   final String? id;
@@ -256,10 +260,131 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       InkWell(
-                          onTap: (){},
+                          onTap: (){
+                            Get.to( UpdateLead(
+                              id:widget.id,
+                              detailsOfRequired: "",
+                              linkedin: "",
+                              x: "",
+                              mainName:widget.mainName,
+                              mainMobile:widget.mobileNumber,
+                              mainEmail:widget.email,
+                              mainWhatsApp: widget.mobileNumber,
+                              companyName:widget.companyName,
+                              status:widget.status,
+                              rating:widget.rating,
+                              emailUpdate:widget.quotationRequired,
+                              name:widget.mainName,
+                              title:"",
+                              mobileNumber:widget.mobileNumber,
+                              whatsappNumber:widget.mobileNumber,
+                              email:widget.email,
+                              mainTitle:"",
+                              addressId:widget.addressId,
+                              companyWebsite:"",
+                              companyNumber:"",
+                              companyEmail:"",
+                              industry:"",
+                              productServices:"",
+                              source:widget.source,
+                              owner:widget.owner,
+                              budget:"",
+                              timelineDecision:"",
+                              serviceInterest:"",
+                              description:"",
+                              leadStatus:widget.leadStatus,
+                              active:widget.active,
+                              addressLine1:widget.addressLine1,
+                              addressLine2:widget.addressLine2,
+                              area:widget.area,
+                              city:widget.city,
+                              state:widget.state,
+                              country:widget.country,
+                              pinCode:widget.pinCode,
+                              quotationStatus:widget.quotationStatus,
+                              productDiscussion:widget.productDiscussion,
+                              discussionPoint:widget.discussionPoint,
+                              notes:widget.notes.toString(),
+                              statusUpdate: widget.statusUpdate,
+                              prospectEnrollmentDate: widget.prospectEnrollmentDate ?? "",
+                              expectedConvertionDate: widget.expectedConvertionDate ?? "",
+                              numOfHeadcount: widget.numOfHeadcount ?? "",
+                              expectedBillingValue: widget.expectedBillingValue ?? "",
+                              arpuValue: widget.arpuValue ?? "",
+                              updateTs: widget.updatedTs.toString(),
+                              sourceDetails: widget.sourceDetails.toString(),));
+                          },
                           child: SvgPicture.asset("assets/images/a_edit.svg",width: 16,height: 16,)),
                       InkWell(
-                          onTap: (){},
+                          onTap: (){
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    content: CustomText(
+                                      text: "Are you sure delete this customers?",
+                                      size: 16,
+                                      isBold: true,
+                                      colors: colorsConst.textColor,
+                                    ),
+                                    actions: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: colorsConst.primary),
+                                                color: Colors.white),
+                                            width: 80,
+                                            height: 25,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.zero,
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: CustomText(
+                                                  text: "Cancel",
+                                                  colors: colorsConst.primary,
+                                                  size: 14,
+                                                )),
+                                          ),
+                                          10.width,
+                                          CustomLoadingButton(
+                                            callback: ()async{
+                                              final deleteData = {
+                                                "lead_id": widget.id.toString(),
+                                                "user_id": controllers.storage.read("id").toString(),
+                                                "rating": (widget.rating ?? "Warm").toString(),
+                                                "cos_id": cosId.toString(),
+                                                "mail_id": widget.mainEmail.toString(),
+                                              };
+
+                                              await apiService.deleteCustomersAPI(context, [deleteData]);
+
+                                            },
+                                            height: 35,
+                                            isLoading: true,
+                                            backgroundColor: colorsConst.primary,
+                                            radius: 2,
+                                            width: 80,
+                                            controller: controllers.productCtr,
+                                            isImage: false,
+                                            text: "Delete",
+                                            textColor: Colors.white,
+                                          ),
+                                          5.width
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
                           child: SvgPicture.asset("assets/images/a_delete.svg",width: 16,height: 16,)),
                       InkWell(
                         onTap: (){
@@ -276,10 +401,144 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         child: SvgPicture.asset("assets/images/a_email.svg",width: 16,height: 16,),
                       ),
                       InkWell(
-                          onTap: (){},
+                          onTap: (){
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    content: CustomText(
+                                      text: "Are you moving to the next level?",
+                                      size: 16,
+                                      isBold: true,
+                                      colors: colorsConst.textColor,
+                                    ),
+                                    actions: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: colorsConst.primary),
+                                                color: Colors.white),
+                                            width: 80,
+                                            height: 25,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.zero,
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: CustomText(
+                                                  text: "Cancel",
+                                                  colors: colorsConst.primary,
+                                                  size: 14,
+                                                )),
+                                          ),
+                                          10.width,
+                                          CustomLoadingButton(
+                                            callback: ()async{
+                                              final deleteData = {
+                                                "lead_id": widget.id.toString(),
+                                                "user_id": controllers.storage.read("id").toString(),
+                                                "rating": (widget.rating ?? "Warm").toString(),
+                                                "cos_id": cosId.toString(),
+                                                "mail_id": widget.mainEmail.toString(),
+                                              };
+                                              await apiService.insertProspectsAPI(context, [deleteData]);
+
+                                            },
+                                            height: 35,
+                                            isLoading: true,
+                                            backgroundColor: colorsConst.primary,
+                                            radius: 2,
+                                            width: 80,
+                                            controller: controllers.productCtr,
+                                            isImage: false,
+                                            text: "Move",
+                                            textColor: Colors.white,
+                                          ),
+                                          5.width
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
                           child: SvgPicture.asset("assets/images/a_qualified.svg",width: 16,height: 16,)),
                       InkWell(
-                          onTap: (){},
+                          onTap: (){
+                            showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    content: CustomText(
+                                      text: "Are you sure disqualify this customers?",
+                                      size: 16,
+                                      isBold: true,
+                                      colors: colorsConst.textColor,
+                                    ),
+                                    actions: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: colorsConst.primary),
+                                                color: Colors.white),
+                                            width: 80,
+                                            height: 25,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.zero,
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: CustomText(
+                                                  text: "Cancel",
+                                                  colors: colorsConst.primary,
+                                                  size: 14,
+                                                )),
+                                          ),
+                                          10.width,
+                                          CustomLoadingButton(
+                                            callback: (){
+                                              final deleteData = {
+                                                "lead_id": widget.id.toString(),
+                                                "user_id": controllers.storage.read("id").toString(),
+                                                "rating": (widget.rating ?? "Warm").toString(),
+                                                "cos_id": cosId.toString(),
+                                                "mail_id": widget.mainEmail.toString(),
+                                              };
+                                              apiService.disqualifiedCustomersAPI(context, [deleteData]);
+                                            },
+                                            height: 35,
+                                            isLoading: true,
+                                            backgroundColor:
+                                            colorsConst.primary,
+                                            radius: 2,
+                                            width: 100,
+                                            controller: controllers.productCtr,
+                                            isImage: false,
+                                            text: "Disqualified",
+                                            textColor:Colors.white,
+                                          ),
+                                          5.width
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
                           child: SvgPicture.asset("assets/images/a_disqualified.svg",width: 16,height: 16,)),
                     ],
                   ),

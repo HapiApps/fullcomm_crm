@@ -1067,7 +1067,7 @@ class ApiService {
         print("success");
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
-        controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
+        apiService.allGoodLeadsDetails();
         prospectsList.clear();
         qualifiedList.clear();
         customerList.clear();

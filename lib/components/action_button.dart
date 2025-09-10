@@ -7,34 +7,46 @@ class ActionButton extends StatelessWidget {
   final double width;
   final String image;
   final String name;
-  const ActionButton({super.key, required this.width, required this.image, required this.name});
+  final String? toolTip;
+  final VoidCallback callback;
+  const ActionButton({super.key, required this.width, required this.image, required this.name, this.toolTip, required this.callback});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      width: width,
-      decoration: BoxDecoration(
-        color: colorsConst.secondary,
-        borderRadius: BorderRadius.circular(4),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 5,
+    return Tooltip(
+      message: toolTip,
+      child: InkWell(
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        onTap: callback,
+        child: Container(
+          height: 40,
+          width: width,
+          decoration: BoxDecoration(
+            color: colorsConst.secondary,
+            borderRadius: BorderRadius.circular(4),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 1,
+                blurRadius: 5,
+              ),
+            ],
           ),
-        ],
-      ),
-      child:  Row(
-        children: [
-          Image.asset(image),
-          8.width,
-          CustomText(
-            text: name,
-              colors: colorsConst.textColor,
-              size: 16,
+          child:  Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(image),
+              10.width,
+              CustomText(
+                text: name,
+                  colors: colorsConst.textColor,
+                  size: 14,
+                isBold: true,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

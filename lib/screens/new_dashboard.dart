@@ -81,256 +81,260 @@ class _NewDashboardState extends State<NewDashboard> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SizedBox(
-                              height: screenHeight-80,
-                              width: (screenWidth-420)/2.1,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 220,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          color: Colors.grey.shade400
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        20.height,
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            CustomText(
-                                              text: "       Rating",
-                                              size: 16,
-                                              isBold: true,
-                                              colors: colorsConst.textColor,
-                                            ),
-                                          ],
-                                        ),
-                                        30.height,
-                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                           Obx(()=> RatingIndicator(
-                                             color: Colors.red,
-                                             label: 'Total Hot',
-                                             value: int.parse(controllers.totalHot.value),
-                                             percentage: 0.2,
-                                           ),),
-                                           Obx(()=> RatingIndicator(
-                                             color: Colors.yellow,
-                                             label: 'Total Warm',
-                                             value: int.parse(controllers.totalWarm.value),
-                                             percentage: 0.6,
-                                           ),),
-                                           Obx(()=> RatingIndicator(
-                                             color: Colors.green,
-                                             label: 'Total Cold',
-                                             value: int.parse(controllers.totalCold.value),
-                                             percentage: 0.4,
-                                           ),),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  10.height,
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      countShown(
-                                          width:150,
-                                          head: "Total Mails",
-                                          count: controllers.mailActivity.length.toString()),
-                                      20.width,
-                                      countShown(
-                                          width:150,
-                                          head: "Total Calls",
-                                          count: controllers.callActivity.length.toString()),
-                                      20.width,
-                                      countShown(
-                                          width:150,
-                                          head: "Total Meetings",
-                                          count: controllers.meetingActivity.length.toString()),
-                                    ],
-                                  ),
-                                  10.height,
-                                  Container(
-                                    height: 220,
-                                    decoration: BoxDecoration(
+                              height: screenHeight-60,
+                              width: (screenWidth-420)/2.15,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      height: 220,
+                                      decoration: BoxDecoration(
                                         color: Colors.white,
-                                        borderRadius:
-                                        BorderRadius.circular(10),
                                         border: Border.all(
                                             color: Colors.grey.shade400
-                                        )
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        20.height,
-                                        Row(
-                                          children: [
-                                            CustomText(
-                                              text:
-                                              "     Quotations Send",
-                                              size: 16,
-                                              isBold: true,
-                                              colors:
-                                              colorsConst.textColor,
-                                            ),
-                                            // CustomText(
-                                            //   text: "Last Month      ",
-                                            //   size: 13,
-                                            //   colors:
-                                            //   colorsConst.textColor,
-                                            // ),
-                                          ],
                                         ),
-                                        40.height,
-                                        Stack(
-                                          children: [
-                                            Container(
-                                              width: 100,
-                                              height: 100,
-                                              alignment: Alignment.center,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                  BorderRadius.circular(50),
-                                                  border: Border.all(
-                                                      color:colorsConst.primary,
-                                                      width: 2.4)),
-                                              child: Obx(()=>CustomText(
-                                                text: controllers.mailActivity.length.toString(),
-                                                colors:
-                                                colorsConst.textColor,
-                                                size: 20,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          20.height,
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              CustomText(
+                                                text: "       Rating",
+                                                size: 16,
                                                 isBold: true,
-                                              ),)
-                                            ),
-                                            const Positioned(
-                                              bottom: 0.4,
-                                              right: 25,
-                                              child: CircleAvatar(
-                                                radius: 5,
-                                                backgroundColor:
-                                                Color(0xff5D5FEF),
+                                                colors: colorsConst.textColor,
                                               ),
-                                            )
-                                          ],
-                                        )
+                                            ],
+                                          ),
+                                          30.height,
+                                           Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                             Obx(()=> RatingIndicator(
+                                               color: Colors.red,
+                                               label: 'Total Hot',
+                                               value: int.parse(controllers.totalHot.value),
+                                               percentage: 0.2,
+                                             ),),
+                                             Obx(()=> RatingIndicator(
+                                               color: Colors.yellow,
+                                               label: 'Total Warm',
+                                               value: int.parse(controllers.totalWarm.value),
+                                               percentage: 0.6,
+                                             ),),
+                                             Obx(()=> RatingIndicator(
+                                               color: Colors.green,
+                                               label: 'Total Cold',
+                                               value: int.parse(controllers.totalCold.value),
+                                               percentage: 0.4,
+                                             ),),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    10.height,
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        countShown(
+                                            width:150,
+                                            head: "Total Mails",
+                                            count: controllers.mailActivity.length.toString()),
+                                        20.width,
+                                        countShown(
+                                            width:150,
+                                            head: "Total Calls",
+                                            count: controllers.callActivity.length.toString()),
+                                        20.width,
+                                        countShown(
+                                            width:150,
+                                            head: "Total Meetings",
+                                            count: controllers.meetingActivity.length.toString()),
                                       ],
                                     ),
-                                  ),
-                                ],
+                                    10.height,
+                                    Container(
+                                      height: 220,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                          BorderRadius.circular(10),
+                                          border: Border.all(
+                                              color: Colors.grey.shade400
+                                          )
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          20.height,
+                                          Row(
+                                            children: [
+                                              CustomText(
+                                                text:
+                                                "     Quotations Send",
+                                                size: 16,
+                                                isBold: true,
+                                                colors:
+                                                colorsConst.textColor,
+                                              ),
+                                              // CustomText(
+                                              //   text: "Last Month      ",
+                                              //   size: 13,
+                                              //   colors:
+                                              //   colorsConst.textColor,
+                                              // ),
+                                            ],
+                                          ),
+                                          40.height,
+                                          Stack(
+                                            children: [
+                                              Container(
+                                                width: 100,
+                                                height: 100,
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                    BorderRadius.circular(50),
+                                                    border: Border.all(
+                                                        color:colorsConst.primary,
+                                                        width: 2.4)),
+                                                child: Obx(()=>CustomText(
+                                                  text: controllers.mailActivity.length.toString(),
+                                                  colors:
+                                                  colorsConst.textColor,
+                                                  size: 20,
+                                                  isBold: true,
+                                                ),)
+                                              ),
+                                              const Positioned(
+                                                bottom: 0.4,
+                                                right: 25,
+                                                child: CircleAvatar(
+                                                  radius: 5,
+                                                  backgroundColor:
+                                                  Color(0xff5D5FEF),
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             SizedBox(
-                              height: screenHeight-80,
+                              height: screenHeight-60,
                               width: (screenWidth-420)/2.1,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 260,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10)),
-                                    child: Column(
-                                      children: [
-                                        3.height,
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            CustomText(
-                                              text: "       New Customers",
-                                              size: 16,
-                                              isBold: true,
-                                              colors: colorsConst.textColor,
-                                            ),
-                                            CustomText(
-                                              text: "2025          ",
-                                              size: 13,
-                                              colors: colorsConst.textColor,
-                                            ),
-                                          ],
-                                        ),
-                                        15.height,
-                                        Container(
-                                            alignment: Alignment.center,
-                                            width: 380,
-                                            height: 210,
-                                            child: const LineChartWidget())
-                                      ],
-                                    ),
-                                  ),
-                                  20.height,
-                                  Container(
-                                    height: 400,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      // border: Border.all(
-                                      //     color: Colors.black
-                                      // ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: SizedBox(
-                                      height: 200,
-                                      child: PieChart(
-                                        dataMap: {
-                                          'Suspects': double.parse(
-                                              controllers.allNewLeadsLength.value.toString()),
-                                          'Prospects': double.parse(
-                                              controllers
-                                                  .allLeadsLength
-                                                  .value
-                                                  .toString()),
-                                          'Qualified': double.parse(
-                                              controllers.allGoodLeadsLength.value
-                                                  .toString()),
-                                          'Disqualified': double.parse(
-                                              controllers.allGoodLeadsLength.value
-                                                  .toString()),
-                                          'Customers': double.parse(
-                                              controllers
-                                                  .allCustomerLength
-                                                  .value
-                                                  .toString()),
-                                        },
-                                        centerTextStyle: TextStyle(
-                                            color: colorsConst.textColor),
-                                        baseChartColor: Colors.white,
-                                        legendOptions: LegendOptions(
-                                            legendTextStyle:
-                                            TextStyle(
-                                                color: colorsConst
-                                                    .textColor)),
-                                        animationDuration:
-                                        const Duration(
-                                            seconds: 2),
-                                        chartLegendSpacing: 50,
-                                        chartRadius:
-                                        MediaQuery.of(context)
-                                            .size
-                                            .width /
-                                            2.7,
-                                        colorList: const [
-                                          Color(0xff94009C),
-                                          Color(0xffE3B552),
-                                          Color(0xff2DD28A),
-                                          Color(0xff7456FC),
-                                          Color(0xffE3528C),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      height: 260,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10)),
+                                      child: Column(
+                                        children: [
+                                          3.height,
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              CustomText(
+                                                text: "       New Customers",
+                                                size: 16,
+                                                isBold: true,
+                                                colors: colorsConst.textColor,
+                                              ),
+                                              CustomText(
+                                                text: "2025          ",
+                                                size: 13,
+                                                colors: colorsConst.textColor,
+                                              ),
+                                            ],
+                                          ),
+                                          15.height,
+                                          Container(
+                                              alignment: Alignment.center,
+                                              width: 380,
+                                              height: 210,
+                                              child: const LineChartWidget())
                                         ],
-                                        chartType: ChartType.ring,
-                                        ringStrokeWidth: 50,
-
-                                        // chartValueBackgroundColor: Colors.green,
-                                        // chartValueBackgroundOpacity: 0.7,
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    20.height,
+                                    Container(
+                                      height: 350,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        // border: Border.all(
+                                        //     color: Colors.black
+                                        // ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: SizedBox(
+                                        height: 200,
+                                        child: PieChart(
+                                          dataMap: {
+                                            'Suspects': double.parse(
+                                                controllers.allNewLeadsLength.value.toString()),
+                                            'Prospects': double.parse(
+                                                controllers
+                                                    .allLeadsLength
+                                                    .value
+                                                    .toString()),
+                                            'Qualified': double.parse(
+                                                controllers.allGoodLeadsLength.value
+                                                    .toString()),
+                                            'Disqualified': double.parse(
+                                                controllers.allGoodLeadsLength.value
+                                                    .toString()),
+                                            'Customers': double.parse(
+                                                controllers
+                                                    .allCustomerLength
+                                                    .value
+                                                    .toString()),
+                                          },
+                                          centerTextStyle: TextStyle(
+                                              color: colorsConst.textColor),
+                                          baseChartColor: Colors.white,
+                                          legendOptions: LegendOptions(
+                                              legendTextStyle:
+                                              TextStyle(
+                                                  color: colorsConst
+                                                      .textColor)),
+                                          animationDuration:
+                                          const Duration(
+                                              seconds: 2),
+                                          chartLegendSpacing: 50,
+                                          chartRadius:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              2.7,
+                                          colorList: const [
+                                            Color(0xff94009C),
+                                            Color(0xffE3B552),
+                                            Color(0xff2DD28A),
+                                            Color(0xff7456FC),
+                                            Color(0xffE3528C),
+                                          ],
+                                          chartType: ChartType.ring,
+                                          ringStrokeWidth: 50,
+
+                                          // chartValueBackgroundColor: Colors.green,
+                                          // chartValueBackgroundOpacity: 0.7,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             )
                           ],
