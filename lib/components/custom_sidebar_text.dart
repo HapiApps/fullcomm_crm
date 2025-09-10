@@ -22,7 +22,7 @@ class CustomSideBarText extends StatelessWidget {
         height: 60,
         child: Row(
           children: [
-            20.width,
+            15.width,
             Text(
               text,
               textAlign: TextAlign.start,
@@ -32,6 +32,7 @@ class CustomSideBarText extends StatelessWidget {
                   fontFamily: "Lato",
                   fontWeight: FontWeight.bold),
             ),
+            15.width,
           ],
         ),
       ),

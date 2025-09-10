@@ -13,6 +13,7 @@ import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/screens/new_dashboard.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -1502,7 +1503,7 @@ class ApiService {
           msg: "Login Successfully",
           color: Colors.green,
         );
-        Get.to(const Home(), duration: Duration.zero);
+        Get.to(const NewDashboard(), duration: Duration.zero);
         controllers.loginCtr.reset();
       } else {
         errorDialog(Get.context!, 'No Account Found');
@@ -1561,7 +1562,7 @@ class ApiService {
         apiService.allNewLeadsDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         controllers.allCustomerFuture = apiService.allCustomerDetails();
-        Get.to(const Home(), duration: Duration.zero);
+        Get.to(const NewDashboard(), duration: Duration.zero);
         controllers.loginCtr.reset();
       } else {
         errorDialog(Get.context!, 'Login failed');
@@ -1911,11 +1912,13 @@ class ApiService {
         //Get.to(const ViewLead());
         controllers.leadCtr.reset();
       } else {
+        Navigator.of(context).pop();
         errorDialog(Get.context!,request.body);
         controllers.leadCtr.reset();
       }
     }catch(e){
-      errorDialog(Get.context!,e.toString());
+      Navigator.of(context).pop();
+      errorDialog(Get.context!,"Something went wrong, Please try again later");
       controllers.leadCtr.reset();
     }
   }

@@ -18,17 +18,17 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Checkbox(
-          //materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5.0),
+            borderRadius: BorderRadius.circular(2.0),
           ),
-          side: MaterialStateBorderSide.resolveWith(
-            (states) => BorderSide(width: 1.0, color: colorsConst.textColor),
+          side: WidgetStateBorderSide.resolveWith(
+            (states) => BorderSide(width: 1.0, color: Color(0xffA3A3A3A3)),
           ),
           checkColor: Colors.white,
-          activeColor: colorsConst.third,
+          activeColor: colorsConst.primary,
           value: widget.saveValue,
           onChanged: widget.onChanged,
         ),

@@ -8,6 +8,7 @@ import 'package:fullcomm_crm/screens/leads/disqualified_lead.dart';
 import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
+import 'package:fullcomm_crm/screens/new_dashboard.dart';
 import 'package:fullcomm_crm/screens/zoom_blocker.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -650,7 +651,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
       pageTransitionType: PageTransitionType.fade,
-      nextScreen: widget.loginScreen == false ? const LoginPage() : const Home(),
+      nextScreen: widget.loginScreen == false ? const LoginPage() : const NewDashboard(),
       //nextScreen:widget.loginScreen?const BottomPage():const LoginPage(),
       //nextScreen:const BottomPage(),
     );

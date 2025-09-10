@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import '../../controller/controller.dart';
 
 final CustomStyle customStyle = CustomStyle._();
@@ -77,8 +78,7 @@ class CustomStyle {
                   : const Color(0xffE1E5FA)),
           borderRadius: BorderRadius.circular(5)),
       // errorStyle: const TextStyle(height:0.05,fontSize: 12),
-      contentPadding:
-          const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
       errorBorder: OutlineInputBorder(
           borderSide: BorderSide(
               color: text == "Search Name"
@@ -91,7 +91,11 @@ class CustomStyle {
   ButtonStyle buttonStyle({Color? color, double? radius}) {
     return ElevatedButton.styleFrom(
         backgroundColor: color,
+        shadowColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(radius!)));
+            borderRadius: BorderRadius.circular(radius!),
+          side: BorderSide(color: colorsConst.primary)
+        ),
+    );
   }
 }

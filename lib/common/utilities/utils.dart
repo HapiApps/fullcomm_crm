@@ -6,6 +6,7 @@ import 'package:excel/excel.dart' as excel;
 import 'package:fullcomm_crm/common/styles/styles.dart';
 import 'package:fullcomm_crm/common/widgets/log_in.dart';
 import 'package:fullcomm_crm/common/widgets/sign_up.dart';
+import 'package:fullcomm_crm/screens/call_comments.dart';
 import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
@@ -15,6 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fullcomm_crm/screens/mail_comments.dart';
+import 'package:fullcomm_crm/screens/meeting_comments.dart';
+import 'package:fullcomm_crm/screens/new_dashboard.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -107,8 +111,7 @@ class Utils {
           e.emailId!.trim() != "null").length;
       withoutMail = total - withMail;
       apiService.prospectsList.addAll(
-        subList
-            .where((data) =>
+        subList.where((data) =>
         data.emailId != null &&
             data.emailId!.trim().isNotEmpty &&
             data.emailId!.trim() != "null") // mail check
@@ -128,7 +131,6 @@ class Utils {
           return StatefulBuilder(
               builder: (context,setState){
                 return AlertDialog(
-                  backgroundColor: colorsConst.primary,
                   actions: [
                     Column(
                       children: [
@@ -145,6 +147,7 @@ class Utils {
                                   IconButton(
                                       onPressed: () {},
                                       icon: SvgPicture.asset(assets.b,
+                                          color: colorsConst.primary,
                                           width: 17, height: 17)),
                                   IconButton(
                                       onPressed: () {},
@@ -152,6 +155,7 @@ class Utils {
                                         assets.i,
                                         width: 15,
                                         height: 15,
+                                        color: colorsConst.primary,
                                       )),
                                   IconButton(
                                       onPressed: () {},
@@ -159,6 +163,7 @@ class Utils {
                                         assets.u,
                                         width: 19,
                                         height: 19,
+                                        color: colorsConst.primary,
                                       )),
                                   IconButton(
                                       onPressed: () {},
@@ -166,6 +171,7 @@ class Utils {
                                         assets.fileFilter,
                                         width: 17,
                                         height: 17,
+                                        color: colorsConst.primary,
                                       )),
                                   // IconButton(
                                   //     onPressed: (){},
@@ -177,17 +183,18 @@ class Utils {
                                             fileName:imageController.empFileName,
                                             pathName:imageController.photo1);
                                       },
-                                      icon: SvgPicture.asset(assets.file)),
+                                      icon: SvgPicture.asset(assets.file,color: colorsConst.primary,)),
                                   IconButton(
                                       onPressed: () {},
                                       icon: SvgPicture.asset(
                                         assets.layer,
                                         width: 17,
                                         height: 17,
+                                        color: colorsConst.primary,
                                       )),
                                   IconButton(
                                       onPressed: () {},
-                                      icon: SvgPicture.asset(assets.a)),
+                                      icon: SvgPicture.asset(assets.a,color: colorsConst.primary,)),
                                 ],
                               ),
                             ),
@@ -310,7 +317,6 @@ class Utils {
                                               final isSelected = selectedRange.value == range;
                                               return InkWell(
                                                 onTap: () {
-                                                  print("In");
                                                   setState((){
                                                     selectRange(range, controllers.allNewLeadFuture);
                                                   }
@@ -341,15 +347,15 @@ class Utils {
                                                   // );
                                                 },
                                                 child: Container(
-                                                  height: 40,
+                                                  height: 44,
                                                   margin: const EdgeInsets.all(5),
-                                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                  padding: const EdgeInsets.all(5),
                                                   decoration: BoxDecoration(
                                                     color: isSelected ? Colors.blue : Colors.transparent,
                                                     borderRadius: BorderRadius.circular(8),
                                                     border: Border.all(color: Colors.blue),
                                                   ),
-                                                  child: Center(child: CustomText(text: range,colors: colorsConst.textColor,)),
+                                                  child: Center(child: CustomText(text: range,colors: isSelected ?Colors.white:colorsConst.textColor,)),
                                                 ),
                                               );
                                             },
@@ -1399,9 +1405,20 @@ class Utils {
 
   Widget sideBarFunction(BuildContext context) {
     return Obx(() => controllers.isLeftOpen.value
-        ? SizedBox(
-      width: 135,
+        ? Container(
+      width: 145,
       height: MediaQuery.of(context).size.height,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            //spreadRadius: 10,
+            blurRadius: 2,
+            offset: const Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -1420,8 +1437,6 @@ class Utils {
                       backgroundColor: colorsConst.secondary,
                       child: Icon(Icons.chevron_left,color: Colors.black,),
                     ),
-                    // icon: Icon(controllers.isLeftOpen.value?Icons.arrow_back_ios:Icons.arrow_forward_ios,
-                    //   color: colorsConst.third,)
                   ),
                 ),
               ],
@@ -1435,114 +1450,93 @@ class Utils {
                 fontFamily: "Lato",
               ),
             ),
-            // 10.height,
-            // Text(
-            //   controllers.storage.read("f_name"),
-            //   style:  TextStyle(
-            //     color: colorsConst.primary,
-            //     fontSize: 18,
-            //     fontFamily: "Lato",
-            //     //fontStyle: FontStyle.italic
-            //   ),
-            // ),
             20.height,
             Obx(() => CustomSideBarText(
                   text: constValue.dashboard,
                   boxColor: controllers.selectedIndex.value == 0
                     ? const Color(0xffF3F8FD)
-                    : colorsConst.backgroundColor,
+                    : Colors.white,
                   textColor: controllers.selectedIndex.value == 0
                       ? colorsConst.primary
                       : Colors.black,
                   onClicked: () {
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 0;
-                    // Navigator.push(
-                    //   context,
-                    //   PageRouteBuilder(
-                    //     pageBuilder: (context, animation1, animation2) =>
-                    //     const Dashboard(),
-                    //     transitionDuration: Duration.zero,
-                    //     reverseTransitionDuration: Duration.zero,
-                    //   ),
-                    // );
-                    //Get.to(const Dashboard());
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const NewDashboard(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
                   }),
             ),
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 1
                     ? const Color(0xffF3F8FD)
-                    : colorsConst.backgroundColor,
+                    : Colors.white,
                   textColor: controllers.selectedIndex.value == 1
                       ? colorsConst.primary
                       : Colors.black,
                   text: "Suspects",
                   onClicked: () {
                     controllers.isLead.value = true;
-                    // Navigator.push(
-                    //   context,
-                    //   PageRouteBuilder(
-                    //     pageBuilder: (context, animation1, animation2) =>
-                    //     const Suspects(),
-                    //     transitionDuration: Duration.zero,
-                    //     reverseTransitionDuration: Duration.zero,
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Suspects(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 1;
                   }),
             ),
-
-            // const Divider(
-            //   color: Colors.white,
-            //   thickness: 0.5,
-            // ),
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 2
                     ? const Color(0xffF3F8FD)
-                    : colorsConst.backgroundColor,
+                    : Colors.white,
                   textColor: controllers.selectedIndex.value == 2
                       ? colorsConst.primary
                       : Colors.black,
                   text: "Prospects",
                   onClicked: () {
                     //controllers.isLead.value=true;
-                    // Navigator.push(
-                    //   context,
-                    //   PageRouteBuilder(
-                    //     pageBuilder: (context, animation1, animation2) =>
-                    //     const Prospects(),
-                    //     transitionDuration: Duration.zero,
-                    //     reverseTransitionDuration: Duration.zero,
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Prospects(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 2;
                   }),
             ),
-
-            // const Divider(
-            //   color: Colors.white,
-            //   thickness: 0.5,
-            // ),
             Obx(() => CustomSideBarText(
                       boxColor: controllers.selectedIndex.value == 3
                           ? const Color(0xffF3F8FD)
-                          : colorsConst.backgroundColor,
+                          : Colors.white,
                   textColor: controllers.selectedIndex.value == 3
                       ? colorsConst.primary
                       : Colors.black,
                   text: "Qualified",
                   onClicked: () {
-                    // Navigator.push(
-                    //   context,
-                    //   PageRouteBuilder(
-                    //     pageBuilder: (context, animation1, animation2) =>
-                    //     const Qualified(),
-                    //     transitionDuration: Duration.zero,
-                    //     reverseTransitionDuration: Duration.zero,
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Qualified(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
                     controllers.isEmployee.value = true;
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 3;
@@ -1551,21 +1545,21 @@ class Utils {
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 4
                     ? const Color(0xffF3F8FD)
-                    : colorsConst.backgroundColor,
+                    : Colors.white,
                   textColor: controllers.selectedIndex.value == 4
                       ? colorsConst.primary
                       : Colors.black,
                   text: constValue.customer,
                   onClicked: () {
-                    // Navigator.push(
-                    //   context,
-                    //   PageRouteBuilder(
-                    //     pageBuilder: (context, animation1, animation2) =>
-                    //     const ViewCustomer(),
-                    //     transitionDuration: Duration.zero,
-                    //     reverseTransitionDuration: Duration.zero,
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const ViewCustomer(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
                     controllers.isCustomer.value = true;
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 4;
@@ -1574,21 +1568,21 @@ class Utils {
             Obx(() => CustomSideBarText(
                       boxColor: controllers.selectedIndex.value == 5
                           ? const Color(0xffF3F8FD)
-                          : colorsConst.backgroundColor,
+                          : Colors.white,
                   textColor: controllers.selectedIndex.value == 5
                       ? colorsConst.primary
                       : Colors.black,
                   text: "Disqualified",
                   onClicked: () {
-                    // Navigator.push(
-                    //   context,
-                    //   PageRouteBuilder(
-                    //     pageBuilder: (context, animation1, animation2) =>
-                    //     const DisqualifiedLead(),
-                    //     transitionDuration: Duration.zero,
-                    //     reverseTransitionDuration: Duration.zero,
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const DisqualifiedLead(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
                     //controllers.isDisqualified.value = true;
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 5;
@@ -1597,12 +1591,21 @@ class Utils {
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 6
                     ? const Color(0xffF3F8FD)
-                    : colorsConst.backgroundColor,
+                    : Colors.white,
                 textColor: controllers.selectedIndex.value == 6
                     ? colorsConst.primary
                     : Colors.black,
                 text: "Call Records",
                 onClicked: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) =>
+                      const CallComments(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
                   controllers.oldIndex.value = controllers.selectedIndex.value;
                   controllers.selectedIndex.value = 6;
                 }),
@@ -1610,12 +1613,21 @@ class Utils {
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 7
                     ? const Color(0xffF3F8FD)
-                    : colorsConst.backgroundColor,
+                    : Colors.white,
                 textColor: controllers.selectedIndex.value == 7
                     ? colorsConst.primary
                     : Colors.black,
                 text: "Mail Records",
                 onClicked: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) =>
+                      const MailComments(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
                   controllers.oldIndex.value = controllers.selectedIndex.value;
                   controllers.selectedIndex.value = 7;
                 }),
@@ -1623,12 +1635,21 @@ class Utils {
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 8
                     ? const Color(0xffF3F8FD)
-                    : colorsConst.backgroundColor,
+                    : Colors.white,
                 textColor: controllers.selectedIndex.value == 8
                     ? colorsConst.primary
                     : Colors.black,
                 text: "Meeting Records",
                 onClicked: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) =>
+                      const MeetingComments(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
                   controllers.oldIndex.value = controllers.selectedIndex.value;
                   controllers.selectedIndex.value = 8;
                 }),
@@ -1636,7 +1657,7 @@ class Utils {
             Obx(() => CustomSideBarText(
                       boxColor: controllers.selectedIndex.value == 10
                           ? const Color(0xffF3F8FD)
-                          : colorsConst.backgroundColor,
+                          : Colors.white,
                   textColor: controllers.selectedIndex.value == 10
                       ? colorsConst.primary
                       : Colors.black,
@@ -1722,7 +1743,7 @@ class Utils {
                     );
                   }),
             ),
-            100.height
+            //100.height
           ],
         ),
       ),
@@ -1732,7 +1753,7 @@ class Utils {
             height: MediaQuery.of(context).size.height,
             padding: const EdgeInsets.fromLTRB(6, 8, 0, 0),
             alignment: Alignment.topCenter,
-            color: colorsConst.backgroundColor,
+            color: Colors.white,
             child: Tooltip(
               message: "Click to view the side panel",
               child: InkWell(

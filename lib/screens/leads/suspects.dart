@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
+import 'package:fullcomm_crm/components/action_button.dart';
 import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:fullcomm_crm/components/custom_search_textfield.dart';
 import 'package:fullcomm_crm/components/delete_button.dart';
@@ -70,366 +71,412 @@ class _SuspectsState extends State<Suspects> {
   Widget build(BuildContext context) {
     return SelectionArea(
       child: Scaffold(
-        body: Obx(() => InkWell(
-          focusColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          onTap: () {
-            _focusNode.requestFocus();
-          },
-          child: Container(
-            width:MediaQuery.of(context).size.width - 130,
-            height: MediaQuery.of(context).size.height,
-            padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header Section
-                buildHeaderSection(),
-                20.height,
-                // Filter Section
-                buildFilterSection(),
-                10.height,
-                Divider(thickness: 2, color: colorsConst.primary),
-                10.height,
-                Table(
-                  columnWidths: const {
-                    0: FlexColumnWidth(1),//check box
-                    1: FlexColumnWidth(1),//mail
-                    2: FlexColumnWidth(2),//N
-                    3: FlexColumnWidth(2.5),//CN
-                    4: FlexColumnWidth(2),//MN
-                    5: FlexColumnWidth(3),//Details of Service Required
-                    6: FlexColumnWidth(2),//Source of Prospect
-                    7: FlexColumnWidth(2.5),// Added DateTime
-                    8: FlexColumnWidth(1.5),// Added DateTime
-                    9: FlexColumnWidth(3),// Status Update
-                    // 9: FlexColumnWidth(3),
-                    // 10: FlexColumnWidth(3),
-                  },
-                  border: TableBorder(
-                    horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                    verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                  ),
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            utils.sideBarFunction(context),
+            Obx(() => InkWell(
+              focusColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: () {
+                _focusNode.requestFocus();
+              },
+              child: Container(
+                width:MediaQuery.of(context).size.width - 150,
+                height: MediaQuery.of(context).size.height,
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TableRow(
-                        decoration: BoxDecoration(
-                            color: colorsConst.primary,
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(5),
-                                topRight: Radius.circular(5))),
-                        children: [
-                          Row(//0
+                    // Header Section
+                    buildHeaderSection(),
+                    20.height,
+                    // Filter Section
+                    buildFilterSection(),
+                    10.height,
+                    Table(
+                      columnWidths: const {
+                        0: FlexColumnWidth(1),//check box
+                        1: FlexColumnWidth(3),//mail
+                        2: FlexColumnWidth(2),//N
+                        3: FlexColumnWidth(2.5),//CN
+                        4: FlexColumnWidth(2),//MN
+                        5: FlexColumnWidth(3),//Details of Service Required
+                        6: FlexColumnWidth(2),//Source of Prospect
+                        7: FlexColumnWidth(2),// Added DateTime
+                        8: FlexColumnWidth(2),// city
+                        9: FlexColumnWidth(3),// Status Update
+                        // 9: FlexColumnWidth(3),
+                        // 10: FlexColumnWidth(3),
+                      },
+                      border: TableBorder(
+                        horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                        verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                      ),
+                      children: [
+                        TableRow(
+                            decoration: BoxDecoration(
+                                color: colorsConst.primary,
+                                borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(5),
+                                    topRight: Radius.circular(5))),
                             children: [
-                              5.width,
-                              Container(
-                                height: 50,
-                                alignment: Alignment.center,
-                                child: Obx(
-                                      () => CustomCheckBox(
-                                      text: "",
-                                      onChanged: (value) {
-                                        if (controllers.isAllSelected.value == true) {
-                                          controllers.isAllSelected.value = false;
-                                          for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                            controllers.isNewLeadList[j]["isSelect"] = false;
-                                            setState(() {
-                                              var i = apiService.prospectsList.indexWhere((element) =>
-                                              element["lead_id"] == controllers.isNewLeadList[j]["lead_id"]);
-                                              apiService.prospectsList.removeAt(i);
-                                            });
-                                          }
-                                        } else {
-                                          controllers.isAllSelected.value = true;
-                                          setState(() {
-                                            for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                              controllers.isNewLeadList[j]["isSelect"] = true;
-                                              apiService.prospectsList.add(
-                                                  {
-                                                    "lead_id": controllers.isNewLeadList[j]["lead_id"],
-                                                    "user_id": controllers.storage.read("id"),
-                                                    "rating": controllers.isNewLeadList[j]["rating"],
-                                                    "cos_id": cosId,
-                                                    "mail_id":controllers.isNewLeadList[j]["mail_id"]
+                                  Container(
+                                    height: 40,
+                                    alignment: Alignment.center,
+                                    child: Obx(
+                                          () => Checkbox(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(2.0),
+                                            ),
+                                            side: WidgetStateBorderSide.resolveWith(
+                                                  (states) => BorderSide(width: 1.0, color: Colors.white),
+                                            ),
+                                            checkColor: colorsConst.primary,
+                                            activeColor: Colors.white,
+                                            value: controllers.isAllSelected.value,
+                                              onChanged: (value) {
+                                                if (controllers.isAllSelected.value == true) {
+                                                  controllers.isAllSelected.value = false;
+                                                  for (int j = 0; j < controllers.isNewLeadList.length; j++) {
+                                                    controllers.isNewLeadList[j]["isSelect"] = false;
+                                                    setState(() {
+                                                      var i = apiService.prospectsList.indexWhere((element) =>
+                                                      element["lead_id"] == controllers.isNewLeadList[j]["lead_id"]);
+                                                      apiService.prospectsList.removeAt(i);
+                                                    });
+                                                  }
+                                                } else {
+                                                  controllers.isAllSelected.value = true;
+                                                  setState(() {
+                                                    for (int j = 0; j < controllers.isNewLeadList.length; j++) {
+                                                      controllers.isNewLeadList[j]["isSelect"] = true;
+                                                      apiService.prospectsList.add({
+                                                            "lead_id": controllers.isNewLeadList[j]["lead_id"],
+                                                            "user_id": controllers.storage.read("id"),
+                                                            "rating": controllers.isNewLeadList[j]["rating"],
+                                                            "cos_id": cosId,
+                                                            "mail_id":controllers.isNewLeadList[j]["mail_id"]
+                                                          });
+                                                    }
                                                   });
-                                            }
-                                          });
-                                        }
-                                        //controllers.isMainPerson.value=!controllers.isMainPerson.value;
-                                      },
-                                      saveValue: controllers.isAllSelected.value),
-                                ),
-                              ),
-                            ],
-                          ),
-                          CustomText(
-                            textAlign: TextAlign.center,
-                            text: "\nMail\n",
-                            size: 15,
-                            isBold: true,
-                            colors: Colors.white,
-                          ),
-                          CustomText(//1
-                            textAlign: TextAlign.center,
-                            text: "\nName\n",
-                            size: 15,
-                            isBold: true,
-                            colors: Colors.white,
-                          ),
-                          CustomText(//2
-                            textAlign: TextAlign.center,
-                            text: "\nCompany Name\n",
-                            size: 15,
-                            isBold: true,
-                            colors: Colors.white,
-                          ),
-                          CustomText(//3
-                            textAlign: TextAlign.center,
-                            text: "\nMobile No.\n",
-                            size: 15,
-                            isBold: true,
-                            colors: Colors.white,
-                          ),
-                          // CustomText(
-                          //   textAlign: TextAlign.center,
-                          //   text: "\nEmail\n",
-                          //   size: 15,
-                          //   isBold: true,
-                          //   colors: colorsConst.textColor,
-                          // ),
-                          Padding(//6
-                            padding: const EdgeInsets.all(8.0),
-                            child: CustomText(
-                              textAlign: TextAlign.center,
-                              text: "Details of Service\nRequired",
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
-                            ),
-                          ),
-                          Padding(//7
-                            padding: const EdgeInsets.all(8.0),
-                            child: CustomText(
-                              textAlign: TextAlign.center,
-                              text: "Source Of \nProspect",
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(//8
-                                padding: const EdgeInsets.all(8.0),
+                                                }}
+                                          ),
+                                    ),
+                                  ),
+
+                              Container(
+                                height: 45,
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.only(left: 5,right: 5),
                                 child: CustomText(
                                   textAlign: TextAlign.center,
-                                  text: "Added\nDateTime",
+                                  text: "Actions",
                                   size: 15,
-                                  isBold: true,
                                   colors: Colors.white,
                                 ),
                               ),
-                              Obx(() => GestureDetector(
-                                onTap: (){
-                                  controllers.sortField.value = 'date';
-                                  controllers.sortOrder.value = 'asc';
-                                },
-                                child: Icon(
-                                  Icons.arrow_upward,
-                                  size: 16,
-                                  color: (controllers.sortField.value == 'date' &&
-                                      controllers.sortOrder.value == 'asc')
-                                      ? colorsConst.third
-                                      : Colors.grey,
+                              Container(
+                                height: 45,
+                                alignment: Alignment.centerLeft,
+                                padding: EdgeInsets.only(left: 5,right: 5),
+                                child: CustomText(//1
+                                  textAlign: TextAlign.left,
+                                  text: "Name",
+                                  size: 15,
+                                  colors: Colors.white,
                                 ),
-                              )),
-                              Obx(() => GestureDetector(
-                                onTap: (){
-                                  controllers.sortField.value = 'date';
-                                  controllers.sortOrder.value = 'desc';
-                                },
-                                child: Icon(
-                                  Icons.arrow_downward,
-                                  size: 16,
-                                  color: (controllers.sortField.value == 'date' &&
-                                      controllers.sortOrder.value == 'desc')
-                                      ? Colors.white
-                                      : Colors.grey,
-                                ),
-                              )
                               ),
+                              Container(
+                                height: 45,
+                                alignment: Alignment.centerLeft,
+                                padding: EdgeInsets.only(left: 5,right: 5),
+                                child: CustomText(//2
+                                  textAlign: TextAlign.left,
+                                  text: "Company Name",
+                                  size: 15,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Container(
+                                height: 45,
+                                alignment: Alignment.centerLeft,
+                                padding: EdgeInsets.only(left: 5,right: 5),
+                                child: CustomText(//3
+                                  textAlign: TextAlign.left,
+                                  text: "Mobile No.",
+                                  size: 15,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Container(
+                                height: 45,
+                                alignment: Alignment.centerLeft,
+                                padding: EdgeInsets.only(left: 5,right: 5),
+                                child: CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Details of Service Required",
+                                  size: 15,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Container(
+                                height: 45,
+                                alignment: Alignment.centerLeft,
+                                padding: EdgeInsets.only(left: 5,right: 5),
+                                child: CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Source Of Prospect",
+                                  size: 15,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Container(
+                                height: 45,
+                                alignment: Alignment.centerLeft,
+                                padding: EdgeInsets.only(left: 5,right: 5),
+                                child: Row(
+                                  children: [
+                                    CustomText(
+                                      textAlign: TextAlign.left,
+                                      text: "Added DateTime",
+                                      size: 15,
+                                      colors: Colors.white,
+                                    ),
+                                    3.width,
+                                    GestureDetector(
+                                      onTap: (){
+                                        controllers.sortField.value = 'date';
+                                        if(controllers.sortOrder.value == 'asc') {
+                                          controllers.sortOrder.value = 'desc';
+                                        }else{
+                                          controllers.sortOrder.value = 'asc';
+                                        }
+                                      },
+                                      child: Obx(()=>Image.asset(controllers.sortField.value.isEmpty?
+                                      "assets/images/arrow.png":controllers.sortOrder.value == 'asc'?"assets/images/arrow_up.png":"assets/images/arrow_down.png",
+                                        width: 15,height: 15,),)
+
+                                    ),
+                                    // Column(
+                                    //   mainAxisAlignment: MainAxisAlignment.center,
+                                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                                    //   children: [
+                                    //     Obx(() => GestureDetector(
+                                    //       onTap: (){
+                                    //         controllers.sortField.value = 'date';
+                                    //         controllers.sortOrder.value = 'asc';
+                                    //       },
+                                    //       child: Icon(
+                                    //         Icons.arrow_drop_up,
+                                    //         size: 20,
+                                    //         color: (controllers.sortField.value == 'date' &&
+                                    //             controllers.sortOrder.value == 'asc')
+                                    //             ? Colors.white
+                                    //             : Colors.grey,
+                                    //       ),
+                                    //     )),
+                                    //     Obx(() => GestureDetector(
+                                    //       onTap: (){
+                                    //         controllers.sortField.value = 'date';
+                                    //         controllers.sortOrder.value = 'desc';
+                                    //       },
+                                    //       child: Icon(
+                                    //         Icons.arrow_drop_down,
+                                    //         size: 20,
+                                    //         color: (controllers.sortField.value == 'date' &&
+                                    //             controllers.sortOrder.value == 'desc')
+                                    //             ? Colors.white
+                                    //             : Colors.grey,
+                                    //       ),
+                                    //     )
+                                    //     ),
+                                    //   ],
+                                    // ),
+
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: 45,
+                                alignment: Alignment.centerLeft,
+                                padding: EdgeInsets.only(left: 5,right: 5),
+                                child: CustomText(//4
+                                  textAlign: TextAlign.left,
+                                  text: "City",
+                                  size: 15,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Container(
+                                height: 45,
+                                alignment: Alignment.centerLeft,
+                                padding: EdgeInsets.only(left: 5,right: 5),
+                                child: CustomText(//9
+                                  textAlign: TextAlign.left,
+                                  text: "Status Update",
+                                  size: 15,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                            ]),
+                      ],
+                    ),
+                    Expanded(
+                      //height: MediaQuery.of(context).size.height/1.5,
+                      child: Obx(
+                              () => controllers.isLead.value == false
+                              ? const Center(child: CircularProgressIndicator())
+                              : controllers.paginatedLeads.isNotEmpty?
+                          GestureDetector(
+                            onTap: () {
+                              _focusNode.requestFocus();
+                            },
+                            child: RawKeyboardListener(
+                              focusNode: _focusNode,
+                              autofocus: true,
+                              onKey: (event) {
+                                if (event is RawKeyDownEvent) {
+                                  if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                                    _controller.animateTo(
+                                      _controller.offset + 100,
+                                      duration: const Duration(milliseconds: 200),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                                    _controller.animateTo(
+                                      _controller.offset - 100,
+                                      duration: const Duration(milliseconds: 200),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  }
+                                }
+                              },
+                              child:  ListView.builder(
+                                controller: _controller,
+                                shrinkWrap: true,
+                                physics: const ScrollPhysics(),
+                                itemCount: controllers.paginatedLeads.length,
+                                itemBuilder: (context, index) {
+                                  final data = controllers.paginatedLeads[index];
+                                  return Obx(()=>CustomLeadTile(
+                                    saveValue: controllers.isNewLeadList[index]["isSelect"],
+                                    onChanged: (value){
+                                      setState(() {
+                                        if(controllers.isNewLeadList[index]["isSelect"]==true){
+                                          controllers.isNewLeadList[index]["isSelect"]=false;
+                                          var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                          apiService.prospectsList.removeAt(i);
+                                        }else{
+                                          controllers.isNewLeadList[index]["isSelect"]=true;
+                                          apiService.prospectsList.add({
+                                            "lead_id":data.userId.toString(),
+                                            "user_id":controllers.storage.read("id"),
+                                            "rating":data.rating ?? "Warm",
+                                            "cos_id":cosId,
+                                            "mail_id":data.emailId.toString().split("||")[0]
+                                          });
+                                        }
+                                      });
+                                    },
+                                    visitType: data.visitType.toString(),
+                                    detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
+                                    statusUpdate: data.statusUpdate.toString(),
+                                    index: index,
+                                    points: data.points.toString(),
+                                    quotationStatus: data.quotationStatus.toString(),
+                                    quotationRequired: data.quotationRequired.toString(),
+                                    productDiscussion: data.productDiscussion.toString(),
+                                    discussionPoint: data.discussionPoint.toString(),
+                                    notes: data.notes.toString(),
+                                    linkedin: "",
+                                    x: "",
+                                    name: data.firstname.toString().split("||")[0],
+                                    mobileNumber: data.mobileNumber.toString().split("||")[0],
+                                    email: data.emailId.toString().split("||")[0],
+                                    companyName: data.companyName.toString(),
+                                    mainWhatsApp: data.mobileNumber.toString().split("||")[0],
+                                    emailUpdate: data.quotationUpdate.toString(),
+                                    id: data.userId.toString(),
+                                    status: data.leadStatus ?? "UnQualified",
+                                    rating: data.rating ?? "Warm",
+                                    mainName: data.firstname.toString().split("||")[0],
+                                    mainMobile: data.mobileNumber.toString().split("||")[0],
+                                    mainEmail: data.emailId.toString().split("||")[0],
+                                    title: "",
+                                    whatsappNumber: data.mobileNumber.toString().split("||")[0],
+                                    mainTitle: "",
+                                    addressId: data.addressId ?? "",
+                                    companyWebsite: "",
+                                    companyNumber: "",
+                                    companyEmail: "",
+                                    industry: "",
+                                    productServices: "",
+                                    source:data.source ?? "",
+                                    owner: "",
+                                    budget: "",
+                                    timelineDecision: "",
+                                    serviceInterest: "",
+                                    description: "",
+                                    leadStatus: data.quotationStatus ?? "",
+                                    active: data.active ?? "",
+                                    addressLine1: data.doorNo ?? "",
+                                    addressLine2: data.landmark1 ?? "",
+                                    area: data.area ?? "",
+                                    city: data.city ?? "",
+                                    state: data.state ?? "",
+                                    country: data.country ?? "",
+                                    pinCode: data.pincode ?? "",
+                                    prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
+                                    expectedConvertionDate: data.expectedConvertionDate ?? "",
+                                    numOfHeadcount: data.numOfHeadcount ?? "",
+                                    expectedBillingValue: data.expectedBillingValue ?? "",
+                                    arpuValue: data.arpuValue ?? "",
+                                    updatedTs: data.createdTs ?? "",
+                                    sourceDetails: data.sourceDetails ?? "",
+                                  ));
+                                },
+                              ),
+                            ),
+                          ):
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              100.height,
+                              Center(
+                                  child: SvgPicture.asset(
+                                      "assets/images/noDataFound.svg")),
                             ],
-                          ),
-                          CustomText(//4
-                            textAlign: TextAlign.center,
-                            text: "\nCity\n",
-                            size: 15,
-                            isBold: true,
-                            colors: Colors.white,
-                          ),
-                          CustomText(//9
-                            textAlign: TextAlign.center,
-                            text: "\nStatus Update\n",
-                            size: 15,
-                            isBold: true,
-                            colors: Colors.white,
-                          ),
-                        ]),
+                          )
+                      ),
+                    ),
+
+                    Obx(() {
+                      final totalPages = controllers.totalPages == 0 ? 1 : controllers.totalPages;
+                      final currentPage = controllers.currentPage.value;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          paginationButton(Icons.chevron_left, currentPage > 1, () {
+                            _focusNode.requestFocus();
+                            controllers.currentPage.value--;
+                          }),
+                          ...buildPagination(totalPages, currentPage),
+                          paginationButton(Icons.chevron_right, currentPage < totalPages, () {
+                            controllers.currentPage.value++;
+                            _focusNode.requestFocus();
+                          }),
+                        ],
+                      );
+                    }),
                   ],
                 ),
-                Expanded(
-                  //height: MediaQuery.of(context).size.height/1.5,
-                  child: Obx(
-                          () => controllers.isLead.value == false
-                          ? const Center(child: CircularProgressIndicator())
-                          : controllers.paginatedLeads.isNotEmpty?
-                      GestureDetector(
-                        onTap: () {
-                          _focusNode.requestFocus();
-                        },
-                        child: RawKeyboardListener(
-                          focusNode: _focusNode,
-                          autofocus: true,
-                          onKey: (event) {
-                            if (event is RawKeyDownEvent) {
-                              if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                                _controller.animateTo(
-                                  _controller.offset + 100,
-                                  duration: const Duration(milliseconds: 200),
-                                  curve: Curves.easeInOut,
-                                );
-                              } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                                _controller.animateTo(
-                                  _controller.offset - 100,
-                                  duration: const Duration(milliseconds: 200),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            }
-                          },
-                          child:  ListView.builder(
-                            controller: _controller,
-                            shrinkWrap: true,
-                            physics: const ScrollPhysics(),
-                            itemCount: controllers.paginatedLeads.length,
-                            itemBuilder: (context, index) {
-                              final data = controllers.paginatedLeads[index];
-                              return Obx(()=>CustomLeadTile(
-                                saveValue: controllers.isNewLeadList[index]["isSelect"],
-                                onChanged: (value){
-                                  setState(() {
-                                    if(controllers.isNewLeadList[index]["isSelect"]==true){
-                                      controllers.isNewLeadList[index]["isSelect"]=false;
-                                      var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                      apiService.prospectsList.removeAt(i);
-                                    }else{
-                                      controllers.isNewLeadList[index]["isSelect"]=true;
-                                      apiService.prospectsList.add({
-                                        "lead_id":data.userId.toString(),
-                                        "user_id":controllers.storage.read("id"),
-                                        "rating":data.rating ?? "Warm",
-                                        "cos_id":cosId,
-                                        "mail_id":data.emailId.toString().split("||")[0]
-                                      });
-                                    }
-                                  });
-                                },
-                                visitType: data.visitType.toString(),
-                                detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
-                                statusUpdate: data.statusUpdate.toString(),
-                                index: index,
-                                points: data.points.toString(),
-                                quotationStatus: data.quotationStatus.toString(),
-                                quotationRequired: data.quotationRequired.toString(),
-                                productDiscussion: data.productDiscussion.toString(),
-                                discussionPoint: data.discussionPoint.toString(),
-                                notes: data.notes.toString(),
-                                linkedin: "",
-                                x: "",
-                                name: data.firstname.toString().split("||")[0],
-                                mobileNumber: data.mobileNumber.toString().split("||")[0],
-                                email: data.emailId.toString().split("||")[0],
-                                companyName: data.companyName.toString(),
-                                mainWhatsApp: data.mobileNumber.toString().split("||")[0],
-                                emailUpdate: data.quotationUpdate.toString(),
-                                id: data.userId.toString(),
-                                status: data.leadStatus ?? "UnQualified",
-                                rating: data.rating ?? "Warm",
-                                mainName: data.firstname.toString().split("||")[0],
-                                mainMobile: data.mobileNumber.toString().split("||")[0],
-                                mainEmail: data.emailId.toString().split("||")[0],
-                                title: "",
-                                whatsappNumber: data.mobileNumber.toString().split("||")[0],
-                                mainTitle: "",
-                                addressId: data.addressId ?? "",
-                                companyWebsite: "",
-                                companyNumber: "",
-                                companyEmail: "",
-                                industry: "",
-                                productServices: "",
-                                source:data.source ?? "",
-                                owner: "",
-                                budget: "",
-                                timelineDecision: "",
-                                serviceInterest: "",
-                                description: "",
-                                leadStatus: data.quotationStatus ?? "",
-                                active: data.active ?? "",
-                                addressLine1: data.doorNo ?? "",
-                                addressLine2: data.landmark1 ?? "",
-                                area: data.area ?? "",
-                                city: data.city ?? "",
-                                state: data.state ?? "",
-                                country: data.country ?? "",
-                                pinCode: data.pincode ?? "",
-                                prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
-                                expectedConvertionDate: data.expectedConvertionDate ?? "",
-                                numOfHeadcount: data.numOfHeadcount ?? "",
-                                expectedBillingValue: data.expectedBillingValue ?? "",
-                                arpuValue: data.arpuValue ?? "",
-                                updatedTs: data.createdTs ?? "",
-                                sourceDetails: data.sourceDetails ?? "",
-                              ));
-                            },
-                          ),
-                        ),
-                      ):
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          100.height,
-                          Center(
-                              child: SvgPicture.asset(
-                                  "assets/images/noDataFound.svg")),
-                        ],
-                      )
-                  ),
-                ),
-
-                Obx(() {
-                  final totalPages = controllers.totalPages == 0 ? 1 : controllers.totalPages;
-                  final currentPage = controllers.currentPage.value;
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      paginationButton(Icons.chevron_left, currentPage > 1, () {
-                        _focusNode.requestFocus();
-                        controllers.currentPage.value--;
-                      }),
-                      ...buildPagination(totalPages, currentPage),
-                      paginationButton(Icons.chevron_right, currentPage < totalPages, () {
-                        controllers.currentPage.value++;
-                        _focusNode.requestFocus();
-                      }),
-                    ],
-                  );
-                }),
-              ],
-            ),
-          ),
-        )),
+              ),
+            )),
+          ],
+        ),
       ),
     );
   }
@@ -512,12 +559,12 @@ class _SuspectsState extends State<Suspects> {
               },
               height: 35,
               isLoading: false,
-              backgroundColor: colorsConst.primary,
+              backgroundColor: Colors.white,
               radius: 2,
               width: 100,
               isImage: false,
               text: "Import",
-              textColor: Colors.white,
+              textColor: colorsConst.primary,
             ),
           ],
         ),
@@ -541,8 +588,7 @@ class _SuspectsState extends State<Suspects> {
                 ),
                 10.width,
                 CircleAvatar(
-                  backgroundColor:
-                  colorsConst.primary,
+                  backgroundColor: colorsConst.primary,
                   radius: 17,
                   child: Obx(
                         () => CustomText(
@@ -555,8 +601,9 @@ class _SuspectsState extends State<Suspects> {
               ],
             ),
 
-            Row(
+            apiService.prospectsList.isEmpty?0.height:Row(
               children: [
+                ActionButton(width: 150, image: "assets/images/action_delete.png", name: "Delete"),
                 GestureDetector(
                   onTap: (){
                     _focusNode.requestFocus();
@@ -573,12 +620,7 @@ class _SuspectsState extends State<Suspects> {
                 IconButton(
                     onPressed: (){
                       _focusNode.requestFocus();
-                      if(apiService.prospectsList.isEmpty){
-                        apiService.errorDialog(
-                            context, "Please select customers");
-                      }else{
                         utils.bulkEmailDialog(_focusNode,list:apiService.prospectsList);
-                      }
                     },
                     icon: SvgPicture.asset("assets/images/email.svg",color: colorsConst.primary,)),
                 GestureDetector(
@@ -615,6 +657,8 @@ class _SuspectsState extends State<Suspects> {
           ],
         ),
         10.height,
+        Divider(thickness: 1.5, color: colorsConst.secondary),
+        10.height,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -627,32 +671,43 @@ class _SuspectsState extends State<Suspects> {
             ),
             Row(
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: colorsConst.secondary,
-                  ),
-                  onPressed: (){
-                    controllers.selectMonth(
-                        context, controllers.selectedProspectSortBy, controllers.selectedMonth);
-                    _focusNode.requestFocus();
-                  },
-                  child: CustomText(
-                    text:controllers.selectedMonth.value != null
-                        ? DateFormat('MMMM yyyy').format(controllers.selectedMonth.value!)
-                        : 'Select Month',
-                    colors: colorsConst.textColor,
+                SizedBox(
+                  height: 35,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorsConst.secondary,
+                      shadowColor: Colors.transparent
+                    ),
+                    onPressed: (){
+                      controllers.selectMonth(
+                          context, controllers.selectedProspectSortBy, controllers.selectedMonth);
+                      _focusNode.requestFocus();
+                    },
+                    child: CustomText(
+                      text:controllers.selectedMonth.value != null
+                          ? DateFormat('MMMM yyyy').format(controllers.selectedMonth.value!)
+                          : 'Select Month',
+                      colors: colorsConst.textColor,
+                    ),
                   ),
                 ),
                 10.width,
                 PopupMenuButton<String>(
                   offset: const Offset(0, 40),
-                  color: colorsConst.secondary,
+                  color: Color(0xffE7EEF8),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(2),
                   ),
                   onSelected: (value) {
                     controllers.selectedProspectSortBy.value = value;
                     _focusNode.requestFocus();
+                    controllers.isMenuOpen.value = false;
+                  },
+                  onCanceled: () {
+                    controllers.isMenuOpen.value = false;
+                  },
+                  onOpened: () {
+                    controllers.isMenuOpen.value = true;
                   },
                   itemBuilder: (context) => [
                     PopupMenuItem(value: "Today", child: Text("Today", style: TextStyle(color: colorsConst.textColor))),
@@ -660,21 +715,24 @@ class _SuspectsState extends State<Suspects> {
                     PopupMenuItem(value: "Last 30 Days", child: Text("Last 30 Days", style: TextStyle(color: colorsConst.textColor))),
                     PopupMenuItem(value: "All", child: Text("All", style: TextStyle(color: colorsConst.textColor))),
                   ],
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorsConst.secondary,
-                    ),
-                    onPressed: null,
+                  child: Container(
+                    color: colorsConst.secondary,
+                    height: 36,
+                    padding: EdgeInsets.all(9),
                     child: Row(
                       children: [
-                        SvgPicture.asset("assets/images/sort.svg",color: colorsConst.primary,),
-                        const SizedBox(width: 6),
                         Obx(() => CustomText(
                           text: controllers.selectedProspectSortBy.value.isEmpty
-                              ? "Sort by"
+                              ? "Filter by Date Range"
                               : controllers.selectedProspectSortBy.value,
-                          colors: colorsConst.primary,
-                          size: 15,
+                          colors: colorsConst.textColor,
+                        )),
+                        5.width,
+                        Obx(() => Icon(
+                          controllers.isMenuOpen.value
+                              ? Icons.arrow_drop_up
+                              : Icons.arrow_drop_down,
+                          color: colorsConst.textColor,
                         )),
                       ],
                     ),

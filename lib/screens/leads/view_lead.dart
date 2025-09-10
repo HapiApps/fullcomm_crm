@@ -195,6 +195,7 @@ class _ViewLeadState extends State<ViewLead> {
           children: [
             utils.sideBarFunction(context),
             Container(
+              width: screenWidth-150,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
               padding: EdgeInsets.all(20),

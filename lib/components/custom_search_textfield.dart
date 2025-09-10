@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import '../common/constant/assets_constant.dart';
 import '../common/constant/colors_constant.dart';
 
@@ -39,15 +38,19 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
           hoverColor: Colors.white,
           hintText: widget.hintText,
           hintStyle: TextStyle(
-            color: colorsConst.textColor,
-            fontSize: 12,
+            color: Color(0xff526B81),
+            fontSize: 13,
             fontFamily: "Lato",
           ),
-          //prefixIcon: SvgPicture.asset(assets.search,width: 1,height: 1,),
           prefixIcon: IconButton(
               onPressed: null,
-              icon: SvgPicture.asset(assets.search, width: 15, height: 15)),
+              icon: SvgPicture.asset(assets.search, width: 15, height: 15,colorFilter: const ColorFilter.mode(
+                Color(0xff526B81),
+                BlendMode.srcIn,
+              ),)),
           suffixIcon: IconButton(
+            focusColor: Colors.transparent,
+              hoverColor: Colors.transparent,
               onPressed: () {
                 widget.controller.clear();
                 if (widget.onChanged != null) {
@@ -56,16 +59,16 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
               },
               icon: Icon(
                 Icons.clear,
-                color: Colors.black,
+                color: Color(0xff526B81),
               )),
-          fillColor: Colors.transparent,
+          fillColor: Colors.white,
           filled: true,
           enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: colorsConst.secondary),
+              borderSide: BorderSide(color: Colors.white),
               borderRadius: BorderRadius.circular(5)),
           focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: colorsConst.secondary,
+                color: colorsConst.primary,
               ),
               borderRadius: BorderRadius.circular(5)),
           contentPadding:

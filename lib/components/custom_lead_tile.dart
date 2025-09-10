@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/screens/leads/view_lead.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
-import 'package:fullcomm_crm/common/extentions/lib_extensions.dart';
 import 'package:fullcomm_crm/components/custom_checkbox.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
@@ -67,12 +66,12 @@ class CustomLeadTile extends StatefulWidget {
   final String? visitType;
   final String? points;
   final String? detailsOfServiceReq;
-  String updatedTs;
+  final String updatedTs;
+  final void Function(bool?) onChanged;
   final bool saveValue;
-  void Function(bool?) onChanged;
 
 
-  CustomLeadTile({super.key,
+  const CustomLeadTile({super.key,
     this.id,
     this.mainName,
     this.mainMobile,
@@ -131,23 +130,13 @@ class CustomLeadTile extends StatefulWidget {
 }
 
 class _CustomLeadTileState extends State<CustomLeadTile> {
-  String formatDateTime(String inputDateTime) {
-    DateTime dateTime;
+  String formatDate(String inputDate) {
     try {
-      dateTime = DateFormat('yyyy-MM-dd HH:mm:ss').parseStrict(inputDateTime);
-    } catch (_) {
-      try {
-        dateTime = DateFormat('dd.MM.yyyy').parseStrict(inputDateTime);
-      } catch (_) {
-        return 'Invalid date';
-      }
+      DateTime parsedDate = DateFormat("dd.MM.yyyy").parse(inputDate);
+      return DateFormat("dd MMM yyyy").format(parsedDate);
+    } catch (e) {
+      return inputDate;
     }
-
-    bool hasTime = inputDateTime.contains(':');
-    final outputFormat = hasTime
-        ? DateFormat('yyyy-MM-dd hh:mm a')
-        : DateFormat('yyyy-MM-dd');
-    return outputFormat.format(dateTime);
   }
   late TextEditingController statusController;
   @override
@@ -230,24 +219,20 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
       child: Table(
         columnWidths:const {
           0: FlexColumnWidth(1),//check box
-          1: FlexColumnWidth(1),//mail
+          1: FlexColumnWidth(3),//mail
           2: FlexColumnWidth(2),//N
           3: FlexColumnWidth(2.5),//CN
           4: FlexColumnWidth(2),//MN
           5: FlexColumnWidth(3),//Details of Service Required
           6: FlexColumnWidth(2),//Source of Prospect
-          7: FlexColumnWidth(2.5),// Added DateTime
-          8: FlexColumnWidth(1.5),// Added DateTime
-          9: FlexColumnWidth(3),
-          // 9: FlexColumnWidth(3),
-          // 10: FlexColumnWidth(3),
+          7: FlexColumnWidth(2),// Added DateTime
+          8: FlexColumnWidth(2),// City
+          9: FlexColumnWidth(3),// Status Update
         },
         border: TableBorder(
           horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
           verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
           bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
-          //left: const BorderSide(width: 1, color: Colors.grey),
-          //right:  BorderSide(width: 1, color: Colors.grey),
         ),
         children:[
           TableRow(
@@ -255,38 +240,48 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                 color: int.parse(widget.index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
               ),
               children:[
-                Row(
-                  children: [
-                    5.width,
                     Container(
-                      height: 70,
+                      height: 45,
                       alignment: Alignment.center,
                       child: CustomCheckBox(
                           text: "",
                           onChanged: widget.onChanged,
                           saveValue: widget.saveValue),
                     ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-                  child: IconButton(
-                    onPressed: (){
-                      controllers.customMailFuture = apiService.mailCommentDetails(widget.id.toString());
-                      Get.to(MailComments(
-                        mainEmail: widget.mainEmail,
-                        mainMobile: widget.mainMobile,
-                        mainName: widget.mainName,
-                        city: widget.city,
-                        id: widget.id,
-                        companyName: widget.companyName,
-                      ));
-                    },
-                    icon: SvgPicture.asset("assets/images/s_mail.svg",
-                      color: widget.emailUpdate.toString().isEmpty||widget.emailUpdate=="null"? Colors.grey:colorsConst.third,
-                    ),
-                    // icon: Icon(Icons.mail_outline,color: widget.emailUpdate.toString().isEmpty||widget.emailUpdate=="null"?
-                    //               Colors.grey:colorsConst.third,)
+
+                Container(
+                  height: 45,
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      InkWell(
+                          onTap: (){},
+                          child: SvgPicture.asset("assets/images/a_edit.svg",width: 16,height: 16,)),
+                      InkWell(
+                          onTap: (){},
+                          child: SvgPicture.asset("assets/images/a_delete.svg",width: 16,height: 16,)),
+                      InkWell(
+                        onTap: (){
+                          controllers.customMailFuture = apiService.mailCommentDetails(widget.id.toString());
+                          Get.to(MailComments(
+                            mainEmail: widget.mainEmail,
+                            mainMobile: widget.mainMobile,
+                            mainName: widget.mainName,
+                            city: widget.city,
+                            id: widget.id,
+                            companyName: widget.companyName,
+                          ));
+                        },
+                        child: SvgPicture.asset("assets/images/a_email.svg",width: 16,height: 16,),
+                      ),
+                      InkWell(
+                          onTap: (){},
+                          child: SvgPicture.asset("assets/images/a_qualified.svg",width: 16,height: 16,)),
+                      InkWell(
+                          onTap: (){},
+                          child: SvgPicture.asset("assets/images/a_disqualified.svg",width: 16,height: 16,)),
+                    ],
                   ),
                 ),
                 // SingleChildScrollView(
@@ -363,10 +358,12 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                 //     ],
                 //   ),
                 // ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 25),
+                Container(
+                  height: 45,
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 5,right: 5),
                   child: CustomText(
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.left,
                     text: widget.mainName.toString()=="null"?"":widget.mainName.toString(),
                     size: 14,
                     colors: colorsConst.textColor,
@@ -374,20 +371,24 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                 ),
                 Tooltip(
                   message: widget.companyName.toString()=="null"?"":widget.companyName.toString(),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 25),
+                  child: Container(
+                    height: 45,
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 5,right: 5),
                     child: CustomText(
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                       text: widget.companyName.toString()=="null"?"":widget.companyName.toString(),
                       size: 14,
                       colors:colorsConst.textColor,
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 25),
+                Container(
+                  height: 45,
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 5,right: 5),
                   child: CustomText(
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.left,
                     text:widget.mainMobile.toString()=="null"?"":widget.mainMobile.toString(),
                     size: 14,
                     colors: colorsConst.textColor,
@@ -395,74 +396,51 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                 ),
                 Tooltip(
                   message: widget.detailsOfServiceReq.toString()=="null"?"":widget.detailsOfServiceReq.toString(),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 25),
+                  child: Container(
+                    height: 45,
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 5,right: 5),
                     child: CustomText(
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                       text: widget.detailsOfServiceReq.toString(),
                       size: 14,
                       colors:colorsConst.textColor,
                     ),
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 25),
-                //   child: CustomText(
-                //     textAlign: TextAlign.center,
-                //     text:widget.mainEmail.toString()=="null"?"":widget.mainEmail.toString(),
-                //     size: 14,
-                //     colors:colorsConst.textColor,
-                //   ),
-                // ),
-
-
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 25),
-                //   child: CustomText(
-                //     textAlign: TextAlign.center,
-                //     text:widget.status.toString(),
-                //     size: 14,
-                //     colors: colorsConst.textColor,
-                //   ),
-                // ),
-
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 25),
-                //   child: CustomText(
-                //     textAlign: TextAlign.center,
-                //     text: widget.visitType.toString(),
-                //     size: 14,
-                //     colors:colorsConst.textColor,
-                //   ),
-                // ),
-
                 Tooltip(
                   message: widget.source.toString()=="null"?"":widget.source.toString(),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 25),
+                  child: Container(
+                    height: 45,
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 5,right: 5),
                     child: CustomText(
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                       text: widget.source.toString(),
                       size: 14,
                       colors:colorsConst.textColor,
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 25,right: 5),
+                Container(
+                  height: 45,
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 5,right: 5),
                   child: CustomText(
-                    textAlign: TextAlign.center,
-                    text: controllers.formatDateTime(widget.prospectEnrollmentDate.toString().isEmpty||widget.prospectEnrollmentDate.toString()=="null"?widget.updatedTs.toString():widget.prospectEnrollmentDate.toString()),
+                    textAlign: TextAlign.left,
+                    text: formatDate(widget.prospectEnrollmentDate.toString().isEmpty||widget.prospectEnrollmentDate.toString()=="null"?widget.updatedTs.toString():widget.prospectEnrollmentDate.toString()),
                     size: 14,
                     colors:colorsConst.textColor,
                   ),
                 ),
                 Tooltip(
                   message: widget.city.toString(),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 25),
+                  child: Container(
+                    height: 45,
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 5,right: 5),
                     child: CustomText(
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                       text: widget.city.toString()=="null"?"":widget.city.toString(),
                       size: 14,
                       colors:colorsConst.textColor,
@@ -471,11 +449,13 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                 ),
                 Tooltip(
                   message: widget.statusUpdate.toString()=="null"?"":widget.statusUpdate.toString(),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 25),
+                  child: Container(
+                    height: 45,
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(left: 6,right: 5,bottom: 5),
                     child: TextField(
                       controller: statusController,
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                       cursorColor: colorsConst.textColor,
                       style: TextStyle(
                         color: colorsConst.textColor,
@@ -495,59 +475,8 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         );
                       },
                     ),
-                    // child: CustomText(
-                    //   textAlign: TextAlign.center,
-                    //   text: widget.statusUpdate.toString(),
-                    //   size: 14,
-                    //   colors:colorsConst.textColor,
-                    // ),
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 25),
-                //   child: Center(
-                //     child: Container(
-                //       width: 65,
-                //       height: 20,
-                //       decoration: BoxDecoration(
-                //           color: widget.rating.toString().toLowerCase() == "cold"
-                //               ? const Color(0xffACF3E4)
-                //               : widget.rating.toString().toLowerCase() == "warm"
-                //               ? const Color(0xffCFE9FE)
-                //               : const Color(0xffFEDED8),
-                //           borderRadius: BorderRadius.circular(10),
-                //           border: Border.all(
-                //               color:widget.rating.toString().toLowerCase() == "cold"?const Color(0xff06A59A):widget.rating.toString().toLowerCase() == "warm"?const Color(0xff0D9DDA):const Color(0xffFE5C4C)
-                //           )
-                //       ),
-                //       alignment: Alignment.center,
-                //       child: CustomText(
-                //         text:widget.rating.toString(),
-                //         colors:widget.rating.toString().toLowerCase() == "cold"?const Color(0xff06A59A):widget.rating.toString().toLowerCase() == "warm"?const Color(0xff0D9DDA):const Color(0xffFE5C4C),
-                //         size: 12,
-                //         isBold: true,
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 25,right: 5),
-                //   child: CustomText(
-                //     textAlign: TextAlign.center,
-                //     text: widget.prospectEnrollmentDate.toString(),
-                //     size: 14,
-                //     colors:colorsConst.textColor,
-                //   ),
-                // ),
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 25,right: 5),
-                //   child: CustomText(
-                //     textAlign: TextAlign.center,
-                //     text: widget.expectedConvertionDate.toString(),
-                //     size: 14,
-                //     colors:colorsConst.textColor,
-                //   ),
-                // ),
               ]
           ),
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/screens/call_comments.dart';
 import 'package:fullcomm_crm/screens/mail_comments.dart';
 import 'package:fullcomm_crm/screens/meeting_comments.dart';
@@ -43,7 +44,7 @@ class _HomeState extends State<Home> {
                width: controllers.selectedIndex.value==0?controllers.isLeftOpen.value == false &&
                    controllers.isRightOpen.value == false
                    ? screenWidth - 200
-                   : screenWidth - 400:screenWidth - 140,
+                   : screenWidth - 400:screenWidth - 150,
                height: MediaQuery.of(context).size.height,
                alignment: Alignment.topLeft,
                child: Obx(() {

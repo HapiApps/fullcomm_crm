@@ -20,8 +20,8 @@ import '../models/product_obj.dart';
 final controllers = Get.put(Controller());
 
 class Controller extends GetxController {
-  var version = "Version 0.0.4";
-  var versionNum = "0.0.4";
+  var version = "Version 0.0.5";
+  var versionNum = "0.0.5";
   // var version = "Version 0.0.14";
   //  var versionNum = "0.0.14";
   String countryDial = "+91";
@@ -29,7 +29,7 @@ class Controller extends GetxController {
   RxInt selectedIndex = 0.obs,oldIndex=0.obs;
   bool extended =false;
   RxString searchText = ''.obs;
-  final RxString searchQuery = ''.obs,searchProspects = ''.obs,searchQulified = ''.obs;
+  final RxString searchQuery = ''.obs,searchProspects = ''.obs,searchQualified = ''.obs;
   Future<List<NewLeadObj>>? allCustomerFuture;
   Future<List<EmployeeObj>>? allEmployeeFuture;
   Future<List<ProductObj>>? allProductFuture;
@@ -48,6 +48,7 @@ class Controller extends GetxController {
   RxString selectedSortBy = "".obs;
   RxString selectedProspectSortBy = "".obs;
   RxString selectedQualifiedSortBy = "".obs;
+  RxBool isMenuOpen = false.obs;
   var allLeads = <NewLeadObj>[].obs;
   final Rxn<DateTime> selectedMonth = Rxn<DateTime>();
   final Rxn<DateTime> selectedPMonth = Rxn<DateTime>();
@@ -69,7 +70,6 @@ class Controller extends GetxController {
 
   String formatDateTime(String inputDateTime) {
     DateTime dateTime;
-
     try {
       dateTime = DateFormat('yyyy-MM-dd HH:mm:ss').parseStrict(inputDateTime);
     } catch (_) {

@@ -42,14 +42,13 @@ class _CustomLoadingButtonState extends State<CustomLoadingButton> {
   Widget build(BuildContext context) {
     return widget.isLoading
         ?
-
         /// Change this line
         RoundedLoadingButton(
             width: widget.width,
             height: widget.height,
             borderRadius: 3,
             color: widget.backgroundColor,
-            successColor: colorsConst.primary,
+            successColor: Colors.white,
             valueColor: Colors.white,
             onPressed: widget.callback,
             controller: widget.controller!,
@@ -66,15 +65,17 @@ class _CustomLoadingButtonState extends State<CustomLoadingButton> {
             width: widget.width,
             child: ElevatedButton(
               style: customStyle.buttonStyle(
-                  color: widget.backgroundColor, radius: widget.radius),
+                  color: widget.backgroundColor, radius: widget.radius,),
               onPressed: widget.callback,
               child: !widget.isImage!
                   ? Text(
                       widget.text.toString(),
-                      style: TextStyle(
+                      style: GoogleFonts.lato(
                           color: widget.textColor,
                           fontSize: widget.textSize!,
-                          fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.w400,
+
+                      ),
                     )
                   : SvgPicture.asset(
                       widget.image!,
