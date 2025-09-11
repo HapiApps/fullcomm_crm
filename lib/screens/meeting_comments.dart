@@ -35,6 +35,15 @@ class _MeetingCommentsState extends State<MeetingComments> {
   String searchText = "";
   late FocusNode _focusNode;
   final ScrollController _controller = ScrollController();
+  String formatFirstDate(String input) {
+    try {
+      String firstDateString = input.split("||")[0];
+      DateTime parsedDate = DateFormat("dd-MM-yyyy").parse(firstDateString);
+      return DateFormat("dd MMM yyyy").format(parsedDate);
+    } catch (e) {
+      return "";
+    }
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -231,14 +240,14 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                 borderColor: Colors.grey.shade300,
                                                 hintText: "Customers",
                                                 labelText: "",
-                                                labelBuilder: (customer) =>'${customer.name} - ${customer.phoneNo}',
+                                                labelBuilder: (customer) =>'${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
                                                 itemBuilder: (customer) =>
                                                     Container(
                                                       width: 300,
                                                       alignment: Alignment.topLeft,
                                                       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                       child: CustomText(
-                                                        text: '${customer.name} - ${customer.companyName}',
+                                                        text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.companyName}',
                                                         colors: Colors.black,
                                                         size: 14,
                                                         textAlign: TextAlign.start,
@@ -706,7 +715,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           padding: const EdgeInsets.all(10.0),
                                           child: CustomText(
                                             textAlign: TextAlign.center,
-                                            text: data.dates.toString(),
+                                            text: formatFirstDate(data.dates.toString()),
                                             size: 14,
                                             colors: colorsConst.textColor,
                                           ),

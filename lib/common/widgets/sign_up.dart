@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,6 +16,9 @@ import '../constant/colors_constant.dart';
 import '../constant/key_constant.dart';
 import '../utilities/utils.dart';
 
+class ActivateIntent extends Intent {
+  const ActivateIntent();
+}
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
 

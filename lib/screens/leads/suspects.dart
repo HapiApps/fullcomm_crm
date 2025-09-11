@@ -2,29 +2,18 @@ import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
-import 'package:fullcomm_crm/components/action_button.dart';
 import 'package:fullcomm_crm/components/custom_loading_button.dart';
-import 'package:fullcomm_crm/components/custom_search_textfield.dart';
-import 'package:fullcomm_crm/components/delete_button.dart';
-import 'package:fullcomm_crm/components/disqualified_button.dart';
-import 'package:fullcomm_crm/components/promote_button.dart';
-import 'package:fullcomm_crm/screens/leads/view_lead.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:group_button/group_button.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/constant/api.dart';
-import '../../components/custom_checkbox.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
 import '../../components/custom_lead_tile.dart';
 import '../../components/custom_table_header.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
-import 'add_lead.dart';
 
 class Suspects extends StatefulWidget {
   const Suspects({super.key});
@@ -310,15 +299,34 @@ class _SuspectsState extends State<Suspects> {
                       selectedSortBy: controllers.selectedProspectSortBy,
                       isMenuOpen: controllers.isMenuOpen,
                     ),
-
                     10.height,
                     CustomTableHeader(
+                      showCheckbox: true,
                       isAllSelected: controllers.isAllSelected.value,
                       onSelectAll: (value) {
                         if (value == true) {
                           controllers.isAllSelected.value = true;
+                          setState(() {
+                            for (int j = 0; j < controllers.isNewLeadList.length; j++) {
+                              controllers.isNewLeadList[j]["isSelect"] = true;
+                              apiService.prospectsList.add({
+                                    "lead_id": controllers.isNewLeadList[j]["lead_id"],
+                                    "user_id": controllers.storage.read("id"),
+                                    "rating": controllers.isNewLeadList[j]["rating"],
+                                    "cos_id": cosId,
+                                    "mail_id":controllers.isNewLeadList[j]["mail_id"]
+                                  });
+                            }
+                          });
                         } else {
                           controllers.isAllSelected.value = false;
+                          for (int j = 0; j < controllers.isNewLeadList.length; j++) {
+                            controllers.isNewLeadList[j]["isSelect"] = false;
+                            setState((){
+                              var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==controllers.isNewLeadList[j]["lead_id"]);
+                              apiService.prospectsList.removeAt(i);
+                            });
+                          }
                         }
                       },
                       onSortDate: () {
@@ -461,12 +469,12 @@ class _SuspectsState extends State<Suspects> {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          paginationButton(Icons.chevron_left, currentPage > 1, () {
+                          utils.paginationButton(Icons.chevron_left, currentPage > 1, () {
                             _focusNode.requestFocus();
                             controllers.currentPage.value--;
                           }),
-                          ...buildPagination(totalPages, currentPage),
-                          paginationButton(Icons.chevron_right, currentPage < totalPages, () {
+                          ...utils.buildPagination(totalPages, currentPage),
+                          utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
                             controllers.currentPage.value++;
                             _focusNode.requestFocus();
                           }),
@@ -480,96 +488,6 @@ class _SuspectsState extends State<Suspects> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget paginationButton(IconData icon, bool isEnabled, VoidCallback onPressed) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: IconButton(
-        focusColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        icon: Icon(icon, color: colorsConst.textColor),
-        onPressed: isEnabled ? onPressed : null,
-        // onLongPress: (){
-        //   _focusNode.requestFocus();
-        // },
-      ),
-    );
-  }
-
-  List<Widget> buildPagination(int totalPages, int currentPage) {
-    const maxVisiblePages = 5;
-    List<Widget> pageButtons = [];
-
-    int startPage = (currentPage - (maxVisiblePages ~/ 2)).clamp(1, totalPages);
-    int endPage = (startPage + maxVisiblePages - 1).clamp(1, totalPages);
-
-    if (startPage > 1) {
-      pageButtons.add(pageButton(1, currentPage));
-      if (startPage > 2) {
-        pageButtons.add(ellipsis());
-      }
-    }
-
-    for (int i = startPage; i <= endPage; i++) {
-      pageButtons.add(pageButton(i, currentPage));
-    }
-
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) {
-        pageButtons.add(ellipsis());
-      }
-      pageButtons.add(pageButton(totalPages, currentPage));
-    }
-
-    return pageButtons;
-  }
-
-  Widget pageButton(int pageNum, int currentPage) {
-    bool isCurrent = pageNum == currentPage;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: InkWell(
-        focusColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        onTap: () {
-          controllers.currentPage.value = pageNum;
-          _focusNode.requestFocus();
-        },
-        onLongPress: (){
-          _focusNode.requestFocus();
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: isCurrent ? colorsConst.primary : colorsConst.secondary,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            //pageNum.toString().padLeft(2, '0'),
-            pageNum.toString(),
-            style: TextStyle(
-              color: isCurrent ? Colors.white : Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget ellipsis() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 4),
-      child: Text('...', style: TextStyle(fontSize: 18, color: Colors.black)),
     );
   }
 }

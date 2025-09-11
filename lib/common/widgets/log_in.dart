@@ -40,7 +40,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     });
   }
-
   @override
   void initState() {
     super.initState();
@@ -49,7 +48,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    //print("width ${MediaQuery.of(context).size.width}");
     return Scaffold(
       body: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -71,8 +69,6 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Image.asset("assets/images/ARUU.png"),
                 50.height,
-                //50.height,
-                //SvgPicture.asset("assets/images/Loader-3.svg"),
                 Text("Login",
                     style: GoogleFonts.poppins(
                       fontSize: 40,

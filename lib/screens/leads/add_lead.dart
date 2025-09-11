@@ -201,7 +201,7 @@ class _AddLeadState extends State<AddLead> {
                             isLoading: false,
                             isImage: false,
                             textSize: 15,
-                            textColor: Colors.black,
+                            textColor: Colors.white,
                             backgroundColor: colorsConst.third,
                             radius: 3,
                             width: 160),
@@ -305,7 +305,7 @@ class _AddLeadState extends State<AddLead> {
                             height: 45,
                             controller: controllers.leadCtr,
                             isLoading: true,
-                            textColor: Colors.black,
+                            textColor: Colors.white,
                             backgroundColor: colorsConst.third,
                             radius: 10,
                             width: 160),
@@ -378,8 +378,7 @@ class _AddLeadState extends State<AddLead> {
                                           elevation: 0,
                                           selectedTextStyle:
                                           customStyle.textStyle(
-                                              colors:
-                                              colorsConst.third,
+                                              colors: colorsConst.third,
                                               size: 16,
                                               isBold: true),
                                           selectedBorderColor:
@@ -545,8 +544,7 @@ class _AddLeadState extends State<AddLead> {
                                             constInputFormatters.textInput,
                                             onChanged: (value) async {
                                               SharedPreferences sharedPref =
-                                              await SharedPreferences
-                                                  .getInstance();
+                                              await SharedPreferences.getInstance();
                                               sharedPref.setString(
                                                   "leadName$index",
                                                   value.toString().trim());
@@ -611,67 +609,41 @@ class _AddLeadState extends State<AddLead> {
                                                     width: textFieldSize,
                                                     height: 50,
                                                     child: TextFormField(
-                                                        style: const TextStyle(
-                                                            color: Colors.white,
+                                                        style: TextStyle(
+                                                            color: colorsConst.textColor,
                                                             fontSize: 14,
                                                             fontFamily: "Lato"),
-                                                        cursorColor: Colors.white,
+                                                        cursorColor: colorsConst.primary,
                                                         onChanged: (value) async {
-                                                          SharedPreferences
-                                                          sharedPref =
-                                                          await SharedPreferences
-                                                              .getInstance();
-                                                          sharedPref.setString(
-                                                              "leadMobileNumber$index",
-                                                              value
-                                                                  .toString()
-                                                                  .trim());
+                                                          SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                                          sharedPref.setString("leadMobileNumber$index", value.toString().trim());
                                                         },
                                                         onTap: () {},
                                                         keyboardType: TextInputType.number,
-                                                        inputFormatters:
-                                                        constInputFormatters
-                                                            .mobileNumberInput,
-                                                        textCapitalization:
-                                                        TextCapitalization.none,
+                                                        inputFormatters: constInputFormatters.mobileNumberInput,
+                                                        textCapitalization: TextCapitalization.none,
                                                         controller: controllers.leadMobileCrt[index],
                                                         textInputAction: TextInputAction.next,
                                                         decoration: InputDecoration(
-                                                          // hintText:"Mobile No.",
-                                                          // hintStyle: TextStyle(
-                                                          //     color:Colors.grey.shade400,
-                                                          //     fontSize: 13,
-                                                          //     fontFamily:"Lato"
-                                                          // ),
+                                                          hoverColor: Colors.transparent,
+                                                          focusColor: Colors.transparent,
+                                                          hintText:"Phone No",
                                                           fillColor: Colors.transparent,
                                                           filled: true,
-                                                          //prefixIcon:IconButton(onPressed: (){}, icon: SvgPicture.asset(assets.gPhone,width:15,height:15) ),
-
-                                                          suffixIcon: Obx(
-                                                                () => Checkbox(
-                                                                shape:
-                                                                RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                      5.0),
+                                                          hintStyle: TextStyle(
+                                                              color: Colors.grey.shade400, fontSize: 13, fontFamily: "Lato"),
+                                                          suffixIcon: Obx(() => Checkbox(
+                                                                shape: RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(5.0),
                                                                 ),
-                                                                side:
-                                                                MaterialStateBorderSide
-                                                                    .resolveWith(
+                                                                side: MaterialStateBorderSide.resolveWith(
                                                                       (states) => BorderSide(
                                                                       width: 1.0,
-                                                                      color: colorsConst
-                                                                          .textColor),
+                                                                      color: colorsConst.textColor),
                                                                 ),
-                                                                hoverColor: Colors
-                                                                    .transparent,
-                                                                activeColor:
-                                                                colorsConst
-                                                                    .third,
-                                                                value: controllers
-                                                                    .isCoMobileNumberList[
-                                                                index],
+                                                                hoverColor: Colors.transparent,
+                                                                activeColor: colorsConst.third,
+                                                                value: controllers.isCoMobileNumberList[index],
                                                                 onChanged: (value) {
                                                                   setState(() {
                                                                     controllers.isCoMobileNumberList[

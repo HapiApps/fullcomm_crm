@@ -16,6 +16,7 @@ import '../services/api_services.dart';
 import 'custom_loading_button.dart';
 
 class CustomLeadTile extends StatefulWidget {
+  final bool showCheckbox;
   final String? id;
   final String? mainName;
   final String? mainMobile;
@@ -76,6 +77,7 @@ class CustomLeadTile extends StatefulWidget {
 
 
   const CustomLeadTile({super.key,
+    this.showCheckbox = true,
     this.id,
     this.mainName,
     this.mainMobile,
@@ -221,17 +223,27 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
         );
       },
       child: Table(
-        columnWidths:const {
-          0: FlexColumnWidth(1),//check box
-          1: FlexColumnWidth(3),//mail
-          2: FlexColumnWidth(2),//N
-          3: FlexColumnWidth(2.5),//CN
-          4: FlexColumnWidth(2),//MN
-          5: FlexColumnWidth(3),//Details of Service Required
-          6: FlexColumnWidth(2),//Source of Prospect
-          7: FlexColumnWidth(2),// Added DateTime
-          8: FlexColumnWidth(2),// City
-          9: FlexColumnWidth(3),// Status Update
+        columnWidths: widget.showCheckbox?{
+          0: FlexColumnWidth(1),
+          1: const FlexColumnWidth(3),
+          2: const FlexColumnWidth(2),
+          3: const FlexColumnWidth(2.5),
+          4: const FlexColumnWidth(2),
+          5: const FlexColumnWidth(3),
+          6: const FlexColumnWidth(2),
+          7: const FlexColumnWidth(2),
+          8: const FlexColumnWidth(2),
+          9: const FlexColumnWidth(3),
+        }:{
+          0: const FlexColumnWidth(3),
+          1: const FlexColumnWidth(2),
+          2: const FlexColumnWidth(2.5),
+          3: const FlexColumnWidth(2),
+          4: const FlexColumnWidth(3),
+          5: const FlexColumnWidth(2),
+          6: const FlexColumnWidth(2),
+          7: const FlexColumnWidth(2),
+          8: const FlexColumnWidth(3),
         },
         border: TableBorder(
           horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -244,6 +256,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                 color: int.parse(widget.index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
               ),
               children:[
+                if (widget.showCheckbox)
                     Container(
                       height: 45,
                       alignment: Alignment.center,

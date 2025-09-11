@@ -146,14 +146,14 @@ class _CallCommentsState extends State<CallComments> {
                                                         borderColor: Colors.grey.shade300,
                                                         hintText: "Customers",
                                                         labelText: "",
-                                                        labelBuilder: (customer) =>'${customer.name} - ${customer.phoneNo}',
+                                                        labelBuilder: (customer) =>'${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
                                                         itemBuilder: (customer) =>
                                                             Container(
                                                               width: 300,
                                                               alignment: Alignment.topLeft,
                                                               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                               child: CustomText(
-                                                                text: '${customer.name} - ${customer.phoneNo}',
+                                                                text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
                                                                 colors: Colors.black,
                                                                 size: 14,
                                                                 textAlign: TextAlign.start,

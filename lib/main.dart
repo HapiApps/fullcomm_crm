@@ -1,13 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:fullcomm_crm/common/constant/default_constant.dart';
 import 'package:fullcomm_crm/common/extentions/int_extensions.dart';
-import 'package:fullcomm_crm/screens/customer/view_customer.dart';
-import 'package:fullcomm_crm/screens/dashboard.dart';
-import 'package:fullcomm_crm/screens/home.dart';
-import 'package:fullcomm_crm/screens/leads/disqualified_lead.dart';
-import 'package:fullcomm_crm/screens/leads/prospects.dart';
-import 'package:fullcomm_crm/screens/leads/qualified.dart';
-import 'package:fullcomm_crm/screens/leads/suspects.dart';
 import 'package:fullcomm_crm/screens/new_dashboard.dart';
 import 'package:fullcomm_crm/screens/zoom_blocker.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
@@ -21,16 +13,13 @@ import 'common/constant/api.dart';
 import 'common/constant/colors_constant.dart';
 import 'common/widgets/log_in.dart';
 import 'components/custom_text.dart';
-import 'controller/controller.dart';
 
 Future<void> main() async {
   await GetStorage.init();
   final prefs = await SharedPreferences.getInstance();
   final loginScreen = prefs.getBool("loginScreen") ?? false;
 
-  runApp(MyApp(
-    loginScreen: loginScreen,
-  ));
+  runApp(MyApp(loginScreen: loginScreen,));
 }
 
 class MyInheritedWidget extends InheritedWidget {
@@ -597,7 +586,7 @@ class _SplashScreenState extends State<SplashScreen> {
       apiService.allQualifiedDetails();
       apiService.allNewLeadsDetails();
       apiService.allGoodLeadsDetails();
-      controllers.allCustomerFuture = apiService.allCustomerDetails();
+      apiService.allCustomerDetails();
     }
     //  Future.delayed(Duration.zero,(){
     //    setState(() {

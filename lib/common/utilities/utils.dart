@@ -1769,6 +1769,109 @@ class Utils {
             ),
           ));
   }
+  void showBlockedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Screenshot Blocked"),
+        content: const Text("Screenshots are not allowed on this website."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget paginationButton(IconData icon, bool isEnabled, VoidCallback onPressed) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: IconButton(
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        icon: Icon(icon, color: colorsConst.textColor),
+        onPressed: isEnabled ? onPressed : null,
+        // onLongPress: (){
+        //   _focusNode.requestFocus();
+        // },
+      ),
+    );
+  }
+
+  List<Widget> buildPagination(int totalPages, int currentPage) {
+    const maxVisiblePages = 5;
+    List<Widget> pageButtons = [];
+
+    int startPage = (currentPage - (maxVisiblePages ~/ 2)).clamp(1, totalPages);
+    int endPage = (startPage + maxVisiblePages - 1).clamp(1, totalPages);
+
+    if (startPage > 1) {
+      pageButtons.add(pageButton(1, currentPage));
+      if (startPage > 2) {
+        pageButtons.add(ellipsis());
+      }
+    }
+
+    for (int i = startPage; i <= endPage; i++) {
+      pageButtons.add(pageButton(i, currentPage));
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pageButtons.add(ellipsis());
+      }
+      pageButtons.add(pageButton(totalPages, currentPage));
+    }
+
+    return pageButtons;
+  }
+
+  Widget pageButton(int pageNum, int currentPage) {
+    bool isCurrent = pageNum == currentPage;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: InkWell(
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () {
+          controllers.currentPage.value = pageNum;
+        },
+        onLongPress: (){
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: isCurrent ? colorsConst.primary : colorsConst.secondary,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            //pageNum.toString().padLeft(2, '0'),
+            pageNum.toString(),
+            style: TextStyle(
+              color: isCurrent ? Colors.white : Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget ellipsis() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4),
+      child: Text('...', style: TextStyle(fontSize: 18, color: Colors.black)),
+    );
+  }
 
   Widget selectHeatingType(
       String text,

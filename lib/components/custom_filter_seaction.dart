@@ -15,7 +15,9 @@ class FilterSection extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onMail;
   final VoidCallback onPromote;
-  final VoidCallback onDisqualify;
+  final VoidCallback? onDisqualify;
+  final VoidCallback? onDemote;
+  final VoidCallback? onQualify;
   final TextEditingController searchController;
   final ValueChanged<Object?>? onSearchChanged;
   final VoidCallback onSelectMonth;
@@ -31,13 +33,14 @@ class FilterSection extends StatelessWidget {
     required this.onDelete,
     required this.onMail,
     required this.onPromote,
-    required this.onDisqualify,
+     this.onDisqualify,
+    this.onDemote,
     required this.searchController,
     required this.onSearchChanged,
     required this.onSelectMonth,
     required this.selectedMonth,
     required this.selectedSortBy,
-    required this.isMenuOpen,
+    required this.isMenuOpen, this.onQualify,
   });
 
   @override
@@ -70,9 +73,16 @@ class FilterSection extends StatelessWidget {
             ),
 
             // --- Action Buttons ---
-            itemList.isEmpty
+            itemList.isEmpty||title=="Customers"
                 ? 0.height
-                : Row(
+                : title=="Disqualified"?ActionButton(
+              width: 100,
+              image: "assets/images/action_promote.png",
+              name: "Qualified",
+              toolTip:
+              "Click here to Qualified the customer details",
+              callback: onQualify!,
+              ):Row(
               children: [
                 ActionButton(
                   width: 100,
@@ -101,13 +111,18 @@ class FilterSection extends StatelessWidget {
                   callback: onPromote,
                 ),
                 10.width,
-                ActionButton(
+                title=="Suspects"?ActionButton(
+                    width: 100,
+                    image: "assets/images/action_disqualified.png",
+                    name: "Disqualify",
+                    toolTip: "Click here to disqualify the customer details",
+                    callback: onDisqualify!,
+                    ):ActionButton(
                   width: 100,
                   image: "assets/images/action_disqualified.png",
-                  name: "Disqualify",
-                  toolTip:
-                  "Click here to disqualify the customer details",
-                  callback: onDisqualify,
+                  name: "Demote",
+                  toolTip: "Click here to disqualify the customer details",
+                  callback: onDemote!,
                 ),
                 5.width,
               ],

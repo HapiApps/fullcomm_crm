@@ -42,16 +42,20 @@ class Controller extends GetxController {
   var allNewLeadFuture        = <NewLeadObj>[].obs;
   var allLeadFuture           = <NewLeadObj>[].obs;
   var allQualifiedLeadFuture  = <NewLeadObj>[].obs;
+  var allCustomerLeadFuture  = <NewLeadObj>[].obs;
   RxString selectedTemperature = "".obs;
   RxString selectedProspectTemperature = "".obs;
   RxString selectedQualifiedTemperature = "".obs;
   RxString selectedSortBy = "".obs;
   RxString selectedProspectSortBy = "".obs;
   RxString selectedQualifiedSortBy = "".obs;
+  RxString selectedCustomerSortBy = "".obs;
   RxBool isMenuOpen = false.obs;
   var allLeads = <NewLeadObj>[].obs;
   final Rxn<DateTime> selectedMonth = Rxn<DateTime>();
   final Rxn<DateTime> selectedPMonth = Rxn<DateTime>();
+  final Rxn<DateTime> selectedQPMonth = Rxn<DateTime>();
+  final Rxn<DateTime> selectedCPMonth = Rxn<DateTime>();
 
   void selectMonth(BuildContext context, RxString sortByKey,
       Rxn<DateTime> selectedMonthTarget) async {
@@ -469,6 +473,171 @@ class Controller extends GetxController {
               if (selectedPMonth.value != null) {
                 matchesSort = updatedDate.year == selectedPMonth.value!.year &&
                     updatedDate.month == selectedPMonth.value!.month;
+              } else {
+                matchesSort = true;
+              }
+              break;
+
+            case 'All':
+            default:
+              matchesSort = true;
+          }
+        } else {
+          matchesSort = false;
+        }
+      } else {
+        matchesSort = false;
+      }
+      return matchesQuery && matchesRating && matchesSort;
+    }).toList();
+
+    if (sortBy == 'Custom Month') {
+      DateTime parseDate(String? dateStr, String? fallback) {
+        if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+          dateStr = fallback;
+        }
+        DateTime? parsed;
+        try {
+          parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+        } catch (_) {
+          parsed = DateTime.tryParse(dateStr!);
+        }
+        return parsed ?? DateTime(1900);
+      }
+
+      filteredLeads.sort((a, b) {
+        final dateA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
+        final dateB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+        return dateB.compareTo(dateA); // reverse order
+      });
+    }
+
+    if (sortField.isNotEmpty) {
+      filteredLeads.sort((a, b) {
+        dynamic valA;
+        dynamic valB;
+
+        switch (sortField.value) {
+          case 'name':
+            valA = a.firstname ?? '';
+            valB = b.firstname ?? '';
+            break;
+          case 'companyName':
+            valA = a.companyName ?? '';
+            valB = b.companyName ?? '';
+            break;
+          case 'mobile':
+            valA = a.mobileNumber ?? '';
+            valB = b.mobileNumber ?? '';
+            break;
+          case 'serviceRequired':
+            valA = a.detailsOfServiceRequired ?? '';
+            valB = b.detailsOfServiceRequired ?? '';
+            break;
+          case 'sourceOfProspect':
+            valA = a.source ?? '';
+            valB = b.source ?? '';
+            break;
+          case 'city':
+            valA = a.city ?? '';
+            valB = b.city ?? '';
+            break;
+          case 'statusUpdate':
+            valA = a.statusUpdate ?? '';
+            valB = b.statusUpdate ?? '';
+            break;
+          case 'date':
+            DateTime parseDate(String? dateStr, String? fallback) {
+              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                dateStr = fallback;
+              }
+              DateTime? parsed;
+              try {
+                parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+              } catch (_) {
+                parsed = DateTime.tryParse(dateStr!);
+              }
+              return parsed ?? DateTime(1900);
+            }
+
+            valA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
+            valB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+            break;
+          default:
+            valA = '';
+            valB = '';
+        }
+
+        if (valA is DateTime && valB is DateTime) {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        } else {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        }
+      });
+    }
+    int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
+
+    if (start >= filteredLeads.length) return [];
+
+    int end = start + itemsProspectPerPage;
+    end = end > filteredLeads.length ? filteredLeads.length : end;
+
+    return filteredLeads.sublist(start, end);
+  }
+
+  List<NewLeadObj> get paginatedCustomerLeads {
+    final query = search.text.trim().toLowerCase();
+    final ratingFilter = selectedProspectTemperature.value;
+    final sortBy = selectedCustomerSortBy.value;
+
+    final now = DateTime.now();
+
+    final filteredLeads = allCustomerLeadFuture.where((lead) {
+      final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
+          (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+          (lead.emailId ?? '').toLowerCase().contains(query);
+
+      final matchesRating = ratingFilter.isEmpty ||
+          (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
+
+      bool matchesSort = true;
+      if (lead.prospectEnrollmentDate != null) {
+        DateTime? updatedDate;
+        try {
+          updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
+        } catch (_) {
+          try {
+            updatedDate = DateTime.tryParse(lead.prospectEnrollmentDate!);
+          } catch (_) {
+            updatedDate = null;
+            matchesSort = false;
+          }
+        }
+
+        if (updatedDate != null) {
+          final diff = now.difference(updatedDate).inDays;
+
+          switch (sortBy) {
+            case 'Today':
+              matchesSort = isSameDate(updatedDate, now);
+              break;
+
+            case 'Last 7 Days':
+              matchesSort = diff <= 7;
+              break;
+
+            case 'Last 30 Days':
+              matchesSort = diff <= 30;
+              break;
+
+            case 'Custom Month':
+              if (selectedQPMonth.value != null) {
+                matchesSort = updatedDate.year == selectedQPMonth.value!.year &&
+                    updatedDate.month == selectedQPMonth.value!.month;
               } else {
                 matchesSort = true;
               }

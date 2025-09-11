@@ -2,18 +2,17 @@ import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
-import 'package:fullcomm_crm/components/custom_loading_button.dart';
-import 'package:fullcomm_crm/components/delete_button.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:group_button/group_button.dart';
 import '../../common/constant/api.dart';
-import '../../components/custom_checkbox.dart';
+import '../../components/custom_filter_seaction.dart';
+import '../../components/custom_header_seaction.dart';
 import '../../components/custom_lead_tile.dart';
+import '../../components/custom_loading_button.dart';
+import '../../components/custom_table_header.dart';
 import '../../components/custom_text.dart';
-import '../../components/promote_button.dart';
 import '../../controller/controller.dart';
 
 class Qualified extends StatefulWidget {
@@ -71,302 +70,260 @@ class _QualifiedState extends State<Qualified> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Header Section
+                        HeaderSection(
+                          title: "Good Leads - ${controllers.leadCategoryList[2]["value"]}",
+                          subtitle: "View all of your ${controllers.leadCategoryList[2]["value"]} Information",
+                        ),
                         20.height,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Obx(
-                                  () => CustomText(
-                                    text:
-                                        "Good Leads - ${controllers.leadCategoryList[2]["value"]}",
-                                    colors: colorsConst.textColor,
-                                    size: 25,
-                                    isBold: true,
-                                  ),
-                                ),
-                                10.height,
-                                Obx(
-                                  () => CustomText(
-                                    text:
-                                        "View all of your ${controllers.leadCategoryList[2]["value"]} Information",
-                                    colors: colorsConst.textColor,
-                                    size: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            // CustomLoadingButton(
-                            //   callback: () {
-                            //     utils.showImportDialog(context);
-                            //   },
-                            //   height: 35,
-                            //   isLoading: false,
-                            //   backgroundColor: colorsConst.third,
-                            //   radius: 2,
-                            //   width: 100,
-                            //   isImage: false,
-                            //   text: "Import",
-                            //   textColor: Colors.black,
-                            // ),
-                          ],
-                        ),
-                        10.height,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                CustomText(
-                                  text: "Qualified",
-                                  colors: colorsConst.primary,
-                                  isBold: true,
-                                  size: 15,
-                                ),
-                                10.width,
-                                CircleAvatar(
-                                  backgroundColor: colorsConst.primary,
-                                  radius: 17,
-                                  child: Obx(
-                                        () => CustomText(
-                                      text: controllers.allGoodLeadsLength.value.toString(),
-                                      colors: Colors.white,
-                                      size: 13,
+                        // Filter Section
+                        FilterSection(
+                          title: "Qualified",
+                          count: controllers.allGoodLeadsLength.value,
+                          itemList: apiService.customerList,
+                          onDelete: () {
+                            _focusNode.requestFocus();
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    content: CustomText(
+                                      text: "Are you sure delete this customers?",
+                                      size: 16,
+                                      isBold: true,
+                                      colors: colorsConst.textColor,
                                     ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                DeleteButton(
-                                  leadList: apiService.customerList,
-                                  callback: () {
-                                    apiService.deleteCustomersAPI(
-                                        context, apiService.customerList);
-                                  },
-                                ),
-                                5.width,
-                                Obx(
-                                  () => PromoteButton(
-                                    headText: controllers.leadCategoryList[1]
-                                        ["value"],
-                                    leadList: apiService.customerList,
-                                    callback: () {
-                                      apiService.insertProspectsAPI(
-                                          context, apiService.customerList);
-                                    },
-                                    text: "Demote",
-                                  ),
-                                ),
-                                5.width,
-                                PromoteButton(
-                                  headText: "Customers",
-                                  leadList: apiService.customerList,
-                                  callback: () {
-                                    apiService.insertPromoteCustomerAPI(context);
-                                  },
-                                  text: "Promote",
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        10.height,
-                        Divider(
-                          thickness: 2,
-                          color: colorsConst.secondary,
-                        ),
-                        15.height,
-                        Table(
-                          columnWidths: const {
-                            0: FlexColumnWidth(1),//check box
-                            1: FlexColumnWidth(1),//check box
-                            2: FlexColumnWidth(2),//N
-                            3: FlexColumnWidth(2.5),//CN
-                            4: FlexColumnWidth(2),//MN
-                            5: FlexColumnWidth(3),//Details of Service Required
-                            6: FlexColumnWidth(2),//Source of Prospect
-                            7: FlexColumnWidth(2.5),// Added DateTime
-                            8: FlexColumnWidth(1.5),// Added DateTime
-                            9: FlexColumnWidth(3),// Status Update
-                            // 9: FlexColumnWidth(3),
-                            // 10: FlexColumnWidth(3),
+                                    actions: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: colorsConst.primary),
+                                                color: Colors.white),
+                                            width: 80,
+                                            height: 25,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.zero,
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: CustomText(
+                                                  text: "Cancel",
+                                                  colors: colorsConst.primary,
+                                                  size: 14,
+                                                )),
+                                          ),
+                                          10.width,
+                                          CustomLoadingButton(
+                                            callback: ()async{
+                                              _focusNode.requestFocus();
+                                              await apiService.deleteCustomersAPI(context, apiService.customerList);
+                                              setState(() {
+                                                apiService.customerList.clear();
+                                              });
+                                            },
+                                            height: 35,
+                                            isLoading: true,
+                                            backgroundColor: colorsConst.primary,
+                                            radius: 2,
+                                            width: 80,
+                                            controller: controllers.productCtr,
+                                            isImage: false,
+                                            text: "Delete",
+                                            textColor: Colors.white,
+                                          ),
+                                          5.width
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                });
                           },
-                          border: TableBorder(
-                            horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                            verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                            bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
-                          ),
-                          children: [
-                            TableRow(
-                                decoration: BoxDecoration(
-                                    color: colorsConst.primary,
-                                    borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(5),
-                                        topRight: Radius.circular(5))),
-                                children: [
-                                  Row(//0
-                                    children: [
-                                      5.width,
-                                      Container(
-                                        height: 50,
-                                        alignment: Alignment.center,
-                                        child: Obx(
-                                              () => CustomCheckBox(
-                                              text: "",
-                                              onChanged: (value) {
-                                                if(controllers.isAllSelected.value==true){
-                                                  controllers.isAllSelected.value=false;
-                                                  for(int j=0;j<controllers.isGoodLeadList.length;j++){
-                                                    controllers.isGoodLeadList[j]["isSelect"]=false;
-                                                    setState((){
-                                                      var i=apiService.customerList.indexWhere((element) => element["lead_id"]==controllers.isGoodLeadList[j]["lead_id"]);
-                                                      apiService.customerList.removeAt(i);
-                                                    });
-                                                  }
-                                                }else{
-                                                  controllers.isAllSelected.value=true;
-                                                  setState((){
-                                                    for(int j=0;j<controllers.isGoodLeadList.length;j++){
-                                                      controllers.isGoodLeadList[j]["isSelect"]=true;
-                                                      apiService.customerList.add({
-                                                        "lead_id":controllers.isGoodLeadList[j]["lead_id"],
-                                                        "user_id":controllers.storage.read("id"),
-                                                        "rating":controllers.isGoodLeadList[j]["rating"],
-                                                        "cos_id":cosId,
-                                                      });
-                                                    }
-                                                  });
-                                                }
-                                                //controllers.isMainPerson.value=!controllers.isMainPerson.value;
-                                              },
-                                              saveValue: controllers.isAllSelected.value),
-                                        ),
+                          onMail: () {
+                            utils.bulkEmailDialog(_focusNode, list: apiService.customerList);
+                          },
+                          onPromote: () {
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    content: CustomText(
+                                      text: "Are you moving to the next level?",
+                                      size: 16,
+                                      isBold: true,
+                                      colors: colorsConst.textColor,
+                                    ),
+                                    actions: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: colorsConst.primary),
+                                                color: Colors.white),
+                                            width: 80,
+                                            height: 25,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.zero,
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: CustomText(
+                                                  text: "Cancel",
+                                                  colors: colorsConst.primary,
+                                                  size: 14,
+                                                )),
+                                          ),
+                                          10.width,
+                                          CustomLoadingButton(
+                                            callback: ()async{
+                                              _focusNode.requestFocus();
+                                              await apiService.insertProspectsAPI(context, apiService.customerList);
+                                              setState(() {
+                                                apiService.customerList.clear();
+                                              });
+                                            },
+                                            height: 35,
+                                            isLoading: true,
+                                            backgroundColor: colorsConst.primary,
+                                            radius: 2,
+                                            width: 80,
+                                            controller: controllers.productCtr,
+                                            isImage: false,
+                                            text: "Move",
+                                            textColor: Colors.white,
+                                          ),
+                                          5.width
+                                        ],
                                       ),
                                     ],
-                                  ),
-                                  CustomText(
-                                    textAlign: TextAlign.center,
-                                    text: "\nMail\n",
-                                    size: 15,
-                                    isBold: true,
-                                    colors: Colors.white,
-                                  ),
-                                  CustomText(//1
-                                    textAlign: TextAlign.center,
-                                    text: "\nName\n",
-                                    size: 15,
-                                    isBold: true,
-                                    colors: Colors.white,
-                                  ),
-                                  CustomText(//2
-                                    textAlign: TextAlign.center,
-                                    text: "\nCompany Name\n",
-                                    size: 15,
-                                    isBold: true,
-                                    colors: Colors.white,
-                                  ),
-                                  CustomText(//3
-                                    textAlign: TextAlign.center,
-                                    text: "\nMobile No.\n",
-                                    size: 15,
-                                    isBold: true,
-                                    colors: Colors.white,
-                                  ),
-                                  // CustomText(
-                                  //   textAlign: TextAlign.center,
-                                  //   text: "\nEmail\n",
-                                  //   size: 15,
-                                  //   isBold: true,
-                                  //   colors: colorsConst.textColor,
-                                  // ),
-                                  Padding(//6
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: CustomText(
-                                      textAlign: TextAlign.center,
-                                      text: "Details of Service\nRequired",
-                                      size: 15,
+                                  );
+                                });
+                          },
+                          onDemote: () {
+                            showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    content: CustomText(
+                                      text: "Are you sure demote this customers?",
+                                      size: 16,
                                       isBold: true,
-                                      colors: Colors.white,
+                                      colors: colorsConst.textColor,
                                     ),
-                                  ),
-                                  Padding(//7
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: CustomText(
-                                      textAlign: TextAlign.center,
-                                      text: "Source Of \nProspect",
-                                      size: 15,
-                                      isBold: true,
-                                      colors: Colors.white,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Padding(//8
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: CustomText(
-                                          textAlign: TextAlign.center,
-                                          text: "Added\nDateTime",
-                                          size: 15,
-                                          isBold: true,
-                                          colors: Colors.white,
-                                        ),
-                                      ),
-                                      Obx(() => GestureDetector(
-                                        onTap: (){
-                                          controllers.sortField.value = 'date';
-                                          controllers.sortOrder.value = 'asc';
-                                        },
-                                        child: Icon(
-                                          Icons.arrow_upward,
-                                          size: 16,
-                                          color: (controllers.sortField.value == 'date' &&
-                                              controllers.sortOrder.value == 'asc')
-                                              ? Colors.white
-                                              : Colors.grey,
-                                        ),
-                                      )),
-                                      Obx(() => GestureDetector(
-                                        onTap: (){
-                                          controllers.sortField.value = 'date';
-                                          controllers.sortOrder.value = 'desc';
-                                        },
-                                        child: Icon(
-                                          Icons.arrow_downward,
-                                          size: 16,
-                                          color: (controllers.sortField.value == 'date' &&
-                                              controllers.sortOrder.value == 'desc')
-                                              ? Colors.white
-                                              : Colors.grey,
-                                        ),
-                                      )
+                                    actions: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: colorsConst.primary),
+                                                color: Colors.white),
+                                            width: 80,
+                                            height: 25,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.zero,
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: CustomText(
+                                                  text: "Cancel",
+                                                  colors: colorsConst.primary,
+                                                  size: 14,
+                                                )),
+                                          ),
+                                          10.width,
+                                          CustomLoadingButton(
+                                            callback: (){
+                                              _focusNode.requestFocus();
+                                              apiService.insertProspectsAPI(
+                                                  context, apiService.customerList);
+                                            },
+                                            height: 35,
+                                            isLoading: true,
+                                            backgroundColor:
+                                            colorsConst.primary,
+                                            radius: 2,
+                                            width: 100,
+                                            controller: controllers.productCtr,
+                                            isImage: false,
+                                            text: "Demote",
+                                            textColor:Colors.white,
+                                          ),
+                                          5.width
+                                        ],
                                       ),
                                     ],
-                                  ),
-                                  CustomText(//4
-                                    textAlign: TextAlign.center,
-                                    text: "\nCity\n",
-                                    size: 15,
-                                    isBold: true,
-                                    colors: Colors.white,
-                                  ),
-                                  CustomText(//9
-                                    textAlign: TextAlign.center,
-                                    text: "\nStatus Update\n",
-                                    size: 15,
-                                    isBold: true,
-                                    colors: Colors.white,
-                                  ),
-                                ]),
-                          ],
+                                  );
+                                });
+                          },
+                          searchController: controllers.search,
+                          onSearchChanged: (value) {
+                            controllers.searchQualified.value = value.toString();
+                          },
+                          onSelectMonth: () {
+                            controllers.selectMonth(
+                                context, controllers.selectedQualifiedSortBy, controllers.selectedPMonth);
+                          },
+                          selectedMonth: controllers.selectedPMonth,
+                          selectedSortBy: controllers.selectedQualifiedSortBy,
+                          isMenuOpen: controllers.isMenuOpen,
+                        ),
+                        10.height,
+                        CustomTableHeader(
+                          showCheckbox: true,
+                          isAllSelected: controllers.isAllSelected.value,
+                          onSelectAll: (value) {
+                            if (value == true) {
+                              controllers.isAllSelected.value = true;
+                              setState((){
+                                for(int j=0;j<controllers.isGoodLeadList.length;j++){
+                                  controllers.isGoodLeadList[j]["isSelect"]=true;
+                                  apiService.customerList.add({
+                                    "lead_id":controllers.isGoodLeadList[j]["lead_id"],
+                                    "user_id":controllers.storage.read("id"),
+                                    "rating":controllers.isGoodLeadList[j]["rating"],
+                                    "cos_id":cosId,
+                                  });
+                                }
+                              });
+                            } else {
+                              controllers.isAllSelected.value = false;
+                              for(int j=0;j<controllers.isGoodLeadList.length;j++){
+                                controllers.isGoodLeadList[j]["isSelect"]=false;
+                                setState((){
+                                  var i=apiService.customerList.indexWhere((element) => element["lead_id"]==controllers.isGoodLeadList[j]["lead_id"]);
+                                  apiService.customerList.removeAt(i);
+                                });
+                              }
+                            }
+                          },
+                          onSortDate: () {
+                            controllers.sortField.value = 'date';
+                            controllers.sortOrder.value =
+                            controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
+                          },
                         ),
                         Expanded(
-                          //height: MediaQuery.of(context).size.height/1.5,
                           child: Obx(
                                   () => controllers.isLead.value == false
                                   ? const Center(child: CircularProgressIndicator())

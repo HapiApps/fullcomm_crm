@@ -2,23 +2,18 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:fullcomm_crm/common/constant/default_constant.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:fullcomm_crm/models/comments_obj.dart';
 import 'package:fullcomm_crm/models/company_obj.dart';
-import 'package:fullcomm_crm/models/good_lead_obj.dart';
 import 'package:fullcomm_crm/models/new_lead_obj.dart';
-import 'package:fullcomm_crm/screens/dashboard.dart';
 import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/screens/new_dashboard.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:fullcomm_crm/screens/mail_comments.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/models/product_obj.dart';
@@ -32,12 +27,9 @@ import '../components/custom_text.dart';
 import '../controller/controller.dart';
 import '../controller/image_controller.dart';
 import '../models/customer_activity.dart';
-import '../models/customer_obj.dart';
 import '../models/employee_obj.dart';
-import '../models/lead_obj.dart';
 import '../models/mail_receive_obj.dart';
 import '../models/meeting_obj.dart';
-import '../screens/home.dart';
 
 final ApiService apiService = ApiService._();
 
@@ -927,7 +919,7 @@ class ApiService {
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
-        getAllCallActivity();
+        getAllMeetingActivity();
         Navigator.pop(context);
         controllers.productCtr.reset();
       } else {
@@ -1486,7 +1478,6 @@ class ApiService {
         controllers.storage.write("role", response["role"]);
         controllers.storage.write("role_name", response["role_name"]);
         controllers.storage.write("id", response["id"]);
-
         final prefs = await SharedPreferences.getInstance();
         prefs.setBool("loginScreen", true);
         String input = response["role_name"];
@@ -1494,10 +1485,11 @@ class ApiService {
         prefs.setBool("isAdmin", controllers.isAdmin.value);
         prefs.remove("loginNumber");
         prefs.remove("loginPassword");
-        apiService.allLeadsDetails();
-        apiService.allNewLeadsDetails();
-        controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
-        controllers.allCustomerFuture = apiService.allCustomerDetails();
+        allLeadsDetails();
+        allNewLeadsDetails();
+        allGoodLeadsDetails();
+        allCustomerDetails();
+        allQualifiedDetails();
         utils.snackBar(
           context: Get.context!,
           msg: "Login Successfully",
@@ -2043,8 +2035,7 @@ class ApiService {
       request.fields['body'] = controllers.emailMessageCtr.text;
       request.fields['user_id'] = controllers.storage.read("id").toString();
       request.fields['id'] = id;
-      request.fields['date'] =
-          "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
+      request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
       request.fields['action'] = 'mail_receive';
 
       if (imageController.empFileName.value.isNotEmpty) {
@@ -2056,7 +2047,6 @@ class ApiService {
         );
         request.files.add(picture1);
       }
-
       var response = await request.send();
       var body = await response.stream.bytesToString();
       print("Response: $body");
@@ -2829,6 +2819,7 @@ class ApiService {
         // for(int i=0;i<controllers.allGoodLeadsLength.value;i++){
         //   controllers.isGoodLeadList.add(false);
         // }
+        controllers.allCustomerLeadFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         return data.map((json) => NewLeadObj.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load leads: Status code ${response.body}');
