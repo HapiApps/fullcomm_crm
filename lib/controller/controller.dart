@@ -914,7 +914,7 @@ class Controller extends GetxController {
     "Reference Leads",
     "Service Call"
   ];
-  RxList callList = [].obs;
+  RxList callList = [{"category":"Visit Call Type","id":"6","value":"Visit"},{"category":"Visit Call Type","id":"7","value":"Call"},{"category":"Visit Call Type","id":"8","value":"Email"},{"category":"Visit Call Type","id":"9","value":"Meeting"},{"category":"Visit Call Type","id":"10","value":"Note"}].obs;
   var quotationStatus = ["Normal", "Urgent", "Critical"];
   var categoryList = ["BUILDING / APARTMENTS", "INDUSTRIES", "CORPORATES"];
   var statusList = ["Qualified", "UnQualified", "Nurturing", "Contacted"];
@@ -1209,6 +1209,8 @@ class Controller extends GetxController {
       empEmail = "".obs,
       empPhone = "".obs,
       empDOB = "".obs,
+      exDate = "".obs,
+      prospectDate = "".obs,
       fDate = "".obs,
       toDate = "".obs,
       callTime = "".obs,

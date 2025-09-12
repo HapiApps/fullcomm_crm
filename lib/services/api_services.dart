@@ -1223,14 +1223,11 @@ class ApiService {
         "quotation_required": "1",
         "visit_type": callListId,
         "data": jsonString,
-        'prospect_enrollment_date':
-            controllers.prospectEnrollmentDateCrt.text.trim(),
-        'expected_convertion_date':
-            controllers.expectedConversionDateCrt.text.trim(),
+        'prospect_enrollment_date': controllers.prospectDate.value.isEmpty?"${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}":controllers.prospectDate.value,
+        'expected_convertion_date': controllers.exDate.value.isEmpty?"${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}":controllers.exDate.value,
         'status_update': controllers.statusCrt.text.trim(),
         'num_of_headcount': controllers.noOfHeadCountCrt.text.trim(),
-        'expected_billing_value':
-            controllers.expectedConversionDateCrt.text.trim(),
+        'expected_billing_value': controllers.expectedConversionDateCrt.text.trim(),
         'arpu_value': controllers.arpuCrt.text.trim(),
         'details_of_service_required': controllers.sourceCrt.text.trim(),
         'rating': controllers.prospectGradingCrt.text.trim(),
@@ -1247,8 +1244,19 @@ class ApiService {
       print("request ${request.body}");
       //Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 &&
-          request.body.toString().contains("Customer saved successfully")) {
+          request.body.toString().contains("Customer saved successfully.")) {
         final prefs = await SharedPreferences.getInstance();
+        controllers.leadActions.clear();
+        controllers.leadDisPointsCrt.clear();
+        controllers.prodDescriptionController.clear();
+        controllers.exMonthBillingValCrt.clear();
+        controllers.arpuCrt.clear();
+        controllers.prospectGradingCrt.clear();
+        controllers.noOfHeadCountCrt.clear();
+        controllers.expectedConversionDateCrt.clear();
+        controllers.sourceCrt.clear();
+        controllers.prospectEnrollmentDateCrt.clear();
+        controllers.statusCrt.clear();
         prefs.remove("leadName");
         prefs.remove("leadCount");
         prefs.remove("leadMobileNumber");
@@ -1281,7 +1289,7 @@ class ApiService {
         print("success");
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
-        controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
+        apiService.allGoodLeadsDetails();
         prospectsList.clear();
         qualifiedList.clear();
         customerList.clear();
@@ -1299,7 +1307,7 @@ class ApiService {
   }
 
   List<Map<String, String>> qualifiedList = [];
-  Future insertQualifiedAPI(BuildContext context) async {
+  Future insertQualifiedAPI(BuildContext context,List<Map<String, String>> list) async {
     try {
       print("data ${qualifiedList.toString()}");
       final request = await http.post(Uri.parse(qualifiedScript),
@@ -1307,7 +1315,7 @@ class ApiService {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
           },
-          body: jsonEncode(qualifiedList),
+          body: jsonEncode(list),
           encoding: Encoding.getByName("utf-8"));
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
@@ -1340,9 +1348,9 @@ class ApiService {
 
   List<Map<String, String>> customerList = [];
 
-  Future insertPromoteCustomerAPI(BuildContext context) async {
+  Future insertPromoteCustomerAPI(BuildContext context,List<Map<String, String>> list) async {
     try {
-      Map data = {"action": "promote_customers", "cusList": customerList};
+      Map data = {"action": "promote_customers", "cusList": list};
       print("customer $data");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {

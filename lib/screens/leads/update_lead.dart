@@ -371,11 +371,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                                               width:textFieldSize,
                                               height: 50,
                                               child: TextFormField(
-                                                  style: const TextStyle(
-                                                      color:Colors.white,fontSize: 14,
+                                                  style: TextStyle(
+                                                      color:colorsConst.textColor,fontSize: 14,
                                                       fontFamily:"Lato"
                                                   ),
-                                                  cursorColor: Colors.white,
+                                                  cursorColor: colorsConst.primary,
                                                   onChanged:(value) async {
                                                     SharedPreferences sharedPref = await SharedPreferences.getInstance();
                                                     //sharedPref.setString("leadMobileNumber$index", value.toString().trim());
@@ -389,12 +389,14 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                   decoration:InputDecoration(
                                                     fillColor:Colors.transparent,
                                                     filled: true,
+                                                    hintStyle: TextStyle(
+                                                        color: Colors.grey.shade400, fontSize: 13, fontFamily: "Lato"),
                                                     enabledBorder: OutlineInputBorder(
                                                         borderSide:  BorderSide(color:Colors.grey.shade200,),
                                                         borderRadius: BorderRadius.circular(5)
                                                     ),
                                                     focusedBorder: OutlineInputBorder(
-                                                        borderSide:  BorderSide(color:Colors.grey.shade200,),
+                                                        borderSide:  BorderSide(color:colorsConst.primary,),
                                                         borderRadius: BorderRadius.circular(5)
                                                     ),
                                                     focusedErrorBorder: OutlineInputBorder(
@@ -755,7 +757,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             ),
                                             child:Obx(() =>  CustomText(
                                               text: "    ${controllers.selectedCountry.value}",
-                                              colors:Colors.white,
+                                              colors:colorsConst.textColor,
                                               size: 15,
                                             ),
                                             )

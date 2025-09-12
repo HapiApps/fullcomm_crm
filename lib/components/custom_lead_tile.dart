@@ -17,6 +17,7 @@ import 'custom_loading_button.dart';
 
 class CustomLeadTile extends StatefulWidget {
   final bool showCheckbox;
+  final String pageName;
   final String? id;
   final String? mainName;
   final String? mainMobile;
@@ -128,7 +129,7 @@ class CustomLeadTile extends StatefulWidget {
     this.statusUpdate,
     required this.onChanged,
     required this.saveValue,
-    required this.updatedTs, this.visitType, this.points,this.detailsOfServiceReq
+    required this.updatedTs, this.visitType, this.points,this.detailsOfServiceReq, required this.pageName
   });
 
   @override
@@ -453,7 +454,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                                 )),
                                           ),
                                           10.width,
-                                          CustomLoadingButton(
+                                          widget.pageName=="Customers"?0.width:CustomLoadingButton(
                                             callback: ()async{
                                               final deleteData = {
                                                 "lead_id": widget.id.toString(),
@@ -462,7 +463,12 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                                 "cos_id": cosId.toString(),
                                                 "mail_id": widget.mainEmail.toString(),
                                               };
-                                              await apiService.insertProspectsAPI(context, [deleteData]);
+                                              if(widget.pageName=="Prospects"){
+                                                await apiService.insertQualifiedAPI(context, [deleteData]);
+                                              }else{
+                                                await apiService.insertProspectsAPI(context, [deleteData]);
+                                              }
+
 
                                             },
                                             height: 35,

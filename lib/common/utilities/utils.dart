@@ -1402,6 +1402,62 @@ class Utils {
   //     ),
   //   );
   // }
+  Future<bool> showExitDialog(BuildContext context) async {
+    bool? exit = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text("Do you want to exit?", style: TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.bold,
+          color: colorsConst.textColor,
+        ),),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              side: BorderSide(
+                  color: colorsConst.primary),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+            child: Text(
+              "No",
+              style: TextStyle(
+                color: colorsConst.primary,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(context).pop(true);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: colorsConst.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+            child: const Text(
+              "Yes",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    return exit ?? false;
+  }
 
   Widget sideBarFunction(BuildContext context) {
     return Obx(() => controllers.isLeftOpen.value
@@ -1462,15 +1518,16 @@ class Utils {
                   onClicked: () {
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 0;
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const NewDashboard(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>NewDashboard()));
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     pageBuilder: (context, animation1, animation2) =>
+                    //     const NewDashboard(),
+                    //     transitionDuration: Duration.zero,
+                    //     reverseTransitionDuration: Duration.zero,
+                    //   ),
+                    // );
                   }),
             ),
             Obx(() => CustomSideBarText(
@@ -1483,15 +1540,16 @@ class Utils {
                   text: "Suspects",
                   onClicked: () {
                     controllers.isLead.value = true;
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Suspects(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Suspects()));
+                    // Navigator.push(
+                    //   context,
+                    //   PageRouteBuilder(
+                    //     pageBuilder: (context, animation1, animation2) =>
+                    //     const Suspects(),
+                    //     transitionDuration: Duration.zero,
+                    //     reverseTransitionDuration: Duration.zero,
+                    //   ),
+                    // );
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 1;
                   }),
@@ -2236,9 +2294,9 @@ class Utils {
     ).then((value) {
       controllers.dateTime = value!;
       textEditingController?.text =
-          "${(controllers.dateTime.year.toString())}-${(controllers.dateTime.month.toString().padLeft(2, "0"))}-${(controllers.dateTime.day.toString().padLeft(2, "0"))}";
+          "${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}";
       pathVal?.value =
-          "${(controllers.dateTime.day.toString().padLeft(2, "0"))}-${(controllers.dateTime.month.toString().padLeft(2, "0"))}-${(controllers.dateTime.year.toString())}";
+          "${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}";
 
       // controllers.empDOB.value=;
       // controllers.empDOJ.value=;

@@ -11,11 +11,12 @@ class CustomDropDown<T> extends StatefulWidget {
       required this.valueList,
       required this.saveValue,
       required this.onChanged,
-      required this.width});
+      required this.width, this.isOptional=false});
   final String text;
   final List valueList;
   final T saveValue;
   final double width;
+  final bool isOptional;
   final ValueChanged<Object?> onChanged;
 
   @override
@@ -29,10 +30,21 @@ class _CustomDropDownState extends State<CustomDropDown> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomText(
-          text:widget.text,
-          colors: colorsConst.textColor,
-          size: 13,
+        Row(
+          children: [
+            CustomText(
+              text:widget.text,
+              colors: colorsConst.textColor,
+              size: 13,
+            ),
+            widget.isOptional! == true
+                ? const CustomText(
+              text: "*",
+              colors: Colors.red,
+              size: 25,
+            )
+                : 0.width
+          ],
         ),
         Container(
           width: widget.width,

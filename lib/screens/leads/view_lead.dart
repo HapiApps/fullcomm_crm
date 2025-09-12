@@ -173,9 +173,7 @@ class _ViewLeadState extends State<ViewLead> {
     _focusNode = FocusNode();
     _focusNode.requestFocus();
     Future.delayed(Duration.zero,(){
-
       controllers.leadFuture = apiService.leadsDetails(widget.id.toString());
-
     });
   }
   @override
@@ -1117,7 +1115,7 @@ class _ViewLeadState extends State<ViewLead> {
                                     ),
                                   ),
                                   20.height,
-                                  Container(
+                                  additionalInfoList.contains("NULL:")?0.height:SizedBox(
                                     width: screenWidth / 2.7,
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1151,7 +1149,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                   ],
                                                 ),
                                               );
-                                            }).toList(),
+                                            }),
                                           ],
                                         ),
                                       ],

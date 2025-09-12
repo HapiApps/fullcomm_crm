@@ -11,6 +11,10 @@ class InputFormatters {
     FilteringTextInputFormatter.allow(RegExp("[0-9]"))
   ];
 
+  final List<TextInputFormatter> passwordInput = [
+    LengthLimitingTextInputFormatter(16)
+  ];
+
   final List<TextInputFormatter> dateInput = [
     LengthLimitingTextInputFormatter(10),
     FilteringTextInputFormatter.allow(RegExp("[0-9.]"))

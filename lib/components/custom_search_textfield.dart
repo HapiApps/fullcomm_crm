@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import '../common/constant/assets_constant.dart';
 import '../common/constant/colors_constant.dart';
 
@@ -21,6 +22,13 @@ class CustomSearchTextField extends StatefulWidget {
 }
 
 class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(() {
+      setState(() {}); // rebuild when text changes
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -44,17 +52,18 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
           ),
           prefixIcon: IconButton(
               onPressed: null,
-              icon: SvgPicture.asset(assets.search, width: 15, height: 15,colorFilter: const ColorFilter.mode(
+              icon: SvgPicture.asset(assets.search, width: 15, height: 15,
+                colorFilter: const ColorFilter.mode(
                 Color(0xff526B81),
                 BlendMode.srcIn,
               ),)),
-          suffixIcon: IconButton(
+          suffixIcon: widget.controller.text.isEmpty?0.height:IconButton(
             focusColor: Colors.transparent,
               hoverColor: Colors.transparent,
               onPressed: () {
                 widget.controller.clear();
                 if (widget.onChanged != null) {
-                  widget.onChanged!(null);
+                  widget.onChanged!("");
                 }
               },
               icon: Icon(

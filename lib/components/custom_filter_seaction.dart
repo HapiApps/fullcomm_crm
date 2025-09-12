@@ -170,6 +170,7 @@ class FilterSection extends StatelessWidget {
                     borderRadius: BorderRadius.circular(2),
                   ),
                   onSelected: (value) {
+                    selectedMonth.value = null;
                     selectedSortBy.value = value;
                     _focusNode.requestFocus();
                     isMenuOpen.value = false;
