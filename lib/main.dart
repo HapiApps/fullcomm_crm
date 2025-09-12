@@ -13,6 +13,7 @@ import 'common/constant/api.dart';
 import 'common/constant/colors_constant.dart';
 import 'common/widgets/log_in.dart';
 import 'components/custom_text.dart';
+import 'controller/controller.dart';
 
 Future<void> main() async {
   await GetStorage.init();
@@ -343,7 +344,7 @@ class LineChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LineChart(
+    return Obx(()=>LineChart(
       LineChartData(
         gridData: FlGridData(
           show: true,
@@ -436,20 +437,7 @@ class LineChartWidget extends StatelessWidget {
         maxY: 250,
         lineBarsData: [
           LineChartBarData(
-            spots: [
-              FlSpot(1, 40),
-              FlSpot(2, 40),
-              FlSpot(3, 20),
-              FlSpot(4, 80),
-              FlSpot(5, 100),
-              FlSpot(6, 220),
-              FlSpot(7, 240),
-              FlSpot(8, 160),
-              FlSpot(9, 180),
-              FlSpot(10, 80),
-              FlSpot(11, 20),
-              FlSpot(12, 40),
-            ],
+            spots: controllers.chartSpots,
             isCurved: true,
             color: Colors.pink,
             barWidth: 3,
@@ -459,7 +447,7 @@ class LineChartWidget extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 
@@ -572,8 +560,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     apiService.getRoles();
-    apiService.getLeadCategory();
-    apiService.getVisitType();
+    // apiService.getLeadCategory();
+    // apiService.getVisitType();
     apiService.getAllCustomers();
     apiService.getAllCallActivity();
     apiService.getOpenedMailActivity(true);

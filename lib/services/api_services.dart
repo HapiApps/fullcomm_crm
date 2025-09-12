@@ -60,7 +60,7 @@ class ApiService {
   //       MapEntry('gender', stringToBase64.encode(controllers.selectedGender)),
   //       MapEntry('marital_status', stringToBase64.encode(controllers.selectedMarital)),
   //       MapEntry('relation_ship', stringToBase64.encode(controllers.selectedRelationShip)),
-  //       MapEntry('cos_id', cosId),
+  //       MapEntry('cos_id', controllers.storage.read("cos_id")),
   //       MapEntry('door_no', stringToBase64.encode(controllers.empDoorNo.value)),
   //       MapEntry('street_name', stringToBase64.encode(controllers.empStreet.value)),
   //       MapEntry('area', stringToBase64.encode(controllers.empArea.value)),
@@ -165,7 +165,7 @@ class ApiService {
           stringToBase64.encode(controllers.selectedMarital);
       request.fields["relation_ship"] =
           stringToBase64.encode(controllers.selectedRelationShip);
-      request.fields["cos_id"] = cosId;
+      request.fields["cos_id"] = controllers.storage.read("cos_id");
       request.fields["door_no"] =
           stringToBase64.encode(controllers.empDoorNo.value);
       request.fields["street_name"] =
@@ -363,7 +363,7 @@ class ApiService {
       Map data = {
         "data": jsonString,
         "lead_status": leadId,
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "main_name": controllers.mainLeadName.value,
         "main_title": controllers.mainLeadTitle.value,
         "main_mobile": controllers.mainLeadMobile.value,
@@ -498,7 +498,7 @@ class ApiService {
       BuildContext context, String leadId, String addressId) async {
     try {
       Map data = {
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "city": controllers.cityController.text,
         "source": controllers.source,
         "source_details": controllers.sourceCrt.text,
@@ -621,7 +621,7 @@ class ApiService {
         "sub_category": controllers.subCategory,
         "compare_price": controllers.comparePriceController.text.trim(),
         "tax": controllers.tax,
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "discount": controllers.discountOnMRPController.text.trim(),
         "product_price": controllers.productPriceController.text.trim(),
         "description": controllers.prodDescriptionController.text.trim(),
@@ -859,7 +859,7 @@ class ApiService {
                 "mobile_number": controllers.selectedCustomerMobile.value,
                 "customer_name": controllers.selectedCustomerName.value,
                 "type": type,
-                "cos_id": cosId,
+                "cos_id": controllers.storage.read("cos_id"),
                 "call_type":controllers.callType,
                 "call_status":controllers.callStatus,
                 //"date":"${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}",
@@ -900,7 +900,7 @@ class ApiService {
         "com_name": controllers.selectedCompanyName.value,
         "cus_name": controllers.selectedCustomerName.value,
         "title": controllers.meetingTitleCrt.text.trim(),
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "venue":controllers.meetingVenueCrt.text.trim(),
         //"date":"${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}",
         "dates":"${controllers.fDate.value}||${controllers.toDate.value}",
@@ -949,7 +949,7 @@ class ApiService {
         url,
         body: jsonEncode({
           "search_type": "disqualified",
-          "cos_id": cosId,
+          "cos_id": controllers.storage.read("cos_id"),
           "role": controllers.storage.read("role"),
           "id": controllers.storage.read("id"),
           "action": "get_data"
@@ -990,7 +990,7 @@ class ApiService {
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
 
       request.fields['subject']        = controllers.emailSubjectCtr.text;
-      request.fields['cos_id']         = cosId.toString();
+      request.fields['cos_id']         = controllers.storage.read("cos_id").toString();
       request.fields['count']          = '${controllers.emailCount.value + 1}';
       request.fields['quotation_name'] = controllers.emailQuotationCtr.text;
       request.fields['body']           = controllers.emailMessageCtr.text;
@@ -1179,7 +1179,7 @@ class ApiService {
       List<Map<String, String>> customersList = [];
       //for (int i = 0; i < _addCustomer.length; i++) {
       customersList.add({
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "name": controllers.leadNameCrt[0].text.trim(),
         "email": controllers.leadEmailCrt[0].text.trim(),
         "phone_no": controllers.leadMobileCrt[0].text.trim(),
@@ -1217,7 +1217,7 @@ class ApiService {
         "lat": "",
         "lng": "",
         "platform": "3",
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "lead_status": leadId,
         "status": controllers.status,
         "quotation_required": "1",
@@ -1390,7 +1390,7 @@ class ApiService {
         "product": controllers.coProductController.text.trim(),
         "email": controllers.coEmailController.text.trim(),
         "website": controllers.coWebSiteController.text.trim(),
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "x": controllers.coXController.text.trim(),
         "linkedin": controllers.coLinkedinController.text.trim(),
         "door_no": controllers.coDNoController.text.trim(),
@@ -1461,8 +1461,7 @@ class ApiService {
       Map data = {
         "mobile_number": controllers.loginNumber.text,
         "password": controllers.loginPassword.text,
-        "unit_login": "0",
-        "action": "sign_on"
+        "action": "login"
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -1474,13 +1473,14 @@ class ApiService {
       print("Login Res ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200) {
-        controllers.storage.write("f_name", response["firstname"]);
-        controllers.storage.write("role", response["role"]);
-        controllers.storage.write("role_name", response["role_name"]);
+        controllers.storage.write("f_name", response["s_name"]);
+        controllers.storage.write("role", "2");
+        controllers.storage.write("role_name", "Admin");
         controllers.storage.write("id", response["id"]);
+        controllers.storage.write("cos_id", response["cos_id"]);
         final prefs = await SharedPreferences.getInstance();
         prefs.setBool("loginScreen", true);
-        String input = response["role_name"];
+        String input = "Admin";
         controllers.isAdmin.value = input == "Admin" ? true : false;
         prefs.setBool("isAdmin", controllers.isAdmin.value);
         prefs.remove("loginNumber");
@@ -1515,7 +1515,7 @@ class ApiService {
       Map data = {
         "mobile_number": controllers.loginNumber.text,
         "password": controllers.loginPassword.text,
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "app_version": controllers.versionNum,
         "device_id": webBrowserInfo.productSub,
         "device_brand": allInfo.toString(),
@@ -1570,8 +1570,8 @@ class ApiService {
     try {
       Map data = {
         "search_type": "category",
-        "cat_id": cosId == '202410' ? "1" : "4",
-        "cos_id": cosId,
+        "cat_id": controllers.storage.read("cos_id") == '202410' ? "1" : "4",
+        "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data"
       };
       final request = await http.post(Uri.parse(scriptApi),
@@ -1603,7 +1603,7 @@ class ApiService {
       Map data = {
         "search_type": "visit_type",
         "cat_id": "2",
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data"
       };
       final request = await http.post(Uri.parse(scriptApi),
@@ -1613,6 +1613,7 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      print("Visit Type res ${request.body}");
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         controllers.callNameList = [];
@@ -1635,7 +1636,7 @@ class ApiService {
     try {
       Map data = {
         "search_type": "allCustomers",
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data"
       };
       final request = await http.post(Uri.parse(scriptApi),
@@ -1661,7 +1662,7 @@ class ApiService {
     try {
       Map data = {
         "search_type": "records",
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data",
         "type":"7"
       };
@@ -1704,7 +1705,7 @@ class ApiService {
     try {
       final data = {
         "search_type": "records",
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data",
         "type": "8",
       };
@@ -1748,7 +1749,7 @@ class ApiService {
     controllers.isSent.value = false;
     try {
       Map data = {
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "action": "fetch_mails",
         "type":"reply"
       };
@@ -1783,7 +1784,7 @@ class ApiService {
     controllers.isReplied.value = false;
     try {
       Map data = {
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "action": "fetch_mails",
         "type":"reply_seen"
       };
@@ -1814,7 +1815,7 @@ class ApiService {
     try {
       Map data = {
         "search_type": "meeting_details",
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data"
       };
       final request = await http.post(Uri.parse(scriptApi),
@@ -1864,7 +1865,7 @@ class ApiService {
     showLoadingDialog(context);
     try{
       Map data ={
-        "cos_id":cosId,
+        "cos_id":controllers.storage.read("cos_id"),
         'status_update' : status.trim(),
         "lead_id":leadId,
         "phone_no":mobile,
@@ -1920,7 +1921,7 @@ class ApiService {
     try {
       Map data = {
         "search_type": "records",
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data",
         "type":"10"
       };
@@ -1964,7 +1965,7 @@ class ApiService {
         "role": controllers.roleId,
         "created_by": controllers.storage.read("id"),
         "boss_id": controllers.storage.read("id"),
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "platform": "3"
       };
       final request = await http.post(Uri.parse(insertUser),
@@ -2029,7 +2030,7 @@ class ApiService {
       // Body values
       request.fields['clientMail'] = controllers.emailToCtr.text;
       request.fields['subject'] = controllers.emailSubjectCtr.text;
-      request.fields['cos_id'] = cosId.toString();
+      request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
       request.fields['count'] = '${controllers.emailCount.value + 1}';
       request.fields['quotation_name'] = controllers.emailQuotationCtr.text;
       request.fields['body'] = controllers.emailMessageCtr.text;
@@ -2085,7 +2086,7 @@ class ApiService {
   //       "co_name":controllers.customerCoNameController.text.trim(),
   //       "no_unit":controllers.customerNoUnitController.text.trim(),
   //       "no_employees":controllers.noOfEmpController.text.trim(),
-  //       "cos_id":cosId,
+  //       "cos_id":controllers.storage.read("cos_id"),
   //       "field_officer":controllers.customerFieldOfficerController.text.trim(),
   //       "description":controllers.customerDescriptionController.text.trim(),
   //       "door_no":controllers.customerUnitNameController.text.trim(),
@@ -2234,7 +2235,7 @@ class ApiService {
       final response = await http.post(
         url,
         body: jsonEncode(
-            {"search_type": "product", "cos_id": cosId, "action": "get_data"}),
+            {"search_type": "product", "cos_id": controllers.storage.read("cos_id"), "action": "get_data"}),
       );
 
       if (response.statusCode == 200) {
@@ -2266,7 +2267,7 @@ class ApiService {
         body: jsonEncode({
           "search_type": "customer_comments",
           "id": id,
-          "cos_id": cosId,
+          "cos_id": controllers.storage.read("cos_id"),
           "action": "get_data"
         }),
       );
@@ -2308,7 +2309,7 @@ class ApiService {
         body: jsonEncode({
           "search_type": "mail_comments",
           "id": id,
-          "cos_id": cosId,
+          "cos_id": controllers.storage.read("cos_id"),
           "action": "get_data"
         }),
       );
@@ -2344,7 +2345,7 @@ class ApiService {
           "search_type": "mail_receive",
           "id": controllers.storage.read("id"),
           "role": controllers.storage.read("role"),
-          "cos_id": cosId,
+          "cos_id": controllers.storage.read("cos_id"),
           "action": "get_data"
         }),
       );
@@ -2384,7 +2385,7 @@ class ApiService {
         url,
         body: jsonEncode({
           "search_type": "mail_receive",
-          "cos_id": cosId,
+          "cos_id": controllers.storage.read("cos_id"),
           "sent_id": id,
           "action": "get_data"
         }),
@@ -2419,13 +2420,12 @@ class ApiService {
     controllers.isLead.value = false;
     final url = Uri.parse(scriptApi);
     controllers.allLeadsLength.value = 0;
-    print("lead id role ${controllers.storage.read("role")}");
     try {
       final response = await http.post(
         url,
         body: jsonEncode({
           "search_type": "leads",
-          "cos_id": cosId,
+          "cos_id": controllers.storage.read("cos_id"),
           "role": controllers.storage.read("role"),
           "id": controllers.storage.read("id"),
           "lead_id": "2",
@@ -2477,7 +2477,7 @@ class ApiService {
         url,
         body: jsonEncode({
           "search_type": "lead_details",
-          "cos_id": cosId,
+          "cos_id": controllers.storage.read("cos_id"),
           "lead_id": leadId,
           "action": "get_data"
         }),
@@ -2517,7 +2517,7 @@ class ApiService {
         url,
         body: jsonEncode({
           "search_type": "leads",
-          "cos_id": cosId,
+          "cos_id": controllers.storage.read("cos_id"),
           "role": controllers.storage.read("role"),
           "id": controllers.storage.read("id"),
           "lead_id": "1",
@@ -2565,7 +2565,7 @@ class ApiService {
   //       url,
   //       body: jsonEncode({
   //         "search_type": "leads",
-  //         "cos_id":cosId,
+  //         "cos_id":controllers.storage.read("cos_id"),
   //         "role":controllers.storage.read("role"),
   //         "id":controllers.storage.read("id"),
   //         "lead_id":"1",
@@ -2610,7 +2610,7 @@ class ApiService {
         url,
         body: jsonEncode({
           "search_type": "leads",
-          "cos_id": cosId,
+          "cos_id": controllers.storage.read("cos_id"),
           "role": controllers.storage.read("role"),
           "id": controllers.storage.read("id"),
           "lead_id": "3",
@@ -2654,7 +2654,7 @@ class ApiService {
     try {
       Map data = {
         "search_type": "allroles",
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data"
       };
 
@@ -2688,7 +2688,7 @@ class ApiService {
       final response = await http.post(
         url,
         body: jsonEncode(
-            {"search_type": "company", "cos_id": cosId, "action": "get_data"}),
+            {"search_type": "company", "cos_id": controllers.storage.read("cos_id"), "action": "get_data"}),
       );
       //print("Company ${response.body}");
       controllers.isLead.value = true;
@@ -2718,7 +2718,7 @@ class ApiService {
         "search_type": "main_report",
         "id": controllers.storage.read("id"),
         "role": controllers.storage.read("role"),
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data",
         "date": "${DateTime.now().day.toString().padLeft(2, "0")}-${DateTime.now().month.toString().padLeft(2, "0")}-${DateTime.now().year.toString()}"
       };
@@ -2759,7 +2759,7 @@ class ApiService {
     try {
       Map data = {
         "search_type": "rating_report",
-        "cos_id": cosId,
+        "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data",
       };
       log("main ${data.toString()}");
@@ -2794,6 +2794,34 @@ class ApiService {
     }
   }
 
+  Future getMonthReport() async {
+    try {
+      Map data = {
+        "search_type": "month_report",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data",
+        "year":"2025"
+      };
+      log("main ${data.toString()}");
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+       controllers.setData(response);
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
   Future<List<NewLeadObj>> allCustomerDetails() async {
     controllers.isLead.value = false;
     final url = Uri.parse(scriptApi);
@@ -2803,7 +2831,7 @@ class ApiService {
         url,
         body: jsonEncode({
           "search_type": "leads",
-          "cos_id": cosId,
+          "cos_id": controllers.storage.read("cos_id"),
           "role": controllers.storage.read("role"),
           "id": controllers.storage.read("id"),
           "lead_id": "4",
@@ -2840,7 +2868,7 @@ class ApiService {
       final response = await http.post(
         url,
         body: jsonEncode(
-            {"search_type": "employee", "cos_id": cosId, "action": "get_data"}),
+            {"search_type": "employee", "cos_id": controllers.storage.read("cos_id"), "action": "get_data"}),
       );
 
       if (response.statusCode == 200) {

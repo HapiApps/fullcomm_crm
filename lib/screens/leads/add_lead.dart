@@ -414,18 +414,10 @@ class _AddLeadState extends State<AddLead> {
                                           : InkWell(
                                         onTap: () async {
                                           controllers.leadPersonalItems++;
-                                          controllers.isMainPersonList
-                                              .add(false);
-                                          controllers.isCoMobileNumberList
-                                              .add(false);
-                                          SharedPreferences sharedPref =
-                                          await SharedPreferences
-                                              .getInstance();
-                                          sharedPref.setInt(
-                                              "leadCount",
-                                              controllers
-                                                  .leadPersonalItems
-                                                  .value);
+                                          controllers.isMainPersonList.add(false);
+                                          controllers.isCoMobileNumberList.add(false);
+                                          SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                          sharedPref.setInt("leadCount", controllers.leadPersonalItems.value);
                                         },
                                         child: Row(
                                           children: [
@@ -477,14 +469,8 @@ class _AddLeadState extends State<AddLead> {
                                           controllers.leadEmailCrt
                                               .removeAt(index);
 
-                                          SharedPreferences sharedPref =
-                                          await SharedPreferences
-                                              .getInstance();
-                                          sharedPref.setInt(
-                                              "leadCount",
-                                              controllers
-                                                  .leadPersonalItems
-                                                  .value);
+                                          SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                          sharedPref.setInt("leadCount", controllers.leadPersonalItems.value);
                                         },
                                         child: Row(
                                           children: [
@@ -543,11 +529,8 @@ class _AddLeadState extends State<AddLead> {
                                             inputFormatters:
                                             constInputFormatters.textInput,
                                             onChanged: (value) async {
-                                              SharedPreferences sharedPref =
-                                              await SharedPreferences.getInstance();
-                                              sharedPref.setString(
-                                                  "leadName$index",
-                                                  value.toString().trim());
+                                              SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                              sharedPref.setString("leadName$index", value.toString().trim());
                                             },
                                             // validator:(value){
                                             //   if(value.toString().isEmpty){

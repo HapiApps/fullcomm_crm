@@ -36,6 +36,7 @@ class _NewDashboardState extends State<NewDashboard> {
     });
     apiService.getDashBoardReport();
     apiService.getRatingReport();
+    apiService.getMonthReport();
   }
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/models/company_obj.dart';
@@ -14,6 +15,7 @@ import '../models/customer_activity.dart';
 import '../models/employee_obj.dart';
 import '../models/mail_receive_obj.dart';
 import '../models/meeting_obj.dart';
+import '../models/month_report_obj.dart';
 import '../models/new_lead_obj.dart';
 import '../models/product_obj.dart';
 
@@ -860,7 +862,7 @@ class Controller extends GetxController {
       shortBy = "All".obs,
       isCommentsLoading = true.obs,isSent = false.obs,isOpened= false.obs,isReplied = false.obs,isMailLoading = false.obs,isIncoming = false.obs,isOutgoing= false.obs,isMissed = false.obs,isCallLoading = false.obs;
   var roleNameList = [];
-  var callNameList = [];
+  var callNameList = ["Visit","Call","Email","Meeting","Note"];
   var customers = <AllCustomersObj>[].obs;
   var callActivity = <CustomerActivity>[].obs;
   var mailActivity = <CustomerActivity>[].obs;
@@ -1175,7 +1177,7 @@ class Controller extends GetxController {
       upInvitation = "No",
       upEventState = "Tamil Nadu",
       leadCategory = "Suspects";
-  RxList leadCategoryList = [].obs;
+  RxList leadCategoryList = [{"category":"Lead Status","id":"1","value":"Suspects"},{"category":"Lead Status","id":"1","value":"Prospects"},{"category":"Lead Status","id":"1","value":"Qualified"},{"category":"Lead Status","id":"1","value":"Suspects"},{"category":"Lead Status","id":"1","value":"Prospects"},{"category":"Lead Status","id":"1","value":"Qualified"}].obs;
   RxList leadCategoryGrList = [].obs;
   List eventImages = [
     "assets/image/event_logo1.jpeg",
@@ -1416,7 +1418,33 @@ class Controller extends GetxController {
   TextEditingController coPinCodeController = TextEditingController();
   TextEditingController coCountryController =
       TextEditingController(text: "India");
+  var monthData = <CustomerMonthData>[].obs;
 
+  void setData(List<dynamic> data) {
+    monthData.value = data.map((e) => CustomerMonthData.fromJson(e)).toList();
+  }
+
+  List<FlSpot> get chartSpots {
+    final monthMap = {
+      "Jan": 1,
+      "Feb": 2,
+      "Mar": 3,
+      "Apr": 4,
+      "May": 5,
+      "Jun": 6,
+      "Jul": 7,
+      "Aug": 8,
+      "Sep": 9,
+      "Oct": 10,
+      "Nov": 11,
+      "Dec": 12,
+    };
+
+    return monthData.map((d) {
+      final x = monthMap[d.monthName] ?? 0;
+      return FlSpot(x.toDouble(), d.totalCustomers);
+    }).toList();
+  }
   var leadPersonalItems = 1.obs,
       leadFieldItems = 1.obs,
       leadSocialItems = 1.obs,
@@ -1463,8 +1491,7 @@ class Controller extends GetxController {
   final RoundedLoadingButtonController loginCtr =
       RoundedLoadingButtonController();
 
-  DateTime dateTime =
-      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  DateTime dateTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   var selectPinCodeList = [];
   var selectStateList = [];
