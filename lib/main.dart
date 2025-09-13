@@ -11,6 +11,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'common/constant/api.dart';
 import 'common/constant/colors_constant.dart';
+import 'common/utilities/utils.dart';
 import 'common/widgets/log_in.dart';
 import 'components/custom_text.dart';
 import 'controller/controller.dart';
@@ -563,9 +564,9 @@ class _SplashScreenState extends State<SplashScreen> {
     // apiService.getLeadCategory();
     // apiService.getVisitType();
     apiService.getAllCustomers();
-    apiService.getAllCallActivity();
     apiService.getOpenedMailActivity(true);
     apiService.getReplyMailActivity(true);
+    apiService.getAllCallActivity();
     apiService.getAllMailActivity();
     apiService.getAllMeetingActivity();
     apiService.getAllNoteActivity();

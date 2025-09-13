@@ -369,6 +369,16 @@ class _SuspectsState extends State<Suspects> {
                                         curve: Curves.easeInOut,
                                       );
                                     }
+                                    if (event is KeyDownEvent) {
+                                      if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
+                                          controllers.currentPage.value > 1) {
+                                        controllers.currentPage.value--;
+                                      }
+                                      if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
+                                          controllers.currentPage.value < controllers.totalPages) {
+                                        controllers.currentPage.value++;
+                                      }
+                                    }
                                   }
                                 },
                                 child:  ListView.builder(

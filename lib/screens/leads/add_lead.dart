@@ -39,7 +39,7 @@ class _AddLeadState extends State<AddLead> {
   Future<void> getStringValue() async {
     SharedPreferences sharedPref = await SharedPreferences.getInstance();
     Future.delayed(Duration.zero, () {
-      //setState(() {
+      setState(() {
       final whatsApp = sharedPref.getString("leadWhatsApp") ?? "";
       final companyName = sharedPref.getString("leadCoName") ?? "";
       final companyPhone = sharedPref.getString("leadCoMobile") ?? "";
@@ -82,8 +82,8 @@ class _AddLeadState extends State<AddLead> {
         // controllers.leadTitleCrt[i].text  = title.toString();
         // controllers.leadWhatsCrt[i].text  = whatsApp.toString();
       }
-      controllers.leadFieldName[0].text = "";
-      controllers.leadFieldValue[0].text = "";
+      // controllers.leadFieldName[0].text = "";
+      // controllers.leadFieldValue[0].text = "";
       controllers.leadCoNameCrt.text = companyName.toString();
       controllers.leadCoMobileCrt.text = companyPhone.toString();
       controllers.leadWebsite.text = webSite.toString();
@@ -107,17 +107,21 @@ class _AddLeadState extends State<AddLead> {
       controllers.countryController.text = country.toString();
       controllers.leadXCrt.text = twitter.toString();
       controllers.leadLinkedinCrt.text = linkedin.toString();
+      controllers.leadNameCrt[0].text = "";
+      print("lead name ${controllers.leadNameCrt[0].text}");
+      controllers.leadMobileCrt[0].text = "";
+      controllers.leadEmailCrt[0].text = "";
+      controllers.leadTitleCrt[0].text = "";
+      controllers.leadWhatsCrt[0].text = "";
     });
-    //});
+    });
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration.zero, () {
-      setDefaults();
-    });
+    getStringValue();
   }
 
   @override

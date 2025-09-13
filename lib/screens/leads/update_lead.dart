@@ -11,6 +11,7 @@ import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import '../../common/constant/key_constant.dart';
+import '../../components/custom_date_box.dart';
 import '../../components/custom_textfield.dart';
 import '../../controller/controller.dart';
 
@@ -68,6 +69,7 @@ class UpdateLead extends StatefulWidget {
   final String? numOfHeadcount;
   final String? expectedBillingValue;
   final String? detailsOfRequired;
+  final String visitType;
   String updateTs;
   UpdateLead({super.key,
     this.id,
@@ -112,7 +114,7 @@ class UpdateLead extends StatefulWidget {
     this.quotationRequired, this.arpuValue,
     this.prospectEnrollmentDate, this.expectedConvertionDate,
     this.statusUpdate, this.numOfHeadcount, this.expectedBillingValue,
-    required this.notes,required this.sourceDetails,required this.updateTs, this.detailsOfRequired
+    required this.notes,required this.sourceDetails,required this.updateTs, this.detailsOfRequired, required this.visitType
   });
 
 
@@ -159,49 +161,6 @@ class _UpdateLeadState extends State<UpdateLead> {
       final linkedin=widget.linkedin=="null"?"":widget.linkedin;
       final time=widget.timelineDecision ?? "";
       final leadDescription=widget.description ?? "";
-
-      controllers.leadCoNameCrt.text=companyName.toString();
-      controllers.leadCoMobileCrt.text=companyPhone.toString();
-      controllers.leadWebsite.text=webSite.toString();
-      controllers.leadCoEmailCrt.text=coEmail.toString();
-      controllers.leadProduct.text=product.toString();
-      controllers.leadOwnerNameCrt.text=ownerName.toString();
-      controllers.prodDescriptionController.text = widget.productDiscussion.toString()=="null"?"":widget.productDiscussion.toString();
-      controllers.statusCrt.text = widget.status .toString()=="null"?"":widget.status.toString();
-      controllers.exMonthBillingValCrt.text = widget.expectedBillingValue.toString()=="null"?"":widget.expectedBillingValue.toString();
-      controllers.noOfHeadCountCrt.text = widget.numOfHeadcount.toString()=="null"?"":widget.numOfHeadcount.toString();
-      controllers.sourceCrt.text = widget.detailsOfRequired.toString()=="null"?"":widget.detailsOfRequired.toString();
-      controllers.additionalNotesCrt.text = widget.notes.toString()=="null"?"":widget.notes.toString();
-      controllers.arpuCrt.text = widget.arpuValue.toString()=="null"?"":widget.arpuValue.toString();
-      controllers.expectedConversionDateCrt.text = widget.expectedConvertionDate.toString()=="null"?"":widget.expectedConvertionDate.toString();
-      controllers.prospectEnrollmentDateCrt.text = widget.prospectEnrollmentDate.toString()=="null"?"":widget.prospectEnrollmentDate.toString();
-      controllers.statusCrt.text = widget.statusUpdate.toString()=="null"?"":widget.statusUpdate.toString();
-      controllers.leadDisPointsCrt.text = widget.source.toString()=="null"?"":widget.source.toString();
-      controllers.industry = (industry == null || industry == "null" || industry.toString().trim().isEmpty) ? null : industry;
-      controllers.source = (source == null || source == "null" || source.toString().trim().isEmpty) ? null : source;
-      controllers.status = (status == null || status == "null" || status.toString().trim().isEmpty) ? null : status;
-      controllers.rating = (rating == null || rating == "null" || rating.toString().trim().isEmpty) ? null : rating;
-      controllers.service = (service == null || service == "null" || service.toString().trim().isEmpty) ? null : service;
-      controllers.doorNumberController.text=doorNo.toString();
-      controllers.leadDescription.text=leadDescription.toString();
-      controllers.leadTime.text=time.toString();
-      controllers.budgetCrt.text=budget.toString();
-      controllers.streetNameController.text=street.toString();
-      controllers.areaController.text=area.toString();
-      controllers.selectedCity.value=city.toString();
-      controllers.cityController.text=city.toString();
-      controllers.pinCode=pinCode.toString();
-      controllers.selectedState.value=state.toString();
-      controllers.countryController.text=country.toString();
-      controllers.leadXCrt.text=twitter.toString();
-      controllers.leadLinkedinCrt.text=linkedin.toString();
-      controllers.selectPinCodeList=[];
-      controllers.selectPinCodeList = controllers.pinCodeList
-          .where((location) =>
-      location["STATE"] == controllers.selectedState &&
-          location["DISTRICT"] == controllers.selectedCity)
-          .map((location) => location["PINCODE"].toString())
-          .toList();
       controllers.leadNameCrt.clear();
       controllers.leadMobileCrt.clear();
       controllers.leadTitleCrt.clear();
@@ -240,10 +199,57 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.leadTitleCrt.add(TextEditingController());
       controllers.leadEmailCrt.add(TextEditingController());
       controllers.leadNameCrt[0].text=widget.mainName.toString();
+      print("lead count error ${widget.mainName} ${controllers.leadNameCrt[0].text}");
       controllers.leadMobileCrt[0].text=widget.mainMobile.toString();
       controllers.leadEmailCrt[0].text=widget.mainEmail.toString();
       controllers.leadTitleCrt[0].text=widget.owner.toString();
-      controllers.leadWhatsCrt[0].text=whatsApp.toString();
+      controllers.visitType = widget.visitType.isEmpty?null:controllers.callNameList.contains(widget.visitType)?widget.visitType:null;
+      controllers.leadCoNameCrt.text=companyName.toString();
+      controllers.leadCoMobileCrt.text=companyPhone.toString();
+      controllers.leadWebsite.text=webSite.toString();
+      controllers.leadCoEmailCrt.text=coEmail.toString();
+      controllers.leadProduct.text=product.toString();
+      controllers.leadOwnerNameCrt.text=ownerName.toString();
+      controllers.prodDescriptionController.text = widget.productDiscussion.toString()=="null"?"":widget.productDiscussion.toString();
+      controllers.statusCrt.text = widget.status .toString()=="null"?"":widget.status.toString();
+      controllers.exMonthBillingValCrt.text = widget.expectedBillingValue.toString()=="null"?"":widget.expectedBillingValue.toString();
+      controllers.noOfHeadCountCrt.text = widget.numOfHeadcount.toString()=="null"?"":widget.numOfHeadcount.toString();
+      controllers.sourceCrt.text = widget.detailsOfRequired.toString()=="null"?"":widget.detailsOfRequired.toString();
+      controllers.additionalNotesCrt.text = widget.notes.toString()=="null"?"":widget.notes.toString();
+      controllers.arpuCrt.text = widget.arpuValue.toString()=="null"?"":widget.arpuValue.toString();
+      controllers.expectedConversionDateCrt.text = widget.expectedConvertionDate.toString()=="null"?"":widget.expectedConvertionDate.toString();
+      controllers.prospectEnrollmentDateCrt.text = widget.prospectEnrollmentDate.toString()=="null"?"":widget.prospectEnrollmentDate.toString();
+      controllers.prospectDate.value = widget.prospectEnrollmentDate.toString()=="null"?"":widget.prospectEnrollmentDate.toString();
+      controllers.exDate.value = widget.expectedConvertionDate.toString()=="null"?"":widget.expectedConvertionDate.toString();
+      controllers.statusCrt.text = widget.statusUpdate.toString()=="null"?"":widget.statusUpdate.toString();
+      controllers.leadDisPointsCrt.text = widget.source.toString()=="null"?"":widget.source.toString();
+      controllers.industry = (industry == null || industry == "null" || industry.toString().trim().isEmpty) ? null : industry;
+      controllers.source = (source == null || source == "null" || source.toString().trim().isEmpty) ? null : source;
+      controllers.status = (status == null || status == "null" || status.toString().trim().isEmpty) ? null : status;
+      controllers.rating = (rating == null || rating == "null" || rating.toString().trim().isEmpty) ? null : rating;
+      controllers.service = (service == null || service == "null" || service.toString().trim().isEmpty) ? null : service;
+      controllers.doorNumberController.text=doorNo.toString();
+      controllers.leadDescription.text=leadDescription.toString();
+      controllers.leadTime.text=time.toString();
+      controllers.budgetCrt.text=budget.toString();
+      controllers.streetNameController.text=street.toString();
+      controllers.areaController.text=area.toString();
+      controllers.selectedCity.value=city.toString();
+      controllers.cityController.text=city.toString();
+      controllers.pinCode=pinCode.toString();
+      controllers.selectedState.value=state.toString();
+      controllers.countryController.text=country.toString();
+      controllers.leadXCrt.text=twitter.toString();
+      controllers.leadLinkedinCrt.text=linkedin.toString();
+      controllers.selectPinCodeList=[];
+      controllers.selectPinCodeList = controllers.pinCodeList
+          .where((location) =>
+      location["STATE"] == controllers.selectedState &&
+          location["DISTRICT"] == controllers.selectedCity)
+          .map((location) => location["PINCODE"].toString())
+          .toList();
+
+      //controllers.leadWhatsCrt[0].text=whatsApp.toString();
     });
   }
   final ScrollController _controller = ScrollController();
@@ -352,7 +358,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         CustomTextField(
                                           hintText:"Name",
                                           text:"Name",
-                                          isOptional: false,
+                                          isOptional: true,
                                           controller: controllers.leadNameCrt[0],
                                           width:textFieldSize,
                                           keyboardType: TextInputType.text,
@@ -363,6 +369,31 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             SharedPreferences sharedPref = await SharedPreferences.getInstance();
                                             //sharedPref.setString("leadName$index", value.toString().trim());
                                           },
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            CustomText(
+                                              text: "Phone No",
+                                              colors: colorsConst.textColor,
+                                              size: 13,
+                                              textAlign: TextAlign.start,
+                                            ),
+                                            const CustomText(
+                                              text: "*",
+                                              colors: Colors.red,
+                                              size: 25,
+                                            ),
+                                            // SizedBox(
+                                            //   width: textFieldSize-150,
+                                            // ),
+                                            // CustomText(
+                                            //   text: "Whatsapp No",
+                                            //   colors: colorsConst.textColor,
+                                            //   size: 13,
+                                            //   textAlign: TextAlign.end,
+                                            // ),
+                                          ],
                                         ),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -1193,6 +1224,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           valueList: controllers.callNameList,
                                           text: "Call Visit Type",
                                           width: textFieldSize,
+                                          isOptional: true,
                                           //inputFormatters: constInputFormatters.textInput,
                                           onChanged: (value) async {
                                             setState((){
@@ -1216,19 +1248,17 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             sharedPref.setString("leadDescription", value.toString().trim());
                                           },
                                         ),
-                                        CustomTextField(
-                                          hintText:"Expected Conversion Date",
-                                          text:"Expected Conversion Date",
-                                          isOptional: false,
-                                          controller: controllers.expectedConversionDateCrt,
-                                          width:textFieldSize,
-                                          keyboardType: TextInputType.text,
-                                          textInputAction: TextInputAction.next,
-                                          inputFormatters: constInputFormatters.textInput,
-                                          onChanged:(value) async {
-                                            SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                            sharedPref.setString("leadDescription", value.toString().trim());
+                                        Obx(() => CustomDateBox(
+                                          text: "Expected Conversion Date",
+                                          value: controllers.exDate.value,
+                                          width: textFieldSize,
+                                          onTap: () {
+                                            utils.datePicker(
+                                                context: context,
+                                                textEditingController: controllers.dateOfConCtr,
+                                                pathVal: controllers.exDate);
                                           },
+                                        ),
                                         ),
                                         CustomTextField(
                                           hintText:"Details of Service Required",
@@ -1244,19 +1274,17 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             sharedPref.setString("leadDescription", value.toString().trim());
                                           },
                                         ),
-                                        CustomTextField(
-                                          hintText:"Prospect Enrollment Date",
-                                          text:"Prospect Enrollment Date",
-                                          isOptional: false,
-                                          controller: controllers.prospectEnrollmentDateCrt,
-                                          width:textFieldSize,
-                                          keyboardType: TextInputType.text,
-                                          textInputAction: TextInputAction.next,
-                                          inputFormatters: constInputFormatters.textInput,
-                                          onChanged:(value) async {
-                                            SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                            sharedPref.setString("leadDescription", value.toString().trim());
+                                        Obx(() => CustomDateBox(
+                                          text: "Prospect Enrollment Date",
+                                          value: controllers.prospectDate.value,
+                                          width: textFieldSize,
+                                          onTap: () {
+                                            utils.datePicker(
+                                                context: context,
+                                                textEditingController: controllers.dateOfConCtr,
+                                                pathVal: controllers.prospectDate);
                                           },
+                                        ),
                                         ),
                                         CustomTextField(
                                           hintText: "Status Update",
@@ -1279,6 +1307,62 @@ class _UpdateLeadState extends State<UpdateLead> {
                                 20.height,
                                 CustomLoadingButton(
                                     callback: (){
+                                      if (controllers.leadNameCrt[0].text.isEmpty) {
+                                        utils.snackBar(
+                                            msg: "Please add name",
+                                            color: Colors.red,
+                                            context: context);
+                                        controllers.leadCtr.reset();
+                                      } else if (controllers.leadMobileCrt[0].text.isEmpty) {
+                                        utils.snackBar(
+                                            msg: "Please Add Mobile Number",
+                                            color: Colors.red,
+                                            context: context);
+                                        controllers.leadCtr.reset();
+                                      } else if (controllers.leadMobileCrt[0].text.length != 10) {
+                                        utils.snackBar(
+                                            msg: "Invalid Mobile Number",
+                                            color: Colors.red,
+                                            context: context);
+                                        controllers.leadCtr.reset();
+                                      } else if (controllers.visitType == null || controllers.visitType.toString().isEmpty) {
+                                        utils.snackBar(
+                                            msg: "Please Select Call Visit Type",
+                                            color: Colors.red,
+                                            context: context);
+                                        controllers.leadCtr.reset();
+                                      } else {
+                                        if(controllers.leadEmailCrt[0].text.isNotEmpty){
+                                          if (controllers.leadEmailCrt[0].text.isEmail) {
+                                            if(controllers.pinCodeController.text.isEmpty){
+                                              apiService.updateLeadAPI(context,widget.id.toString(),widget.addressId.toString());
+                                            }else{
+                                              if(controllers.pinCodeController.text.length==6){
+                                                apiService.updateLeadAPI(context,widget.id.toString(),widget.addressId.toString());
+                                              }else{
+                                                utils.snackBar(msg: "Please add 6 digits pin code",
+                                                    color: colorsConst.primary,context:context);
+                                                controllers.leadCtr.reset();
+                                              }
+                                            }
+                                          }else{
+                                            utils.snackBar(msg: "Please add valid email",
+                                                color: colorsConst.primary,context:context);
+                                            controllers.leadCtr.reset();
+                                          }
+                                        }else{
+                                          if(controllers.pinCodeController.text.isEmpty){
+                                            apiService.updateLeadAPI(context,widget.id.toString(),widget.addressId.toString());
+                                          }else{
+                                            if(controllers.pinCodeController.text.length==6){
+                                              apiService.updateLeadAPI(context,widget.id.toString(),widget.addressId.toString());
+                                            }else{
+                                              utils.snackBar(msg: "Please add 6 digits pin code",
+                                                  color: colorsConst.primary,context:context);
+                                              controllers.leadCtr.reset();
+                                            }
+                                          }
+                                        }}
                                       // if(controllers.leadNameCrt[0].text.isEmpty){
                                       //   utils.snackBar(msg: "Please add name",
                                       //       color: colorsConst.primary,context:context);
@@ -1328,7 +1412,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       //     if(controllers.leadCoEmailCrt.text.isEmail){
                                       print("lead id ${widget.id.toString()}");
                                       //controllers.leadCtr.reset();
-                                      apiService.updateLeadAPI(context,widget.id.toString(),widget.addressId.toString());
+
                                       //     }else{
                                       //       utils.snackBar(msg: "Invalid Company Email",
                                       //           color: colorsConst.primary,context:context);

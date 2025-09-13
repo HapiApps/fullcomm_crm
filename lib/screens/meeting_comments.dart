@@ -112,6 +112,19 @@ class _MeetingCommentsState extends State<MeetingComments> {
                             ),
                           ),
                           onPressed: (){
+                            controllers.fDate.value = "";
+                            controllers.fTime.value = "";
+                            controllers.toDate.value = "";
+                            controllers.toTime.value = "";
+                            setState(() {
+                              controllers.clearSelectedCustomer();
+                              controllers.cusController.text = "";
+                              controllers.callType = null;
+                              controllers.callStatus = null;
+                            });
+                            controllers.callCommentCont.text = "";
+                            controllers.meetingTitleCrt.text = "";
+                            controllers.meetingVenueCrt.text = "";
                             showDialog(
                                 context: context,
                                 barrierDismissible: false,
@@ -368,17 +381,20 @@ class _MeetingCommentsState extends State<MeetingComments> {
                     10.height,
                     Row(
                       children: [
-                        Obx(()=> utils.selectHeatingType("Scheduled", controllers.isIncoming.value, (){
-                          apiService.getAllMailActivity();
-                        }, false,controllers.allIncomingCalls),),
+                        Obx(()=> utils.selectHeatingType("Scheduled",
+                            controllers.selectMeetingType.value=="Scheduled", (){
+                              controllers.selectMeetingType.value="Scheduled";
+                        }, false,controllers.allScheduleMeet),),
                         10.width,
-                        Obx(()=>utils.selectHeatingType("Completed", controllers.isOutgoing.value, (){
-                          apiService.getOpenedMailActivity(false);
-                        }, false,controllers.allOutgoingCalls),),
+                        Obx(()=>utils.selectHeatingType("Completed",
+                            controllers.selectMeetingType.value=="Completed", (){
+                              controllers.selectMeetingType.value="Completed";
+                        }, false,controllers.allCompletedMeet),),
                         10.width,
-                        Obx(()=> utils.selectHeatingType("Cancelled", controllers.isMissed.value, (){
-                          apiService.getReplyMailActivity(false);
-                        }, true,controllers.allMissedCalls),)
+                        Obx(()=> utils.selectHeatingType("Cancelled",
+                            controllers.selectMeetingType.value=="Cancelled", (){
+                              controllers.selectMeetingType.value="Cancelled";
+                        }, true,controllers.allCancelled),)
                       ],
                     ),
                     5.height,
@@ -392,7 +408,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                       children: [
                         CustomSearchTextField(
                           controller: controllers.search,
-                          hintText: "Search Name, Customer Name, Company Name, Mobile",
+                          hintText: "Search Name, Customer Name, Company Name",
                           onChanged: (value) {
                             setState(() {
                               searchText = value.toString().trim();
@@ -552,7 +568,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                     topRight: Radius.circular(5))),
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
@@ -564,41 +580,41 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       colors: Colors.white,
                                     ),
                                   ),
-                                  Obx(() => GestureDetector(
-                                    onTap: (){
-                                      controllers.sortField.value = 'date';
-                                      controllers.sortOrder.value = 'asc';
-                                    },
-                                    child: Icon(
-                                      Icons.arrow_upward,
-                                      size: 16,
-                                      color: (controllers.sortField.value == 'date' &&
-                                          controllers.sortOrder.value == 'asc')
-                                          ? Colors.white
-                                          : Colors.grey,
-                                    ),
-                                  )),
-                                  Obx(() => GestureDetector(
-                                    onTap: (){
-                                      controllers.sortField.value = 'date';
-                                      controllers.sortOrder.value = 'desc';
-                                    },
-                                    child: Icon(
-                                      Icons.arrow_downward,
-                                      size: 16,
-                                      color: (controllers.sortField.value == 'date' &&
-                                          controllers.sortOrder.value == 'desc')
-                                          ? Colors.white
-                                          : Colors.grey,
-                                    ),
-                                  )
-                                  ),
+                                  // Obx(() => GestureDetector(
+                                  //   onTap: (){
+                                  //     controllers.sortField.value = 'date';
+                                  //     controllers.sortOrder.value = 'asc';
+                                  //   },
+                                  //   child: Icon(
+                                  //     Icons.arrow_upward,
+                                  //     size: 16,
+                                  //     color: (controllers.sortField.value == 'date' &&
+                                  //         controllers.sortOrder.value == 'asc')
+                                  //         ? Colors.white
+                                  //         : Colors.grey,
+                                  //   ),
+                                  // )),
+                                  // Obx(() => GestureDetector(
+                                  //   onTap: (){
+                                  //     controllers.sortField.value = 'date';
+                                  //     controllers.sortOrder.value = 'desc';
+                                  //   },
+                                  //   child: Icon(
+                                  //     Icons.arrow_downward,
+                                  //     size: 16,
+                                  //     color: (controllers.sortField.value == 'date' &&
+                                  //         controllers.sortOrder.value == 'desc')
+                                  //         ? Colors.white
+                                  //         : Colors.grey,
+                                  //   ),
+                                  // )
+                                  // ),
                                 ],
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: CustomText(//1
-                                  textAlign: TextAlign.center,
+                                  textAlign: TextAlign.left,
                                   text: "Customer Name",
                                   size: 15,
                                   isBold: true,
@@ -608,7 +624,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: CustomText(//2
-                                  textAlign: TextAlign.center,
+                                  textAlign: TextAlign.left,
                                   text: "Company name",
                                   size: 15,
                                   isBold: true,
@@ -618,7 +634,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: CustomText(
-                                  textAlign: TextAlign.center,
+                                  textAlign: TextAlign.left,
                                   text: "Meeting Title",
                                   size: 15,
                                   isBold: true,
@@ -628,7 +644,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: CustomText(
-                                  textAlign: TextAlign.center,
+                                  textAlign: TextAlign.left,
                                   text: "Notes",
                                   size: 15,
                                   isBold: true,
@@ -638,36 +654,47 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: CustomText(//4
-                                  textAlign: TextAlign.center,
+                                  textAlign: TextAlign.left,
                                   text: "Status",
                                   size: 15,
                                   isBold: true,
                                   colors: Colors.white,
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: CustomText(//9
-                                  textAlign: TextAlign.center,
-                                  text: "Actions",
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
-                                ),
-                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.all(10.0),
+                              //   child: CustomText(//9
+                              //     textAlign: TextAlign.center,
+                              //     text: "Actions",
+                              //     size: 15,
+                              //     isBold: true,
+                              //     colors: Colors.white,
+                              //   ),
+                              // ),
                             ]),
                       ],
                     ),
                     // Table Body
                     Expanded(
                         child: Obx((){
-                          return controllers.meetingActivity.isEmpty?
+                          final searchTexts = searchText.toLowerCase();
+
+                          final filteredList = controllers.meetingActivity.where((activity) {
+                            final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
+                                activity.status == controllers.selectMeetingType.value;
+
+                            final matchesSearch = searchTexts.isEmpty ||
+                                (activity.comName.toString().toLowerCase().contains(searchText) ?? false) ||
+                                (activity.cusName.toString().toLowerCase().contains(searchText) ?? false);
+
+                            return matchesCallType && matchesSearch;
+                          }).toList();
+                          return filteredList.isEmpty?
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               100.height,
-                              Center(
-                                  child: SvgPicture.asset("assets/images/noDataFound.svg")),
+                              Center(child: SvgPicture.asset("assets/images/noDataFound.svg")),
                             ],
                           )
                               :RawKeyboardListener(
@@ -694,9 +721,9 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               controller: _controller,
                               shrinkWrap: true,
                               physics: const ScrollPhysics(),
-                              itemCount: controllers.meetingActivity.length,
+                              itemCount: filteredList.length,
                               itemBuilder: (context, index) {
-                                final data = controllers.meetingActivity[index];
+                                final data = filteredList[index];
                                 return Table(
                                   columnWidths:const {
                                     0: FlexColumnWidth(3),//date
@@ -705,7 +732,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                     3: FlexColumnWidth(3),//Call Type
                                     4: FlexColumnWidth(3.5),//Message
                                     5: FlexColumnWidth(2.5),//Status
-                                    6: FlexColumnWidth(4.5),//Actions
+                                    //6: FlexColumnWidth(4.5),//Actions
                                   },
                                   border: TableBorder(
                                     horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -721,7 +748,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: CustomText(
-                                              textAlign: TextAlign.center,
+                                              textAlign: TextAlign.left,
                                               text: formatFirstDate(data.dates.toString()),
                                               size: 14,
                                               colors: colorsConst.textColor,
@@ -732,7 +759,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                             child: Padding(
                                               padding: const EdgeInsets.all(10.0),
                                               child: CustomText(
-                                                textAlign: TextAlign.center,
+                                                textAlign: TextAlign.left,
                                                 text: data.cusName.toString()=="null"?"":data.cusName.toString(),
                                                 size: 14,
                                                 colors:colorsConst.textColor,
@@ -742,7 +769,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: CustomText(
-                                              textAlign: TextAlign.center,
+                                              textAlign: TextAlign.left,
                                               text:data.comName.toString()=="null"?"":data.comName.toString(),
                                               size: 14,
                                               colors: colorsConst.textColor,
@@ -753,7 +780,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                             child: Padding(
                                               padding: const EdgeInsets.all(10.0),
                                               child: CustomText(
-                                                textAlign: TextAlign.center,
+                                                textAlign: TextAlign.left,
                                                 text: data.title.toString(),
                                                 size: 14,
                                                 colors:colorsConst.textColor,
@@ -765,7 +792,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                             child: Padding(
                                               padding: const EdgeInsets.all(10.0),
                                               child: CustomText(
-                                                textAlign: TextAlign.center,
+                                                textAlign: TextAlign.left,
                                                 text: data.notes.toString(),
                                                 size: 14,
                                                 colors:colorsConst.textColor,
@@ -775,33 +802,31 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: CustomText(
-                                              textAlign: TextAlign.center,
+                                              textAlign: TextAlign.left,
                                               text: data.status.toString(),
                                               size: 14,
                                               colors:colorsConst.textColor,
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(3.0),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                IconButton(
-                                                    onPressed: (){},
-                                                    icon: Icon(Icons.edit,color: Colors.green,)),
-                                                IconButton(
-                                                    onPressed: (){},
-                                                    icon: SvgPicture.asset("assets/images/add_note.svg")),
-                                                IconButton(
-                                                    onPressed: (){},
-                                                    icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
-                                              ],
-                                            ),
-                                          ),
-
+                                          // Padding(
+                                          //   padding: const EdgeInsets.all(3.0),
+                                          //   child: Row(
+                                          //     mainAxisAlignment: MainAxisAlignment.center,
+                                          //     children: [
+                                          //       IconButton(
+                                          //           onPressed: (){},
+                                          //           icon: Icon(Icons.edit,color: Colors.green,)),
+                                          //       IconButton(
+                                          //           onPressed: (){},
+                                          //           icon: SvgPicture.asset("assets/images/add_note.svg")),
+                                          //       IconButton(
+                                          //           onPressed: (){},
+                                          //           icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
+                                          //     ],
+                                          //   ),
+                                          // ),
                                         ]
                                     ),
-
                                   ],
                                 );
                               },

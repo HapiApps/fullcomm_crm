@@ -268,8 +268,14 @@ class _ViewLeadState extends State<ViewLead> {
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor: colorsConst.primary,),
                                                 onPressed: (){
+                                                  controllers.leadNameCrt.add(TextEditingController());
+                                                  controllers.leadMobileCrt.add(TextEditingController());
+                                                  controllers.leadTitleCrt.add(TextEditingController());
+                                                  controllers.leadEmailCrt.add(TextEditingController());
+                                                  controllers.leadWhatsCrt.add(TextEditingController());
                                                   //Get.to(const Suspects(),duration: Duration.zero);
                                                   Get.to( UpdateLead(
+                                                    visitType: leadData.visitType.toString(),
                                                     id:widget.id,
                                                     detailsOfRequired: leadData.detailsOfServiceRequired,
                                                     linkedin: "",

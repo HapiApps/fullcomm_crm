@@ -30,8 +30,7 @@ class _CustomCustomerTileState extends State<CustomCustomerTile> {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-    double minPartWidth =
-        1230 > screenSize.width - 250 ? 980 : screenSize.width - 380.0;
+    double minPartWidth = 1230 > screenSize.width - 250 ? 980 : screenSize.width - 380.0;
     return Column(
       children: [
         20.height,

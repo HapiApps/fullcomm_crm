@@ -31,6 +31,7 @@ class _NewDashboardState extends State<NewDashboard> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero, () async {
+       apiService.currentVersion();
       controllers.selectedIndex.value = 0;
       final prefs = await SharedPreferences.getInstance();
       controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;

@@ -161,7 +161,6 @@ class FilterSection extends StatelessWidget {
                   ),
                 ),
                 10.width,
-
                 // Popup Filter
                 PopupMenuButton<String>(
                   offset: const Offset(0, 40),

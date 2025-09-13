@@ -37,6 +37,7 @@ import '../../components/custom_loading_button.dart';
 import '../../components/custom_sidebar_text.dart';
 import '../../components/custom_text.dart';
 import '../../components/custom_textbutton.dart';
+import '../../components/dialog_button.dart';
 import '../../components/funnel_container.dart';
 import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
@@ -1518,16 +1519,15 @@ class Utils {
                   onClicked: () {
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 0;
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>NewDashboard()));
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     pageBuilder: (context, animation1, animation2) =>
-                    //     const NewDashboard(),
-                    //     transitionDuration: Duration.zero,
-                    //     reverseTransitionDuration: Duration.zero,
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const NewDashboard(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
                   }),
             ),
             Obx(() => CustomSideBarText(
@@ -1540,16 +1540,15 @@ class Utils {
                   text: "Suspects",
                   onClicked: () {
                     controllers.isLead.value = true;
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Suspects()));
-                    // Navigator.push(
-                    //   context,
-                    //   PageRouteBuilder(
-                    //     pageBuilder: (context, animation1, animation2) =>
-                    //     const Suspects(),
-                    //     transitionDuration: Duration.zero,
-                    //     reverseTransitionDuration: Duration.zero,
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Suspects(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 1;
                   }),
@@ -3132,6 +3131,157 @@ class Utils {
           ],
         );
       },
+    );
+  }
+
+  void updateDialog(){
+    showDialog(
+        context: Get.context!,
+        barrierDismissible: false,
+        builder:(context){
+          return WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: AlertDialog(
+              shape:  RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)
+              ),
+              backgroundColor: Colors.white,
+              title:  Text(
+                "Update Available?",
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color:colorsConst.textColor,
+                  fontFamily: "Lato",
+                ),
+              ),
+              content: SizedBox(
+                //height: 300,
+                width: 300,
+                child:Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Obx(()=>Text(
+                      "A new version of CRM is available! \nCurrent:${controllers.versionNum} -> Latest:${controllers.serverVersion}",
+                      style: TextStyle(
+                          fontSize:15,
+                          fontWeight: FontWeight.w500,
+                          color:colorsConst.textColor,
+                        fontFamily: "Lato",
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    ),
+                    10.height,
+                        Text(
+                          "Update now to enjoy the latest \nfeatures and improvements.",
+                          style: TextStyle(
+                              fontSize:15,
+                              fontWeight: FontWeight.w500,
+                              color:colorsConst.textColor
+                          ),
+                          textAlign: TextAlign.start,
+                        ),
+                    20.height,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        DialogButton(
+                            text: "IGNORE",
+                            width: 90,
+                            onPress: (){
+                              SystemNavigator.pop();
+                            }),
+                        DialogButton(
+                            text: "LATER",
+                            width: 90,
+                            onPress: (){
+                              Navigator.pop(Get.context!);
+                            }),
+                        DialogButton(
+                            text: "UPDATE",
+                            width: 90,
+                            onPress: (){
+                              // utils.makingWebsite(web: "https://play.google.com/store/apps/details?id=com.hapiapps.anpace6");
+                              utils.makingWebsite(web: controllers.currentApk.value);
+                            }),
+                      ],
+                    ),
+
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+    );
+  }
+
+  void expiredDateDialog(String date){
+    showDialog(
+        context: Get.context!,
+        barrierDismissible: false,
+        builder:(context){
+          return WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: AlertDialog(
+              shape:  RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)
+              ),
+              backgroundColor: Colors.white,
+              title:  Row(
+                children: [
+                  Image.asset("assets/images/warning.png",height: 30,width: 30,),
+                  Text(
+                    "App Expired",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color:colorsConst.textColor,
+                      fontFamily: "Lato",
+                    ),
+                  ),
+                ],
+              ),
+              content: SizedBox(
+                //height: 300,
+                width: 330,
+                child:Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "This app version expired on ",
+                      style: TextStyle(
+                          fontSize:17,
+                          fontWeight: FontWeight.w500,
+                          color:colorsConst.textColor,
+                        fontFamily: "Lato",
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    5.height,
+                    Text(
+                      date,
+                      style: TextStyle(
+                        fontSize:17,
+                        fontWeight: FontWeight.w500,
+                        color:colorsConst.textColor,
+                        fontFamily: "Lato",
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
     );
   }
 

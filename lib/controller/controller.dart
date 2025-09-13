@@ -22,10 +22,15 @@ import '../models/product_obj.dart';
 final controllers = Get.put(Controller());
 
 class Controller extends GetxController {
-  var version = "Version 0.0.5";
-  var versionNum = "0.0.5";
+  var version = "Version 0.0.6";
+  var versionNum = "0.0.6";
   // var version = "Version 0.0.14";
   //  var versionNum = "0.0.14";
+  var serverVersion = "".obs,
+      currentApk = "".obs,
+      currentCRMLink = "".obs,
+      versionActive = true.obs,
+      updateAvailable = true.obs;
   String countryDial = "+91";
   var isEyeOpen = false.obs,isLeftOpen=true.obs,isRightOpen=true.obs;
   RxInt selectedIndex = 0.obs,oldIndex=0.obs;
@@ -859,6 +864,9 @@ class Controller extends GetxController {
       allIncomingCalls = "0".obs,
       allOutgoingCalls = "0".obs,
       allMissedCalls = "0".obs,
+      allScheduleMeet = "0".obs,
+      allCompletedMeet = "0".obs,
+      allCancelled = "0".obs,
       shortBy = "All".obs,
       isCommentsLoading = true.obs,isSent = false.obs,isOpened= false.obs,isReplied = false.obs,isMailLoading = false.obs,isIncoming = false.obs,isOutgoing= false.obs,isMissed = false.obs,isCallLoading = false.obs;
   var roleNameList = [];
@@ -1141,7 +1149,7 @@ class Controller extends GetxController {
       allCompanyLength = 0.obs,
       allCustomerLength = 0.obs,
       allProductLength = 0.obs,
-      allEmployeeLength = 0.obs, selectCallType = "".obs;
+      allEmployeeLength = 0.obs, selectCallType = "".obs,selectMeetingType = "".obs;
 
   var states,
       upState,

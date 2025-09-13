@@ -507,8 +507,8 @@ class ApiService {
         "points": controllers.additionalNotesCrt.text,
         "status": controllers.status,
         //"owner":controllers.leadOwnerNameCrt.text.trim(),
-        "prospect_enrollment_date": controllers.prospectEnrollmentDateCrt.text,
-        "expected_convertion_date": controllers.expectedConversionDateCrt.text,
+        'prospect_enrollment_date': controllers.prospectDate.value.isEmpty?"${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}":controllers.prospectDate.value,
+        'expected_convertion_date': controllers.exDate.value.isEmpty?"${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}":controllers.exDate.value,
         "num_of_headcount": controllers.noOfHeadCountCrt.text,
         "expected_billing_value": controllers.exMonthBillingValCrt.text,
         "arpu_value": controllers.arpuCrt.text,
@@ -787,11 +787,11 @@ class ApiService {
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"]=="OK"){
-        print("success");
         apiService.allLeadsDetails();
-        apiService.allNewLeadsDetails();
         apiService.allQualifiedDetails();
-        controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
+        apiService.allNewLeadsDetails();
+        apiService.allGoodLeadsDetails();
+        apiService.allCustomerDetails();
         prospectsList.clear();
         qualifiedList.clear();
         customerList.clear();
@@ -871,6 +871,12 @@ class ApiService {
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
+        controllers.clearSelectedCustomer();
+        controllers.empDOB.value = "";
+        controllers.callTime.value = "";
+          controllers.callType = null;
+          controllers.callStatus = null;
+        controllers.callCommentCont.text = "";
         getAllCallActivity();
         Navigator.pop(context);
         controllers.productCtr.reset();
@@ -980,6 +986,8 @@ class ApiService {
       print('Server error: ${e.toString()}');
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
+      controllers.disqualifiedFuture.value = [];
+      controllers.isDisqualifiedList.value = [];
       print('Unexpected error: ${e.toString()}');
       throw Exception('Unexpected error: ${e.toString()}');
     }
@@ -1493,6 +1501,10 @@ class ApiService {
         prefs.setBool("isAdmin", controllers.isAdmin.value);
         prefs.remove("loginNumber");
         prefs.remove("loginPassword");
+        apiService.getAllCallActivity();
+        apiService.getAllMailActivity();
+        apiService.getAllMeetingActivity();
+        apiService.getAllNoteActivity();
         allLeadsDetails();
         allNewLeadsDetails();
         allGoodLeadsDetails();
@@ -1837,10 +1849,24 @@ class ApiService {
         List response = json.decode(request.body);
         controllers.meetingActivity.clear();
         controllers.meetingActivity.value = response.map((e) => MeetingObj.fromJson(e)).toList();
+        final scheduled = controllers.meetingActivity.where((e) => e.status.isNotEmpty && e.status.trim() == "Scheduled").toList();
+        final completed = controllers.meetingActivity
+            .where((e) => e.status.isNotEmpty && e.status.trim() == "Completed")
+            .toList();
+        final cancelled = controllers.meetingActivity
+            .where((e) => e.status.isNotEmpty && e.status.trim() == "Cancelled")
+            .toList();
+
+        controllers.allScheduleMeet.value = scheduled.length.toString();
+        controllers.allCompletedMeet.value = completed.length.toString();
+        controllers.allCancelled.value = cancelled.length.toString();
       } else {
         throw Exception('Failed to load album');
       }
     } catch (e) {
+      controllers.allScheduleMeet.value = "0";
+      controllers.allCompletedMeet.value = "0";
+      controllers.allCancelled.value = "0";
       throw Exception('Failed to load album');
     }
   }
@@ -2717,6 +2743,63 @@ class ApiService {
     } catch (e) {
       print('Unexpected error lead: ${e.toString()}');
       throw Exception('Unexpected error lead: ${e.toString()}');
+    }
+  }
+  DateTime? parseExpiredDate(String s) {
+    try {
+      final input = s.trim();
+      final df = DateFormat("dd-MM-yyyy h.mm a");
+      return df.parseStrict(input);
+    } catch (e) {
+      try {
+        final df2 = DateFormat("dd-MM-yyyy h:mm a");
+        return df2.parseStrict(s);
+      } catch (_) {
+        return null;
+      }
+    }
+  }
+
+  Future currentVersion() async {
+    try {
+      Map data = {
+        "search_type": "checkVersion",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action":"get_data"
+      };
+      log("data version $data");
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      controllers.versionActive.value = false;
+      controllers.updateAvailable.value = false;
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.serverVersion.value = response[0]["current_version"];
+        final expiredDate = parseExpiredDate(response[0]["expired_date"]);
+        final now = DateTime.now();
+        if (expiredDate != null && now.isAfter(expiredDate)) {
+          utils.expiredDateDialog(response[0]["expired_date"]);
+          controllers.versionActive.value = true;
+          controllers.updateAvailable.value = false;
+          return;
+        }
+        if (controllers.versionNum != controllers.serverVersion.value) {
+          controllers.versionActive.value = true;
+          if (response[0]["active"] == "1") {
+            utils.updateDialog();
+            controllers.updateAvailable.value = true;
+          }
+        }
+      } else {
+        controllers.versionActive.value = false;
+      }
+    } catch (e) {
+      controllers.versionActive.value = false;
     }
   }
 

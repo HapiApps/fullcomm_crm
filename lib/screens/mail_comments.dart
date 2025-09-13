@@ -144,11 +144,11 @@ class _MailCommentsState extends State<MailComments> {
                           Table(
                             columnWidths: const {
                               0: FlexColumnWidth(3),//date
-                              1: FlexColumnWidth(3.5),//Customer Name
-                              2: FlexColumnWidth(2),//Mobile No.
-                              3: FlexColumnWidth(3),//Call Type
-                              4: FlexColumnWidth(3.5),//Message
-                              5: FlexColumnWidth(4.5),//Actions
+                              //1: FlexColumnWidth(3.5),//Customer Name
+                              1: FlexColumnWidth(2),//Mobile No.
+                              2: FlexColumnWidth(3),//Call Type
+                              3: FlexColumnWidth(4.5),//Message
+                              //5: FlexColumnWidth(4.5),//Actions
                             },
                             border: TableBorder(
                               horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -163,7 +163,7 @@ class _MailCommentsState extends State<MailComments> {
                                           topRight: Radius.circular(5))),
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(10.0),
@@ -175,51 +175,51 @@ class _MailCommentsState extends State<MailComments> {
                                             colors: Colors.white,
                                           ),
                                         ),
-                                        Obx(() => GestureDetector(
-                                          onTap: (){
-                                            controllers.sortField.value = 'date';
-                                            controllers.sortOrder.value = 'asc';
-                                          },
-                                          child: Icon(
-                                            Icons.arrow_upward,
-                                            size: 16,
-                                            color: (controllers.sortField.value == 'date' &&
-                                                controllers.sortOrder.value == 'asc')
-                                                ? Colors.white
-                                                : Colors.grey,
-                                          ),
-                                        )),
-                                        Obx(() => GestureDetector(
-                                          onTap: (){
-                                            controllers.sortField.value = 'date';
-                                            controllers.sortOrder.value = 'desc';
-                                          },
-                                          child: Icon(
-                                            Icons.arrow_downward,
-                                            size: 16,
-                                            color: (controllers.sortField.value == 'date' &&
-                                                controllers.sortOrder.value == 'desc')
-                                                ? Colors.white
-                                                : Colors.grey,
-                                          ),
-                                        )
-                                        ),
+                                        // Obx(() => GestureDetector(
+                                        //   onTap: (){
+                                        //     controllers.sortField.value = 'date';
+                                        //     controllers.sortOrder.value = 'asc';
+                                        //   },
+                                        //   child: Icon(
+                                        //     Icons.arrow_upward,
+                                        //     size: 16,
+                                        //     color: (controllers.sortField.value == 'date' &&
+                                        //         controllers.sortOrder.value == 'asc')
+                                        //         ? Colors.white
+                                        //         : Colors.grey,
+                                        //   ),
+                                        // )),
+                                        // Obx(() => GestureDetector(
+                                        //   onTap: (){
+                                        //     controllers.sortField.value = 'date';
+                                        //     controllers.sortOrder.value = 'desc';
+                                        //   },
+                                        //   child: Icon(
+                                        //     Icons.arrow_downward,
+                                        //     size: 16,
+                                        //     color: (controllers.sortField.value == 'date' &&
+                                        //         controllers.sortOrder.value == 'desc')
+                                        //         ? Colors.white
+                                        //         : Colors.grey,
+                                        //   ),
+                                        // )
+                                        // ),
                                       ],
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: CustomText(//1
-                                        textAlign: TextAlign.center,
-                                        text: "Customer Name",
-                                        size: 15,
-                                        isBold: true,
-                                        colors: Colors.white,
-                                      ),
-                                    ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.all(10.0),
+                                    //   child: CustomText(//1
+                                    //     textAlign: TextAlign.left,
+                                    //     text: "Customer Name",
+                                    //     size: 15,
+                                    //     isBold: true,
+                                    //     colors: Colors.white,
+                                    //   ),
+                                    // ),
                                     Padding(
                                       padding: const EdgeInsets.all(10.0),
                                       child: CustomText(//2
-                                        textAlign: TextAlign.center,
+                                        textAlign: TextAlign.left,
                                         text: "Sent Mail",
                                         size: 15,
                                         isBold: true,
@@ -229,7 +229,7 @@ class _MailCommentsState extends State<MailComments> {
                                     Padding(
                                       padding: const EdgeInsets.all(10.0),
                                       child: CustomText(
-                                        textAlign: TextAlign.center,
+                                        textAlign: TextAlign.left,
                                         text: "Subject",
                                         size: 15,
                                         isBold: true,
@@ -239,23 +239,23 @@ class _MailCommentsState extends State<MailComments> {
                                     Padding(
                                       padding: const EdgeInsets.all(10.0),
                                       child: CustomText(
-                                        textAlign: TextAlign.center,
+                                        textAlign: TextAlign.left,
                                         text: "Message",
                                         size: 15,
                                         isBold: true,
                                         colors: Colors.white,
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: CustomText(//9
-                                        textAlign: TextAlign.center,
-                                        text: "Actions",
-                                        size: 15,
-                                        isBold: true,
-                                        colors: Colors.white,
-                                      ),
-                                    ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.all(10.0),
+                                    //   child: CustomText(//9
+                                    //     textAlign: TextAlign.center,
+                                    //     text: "Actions",
+                                    //     size: 15,
+                                    //     isBold: true,
+                                    //     colors: Colors.white,
+                                    //   ),
+                                    // ),
                                   ]),
                             ],
                           ),
@@ -302,11 +302,11 @@ class _MailCommentsState extends State<MailComments> {
                                       return Table(
                                         columnWidths:const {
                                           0: FlexColumnWidth(3),//date
-                                          1: FlexColumnWidth(3.5),//Customer Name
-                                          2: FlexColumnWidth(2),//Mobile No.
-                                          3: FlexColumnWidth(3),//Call Type
-                                          4: FlexColumnWidth(3.5),//Message
-                                          5: FlexColumnWidth(4.5),//Actions
+                                          //1: FlexColumnWidth(3.5),//Customer Name
+                                          1: FlexColumnWidth(2),//Mobile No.
+                                          2: FlexColumnWidth(3),//Call Type
+                                          3: FlexColumnWidth(4.5),//Message
+                                          //5: FlexColumnWidth(4.5),//Actions
                                         },
                                         border: TableBorder(
                                           horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -322,28 +322,28 @@ class _MailCommentsState extends State<MailComments> {
                                                 Padding(
                                                   padding: const EdgeInsets.all(10.0),
                                                   child: CustomText(
-                                                    textAlign: TextAlign.center,
+                                                    textAlign: TextAlign.left,
                                                     text: data.sentDate.toString(),
                                                     size: 14,
                                                     colors: colorsConst.textColor,
                                                   ),
                                                 ),
-                                                Tooltip(
-                                                  message: data.customerName.toString()=="null"?"":data.customerName.toString(),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(10.0),
-                                                    child: CustomText(
-                                                      textAlign: TextAlign.center,
-                                                      text: data.customerName.toString()=="null"?"":data.customerName.toString(),
-                                                      size: 14,
-                                                      colors:colorsConst.textColor,
-                                                    ),
-                                                  ),
-                                                ),
+                                                // Tooltip(
+                                                //   message: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                                //   child: Padding(
+                                                //     padding: const EdgeInsets.all(10.0),
+                                                //     child: CustomText(
+                                                //       textAlign: TextAlign.center,
+                                                //       text: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                                //       size: 14,
+                                                //       colors:colorsConst.textColor,
+                                                //     ),
+                                                //   ),
+                                                // ),
                                                 Padding(
                                                   padding: const EdgeInsets.all(10.0),
                                                   child: CustomText(
-                                                    textAlign: TextAlign.center,
+                                                    textAlign: TextAlign.left,
                                                     text:data.toData.toString()=="null"?"":data.toData.toString(),
                                                     size: 14,
                                                     colors: colorsConst.textColor,
@@ -354,7 +354,7 @@ class _MailCommentsState extends State<MailComments> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
-                                                      textAlign: TextAlign.center,
+                                                      textAlign: TextAlign.left,
                                                       text: data.subject.toString(),
                                                       size: 14,
                                                       colors:colorsConst.textColor,
@@ -366,30 +366,30 @@ class _MailCommentsState extends State<MailComments> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
-                                                      textAlign: TextAlign.center,
+                                                      textAlign: TextAlign.left,
                                                       text: data.message.toString(),
                                                       size: 14,
                                                       colors:colorsConst.textColor,
                                                     ),
                                                   ),
                                                 ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(3.0),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      IconButton(
-                                                          onPressed: (){},
-                                                          icon: Icon(Icons.edit,color: Colors.green,)),
-                                                      IconButton(
-                                                          onPressed: (){},
-                                                          icon: SvgPicture.asset("assets/images/add_note.svg")),
-                                                      IconButton(
-                                                          onPressed: (){},
-                                                          icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
-                                                    ],
-                                                  ),
-                                                ),
+                                                // Padding(
+                                                //   padding: const EdgeInsets.all(3.0),
+                                                //   child: Row(
+                                                //     mainAxisAlignment: MainAxisAlignment.center,
+                                                //     children: [
+                                                //       IconButton(
+                                                //           onPressed: (){},
+                                                //           icon: Icon(Icons.edit,color: Colors.green,)),
+                                                //       IconButton(
+                                                //           onPressed: (){},
+                                                //           icon: SvgPicture.asset("assets/images/add_note.svg")),
+                                                //       IconButton(
+                                                //           onPressed: (){},
+                                                //           icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
+                                                //     ],
+                                                //   ),
+                                                // ),
 
                                               ]
                                           ),

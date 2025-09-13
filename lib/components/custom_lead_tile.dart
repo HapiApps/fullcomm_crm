@@ -275,7 +275,8 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                     children: [
                       InkWell(
                           onTap: (){
-                            Get.to( UpdateLead(
+                            Get.to(UpdateLead(
+                              visitType: widget.visitType.toString(),
                               id:widget.id,
                               detailsOfRequired: "",
                               linkedin: "",
@@ -414,7 +415,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         },
                         child: SvgPicture.asset("assets/images/a_email.svg",width: 16,height: 16,),
                       ),
-                      InkWell(
+                      widget.pageName=="Customers"?0.width:InkWell(
                           onTap: (){
                             showDialog(
                                 context: context,
@@ -454,7 +455,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                                 )),
                                           ),
                                           10.width,
-                                          widget.pageName=="Customers"?0.width:CustomLoadingButton(
+                                          CustomLoadingButton(
                                             callback: ()async{
                                               final deleteData = {
                                                 "lead_id": widget.id.toString(),
@@ -465,6 +466,10 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                               };
                                               if(widget.pageName=="Prospects"){
                                                 await apiService.insertQualifiedAPI(context, [deleteData]);
+                                              } else if(widget.pageName=="Qualified"){
+                                                await apiService.insertPromoteCustomerAPI(context, [deleteData]);
+                                              } else if(widget.pageName=="Disqualified"){
+                                                await apiService.qualifiedCustomersAPI(context, [deleteData]);
                                               }else{
                                                 await apiService.insertProspectsAPI(context, [deleteData]);
                                               }
@@ -489,7 +494,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                 });
                           },
                           child: SvgPicture.asset("assets/images/a_qualified.svg",width: 16,height: 16,)),
-                      InkWell(
+                      widget.pageName=="Disqualified"||widget.pageName=="Customers"?0.width:InkWell(
                           onTap: (){
                             showDialog(
                                 context: context,

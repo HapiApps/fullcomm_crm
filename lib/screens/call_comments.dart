@@ -105,6 +105,15 @@ class _CallCommentsState extends State<CallComments> {
                                   ),
                                 ),
                                 onPressed: (){
+                                  controllers.empDOB.value = "";
+                                  controllers.callTime.value = "";
+                                  setState(() {
+                                    controllers.clearSelectedCustomer();
+                                    controllers.cusController.text = "";
+                                    controllers.callType = null;
+                                    controllers.callStatus = null;
+                                  });
+                                  controllers.callCommentCont.text = "";
                                   showDialog(
                                       context: context,
                                       barrierDismissible: false,
@@ -188,7 +197,6 @@ class _CallCommentsState extends State<CallComments> {
                                                       setState(() {
                                                         controllers.callType = value;
                                                       });
-                                                      print("Value ${controllers.callType}");
                                                     },
                                                   ),
                                                   Row(
@@ -201,8 +209,7 @@ class _CallCommentsState extends State<CallComments> {
                                                           onTap: () {
                                                             utils.datePicker(
                                                                 context: context,
-                                                                textEditingController:
-                                                                controllers.dateOfConCtr,
+                                                                textEditingController: controllers.dateOfConCtr,
                                                                 pathVal: controllers.empDOB);
                                                           },
                                                         ),
@@ -358,66 +365,66 @@ class _CallCommentsState extends State<CallComments> {
                         ),
                         5.height,
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             CustomSearchTextField(
                               controller: controllers.search,
-                              hintText: "Search Name, Customer Name, Company Name, Mobile",
+                              hintText: "Search Customer Name, Mobile",
                               onChanged: (value) {
                                   controllers.searchText.value = value.toString().trim();
                               },
                             ),
                             10.width,
-                            Obx(() => Radio(
-                                  activeColor: colorsConst.third,
-                                  value: "Completed",
-                                  fillColor: WidgetStateProperty.resolveWith<Color?>(
-                                      (states) {
-                                    return colorsConst.third;
-                                  }),
-                                  groupValue: controllers.shortBy.value,
-                                  onChanged: (value) {
-                                    controllers.shortBy.value = value.toString().trim();
-                                  }),
-                            ),
-                            CustomText(
-                              text: "Completed",
-                              colors: colorsConst.textColor,
-                            ),
-                            Obx(() => Radio(
-                                  activeColor: colorsConst.third,
-                                  value: "Missed",
-                                  fillColor: WidgetStateProperty.resolveWith<Color?>(
-                                      (states) {
-                                    return colorsConst.third;
-                                  }),
-                                  groupValue: controllers.shortBy.value,
-                                  onChanged: (value) {
-                                    controllers.shortBy.value = value.toString().trim();
-                                  }),
-                            ),
-                            CustomText(
-                              text: "Missed",
-                              colors: colorsConst.textColor,
-                            ),
-                            Obx(
-                              () => Radio(
-                                  activeColor: colorsConst.third,
-                                  value: "Pending",
-                                  fillColor: WidgetStateProperty.resolveWith<Color?>(
-                                      (states) {
-                                    return colorsConst.third;
-                                  }),
-                                  groupValue: controllers.shortBy.value,
-                                  onChanged: (value) {
-                                    controllers.shortBy.value =
-                                        value.toString().trim();
-                                  }),
-                            ),
-                            CustomText(
-                              text: "Pending",
-                              colors: colorsConst.textColor,
-                            ),
+                            // Obx(() => Radio(
+                            //       activeColor: colorsConst.third,
+                            //       value: "Completed",
+                            //       fillColor: WidgetStateProperty.resolveWith<Color?>(
+                            //           (states) {
+                            //         return colorsConst.third;
+                            //       }),
+                            //       groupValue: controllers.shortBy.value,
+                            //       onChanged: (value) {
+                            //         controllers.shortBy.value = value.toString().trim();
+                            //       }),
+                            // ),
+                            // CustomText(
+                            //   text: "Completed",
+                            //   colors: colorsConst.textColor,
+                            // ),
+                            // Obx(() => Radio(
+                            //       activeColor: colorsConst.third,
+                            //       value: "Missed",
+                            //       fillColor: WidgetStateProperty.resolveWith<Color?>(
+                            //           (states) {
+                            //         return colorsConst.third;
+                            //       }),
+                            //       groupValue: controllers.shortBy.value,
+                            //       onChanged: (value) {
+                            //         controllers.shortBy.value = value.toString().trim();
+                            //       }),
+                            // ),
+                            // CustomText(
+                            //   text: "Missed",
+                            //   colors: colorsConst.textColor,
+                            // ),
+                            // Obx(
+                            //   () => Radio(
+                            //       activeColor: colorsConst.third,
+                            //       value: "Pending",
+                            //       fillColor: WidgetStateProperty.resolveWith<Color?>(
+                            //           (states) {
+                            //         return colorsConst.third;
+                            //       }),
+                            //       groupValue: controllers.shortBy.value,
+                            //       onChanged: (value) {
+                            //         controllers.shortBy.value =
+                            //             value.toString().trim();
+                            //       }),
+                            // ),
+                            // CustomText(
+                            //   text: "Pending",
+                            //   colors: colorsConst.textColor,
+                            // ),
                             20.width,
                             // Container(
                             //   decoration: BoxDecoration(
@@ -555,7 +562,8 @@ class _CallCommentsState extends State<CallComments> {
                             3: FlexColumnWidth(3),//Call Type
                             4: FlexColumnWidth(3.5),//Message
                             5: FlexColumnWidth(2.5),//Status
-                            6: FlexColumnWidth(4.5),//Actions
+                            6: FlexColumnWidth(2.5),//Lead Status
+                            //6: FlexColumnWidth(4.5),//Actions
                           },
                           border: TableBorder(
                             horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -570,53 +578,53 @@ class _CallCommentsState extends State<CallComments> {
                                         topRight: Radius.circular(5))),
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(10.0),
                                         child: CustomText(
-                                          textAlign: TextAlign.center,
+                                          textAlign: TextAlign.left,
                                           text: "Date",
                                           size: 15,
                                           isBold: true,
                                           colors: Colors.white,
                                         ),
                                       ),
-                                      Obx(() => GestureDetector(
-                                        onTap: (){
-                                          controllers.sortField.value = 'date';
-                                          controllers.sortOrder.value = 'asc';
-                                        },
-                                        child: Icon(
-                                          Icons.arrow_upward,
-                                          size: 16,
-                                          color: (controllers.sortField.value == 'date' &&
-                                              controllers.sortOrder.value == 'asc')
-                                              ? Colors.white
-                                              : Colors.grey,
-                                        ),
-                                      )),
-                                      Obx(() => GestureDetector(
-                                        onTap: (){
-                                          controllers.sortField.value = 'date';
-                                          controllers.sortOrder.value = 'desc';
-                                        },
-                                        child: Icon(
-                                          Icons.arrow_downward,
-                                          size: 16,
-                                          color: (controllers.sortField.value == 'date' &&
-                                              controllers.sortOrder.value == 'desc')
-                                              ? Colors.white
-                                              : Colors.grey,
-                                        ),
-                                      )
-                                      ),
+                                      // Obx(() => GestureDetector(
+                                      //   onTap: (){
+                                      //     controllers.sortField.value = 'date';
+                                      //     controllers.sortOrder.value = 'asc';
+                                      //   },
+                                      //   child: Icon(
+                                      //     Icons.arrow_upward,
+                                      //     size: 16,
+                                      //     color: (controllers.sortField.value == 'date' &&
+                                      //         controllers.sortOrder.value == 'asc')
+                                      //         ? Colors.white
+                                      //         : Colors.grey,
+                                      //   ),
+                                      // )),
+                                      // Obx(() => GestureDetector(
+                                      //   onTap: (){
+                                      //     controllers.sortField.value = 'date';
+                                      //     controllers.sortOrder.value = 'desc';
+                                      //   },
+                                      //   child: Icon(
+                                      //     Icons.arrow_downward,
+                                      //     size: 16,
+                                      //     color: (controllers.sortField.value == 'date' &&
+                                      //         controllers.sortOrder.value == 'desc')
+                                      //         ? Colors.white
+                                      //         : Colors.grey,
+                                      //   ),
+                                      // )
+                                      // ),
                                     ],
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(//1
-                                      textAlign: TextAlign.center,
+                                      textAlign: TextAlign.left,
                                       text: "Customer Name",
                                       size: 15,
                                       isBold: true,
@@ -626,7 +634,7 @@ class _CallCommentsState extends State<CallComments> {
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(//2
-                                      textAlign: TextAlign.center,
+                                      textAlign: TextAlign.left,
                                       text: "Mobile No",
                                       size: 15,
                                       isBold: true,
@@ -636,7 +644,7 @@ class _CallCommentsState extends State<CallComments> {
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
-                                      textAlign: TextAlign.center,
+                                      textAlign: TextAlign.left,
                                       text: "Call Type",
                                       size: 15,
                                       isBold: true,
@@ -646,7 +654,7 @@ class _CallCommentsState extends State<CallComments> {
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
-                                      textAlign: TextAlign.center,
+                                      textAlign: TextAlign.left,
                                       text: "Message",
                                       size: 15,
                                       isBold: true,
@@ -656,7 +664,7 @@ class _CallCommentsState extends State<CallComments> {
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(//4
-                                      textAlign: TextAlign.center,
+                                      textAlign: TextAlign.left,
                                       text: "Status",
                                       size: 15,
                                       isBold: true,
@@ -665,24 +673,42 @@ class _CallCommentsState extends State<CallComments> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
-                                    child: CustomText(//9
-                                      textAlign: TextAlign.center,
-                                      text: "Actions",
+                                    child: CustomText(//4
+                                      textAlign: TextAlign.left,
+                                      text: "Lead Status",
                                       size: 15,
                                       isBold: true,
                                       colors: Colors.white,
                                     ),
                                   ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.all(10.0),
+                                  //   child: CustomText(//9
+                                  //     textAlign: TextAlign.center,
+                                  //     text: "Actions",
+                                  //     size: 15,
+                                  //     isBold: true,
+                                  //     colors: Colors.white,
+                                  //   ),
+                                  // ),
                                 ]),
                           ],
                         ),
 
                             Expanded(
                               child: Obx((){
-                                final filteredList = controllers.callActivity
-                                    .where((activity) =>
-                                controllers.selectCallType.value.isEmpty ||
-                                    activity.callType == controllers.selectCallType.value).toList();
+                                final searchText = controllers.searchText.value.toLowerCase();
+
+                                final filteredList = controllers.callActivity.where((activity) {
+                                  final matchesCallType = controllers.selectCallType.value.isEmpty ||
+                                      activity.callType == controllers.selectCallType.value;
+
+                                  final matchesSearch = searchText.isEmpty ||
+                                      (activity.customerName.toString().toLowerCase().contains(searchText) ?? false) ||
+                                      (activity.toData.toString().toLowerCase().contains(searchText) ?? false);
+
+                                  return matchesCallType && matchesSearch;
+                                }).toList();
                                 return filteredList.isEmpty?
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -720,6 +746,13 @@ class _CallCommentsState extends State<CallComments> {
                                           itemCount: filteredList.length,
                                           itemBuilder: (context, index) {
                                       final data = filteredList[index];
+                                      final leadStatus = data.leadStatus == "1"
+                                          ? "Suspects"
+                                          : data.leadStatus == "2"
+                                          ? "Prospects"
+                                          : data.leadStatus == "3"
+                                          ? "Qualified"
+                                          : "Customers";
                                       return Table(
                                         columnWidths:const {
                                           0: FlexColumnWidth(3),//date
@@ -728,7 +761,8 @@ class _CallCommentsState extends State<CallComments> {
                                           3: FlexColumnWidth(3),//Call Type
                                           4: FlexColumnWidth(3.5),//Message
                                           5: FlexColumnWidth(2.5),//Status
-                                          6: FlexColumnWidth(4.5),//Actions
+                                          6: FlexColumnWidth(2.5),//Lead Status
+                                          //6: FlexColumnWidth(4.5),//Actions
                                         },
                                         border: TableBorder(
                                           horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -744,7 +778,7 @@ class _CallCommentsState extends State<CallComments> {
                                                 Padding(
                                                   padding: const EdgeInsets.all(10.0),
                                                   child: CustomText(
-                                                    textAlign: TextAlign.center,
+                                                    textAlign: TextAlign.left,
                                                     text: data.sentDate.toString(),
                                                     size: 14,
                                                     colors: colorsConst.textColor,
@@ -755,7 +789,7 @@ class _CallCommentsState extends State<CallComments> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
-                                                      textAlign: TextAlign.center,
+                                                      textAlign: TextAlign.left,
                                                       text: data.customerName.toString()=="null"?"":data.customerName.toString(),
                                                       size: 14,
                                                       colors:colorsConst.textColor,
@@ -765,7 +799,7 @@ class _CallCommentsState extends State<CallComments> {
                                                 Padding(
                                                   padding: const EdgeInsets.all(10.0),
                                                   child: CustomText(
-                                                    textAlign: TextAlign.center,
+                                                    textAlign: TextAlign.left,
                                                     text:data.toData.toString()=="null"?"":data.toData.toString(),
                                                     size: 14,
                                                     colors: colorsConst.textColor,
@@ -776,7 +810,7 @@ class _CallCommentsState extends State<CallComments> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
-                                                      textAlign: TextAlign.center,
+                                                      textAlign: TextAlign.left,
                                                       text: data.callType.toString(),
                                                       size: 14,
                                                       colors:colorsConst.textColor,
@@ -788,7 +822,7 @@ class _CallCommentsState extends State<CallComments> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
-                                                      textAlign: TextAlign.center,
+                                                      textAlign: TextAlign.left,
                                                       text: data.message.toString(),
                                                       size: 14,
                                                       colors:colorsConst.textColor,
@@ -798,29 +832,38 @@ class _CallCommentsState extends State<CallComments> {
                                                 Padding(
                                                   padding: const EdgeInsets.all(10.0),
                                                   child: CustomText(
-                                                    textAlign: TextAlign.center,
+                                                    textAlign: TextAlign.left,
                                                     text: data.callStatus.toString(),
                                                     size: 14,
                                                     colors:colorsConst.textColor,
                                                   ),
                                                 ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(3.0),
-                                              child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          IconButton(
-                                                              onPressed: (){},
-                                                              icon: Icon(Icons.edit,color: Colors.green,)),
-                                                          IconButton(
-                                                              onPressed: (){},
-                                                              icon: SvgPicture.asset("assets/images/add_note.svg")),
-                                                          IconButton(
-                                                              onPressed: (){},
-                                                              icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
-                                                        ],
-                                                      ),
-                                            ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text: leadStatus.toString(),
+                                                    size: 14,
+                                                    colors:colorsConst.textColor,
+                                                  ),
+                                                ),
+                                            // Padding(
+                                            //   padding: const EdgeInsets.all(3.0),
+                                            //   child: Row(
+                                            //             mainAxisAlignment: MainAxisAlignment.center,
+                                            //             children: [
+                                            //               IconButton(
+                                            //                   onPressed: (){},
+                                            //                   icon: Icon(Icons.edit,color: Colors.green,)),
+                                            //               IconButton(
+                                            //                   onPressed: (){},
+                                            //                   icon: SvgPicture.asset("assets/images/add_note.svg")),
+                                            //               IconButton(
+                                            //                   onPressed: (){},
+                                            //                   icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
+                                            //             ],
+                                            //           ),
+                                            // ),
 
                                               ]
                                           ),
