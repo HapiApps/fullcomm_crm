@@ -620,7 +620,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             //Image.asset("assets/images/app_logo.png",fit: BoxFit.fill,),
             CustomText(
-              text: "$appName CRM",
+              text: appName,
               size: 30,
               colors: colorsConst.primary,
               isBold: true,

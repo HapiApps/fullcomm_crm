@@ -1499,7 +1499,7 @@ class Utils {
               ],
             ),
            Text(
-              "$appName CRM",
+              appName,
               style: TextStyle(
                 color: colorsConst.primary,
                 fontWeight: FontWeight.bold,

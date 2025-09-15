@@ -128,19 +128,19 @@ class _NewDashboardState extends State<NewDashboard> {
                                                Obx(()=> RatingIndicator(
                                                  color: Colors.red,
                                                  label: 'Total Hot',
-                                                 value: int.parse(controllers.totalHot.value),
+                                                 value: int.parse(controllers.totalHot.value.isEmpty ? "0" : controllers.totalHot.value),
                                                  percentage: 0.2,
                                                ),),
                                                Obx(()=> RatingIndicator(
                                                  color: Colors.yellow,
                                                  label: 'Total Warm',
-                                                 value: int.parse(controllers.totalWarm.value),
+                                                 value: int.parse(controllers.totalWarm.value.isEmpty ? "0" : controllers.totalWarm.value),
                                                  percentage: 0.6,
                                                ),),
                                                Obx(()=> RatingIndicator(
                                                  color: Colors.green,
                                                  label: 'Total Cold',
-                                                 value: int.parse(controllers.totalCold.value),
+                                                 value: int.parse(controllers.totalCold.value.isEmpty ? "0" : controllers.totalCold.value),
                                                  percentage: 0.4,
                                                ),),
                                               ],
@@ -173,8 +173,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                         height: 220,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius:
-                                            BorderRadius.circular(10),
+                                            borderRadius: BorderRadius.circular(10),
                                             border: Border.all(
                                                 color: Colors.grey.shade400
                                             )

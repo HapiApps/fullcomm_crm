@@ -12,7 +12,7 @@ const String domain = "https://aruu.celwiz.com"; // 9999999991
 const String version1 = "v1/CRM/web";
 //const String appName = "Hapi Apps";//202401
 //const String appName   = "JPS";//202410
-const String appName = "ARUU"; //202110
+const String appName = "ARUU’s EasyCRM"; //202110
 //const String appName = "Gotek";//202405
 //const String appName = "NS Hydraulics";//202405
 

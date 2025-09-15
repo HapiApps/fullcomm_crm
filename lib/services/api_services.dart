@@ -1505,6 +1505,7 @@ class ApiService {
         apiService.getAllMailActivity();
         apiService.getAllMeetingActivity();
         apiService.getAllNoteActivity();
+        loginHistoryApi();
         allLeadsDetails();
         allNewLeadsDetails();
         allGoodLeadsDetails();
@@ -1534,7 +1535,7 @@ class ApiService {
     try {
       Map data = {
         "mobile_number": controllers.loginNumber.text,
-        "password": controllers.loginPassword.text,
+        "user_id": controllers.storage.read("id"),
         "cos_id": controllers.storage.read("cos_id"),
         "app_version": controllers.versionNum,
         "device_id": webBrowserInfo.productSub,
@@ -1542,7 +1543,7 @@ class ApiService {
         "device_model": webBrowserInfo.product,
         "device_os": webBrowserInfo.deviceMemory,
         "platform": "3",
-        "action": "sign_on"
+        "action": "login_history"
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -1551,37 +1552,14 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200) {
-        controllers.storage.write("f_name", response["firstname"]);
-        controllers.storage.write("role", response["role"]);
-        controllers.storage.write("role_name", response["role"]);
-        controllers.storage.write("id", response["id"]);
-
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setBool("loginScreen", true);
-        String input = response["role_name"];
-        controllers.isAdmin.value = input == "Admin" ? true : false;
-        prefs.setBool("isAdmin", controllers.isAdmin.value);
-        prefs.remove("loginNumber");
-        prefs.remove("loginPassword");
-        utils.snackBar(
-          context: Get.context!,
-          msg: "Login Successful",
-          color: Colors.green,
-        );
-        apiService.allLeadsDetails();
-        apiService.allNewLeadsDetails();
-        controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
-        controllers.allCustomerFuture = apiService.allCustomerDetails();
-        Get.to(const NewDashboard(), duration: Duration.zero);
-        controllers.loginCtr.reset();
+        print("Login history added success");
       } else {
-        errorDialog(Get.context!, 'Login failed');
+        print('Login failed');
         controllers.loginCtr.reset();
       }
     } catch (e) {
-      errorDialog(Get.context!, 'Login failed: ${e.toString()}');
+      print('Login failed: ${e.toString()}');
       controllers.loginCtr.reset();
     }
   }
@@ -2861,16 +2839,17 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      log("view dashboard report");
-      log(request.body);
+      print("view dashboard report");
+      print(request.body);
       controllers.totalCold.value = "0";
       controllers.totalHot.value = "0";
       controllers.totalWarm.value = "0";
+
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
-        controllers.totalCold.value = response[0]["cold_total"];
-        controllers.totalHot.value = response[0]["hot_total"];
-        controllers.totalWarm.value = response[0]["warm_total"];
+        controllers.totalCold.value = response[0]["cold_total"].toString()=="null"?"0":response[0]["cold_total"];
+        controllers.totalHot.value = response[0]["hot_total"].toString()=="null"?"0":response[0]["hot_total"];
+        controllers.totalWarm.value = response[0]["warm_total"].toString()=="null"?"0":response[0]["warm_total"];
       } else {
         controllers.totalCold.value = "0";
         controllers.totalHot.value = "0";
