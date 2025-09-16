@@ -2849,174 +2849,256 @@ class Utils {
   List<Map<String, dynamic>> customerData = [];
   List<Map<String, dynamic>> mCustomerData = [];
 
+  // void parseExcelFile(Uint8List bytes, BuildContext context) async {
+  //   customerData = [];
+  //   var excelD = excel.Excel.decodeBytes(bytes);
+  //
+  //   Map<String, List<String>> keyMapping = {
+  //     "company_name": ["NAME OF THE CUSTOMER", "CUSTOMER NAME", "CLIENT NAME", "CUSTOMER"],
+  //     "city": ["SITE LOCATION DETAILS", "City", "Location"],
+  //     "lead_status": ["LEAD / PROSPECT"],
+  //     "status": ["CURRENT STATUS"],
+  //     "details_of_service_required": ["DETAILS OF SERVICES REQUIRED"],
+  //     "owner": ["NAME OF THE ACCOUNT MANAGER", "Owner"],
+  //     "prospect_enrollment_date": ["PROSPECT ENROLLMENT DATE"],
+  //     "expected_convertion_date": ["EXPECTED CONVERSION DATE"],
+  //     "status_update": ["STATUS UPDATE"],
+  //     "num_of_headcount": ["TOTAL NUMBER OF HEAD COUNT"],
+  //     "expected_billing_value": ["EXPECTED MONTHLY BILLING VALUE"],
+  //     "arpu_value": ["ARPU VALUE"],
+  //     "name": ["KEY CONTACT PERSON", "Name"],
+  //     "email": ["EMAIL ID", "Email"],
+  //     "phone_no": ["CONTACT NUMBER", "Phone No", "Mobile No", "Number"],
+  //     "source": ["SOURCE OF PROSPECT (either BNI or social)"],
+  //     "source_details": ["PROSPECT SOURCE DETAILS"],
+  //     "rating": ["PROSPECT GRADING"],
+  //   };
+  //
+  //   for (var table in excelD.tables.keys) {
+  //     var rows = excelD.tables[table]!.rows;
+  //     List<String> headers = rows.first
+  //         .map((cell) => (cell?.value.toString().trim().toUpperCase()) ?? "")
+  //         .toList();
+  //
+  //     for (var i = 1; i < rows.length; i++) {
+  //       var row = rows[i];
+  //       Map<String, dynamic> rowData = {};
+  //       Map<String, dynamic> formattedData = {};
+  //       List<Map<String, String>> additionalFields = [];
+  //
+  //       bool isRowEmpty = row.every((cell) =>
+  //       cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
+  //       if (isRowEmpty) continue;
+  //
+  //       // Fill rowData with header→value mapping
+  //       for (var j = 0; j < headers.length; j++) {
+  //         String header = headers[j];
+  //         rowData[header] = row[j]?.value;
+  //       }
+  //
+  //       // Map fields into formattedData + capture extras
+  //       rowData.forEach((key, value) {
+  //         bool matched = false;
+  //         for (var entry in keyMapping.entries) {
+  //           if (entry.value
+  //               .map((e) => e.toUpperCase().trim())
+  //               .contains(key.toUpperCase().trim())) {
+  //             matched = true;
+  //
+  //             if (entry.key == "rating") {
+  //               formattedData[entry.key] = (value != null && value.toString().trim().isNotEmpty)
+  //                   ? value.toString().trim()
+  //                   : "WARM";
+  //             } else if (entry.key == "prospect_enrollment_date") {
+  //               if (value == null ||
+  //                   value.toString().trim().isEmpty ||
+  //                   value.toString().trim().toLowerCase() == "null") {
+  //                 formattedData[entry.key] =
+  //                     DateFormat('dd.MM.yyyy').format(DateTime.now());
+  //               } else {
+  //                 formattedData[entry.key] = value.toString().trim();
+  //               }
+  //             } else {
+  //               formattedData[entry.key] =
+  //               (value == null || value.toString().trim().isEmpty || value.toString().trim().toLowerCase() == "null")
+  //                   ? ""
+  //                   : value.toString().trim();
+  //             }
+  //           }
+  //         }
+  //
+  //         // Extra field → additional_fields
+  //         if (!matched) {
+  //           additionalFields.add({
+  //             "field_name": key,
+  //             "field_value": value?.toString().trim() ?? "",
+  //           });
+  //         }
+  //       });
+  //
+  //       if (rowData.keys.any((k) => k.toUpperCase().trim() == "CONTACT NUMBER")) {
+  //         formattedData["whatsapp_no"] = rowData.entries.firstWhere(
+  //               (e) => e.key.toUpperCase().trim() == "CONTACT NUMBER",
+  //           orElse: () => const MapEntry("", null),
+  //         ).value;
+  //       }
+  //
+  //       // Extra fields common
+  //       formattedData["user_id"] = controllers.storage.read("id");
+  //       formattedData["cos_id"] = cosId;
+  //       formattedData["door_no"] = "";
+  //       formattedData["area"] = "";
+  //       formattedData["country"] = "India";
+  //       formattedData["state"] = "Tamil Nadu";
+  //       formattedData["pincode"] = "";
+  //       formattedData["product_discussion"] = "";
+  //       formattedData["discussion_point"] = "";
+  //       formattedData["points"] = "";
+  //       formattedData["department"] = "";
+  //       formattedData["designation"] = "";
+  //       if (!formattedData.containsKey("source")) {
+  //         formattedData["source"] = "";
+  //       }
+  //
+  //       // Attach additional fields
+  //       formattedData["additional_fields"] = additionalFields;
+  //
+  //       // Validate and add to list
+  //       if ((formattedData["phone_no"] != null &&
+  //           formattedData["phone_no"].toString().isNotEmpty) ||
+  //           (formattedData["name"] != null &&
+  //               formattedData["name"].toString().isNotEmpty)) {
+  //         customerData.add(formattedData);
+  //       } else {
+  //         if (formattedData["email"] != null &&
+  //             formattedData["email"].toString().isNotEmpty) {
+  //           customerData.add(formattedData);
+  //         } else {
+  //           mCustomerData.add(formattedData);
+  //         }
+  //       }
+  //     }
+  //   }
+  //
+  //   print("mCustomerData ${mCustomerData.length}");
+  //   print("customerData ${customerData.length}");
+  //
+  //   if (customerData.isEmpty) {
+  //     Navigator.of(context).pop();
+  //     showDialog(
+  //       context: context,
+  //       builder: (context) => AlertDialog(
+  //         backgroundColor: colorsConst.primary,
+  //         content: SingleChildScrollView(
+  //           child: Text(
+  //             "Some entries under KEY CONTACT PERSON and CONTACT NUMBER are empty in your Excel sheet. Please check and re-upload.",
+  //             style: TextStyle(
+  //               color: colorsConst.textColor,
+  //               fontSize: 16,
+  //             ),
+  //             textAlign: TextAlign.left,
+  //             softWrap: true,
+  //           ),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Navigator.of(context).pop(),
+  //             child: CustomText(
+  //               text: "OK",
+  //               colors: colorsConst.textColor,
+  //               size: 16,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //     return;
+  //   } else {
+  //     await apiService.insertCustomersAPI(context, customerData);
+  //   }
+  // }
+
   void parseExcelFile(Uint8List bytes, BuildContext context) async {
     customerData = [];
     var excelD = excel.Excel.decodeBytes(bytes);
 
-    Map<String, List<String>> keyMapping = {
-      "company_name": ["NAME OF THE CUSTOMER", "CUSTOMER NAME", "CLIENT NAME", "CUSTOMER"],
-      "city": ["SITE LOCATION DETAILS", "City", "Location"],
-      "lead_status": ["LEAD / PROSPECT"],
-      "status": ["CURRENT STATUS"],
-      "details_of_service_required": ["DETAILS OF SERVICES REQUIRED"],
-      "owner": ["NAME OF THE ACCOUNT MANAGER", "Owner"],
-      "prospect_enrollment_date": ["PROSPECT ENROLLMENT DATE"],
-      "expected_convertion_date": ["EXPECTED CONVERSION DATE"],
-      "status_update": ["STATUS UPDATE"],
-      "num_of_headcount": ["TOTAL NUMBER OF HEAD COUNT"],
-      "expected_billing_value": ["EXPECTED MONTHLY BILLING VALUE"],
-      "arpu_value": ["ARPU VALUE"],
-      "name": ["KEY CONTACT PERSON", "Name"],
-      "email": ["EMAIL ID", "Email"],
-      "phone_no": ["CONTACT NUMBER", "Phone No", "Mobile No", "Number"],
-      "source": ["SOURCE OF PROSPECT (either BNI or social)"],
-      "source_details": ["PROSPECT SOURCE DETAILS"],
-      "rating": ["PROSPECT GRADING"],
-    };
-
     for (var table in excelD.tables.keys) {
       var rows = excelD.tables[table]!.rows;
-      List<String> headers = rows.first
-          .map((cell) => (cell?.value.toString().trim().toUpperCase()) ?? "")
+
+      if (rows.length < 3) {
+        print("Excel needs min 3 rows (system, display, data)");
+        return;
+      }
+
+      // First row = system keys
+      List<String> systemKeys = rows[0]
+          .map((c) => (c?.value?.toString().trim() ?? ""))
           .toList();
 
-      for (var i = 1; i < rows.length; i++) {
-        var row = rows[i];
-        Map<String, dynamic> rowData = {};
-        Map<String, dynamic> formattedData = {};
-        List<Map<String, String>> additionalFields = [];
+      // Second row = display names
+      List<String> displayNames = rows[1]
+          .map((c) => (c?.value?.toString().trim() ?? ""))
+          .toList();
 
+      // Build field mappings
+      List<Map<String, String>> fieldMappings = [];
+      for (int i = 0; i < systemKeys.length; i++) {
+        if (systemKeys[i].isNotEmpty) {
+          fieldMappings.add({
+            "cos_id": cosId,
+            "system_field": systemKeys[i],
+            "display_name": (i < displayNames.length && displayNames[i].isNotEmpty)
+                ? displayNames[i]
+                : systemKeys[i],
+            "created_by": controllers.storage.read("id").toString(),
+          });
+        }
+      }
+
+      // Parse data rows (3rd row onwards)
+      for (var i = 2; i < rows.length; i++) {
+        var row = rows[i];
         bool isRowEmpty = row.every((cell) =>
         cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
         if (isRowEmpty) continue;
 
-        // Fill rowData with header→value mapping
-        for (var j = 0; j < headers.length; j++) {
-          String header = headers[j];
-          rowData[header] = row[j]?.value;
-        }
+        Map<String, dynamic> formattedData = {};
+        List<Map<String, String>> additionalFields = [];
 
-        // Map fields into formattedData + capture extras
-        rowData.forEach((key, value) {
-          bool matched = false;
-          for (var entry in keyMapping.entries) {
-            if (entry.value
-                .map((e) => e.toUpperCase().trim())
-                .contains(key.toUpperCase().trim())) {
-              matched = true;
+        for (int j = 0; j < systemKeys.length; j++) {
+          String key = systemKeys[j];
+          var value = row[j]?.value?.toString().trim() ?? "";
 
-              if (entry.key == "rating") {
-                formattedData[entry.key] = (value != null && value.toString().trim().isNotEmpty)
-                    ? value.toString().trim()
-                    : "WARM";
-              } else if (entry.key == "prospect_enrollment_date") {
-                if (value == null ||
-                    value.toString().trim().isEmpty ||
-                    value.toString().trim().toLowerCase() == "null") {
-                  formattedData[entry.key] =
-                      DateFormat('dd.MM.yyyy').format(DateTime.now());
-                } else {
-                  formattedData[entry.key] = value.toString().trim();
-                }
-              } else {
-                formattedData[entry.key] =
-                (value == null || value.toString().trim().isEmpty || value.toString().trim().toLowerCase() == "null")
-                    ? ""
-                    : value.toString().trim();
-              }
-            }
-          }
-
-          // Extra field → additional_fields
-          if (!matched) {
+          if (key.isNotEmpty) {
+            formattedData[key] = value;
+          } else {
             additionalFields.add({
-              "field_name": key,
-              "field_value": value?.toString().trim() ?? "",
+              "field_name": (j < displayNames.length) ? displayNames[j] : "",
+              "field_value": value,
             });
           }
-        });
-
-        if (rowData.keys.any((k) => k.toUpperCase().trim() == "CONTACT NUMBER")) {
-          formattedData["whatsapp_no"] = rowData.entries.firstWhere(
-                (e) => e.key.toUpperCase().trim() == "CONTACT NUMBER",
-            orElse: () => const MapEntry("", null),
-          ).value;
         }
 
-        // Extra fields common
         formattedData["user_id"] = controllers.storage.read("id");
         formattedData["cos_id"] = cosId;
-        formattedData["door_no"] = "";
-        formattedData["area"] = "";
-        formattedData["country"] = "India";
-        formattedData["state"] = "Tamil Nadu";
-        formattedData["pincode"] = "";
-        formattedData["product_discussion"] = "";
-        formattedData["discussion_point"] = "";
-        formattedData["points"] = "";
-        formattedData["department"] = "";
-        formattedData["designation"] = "";
-        if (!formattedData.containsKey("source")) {
-          formattedData["source"] = "";
-        }
-
-        // Attach additional fields
         formattedData["additional_fields"] = additionalFields;
 
-        // Validate and add to list
-        if ((formattedData["phone_no"] != null &&
-            formattedData["phone_no"].toString().isNotEmpty) ||
-            (formattedData["name"] != null &&
-                formattedData["name"].toString().isNotEmpty)) {
-          customerData.add(formattedData);
-        } else {
-          if (formattedData["email"] != null &&
-              formattedData["email"].toString().isNotEmpty) {
-            customerData.add(formattedData);
-          } else {
-            mCustomerData.add(formattedData);
-          }
-        }
+        customerData.add(formattedData);
       }
-    }
 
-    print("mCustomerData ${mCustomerData.length}");
-    print("customerData ${customerData.length}");
+      // Final Payload
+      Map<String, dynamic> finalPayload = {
+        "field_mappings": fieldMappings,
+        "cusList": customerData,
+      };
 
-    if (customerData.isEmpty) {
-      Navigator.of(context).pop();
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          backgroundColor: colorsConst.primary,
-          content: SingleChildScrollView(
-            child: Text(
-              "Some entries under KEY CONTACT PERSON and CONTACT NUMBER are empty in your Excel sheet. Please check and re-upload.",
-              style: TextStyle(
-                color: colorsConst.textColor,
-                fontSize: 16,
-              ),
-              textAlign: TextAlign.left,
-              softWrap: true,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: CustomText(
-                text: "OK",
-                colors: colorsConst.textColor,
-                size: 16,
-              ),
-            ),
-          ],
-        ),
-      );
-      return;
-    } else {
-      await apiService.insertCustomersAPI(context, customerData);
+      print("Payload: ${jsonEncode(finalPayload)}");
+
+      await apiService.insertCustomersAPI(context, customerData, fieldMappings);
     }
   }
+
+
 
   Future<void> showImportDialog(BuildContext context) async {
     return showDialog<void>(

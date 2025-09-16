@@ -1085,23 +1085,21 @@ class ApiService {
   }
 
   Future insertCustomersAPI(
-      BuildContext context, List<Map<String, dynamic>> customerData) async {
+      BuildContext context, List<Map<String, dynamic>> customerData, List<Map<String, dynamic>> fieldMappings) async {
     try {
-      List<Map<String, dynamic>> formattedData = customerData.map((customer) {
-        return customer.map((key, value) {
-          // additional_fields is List, don't convert to string
-          if (key == "additional_fields" && value is List) {
-            return MapEntry(key, value);
-          }
-          return MapEntry(key, value.toString());
-        });
-      }).toList();
-
+      // List<Map<String, dynamic>> formattedData = customerData.map((customer) {
+      //   return customer.map((key, value) {
+      //     if (key == "additional_fields" && value is List) {
+      //       return MapEntry(key, value);
+      //     }
+      //     return MapEntry(key, value.toString());
+      //   });
+      // }).toList();
       Map data = {
-        "action": "create_customers",
-        "cusList": formattedData,
+        "action": "sheet_customers",
+        "field_mappings": fieldMappings,
+        "cusList": customerData,
       };
-
       print("Final Data to be sent: ${jsonEncode(data)}");
 
       final request = await http.post(
