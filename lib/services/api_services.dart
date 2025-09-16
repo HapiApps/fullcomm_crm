@@ -132,7 +132,7 @@ class ApiService {
   Future insertEmployeeApi(BuildContext context) async {
     try {
       ///home/hapinode3/DomainActiveProj/crm.hapirides.in/zengraf_crm/dev/insert_employee.php
-      final uri = Uri.parse(insertEmployee);
+      final uri = Uri.parse(scriptApi);
       var request = http.MultipartRequest("POST", uri);
 
       request.fields["name"] = stringToBase64.encode(controllers.empName.value);
@@ -633,7 +633,7 @@ class ApiService {
 
       print("data ${data.toString()}");
       final request = await http.post(
-        Uri.parse(insertProduct),
+        Uri.parse(scriptApi),
         // headers: {
         //   "Accept": "application/text",
         //   "Content-Type": "application/x-www-form-urlencoded"
@@ -1420,7 +1420,7 @@ class ApiService {
 
       print("data ${data.toString()}");
       final request = await http.post(
-        Uri.parse(insertCompany),
+        Uri.parse(scriptApi),
         // headers: {
         //   "Accept": "application/text",
         //   "Content-Type": "application/x-www-form-urlencoded"
@@ -1980,7 +1980,7 @@ class ApiService {
         "cos_id": controllers.storage.read("cos_id"),
         "platform": "3"
       };
-      final request = await http.post(Uri.parse(insertUser),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
