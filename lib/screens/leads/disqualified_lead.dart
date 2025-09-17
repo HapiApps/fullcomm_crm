@@ -318,7 +318,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                   "lead_id": controllers.isDisqualifiedList[j]["lead_id"],
                                   "user_id": controllers.storage.read("id"),
                                   "rating": controllers.isDisqualifiedList[j]["rating"],
-                                  "cos_id": cosId,
+                                  "cos_id": controllers.storage.read("cos_id"),
                                   "mail": controllers.isDisqualifiedList[j]["mail_id"],
                                 });
                               }
@@ -391,7 +391,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                                 "lead_id":data.userId.toString(),
                                                 "user_id":controllers.storage.read("id"),
                                                 "rating":data.rating.toString(),
-                                                "cos_id":cosId,
+                                                "cos_id":controllers.storage.read("cos_id"),
                                                 "mail":data.emailId.toString(),
                                               });
                                             }

@@ -310,7 +310,7 @@ class _ProspectsState extends State<Prospects> {
                                   "lead_id":controllers.isLeadsList[j]["lead_id"],
                                   "user_id":controllers.storage.read("id"),
                                   "rating":controllers.isLeadsList[j]["rating"],
-                                  "cos_id":cosId,
+                                  "cos_id":controllers.storage.read("cos_id"),
                                 });
                               }
                             });
@@ -382,7 +382,7 @@ class _ProspectsState extends State<Prospects> {
                                               "lead_id":data.userId.toString(),
                                               "user_id":controllers.storage.read("id"),
                                               "rating":data.rating ?? "Warm",
-                                              "cos_id":cosId,
+                                              "cos_id":controllers.storage.read("cos_id"),
                                             });
                                           }
                                         });

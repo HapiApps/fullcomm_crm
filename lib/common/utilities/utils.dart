@@ -120,7 +120,7 @@ class Utils {
           "lead_id": data.userId.toString(),
           "user_id": controllers.storage.read("id"),
           "rating": data.rating ?? "Warm",
-          "cos_id": cosId,
+          "cos_id": controllers.storage.read("cos_id"),
           "mail_id": data.emailId!.split("||")[0]
         }),
       );
@@ -754,39 +754,42 @@ class Utils {
                                   color: Colors.grey.shade300,
                                   thickness: 1,
                                 ),
-                                Obx(
-                                  () => controllers.isTemplate.value == false
+                                Obx(() => controllers.isTemplate.value == false
                                       ? SingleChildScrollView(
                                           child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Obx(
-                                                () => imageController
-                                                        .photo1.value.isEmpty
+                                              Obx(() => imageController.photo1.value.isEmpty
                                                     ? 0.height
-                                                    : Image.memory(
-                                                        base64Decode(
-                                                            imageController
-                                                                .photo1.value),
-                                                        fit: BoxFit.cover,
-                                                        width: 80,
-                                                        height: 80,
-                                                      ),
+                                                    :Container(
+                                                  height: 40,
+                                                  padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                                                  child: Row(
+                                                    children: [
+                                                      Obx(()=>CustomText(text: imageController.empFileName.value))
+                                                    ],
+                                                  ),
+                                                )
+                                                    // : Image.memory(
+                                                    //     base64Decode(
+                                                    //         imageController
+                                                    //             .photo1.value),
+                                                    //     fit: BoxFit.cover,
+                                                    //     width: 80,
+                                                    //     height: 80,
+                                                    //   ),
                                               ),
                                               SizedBox(
                                                 width: 600,
                                                 height: 223,
                                                 child: TextField(
-                                                  textInputAction:
-                                                      TextInputAction.newline,
-                                                  controller: controllers
-                                                      .emailMessageCtr,
-                                                  keyboardType:
-                                                      TextInputType.multiline,
+                                                  textInputAction: TextInputAction.newline,
+                                                  controller: controllers.emailMessageCtr,
+                                                  keyboardType: TextInputType.multiline,
                                                   maxLines: 21,
                                                   expands: false,
                                                   style: TextStyle(
-                                                    color:
-                                                        colorsConst.textColor,
+                                                    color: colorsConst.textColor,
                                                   ),
                                                   decoration: InputDecoration(
                                                     hintText: "Message",
@@ -824,43 +827,32 @@ class Utils {
                                                       border: TableBorder.all(
                                                           color: Colors
                                                               .grey.shade300,
-                                                          style:
-                                                              BorderStyle.solid,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
+                                                          style: BorderStyle.solid,
+                                                          borderRadius: BorderRadius.circular(10),
                                                           width: 1),
                                                       children: [
-                                                        TableRow(children: [
+                                                        TableRow(
+                                                            children: [
                                                           CustomText(
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            text:
-                                                                "\nTemplate Name\n",
-                                                            colors: colorsConst
-                                                                .textColor,
+                                                            textAlign: TextAlign.center,
+                                                            text: "\nTemplate Name\n",
+                                                            colors: colorsConst.textColor,
                                                             size: 15,
                                                             isBold: true,
                                                           ),
                                                           CustomText(
-                                                            textAlign: TextAlign
-                                                                .center,
+                                                            textAlign: TextAlign.center,
                                                             text: "\nSubject\n",
-                                                            colors: colorsConst
-                                                                .textColor,
+                                                            colors: colorsConst.textColor,
                                                             size: 15,
                                                             isBold: true,
                                                           ),
                                                         ]),
                                                         utils.emailRow(context,
-                                                            isCheck: controllers
-                                                                .isAdd,
-                                                            templateName:
-                                                                "Promotional",
-                                                            msg:
-                                                                "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
-                                                            subject:
-                                                                "Exclusive Promotion for You - \nLimited Time Offer!"),
+                                                            isCheck: controllers.isAdd,
+                                                            templateName: "Promotional",
+                                                            msg: "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
+                                                            subject: "Exclusive Promotion for You - \nLimited Time Offer!"),
                                                         utils.emailRow(context,
                                                             isCheck: controllers
                                                                 .isAdd,
@@ -871,14 +863,10 @@ class Utils {
                                                             subject:
                                                                 "Follow-up on Recent Service Interaction"),
                                                         utils.emailRow(context,
-                                                            msg:
-                                                                "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
-                                                            isCheck: controllers
-                                                                .isAdd,
-                                                            templateName:
-                                                                "Service Update",
-                                                            subject:
-                                                                "Service Update - [Brief Description]"),
+                                                            msg: "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+                                                            isCheck: controllers.isAdd,
+                                                            templateName: "Service Update",
+                                                            subject: "Service Update - [Brief Description]"),
                                                       ],
                                                     ),
                                                   ),
@@ -1498,16 +1486,17 @@ class Utils {
                 ),
               ],
             ),
-           Text(
-              appName,
-              style: TextStyle(
-                color: colorsConst.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                fontFamily: "Lato",
-              ),
-            ),
-            20.height,
+           Image.asset("assets/images/logo.png"),
+           // Text(
+           //    appName,
+           //    style: TextStyle(
+           //      color: colorsConst.primary,
+           //      fontWeight: FontWeight.bold,
+           //      fontSize: 20,
+           //      fontFamily: "Lato",
+           //    ),
+           //  ),
+            //20.height,
             Obx(() => CustomSideBarText(
                   text: constValue.dashboard,
                   boxColor: controllers.selectedIndex.value == 0
@@ -2324,18 +2313,15 @@ class Utils {
     return yearDiff > 18 || yearDiff == 18 && monthDiff >= 0 && dayDiff >= 0;
   }
 
-  Future<void> chooseFile(
-      {RxList? mediaDataV, RxString? fileName, RxString? pathName}) async {
+  Future<void> chooseFile({RxList? mediaDataV, RxString? fileName, RxString? pathName}) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf', 'png', 'jpeg', 'jpg'],
     );
-
     if (result != null) {
       fileName?.value = result.files.single.name;
       print("file name ${result.files.single.name}");
       mediaDataV?.value = result.files.single.bytes!.toList();
-      print("byte name ${result.files.single.bytes!.toList()}");
       pathName?.value = base64.encode(result.files.single.bytes!.toList());
     } else {
       print('No file selected');
@@ -3025,18 +3011,18 @@ class Utils {
     for (var table in excelD.tables.keys) {
       var rows = excelD.tables[table]!.rows;
 
-      if (rows.length < 3) {
-        print("Excel needs min 3 rows (system, display, data)");
+      if (rows.length < 6) {
+        print("Excel needs min 6 rows (3 empty, system, display, data)");
         return;
       }
 
-      // First row = system keys
-      List<String> systemKeys = rows[0]
+      // Row 4 = system keys (index 3)
+      List<String> systemKeys = rows[3]
           .map((c) => (c?.value?.toString().trim() ?? ""))
           .toList();
 
-      // Second row = display names
-      List<String> displayNames = rows[1]
+      // Row 5 = display names (index 4)
+      List<String> displayNames = rows[4]
           .map((c) => (c?.value?.toString().trim() ?? ""))
           .toList();
 
@@ -3045,7 +3031,7 @@ class Utils {
       for (int i = 0; i < systemKeys.length; i++) {
         if (systemKeys[i].isNotEmpty) {
           fieldMappings.add({
-            "cos_id": cosId,
+            "cos_id": controllers.storage.read("cos_id"),
             "system_field": systemKeys[i],
             "display_name": (i < displayNames.length && displayNames[i].isNotEmpty)
                 ? displayNames[i]
@@ -3055,8 +3041,8 @@ class Utils {
         }
       }
 
-      // Parse data rows (3rd row onwards)
-      for (var i = 2; i < rows.length; i++) {
+      // Parse data rows (from row 6 → index 5 onwards)
+      for (var i = 5; i < rows.length; i++) {
         var row = rows[i];
         bool isRowEmpty = row.every((cell) =>
         cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
@@ -3080,7 +3066,7 @@ class Utils {
         }
 
         formattedData["user_id"] = controllers.storage.read("id");
-        formattedData["cos_id"] = cosId;
+        formattedData["cos_id"] = controllers.storage.read("cos_id");
         formattedData["additional_fields"] = additionalFields;
 
         customerData.add(formattedData);
@@ -3097,6 +3083,7 @@ class Utils {
       await apiService.insertCustomersAPI(context, customerData, fieldMappings);
     }
   }
+
 
 
 

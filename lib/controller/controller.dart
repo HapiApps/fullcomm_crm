@@ -251,7 +251,7 @@ class Controller extends GetxController {
       final matchesQuery = query.isEmpty ||
           (lead.firstname?.toLowerCase().contains(query) ?? false) ||
           (lead.mobileNumber?.toLowerCase().contains(query) ?? false) ||
-          (lead.emailId?.toLowerCase().contains(query) ?? false);
+          (lead.companyName?.toLowerCase().contains(query) ?? false);
 
       final matchesRating = ratingFilter.isEmpty ||
           ((lead.rating ?? '').toLowerCase() == ratingFilter.toLowerCase());

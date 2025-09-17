@@ -365,7 +365,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                         "lead_id":data.userId.toString(),
                                         "user_id":controllers.storage.read("id"),
                                         "rating":data.rating ?? "Warm",
-                                        "cos_id":cosId,
+                                        "cos_id":controllers.storage.read("cos_id"),
                                         "mail_id":data.emailId.toString().split("||")[0]
                                       });
                                     }

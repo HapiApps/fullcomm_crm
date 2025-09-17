@@ -122,29 +122,37 @@ class _NewDashboardState extends State<NewDashboard> {
                                               ],
                                             ),
                                             30.height,
-                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                               Obx(()=> RatingIndicator(
-                                                 color: Colors.red,
-                                                 label: 'Total Hot',
-                                                 value: int.parse(controllers.totalHot.value.isEmpty ? "0" : controllers.totalHot.value),
-                                                 percentage: 0.2,
-                                               ),),
-                                               Obx(()=> RatingIndicator(
-                                                 color: Colors.yellow,
-                                                 label: 'Total Warm',
-                                                 value: int.parse(controllers.totalWarm.value.isEmpty ? "0" : controllers.totalWarm.value),
-                                                 percentage: 0.6,
-                                               ),),
-                                               Obx(()=> RatingIndicator(
-                                                 color: Colors.green,
-                                                 label: 'Total Cold',
-                                                 value: int.parse(controllers.totalCold.value.isEmpty ? "0" : controllers.totalCold.value),
-                                                 percentage: 0.4,
-                                               ),),
-                                              ],
-                                            )
+                                            Obx(() {
+                                              final hot = int.tryParse(controllers.totalHot.value) ?? 0;
+                                              final warm = int.tryParse(controllers.totalWarm.value) ?? 0;
+                                              final cold = int.tryParse(controllers.totalCold.value) ?? 0;
+
+                                              final totalCount = hot + warm + cold;
+
+                                              return Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                children: [
+                                                  RatingIndicator(
+                                                    color: Colors.red,
+                                                    label: 'Total Hot',
+                                                    value: hot,
+                                                    percentage: totalCount == 0 ? 0.0 : hot / totalCount,
+                                                  ),
+                                                  RatingIndicator(
+                                                    color: Colors.orange,
+                                                    label: 'Total Warm',
+                                                    value: warm,
+                                                    percentage: totalCount == 0 ? 0.0 : warm / totalCount,
+                                                  ),
+                                                  RatingIndicator(
+                                                    color: Colors.blue,
+                                                    label: 'Total Cold',
+                                                    value: cold,
+                                                    percentage: totalCount == 0 ? 0.0 : cold / totalCount,
+                                                  ),
+                                                ],
+                                              );
+                                            }),
                                           ],
                                         ),
                                       ),

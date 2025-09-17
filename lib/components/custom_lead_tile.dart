@@ -11,6 +11,7 @@ import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:fullcomm_crm/screens/mail_comments.dart';
 import '../common/constant/api.dart';
+import '../screens/cus_mail_comments.dart';
 import '../screens/leads/update_lead.dart';
 import '../services/api_services.dart';
 import 'custom_loading_button.dart';
@@ -376,7 +377,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                                 "lead_id": widget.id.toString(),
                                                 "user_id": controllers.storage.read("id").toString(),
                                                 "rating": (widget.rating ?? "Warm").toString(),
-                                                "cos_id": cosId.toString(),
+                                                "cos_id": controllers.storage.read("cos_id").toString(),
                                                 "mail_id": widget.mainEmail.toString(),
                                               };
 
@@ -404,7 +405,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                       InkWell(
                         onTap: (){
                           controllers.customMailFuture = apiService.mailCommentDetails(widget.id.toString());
-                          Get.to(MailComments(
+                          Get.to(CusMailComments(
                             mainEmail: widget.mainEmail,
                             mainMobile: widget.mainMobile,
                             mainName: widget.mainName,
@@ -461,7 +462,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                                 "lead_id": widget.id.toString(),
                                                 "user_id": controllers.storage.read("id").toString(),
                                                 "rating": (widget.rating ?? "Warm").toString(),
-                                                "cos_id": cosId.toString(),
+                                                "cos_id": controllers.storage.read("cos_id").toString(),
                                                 "mail_id": widget.mainEmail.toString(),
                                               };
                                               if(widget.pageName=="Prospects"){
@@ -540,7 +541,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                                 "lead_id": widget.id.toString(),
                                                 "user_id": controllers.storage.read("id").toString(),
                                                 "rating": (widget.rating ?? "Warm").toString(),
-                                                "cos_id": cosId.toString(),
+                                                "cos_id": controllers.storage.read("cos_id").toString(),
                                                 "mail_id": widget.mainEmail.toString(),
                                               };
                                               apiService.disqualifiedCustomersAPI(context, [deleteData]);

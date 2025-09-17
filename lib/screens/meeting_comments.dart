@@ -276,6 +276,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                   textEditingController: controllers.cusController,
                                                   onSelected: (value) {
                                                     controllers.selectCustomer(value);
+                                                    print("mail ${value.email}");
                                                   },
                                                   onClear: () {
                                                     controllers.clearSelectedCustomer();

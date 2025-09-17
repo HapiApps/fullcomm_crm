@@ -320,7 +320,7 @@ class _SuspectsState extends State<Suspects> {
                                       "lead_id": controllers.isNewLeadList[j]["lead_id"],
                                       "user_id": controllers.storage.read("id"),
                                       "rating": controllers.isNewLeadList[j]["rating"],
-                                      "cos_id": cosId,
+                                      "cos_id": controllers.storage.read("cos_id"),
                                       "mail_id":controllers.isNewLeadList[j]["mail_id"]
                                     });
                               }
@@ -403,7 +403,7 @@ class _SuspectsState extends State<Suspects> {
                                               "lead_id":data.userId.toString(),
                                               "user_id":controllers.storage.read("id"),
                                               "rating":data.rating ?? "Warm",
-                                              "cos_id":cosId,
+                                              "cos_id":controllers.storage.read("cos_id"),
                                               "mail_id":data.emailId.toString().split("||")[0]
                                             });
                                           }

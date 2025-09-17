@@ -309,7 +309,7 @@ class _QualifiedState extends State<Qualified> {
                                       "lead_id":controllers.isGoodLeadList[j]["lead_id"],
                                       "user_id":controllers.storage.read("id"),
                                       "rating":controllers.isGoodLeadList[j]["rating"],
-                                      "cos_id":cosId,
+                                      "cos_id":controllers.storage.read("cos_id"),
                                     });
                                   }
                                 });
@@ -381,7 +381,7 @@ class _QualifiedState extends State<Qualified> {
                                                   "lead_id":data.userId.toString(),
                                                   "user_id":controllers.storage.read("id"),
                                                   "rating":data.rating ?? "Warm",
-                                                  "cos_id":cosId,
+                                                  "cos_id":controllers.storage.read("cos_id"),
                                                 });
                                               }
                                             });

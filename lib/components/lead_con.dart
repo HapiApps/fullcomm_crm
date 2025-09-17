@@ -227,7 +227,7 @@ class _LeadConState extends State<LeadCon> {
                                   "lead_id": widget.id.toString(),
                                   "user_id": controllers.storage.read("id"),
                                   "rating": widget.rating.toString(),
-                                  "cos_id": cosId,
+                                  "cos_id": controllers.storage.read("cos_id"),
                                 });
                               }
                               print(apiService.qualifiedList);
@@ -249,7 +249,7 @@ class _LeadConState extends State<LeadCon> {
                                   "lead_id": widget.id.toString(),
                                   "user_id": controllers.storage.read("id"),
                                   "rating": widget.rating.toString(),
-                                  "cos_id": cosId,
+                                  "cos_id": controllers.storage.read("cos_id"),
                                 });
                               }
                               //print(apiService.qualifiedList);

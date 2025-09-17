@@ -914,7 +914,7 @@ class ApiService {
         "created_by": controllers.storage.read("id"),
         "notes": controllers.callCommentCont.text.trim(),
       };
-      print("data lead ${data.toString()}");
+      print("data ${data.toString()}");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
@@ -925,6 +925,8 @@ class ApiService {
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
+        apiService.insertMeetEmailAPI(context, controllers.selectedCustomerId.value,
+            imageController.photo1.value);
         getAllMeetingActivity();
         Navigator.pop(context);
         controllers.productCtr.reset();
@@ -2076,6 +2078,50 @@ class ApiService {
         await Future.delayed(const Duration(milliseconds: 100));
         Navigator.pop(Get.context!);
         controllers.emailCtr.reset();
+      } else {
+        controllers.emailCtr.reset();
+        errorDialog(Get.context!, "Mail has been not sent");
+      }
+    } catch (e) {
+      errorDialog(Get.context!, e.toString());
+      controllers.emailCtr.reset();
+    }
+  }
+
+  Future insertMeetEmailAPI(BuildContext context, String id, String image) async {
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
+
+      // Body values
+      request.fields['clientMail'] = controllers.selectedCustomerEmail.value;
+      request.fields['subject'] = "Meeting Reminder: ${controllers.meetingTitleCrt.text}";
+      request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
+      request.fields['count'] = '${controllers.emailCount.value + 1}';
+      request.fields['quotation_name'] = controllers.emailQuotationCtr.text;
+      request.fields['body'] =  "Meeting Notes: ${controllers.callCommentCont.text}";
+      request.fields['user_id'] = controllers.storage.read("id").toString();
+      request.fields['id'] = id;
+      request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
+      request.fields['action'] = 'mail_receive';
+
+      if (imageController.empFileName.value.isNotEmpty) {
+        var picture1 = http.MultipartFile.fromBytes(
+          "attachment",
+          imageController.empMediaData,
+          filename: imageController.empFileName.value,
+          //contentType: http.MediaType('image', 'jpeg'),
+        );
+        request.files.add(picture1);
+      }
+      var response = await request.send();
+      var body = await response.stream.bytesToString();
+      print("Response: $body");
+      if (response.statusCode == 200 && body == "Message has been sent") {
+        // utils.snackBar(
+        //     msg: "Mail has been sent",
+        //     color: Colors.green,
+        //     context: Get.context!);
+
       } else {
         controllers.emailCtr.reset();
         errorDialog(Get.context!, "Mail has been not sent");

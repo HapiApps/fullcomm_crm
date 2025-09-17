@@ -32,8 +32,8 @@ class _CusMailCommentsState extends State<CusMailComments> {
     screenWidth > screenHeight ? screenWidth * 0.30 : screenWidth * 0.90;
     return SelectionArea(
       child: Scaffold(
-        backgroundColor: colorsConst.primary,
-        body: Obx(()=>Container(
+        backgroundColor: colorsConst.backgroundColor,
+        body:Container(
           width:screenWidth-130,
           height: MediaQuery.of(context).size.height,
           alignment: Alignment.center,
@@ -41,8 +41,8 @@ class _CusMailCommentsState extends State<CusMailComments> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               10.height,
-              const CustomText(text: "New Leads - Suspects",
-                colors: Color(0xffE1E5FA),isBold: true,size: 20,),
+               CustomText(text: "New Leads - Suspects",
+                colors: colorsConst.textColor,isBold: true,size: 20,),
               20.height,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -164,7 +164,7 @@ class _CusMailCommentsState extends State<CusMailComments> {
               )
             ],
           ),
-        ),),
+        ),
       ),
     );
   }

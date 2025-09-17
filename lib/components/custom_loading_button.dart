@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
-import '../common/constant/colors_constant.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../common/styles/styles.dart';
-import 'custom_text.dart';
 
 class CustomLoadingButton extends StatefulWidget {
   const CustomLoadingButton(
@@ -74,7 +72,6 @@ class _CustomLoadingButtonState extends State<CustomLoadingButton> {
                           color: widget.textColor,
                           fontSize: widget.textSize!,
                         fontWeight: FontWeight.w400,
-
                       ),
                     )
                   : SvgPicture.asset(
