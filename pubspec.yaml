@@ -53,7 +53,7 @@ dependencies:
   google_maps_flutter:
   google_maps_flutter_web:
   provider: ^6.1.2
-  syncfusion_flutter_datagrid: ^25.1.37
+  syncfusion_flutter_datagrid:
   group_button: ^5.3.4
   image_picker_web: ^3.1.1
   mime_type: ^1.0.0
@@ -81,6 +81,7 @@ dependencies:
   month_picker_dialog:
   google_fonts:
   web: ^1.1.1
+  syncfusion_flutter_pdfviewer:
 
 dev_dependencies:
   flutter_test:

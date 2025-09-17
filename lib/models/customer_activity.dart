@@ -12,6 +12,7 @@ class CustomerActivity {
   final String quotationName;
   final String customerName;
   final String leadStatus;
+  final String attachment;
 
   CustomerActivity({
     required this.id,
@@ -27,7 +28,7 @@ class CustomerActivity {
     required this.callType,
     required this.leadStatus,
     required this.callStatus,
-
+    required this.attachment
   });
 
   factory CustomerActivity.fromJson(Map<String, dynamic> json) {
@@ -45,6 +46,7 @@ class CustomerActivity {
       callType: json['call_type'] ?? '',
       callStatus: json['call_status'] ?? '',
       leadStatus: json['lead_status'] ?? '',
+      attachment: json['attachment'] ?? '',
     );
   }
 
@@ -63,6 +65,7 @@ class CustomerActivity {
       'call_type': callType,
       'call_status': callStatus,
       'lead_status': leadStatus,
+      'attachment':attachment
     };
   }
 }

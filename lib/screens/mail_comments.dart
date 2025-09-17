@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/models/mail_receive_obj.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_comment_container.dart';
@@ -148,6 +150,7 @@ class _MailCommentsState extends State<MailComments> {
                               1: FlexColumnWidth(2),//Mobile No.
                               2: FlexColumnWidth(3),//Call Type
                               3: FlexColumnWidth(4.5),//Message
+                              4: FlexColumnWidth(4),//Attachment
                               //5: FlexColumnWidth(4.5),//Actions
                             },
                             border: TableBorder(
@@ -246,6 +249,16 @@ class _MailCommentsState extends State<MailComments> {
                                         colors: Colors.white,
                                       ),
                                     ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: CustomText(
+                                        textAlign: TextAlign.left,
+                                        text: "Attachment",
+                                        size: 15,
+                                        isBold: true,
+                                        colors: Colors.white,
+                                      ),
+                                    ),
                                     // Padding(
                                     //   padding: const EdgeInsets.all(10.0),
                                     //   child: CustomText(//9
@@ -306,6 +319,7 @@ class _MailCommentsState extends State<MailComments> {
                                           1: FlexColumnWidth(2),//Mobile No.
                                           2: FlexColumnWidth(3),//Call Type
                                           3: FlexColumnWidth(4.5),//Message
+                                          4: FlexColumnWidth(4),//Attachment
                                           //5: FlexColumnWidth(4.5),//Actions
                                         },
                                         border: TableBorder(
@@ -373,6 +387,41 @@ class _MailCommentsState extends State<MailComments> {
                                                     ),
                                                   ),
                                                 ),
+                                                data.attachment.isNotEmpty
+                                                    ? Builder(
+                                                  builder: (context) {
+                                                    final file = data.attachment.toLowerCase();
+                                                    if (file.endsWith(".pdf")) {
+                                                      return SizedBox(
+                                                        height: 50,
+                                                        child: SfPdfViewer.network("$getImage?path=${Uri.encodeComponent(data.attachment)}"),
+                                                      );
+                                                    } else if (file.endsWith(".jpg") ||
+                                                        file.endsWith(".jpeg") ||
+                                                        file.endsWith(".png")) {
+                                                      return Padding(
+                                                        padding: const EdgeInsets.only(top: 5),
+                                                        child: Image.network(
+                                                          "$getImage?path=${Uri.encodeComponent(data.attachment)}",
+                                                          height: 50,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return ListTile(
+                                                        title: Text("Unsupported file"),
+                                                      );
+                                                    }
+                                                  },
+                                                )
+                                                    : Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: Text(
+                                                    "No attachment",
+                                                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                                                  ),
+                                                )
+
                                                 // Padding(
                                                 //   padding: const EdgeInsets.all(3.0),
                                                 //   child: Row(
