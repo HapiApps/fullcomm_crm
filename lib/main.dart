@@ -11,7 +11,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'common/constant/api.dart';
 import 'common/constant/colors_constant.dart';
-import 'common/utilities/utils.dart';
 import 'common/widgets/log_in.dart';
 import 'components/custom_text.dart';
 import 'controller/controller.dart';
@@ -19,7 +18,7 @@ import 'controller/controller.dart';
 Future<void> main() async {
   await GetStorage.init();
   final prefs = await SharedPreferences.getInstance();
-  final loginScreen = prefs.getBool("loginScreen") ?? false;
+  final loginScreen = prefs.getBool("loginScreen${controllers.versionNum}") ?? false;
 
   runApp(MyApp(loginScreen: loginScreen,));
 }
@@ -40,10 +39,63 @@ class MyInheritedWidget extends InheritedWidget {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final bool loginScreen;
   const MyApp({super.key, required this.loginScreen});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    apiService.getRoles();
+    // apiService.getLeadCategory();
+    // apiService.getVisitType();
+    apiService.getAllCustomers();
+    apiService.getOpenedMailActivity(true);
+    apiService.getReplyMailActivity(true);
+    apiService.getAllCallActivity();
+    apiService.getAllMailActivity();
+    apiService.getAllMeetingActivity();
+    apiService.getAllNoteActivity();
+    apiService.getUserHeading();
+    if (widget.loginScreen) {
+      apiService.allLeadsDetails();
+      apiService.allQualifiedDetails();
+      apiService.allNewLeadsDetails();
+      apiService.allGoodLeadsDetails();
+      apiService.allCustomerDetails();
+    }
+    //  Future.delayed(Duration.zero,(){
+    //    setState(() {
+    //    controllers.selectStateList=[];
+    //    for (var entry in controllers.pinCodeList){
+    //      if (entry['STATE'] is String && !controllers.selectStateList.contains(entry['STATE'])) {
+    //        controllers.selectStateList.add(entry['STATE']);
+    //      }
+    //    }
+    //    for (var item in controllers.stateList){
+    //      if (!controllers.selectStateList.contains(item)){
+    //        print(item);
+    //      }
+    //    }
+    //   controllers.selectCityList=[];
+    //   for (var entry in controllers.pinCodeList){
+    //     if (entry['STATE'] == "Tamil Nadu" && entry['DISTRICT'] is String){
+    //       if (!controllers.selectCityList.contains(entry['DISTRICT'])) {
+    //         controllers.selectCityList.add(entry['DISTRICT'].toString().trim());
+    //       }
+    //     }
+    //   }
+    // });
+    //
+    //  });
+    //controllers.allCompanyFuture=apiService.allCompanyDetails();
+    //controllers.allEmployeeFuture=apiService.allEmployeeDetails();
+  }
   @override
   Widget build(BuildContext context) {
     return ZoomBlocker(
@@ -51,9 +103,6 @@ class MyApp extends StatelessWidget {
         data: 42,
         child: GetMaterialApp(
           scrollBehavior: MyCustomScrollBehavior(),
-          // scrollBehavior: const MaterialScrollBehavior().copyWith(
-          //   dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown},
-          // ),
           debugShowCheckedModeBanner: false,
           title: appName,
           theme: ThemeData(
@@ -67,278 +116,103 @@ class MyApp extends StatelessWidget {
               radius: const Radius.circular(5),
             ),
           ),
-
           home: SelectionArea(
-              child: SplashScreen(
-            loginScreen: loginScreen,
-          )),
+              child:widget.loginScreen == false ? const LoginPage() : const NewDashboard()),
         ),
       ),
     );
   }
 }
 
-// class ZengrafDashboard extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Zengraf Dashboard',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//       ),
-//       home: DashboardPage(),
-//     );
-//   }
-// }
-//
-// class DashboardPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Zengraf'),
-//         actions: [
-//           IconButton(
-//             icon: Icon(Icons.message),
-//             onPressed: () {},
-//           ),
-//           CircleAvatar(
-//             backgroundImage: AssetImage('assets/profile.jpg'), // Add your image asset here
-//           ),
-//           SizedBox(width: 16),
-//         ],
-//       ),
-//       drawer: Drawer(
-//         child: ListView(
-//           padding: EdgeInsets.zero,
-//           children: <Widget>[
-//             DrawerHeader(
-//               child: Text('Menu', style: TextStyle(color: Colors.white)),
-//               decoration: BoxDecoration(
-//                 color: Colors.blue,
-//               ),
-//             ),
-//             ListTile(
-//               title: Text('Dashboard'),
-//               onTap: () {},
-//             ),
-//             ListTile(
-//               title: Text('Lead'),
-//               onTap: () {},
-//             ),
-//             ListTile(
-//               title: Text('Client'),
-//               onTap: () {},
-//             ),
-//             ListTile(
-//               title: Text('Customer'),
-//               onTap: () {},
-//             ),
-//             ListTile(
-//               title: Text('Products'),
-//               onTap: () {},
-//             ),
-//           ],
-//         ),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: SingleChildScrollView(
-//           child: Column(
-//             children: <Widget>[
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: <Widget>[
-//                   SummaryCard(
-//                     title: 'Leads',
-//                     value: '100',
-//                     subtitle: '+8% from yesterday',
-//                     color: Colors.redAccent,
-//                   ),
-//                   SummaryCard(
-//                     title: 'This Week',
-//                     value: '100',
-//                     subtitle: '+8% from previous week',
-//                     color: Colors.orangeAccent,
-//                   ),
-//                   SummaryCard(
-//                     title: 'This Month',
-//                     value: '100',
-//                     subtitle: '+8% from previous month',
-//                     color: Colors.greenAccent,
-//                   ),
-//                   SummaryCard(
-//                     title: 'Total Leads',
-//                     value: '100',
-//                     color: Colors.purpleAccent,
-//                   ),
-//                 ],
-//               ),
-//               SizedBox(height: 16.0),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: <Widget>[
-//                   Expanded(
-//                     child: Container(
-//                       height: 200.0,
-//                       padding: EdgeInsets.all(8.0),
-//                       color: Colors.white,
-//                       child: LineChart(LineChartData(
-//                         gridData: const FlGridData(show: false),
-//                         titlesData: const FlTitlesData(show: true),
-//                         borderData: FlBorderData(show: false),
-//                         lineBarsData: [
-//                           LineChartBarData(
-//                             spots: [
-//                               FlSpot(0, 1),
-//                               FlSpot(1, 3),
-//                               FlSpot(2, 10),
-//                               FlSpot(3, 7),
-//                               FlSpot(4, 12),
-//                               FlSpot(5, 13),
-//                               FlSpot(6, 17),
-//                             ],
-//                             isCurved: true,
-//                             color: Colors.blue,
-//                             barWidth: 4,
-//                             isStrokeCapRound: true,
-//                             dotData: FlDotData(show: false),
-//                           ),
-//                         ],
-//                       )),
-//                     ),
-//                   ),
-//                   SizedBox(width: 16.0),
-//                   Expanded(
-//                     child: Container(
-//                       height: 200.0,
-//                       padding: EdgeInsets.all(8.0),
-//                       color: Colors.white,
-//                       child: BarChart(BarChartData(
-//                         gridData: FlGridData(show: false),
-//                         titlesData: FlTitlesData(show: true),
-//                         borderData: FlBorderData(show: false),
-//                         barGroups: [
-//                           BarChartGroupData(x: 0, barRods: [BarChartRodData(color: Colors.lightBlueAccent, toY: 8)]),
-//                           BarChartGroupData(x: 1, barRods: [BarChartRodData(color: Colors.lightBlueAccent, toY: 10)]),
-//                           BarChartGroupData(x: 2, barRods: [BarChartRodData(color: Colors.lightBlueAccent, toY: 14)]),
-//                           BarChartGroupData(x: 3, barRods: [BarChartRodData(color: Colors.lightBlueAccent, toY: 15)]),
-//                           BarChartGroupData(x: 4, barRods: [BarChartRodData(color: Colors.lightBlueAccent, toY: 13)]),
-//                           BarChartGroupData(x: 5, barRods: [BarChartRodData(color: Colors.lightBlueAccent, toY: 10)]),
-//                         ],
-//                       )),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               SizedBox(height: 16.0),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: <Widget>[
-//                   RatingCard(color: Colors.red, title: "Total Hot", value: "120"),
-//                   RatingCard(color: Colors.orange, title: "Total Warm", value: "120"),
-//                   RatingCard(color: Colors.green, title: "Total Cold", value: "120"),
-//                 ],
-//               ),
-//               SizedBox(height: 16.0),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: <Widget>[
-//                   Expanded(
-//                     child: InfoCard(
-//                       title: 'Quotations Sent',
-//                       value: '200',
-//                     ),
-//                   ),
-//                   SizedBox(width: 16.0),
-//                   Expanded(
-//                     child: InfoCard(
-//                       title: 'Emails Sent',
-//                       value: '50',
-//                       additionalInfo: 'Not Sent: 45',
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               SizedBox(height: 16.0),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: <Widget>[
-//                   Expanded(
-//                     child: InfoCard(
-//                       title: 'Total Customers',
-//                       value: '150',
-//                     ),
-//                   ),
-//                   SizedBox(width: 16.0),
-//                   Expanded(
-//                     child: InfoCard(
-//                       title: 'Total Products',
-//                       value: '150',
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-// class SummaryCard extends StatelessWidget {
-//   final String title;
-//   final String value;
-//   final String subtitle;
-//   final Color color;
-//
-//   SummaryCard({
-//     required this.title,
-//     required this.value,
-//     this.subtitle = '',
-//     required this.color,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Expanded(
-//       child: Card(
-//         color: color,
-//         child: Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: <Widget>[
-//               Text(
-//                 title,
-//                 style: TextStyle(
-//                   color: Colors.white,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//               Text(
-//                 value,
-//                 style: TextStyle(
-//                   color: Colors.white,
-//                   fontSize: 24.0,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//               Text(
-//                 subtitle,
-//                 style: TextStyle(
-//                   color: Colors.white,
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
+class SplashScreen extends StatefulWidget {
+  final bool loginScreen;
+  const SplashScreen({super.key, required this.loginScreen});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    apiService.getRoles();
+    // apiService.getLeadCategory();
+    // apiService.getVisitType();
+    apiService.getAllCustomers();
+    apiService.getOpenedMailActivity(true);
+    apiService.getReplyMailActivity(true);
+    apiService.getAllCallActivity();
+    apiService.getAllMailActivity();
+    apiService.getAllMeetingActivity();
+    apiService.getAllNoteActivity();
+    apiService.getUserHeading();
+    if (widget.loginScreen) {
+      apiService.allLeadsDetails();
+      apiService.allQualifiedDetails();
+      apiService.allNewLeadsDetails();
+      apiService.allGoodLeadsDetails();
+      apiService.allCustomerDetails();
+    }
+    //  Future.delayed(Duration.zero,(){
+    //    setState(() {
+    //    controllers.selectStateList=[];
+    //    for (var entry in controllers.pinCodeList){
+    //      if (entry['STATE'] is String && !controllers.selectStateList.contains(entry['STATE'])) {
+    //        controllers.selectStateList.add(entry['STATE']);
+    //      }
+    //    }
+    //    for (var item in controllers.stateList){
+    //      if (!controllers.selectStateList.contains(item)){
+    //        print(item);
+    //      }
+    //    }
+    //   controllers.selectCityList=[];
+    //   for (var entry in controllers.pinCodeList){
+    //     if (entry['STATE'] == "Tamil Nadu" && entry['DISTRICT'] is String){
+    //       if (!controllers.selectCityList.contains(entry['DISTRICT'])) {
+    //         controllers.selectCityList.add(entry['DISTRICT'].toString().trim());
+    //       }
+    //     }
+    //   }
+    // });
+    //
+    //  });
+    //controllers.allCompanyFuture=apiService.allCompanyDetails();
+    //controllers.allEmployeeFuture=apiService.allEmployeeDetails();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSplashScreen(
+      duration: 100,
+      splashIconSize: 800,
+      splashTransition: SplashTransition.fadeTransition,
+      splash: Container(
+        color: Colors.white,
+        width: double.infinity,
+        height: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            //Image.asset("assets/images/app_logo.png",fit: BoxFit.fill,),
+            CustomText(
+              text: appName,
+              size: 30,
+              colors: colorsConst.primary,
+              isBold: true,
+            )
+          ],
+        ),
+      ),
+      pageTransitionType: PageTransitionType.fade,
+      nextScreen: widget.loginScreen == false ? const LoginPage() : const NewDashboard(),
+      //nextScreen:widget.loginScreen?const BottomPage():const LoginPage(),
+      //nextScreen:const BottomPage(),
+    );
+  }
+}
+
 
 class LineChartWidget extends StatelessWidget {
   const LineChartWidget({super.key});
@@ -503,7 +377,6 @@ class RatingCard extends StatelessWidget {
   }
 }
 
-//
 class InfoCard extends StatelessWidget {
   final String title;
   final String value;
@@ -544,94 +417,6 @@ class InfoCard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class SplashScreen extends StatefulWidget {
-  final bool loginScreen;
-  const SplashScreen({super.key, required this.loginScreen});
-
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    apiService.getRoles();
-    // apiService.getLeadCategory();
-    // apiService.getVisitType();
-    apiService.getAllCustomers();
-    apiService.getOpenedMailActivity(true);
-    apiService.getReplyMailActivity(true);
-    apiService.getAllCallActivity();
-    apiService.getAllMailActivity();
-    apiService.getAllMeetingActivity();
-    apiService.getAllNoteActivity();
-    if (widget.loginScreen) {
-      apiService.allLeadsDetails();
-      apiService.allQualifiedDetails();
-      apiService.allNewLeadsDetails();
-      apiService.allGoodLeadsDetails();
-      apiService.allCustomerDetails();
-    }
-    //  Future.delayed(Duration.zero,(){
-    //    setState(() {
-    //    controllers.selectStateList=[];
-    //    for (var entry in controllers.pinCodeList){
-    //      if (entry['STATE'] is String && !controllers.selectStateList.contains(entry['STATE'])) {
-    //        controllers.selectStateList.add(entry['STATE']);
-    //      }
-    //    }
-    //    for (var item in controllers.stateList){
-    //      if (!controllers.selectStateList.contains(item)){
-    //        print(item);
-    //      }
-    //    }
-    //   controllers.selectCityList=[];
-    //   for (var entry in controllers.pinCodeList){
-    //     if (entry['STATE'] == "Tamil Nadu" && entry['DISTRICT'] is String){
-    //       if (!controllers.selectCityList.contains(entry['DISTRICT'])) {
-    //         controllers.selectCityList.add(entry['DISTRICT'].toString().trim());
-    //       }
-    //     }
-    //   }
-    // });
-    //
-    //  });
-    //controllers.allCompanyFuture=apiService.allCompanyDetails();
-    //controllers.allEmployeeFuture=apiService.allEmployeeDetails();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedSplashScreen(
-      duration: 300,
-      splashIconSize: 800,
-      splashTransition: SplashTransition.fadeTransition,
-      splash: Container(
-        color: Colors.white,
-        width: double.infinity,
-        height: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            //Image.asset("assets/images/app_logo.png",fit: BoxFit.fill,),
-            CustomText(
-              text: appName,
-              size: 30,
-              colors: colorsConst.primary,
-              isBold: true,
-            )
-          ],
-        ),
-      ),
-      pageTransitionType: PageTransitionType.fade,
-      nextScreen: widget.loginScreen == false ? const LoginPage() : const NewDashboard(),
-      //nextScreen:widget.loginScreen?const BottomPage():const LoginPage(),
-      //nextScreen:const BottomPage(),
     );
   }
 }

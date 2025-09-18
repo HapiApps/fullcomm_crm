@@ -39,11 +39,11 @@ class CustomTableHeader extends StatelessWidget {
           ),
         ),
       _headerCell("Actions", textAlign: TextAlign.center),
-      _headerCell("Name"),
-      _headerCell("Company Name"),
-      _headerCell("Mobile No."),
-      _headerCell("Details of Service Required"),
-      _headerCell("Source Of Prospect"),
+      _headerCell(controllers.getUserHeading("name") ?? "Name"),
+      _headerCell(controllers.getUserHeading("company_name") ?? "Company Name"),
+      _headerCell(controllers.getUserHeading("phone_no") ?? "Mobile No."),
+      _headerCell(controllers.getUserHeading("details_of_service_required") ?? "Details of Service Required"),
+      _headerCell(controllers.getUserHeading("source") ?? "Source Of Prospect"),
       Container(
         height: 45,
         alignment: Alignment.centerLeft,
@@ -74,8 +74,8 @@ class CustomTableHeader extends StatelessWidget {
           ],
         ),
       ),
-      _headerCell("City"),
-      _headerCell("Status Update"),
+      _headerCell(controllers.getUserHeading("city") ?? "City"),
+      _headerCell(controllers.getUserHeading("status_update") ?? "Status Update"),
     ];
 
     return Table(
@@ -120,6 +120,16 @@ class CustomTableHeader extends StatelessWidget {
     );
   }
 
+  String _formatHeading(String heading) {
+    String cleaned = heading.replaceAll(",", "").trim();
+    return cleaned
+        .split(" ")
+        .map((word) => word.isNotEmpty
+        ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+        : "")
+        .join(" ");
+  }
+
   Widget _headerCell(String text, {TextAlign textAlign = TextAlign.left}) {
     return Container(
       height: 45,
@@ -128,7 +138,7 @@ class CustomTableHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: CustomText(
         textAlign: textAlign,
-        text: text,
+        text: _formatHeading(text),
         size: 15,
         colors: Colors.white,
       ),

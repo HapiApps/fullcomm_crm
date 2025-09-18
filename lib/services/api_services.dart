@@ -6,6 +6,7 @@ import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:fullcomm_crm/models/comments_obj.dart';
 import 'package:fullcomm_crm/models/company_obj.dart';
 import 'package:fullcomm_crm/models/new_lead_obj.dart';
+import 'package:fullcomm_crm/models/user_heading_obj.dart';
 import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
@@ -1119,7 +1120,8 @@ class ApiService {
       if (request.statusCode == 200 && response["message"] == "Customer save process completed.") {
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
-        controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
+        apiService.allGoodLeadsDetails();
+        getUserHeading();
         prospectsList.clear();
         qualifiedList.clear();
         customerList.clear();
@@ -1495,7 +1497,7 @@ class ApiService {
         controllers.storage.write("id", response["id"]);
         controllers.storage.write("cos_id", response["cos_id"]);
         final prefs = await SharedPreferences.getInstance();
-        prefs.setBool("loginScreen", true);
+        prefs.setBool("loginScreen${controllers.versionNum}", true);
         String input = "Admin";
         controllers.isAdmin.value = input == "Admin" ? true : false;
         prefs.setBool("isAdmin", controllers.isAdmin.value);
@@ -1511,6 +1513,7 @@ class ApiService {
         allGoodLeadsDetails();
         allCustomerDetails();
         allQualifiedDetails();
+        getUserHeading();
         utils.snackBar(
           context: Get.context!,
           msg: "Login Successfully",
@@ -1948,6 +1951,31 @@ class ApiService {
         List response = json.decode(request.body);
         controllers.noteActivity.clear();
         controllers.noteActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future getUserHeading() async {
+    try {
+      Map data = {
+        "search_type": "user_field_head",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data"};
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.fields.clear();
+        controllers.fields.value = response.map((e) => CustomerField.fromJson(e)).toList();
       } else {
         throw Exception('Failed to load album');
       }

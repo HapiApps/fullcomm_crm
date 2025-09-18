@@ -23,7 +23,6 @@ class HeaderSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final controllers = Get.find<Controller>();
     final FocusNode _focusNode = FocusNode();
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -61,10 +60,8 @@ class HeaderSection extends StatelessWidget {
                   controllers.isCoMobileNumberList.add(false);
                 }
 
-                controllers.leadCoNameCrt.text =
-                    sharedPref.getString("leadCoName") ?? "";
-                controllers.leadCoMobileCrt.text =
-                    sharedPref.getString("leadCoMobile") ?? "";
+                controllers.leadCoNameCrt.text = sharedPref.getString("leadCoName") ?? "";
+                controllers.leadCoMobileCrt.text = sharedPref.getString("leadCoMobile") ?? "";
 
                 _focusNode.requestFocus();
                 Get.to(const AddLead(), duration: Duration.zero);

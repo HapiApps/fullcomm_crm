@@ -122,7 +122,7 @@ class _HomeState extends State<Home> {
                                        onPressed: () async {
                                          final prefs =
                                          await SharedPreferences.getInstance();
-                                         prefs.setBool("loginScreen", false);
+                                         prefs.setBool("loginScreen${controllers.versionNum}", false);
                                          prefs.setBool("isAdmin", false);
                                          Get.to(const LoginPage(),
                                              duration: Duration.zero);

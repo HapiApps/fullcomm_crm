@@ -5,7 +5,6 @@ import 'package:csc_picker_plus/dropdown_with_search.dart';
 import 'package:excel/excel.dart' as excel;
 import 'package:fullcomm_crm/common/styles/styles.dart';
 import 'package:fullcomm_crm/common/widgets/log_in.dart';
-import 'package:fullcomm_crm/common/widgets/sign_up.dart';
 import 'package:fullcomm_crm/screens/call_comments.dart';
 import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
@@ -14,7 +13,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/screens/mail_comments.dart';
 import 'package:fullcomm_crm/screens/meeting_comments.dart';
@@ -31,20 +29,16 @@ import 'package:unique_simple_bar_chart/simple_bar_chart.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/screens/customer/view_customer.dart';
-import 'package:fullcomm_crm/screens/dashboard.dart';
 import '../../components/custom_alert_dialog.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_sidebar_text.dart';
 import '../../components/custom_text.dart';
-import '../../components/custom_textbutton.dart';
 import '../../components/dialog_button.dart';
-import '../../components/funnel_container.dart';
 import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
 import '../../models/new_lead_obj.dart';
 import '../../screens/leads/disqualified_lead.dart';
 import '../../services/api_services.dart';
-import '../constant/api.dart';
 import '../constant/assets_constant.dart';
 import '../constant/colors_constant.dart';
 import '../constant/default_constant.dart';
@@ -55,29 +49,6 @@ final Utils utils = Utils._();
 
 class Utils {
   Utils._();
-
-  makingPhoneCall({String? ph}) async {
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: ph,
-    );
-    await launchUrl(launchUri);
-  }
-
-  makingWhatApp({String? whatsapp}) async {
-    // String url(){
-    //   if (Platform.isAndroid){
-    var url = Uri.parse("https://wa.me/$whatsapp/?text=hi");
-    // return "https://www.whatsapp.com/?text=Your%20text%20here";
-    //   } else {
-    //     return "https://api.whatsapp.com/send?phone=$whatsapp=hi";
-    //   }
-    // }
-    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
   Widget headingBox({double? width, String? text}) {
     return Container(
       alignment: Alignment.center,
@@ -1002,160 +973,12 @@ class Utils {
     );
   }
 
-  Widget simpleBarChart() {
-    return SimpleBarChart(
-      makeItDouble: false,
-      verticalInterval: 70,
-      horizontalBarPadding: 10,
-      listOfHorizontalBarData: [
-        HorizontalDetailsModel(
-          name: 'Mon',
-          color: const Color(0xFFEB7735),
-          size: 200,
-          // sizeTwo: 40,
-          // colorTwo: Colors.blue,
-        ),
-        HorizontalDetailsModel(
-          name: 'Tues',
-          color: const Color(0xFFEB7735),
-          size: 92,
-          // sizeTwo: 85,
-          // colorTwo: Colors.blue,
-        ),
-        HorizontalDetailsModel(
-          name: 'Wed',
-          color: const Color(0xFFFBBC05),
-          size: 120,
-          // sizeTwo: 100,
-          // colorTwo: Colors.blue,
-        ),
-        HorizontalDetailsModel(
-          name: 'Thurs',
-          color: const Color(0xFFFBBC05),
-          size: 86,
-          //sizeTwo: 220,
-          //colorTwo: Colors.blue,
-        ),
-        HorizontalDetailsModel(
-          name: 'Fri',
-          color: const Color(0xFFFBBC05),
-          size: 64,
-          // sizeTwo: 170,
-          // colorTwo: Colors.blue,
-        ),
-        HorizontalDetailsModel(
-          name: 'Sat',
-          color: const Color(0xFFFBBC05),
-          size: 155,
-          // sizeTwo: 120,
-          // colorTwo: Colors.blue,
-        ),
-        HorizontalDetailsModel(
-          name: 'Sun',
-          color: const Color(0xFFFBBC05),
-          size: 200,
-          // sizeTwo: 96,
-          // colorTwo: Colors.blue,
-        ),
-      ],
-    );
-  }
-
-  makingFacebook({String? fb}) async {
-    // String url(){
-    //   if (Platform.isAndroid){
-    var url = Uri.parse('https://www.facebook.com/$fb/');
-    //return "fb://page/page_id";
-    //   } else {
-    //     return "fb://profile/page_id";
-    //     //return "fb://profile/page_id";
-    //   }
-    // }
-    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
-  makingEmail({String? mail}) async {
-    final url = Uri.parse('mailto:$mail');
-    //final url = 'https://mail.google.com/mail/u/0/#inbox';
-    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
-  makingInstagram({String? instagram}) async {
-    var url = Uri.parse('https://www.instagram.com/$instagram/');
-    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
-  makingTwitter({String? twitter}) async {
-    var url = Uri.parse('https://www.twitter.com/$twitter/');
-    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
-  makingLinkDin({String? link}) async {
-    var url = Uri.parse('https://www.linkedin.com/');
-    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
   makingWebsite({String? web}) async {
     final url = Uri.parse('https://www.$web.com');
     if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
       throw Exception('Could not launch $url');
     }
   }
-
-  // Future<File?> pickFile() async {
-  //   final result = await FilePicker.platform.pickFiles(
-  //     type: FileType.custom,
-  //     allowedExtensions: ['pdf'],
-  //   );
-  //
-  //   if (result == null) return null;
-  //   return File(result.paths.first.toString());
-  // }
-
-  Future<File> loadNetwork(String url) async {
-    final response = await http.get(Uri.parse(url));
-    final bytes = response.bodyBytes;
-
-    return _storeFile(url, bytes);
-  }
-
-  Future<File> _storeFile(String url, List<int> bytes) async {
-    final filename = basename(url);
-    final dir = await getApplicationDocumentsDirectory();
-
-    final file = File('${dir.path}/$filename');
-    await file.writeAsBytes(bytes, flush: true);
-    return file;
-  }
-
-  // String? selectedTime;
-  // void displayTimeDialog(BuildContext context,{TextEditingController? controller}) async {
-  //   TimeOfDay? time =await showTimePicker(
-  //     context: context,
-  //     initialTime: TimeOfDay.now(),
-  //     builder: (BuildContext context, Widget? child){
-  //       return MediaQuery(
-  //         data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-  //         child: child!,
-  //       );
-  //     }
-  //   );
-  //   if (time != null){
-  //       selectedTime=_formatTime12Hour(time,context);
-  //       controller!.text=selectedTime.toString();
-  //
-  //   }
-  // }
 
   Future<void> pickImage() async {
     XFile? pickedFile;
@@ -1759,7 +1582,7 @@ class Utils {
                                   ElevatedButton(
                                     onPressed: () async {
                                       final prefs = await SharedPreferences.getInstance();
-                                      prefs.setBool("loginScreen", false);
+                                      prefs.setBool("loginScreen${controllers.versionNum}", false);
                                       prefs.setBool("isAdmin", false);
                                       Get.to(const LoginPage(), duration: Duration.zero);
                                       //controllers.isEmployee.value=true;
@@ -2226,25 +2049,6 @@ class Utils {
     ));
   }
 
-  Widget commentHead({required String head, required String value}) {
-    return Row(
-      children: [
-        15.width,
-        CustomText(
-          text: "$head :",
-          colors: colorsConst.third,
-          size: 15,
-          isBold: true,
-        ),
-        5.width,
-        CustomText(
-          text: value,
-          colors: colorsConst.textColor,
-          size: 15,
-        ),
-      ],
-    );
-  }
   Future<void> timePicker({
     BuildContext? context,
     TextEditingController? textEditingController,
@@ -3003,7 +2807,6 @@ class Utils {
   //     await apiService.insertCustomersAPI(context, customerData);
   //   }
   // }
-
   void parseExcelFile(Uint8List bytes, BuildContext context) async {
     customerData = [];
     var excelD = excel.Excel.decodeBytes(bytes);
@@ -3012,21 +2815,45 @@ class Utils {
       var rows = excelD.tables[table]!.rows;
 
       if (rows.length < 6) {
-        print("Excel needs min 6 rows (3 empty, system, display, data)");
+        Navigator.of(context).pop();
+        apiService.errorDialog(context, "Excel format is invalid. Needs min 6 rows (3 empty, system, display, data).");
         return;
       }
 
-      // Row 4 = system keys (index 3)
+      // ✅ Check first 3 rows are empty
+      for (int i = 0; i < 3; i++) {
+        bool isRowEmpty = rows[i].every((cell) =>
+        cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
+        if (!isRowEmpty) {
+          Navigator.of(context).pop();
+          apiService.errorDialog(context, "Excel format invalid. First 3 rows must be empty.");
+          return;
+        }
+      }
+
+      // ✅ Row 4 = system keys
       List<String> systemKeys = rows[3]
           .map((c) => (c?.value?.toString().trim() ?? ""))
           .toList();
 
-      // Row 5 = display names (index 4)
+      if (systemKeys.every((e) => e.isEmpty)) {
+        Navigator.of(context).pop();
+        apiService.errorDialog(context, "Excel format invalid. Row 4 (system fields) cannot be empty.");
+        return;
+      }
+
+      // ✅ Row 5 = display names
       List<String> displayNames = rows[4]
           .map((c) => (c?.value?.toString().trim() ?? ""))
           .toList();
 
-      // Build field mappings
+      if (displayNames.every((e) => e.isEmpty)) {
+        Navigator.of(context).pop();
+        apiService.errorDialog(context, "Excel format invalid. Row 5 (display headings) cannot be empty.");
+        return;
+      }
+
+      // 🔽 Build field mappings
       List<Map<String, String>> fieldMappings = [];
       for (int i = 0; i < systemKeys.length; i++) {
         if (systemKeys[i].isNotEmpty) {
@@ -3041,7 +2868,7 @@ class Utils {
         }
       }
 
-      // Parse data rows (from row 6 → index 5 onwards)
+      // 🔽 Parse data rows (from row 6 → index 5 onwards)
       for (var i = 5; i < rows.length; i++) {
         var row = rows[i];
         bool isRowEmpty = row.every((cell) =>
@@ -3072,7 +2899,7 @@ class Utils {
         customerData.add(formattedData);
       }
 
-      // Final Payload
+      // 🔽 Final Payload
       Map<String, dynamic> finalPayload = {
         "field_mappings": fieldMappings,
         "cusList": customerData,
@@ -3084,8 +2911,96 @@ class Utils {
     }
   }
 
+  // void parseExcelFile(Uint8List bytes, BuildContext context) async {
+  //   customerData = [];
+  //   var excelD = excel.Excel.decodeBytes(bytes);
+  //
+  //   for (var table in excelD.tables.keys) {
+  //     var rows = excelD.tables[table]!.rows;
+  //
+  //     if (rows.length < 6) {
+  //       print("Excel needs min 6 rows (3 empty, system, display, data)");
+  //       return;
+  //     }
+  //
+  //     // Row 4 = system keys (index 3)
+  //     List<String> systemKeys = rows[3]
+  //         .map((c) => (c?.value?.toString().trim() ?? ""))
+  //         .toList();
+  //
+  //     // Row 5 = display names (index 4)
+  //     List<String> displayNames = rows[4]
+  //         .map((c) => (c?.value?.toString().trim() ?? ""))
+  //         .toList();
+  //
+  //     // Build field mappings
+  //     List<Map<String, String>> fieldMappings = [];
+  //     for (int i = 0; i < systemKeys.length; i++) {
+  //       if (systemKeys[i].isNotEmpty) {
+  //         fieldMappings.add({
+  //           "cos_id": controllers.storage.read("cos_id"),
+  //           "system_field": systemKeys[i],
+  //           "display_name": (i < displayNames.length && displayNames[i].isNotEmpty)
+  //               ? displayNames[i]
+  //               : systemKeys[i],
+  //           "created_by": controllers.storage.read("id").toString(),
+  //         });
+  //       }
+  //     }
+  //
+  //     // Parse data rows (from row 6 → index 5 onwards)
+  //     for (var i = 5; i < rows.length; i++) {
+  //       var row = rows[i];
+  //       bool isRowEmpty = row.every((cell) =>
+  //       cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
+  //       if (isRowEmpty) continue;
+  //
+  //       Map<String, dynamic> formattedData = {};
+  //       List<Map<String, String>> additionalFields = [];
+  //
+  //       for (int j = 0; j < systemKeys.length; j++) {
+  //         String key = systemKeys[j];
+  //         var value = row[j]?.value?.toString().trim() ?? "";
+  //
+  //         if (key.isNotEmpty) {
+  //           formattedData[key] = value;
+  //         } else {
+  //           additionalFields.add({
+  //             "field_name": (j < displayNames.length) ? displayNames[j] : "",
+  //             "field_value": value,
+  //           });
+  //         }
+  //       }
+  //
+  //       formattedData["user_id"] = controllers.storage.read("id");
+  //       formattedData["cos_id"] = controllers.storage.read("cos_id");
+  //       formattedData["additional_fields"] = additionalFields;
+  //
+  //       customerData.add(formattedData);
+  //     }
+  //
+  //     // Final Payload
+  //     Map<String, dynamic> finalPayload = {
+  //       "field_mappings": fieldMappings,
+  //       "cusList": customerData,
+  //     };
+  //
+  //     print("Payload: ${jsonEncode(finalPayload)}");
+  //
+  //     await apiService.insertCustomersAPI(context, customerData, fieldMappings);
+  //   }
+  // }
+  Future<void> downloadSampleExcel() async {
+    final data = await rootBundle.load("assets/easycrm_data_upload_template.xlsx");
+    final blob = html.Blob([data.buffer.asUint8List()]);
+    final url = html.Url.createObjectUrlFromBlob(blob);
 
+    final anchor = html.AnchorElement(href: url)
+      ..setAttribute("download", "easycrm_data_upload_template.xlsx")
+      ..click();
 
+    html.Url.revokeObjectUrl(url);
+  }
 
   Future<void> showImportDialog(BuildContext context) async {
     return showDialog<void>(
@@ -3093,63 +3008,52 @@ class Utils {
       builder: (BuildContext context) {
         return AlertDialog(
           insetPadding: const EdgeInsets.all(5),
-          backgroundColor: colorsConst.secondary,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           content: SizedBox(
             width: 350,
-            height: 500,
+            height: 340,
             child: SelectionArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                    colors: colorsConst.third,
-                    text:
-                        "Your uploaded Excel file should have columns matching the required fields exactly as listed below to ensure correct data insertion:",
+                    text: "File format: .xlsx, .xls",
+                    colors: colorsConst.textColor,
+                    size: 17,
                     isBold: true,
-                    size: 15,
-                    textAlign: TextAlign.start,
                   ),
                   10.height,
-                  CustomText(
-                    text: "Column Names:",
-                    colors: colorsConst.textColor,
-                    size: 15,
-                    isBold: true,
-                  ),
-                  5.height,
-                  dialogText("NAME OF THE ACCOUNT MANAGER"),
-                  dialogText("NAME OF THE CUSTOMER"),
-                  dialogText("KEY CONTACT PERSON"),
-                  dialogText("CONTACT NUMBER"),
-                  dialogText("EMAIL ID"),
-                  dialogText("SITE LOCATION DETAILS"),
-                  dialogText("SOURCE OF PROSPECT (either BNI or social)"),
-                  dialogText("LEAD / PROSPECT"),
-                  dialogText("PROSPECT SOURCE DETAILS"),
-                  dialogText("PROSPECT ENROLLMENT DATE"),
-                  dialogText("EXPECTED CONVERSION DATE"),
-                  dialogText("DETAILS OF SERVICES REQUIRED"),
-                  dialogText("PROSPECT GRADING"),
-                  dialogText("STATUS UPDATE"),
-                  dialogText("TOTAL NUMBER OF HEAD COUNT"),
-                  dialogText("EXPECTED MONTHLY BILLING VALUE"),
-                  dialogText("ARPU VALUE"),
-                  dialogText("CURRENT STATUS"),
-                  10.height,
-                  CustomText(
-                    text: "File format:",
-                    colors: colorsConst.textColor,
-                    size: 15,
-                    isBold: true,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(17, 5, 5, 5),
-                    child: CustomText(
+                  SizedBox(
+                    width: 340,
+                    child: Text(
+                      "In this CRM template, the first two rows are kept blank. In the 3rd row, the field requirement is shown — if the field is Required it will be highlighted in Red, and if the field is Optional it will be highlighted in Yellow. In the 4th row, the system field names are given (these are the names used internally by the application). In the 5th row, the display headings are given (these are the names that will appear in the app for users). From the 6th row onwards, you can enter your customer data.It is not necessary to keep the column names in the same order as in this sheet. You can change the column names as needed, and you may also add extra columns.",
+                      style: TextStyle(
+                        color: colorsConst.textColor,
+                        fontSize: 15,
+                      ),
                       textAlign: TextAlign.start,
-                      text: '.xlsx, .xls',
-                      colors: colorsConst.textColor,
-                      size: 14,
+                    ),
+                  ),
+                  10.height,
+                  SizedBox(
+                    width: 250,
+                    height: 40,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(40),
+                          backgroundColor: colorsConst.third,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              side: BorderSide(color: colorsConst.third))),
+                      onPressed: () {
+                        downloadSampleExcel();
+                      },
+                      child: const CustomText(
+                        text: "Download Sample Excel Sheet",
+                        colors: Colors.white,
+                        isBold: true,
+                        size: 15,
+                      ),
                     ),
                   ),
                 ],
@@ -3175,7 +3079,7 @@ class Utils {
                     },
                     child: const CustomText(
                       text: "Cancel",
-                      colors: Colors.black,
+                      colors: Colors.white,
                       isBold: true,
                       size: 15,
                     ),
@@ -3193,7 +3097,7 @@ class Utils {
                   controller: controllers.customerCtr,
                   text: "Import",
                   isImage: false,
-                  textColor: colorsConst.textColor,
+                  textColor: colorsConst.primary,
                 ),
               ],
             ),
@@ -3354,148 +3258,4 @@ class Utils {
     );
   }
 
-  Widget dialogText(String text) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(17, 2, 5, 2),
-      child: CustomText(
-        textAlign: TextAlign.start,
-        text: text,
-        colors: colorsConst.textColor,
-        size: 13,
-      ),
-    );
-  }
-
-  final ImagePicker _picker = ImagePicker();
-
-  Future<void> takePhoto(
-      ImageSource source, XFile? fileName, RxString? pathName) async {
-    XFile? pickedFile = await _picker.pickImage(source: source);
-    fileName = pickedFile;
-    pathName?.value = fileName!.path;
-  }
-
-  Future<XFile?> compressImage(File file, RxString? savePhoto) async {
-    final filePath = file.absolute.path;
-    final lastIndex = filePath.lastIndexOf(RegExp(r'.png|.jp'));
-    final split = filePath.substring(0, (lastIndex));
-    final outPath = "${split}_out${filePath.substring(lastIndex)}";
-    int originalSize = await file.length();
-
-    if (lastIndex == filePath.lastIndexOf(RegExp(r'.png'))) {
-      final compressedImage = await FlutterImageCompress.compressAndGetFile(
-          filePath, outPath,
-          minWidth: 1000,
-          minHeight: 1000,
-          quality: 50,
-          format: CompressFormat.png);
-      int compressedSize = await compressedImage!.length();
-      savePhoto?.value = compressedImage.path;
-      // Convert sizes to KB and MB
-      double originalSizeKB = originalSize / 1024;
-      double compressedSizeKB = compressedSize / 1024;
-
-      double originalSizeMB = originalSizeKB / 1024;
-      double compressedSizeMB = compressedSizeKB / 1024;
-      log("Original Size: ${originalSizeKB.toStringAsFixed(2)} KB (${originalSizeMB.toStringAsFixed(2)} MB)");
-      log("Compressed Size: ${compressedSizeKB.toStringAsFixed(2)} KB (${compressedSizeMB.toStringAsFixed(2)} MB)");
-      return compressedImage;
-    } else {
-      final compressedImage = await FlutterImageCompress.compressAndGetFile(
-        filePath,
-        outPath,
-        minWidth: 1000,
-        minHeight: 1000,
-        quality: 50,
-      );
-      int compressedSize = await compressedImage!.length();
-      savePhoto?.value = compressedImage.path;
-      // Convert sizes to KB and MB
-      double originalSizeKB = originalSize / 1024;
-      double compressedSizeKB = compressedSize / 1024;
-
-      double originalSizeMB = originalSizeKB / 1024;
-      double compressedSizeMB = compressedSizeKB / 1024;
-      log("Original Size: ${originalSizeKB.toStringAsFixed(2)} KB (${originalSizeMB.toStringAsFixed(2)} MB)");
-      log("Compressed Size: ${compressedSizeKB.toStringAsFixed(2)} KB (${compressedSizeMB.toStringAsFixed(2)} MB)");
-      return compressedImage;
-    }
-  }
-
-  void bottomSheet({RxString? pathName, var cameraPath, XFile? fileName}) {
-    Get.bottomSheet(
-        SizedBox(
-          height: 220,
-          child: Column(
-            children: [
-              20.height,
-              const CustomText(
-                text: "Add photo",
-                size: 25,
-                colors: Colors.white,
-                isBold: true,
-              ),
-              5.height,
-              pathName?.value == ""
-                  ? 10.height
-                  : Row(
-                      children: [
-                        20.width,
-                        GestureDetector(
-                          onTap: () {
-                            pathName?.value = "";
-                            Get.back();
-                          },
-                          child: CustomText(
-                              text: constValue.removePhoto,
-                              size: 20,
-                              colors: Colors.white),
-                        ),
-                      ],
-                    ),
-              20.height,
-              Row(
-                children: [
-                  20.width,
-                  GestureDetector(
-                    onTap: () async {
-                      cameraPath = await Get.to(const CameraWidget(
-                        cameraPosition: CameraType.front,
-                      ));
-                      pathName?.value = cameraPath;
-                      compressImage(File(cameraPath), pathName);
-                      Get.back();
-                    },
-                    child: CustomText(
-                        text: constValue.takePhoto,
-                        size: 20,
-                        colors: Colors.white),
-                  ),
-                ],
-              ),
-              20.height,
-              Row(
-                children: [
-                  20.width,
-                  GestureDetector(
-                    onTap: () {
-                      takePhoto(ImageSource.gallery, fileName, pathName);
-                      compressImage(File(pathName!.value), pathName);
-                      Get.back();
-                    },
-                    child: CustomText(
-                        text: constValue.galleryPhoto,
-                        size: 20,
-                        colors: Colors.white),
-                  ),
-                ],
-              ),
-              20.height,
-            ],
-          ),
-        ),
-        backgroundColor: Colors.black54,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(10.0))));
-  }
 }

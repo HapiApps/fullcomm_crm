@@ -221,8 +221,7 @@ class _LeadConState extends State<LeadCon> {
                                         widget.id.toString());
                                 apiService.qualifiedList.removeAt(i);
                               } else {
-                                controllers.isLeadsList[widget.index!]
-                                    ["isSelect"] = true;
+                                controllers.isLeadsList[widget.index!]["isSelect"] = true;
                                 apiService.qualifiedList.add({
                                   "lead_id": widget.id.toString(),
                                   "user_id": controllers.storage.read("id"),
@@ -232,19 +231,13 @@ class _LeadConState extends State<LeadCon> {
                               }
                               print(apiService.qualifiedList);
                             } else {
-                              if (controllers.isGoodLeadList[widget.index!]
-                                      ["isSelect"] ==
-                                  true) {
-                                controllers.isGoodLeadList[widget.index!]
-                                    ["isSelect"] = false;
+                              if (controllers.isGoodLeadList[widget.index!]["isSelect"] == true) {
+                                controllers.isGoodLeadList[widget.index!]["isSelect"] = false;
                                 var i = apiService.customerList.indexWhere(
-                                    (element) =>
-                                        element["lead_id"] ==
-                                        widget.id.toString());
+                                    (element) => element["lead_id"] == widget.id.toString());
                                 apiService.customerList.removeAt(i);
                               } else {
-                                controllers.isGoodLeadList[widget.index!]
-                                    ["isSelect"] = true;
+                                controllers.isGoodLeadList[widget.index!]["isSelect"] = true;
                                 apiService.customerList.add({
                                   "lead_id": widget.id.toString(),
                                   "user_id": controllers.storage.read("id"),
@@ -259,12 +252,10 @@ class _LeadConState extends State<LeadCon> {
                         saveValue: widget.leadStatus.toString().trim() == "2"
                             ? controllers.isLeadsList.isEmpty
                                 ? false
-                                : controllers.isLeadsList[widget.index!]
-                                    ["isSelect"]
+                                : controllers.isLeadsList[widget.index!]["isSelect"]
                             : controllers.isGoodLeadList.isEmpty
                                 ? false
-                                : controllers.isGoodLeadList[widget.index!]
-                                    ["isSelect"]),
+                                : controllers.isGoodLeadList[widget.index!]["isSelect"]),
                   )
                 ],
               ),

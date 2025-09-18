@@ -18,12 +18,13 @@ import '../models/meeting_obj.dart';
 import '../models/month_report_obj.dart';
 import '../models/new_lead_obj.dart';
 import '../models/product_obj.dart';
+import '../models/user_heading_obj.dart';
 
 final controllers = Get.put(Controller());
 
 class Controller extends GetxController {
-  var version = "Version 0.0.6";
-  var versionNum = "0.0.6";
+  var version = "Version 0.0.7";
+  var versionNum = "0.0.7";
   // var version = "Version 0.0.14";
   //  var versionNum = "0.0.14";
   var serverVersion = "".obs,
@@ -869,13 +870,27 @@ class Controller extends GetxController {
       allCancelled = "0".obs,
       shortBy = "All".obs,
       isCommentsLoading = true.obs,isSent = false.obs,isOpened= false.obs,isReplied = false.obs,isMailLoading = false.obs,isIncoming = false.obs,isOutgoing= false.obs,isMissed = false.obs,isCallLoading = false.obs;
-  var roleNameList = [];
-  var callNameList = ["Visit","Call","Email","Meeting","Note"];
-  var customers = <AllCustomersObj>[].obs;
-  var callActivity = <CustomerActivity>[].obs;
-  var mailActivity = <CustomerActivity>[].obs;
+  var roleNameList    = [];
+  var callNameList    = ["Visit","Call","Email","Meeting","Note"];
+  var customers       = <AllCustomersObj>[].obs;
+  var callActivity    = <CustomerActivity>[].obs;
+  var mailActivity    = <CustomerActivity>[].obs;
   var meetingActivity = <MeetingObj>[].obs;
-  var noteActivity = <CustomerActivity>[].obs;
+  var noteActivity    = <CustomerActivity>[].obs;
+  var fields          = <CustomerField>[].obs;
+
+  void setFields(List<CustomerField> newFields) {
+    fields.value = newFields;
+  }
+
+  String? getUserHeading(String systemField) {
+    try {
+      return fields.firstWhere((f) => f.systemField == systemField).userHeading;
+    } catch (e) {
+      return null;
+    }
+  }
+
   List<CustomerActivity> get filteredList {
     if (controllers.selectCallType.value.isEmpty) {
       return controllers.callActivity;
