@@ -878,10 +878,19 @@ class Controller extends GetxController {
   var meetingActivity = <MeetingObj>[].obs;
   var noteActivity    = <CustomerActivity>[].obs;
   var fields          = <CustomerField>[].obs;
+  var headingFields   = <String>[].obs;
 
-  void setFields(List<CustomerField> newFields) {
-    fields.value = newFields;
+  String formatHeading(String heading) {
+    String cleaned = heading.replaceAll(",", "").trim();
+    return cleaned
+        .split(" ")
+        .map((word) => word.isNotEmpty
+        ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+        : "")
+        .join(" ");
   }
+
+
 
   String? getUserHeading(String systemField) {
     try {

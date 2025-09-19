@@ -3026,7 +3026,7 @@ class Utils {
                   SizedBox(
                     width: 340,
                     child: Text(
-                      "In this CRM template, the first two rows are kept blank. In the 3rd row, the field requirement is shown — if the field is Required it will be highlighted in Red, and if the field is Optional it will be highlighted in Yellow. In the 4th row, the system field names are given (these are the names used internally by the application). In the 5th row, the display headings are given (these are the names that will appear in the app for users). From the 6th row onwards, you can enter your customer data.It is not necessary to keep the column names in the same order as in this sheet. You can change the column names as needed, and you may also add extra columns.",
+                      "In this CRM template, \n1. Place your column names on Row 5. This will appear in EasyCRM as Heading.\n2. Place your data from Row 6. \n3. Pick the CRM internal field designators from Row 4 and place it over correct heading on Row 5.\n4. Save the sheet and upload to EasyCRM and start managing your Leads and Customers.",
                       style: TextStyle(
                         color: colorsConst.textColor,
                         fontSize: 15,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:fullcomm_crm/controller/table_controller.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:fullcomm_crm/models/comments_obj.dart';
 import 'package:fullcomm_crm/models/company_obj.dart';
@@ -1930,8 +1931,6 @@ class ApiService {
       controllers.leadCtr.reset();
     }
   }
-
-
   Future getAllNoteActivity() async {
     try {
       Map data = {
@@ -1976,10 +1975,13 @@ class ApiService {
         List response = json.decode(request.body);
         controllers.fields.clear();
         controllers.fields.value = response.map((e) => CustomerField.fromJson(e)).toList();
+        tableController.setHeadingFields(response);
       } else {
+        tableController.setHeadingFields(tableController.defaultHeadings);
         throw Exception('Failed to load album');
       }
     } catch (e) {
+      tableController.setHeadingFields(tableController.defaultHeadings);
       throw Exception('Failed to load album');
     }
   }
