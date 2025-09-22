@@ -1958,6 +1958,7 @@ class ApiService {
   }
 
   Future getUserHeading() async {
+    print("Inn Fields");
     try {
       Map data = {
         "search_type": "user_field_head",
@@ -1976,11 +1977,14 @@ class ApiService {
         controllers.fields.value = response.map((e) => CustomerField.fromJson(e)).toList();
         tableController.setHeadingFields(response);
       } else {
-        tableController.setHeadingFields(tableController.defaultHeadings);
+        controllers.fields.value = controllers.defaultFields.map((e) => CustomerField.fromJson(e)).toList();
+        tableController.setHeadingFields(controllers.defaultFields);
         throw Exception('Failed to load album');
       }
     } catch (e) {
-      tableController.setHeadingFields(tableController.defaultHeadings);
+        controllers.fields.value = controllers.defaultFields.map((e) => CustomerField.fromJson(e)).toList();
+      tableController.setHeadingFields(controllers.defaultFields);
+      print("Server fields value fetched failed $e");
       throw Exception('Failed to load album');
     }
   }

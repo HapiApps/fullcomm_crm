@@ -821,6 +821,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                 // ),
 
                 ...tableController.tableHeadings.map((heading) {
+                  print("head $heading");
                   if (heading.toLowerCase() == "added date" ||
                       heading.toLowerCase() == "prospect enrollment date") {
                     return Container(
@@ -874,7 +875,6 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         .firstWhereOrNull((f) => f.userHeading == heading)
                         ?.systemField;
                     final value = key != null ? toJson()[key] ?? "" : "";
-                    print("key $key");
                     return Tooltip(
                       message: value.toString() == "null" ? "" : value.toString(),
                       child: Container(

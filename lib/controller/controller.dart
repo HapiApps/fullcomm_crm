@@ -879,6 +879,31 @@ class Controller extends GetxController {
   var noteActivity    = <CustomerActivity>[].obs;
   var fields          = <CustomerField>[].obs;
   var headingFields   = <String>[].obs;
+  final defaultFields = [
+    {"id": "1", "system_field": "name", "user_heading": "Name", "is_required": "1"},
+    {"id": "8", "system_field": "company_name", "user_heading": "Company Name", "is_required": "1"},
+    {"id": "2", "system_field": "mobile_number", "user_heading": "Mobile Number", "is_required": "1"},
+    {"id": "14", "system_field": "details_of_service_required", "user_heading": "DETAILS OF SERVICES REQUIRED", "is_required": "1"},
+    {"id": "9", "system_field": "source", "user_heading": "SOURCE OF PROSPECT", "is_required": "1"},
+    {"id": "12", "system_field": "prospect_enrollment_date", "user_heading": "PROSPECT ENROLLMENT DATE", "is_required": "1"},
+    {"id": "4", "system_field": "city", "user_heading": "City", "is_required": "1"},
+    {"id": "18", "system_field": "status_update", "user_heading": "STATUS UPDATE", "is_required": "1"},
+    {"id": "3", "system_field": "email", "user_heading": "Email", "is_required": "1"},
+    {"id": "5", "system_field": "owner", "user_heading": "AC Manager", "is_required": "1"},
+    {"id": "6", "system_field": "designation", "user_heading": "designation", "is_required": "1"},
+    {"id": "7", "system_field": "department", "user_heading": "department", "is_required": "1"},
+    {"id": "10", "system_field": "source_details", "user_heading": "PROSPECT SOURCE DETAILS", "is_required": "1"},
+    {"id": "11", "system_field": "lead_status", "user_heading": "LEAD / PROSPECT", "is_required": "1"},
+    {"id": "13", "system_field": "expected_convertion_date", "user_heading": "EXPECTED CONVERSION DATE", "is_required": "1"},
+    {"id": "15", "system_field": "discussion_point", "user_heading": "DISCUSSION POINTS", "is_required": "1"},
+    {"id": "16", "system_field": "product_discussion", "user_heading": "PRODUCT DISCUSSION", "is_required": "1"},
+    {"id": "17", "system_field": "rating", "user_heading": "PROSPECT GRADING / RATING", "is_required": "1"},
+    {"id": "19", "system_field": "status", "user_heading": "CURRENT STATUS", "is_required": "1"},
+    {"id": "20", "system_field": "num_of_headcount", "user_heading": "TOTAL NUMBER OF HEAD COUNT", "is_required": "1"},
+    {"id": "21", "system_field": "expected_billing_value", "user_heading": "EXPECTED BILLING VALUE", "is_required": "1"},
+    {"id": "22", "system_field": "arpu_value", "user_heading": "ARPU VALUE", "is_required": "1"},
+    {"id": "23", "system_field": "phone_no", "user_heading": "Phone", "is_required": "1"},
+  ];
 
   String formatHeading(String heading) {
     String cleaned = heading.replaceAll(",", "").trim();

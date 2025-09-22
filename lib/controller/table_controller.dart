@@ -32,15 +32,19 @@ class TableController extends GetxController {
   ];
   var headingFields = <String>[].obs;
   void setHeadingFields(List<dynamic> data) async{
-    headingFields.value = data.map((e) => controllers.formatHeading(e['user_heading'].toString())).toList();
-    final prefs = await SharedPreferences.getInstance();
-    final saved = prefs.getString('tableHeadings');
+    try{
+      headingFields.value = data.map((e) => controllers.formatHeading(e['user_heading'].toString())).toList();
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getString('tableHeadings');
 
-    if (saved != null) {
-      final List<dynamic> decoded = jsonDecode(saved);
-      tableHeadings.value = decoded.cast<String>();
-    } else {
-      tableHeadings.value = headingFields.take(8).toList();
+      if (saved != null) {
+        final List<dynamic> decoded = jsonDecode(saved);
+        tableHeadings.value = decoded.cast<String>();
+      } else {
+        tableHeadings.value = headingFields.take(8).toList();
+      }
+    }catch(e){
+      print("Set Heading fields $e");
     }
   }
 
@@ -71,29 +75,29 @@ class TableController extends GetxController {
 
   // Cancel changes (restore default)
   void cancelChanges() async{
-    headingFields.value = [
-      "Name",
-      "Company Name",
-      "Mobile Number",
-      "Details Of Services Required",
-      "Source Of Prospect",
-      "Added Date",
-      "City",
-      "Status Update",
-      "Designation",
-      "Department",
-      "Email",
-      "Manager",
-      "Prospect Source Details",
-      "Expected Conversion Date",
-      "Discussion Points",
-      "Product Discussion",
-      "Rating",
-      "Status",
-      "Total Number Of Head Count",
-      "Expected Billing Value",
-      "Arpu Value"
-    ];
+    // headingFields.value = [
+    //   "Name",
+    //   "Company Name",
+    //   "Mobile Number",
+    //   "Details Of Services Required",
+    //   "Source Of Prospect",
+    //   "Added Date",
+    //   "City",
+    //   "Status Update",
+    //   "Designation",
+    //   "Department",
+    //   "Email",
+    //   "Manager",
+    //   "Prospect Source Details",
+    //   "Expected Conversion Date",
+    //   "Discussion Points",
+    //   "Product Discussion",
+    //   "Rating",
+    //   "Status",
+    //   "Total Number Of Head Count",
+    //   "Expected Billing Value",
+    //   "Arpu Value"
+    // ];
     tableHeadings.value = headingFields.take(8).toList();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
