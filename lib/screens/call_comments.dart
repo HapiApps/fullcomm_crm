@@ -143,6 +143,8 @@ class _CallCommentsState extends State<CallComments> {
                                               width: 500,
                                               height: 400,
                                               child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                                  // Divider(),
                                                   Column(
@@ -156,25 +158,26 @@ class _CallCommentsState extends State<CallComments> {
                                                       SizedBox(
                                                         width: 480,
                                                         height: 50,
-                                                        child: KeyboardDropdownField<AllCustomersObj>(
-                                                          items: controllers.customers,
+                                                        child: Obx(()=>KeyboardDropdownField<AllCustomersObj>(
+                                                          items: controllers.customers.value,
                                                           borderRadius: 5,
                                                           borderColor: Colors.grey.shade300,
                                                           hintText: "Customers",
                                                           labelText: "",
                                                           labelBuilder: (customer) =>'${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
-                                                          itemBuilder: (customer) =>
-                                                              Container(
-                                                                width: 300,
-                                                                alignment: Alignment.topLeft,
-                                                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                                                child: CustomText(
-                                                                  text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
-                                                                  colors: Colors.black,
-                                                                  size: 14,
-                                                                  textAlign: TextAlign.start,
-                                                                ),
+                                                          itemBuilder: (customer) {
+                                                            return Container(
+                                                              width: 300,
+                                                              alignment: Alignment.topLeft,
+                                                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                              child: CustomText(
+                                                                text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                                                colors: Colors.black,
+                                                                size: 14,
+                                                                textAlign: TextAlign.start,
                                                               ),
+                                                            );
+                                                          },
                                                           textEditingController: controllers.cusController,
                                                           onSelected: (value) {
                                                             controllers.selectCustomer(value);
@@ -182,22 +185,27 @@ class _CallCommentsState extends State<CallComments> {
                                                           onClear: () {
                                                             controllers.clearSelectedCustomer();
                                                           },
-                                                        ),
+                                                        ),)
                                                       ),
                                                     ],
                                                   ),
                                                   10.height,
-                                                  CustomDropDown(
-                                                    saveValue: controllers.callType,
-                                                    valueList: controllers.callTypeList,
-                                                    text: "Call Type",
-                                                    width: 480,
-                                                    //inputFormatters: constInputFormatters.textInput,
-                                                    onChanged: (value) async {
-                                                      setState(() {
-                                                        controllers.callType = value;
-                                                      });
-                                                    },
+                                                  Row(
+                                                    children: [
+                                                      8.width,
+                                                      CustomDropDown(
+                                                        saveValue: controllers.callType,
+                                                        valueList: controllers.callTypeList,
+                                                        text: "Call Type",
+                                                        width: 480,
+                                                        //inputFormatters: constInputFormatters.textInput,
+                                                        onChanged: (value) async {
+                                                          setState(() {
+                                                            controllers.callType = value;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ],
                                                   ),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -205,7 +213,7 @@ class _CallCommentsState extends State<CallComments> {
                                                       Obx(() => CustomDateBox(
                                                           text: "Date",
                                                           value: controllers.empDOB.value,
-                                                          width: 230,
+                                                          width: 235,
                                                           onTap: () {
                                                             utils.datePicker(
                                                                 context: context,
@@ -218,7 +226,7 @@ class _CallCommentsState extends State<CallComments> {
                                                       Obx(() => CustomDateBox(
                                                           text: "Time",
                                                           value: controllers.callTime.value,
-                                                          width: 230,
+                                                          width: 235,
                                                           onTap: () {
                                                             utils.timePicker(
                                                                 context: context,
@@ -231,16 +239,21 @@ class _CallCommentsState extends State<CallComments> {
                                                     ],
                                                   ),
                                                   10.height,
-                                                  CustomDropDown(
-                                                    saveValue: controllers.callStatus,
-                                                    valueList: controllers.callStatusList,
-                                                    text: "Status",
-                                                    width: 480,
-                                                    onChanged: (value) async {
-                                                      setState(() {
-                                                        controllers.callStatus = value;
-                                                      });
-                                                    },
+                                                  Row(
+                                                    children: [
+                                                      8.width,
+                                                      CustomDropDown(
+                                                        saveValue: controllers.callStatus,
+                                                        valueList: controllers.callStatusList,
+                                                        text: "Status",
+                                                        width: 480,
+                                                        onChanged: (value) async {
+                                                          setState(() {
+                                                            controllers.callStatus = value;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ],
                                                   ),
                                                   Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,

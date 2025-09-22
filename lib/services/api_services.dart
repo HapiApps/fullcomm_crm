@@ -1140,8 +1140,7 @@ class ApiService {
           // 👉 Build a readable string
           StringBuffer failMsg = StringBuffer();
           for (var failure in response["failures"]) {
-            failMsg.writeln(
-                "• ${failure["name"]} (${failure["phone_no"]}) → ${failure["error"]}");
+            failMsg.writeln("• ${failure["name"]} (${failure["phone_no"]}) → ${failure["error"]}");
           }
 
           cusErrorDialog(

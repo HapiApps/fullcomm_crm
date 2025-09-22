@@ -108,7 +108,6 @@ class _AddLeadState extends State<AddLead> {
       controllers.leadXCrt.text = twitter.toString();
       controllers.leadLinkedinCrt.text = linkedin.toString();
       controllers.leadNameCrt[0].text = "";
-      print("lead name ${controllers.leadNameCrt[0].text}");
       controllers.leadMobileCrt[0].text = "";
       controllers.leadEmailCrt[0].text = "";
       controllers.leadTitleCrt[0].text = "";

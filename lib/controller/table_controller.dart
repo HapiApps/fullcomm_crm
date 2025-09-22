@@ -43,6 +43,8 @@ class TableController extends GetxController {
       tableHeadings.value = headingFields.take(8).toList();
     }
   }
+
+  RxBool isTableLoading = false.obs;
   RxList<String> tableHeadings = <String>[].obs;
 
   @override
@@ -60,13 +62,15 @@ class TableController extends GetxController {
 
   // Apply changes (first 8 update table headings)
   void applyChanges()async{
+    isTableLoading.value = true;
     tableHeadings.value = headingFields.take(8).toList();
+    isTableLoading.value =false;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
   }
 
   // Cancel changes (restore default)
-  void cancelChanges() {
+  void cancelChanges() async{
     headingFields.value = [
       "Name",
       "Company Name",
@@ -91,5 +95,7 @@ class TableController extends GetxController {
       "Arpu Value"
     ];
     tableHeadings.value = headingFields.take(8).toList();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
   }
 }
