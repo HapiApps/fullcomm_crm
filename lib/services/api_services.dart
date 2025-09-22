@@ -1984,7 +1984,6 @@ class ApiService {
     } catch (e) {
         controllers.fields.value = controllers.defaultFields.map((e) => CustomerField.fromJson(e)).toList();
       tableController.setHeadingFields(controllers.defaultFields);
-      print("Server fields value fetched failed $e");
       throw Exception('Failed to load album');
     }
   }
