@@ -821,7 +821,6 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                 // ),
 
                 ...tableController.tableHeadings.map((heading) {
-                  print("head $heading");
                   if (heading.toLowerCase() == "added date" ||
                       heading.toLowerCase() == "prospect enrollment date") {
                     return Container(

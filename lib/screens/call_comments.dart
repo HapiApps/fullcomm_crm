@@ -190,23 +190,24 @@ class _CallCommentsState extends State<CallComments> {
                                                     ],
                                                   ),
                                                   10.height,
-                                                  Row(
-                                                    children: [
-                                                      8.width,
-                                                      CustomDropDown(
-                                                        saveValue: controllers.callType,
-                                                        valueList: controllers.callTypeList,
-                                                        text: "Call Type",
-                                                        width: 480,
-                                                        //inputFormatters: constInputFormatters.textInput,
-                                                        onChanged: (value) async {
-                                                          setState(() {
-                                                            controllers.callType = value;
-                                                          });
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
+
+                                                  // Row(
+                                                  //   children: [
+                                                  //     8.width,
+                                                  //     CustomDropDown(
+                                                  //       saveValue: controllers.callType,
+                                                  //       valueList: controllers.callTypeList,
+                                                  //       text: "Call Type",
+                                                  //       width: 480,
+                                                  //       //inputFormatters: constInputFormatters.textInput,
+                                                  //       onChanged: (value) async {
+                                                  //         setState(() {
+                                                  //           controllers.callType = value;
+                                                  //         });
+                                                  //       },
+                                                  //     ),
+                                                  //   ],
+                                                  // ),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
@@ -241,20 +242,94 @@ class _CallCommentsState extends State<CallComments> {
                                                   10.height,
                                                   Row(
                                                     children: [
-                                                      8.width,
-                                                      CustomDropDown(
-                                                        saveValue: controllers.callStatus,
-                                                        valueList: controllers.callStatusList,
-                                                        text: "Status",
-                                                        width: 480,
-                                                        onChanged: (value) async {
-                                                          setState(() {
-                                                            controllers.callStatus = value;
-                                                          });
-                                                        },
+                                                      5.width,
+                                                      Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          CustomText(
+                                                            text:"Call Type",
+                                                            colors: colorsConst.textColor,
+                                                            size: 13,
+                                                          ),
+                                                          Row(
+                                                            children: controllers.callTypeList.map<Widget>((type) {
+                                                              return Row(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: [
+                                                                  Radio<String>(
+                                                                    value: type,
+                                                                    groupValue: controllers.callType,
+                                                                    activeColor: colorsConst.primary,
+                                                                    onChanged: (value) {
+                                                                      setState(() {
+                                                                        controllers.callType = value!;
+                                                                      });
+                                                                    },
+                                                                  ),
+                                                                  CustomText(text:type,size: 14,),
+                                                                  20.width, // space between options
+                                                                ],
+                                                              );
+                                                            }).toList(),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ],
                                                   ),
+                                                  10.height,
+                                                  Row(
+                                                    children: [
+                                                      5.width,
+                                                      Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          CustomText(
+                                                            text:"Status",
+                                                            colors: colorsConst.textColor,
+                                                            size: 13,
+                                                          ),
+                                                          Row(
+                                                            children: controllers.callStatusList.map<Widget>((type) {
+                                                              return Row(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: [
+                                                                  Radio<String>(
+                                                                    value: type,
+                                                                    groupValue: controllers.callStatus,
+                                                                    activeColor: colorsConst.primary,
+                                                                    onChanged: (value) {
+                                                                      setState(() {
+                                                                        controllers.callStatus = value!;
+                                                                      });
+                                                                    },
+                                                                  ),
+                                                                  CustomText(text:type,size: 14,),
+                                                                  20.width // space between options
+                                                                ],
+                                                              );
+                                                            }).toList(),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  10.height,
+                                                  // Row(
+                                                  //   children: [
+                                                  //     8.width,
+                                                  //     CustomDropDown(
+                                                  //       saveValue: controllers.callStatus,
+                                                  //       valueList: controllers.callStatusList,
+                                                  //       text: "Status",
+                                                  //       width: 480,
+                                                  //       onChanged: (value) async {
+                                                  //         setState(() {
+                                                  //           controllers.callStatus = value;
+                                                  //         });
+                                                  //       },
+                                                  //     ),
+                                                  //   ],
+                                                  // ),
                                                   Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
