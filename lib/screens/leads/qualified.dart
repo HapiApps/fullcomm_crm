@@ -34,6 +34,7 @@ class _QualifiedState extends State<Qualified> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero, () {
+      apiService.currentVersion();
       controllers.selectedIndex.value = 3;
       controllers.groupController.selectIndex(0);
       setState(() {

@@ -37,6 +37,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero, () {
+      apiService.currentVersion();
       controllers.selectedIndex.value = 5;
       controllers.groupController.selectIndex(0);
       setState(() {

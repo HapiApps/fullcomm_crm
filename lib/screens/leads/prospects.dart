@@ -34,6 +34,7 @@ class _ProspectsState extends State<Prospects> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero, () {
+      apiService.currentVersion();
       controllers.selectedIndex.value = 2;
       controllers.groupController.selectIndex(0);
       setState(() {

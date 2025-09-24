@@ -42,6 +42,9 @@ class _CallCommentsState extends State<CallComments> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
+    Future.delayed(Duration.zero,(){
+      apiService.currentVersion();
+    });
   }
 
   @override

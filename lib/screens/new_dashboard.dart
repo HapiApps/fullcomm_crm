@@ -312,13 +312,9 @@ class _NewDashboardState extends State<NewDashboard> {
                                                   controllers.allGoodLeadsLength.value
                                                       .toString()),
                                               'Disqualified': double.parse(
-                                                  controllers.allGoodLeadsLength.value
-                                                      .toString()),
+                                                  controllers.allGoodLeadsLength.value.toString()),
                                               'Customers': double.parse(
-                                                  controllers
-                                                      .allCustomerLength
-                                                      .value
-                                                      .toString()),
+                                                  controllers.allCustomerLength.value.toString()),
                                             },
                                             centerTextStyle: TextStyle(
                                                 color: colorsConst.textColor),
@@ -326,17 +322,12 @@ class _NewDashboardState extends State<NewDashboard> {
                                             legendOptions: LegendOptions(
                                                 legendTextStyle:
                                                 TextStyle(
-                                                    color: colorsConst
-                                                        .textColor)),
-                                            animationDuration:
-                                            const Duration(
+                                                    color: colorsConst.textColor)),
+                                            animationDuration: const Duration(
                                                 seconds: 2),
                                             chartLegendSpacing: 50,
                                             chartRadius:
-                                            MediaQuery.of(context)
-                                                .size
-                                                .width /
-                                                2.7,
+                                            MediaQuery.of(context).size.width / 2.7,
                                             colorList: const [
                                               Color(0xff94009C),
                                               Color(0xffE3B552),

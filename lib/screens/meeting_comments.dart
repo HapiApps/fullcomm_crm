@@ -52,6 +52,9 @@ class _MeetingCommentsState extends State<MeetingComments> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
+    Future.delayed(Duration.zero,(){
+      apiService.currentVersion();
+    });
   }
 
   @override

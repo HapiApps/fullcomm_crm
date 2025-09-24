@@ -46,6 +46,9 @@ class _MailCommentsState extends State<MailComments> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
+    Future.delayed(Duration.zero,(){
+      apiService.currentVersion();
+    });
   }
 
   @override

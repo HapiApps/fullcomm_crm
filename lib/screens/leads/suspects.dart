@@ -37,6 +37,7 @@ class _SuspectsState extends State<Suspects> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero, () {
+      apiService.currentVersion();
       controllers.selectedIndex.value = 1;
       controllers.groupController.selectIndex(0);
       setState(() {
