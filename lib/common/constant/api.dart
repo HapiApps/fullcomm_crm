@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-//const String domain          = "https://aruu.celwiz.com";
-const String domain          = "https://aruu.in/";
+const String domain          = "https://aruu.celwiz.com";
+//const String domain          = "https://aruu.in/";
 const String version1        = "v1/CRM/web";
 const String appName         = "ARUU’s EasyCRM";
 const String scriptApi       = "$domain/CRM/script.php";

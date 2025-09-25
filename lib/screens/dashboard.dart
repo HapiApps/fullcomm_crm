@@ -337,8 +337,7 @@ class _DashboardState extends State<Dashboard> {
                                                             .toString()),
                                                   },
                                                   centerTextStyle: TextStyle(
-                                                      color: colorsConst
-                                                          .textColor),
+                                                      color: colorsConst.textColor),
                                                   baseChartColor: Colors.white,
                                                   legendOptions: LegendOptions(
                                                       legendTextStyle:
@@ -376,8 +375,7 @@ class _DashboardState extends State<Dashboard> {
                                           height: 220,
                                           decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
+                                            borderRadius: BorderRadius.circular(10),
                                             border: Border.all(
                                               color: Colors.black
                                             )
@@ -386,9 +384,7 @@ class _DashboardState extends State<Dashboard> {
                                             children: [
                                               20.height,
                                               Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   CustomText(
                                                     text:
@@ -436,8 +432,7 @@ class _DashboardState extends State<Dashboard> {
                                                     right: 25,
                                                     child: CircleAvatar(
                                                       radius: 5,
-                                                      backgroundColor:
-                                                          Color(0xff5D5FEF),
+                                                      backgroundColor: Color(0xff5D5FEF),
                                                     ),
                                                   )
                                                 ],

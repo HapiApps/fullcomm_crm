@@ -20,10 +20,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/models/product_obj.dart';
 import 'package:fullcomm_crm/screens/customer/view_customer.dart';
-import 'package:fullcomm_crm/screens/employee/view_employee.dart';
 import 'package:fullcomm_crm/screens/products/view_product.dart';
 import '../common/constant/colors_constant.dart';
-import '../common/utilities/my_encryption_decryption.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_text.dart';
 import '../controller/controller.dart';
@@ -37,268 +35,9 @@ final ApiService apiService = ApiService._();
 
 class ApiService {
   ApiService._();
-  // Future<void> insertEmployeeApi(BuildContext context) async {
-  //   try {
-  //     String uri = 'https://crm.hapirides.in/$version1/dev/insert_employee.php';
-  //     final formData = FormData(({}));
-  //
-  //     formData.fields.addAll([
-  //       MapEntry('name', stringToBase64.encode(controllers.empName.value)),
-  //       MapEntry('emp_id', stringToBase64.encode(controllers.empId.value)),
-  //       MapEntry('email', stringToBase64.encode(controllers.empEmail.value)),
-  //       MapEntry('phone_number', controllers.empPhone.value),
-  //       MapEntry('dob', controllers.empDOB.value),
-  //       MapEntry('department', stringToBase64.encode(controllers.department)),
-  //       MapEntry('position', stringToBase64.encode(controllers.position)),
-  //       MapEntry('type', stringToBase64.encode(controllers.employeeType)),
-  //       MapEntry('doj', controllers.empDOJ.value),
-  //       MapEntry('manager_name', stringToBase64.encode(controllers.empManagerName.value)),
-  //       MapEntry('salary', stringToBase64.encode(controllers.empSalary.value)),
-  //       MapEntry('bonus', stringToBase64.encode(controllers.empBonus.value)),
-  //       MapEntry('benefits', stringToBase64.encode(controllers.benefits)),
-  //       MapEntry('degree', stringToBase64.encode(controllers.empDegree.value)),
-  //       MapEntry('institution', stringToBase64.encode(controllers.empInstitution.value)),
-  //       MapEntry('graduation_year', stringToBase64.encode(controllers.empGraYear.value)),
-  //       MapEntry('gender', stringToBase64.encode(controllers.selectedGender)),
-  //       MapEntry('marital_status', stringToBase64.encode(controllers.selectedMarital)),
-  //       MapEntry('relation_ship', stringToBase64.encode(controllers.selectedRelationShip)),
-  //       MapEntry('cos_id', controllers.storage.read("cos_id")),
-  //       MapEntry('door_no', stringToBase64.encode(controllers.empDoorNo.value)),
-  //       MapEntry('street_name', stringToBase64.encode(controllers.empStreet.value)),
-  //       MapEntry('area', stringToBase64.encode(controllers.empArea.value)),
-  //       MapEntry('city', stringToBase64.encode(controllers.empCity.value)),
-  //       MapEntry('state', stringToBase64.encode(controllers.emState)),
-  //       MapEntry('country', stringToBase64.encode(controllers.empCountry.value)),
-  //       MapEntry('pin_code', stringToBase64.encode(controllers.empPinCode.value)),
-  //     ]);
-  //
-  //     if (imageController.empFileName.value.isNotEmpty){
-  //       formData.files.add(
-  //         MapEntry(
-  //           'image',
-  //           MultipartFile(
-  //             imageController.empMediaData,
-  //             filename: imageController.empFileName.value,
-  //           ),
-  //         ),
-  //       );
-  //     }
-  //
-  //     if (imageController.resumeFileName.value.isNotEmpty) {
-  //       formData.files.add(
-  //         MapEntry(
-  //           'resume',
-  //           MultipartFile(
-  //             imageController.resumeMediaData,
-  //             filename: imageController.resumeFileName.value,
-  //           ),
-  //         ),
-  //       );
-  //     }
-  //
-  //     if (imageController.idCardFileName.value.isNotEmpty) {
-  //       formData.files.add(
-  //         MapEntry(
-  //           'id_card',
-  //           MultipartFile(
-  //             imageController.idCardMediaData,
-  //             filename: imageController.idCardFileName.value,
-  //           ),
-  //         ),
-  //       );
-  //     }
-  //
-  //     final response =  await dio.post(uri, data: formData);
-  //
-  //     if (response.statusCode == 200){
-  //       print("Success: ${response.data}");
-  //       // Reset the controllers and form fields
-  //       //resetFormFields();
-  //       controllers.allEmployeeFuture = apiService.allEmployeeDetails();
-  //       await Future.delayed(const Duration(milliseconds: 100));
-  //       Get.to(const ViewEmployees(), duration: Duration.zero);
-  //     } else {
-  //       print("Failed: ${response.data}");
-  //       errorDialog(context, 'Failed to insert employee: ${response.data}');
-  //     }
-  //   } on SocketException {
-  //     controllers.employeeCtr.reset();
-  //     errorDialog(context, 'No internet connection');
-  //   }  catch (e) {
-  //     controllers.employeeCtr.reset();
-  //     errorDialog(context, 'Unexpected error: ${e.toString()}');
-  //     print('Unexpected error: ${e.toString()}');
-  //   }
-  // }
-
-  Future insertEmployeeApi(BuildContext context) async {
-    try {
-      ///home/hapinode3/DomainActiveProj/crm.hapirides.in/zengraf_crm/dev/insert_employee.php
-      final uri = Uri.parse(scriptApi);
-      var request = http.MultipartRequest("POST", uri);
-
-      request.fields["name"] = stringToBase64.encode(controllers.empName.value);
-      request.fields["emp_id"] = stringToBase64.encode(controllers.empId.value);
-      request.fields["email"] =
-          stringToBase64.encode(controllers.empEmail.value);
-      request.fields["phone_number"] = controllers.empPhone.value;
-      request.fields["dob"] = controllers.empDOB.value;
-      request.fields["department"] =
-          stringToBase64.encode(controllers.department);
-      request.fields["position"] = stringToBase64.encode(controllers.position);
-      request.fields["type"] = stringToBase64.encode(controllers.employeeType);
-      request.fields["doj"] = controllers.empDOJ.value;
-      request.fields["manager_name"] =
-          stringToBase64.encode(controllers.empManagerName.value);
-      request.fields["salary"] =
-          stringToBase64.encode(controllers.empSalary.value);
-      request.fields["bonus"] =
-          stringToBase64.encode(controllers.empBonus.value);
-      request.fields["benefits"] = stringToBase64.encode(controllers.benefits);
-      request.fields["degree"] =
-          stringToBase64.encode(controllers.empDegree.value);
-      request.fields["institution"] =
-          stringToBase64.encode(controllers.empInstitution.value);
-      request.fields["graduation_year"] =
-          stringToBase64.encode(controllers.empGraYear.value);
-      request.fields["gender"] =
-          stringToBase64.encode(controllers.selectedGender);
-      request.fields["marital_status"] =
-          stringToBase64.encode(controllers.selectedMarital);
-      request.fields["relation_ship"] =
-          stringToBase64.encode(controllers.selectedRelationShip);
-      request.fields["cos_id"] = controllers.storage.read("cos_id");
-      request.fields["door_no"] =
-          stringToBase64.encode(controllers.empDoorNo.value);
-      request.fields["street_name"] =
-          stringToBase64.encode(controllers.empStreet.value);
-      request.fields["area"] = stringToBase64.encode(controllers.empArea.value);
-      request.fields["city"] = stringToBase64.encode(controllers.empCity.value);
-      request.fields["state"] = stringToBase64.encode(controllers.emState);
-      request.fields["country"] =
-          stringToBase64.encode(controllers.empCountry.value);
-      request.fields["pin_code"] =
-          stringToBase64.encode(controllers.empPinCode.value);
-
-      if (imageController.empFileName.value.isNotEmpty) {
-        var picture1 = http.MultipartFile.fromBytes(
-          "image",
-          imageController.empMediaData,
-          filename: imageController.empFileName.value,
-          //contentType: http.MediaType('image', 'jpeg'),
-        );
-        request.files.add(picture1);
-      }
-      if (imageController.resumeFileName.value.isNotEmpty) {
-        var picture2 = http.MultipartFile.fromBytes(
-          "resume",
-          imageController.resumeMediaData,
-          filename: imageController.resumeFileName.value,
-          //contentType: http.MediaType('image', 'jpeg'),
-        );
-        request.files.add(picture2);
-      }
-      if (imageController.idCardFileName.value.isNotEmpty) {
-        var picture3 = http.MultipartFile.fromBytes(
-          "id_card",
-          imageController.idCardMediaData,
-          filename: imageController.idCardFileName.value,
-          //contentType: http.MediaType('image', 'jpeg'),
-        );
-        request.files.add(picture3);
-      }
-      var response = await request.send();
-      var output = await http.Response.fromStream(response);
-      print("result ${output.body}");
-      print("fields ${request.fields}");
-      if (response.statusCode == 200 &&
-          output.body == "{\"status_code\":200,\"message\":\"OK\"}") {
-        print("success");
-
-        controllers.empName.value = "";
-        controllers.emNameController.clear();
-        controllers.empId.value = "";
-        controllers.emIDController.clear();
-        controllers.empEmail.value = "";
-        controllers.emEmailController.clear();
-        controllers.empPhone.value = "";
-        controllers.emPhoneController.clear();
-        controllers.empDOB.value = "";
-
-        controllers.department = null;
-        controllers.position = null;
-        controllers.employeeType = null;
-        controllers.empDOJ.value = "";
-        controllers.empManagerName.value = "";
-        controllers.emManagerController.clear();
-        controllers.empSalary.value = "";
-        controllers.emSalaryController.clear();
-        controllers.empBonus.value = "";
-        controllers.emBonusController.clear();
-        controllers.benefits = null;
-        controllers.empDegree.value = "";
-        controllers.emDegreeController.clear();
-        controllers.empInstitution.value = "";
-        controllers.emInstitutionController.clear();
-        controllers.empGraYear.value = "";
-        controllers.emGraduationYearController.clear();
-        controllers.selectedGender = 'Male';
-        controllers.selectedMarital = 'Single';
-        controllers.selectedRelationShip = 'Spouse';
-        controllers.empDoorNo.value = "";
-        controllers.emDoorNoController.clear();
-        controllers.empStreet.value = "";
-        controllers.emStreetController.clear();
-        controllers.empArea.value = "";
-        controllers.emAreaController.clear();
-        controllers.empCity.value = "";
-        controllers.emCityController.clear();
-        controllers.emState = null;
-        controllers.empCountry.value = "";
-        controllers.emCountryController.clear();
-        controllers.empPinCode.value = "";
-        controllers.emPinCodeController.clear();
-        imageController.photo1.value = "";
-        controllers.allEmployeeFuture = apiService.allEmployeeDetails();
-        await Future.delayed(const Duration(milliseconds: 100));
-        Get.to(const ViewEmployees(), duration: Duration.zero);
-        // Get.to(const ViewStall());
-      } else {
-        print("Failed");
-        errorDialog(Get.context!, output.body);
-      }
-
-      // Navigator.push(context,
-      //   PageRouteBuilder(
-      //     pageBuilder: (context, animation1, animation2) => const ViewEmployees(),
-      //     transitionDuration: Duration.zero,
-      //     reverseTransitionDuration: Duration.zero,
-      //   ),
-      // );
-      //Get.to(const ViewEmployees());
-      // var output=await http.Response.fromStream(response);
-      // print("result ${output.body}");
-
-      controllers.employeeCtr.reset();
-    } on SocketException {
-      controllers.employeeCtr.reset();
-      errorDialog(Get.context!, 'No internet connection');
-      //throw Exception('No internet connection'); // Handle network errors
-    } on HttpException catch (e) {
-      controllers.employeeCtr.reset();
-      errorDialog(Get.context!, 'Server error employee: ${e.toString()}');
-      //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
-    } catch (e) {
-      controllers.employeeCtr.reset();
-      errorDialog(Get.context!, 'Unexpected error employee: ${e.toString()}');
-      //throw Exception('Unexpected error employee: ${e.toString()}'); // Catch other exceptions
-    }
-  }
 
   Future insertLeadAPI(BuildContext context) async {
-    var index =
-        controllers.isMainPersonList.indexWhere((element) => element == true);
-    print(index);
+    var index = controllers.isMainPersonList.indexWhere((element) => element == true);
     controllers.leadNames.value = "";
     controllers.leadMobiles.value = "";
     controllers.leadEmails.value = "";
@@ -2533,8 +2272,7 @@ class ApiService {
             "rating": data[i]["rating"].toString(),
           });
         }
-        controllers.allLeadFuture.value =
-            data.map((json) => NewLeadObj.fromJson(json)).toList();
+        controllers.allLeadFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         controllers.allLeads.value =
             data.map((json) => NewLeadObj.fromJson(json)).toList();
         return data.map((json) => NewLeadObj.fromJson(json)).toList();
@@ -2624,10 +2362,8 @@ class ApiService {
             "rating": data[i]["rating"].toString(),
           });
         }
-
         // Update the observable list with the fetched data
-        controllers.allNewLeadFuture.value =
-            data.map((json) => NewLeadObj.fromJson(json)).toList();
+        controllers.allNewLeadFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
