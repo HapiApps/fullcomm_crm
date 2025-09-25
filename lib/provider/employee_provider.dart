@@ -1,23 +1,14 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:pss_web/model/customer_response.dart';
-import 'package:pss_web/model/delivery_response.dart';
-import 'package:pss_web/model/employee_details.dart';
-import 'package:pss_web/model/role_details.dart';
-
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
-import '../api/color.dart';
-import '../common/util/toast.dart';
-import '../repo/employee_repo.dart';
-import '../sidebar.dart';
-
-
+import '../common/utilities/utils.dart';
+import '../models/employee_details.dart';
+import 'employee_repo.dart';
 
 class EmployeeProvider with ChangeNotifier {
 
-  final EmployeeRepository _EmployeeRepository = EmployeeRepository();
+  final EmployeeRepository _employeeRepository = EmployeeRepository();
   bool _isLoading = false;
   bool _isError = false;
 
@@ -52,67 +43,14 @@ class EmployeeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
-  List<Role> _roledata = [];
-
-  List<Role> get roleData => _roledata;
-
   List<Staff> _staffRoleData = [];
 
   List<Staff> get staffRoleData => _staffRoleData;
 
   List<Staff>  filteredStaff = [];
-  List<Role>  filteredRole = [];
-
-  List<Delivery> _deliverydata = [];
-
-  List<Delivery> get deliverydata => _deliverydata;
-
-  List<Customer> _customerData = [];
-
-  List<Customer> get customerData => _customerData;
-
-  List<Delivery>  filtereddelivery = [];
-  List<Customer>  filteredCustomer = [];
-
-  void _initializeRoles() {
-    filteredRole = List.from(_roledata);
-   // log('Initialized vendors: $_roledata');
-    notifyListeners();
-  }
 
   void _initializeStaff() {
     filteredStaff = List.from(_staffRoleData);
-    //log('Initialized vendors: $_staffRoleData');
-    notifyListeners();
-  }
-
-  void _initializeDelivery() {
-    filtereddelivery = List.from(_deliverydata);
-   // log('Initialized vendors: $_deliverydata');
-    notifyListeners();
-  }
-  void _initializeCustomer() {
-    filteredCustomer = List.from(_customerData);
-   // log('Initialized vendors: $_customerData');
-    notifyListeners();
-  }
-  // void _initializeCustomer() {
-  //   filteredCustomer = _customerData.where((customer) {
-  //     final role = customer.code ?? '';
-  //     return role.isNotEmpty; // or whatever condition
-  //   }).toList();
-  // }
-
-  void filterRoles(String query) {
-    if (query.isEmpty) {
-      filteredRole = List.from(_roledata);
-    } else {
-      filteredRole = _roledata
-          .where((roleData) =>
-          roleData.roleTitle!.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    }
     notifyListeners();
   }
 
@@ -120,84 +58,17 @@ class EmployeeProvider with ChangeNotifier {
     if (query.isEmpty) {
       filteredStaff = List.from(_staffRoleData);
     } else {
-      filteredStaff = _staffRoleData
-          .where((staffData) =>
+      filteredStaff = _staffRoleData.where((staffData) =>
           staffData.sName!.toLowerCase().contains(query.toLowerCase()))
           .toList();
     }
     notifyListeners();
   }
 
-  void filterDelivery(String query) {
-    if (query.isEmpty) {
-      filtereddelivery = List.from(_deliverydata);
-    } else {
-      filtereddelivery = _deliverydata
-          .where((deliverydata) =>
-          deliverydata.sName!.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    }
-    notifyListeners();
-  }
-  void initializeCustomers(List<Customer> customers) {
-    _customerData = customers;
-    filteredCustomer = List.from(_customerData); // Initialize with full data
-    notifyListeners();
-  }
-  void filterCustomer(String query) {
-    if (query.isEmpty) {
-      // Restore full list
-      filteredCustomer = List.from(_customerData);
-    } else {
-      // Apply filter
-      filteredCustomer = _customerData
-          .where((customerData) =>
-          customerData.name!.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    }
-    notifyListeners();
-  }
-
-  // Filter users based on search query
-  void clearSearch() {
-    // searchController.clear();
-    filteredRole= List.from(_roledata);
-    notifyListeners();
-  }
   void clearSearchStaff() {
-    // searchController.clear();
     filteredStaff= List.from(_staffRoleData);
     notifyListeners();
   }
-
-
-  // /// Vendor Checkbox
-  // List<String> _selectedVendorIds = [];
-  // List<String> get selectedVendorIds => _selectedVendorIds;
-  //
-  // bool isChecked(String id) {
-  //   return _selectedVendorIds.contains(id);
-  // }
-  //
-  // bool get hasSelectedVendors {
-  //   return _selectedVendorIds.isNotEmpty;
-  // }
-  //
-  // void resetCategoriesChecked(){
-  //   _selectedVendorIds = [];
-  // }
-  //
-  // void toggleSelection(String id) {
-  //   if (_selectedVendorIds.contains(id)) {
-  //     _selectedVendorIds.remove(id);
-  //     log("Selected Product Id for deletion:$_selectedVendorIds");
-  //   } else {
-  //     // Add ID if not in the list (selected)
-  //     _selectedVendorIds.add(id);
-  //     log("Selected Product Id for deletion:$_selectedVendorIds");
-  //   }
-  //   notifyListeners();
-  // }
 
   ///Customer Details Checkbox
   List<String> _selectedCustomerIds = [];
@@ -468,406 +339,76 @@ class EmployeeProvider with ChangeNotifier {
     dEmailController.clear();
   }
 
-  List<Role> _roleTitles = [];
-  List<Role> get roleTitles => _roleTitles;
-
-  List<Role> roles = [];
-
-  List<Role> selectedRoles = [];
-
-
-
-
-
-
-  void showRoleMultiSelect(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Select Roles"),
-          content: SingleChildScrollView(
-            child: Column(
-              children: roleTitles.map((role) {
-                final isSelected = selectedRoles.contains(role);
-                return CheckboxListTile(
-                  value: isSelected,
-                  title: Text(role.roleTitle ?? ''),
-                  onChanged: (bool? value) {
-                    if (value == true) {
-                      selectedRoles.add(role);
-                    } else {
-                      selectedRoles.remove(role);
-                    }
-                    // Force rebuild the dialog
-                    (context as Element).markNeedsBuild();
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-
-                // Update text field with role titles (for UI display)
-                otherRoleController.text =
-                    selectedRoles.map((r) => r.roleTitle).join(',');
-
-                // ✅ Extract only IDs and store/send
-                List<String?> selectedRoleIds = selectedRoles.map((r) => r.id).toList();
-
-                print("Selected Role IDs to send: $selectedRoleIds");
-
-                // ❗ Now send this `selectedRoleIds` to backend wherever you do API call
-              },
-              child: Text("OK"),
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  Role? _selectedRole;
-  Role? get selectedRole => _selectedRole;
-
-  void selectedRoleSetter(Role? role) {
-    _selectedRole = role;
-    notifyListeners();
-  }
-
-  void setRolesFromJson(List<dynamic> jsonList) {
-    _roleTitles = jsonList.map((e) => Role.fromJson(e)).toList();
-    notifyListeners();
-  }
-
-  Future<void> roleDetailsData({required BuildContext context}) async {
-
-    try {
-
-      // _isLoading = true;
-      // notifyListeners();
-
-      final response = await _EmployeeRepository.getRoleData();
-
-      if (response.responseCode == 200) {
-
-        _isLoading = false;
-
-        _roledata = response.roles ?? [];
-        _roleTitles = _roledata;
-
-        _initializeRoles();
-
-        log("Filtered Role Data Count: ${filteredRole.length}");
-
-        log("Filtered Role Data : ${filteredRole}");
-
-
-        log("Role Inn: $_roledata");
-
-        log("Role Data Fetched: ${response.roles}");
-
-      } else {
-
-        log("Role Provider: Something Went Wrong");
-
-      }
-
-    } catch (e) {
-
-      log("Role Provider: ${e}");
-      throw Exception(e);
-
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
   Future<void> staffRoleDetailsData({required BuildContext context}) async {
-
     try {
-
-      // _isLoading = true;
-      // notifyListeners();
-
-      final response = await _EmployeeRepository.getStaffRoleData();
-
+      final response = await _employeeRepository.getStaffRoleData();
       if (response.responseCode == 200) {
-
         _isLoading = false;
         _staffRoleData = response.roles ?? [];
         _initializeStaff();
-
-        // log("Filtered Vendors Data Count: ${filteredStaff.length}");
-        //
-        // log("Filtered Vendors Data : ${filteredStaff}");
-        //
-        //
-        // log("Categories Inn: $_roledata");
-        //
-        // log("Categories Data Fetched: ${response.roles}");
-
       } else {
-
         log("Vendor Provider: Something Went Wrong");
-
       }
-
     } catch (e) {
-
       log("Vendor Provider: ${e}");
       throw Exception(e);
-
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
-
-  Future<void> CustomerDetailsData({required BuildContext context}) async {
-
-    try {
-
-      // _isLoading = true;
-      // notifyListeners();
-
-      final response = await _EmployeeRepository.getCustomerRoleData();
-
-      if (response.responseCode == 200) {
-
-        _isLoading = false;
-
-        _customerData = response.customer ;
-
-        _initializeCustomer();
-        //CustomerDetailsData(context: context);
-        // log("Filtered filteredCustomer Data Count: ${filteredCustomer.length}");
-        //
-        // log("Filtered filteredCustomer Data : ${filteredCustomer}");
-        //
-        //
-        // log("filteredCustomer Inn: $_roledata");
-        //
-        // log("filteredCustomer Data Fetched: ${response.customer}");
-
-      } else {
-
-        log("filteredCustomer Provider: Something Went Wrong");
-
-      }
-
-    } catch (e) {
-
-      log("filteredCustomer Provider: ${e}");
-      throw Exception(e);
-
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> DeliveryDetailsData({required BuildContext context}) async {
-
-    try {
-
-      // _isLoading = true;
-      // notifyListeners();
-
-      final response = await _EmployeeRepository.getDeliveryData();
-
-      if (response.responseCode == 200) {
-
-        _isLoading = false;
-
-        _deliverydata = response.delivery ?? [];
-
-        _initializeDelivery();
-
-       // log("Filtered Vendors Data Count: ${filtereddelivery.length}");
-
-       // log("Filtered Vendors Data : ${filtereddelivery}");
-
-//log("Categories Inn: $_roledata");
-
-        //log("Categories Data Fetched: ${response.delivery}");
-
-      } else {
-
-        log("Vendor Provider: Something Went Wrong");
-
-      }
-
-    } catch (e) {
-
-      log("Vendor Provider: ${e}");
-      throw Exception(e);
-
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> roleInsert({required BuildContext context, required role, required roleDesc ,required active}) async {
-
-    try {
-      // _isLoading = true;
-      notifyListeners();
-      final response = await _EmployeeRepository.insertRole(
-         roleName: role,
-         roleDesc : roleDesc,
-         active : active,
-      );
-      log("$response");
-      if (response.responseCode == 200) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SidebarScreen(selectedPage: "Role")));
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Role Inserted Sucessfully",
-            backgroundColor: colorsConst.successColor
-        );
-
-
-      }
-      else if(response.responseCode == 409) {
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Role Already Exist",
-            backgroundColor: colorsConst.errorColor);
-      }
-      else {
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Role Insertion Failed",
-            backgroundColor: colorsConst.errorColor);
-      }
-
-    } catch (e) {
-
-      throw Exception(e);
-
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-      addRoleButtonController.reset();
-
-    }
-  }
-
-  Future<void> roleUpdate({required BuildContext context, required role, required roleDesc ,required id ,required active}) async {
-
-    try {
-      // _isLoading = true;
-      notifyListeners();
-      final response = await _EmployeeRepository.updateRole(
-        id:id,
-        roleName: role,
-        roleDesc : roleDesc,
-        active : active,
-      );
-      log("$response");
-      if (response.responseCode == 200) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SidebarScreen(selectedPage: "Role")));
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Role Updated Sucessfully",
-            backgroundColor: colorsConst.successColor
-        );
-
-
-      }
-      else if(response.responseCode == 409) {
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Role Already Exist",
-            backgroundColor: colorsConst.errorColor);
-      }
-      else {
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Role Updated Failed",
-            backgroundColor: colorsConst.errorColor);
-      }
-
-    } catch (e) {
-
-      throw Exception(e);
-
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-      addRoleButtonController.reset();
-
-    }
-  }
-
   Future<void> employeeInsert({
     required BuildContext context,
-    required emp_name,  required emp_mobile, required emp_address, required emp_bonus, required emp_email, required emp_join_date, required emp_password,
-    required emp_role , required emp_salary, required emp_whatsapp, required active,  required roles,
+    required empName,
+    required empMobile, required empAddress,
+    required empBonus, required empEmail, required empJoinDate, required empPassword,
+    required empRole , required empSalary, required empWhatsapp, required active,  required roles,
   })
   async {
-
     try {
-      // _isLoading = true;
       notifyListeners();
-      final response = await _EmployeeRepository.insertEmployee(
-        emp_name: emp_name,
-        emp_mobile : emp_mobile,
-        emp_address: emp_address,
-        emp_bonus: emp_bonus,
-        emp_email: emp_email,
-        emp_join_date: emp_join_date,
-        emp_password:emp_password ,
-        emp_role: emp_role,
-        emp_salary:emp_salary ,
-        emp_whatsapp:emp_whatsapp ,
+      final response = await _employeeRepository.insertEmployee(
+        emp_name: empName,
+        emp_mobile : empMobile,
+        emp_address: empAddress,
+        emp_bonus: empBonus,
+        emp_email: empEmail,
+        emp_join_date: empJoinDate,
+        emp_password:empPassword ,
+        emp_role: empRole,
+        emp_salary:empSalary ,
+        emp_whatsapp:empWhatsapp ,
         active : active,
         roles:roles ,
       );
       log("response:$response");
-      log("Add Employee Repository if ${emp_name}");
-      log("Add Employee Repository if ${emp_mobile}");
-      log("Add Employee Repository if ${emp_whatsapp}");
-      log("Add Employee Repository if ${emp_email}");
-      log("Add Employee Repository if ${emp_address}");
-      log("Add Employee Repository if ${emp_password}");
-      log("Add Employee Repository if ${emp_role}");
-      log("Add Employee Repository if ${emp_salary}");
-      log("Add Employee Repository if ${emp_bonus}");
-      log("Add Employee Repository if ${emp_join_date}");
+      log("Add Employee Repository if $empName");
+      log("Add Employee Repository if $empMobile");
+      log("Add Employee Repository if $empWhatsapp");
+      log("Add Employee Repository if $empEmail");
+      log("Add Employee Repository if $empAddress");
+      log("Add Employee Repository if $empPassword");
+      log("Add Employee Repository if $empRole");
+      log("Add Employee Repository if $empSalary");
+      log("Add Employee Repository if $empBonus");
+      log("Add Employee Repository if $empJoinDate");
       if (response.responseCode == 200) {
         log("response:$response");
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SidebarScreen(selectedPage: "Employee")));
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Employee Inserted Sucessfully",
-            backgroundColor: colorsConst.successColor
-        );
+        Navigator.pop(context);
+        utils.snackBar(msg: "Employee Inserted Sucessfully",
+            color: Colors.green,context:context);
         addRoleButtonController.reset();
        }
       else if(response.responseCode == 409){
         addRoleButtonController.reset();
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Mobile Number Already Exist  ",
-            backgroundColor: colorsConst.errorColor);
+        utils.snackBar(msg: "Mobile Number Already Exist",
+            color: Colors.red,context:context);
       }
 
       else {
         addRoleButtonController.reset();
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Employee Insertion Failed",
-            backgroundColor: colorsConst.errorColor);
+        utils.snackBar(msg: "Employee Inserted Failed",
+            color: Colors.red,context:context);
       }
 
     } catch (e) {
@@ -892,7 +433,7 @@ class EmployeeProvider with ChangeNotifier {
     try {
       // _isLoading = true;
       notifyListeners();
-      final response = await _EmployeeRepository.updateEmployee(
+      final response = await _employeeRepository.updateEmployee(
         id: id,
         emp_name: emp_name,
         emp_mobile : emp_mobile,
@@ -920,29 +461,21 @@ class EmployeeProvider with ChangeNotifier {
       log("Add Employee Repository if ${emp_join_date}");
       if (response.responseCode == 200) {
         log("response:$response");
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SidebarScreen(selectedPage: "Employee")));
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Employee Inserted Sucessfully",
-            backgroundColor: colorsConst.successColor
-        );
+        Navigator.pop(context);
+        utils.snackBar(msg: "Employee Inserted Sucessfully",
+            color: Colors.green,context:context);
         addEmployeeButtonController.reset();
       }
       else if(response.responseCode == 409){
       addEmployeeButtonController.reset();
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Mobile Number Already Exist  ",
-            backgroundColor: colorsConst.errorColor);
+      utils.snackBar(msg: "Mobile Number Already Exist  ",
+          color: Colors.red,context:context);
       }
 
       else {
         addEmployeeButtonController.reset();
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Employee Insertion Failed",
-            backgroundColor: colorsConst.errorColor);
+        utils.snackBar(msg: "Employee Inserted Failed",
+            color: Colors.red,context:context);
       }
 
     } catch (e) {
@@ -961,7 +494,7 @@ class EmployeeProvider with ChangeNotifier {
     try {
       notifyListeners(); // Notifying without setting loading to true
 
-      final response = await _EmployeeRepository.deleteEmployee(
+      final response = await _employeeRepository.deleteEmployee(
         employeeIds: eIds,
         employeeId: eId,
       );
@@ -993,490 +526,14 @@ class EmployeeProvider with ChangeNotifier {
         }
 
         if (context.mounted) {
-          ToastMsg.showSnackbar(
-            context: context,
-            text: "Vendor(s) deleted successfully",
-            backgroundColor: colorsConst.successColor,
-          );
+          utils.snackBar(msg: "Vendor(s) deleted successfully",
+              color: Colors.green,context:context);
         }
         staffRoleDetailsData(context: context);
         notifyListeners();
       } else {
-        ToastMsg.showSnackbar(
-          context: context,
-          text: "Vendor deletion failed",
-          backgroundColor: colorsConst.errorColor,
-        );
-      }
-    } catch (e) {
-      throw Exception(e);
-    } finally {
-      notifyListeners(); // Keeping this to update UI if needed
-    }
-  }
-
-  Future<void> roleDelete({required BuildContext context, List<String>? rIds, rId}) async {
-    try {
-      notifyListeners(); // Notifying without setting loading to true
-
-      final response = await _EmployeeRepository.roledelete(
-        roleIds: rIds,
-        roleId: rId,
-      );
-
-      log("${response.toJson()}");
-
-      if (response.responseCode == 200) {
-        List<String> deletedIds = [];
-
-        if (response.result is List) {
-          log("Deleting Vendor(s) with ID(s): ${response.result}");
-          deletedIds = List<String>.from(response.result?.map((id) => id.toString()));
-        } else if (response.result is String) {
-          deletedIds = [response.result.toString()];
-        }
-
-        if (deletedIds.isNotEmpty) {
-          log("Before deletion: ${filteredRole.length}");
-
-          filteredRole.removeWhere((role) => deletedIds.contains(role.id.toString()));
-
-          log("After deletion: ${filteredRole.length}");
-
-
-
-          roleDetailsData(context: context);
-
-          notifyListeners();
-        }
-
-        if (context.mounted) {
-          ToastMsg.showSnackbar(
-            context: context,
-            text: "Role deleted successfully",
-            backgroundColor: colorsConst.successColor,
-          );
-        }
-        staffRoleDetailsData(context: context);
-        notifyListeners();
-      } else {
-        ToastMsg.showSnackbar(
-          context: context,
-          text: "Role deletion failed",
-          backgroundColor: colorsConst.errorColor,
-        );
-      }
-    } catch (e) {
-      throw Exception(e);
-    } finally {
-      notifyListeners(); // Keeping this to update UI if needed
-    }
-  }
-
-
-  Future<void> customerInsert({
-    required BuildContext context,
-    required name,  required mobile, required address,required email,  required password,
-    required whatsapp, required active,
-  })
-  async {
-
-    try {
-      // _isLoading = true;
-      notifyListeners();
-      final response = await _EmployeeRepository.insertCustomer(
-        name: name,
-        mobile : mobile,
-        address: address,
-
-        email: email,
-
-        password:password ,
-
-        whatsapp:whatsapp ,
-        active : active,
-
-      );
-      log("response:$response");
-      log("Add Employee Repository if ${name}");
-      log("Add Employee Repository if ${mobile}");
-      log("Add Employee Repository if ${whatsapp}");
-      log("Add Employee Repository if ${email}");
-      log("Add Employee Repository if ${address}");
-      log("Add Employee Repository if ${password}");
-
-      if (response.responseCode == 200) {
-        log("response:$response");
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SidebarScreen(selectedPage: "Customer")));
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Customer Inserted Sucessfully",
-            backgroundColor: colorsConst.successColor
-        );
-        CustomerDetailsData(context: context);
-        addCustomerButtonController.reset();
-      }
-      else if(response.responseCode == 409){
-        addCustomerButtonController.reset();
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Mobile Number Already Exist  ",
-            backgroundColor: colorsConst.errorColor);
-      }
-
-      else {
-        addCustomerButtonController.reset();
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Customer Insertion Failed",
-            backgroundColor: colorsConst.errorColor);
-      }
-
-    } catch (e) {
-      addCustomerButtonController.reset();
-      throw Exception(e);
-
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-      addCustomerButtonController.reset();
-
-    }
-  }
-
-  Future<void> customerUpdate({
-    required BuildContext context,required id,
-    required name,  required mobile, required address,  required email,  required password,
-     required whatsapp, required active,
-  })
-  async {
-
-    try {
-      // _isLoading = true;
-      notifyListeners();
-      final response = await _EmployeeRepository.updateCustomer(
-        id: id,
-        name: name,
-        mobile : mobile,
-        address: address,
-        email: email,
-        password:password ,
-        whatsapp:whatsapp ,
-        active : active,
-
-      );
-      log("response:$response");
-      log("Add Employee Repository if ${name}");
-      log("Add Employee Repository if ${whatsapp}");
-      log("Add Employee Repository if ${email}");
-      log("Add Employee Repository if ${address}");
-      log("Add Employee Repository if ${password}");
-
-      if (response.responseCode == 200) {
-        log("response:$response");
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SidebarScreen(selectedPage: "Customer")));
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Customer Updated Sucessfully",
-            backgroundColor: colorsConst.successColor
-        );
-        CustomerDetailsData(context: context);
-        addCustomerButtonController.reset();
-      }
-      else if(response.responseCode == 409){
-        addEmployeeButtonController.reset();
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Mobile Number Already Exist  ",
-            backgroundColor: colorsConst.errorColor);
-      }
-
-      else {
-        log("Customer Updation Failed");
-        addCustomerButtonController.reset();
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Customer Updation Failed",
-            backgroundColor: colorsConst.errorColor);
-      }
-
-    } catch (e) {
-      addCustomerButtonController.reset();
-      throw Exception(e);
-
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-      addCustomerButtonController.reset();
-    }
-  }
-
-  Future<void> customerDelete({required BuildContext context, List<String>? cIds, cId}) async {
-    try {
-      notifyListeners(); // Notifying without setting loading to true
-
-      final response = await _EmployeeRepository.deleteCustomer(
-        customerIds: cIds,
-        customerId: cId,
-      );
-
-      log("${response.toJson()}");
-
-      if (response.responseCode == 200) {
-        List<String> deletedIds = [];
-
-        if (response.result is List) {
-          log("Deleting customer(s) with ID(s): ${response.result}");
-          deletedIds = List<String>.from(response.result?.map((id) => id.toString()));
-        } else if (response.result is String) {
-          deletedIds = [response.result.toString()];
-        }
-
-        if (deletedIds.isNotEmpty) {
-          if (deletedIds.isNotEmpty) {
-            log("Before deletion: ${filteredCustomer.length}");
-            filteredCustomer.removeWhere((customer) => deletedIds.contains(customer.id.toString()));
-            log("After deletion: ${filteredCustomer.length}");
-
-            Navigator.pop(context); // Close the dialog first
-
-            ToastMsg.showSnackbar(
-              context: context,
-              text: "Customer Deleted Successfully",
-              backgroundColor: colorsConst.successColor,
-            );
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SidebarScreen(selectedPage: "Customer")),
-            );
-
-          //  CustomerDetailsData(context: context);
-            notifyListeners();
-          }
-        }
-
-
-        addCustomerButtonController.reset();
-        CustomerDetailsData(context: context);
-        notifyListeners();
-      } else {
-        addCustomerButtonController.reset();
-        ToastMsg.showSnackbar(
-          context: context,
-          text: "customer deletion failed",
-          backgroundColor: colorsConst.errorColor,
-        );
-      }
-    } catch (e) {
-      addCustomerButtonController.reset();
-      throw Exception(e);
-    } finally {
-      addCustomerButtonController.reset();
-      notifyListeners(); // Keeping this to update UI if needed
-    }
-  }
-
-  Future<void> deliveryInsert({
-    required BuildContext context,
-    required emp_name,  required emp_mobile, required emp_address, required emp_bonus,
-    required emp_email, required emp_join_date, required emp_password, required emp_salary, required emp_whatsapp, required active,
-  })
-  async {
-
-    try {
-      // _isLoading = true;
-      notifyListeners();
-      final response = await _EmployeeRepository.inserDelivery(
-        emp_name: emp_name,
-        emp_mobile : emp_mobile,
-        emp_address: emp_address,
-        emp_bonus: emp_bonus,
-        emp_email: emp_email,
-        emp_join_date: emp_join_date,
-        emp_password:emp_password ,
-        emp_salary:emp_salary ,
-        emp_whatsapp:emp_whatsapp ,
-        active : active,
-
-      );
-      log("response:$response");
-      log("Add Employee Repository if ${emp_name}");
-      log("Add Employee Repository if ${emp_mobile}");
-      log("Add Employee Repository if ${emp_whatsapp}");
-      log("Add Employee Repository if ${emp_email}");
-      log("Add Employee Repository if ${emp_address}");
-      log("Add Employee Repository if ${emp_password}");
-
-      log("Add Employee Repository if ${emp_salary}");
-      log("Add Employee Repository if ${emp_bonus}");
-      log("Add Employee Repository if ${emp_join_date}");
-      if (response.responseCode == 200) {
-        log("response:$response");
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SidebarScreen(selectedPage: "Delivery")));
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Delivery Person Inserted Sucessfully",
-            backgroundColor: colorsConst.successColor
-        );
-        addDeliveryButtonController.reset();
-      }
-      else if(response.responseCode == 409){
-        addDeliveryButtonController.reset();
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Mobile Number Already Exist  ",
-            backgroundColor: colorsConst.errorColor);
-      }
-
-      else {
-        addDeliveryButtonController.reset();
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Delivery Person Insertion Failed",
-            backgroundColor: colorsConst.errorColor);
-      }
-
-    } catch (e) {
-      addDeliveryButtonController.reset();
-      throw Exception(e);
-
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-      addDeliveryButtonController.reset();
-
-    }
-  }
-
-  Future<void> deliveryUpdate({
-    required BuildContext context,required id,
-    required emp_name,  required emp_mobile, required emp_address, required emp_bonus, required emp_email, required emp_join_date, required emp_password,
-     required emp_salary, required emp_whatsapp, required active,
-  })
-  async {
-
-    try {
-      // _isLoading = true;
-      notifyListeners();
-      final response = await _EmployeeRepository.updateDelivery(
-        id: id,
-        emp_name: emp_name,
-        emp_mobile : emp_mobile,
-        emp_address: emp_address,
-        emp_bonus: emp_bonus,
-        emp_email: emp_email,
-        emp_join_date: emp_join_date,
-        emp_password:emp_password ,
-
-        emp_salary:emp_salary ,
-        emp_whatsapp:emp_whatsapp ,
-        active : active,
-
-      );
-      log("response:$response");
-      log("Add Employee Repository if ${emp_name}");
-      log("Add Employee Repository if ${emp_mobile}");
-      log("Add Employee Repository if ${emp_whatsapp}");
-      log("Add Employee Repository if ${emp_email}");
-      log("Add Employee Repository if ${emp_address}");
-      log("Add Employee Repository if ${emp_password}");
-
-      log("Add Employee Repository if ${emp_salary}");
-      log("Add Employee Repository if ${emp_bonus}");
-      log("Add Employee Repository if ${emp_join_date}");
-      if (response.responseCode == 200) {
-        log("response:$response");
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SidebarScreen(selectedPage: "Delivery")));
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Delivery person Updated Successfully",
-            backgroundColor: colorsConst.successColor
-        );
-        addDeliveryButtonController.reset();
-      }
-      else if(response.responseCode == 409){
-        addDeliveryButtonController.reset();
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Mobile Number Already Exist  ",
-            backgroundColor: colorsConst.errorColor);
-      }
-
-      else {
-        addDeliveryButtonController.reset();
-        ToastMsg.showSnackbar(
-            context: context,
-            text: "Delivery person  Updation Failed",
-            backgroundColor: colorsConst.errorColor);
-      }
-
-    } catch (e) {
-      addDeliveryButtonController.reset();
-      throw Exception(e);
-
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-      addDeliveryButtonController.reset();
-
-    }
-  }
-
-  Future<void> deliveryDelete({required BuildContext context, List<String>? eIds, eId}) async {
-    try {
-      notifyListeners(); // Notifying without setting loading to true
-
-      final response = await _EmployeeRepository.deleteDelivery(
-        employeeIds: eIds,
-        employeeId: eId,
-      );
-
-      log("${response.toJson()}");
-
-      if (response.responseCode == 200) {
-        List<String> deletedIds = [];
-
-        if (response.result is List) {
-          log("Deleting Delivery person (s) with ID(s): ${response.result}");
-          deletedIds = List<String>.from(response.result?.map((id) => id.toString()));
-        } else if (response.result is String) {
-          deletedIds = [response.result.toString()];
-        }
-
-        if (deletedIds.isNotEmpty) {
-          log("Before deletion: ${filtereddelivery.length}");
-
-          filtereddelivery.removeWhere((delivery) => deletedIds.contains(delivery.id.toString()));
-
-          log("After deletion: ${filtereddelivery.length}");
-
-
-          DeliveryDetailsData
-          (context: context);
-
-          notifyListeners();
-        }
-
-        if (context.mounted) {
-          ToastMsg.showSnackbar(
-            context: context,
-            text: "Delivery person  deleted successfully",
-            backgroundColor: colorsConst.successColor,
-          );
-        }
-        DeliveryDetailsData(context: context);
-        notifyListeners();
-      } else {
-        ToastMsg.showSnackbar(
-          context: context,
-          text: "Delivery person  deletion failed",
-          backgroundColor: colorsConst.errorColor,
-        );
+        utils.snackBar(msg: "Vendor deletion failed",
+            color: Colors.red,context:context);
       }
     } catch (e) {
       throw Exception(e);

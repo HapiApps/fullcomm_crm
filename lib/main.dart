@@ -1,5 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:fullcomm_crm/common/extentions/int_extensions.dart';
+import 'package:fullcomm_crm/provider/employee_provider.dart';
 import 'package:fullcomm_crm/screens/new_dashboard.dart';
 import 'package:fullcomm_crm/screens/zoom_blocker.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'common/constant/api.dart';
 import 'common/constant/colors_constant.dart';
@@ -20,7 +22,10 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final loginScreen = prefs.getBool("loginScreen${controllers.versionNum}") ?? false;
 
-  runApp(MyApp(loginScreen: loginScreen,));
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => EmployeeProvider()),
+      ],child: MyApp(loginScreen: loginScreen,)));
 }
 
 class MyInheritedWidget extends InheritedWidget {

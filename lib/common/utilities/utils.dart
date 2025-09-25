@@ -6,6 +6,7 @@ import 'package:excel/excel.dart' as excel;
 import 'package:fullcomm_crm/common/styles/styles.dart';
 import 'package:fullcomm_crm/common/widgets/log_in.dart';
 import 'package:fullcomm_crm/screens/call_comments.dart';
+import 'package:fullcomm_crm/screens/employee/employee_screen.dart';
 import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
@@ -1521,6 +1522,28 @@ class Utils {
                   );
                   controllers.oldIndex.value = controllers.selectedIndex.value;
                   controllers.selectedIndex.value = 8;
+                }),
+            ),
+            Obx(() => CustomSideBarText(
+                boxColor: controllers.selectedIndex.value == 9
+                    ? const Color(0xffF3F8FD)
+                    : Colors.white,
+                textColor: controllers.selectedIndex.value == 9
+                    ? colorsConst.primary
+                    : Colors.black,
+                text: "Employees",
+                onClicked: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) =>
+                      const EmployeeScreen(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
+                  controllers.oldIndex.value = controllers.selectedIndex.value;
+                  controllers.selectedIndex.value = 9;
                 }),
             ),
             Obx(() => CustomSideBarText(
