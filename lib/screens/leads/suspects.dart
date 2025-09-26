@@ -7,7 +7,6 @@ import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import '../../common/constant/api.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
 import '../../components/custom_lead_tile.dart';
@@ -463,7 +462,7 @@ class _SuspectsState extends State<Suspects> {
                                       numOfHeadcount: data.numOfHeadcount ?? "",
                                       expectedBillingValue: data.expectedBillingValue ?? "",
                                       arpuValue: data.arpuValue ?? "",
-                                      updatedTs: data.createdTs ?? "",
+                                      updatedTs: data.updatedTs ?? "",
                                       sourceDetails: data.sourceDetails ?? "",
                                     ));
                                   },

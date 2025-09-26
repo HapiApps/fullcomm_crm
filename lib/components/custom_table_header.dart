@@ -201,11 +201,19 @@ class CustomTableHeader extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Row(
                 children: [
-                  CustomText(
-                    textAlign: TextAlign.left,
-                    text: "Added Date",
-                    size: 15,
-                    colors: Colors.white,
+                  Expanded(
+                    child: Text(
+                      "Added Date",
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                        fontFamily: "Lato",
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                    ),
                   ),
                   const SizedBox(width: 3),
                   GestureDetector(
@@ -274,19 +282,41 @@ class CustomTableHeader extends StatelessWidget {
       );
     });
   }
-
   Widget _headerCell(String text, {TextAlign textAlign = TextAlign.left}) {
     return Container(
       height: 45,
-      alignment:
-      textAlign == TextAlign.center ? Alignment.center : Alignment.centerLeft,
+      alignment: textAlign == TextAlign.center
+          ? Alignment.center
+          : Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 5),
-      child: CustomText(
+      child: Text(
+        text,
         textAlign: textAlign,
-        text: text,
-        size: 15,
-        colors: Colors.white,
+        style: const TextStyle(
+          fontSize: 15,
+          color: Colors.white,
+          fontFamily: "Lato",
+        ),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        softWrap: true,
       ),
     );
   }
+
+
+  // Widget _headerCell(String text, {TextAlign textAlign = TextAlign.left}) {
+  //   return Container(
+  //     height: 45,
+  //     alignment:
+  //     textAlign == TextAlign.center ? Alignment.center : Alignment.centerLeft,
+  //     padding: const EdgeInsets.symmetric(horizontal: 5),
+  //     child: CustomText(
+  //       textAlign: textAlign,
+  //       text: text,
+  //       size: 15,
+  //       colors: Colors.white,
+  //     ),
+  //   );
+  // }
 }

@@ -146,12 +146,18 @@ class CustomLeadTile extends StatefulWidget {
 class _CustomLeadTileState extends State<CustomLeadTile> {
   String formatDate(String inputDate) {
     try {
-      DateTime parsedDate = DateFormat("dd.MM.yyyy").parse(inputDate);
+      DateTime parsedDate = DateFormat("yyyy-MM-dd HH:mm:ss").parse(inputDate);
       return DateFormat("dd MMM yyyy").format(parsedDate);
-    } catch (e) {
-      return inputDate;
+    } catch (e1) {
+      try {
+        DateTime parsedDate = DateFormat("dd.MM.yyyy").parse(inputDate);
+        return DateFormat("dd MMM yyyy").format(parsedDate);
+      } catch (e2) {
+        return inputDate;
+      }
     }
   }
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -829,12 +835,13 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: CustomText(
                         textAlign: TextAlign.left,
-                        text: formatDate(
-                          widget.prospectEnrollmentDate.toString().isEmpty ||
-                              widget.prospectEnrollmentDate.toString() == "null"
-                              ? widget.updatedTs.toString()
-                              : widget.prospectEnrollmentDate.toString(),
-                        ),
+                        // text: formatDate(
+                        //   widget.prospectEnrollmentDate.toString().isEmpty ||
+                        //       widget.prospectEnrollmentDate.toString() == "null"
+                        //       ? widget.updatedTs.toString()
+                        //       : widget.prospectEnrollmentDate.toString(),
+                        // ),
+                        text: formatDate(widget.updatedTs.toString()),
                         size: 14,
                         colors: colorsConst.textColor,
                       ),

@@ -362,64 +362,46 @@ class EmployeeProvider with ChangeNotifier {
     required empName,
     required empMobile, required empAddress,
     required empBonus, required empEmail, required empJoinDate, required empPassword,
-    required empRole , required empSalary, required empWhatsapp, required active,  required roles,
+    required empRole , required empSalary, required empWhatsapp, required active
   })
   async {
     try {
       notifyListeners();
       final response = await _employeeRepository.insertEmployee(
-        emp_name: empName,
-        emp_mobile : empMobile,
-        emp_address: empAddress,
-        emp_bonus: empBonus,
-        emp_email: empEmail,
-        emp_join_date: empJoinDate,
-        emp_password:empPassword ,
-        emp_role: empRole,
-        emp_salary:empSalary ,
-        emp_whatsapp:empWhatsapp ,
+        empName: empName,
+        empMobile : empMobile,
+        empAddress: empAddress,
+        empBonus: empBonus,
+        empEmail: empEmail,
+        empJoinDate: empJoinDate,
+        empPassword:empPassword ,
+        empRole: empRole,
+        empSalary:empSalary ,
+        empWhatsapp:empWhatsapp ,
         active : active,
-        roles:roles ,
       );
-      log("response:$response");
-      log("Add Employee Repository if $empName");
-      log("Add Employee Repository if $empMobile");
-      log("Add Employee Repository if $empWhatsapp");
-      log("Add Employee Repository if $empEmail");
-      log("Add Employee Repository if $empAddress");
-      log("Add Employee Repository if $empPassword");
-      log("Add Employee Repository if $empRole");
-      log("Add Employee Repository if $empSalary");
-      log("Add Employee Repository if $empBonus");
-      log("Add Employee Repository if $empJoinDate");
       if (response.responseCode == 200) {
         log("response:$response");
         Navigator.pop(context);
         utils.snackBar(msg: "Employee Inserted Sucessfully",
             color: Colors.green,context:context);
         addRoleButtonController.reset();
-       }
-      else if(response.responseCode == 409){
+       } else if(response.responseCode == 409){
         addRoleButtonController.reset();
         utils.snackBar(msg: "Mobile Number Already Exist",
             color: Colors.red,context:context);
-      }
-
-      else {
+      } else {
         addRoleButtonController.reset();
         utils.snackBar(msg: "Employee Inserted Failed",
             color: Colors.red,context:context);
       }
-
     } catch (e) {
       addRoleButtonController.reset();
       throw Exception(e);
-
     } finally {
       _isLoading = false;
       notifyListeners();
       addRoleButtonController.reset();
-
     }
   }
 
@@ -487,6 +469,30 @@ class EmployeeProvider with ChangeNotifier {
       notifyListeners();
       addEmployeeButtonController.reset();
 
+    }
+  }
+  var role;
+  var roleId;
+  List<dynamic> _roleList = [];
+  List<dynamic> get roleList => _roleList;
+  Future<void> fetchRoleList() async {
+    role = null;
+    _roleList = [];
+    notifyListeners();
+    try {
+      final response = await _employeeRepository.getRole();
+
+      if (response.isNotEmpty) {
+        _roleList = response;
+
+      } else {
+        _roleList = [];
+      }
+      notifyListeners();
+    } catch (e) {
+      print("fetchRoleList error $e");
+      _roleList = [];
+      notifyListeners();
     }
   }
 

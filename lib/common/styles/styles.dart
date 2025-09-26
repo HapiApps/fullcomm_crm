@@ -36,7 +36,7 @@ class CustomStyle {
       hintStyle: TextStyle(
           color: Colors.grey.shade400, fontSize: 13, fontFamily: "Lato"),
       fillColor:
-          text == "Search Name" ? Colors.grey.shade200 : Colors.transparent,
+          text == "Search Name" ? Colors.grey.shade200 : Colors.white,
       filled: true,
       prefixIcon: isIcon == true
           ? IconButton(

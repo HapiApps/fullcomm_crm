@@ -9,7 +9,29 @@ import '../models/employee_details.dart';
 
 
 class EmployeeRepository {
-  ///Vendor Fetch Data
+  Future<List<Map<String, dynamic>>> getRole() async {
+    try {
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        body: jsonEncode({
+          'search_type': "all_roles",
+          'action': "get_data",
+          "cos_id": controllers.storage.read("cos_id"),
+        }),
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonList = jsonDecode(response.body);
+        final List<Map<String, dynamic>> dataMap = jsonList.map((e) => Map<String, dynamic>.from(e)).toList();
+        return dataMap;
+      } else {
+        throw Exception('Failed to load getUser ${response.body}');
+      }
+    } catch (e) {
+      log("Error getUser : $e");
+      throw Exception(e);
+    }
+  }
+
 
   Future<StaffData> getStaffRoleData() async {
     try {
@@ -41,18 +63,16 @@ class EmployeeRepository {
 
 
   Future<CommonResponse> insertEmployee({
-
-    required  emp_name,
-    required  emp_mobile,
-    required  emp_whatsapp,
-    required  emp_email,
-    required  emp_address,
-    required  emp_password,
-    required  emp_role,
-    required  roles,
-    required  emp_join_date,
-    required  emp_salary,
-    required  emp_bonus,
+    required  empName,
+    required empMobile,
+    required empWhatsapp,
+    required empEmail,
+    required empAddress,
+    required empPassword,
+    required empRole,
+    required empJoinDate,
+    required empSalary,
+    required empBonus,
     required  active,
     })
   async{
@@ -62,20 +82,20 @@ class EmployeeRepository {
           Uri.parse(scriptApi),
           body: jsonEncode(
             {
-              "emp_name":emp_name ,
-              "emp_mobile": emp_mobile,
-              "emp_whatsapp": emp_whatsapp,
-              "emp_email": emp_email,
-              "emp_address": emp_address,
-              "emp_password": emp_password,
-              "emp_role": emp_role,
-              "roles": roles,
-              "emp_join_date": emp_join_date,
-              "emp_salary": emp_salary,
-              "emp_bonus": emp_bonus,
+              "emp_name":empName ,
+              "emp_mobile": empMobile,
+              "emp_whatsapp": empWhatsapp,
+              "emp_email": empEmail,
+              "emp_address": empAddress,
+              "emp_password": empPassword,
+              "emp_role": empRole,
+              "emp_join_date": empJoinDate,
+              "emp_salary": empSalary,
+              "emp_bonus": empBonus,
               "created_by": controllers.storage.read("id"),
               "active": active,
-              "action":"p_add_employee_details"
+              "action":"p_add_employee_details",
+              "cos_id": controllers.storage.read("cos_id")
             },
           )
       );
@@ -92,7 +112,6 @@ class EmployeeRepository {
       // log("Add Employee Repository if ${emp_join_date}");
 
       if(response.statusCode == 200){
-
         log("Add Employee Repository if ${response.body}");
 
         final Map<String,dynamic> data =  jsonDecode(response.body);
@@ -125,12 +144,10 @@ class EmployeeRepository {
     required  active,
   })
   async{
-
     try{
       final response =   await  http.post(
           Uri.parse(scriptApi),
-          body: jsonEncode(
-            {
+          body: jsonEncode({
               "id":id,
               "emp_name":emp_name ,
               "emp_mobile": emp_mobile,
@@ -145,7 +162,8 @@ class EmployeeRepository {
               "emp_bonus": emp_bonus,
               "created_by": controllers.storage.read("id"),
               "active": active,
-              "action":"p_update_employee"
+              "action":"p_update_employee",
+              "cos_id": controllers.storage.read("cos_id")
             },
           )
       );
@@ -177,15 +195,12 @@ class EmployeeRepository {
               "employee_ids": employeeIds,
               "id": employeeId,
               "action" : "p_delete_employee",
-              "updated_by" : controllers.storage.read("id")
+              "updated_by" : controllers.storage.read("id"),
+            "cos_id": controllers.storage.read("cos_id")
             },
           )
       );
-
       if(response.statusCode == 200){
-
-        // log("delete vendor Repository if ${response.body}");
-
         final Map<String,dynamic> data =  jsonDecode(response.body);
 
         return CommonResponse.fromJson(data);

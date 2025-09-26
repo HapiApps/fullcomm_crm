@@ -85,7 +85,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         widget.hintText!.isEmpty
-            ? 0.height
+            ? 2.height
             : Row(
                 children: [
                   CustomText(

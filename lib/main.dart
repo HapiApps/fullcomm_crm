@@ -224,23 +224,21 @@ class LineChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(()=>LineChart(
+    final int currentMonth = DateTime.now().month;
+
+    return Obx(() => LineChart(
       LineChartData(
         gridData: FlGridData(
           show: true,
           drawVerticalLine: true,
-          getDrawingHorizontalLine: (value) {
-            return const FlLine(
-              color: Colors.black,
-              strokeWidth: 1,
-            );
-          },
-          getDrawingVerticalLine: (value) {
-            return const FlLine(
-              color: Colors.black,
-              strokeWidth: 1,
-            );
-          },
+          getDrawingHorizontalLine: (value) => const FlLine(
+            color: Colors.black,
+            strokeWidth: 1,
+          ),
+          getDrawingVerticalLine: (value) => const FlLine(
+            color: Colors.black,
+            strokeWidth: 1,
+          ),
         ),
         titlesData: FlTitlesData(
           rightTitles: const AxisTitles(
@@ -267,7 +265,6 @@ class LineChartWidget extends StatelessWidget {
               showTitles: true,
               interval: 1,
               getTitlesWidget: (value, meta) {
-                //var conData="";
                 Widget text(String text) {
                   return CustomText(
                     text: text,
@@ -275,6 +272,9 @@ class LineChartWidget extends StatelessWidget {
                     size: 12,
                   );
                 }
+
+                // Only show labels up to the current month
+                if (value.toInt() > currentMonth) return const SizedBox.shrink();
 
                 switch (value.toInt()) {
                   case 1:
@@ -312,12 +312,14 @@ class LineChartWidget extends StatelessWidget {
           border: Border.all(color: Colors.white24, width: 1),
         ),
         minX: 1,
-        maxX: 12,
+        maxX: currentMonth.toDouble(), // Set maxX to current month
         minY: 0,
         maxY: 250,
         lineBarsData: [
           LineChartBarData(
-            spots: controllers.chartSpots,
+            spots: controllers.chartSpots
+                .where((spot) => spot.x <= currentMonth)
+                .toList(), // Filter spots to current month
             isCurved: true,
             color: Colors.pink,
             barWidth: 3,
