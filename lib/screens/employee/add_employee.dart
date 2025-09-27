@@ -266,7 +266,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                 color: colorsConst.primary,
                                 controller: employeeProvider.addEmployeeButtonController,
                                 onPressed: () {
-                                 if(employeeProvider.nameController.text.isEmpty ){
+                                 if(employeeProvider.nameController.text.isEmpty){
                                     employeeProvider.addEmployeeButtonController.reset();
                                     utils.snackBar(
                                       context: context,
@@ -297,7 +297,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                       color: Colors.red,
                                     );
                                   }
-                                  else if(employeeProvider.password.text.length>8) {
+                                  else if(employeeProvider.password.text.length<8) {
                                     employeeProvider.addEmployeeButtonController.reset();
                                     utils.snackBar(
                                       context: context,

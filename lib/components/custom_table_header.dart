@@ -172,6 +172,7 @@ class CustomTableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Obx(() {
       final headings = tableController.tableHeadings;
       final headerChildren = <Widget>[
@@ -192,7 +193,7 @@ class CustomTableHeader extends StatelessWidget {
               onChanged: onSelectAll,
             ),
           ),
-        _headerCell("Actions", textAlign: TextAlign.center),
+        _headerCell("Actions", screenWidth,textAlign: TextAlign.center),
         ...headings.map((h) {
           if (h.toLowerCase() == "added date"||h.toLowerCase()=="prospect enrollment date") {
             return Container(
@@ -234,7 +235,7 @@ class CustomTableHeader extends StatelessWidget {
               ),
             );
           }
-          return _headerCell(h);
+          return _headerCell(h,screenWidth,);
         }),
       ];
 
@@ -282,9 +283,9 @@ class CustomTableHeader extends StatelessWidget {
       );
     });
   }
-  Widget _headerCell(String text, {TextAlign textAlign = TextAlign.left}) {
+  Widget _headerCell(String text,double width, {TextAlign textAlign = TextAlign.left}) {
     return Container(
-      height: 45,
+      height: width<=922?55:45,
       alignment: textAlign == TextAlign.center
           ? Alignment.center
           : Alignment.centerLeft,
@@ -297,9 +298,9 @@ class CustomTableHeader extends StatelessWidget {
           color: Colors.white,
           fontFamily: "Lato",
         ),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
+        maxLines: null,
         softWrap: true,
+        overflow: TextOverflow.visible,
       ),
     );
   }

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/components/line_chart.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_text.dart';
 import '../controller/controller.dart';
 import '../main.dart';
+import '../provider/employee_provider.dart';
 import '../services/api_services.dart';
 import 'dashboard.dart';
 import 'dart:html' as html;
@@ -29,6 +33,8 @@ class _NewDashboardState extends State<NewDashboard> {
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
+      final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
+      employeeData.staffRoleDetailsData(context: context);
     });
     Future.delayed(Duration.zero, () async {
        apiService.currentVersion();
@@ -39,6 +45,7 @@ class _NewDashboardState extends State<NewDashboard> {
     apiService.getDashBoardReport();
     apiService.getRatingReport();
     apiService.getMonthReport();
+    apiService.getDayReport();
   }
   @override
   Widget build(BuildContext context) {
@@ -157,25 +164,43 @@ class _NewDashboardState extends State<NewDashboard> {
                                         ),
                                       ),
                                       10.height,
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      Wrap(
+                                        spacing: 20,
+                                        runSpacing: 10,
                                         children: [
+                                          countShown(width: 130, head: "Total Mails",
+                                              count: controllers.mailActivity.length.toString(),icon: Icons.email),
+                                          countShown(width: 130, head: "Total Calls", count: controllers.callActivity.length.toString(),icon: Icons.call),
+                                          countShown(width: 130, head: "Total Meetings",
+                                              count: controllers.meetingActivity.length.toString(),
+                                              icon: Icons.calendar_month_outlined),
                                           countShown(
-                                              width:150,
-                                              head: "Total Mails",
-                                              count: controllers.mailActivity.length.toString()),
-                                          20.width,
-                                          countShown(
-                                              width:150,
-                                              head: "Total Calls",
-                                              count: controllers.callActivity.length.toString()),
-                                          20.width,
-                                          countShown(
-                                              width:150,
-                                              head: "Total Meetings",
-                                              count: controllers.meetingActivity.length.toString()),
+                                            width: 130,
+                                            head: "Total Employees",
+                                            count: context.watch<EmployeeProvider>().filteredStaff.length.toString(),
+                                            icon: Icons.people_outline,
+                                          ),
                                         ],
                                       ),
+                                      // Row(
+                                      //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      //   children: [
+                                      //     countShown(
+                                      //         width:150,
+                                      //         head: "Total Mails",
+                                      //         count: controllers.mailActivity.length.toString()),
+                                      //     20.width,
+                                      //     countShown(
+                                      //         width:150,
+                                      //         head: "Total Calls",
+                                      //         count: controllers.callActivity.length.toString()),
+                                      //     20.width,
+                                      //     countShown(
+                                      //         width:150,
+                                      //         head: "Total Meetings",
+                                      //         count: controllers.meetingActivity.length.toString()),
+                                      //   ],
+                                      // ),
                                       10.height,
                                       Container(
                                         height: 220,
@@ -234,8 +259,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                   right: 25,
                                                   child: CircleAvatar(
                                                     radius: 5,
-                                                    backgroundColor:
-                                                    Color(0xff5D5FEF),
+                                                    backgroundColor: Color(0xff5D5FEF),
                                                   ),
                                                 )
                                               ],
@@ -254,7 +278,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                   child: Column(
                                     children: [
                                       Container(
-                                        height: 260,
+                                        height: 300,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
                                             borderRadius: BorderRadius.circular(10)),
@@ -277,12 +301,31 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 ),
                                               ],
                                             ),
-                                            15.height,
+                                            10.height,
                                             Container(
-                                                alignment: Alignment.center,
-                                                width: 380,
-                                                height: 210,
-                                                child: const LineChartWidget())
+                                                  alignment: Alignment.center,
+                                                  width: (screenWidth-420)/2.1-50,
+                                                  height: 210,
+                                                  child: const DayWiseLineChart()),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                IconButton(
+                                                  icon: const Icon(Icons.arrow_back),
+                                                  onPressed: () => controllers.moveRange(-7),
+                                                ),
+                                                Text(
+                                                  "${DateFormat.MMMd().format(controllers.rangeStart.value)} - "
+                                                      "${DateFormat.MMMd().format(controllers.rangeEnd.value)}",
+                                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                                ),
+                                                IconButton(
+                                                  icon: const Icon(Icons.arrow_forward),
+                                                  onPressed: () => controllers.moveRange(7),
+                                                ),
+                                              ],
+                                            ),
+
                                           ],
                                         ),
                                       ),
@@ -292,54 +335,39 @@ class _NewDashboardState extends State<NewDashboard> {
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          // border: Border.all(
-                                          //     color: Colors.black
-                                          // ),
                                           borderRadius: BorderRadius.circular(10),
                                         ),
                                         child: SizedBox(
                                           height: 200,
                                           child: PieChart(
                                             dataMap: {
-                                              'Suspects': double.parse(
-                                                  controllers.allNewLeadsLength.value.toString()),
-                                              'Prospects': double.parse(
-                                                  controllers
-                                                      .allLeadsLength
-                                                      .value
-                                                      .toString()),
-                                              'Qualified': double.parse(
-                                                  controllers.allGoodLeadsLength.value
-                                                      .toString()),
-                                              'Disqualified': double.parse(
-                                                  controllers.allGoodLeadsLength.value.toString()),
-                                              'Customers': double.parse(
-                                                  controllers.allCustomerLength.value.toString()),
+                                              'Suspects': double.parse(controllers.allNewLeadsLength.value.toString()),
+                                              'Prospects': double.parse(controllers.allLeadsLength.value.toString()),
+                                              'Qualified': double.parse(controllers.allGoodLeadsLength.value.toString()),
+                                              'Unqualified': double.parse(controllers.allDisqualifiedLength.value.toString()),  // corrected
+                                              'Customers': double.parse(controllers.allCustomerLength.value.toString()),
                                             },
-                                            centerTextStyle: TextStyle(
-                                                color: colorsConst.textColor),
-                                            baseChartColor: Colors.white,
-                                            legendOptions: LegendOptions(
-                                                legendTextStyle:
-                                                TextStyle(
-                                                    color: colorsConst.textColor)),
-                                            animationDuration: const Duration(
-                                                seconds: 2),
-                                            chartLegendSpacing: 50,
-                                            chartRadius:
-                                            MediaQuery.of(context).size.width / 2.7,
+                                            animationDuration: const Duration(seconds: 2),
+                                            chartLegendSpacing: 32,
+                                            chartRadius: MediaQuery.of(context).size.width / 2.2,
                                             colorList: const [
-                                              Color(0xff94009C),
-                                              Color(0xffE3B552),
-                                              Color(0xff2DD28A),
-                                              Color(0xff7456FC),
-                                              Color(0xffE3528C),
+                                              Color(0xffE3B552), // Suspects
+                                              Color(0xff017EFF), // Prospects (blue)
+                                              Color(0xffF55353), // Qualified (red)
+                                              Color(0xff7456FC), // Unqualified (purple)
+                                              Color(0xffE3528C), // Customers (pink)
                                             ],
-                                            chartType: ChartType.ring,
-                                            ringStrokeWidth: 50,
-
-                                            // chartValueBackgroundColor: Colors.green,
-                                            // chartValueBackgroundOpacity: 0.7,
+                                            chartType: ChartType.disc,
+                                            centerText: "",
+                                            legendOptions: LegendOptions(
+                                              showLegends: true,
+                                              legendTextStyle: TextStyle(color: colorsConst.textColor),
+                                            ),
+                                            chartValuesOptions: ChartValuesOptions(
+                                              showChartValuesInPercentage: false,
+                                              showChartValues: true,
+                                              showChartValueBackground: false,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -359,7 +387,7 @@ class _NewDashboardState extends State<NewDashboard> {
       ),
     );
   }
-  Widget countShown({required double width, required String head, required String count}) {
+  Widget countShown({required double width, required String head, required String count,required IconData icon}) {
     return Container(
       width: width,
       height: 180,
@@ -384,6 +412,11 @@ class _NewDashboardState extends State<NewDashboard> {
           //     10.width
           //   ],
           // ),
+          Icon(
+            icon,
+            color: colorsConst.primary,
+            size: 50,
+          ),
           CustomText(
             text: count,
             colors: colorsConst.textColor,
@@ -396,8 +429,6 @@ class _NewDashboardState extends State<NewDashboard> {
             colors: colorsConst.textColor,
             size: 16,
           ),
-
-
         ],
       ),
     );

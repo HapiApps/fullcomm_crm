@@ -9,10 +9,12 @@ import 'package:provider/provider.dart';
 
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/utils.dart';
+import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_text.dart';
 import '../../components/custom_textfield.dart';
 import '../../components/k_card_container.dart';
+import '../../controller/controller.dart';
 import '../../provider/employee_provider.dart';
 import 'add_employee.dart';
 
@@ -28,10 +30,10 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
+      await employeeData.fetchRoleList();
       employeeData.staffRoleDetailsData(context: context);
-
     });
   }
   @override
@@ -61,7 +63,6 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                       crossAxisAlignment: isWebView ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-
                         SizedBox(
                             width: isWebView ? screenWidth * 0.35 : screenWidth,
                             child:  Row(
@@ -98,52 +99,55 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
-                                              title: Text(
-                                                "Delete Employee",
-                                                style: GoogleFonts.lato(
-                                                  fontSize: 20,
-                                                  color: colorsConst.primary,
-                                                ),
-                                              ),
-                                              content: Text(
-                                                "Do you want to Delete this Employee?",
-                                                style: GoogleFonts.lato(
-                                                  fontSize: 14,
-                                                  color: Colors.black,
-                                                ),
+                                              content: CustomText(
+                                                text: "Are you sure delete this employees?",
+                                                size: 16,
+                                                isBold: true,
+                                                colors: colorsConst.textColor,
                                               ),
                                               actions: [
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.end,
                                                   children: [
-                                                    TextButton(
-                                                      child: Text(
-                                                        "Cancel",
-                                                        style: GoogleFonts.lato(
-                                                          fontSize: 14,
-                                                          color: colorsConst.primary,
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(color: colorsConst.primary),
+                                                          color: Colors.white),
+                                                      width: 80,
+                                                      height: 25,
+                                                      child: ElevatedButton(
+                                                          style: ElevatedButton.styleFrom(
+                                                            shape: const RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.zero,
+                                                            ),
+                                                            backgroundColor: Colors.white,
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: CustomText(
+                                                            text: "Cancel",
+                                                            colors: colorsConst.primary,
+                                                            size: 14,
+                                                          )),
                                                     ),
-                                                    TextButton(
-                                                      child: Text(
-                                                        "Delete",
-                                                        style: GoogleFonts.lato(
-                                                          fontSize: 14,
-                                                          color: colorsConst.primary,
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                        print('Delete selected Employee: ${employeeProvider.selectedEmployeeIds}');
+                                                    10.width,
+                                                    CustomLoadingButton(
+                                                      callback: ()async{
                                                         employeeProvider.employeeDelete(
                                                           context: context,
                                                           eIds: employeeProvider.selectedEmployeeIds,
                                                         );
                                                       },
+                                                      height: 35,
+                                                      isLoading: true,
+                                                      backgroundColor: colorsConst.primary,
+                                                      radius: 2,
+                                                      width: 80,
+                                                      controller: controllers.productCtr,
+                                                      isImage: false,
+                                                      text: "Delete",
+                                                      textColor: Colors.white,
                                                     ),
                                                   ],
                                                 ),
@@ -414,7 +418,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                           padding: const EdgeInsets.all(10.0),
                                           child: CustomText(
                                             textAlign: TextAlign.left,
-                                            text:staffData.role.toString()=="null"?"":staffData.role.toString(),
+                                            text:employeeProvider.getRoleName(staffData.role.toString()=="null"?"1":staffData.role.toString()),
                                             size: 14,
                                             colors: colorsConst.textColor,
                                           ),
@@ -431,69 +435,86 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(
-                                          width: screenWidth * 0.80 * 0.15,
+                                        Padding(
+                                          padding: const EdgeInsets.all(3.0),
                                           child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                width: screenWidth * 0.80 * 0.10 * 0.50,
-                                                child: TextButton(
-                                                    onPressed: (){
-                                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateEmployee(
-                                                        EmployeeData :staffData ,
-                                                      )));
-                                                    },
-                                                    child: CustomText(text: "Update",size: 12,colors: colorsConst.primary,textAlign: TextAlign.center,)),
-                                              ),
-                                              10.width,
-                                              SizedBox(
-                                                width: screenWidth * 0.80 * 0.10 * 0.45,
-                                                child: TextButton(
-                                                  onPressed: (){
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext context) {
-                                                        return AlertDialog(
-                                                          title:Text( "Delete Employee",style: GoogleFonts.lato(fontSize: 20,color: colorsConst.primary),),
-                                                          content: Text( "Do you want to Delete this Employee?",style: GoogleFonts.lato(fontSize: 14,color: Colors.black),),
-                                                          actions: [
-                                                            Row(
-                                                              children: [
-                                                                TextButton(
-                                                                  child: Text( "Cancel",style: GoogleFonts.lato(fontSize: 14,color: colorsConst.primary),),
-                                                                  onPressed: () {
-                                                                    Navigator.pop(context);
-                                                                  },
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      IconButton(
+                                                          onPressed: (){
+                                                            Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateEmployee(
+                                                              employeeData :staffData ,
+                                                            )));
+                                                          },
+                                                          icon: Icon(Icons.edit,color: Colors.green,)),
+                                                      IconButton(
+                                                          onPressed: (){
+                                                            showDialog(
+                                                              context: context,
+                                                              builder: (BuildContext context) {
+                                                                return AlertDialog(
+                                                                  content: CustomText(
+                                                                    text: "Are you sure delete this employees?",
+                                                                    size: 16,
+                                                                    isBold: true,
+                                                                    colors: colorsConst.textColor,
+                                                                  ),                                                                  actions: [
+                                                                    Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                      children: [
+                                                                        Container(
+                                                                          decoration: BoxDecoration(
+                                                                              border: Border.all(color: colorsConst.primary),
+                                                                              color: Colors.white),
+                                                                          width: 80,
+                                                                          height: 25,
+                                                                          child: ElevatedButton(
+                                                                              style: ElevatedButton.styleFrom(
+                                                                                shape: const RoundedRectangleBorder(
+                                                                                  borderRadius: BorderRadius.zero,
+                                                                                ),
+                                                                                backgroundColor: Colors.white,
+                                                                              ),
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: CustomText(
+                                                                                text: "Cancel",
+                                                                                colors: colorsConst.primary,
+                                                                                size: 14,
+                                                                              )),
+                                                                        ),
+                                                                        10.width,
+                                                                        CustomLoadingButton(
+                                                                          callback: ()async{
+                                                                            employeeProvider.employeeDelete(
+                                                                                eId:staffData.id,
+                                                                                context: context
+                                                                            );
 
-                                                                ),
-                                                                TextButton(
-                                                                  child: Text("Delete",style: GoogleFonts.lato(fontSize: 14,color: colorsConst.primary),),
-                                                                  onPressed: () {
-                                                                    Navigator.pop(context);
-                                                                    employeeProvider.employeeDelete(
-                                                                        eId:staffData.id,
-                                                                        context: context
-                                                                    );
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    );
-                                                  },
-                                                  child:CustomText(text: "Delete",size: 12,
-                                                    colors: Colors.red,
-                                                    textAlign: TextAlign.center,
+                                                                          },
+                                                                          height: 35,
+                                                                          isLoading: true,
+                                                                          backgroundColor: colorsConst.primary,
+                                                                          radius: 2,
+                                                                          width: 80,
+                                                                          controller: controllers.productCtr,
+                                                                          isImage: false,
+                                                                          text: "Delete",
+                                                                          textColor: Colors.white,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              },
+                                                            );
+                                                          },
+                                                          icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
+                                                    ],
                                                   ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        )
+                                        ),
+
                                         // Visibility(
                                         //   visible: employeeProvider.selectedEmployeeIndex == index,
                                         //   child: Column(

@@ -1523,28 +1523,28 @@ class Utils {
                   controllers.selectedIndex.value = 8;
                 }),
             ),
-            // Obx(() => CustomSideBarText(
-            //     boxColor: controllers.selectedIndex.value == 9
-            //         ? const Color(0xffF3F8FD)
-            //         : Colors.white,
-            //     textColor: controllers.selectedIndex.value == 9
-            //         ? colorsConst.primary
-            //         : Colors.black,
-            //     text: "Employees",
-            //     onClicked: () {
-            //       Navigator.push(
-            //         context,
-            //         PageRouteBuilder(
-            //           pageBuilder: (context, animation1, animation2) =>
-            //           const EmployeeScreen(),
-            //           transitionDuration: Duration.zero,
-            //           reverseTransitionDuration: Duration.zero,
-            //         ),
-            //       );
-            //       controllers.oldIndex.value = controllers.selectedIndex.value;
-            //       controllers.selectedIndex.value = 9;
-            //     }),
-            // ),
+            Obx(() => CustomSideBarText(
+                boxColor: controllers.selectedIndex.value == 9
+                    ? const Color(0xffF3F8FD)
+                    : Colors.white,
+                textColor: controllers.selectedIndex.value == 9
+                    ? colorsConst.primary
+                    : Colors.black,
+                text: "Employees",
+                onClicked: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) =>
+                      const EmployeeScreen(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
+                  controllers.oldIndex.value = controllers.selectedIndex.value;
+                  controllers.selectedIndex.value = 9;
+                }),
+            ),
             Obx(() => CustomSideBarText(
                       boxColor: controllers.selectedIndex.value == 10
                           ? const Color(0xffF3F8FD)

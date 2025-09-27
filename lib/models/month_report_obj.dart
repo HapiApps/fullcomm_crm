@@ -14,3 +14,23 @@ class CustomerMonthData {
     );
   }
 }
+
+class CustomerDayData {
+  final int dayNum;
+  final String? dayName;
+  final double totalCustomers;
+
+  CustomerDayData({
+    required this.dayNum,
+    this.dayName,
+    required this.totalCustomers,
+  });
+
+  factory CustomerDayData.fromJson(Map<String, dynamic> json) {
+    return CustomerDayData(
+      dayNum: int.tryParse(json['day_num'].toString()) ?? 0,
+      dayName: json['day_name'],
+      totalCustomers: double.tryParse(json['total_customers'].toString()) ?? 0,
+    );
+  }
+}

@@ -37,18 +37,16 @@ class EmployeeRepository {
     try {
       final response = await http.post(
           Uri.parse(scriptApi),
-          body: jsonEncode(
-            {
-              "action" : "p_employee_details"
+          body: jsonEncode({
+              "action" : "p_employee_details",
+            "cos_id": controllers.storage.read("cos_id")
             },
           )
       );
-     // log("role: ${response.body}");
+     //log("role: ${response.body}");
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
-        // log("Vendor Repository if $data");
 
         return StaffData.fromJson(data);
       } else {
@@ -57,6 +55,7 @@ class EmployeeRepository {
       }
     }
     catch (e) {
+      print("Error getStaffRoleData : $e");
       throw Exception(e);
     }
   }
@@ -130,17 +129,16 @@ class EmployeeRepository {
 
   Future<CommonResponse> updateEmployee({
     required id,
-    required  emp_name,
-    required  emp_mobile,
-    required  emp_whatsapp,
-    required  emp_email,
-    required  emp_address,
-    required  emp_password,
-    required  emp_role,
-    required  roles,
-    required  emp_join_date,
-    required  emp_salary,
-    required  emp_bonus,
+    required  empName,
+    required  empMobile,
+    required  empWhatsapp,
+    required  empEmail,
+    required  empAddress,
+    required  empPassword,
+    required  empRole,
+    required  empJoinDate,
+    required  empSalary,
+    required  empBonus,
     required  active,
   })
   async{
@@ -149,17 +147,16 @@ class EmployeeRepository {
           Uri.parse(scriptApi),
           body: jsonEncode({
               "id":id,
-              "emp_name":emp_name ,
-              "emp_mobile": emp_mobile,
-              "emp_whatsapp": emp_whatsapp,
-              "emp_email": emp_email,
-              "emp_address": emp_address,
-              "emp_password": emp_password,
-              "emp_role": emp_role,
-              "roles": roles,
-              "emp_join_date": emp_join_date,
-              "emp_salary": emp_salary,
-              "emp_bonus": emp_bonus,
+              "emp_name":empName ,
+              "emp_mobile": empMobile,
+              "emp_whatsapp": empWhatsapp,
+              "emp_email": empEmail,
+              "emp_address": empAddress,
+              "emp_password": empPassword,
+              "emp_role": empRole,
+              "emp_join_date": empJoinDate,
+              "emp_salary": empSalary,
+              "emp_bonus": empBonus,
               "created_by": controllers.storage.read("id"),
               "active": active,
               "action":"p_update_employee",
@@ -202,7 +199,6 @@ class EmployeeRepository {
       );
       if(response.statusCode == 200){
         final Map<String,dynamic> data =  jsonDecode(response.body);
-
         return CommonResponse.fromJson(data);
 
       }else{

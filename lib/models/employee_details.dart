@@ -8,31 +8,31 @@ class StaffData {
   int? responseCode;
   String? result;
   String? responseMsg;
-  List<Staff>? roles;
+  List<Staff>? employees;
 
   StaffData({
     this.responseCode,
     this.result,
     this.responseMsg,
-    this.roles,
+    this.employees,
   });
 
   factory StaffData.fromJson(Map<String, dynamic> json) => StaffData(
     responseCode: json["responseCode"],
     result: json["result"],
     responseMsg: json["responseMsg"],
-    roles: json["roles"] == null
+    employees: json["employees"] == null
         ? []
-        : List<Staff>.from(json["roles"].map((x) => Staff.fromJson(x))),
+        : List<Staff>.from(json["employees"].map((x) => Staff.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "responseCode": responseCode,
     "result": result,
     "responseMsg": responseMsg,
-    "roles": roles == null
+    "employees": employees == null
         ? []
-        : List<dynamic>.from(roles!.map((x) => x.toJson())),
+        : List<dynamic>.from(employees!.map((x) => x.toJson())),
   };
 }
 

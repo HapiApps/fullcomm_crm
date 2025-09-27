@@ -30,6 +30,7 @@ import '../models/customer_activity.dart';
 import '../models/employee_obj.dart';
 import '../models/mail_receive_obj.dart';
 import '../models/meeting_obj.dart';
+import '../models/month_report_obj.dart';
 
 final ApiService apiService = ApiService._();
 
@@ -2696,6 +2697,37 @@ class ApiService {
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
        controllers.setData(response);
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future getDayReport() async {
+    try {
+      Map data = {
+        "search_type": "day_report",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data",
+        "year":DateTime.now().year,
+        "month":DateTime.now().month
+      };
+      log("main ${data.toString()}");
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.dayReport.value = response.map<CustomerDayData>(
+              (e) => CustomerDayData.fromJson(e),
+        ).toList();
       } else {
         throw Exception('Failed to load album');
       }

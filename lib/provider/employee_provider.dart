@@ -344,7 +344,7 @@ class EmployeeProvider with ChangeNotifier {
       final response = await _employeeRepository.getStaffRoleData();
       if (response.responseCode == 200) {
         _isLoading = false;
-        _staffRoleData = response.roles ?? [];
+        _staffRoleData = response.employees ?? [];
         _initializeStaff();
       } else {
         log("Vendor Provider: Something Went Wrong");
@@ -357,6 +357,7 @@ class EmployeeProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
   Future<void> employeeInsert({
     required BuildContext context,
     required empName,
@@ -381,11 +382,10 @@ class EmployeeProvider with ChangeNotifier {
         active : active,
       );
       if (response.responseCode == 200) {
-        log("response:$response");
         Navigator.pop(context);
-        utils.snackBar(msg: "Employee Inserted Sucessfully",
-            color: Colors.green,context:context);
+        utils.snackBar(msg: "Employee Inserted Successfully", color: Colors.green,context:context);
         addRoleButtonController.reset();
+        staffRoleDetailsData(context: context);
        } else if(response.responseCode == 409){
         addRoleButtonController.reset();
         utils.snackBar(msg: "Mobile Number Already Exist",
@@ -407,45 +407,37 @@ class EmployeeProvider with ChangeNotifier {
 
   Future<void> employeeUpdate({
     required BuildContext context,required id,
-    required emp_name,  required emp_mobile, required emp_address, required emp_bonus, required emp_email, required emp_join_date, required emp_password,
-    required emp_role , required emp_salary, required emp_whatsapp, required active,  required roles,
+    required empName,  required empMobile, required empAddress,
+    required empBonus, required empEmail, required empJoinDate, required empPassword,
+    required empRole , required empSalary, required empWhatsapp, required active,
   })
   async {
-
     try {
       // _isLoading = true;
       notifyListeners();
       final response = await _employeeRepository.updateEmployee(
         id: id,
-        emp_name: emp_name,
-        emp_mobile : emp_mobile,
-        emp_address: emp_address,
-        emp_bonus: emp_bonus,
-        emp_email: emp_email,
-        emp_join_date: emp_join_date,
-        emp_password:emp_password ,
-        emp_role: emp_role,
-        emp_salary:emp_salary ,
-        emp_whatsapp:emp_whatsapp ,
+        empName: empName,
+        empMobile : empMobile,
+        empAddress: empAddress,
+        empBonus: empBonus,
+        empEmail: empEmail,
+        empJoinDate: empJoinDate,
+        empPassword:empPassword ,
+        empRole: empRole,
+        empSalary:empSalary ,
+        empWhatsapp:empWhatsapp ,
         active : active,
-        roles:roles ,
       );
       log("response:$response");
-      log("Add Employee Repository if ${emp_name}");
-      log("Add Employee Repository if ${emp_mobile}");
-      log("Add Employee Repository if ${emp_whatsapp}");
-      log("Add Employee Repository if ${emp_email}");
-      log("Add Employee Repository if ${emp_address}");
-      log("Add Employee Repository if ${emp_password}");
-      log("Add Employee Repository if ${emp_role}");
-      log("Add Employee Repository if ${emp_salary}");
-      log("Add Employee Repository if ${emp_bonus}");
-      log("Add Employee Repository if ${emp_join_date}");
+
       if (response.responseCode == 200) {
         log("response:$response");
+        staffRoleDetailsData(context: context);
         Navigator.pop(context);
-        utils.snackBar(msg: "Employee Inserted Sucessfully",
+        utils.snackBar(msg: "Employee Updated Successfully",
             color: Colors.green,context:context);
+
         addEmployeeButtonController.reset();
       }
       else if(response.responseCode == 409){
@@ -453,28 +445,36 @@ class EmployeeProvider with ChangeNotifier {
       utils.snackBar(msg: "Mobile Number Already Exist  ",
           color: Colors.red,context:context);
       }
-
       else {
         addEmployeeButtonController.reset();
-        utils.snackBar(msg: "Employee Inserted Failed",
+        utils.snackBar(msg: "Employee Updated Failed",
             color: Colors.red,context:context);
       }
-
     } catch (e) {
       addEmployeeButtonController.reset();
       throw Exception(e);
-
     } finally {
       _isLoading = false;
       notifyListeners();
       addEmployeeButtonController.reset();
-
     }
   }
   var role;
   var roleId;
   List<dynamic> _roleList = [];
   List<dynamic> get roleList => _roleList;
+  List<Map<String, dynamic>> get fRoleList => List<Map<String, dynamic>>.from(_roleList);
+
+  String getRoleName(String? staffRoleId) {
+    if (staffRoleId == null || staffRoleId == "null") return "";
+    final match = fRoleList.firstWhere(
+          (role) => role['u_id'].toString() == staffRoleId,
+      orElse: () => <String, dynamic>{},
+    );
+    return match.isNotEmpty ? match['role_name'].toString() : "";
+  }
+
+
   Future<void> fetchRoleList() async {
     role = null;
     _roleList = [];
@@ -484,6 +484,7 @@ class EmployeeProvider with ChangeNotifier {
 
       if (response.isNotEmpty) {
         _roleList = response;
+        print("Role List: $_roleList");
 
       } else {
         _roleList = [];
@@ -511,39 +512,32 @@ class EmployeeProvider with ChangeNotifier {
         List<String> deletedIds = [];
 
         if (response.result is List) {
-          log("Deleting Vendor(s) with ID(s): ${response.result}");
           deletedIds = List<String>.from(response.result?.map((id) => id.toString()));
         } else if (response.result is String) {
           deletedIds = [response.result.toString()];
         }
 
         if (deletedIds.isNotEmpty) {
-          log("Before deletion: ${filteredStaff.length}");
-
           filteredStaff.removeWhere((staff) => deletedIds.contains(staff.id.toString()));
-
-          log("After deletion: ${filteredStaff.length}");
-
           _selectedEmployeeIds.clear();
-
           staffRoleDetailsData(context: context);
-
           notifyListeners();
         }
 
         if (context.mounted) {
-          utils.snackBar(msg: "Vendor(s) deleted successfully",
+          utils.snackBar(msg: "Employees deleted successfully",
               color: Colors.green,context:context);
         }
         staffRoleDetailsData(context: context);
         notifyListeners();
       } else {
-        utils.snackBar(msg: "Vendor deletion failed",
+        utils.snackBar(msg: "Employee deletion failed",
             color: Colors.red,context:context);
       }
     } catch (e) {
       throw Exception(e);
     } finally {
+      Navigator.pop(context);
       notifyListeners(); // Keeping this to update UI if needed
     }
   }

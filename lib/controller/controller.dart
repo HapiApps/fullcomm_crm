@@ -1478,7 +1478,14 @@ class Controller extends GetxController {
   TextEditingController coCountryController =
       TextEditingController(text: "India");
   var monthData = <CustomerMonthData>[].obs;
+  var dayReport = <CustomerDayData>[].obs;
+  var rangeStart = DateTime.now().subtract(const Duration(days: 6)).obs;
+  var rangeEnd = DateTime.now().obs;
 
+  void moveRange(int days) {
+    rangeStart.value = rangeStart.value.add(Duration(days: days));
+    rangeEnd.value = rangeEnd.value.add(Duration(days: days));
+  }
   void setData(List<dynamic> data) {
     monthData.value = data.map((e) => CustomerMonthData.fromJson(e)).toList();
   }
