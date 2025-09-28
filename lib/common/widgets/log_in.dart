@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
               alignment: Alignment.center,
               //color: Colors.orange[50],
               //color: colorsConst.secondary,
-              child: SvgPicture.asset("assets/images/login.svg"),
+              child: Image.asset("assets/images/login.png"),
             ),
             Container(
               alignment: Alignment.center,
@@ -117,11 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Obx(
-                        () => CustomPasswordTextField(
-                          iconData: controllers.isEyeOpen.value
-                              ? Icons.remove_red_eye_outlined
-                              : Icons.visibility_off,
+                      CustomPasswordTextField(
                           onChanged: (value) async {
                             SharedPreferences sharedPref = await SharedPreferences.getInstance();
                             sharedPref.setString("loginPassword", value.toString().trim());
@@ -137,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                           hintText: 'Enter Your Password',
                           isOptional: true,
                         ),
-                      ),
+
                     ],
                   ),
 

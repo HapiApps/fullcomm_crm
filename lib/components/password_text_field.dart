@@ -1,11 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/styles/styles.dart';
-import '../common/utilities/utils.dart';
-import '../controller/controller.dart';
 import 'custom_text.dart';
 
 class CustomPasswordTextField extends StatefulWidget {
@@ -29,57 +26,39 @@ class CustomPasswordTextField extends StatefulWidget {
   final IconData? iconData;
   final String? image;
   final String? prefixText;
-  final VoidCallback? onPressed;
   final VoidCallback? onEdit;
 
-  const CustomPasswordTextField(
-      {super.key,
-      required this.text,
-      this.height = 70,
-      this.width = 270,
-      required this.controller,
-      this.focusNode,
-      this.onChanged,
-      this.onTap,
-      this.keyboardType = TextInputType.text,
-      this.textInputAction = TextInputAction.next,
-      this.textCapitalization = TextCapitalization.words,
-      this.validator,
-      this.inputFormatters,
-      this.hintText,
-      this.isIcon,
-      this.iconData,
-      this.isShadow = false,
-      this.isLogin = false,
-      this.image,
-      this.onPressed,
-      this.prefixText,
-      this.onEdit,
-      required this.isOptional});
+  const CustomPasswordTextField({
+    super.key,
+    required this.text,
+    this.height = 70,
+    this.width = 270,
+    required this.controller,
+    this.focusNode,
+    this.onChanged,
+    this.onTap,
+    this.keyboardType = TextInputType.text,
+    this.textInputAction = TextInputAction.next,
+    this.textCapitalization = TextCapitalization.words,
+    this.validator,
+    this.inputFormatters,
+    this.hintText,
+    this.isIcon,
+    this.iconData,
+    this.isShadow = false,
+    this.isLogin = false,
+    this.image,
+    this.prefixText,
+    this.onEdit,
+    required this.isOptional,
+  });
 
   @override
-  State<CustomPasswordTextField> createState() =>
-      _CustomPasswordTextFieldState();
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-        .add(ObjectFlagProperty<VoidCallback?>.has('onPressed', onPressed));
-  }
+  State<CustomPasswordTextField> createState() => _CustomPasswordTextFieldState();
 }
 
 class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
-  // late FocusNode _focusNode;
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   _focusNode = widget.focusNode ?? FocusNode();
-  //   _focusNode.addListener(() {
-  //     setState(() {
-  //     });
-  //   });
-  // }
+  bool isEyeOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -92,56 +71,66 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
             CustomText(
               text: widget.text,
               textAlign: TextAlign.start,
-              colors: Color(0xff4B5563),
+              colors: const Color(0xff4B5563),
               size: 15,
             ),
-            widget.isOptional == true
+            widget.isOptional
                 ? const CustomText(
-                    text: "*",
-                    colors: Colors.red,
-                    size: 25,
-                  )
-                : 0.width
+              text: "*",
+              colors: Colors.red,
+              size: 25,
+            )
+                : 0.width,
           ],
         ),
         SizedBox(
           width: widget.width,
-          // height:80,
           child: Center(
             child: TextFormField(
-                key: ValueKey(widget.text),
-                style: const TextStyle(
-                    color: Colors.black, fontSize: 15, fontFamily: "Lato"),
-                // readOnly: widget.controller==controllers.upDOBController||widget.controller==controllers.upDOBController?true:false,
-                obscureText: widget.controller == controllers.loginPassword ||
-                        widget.controller ==
-                            controllers.signupPasswordController
-                    ? !controllers.isEyeOpen.value
-                    : false,
-                // focusNode: FocusNode(),
-                cursorColor: colorsConst.primary,
-                focusNode: widget.focusNode,
-                onChanged: widget.onChanged,
-                onTap: widget.onTap,
-                obscuringCharacter: "*",
-                inputFormatters: widget.inputFormatters,
-                textCapitalization: widget.textCapitalization!,
-                textInputAction: widget.textInputAction,
-                keyboardType: widget.keyboardType,
-                validator: widget.validator,
-                controller: widget.controller,
-                onEditingComplete: widget.onEdit,
-                decoration: customStyle.inputDecoration(
-                    text: widget.hintText,
-                    iconData: widget.iconData,
-                    image: widget.image,
-                    isIcon: widget.isIcon,
-                    isLogin: widget.isLogin,
-                    onPressed: widget.onPressed)),
+              key: ValueKey(widget.text),
+              controller: widget.controller,
+              focusNode: widget.focusNode,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 15,
+                fontFamily: "Lato",
+              ),
+              cursorColor: colorsConst.primary,
+              onChanged: widget.onChanged,
+              onTap: widget.onTap,
+              obscuringCharacter: "*",
+              inputFormatters: widget.inputFormatters,
+              textCapitalization: widget.textCapitalization!,
+              textInputAction: widget.textInputAction,
+              keyboardType: widget.keyboardType,
+              validator: widget.validator,
+              onEditingComplete: widget.onEdit,
+              obscureText: !isEyeOpen,
+              decoration: customStyle.inputDecoration(
+                text: widget.hintText,
+                image: widget.image,
+                isIcon: widget.isIcon,
+                isLogin: widget.isLogin,
+              ).copyWith(
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    isEyeOpen
+                        ? Icons.remove_red_eye_outlined
+                        : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isEyeOpen = !isEyeOpen;
+                    });
+                  },
+                ),
+              ),
+            ),
           ),
         ),
-        20.height
+        20.height,
       ],
     );
   }
 }
+

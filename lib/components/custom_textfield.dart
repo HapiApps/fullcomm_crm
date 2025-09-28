@@ -6,7 +6,7 @@ import '../common/constant/colors_constant.dart';
 import '../common/styles/styles.dart';
 import 'custom_text.dart';
 
-class CustomTextField extends StatefulWidget {
+class CustomTextField extends StatelessWidget {
   final String text;
   final String? hintText;
   final double? height;
@@ -56,45 +56,22 @@ class CustomTextField extends StatefulWidget {
       this.isOptional});
 
   @override
-  State<CustomTextField> createState() => _CustomTextFieldState();
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-        .add(ObjectFlagProperty<VoidCallback?>.has('onPressed', onPressed));
-  }
-}
-
-class _CustomTextFieldState extends State<CustomTextField> {
-  // late FocusNode _focusNode;
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   _focusNode = widget.focusNode ?? FocusNode();
-  //   _focusNode.addListener(() {
-  //     setState(() {
-  //     });
-  //   });
-  // }
-
-  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        widget.hintText!.isEmpty
+        hintText!.isEmpty
             ? 2.height
             : Row(
                 children: [
                   CustomText(
-                    text: widget.text,
+                    text: text,
                     textAlign: TextAlign.start,
                     colors: Color(0xff4B5563),
                     size: 13,
                   ),
-                  widget.isOptional! == true
+                  isOptional! == true
                       ? const CustomText(
                           text: "*",
                           colors: Colors.red,
@@ -104,11 +81,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 ],
               ),
         SizedBox(
-          width: widget.width,
+          width: width,
           height:40,
           child: Center(
             child: TextFormField(
-                key: ValueKey(widget.text),
+                key: ValueKey(text),
                 maxLines: null,
                 style: const TextStyle(
                     color: Colors.black, fontSize: 15, fontFamily: "Lato"),
@@ -116,26 +93,26 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 //obscureText: widget.controller==controllers.loginPassword||widget.controller==controllers.signupPasswordController?!controllers.isEyeOpen.value:false,
                 // focusNode: FocusNode(),
                 cursorColor: colorsConst.primary,
-                focusNode: widget.focusNode,
-                onChanged: widget.onChanged,
-                onTap: widget.onTap,
-                inputFormatters: widget.inputFormatters,
-                textCapitalization: widget.textCapitalization!,
-                textInputAction: widget.textInputAction,
-                keyboardType: widget.keyboardType,
-                validator: widget.validator,
-                controller: widget.controller,
-                onEditingComplete: widget.onEdit,
+                focusNode: focusNode,
+                onChanged: onChanged,
+                onTap: onTap,
+                inputFormatters: inputFormatters,
+                textCapitalization: textCapitalization!,
+                textInputAction: textInputAction,
+                keyboardType: keyboardType,
+                validator: validator,
+                controller: controller,
+                onEditingComplete: onEdit,
                 decoration: customStyle.inputDecoration(
-                    text: widget.hintText,
-                    iconData: widget.iconData,
-                    image: widget.image,
-                    isIcon: widget.isIcon,
-                    isLogin: widget.isLogin,
-                    onPressed: widget.onPressed)),
+                    text: hintText,
+                    iconData: iconData,
+                    image: image,
+                    isIcon: isIcon,
+                    isLogin: isLogin,
+                    onPressed: onPressed)),
           ),
         ),
-        widget.hintText!.isEmpty ? 10.height : 20.height,
+        hintText!.isEmpty ? 10.height : 20.height,
       ],
     );
   }

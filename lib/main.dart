@@ -56,50 +56,22 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    apiService.getRoles();
-    // apiService.getLeadCategory();
-    // apiService.getVisitType();
-    apiService.getAllCustomers();
-    apiService.getOpenedMailActivity(true);
-    apiService.getReplyMailActivity(true);
-    apiService.getAllCallActivity();
-    apiService.getAllMailActivity();
-    apiService.getAllMeetingActivity();
-    apiService.getAllNoteActivity();
-    apiService.getUserHeading();
     if (widget.loginScreen) {
       apiService.allLeadsDetails();
       apiService.allQualifiedDetails();
       apiService.allNewLeadsDetails();
       apiService.allGoodLeadsDetails();
       apiService.allCustomerDetails();
+      apiService.getRoles();
+      apiService.getAllCustomers();
+      apiService.getOpenedMailActivity(true);
+      apiService.getReplyMailActivity(true);
+      apiService.getAllCallActivity();
+      apiService.getAllMailActivity();
+      apiService.getAllMeetingActivity();
+      apiService.getAllNoteActivity();
+      apiService.getUserHeading();
     }
-    //  Future.delayed(Duration.zero,(){
-    //    setState(() {
-    //    controllers.selectStateList=[];
-    //    for (var entry in controllers.pinCodeList){
-    //      if (entry['STATE'] is String && !controllers.selectStateList.contains(entry['STATE'])) {
-    //        controllers.selectStateList.add(entry['STATE']);
-    //      }
-    //    }
-    //    for (var item in controllers.stateList){
-    //      if (!controllers.selectStateList.contains(item)){
-    //        print(item);
-    //      }
-    //    }
-    //   controllers.selectCityList=[];
-    //   for (var entry in controllers.pinCodeList){
-    //     if (entry['STATE'] == "Tamil Nadu" && entry['DISTRICT'] is String){
-    //       if (!controllers.selectCityList.contains(entry['DISTRICT'])) {
-    //         controllers.selectCityList.add(entry['DISTRICT'].toString().trim());
-    //       }
-    //     }
-    //   }
-    // });
-    //
-    //  });
-    //controllers.allCompanyFuture=apiService.allCompanyDetails();
-    //controllers.allEmployeeFuture=apiService.allEmployeeDetails();
   }
   @override
   Widget build(BuildContext context) {

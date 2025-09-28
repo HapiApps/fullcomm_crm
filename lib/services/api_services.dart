@@ -1243,10 +1243,10 @@ class ApiService {
         prefs.setBool("isAdmin", controllers.isAdmin.value);
         prefs.remove("loginNumber");
         prefs.remove("loginPassword");
-        apiService.getAllCallActivity();
-        apiService.getAllMailActivity();
-        apiService.getAllMeetingActivity();
-        apiService.getAllNoteActivity();
+        getAllCallActivity();
+        getAllMailActivity();
+        getAllMeetingActivity();
+        getAllNoteActivity();
         loginHistoryApi();
         allLeadsDetails();
         allNewLeadsDetails();
@@ -1254,6 +1254,10 @@ class ApiService {
         allCustomerDetails();
         allQualifiedDetails();
         getUserHeading();
+        getRoles();
+        getAllCustomers();
+        getOpenedMailActivity(true);
+        getReplyMailActivity(true);
         utils.snackBar(
           context: Get.context!,
           msg: "Login Successfully",
