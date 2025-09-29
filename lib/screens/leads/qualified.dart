@@ -71,7 +71,7 @@ class _QualifiedState extends State<Qualified> {
             children: [
               utils.sideBarFunction(context),
               Container(
-                      width: MediaQuery.of(context).size.width - 150,
+                width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
                       height: MediaQuery.of(context).size.height,
                       alignment: Alignment.center,
                       padding: EdgeInsets.fromLTRB(16, 5, 16, 16),

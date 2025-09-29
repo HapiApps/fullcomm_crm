@@ -2517,7 +2517,9 @@ class ApiService {
       final response = await http.post(
         url,
         body: jsonEncode(
-            {"search_type": "company", "cos_id": controllers.storage.read("cos_id"), "action": "get_data"}),
+            {"search_type": "company",
+              "cos_id": controllers.storage.read("cos_id"),
+              "action": "get_data"}),
       );
       //print("Company ${response.body}");
       controllers.isLead.value = true;
@@ -2709,16 +2711,17 @@ class ApiService {
     }
   }
 
-  Future getDayReport() async {
+  Future getDayReport(String year,String month) async {
     try {
       Map data = {
         "search_type": "day_report",
         "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data",
-        "year":DateTime.now().year,
-        "month":DateTime.now().month
+        "year":year,
+        "month":month
       };
-      log("main ${data.toString()}");
+      log("main day wise ${data.toString()}");
+      controllers.dayReport.value = [];
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
@@ -2736,6 +2739,7 @@ class ApiService {
         throw Exception('Failed to load album');
       }
     } catch (e) {
+      print("day_report $e");
       throw Exception('Failed to load album');
     }
   }

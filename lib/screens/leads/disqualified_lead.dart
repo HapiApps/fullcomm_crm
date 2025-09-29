@@ -82,7 +82,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                   _focusNode.requestFocus();
                 },
                 child: Container(
-                  width: MediaQuery.of(context).size.width - 150,
+                  width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
                   height: MediaQuery.of(context).size.height,
                   padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
                   child: Column(

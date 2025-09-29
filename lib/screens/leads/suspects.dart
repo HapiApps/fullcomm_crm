@@ -83,7 +83,7 @@ class _SuspectsState extends State<Suspects> {
                   _focusNode.requestFocus();
                 },
                 child: Container(
-                  width:MediaQuery.of(context).size.width - 150,
+                  width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
                   height: MediaQuery.of(context).size.height,
                   padding: const EdgeInsets.fromLTRB(20, 5, 20, 16),
                   child: Column(
@@ -317,12 +317,12 @@ class _SuspectsState extends State<Suspects> {
                               for (int j = 0; j < controllers.isNewLeadList.length; j++) {
                                 controllers.isNewLeadList[j]["isSelect"] = true;
                                 apiService.prospectsList.add({
-                                      "lead_id": controllers.isNewLeadList[j]["lead_id"],
-                                      "user_id": controllers.storage.read("id"),
-                                      "rating": controllers.isNewLeadList[j]["rating"],
-                                      "cos_id": controllers.storage.read("cos_id"),
-                                      "mail_id":controllers.isNewLeadList[j]["mail_id"]
-                                    });
+                                  "lead_id": controllers.isNewLeadList[j]["lead_id"],
+                                  "user_id": controllers.storage.read("id"),
+                                  "rating": controllers.isNewLeadList[j]["rating"],
+                                  "cos_id": controllers.storage.read("cos_id"),
+                                  "mail_id":controllers.isNewLeadList[j]["mail_id"]
+                                });
                               }
                             });
                           } else {
@@ -345,139 +345,139 @@ class _SuspectsState extends State<Suspects> {
                       Expanded(
                         //height: MediaQuery.of(context).size.height/1.5,
                         child: Obx(() => controllers.isLead.value == false
-                                ? const Center(child: CircularProgressIndicator())
-                                : controllers.paginatedLeads.isNotEmpty?
-                            GestureDetector(
-                              onTap: () {
-                                _focusNode.requestFocus();
-                              },
-                              child: RawKeyboardListener(
-                                focusNode: _focusNode,
-                                autofocus: true,
-                                onKey: (event) {
-                                  if (event is RawKeyDownEvent) {
-                                    if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                                      _controller.animateTo(
-                                        _controller.offset + 100,
-                                        duration: const Duration(milliseconds: 200),
-                                        curve: Curves.easeInOut,
-                                      );
-                                    } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                                      _controller.animateTo(
-                                        _controller.offset - 100,
-                                        duration: const Duration(milliseconds: 200),
-                                        curve: Curves.easeInOut,
-                                      );
-                                    }
-                                    if (event is KeyDownEvent) {
-                                      if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
-                                          controllers.currentPage.value > 1) {
-                                        controllers.currentPage.value--;
-                                      }
-                                      if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
-                                          controllers.currentPage.value < controllers.totalPages) {
-                                        controllers.currentPage.value++;
-                                      }
-                                    }
+                            ? const Center(child: CircularProgressIndicator())
+                            : controllers.paginatedLeads.isNotEmpty?
+                        GestureDetector(
+                          onTap: () {
+                            _focusNode.requestFocus();
+                          },
+                          child: RawKeyboardListener(
+                            focusNode: _focusNode,
+                            autofocus: true,
+                            onKey: (event) {
+                              if (event is RawKeyDownEvent) {
+                                if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                                  _controller.animateTo(
+                                    _controller.offset + 100,
+                                    duration: const Duration(milliseconds: 200),
+                                    curve: Curves.easeInOut,
+                                  );
+                                } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                                  _controller.animateTo(
+                                    _controller.offset - 100,
+                                    duration: const Duration(milliseconds: 200),
+                                    curve: Curves.easeInOut,
+                                  );
+                                }
+                                if (event is KeyDownEvent) {
+                                  if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
+                                      controllers.currentPage.value > 1) {
+                                    controllers.currentPage.value--;
                                   }
-                                },
-                                child:  ListView.builder(
-                                  controller: _controller,
-                                  shrinkWrap: true,
-                                  physics: const ScrollPhysics(),
-                                  itemCount: controllers.paginatedLeads.length,
-                                  itemBuilder: (context, index) {
-                                    final data = controllers.paginatedLeads[index];
-                                    return Obx(()=>CustomLeadTile(
-                                      pageName: "Suspects",
-                                      saveValue: controllers.isNewLeadList[index]["isSelect"],
-                                      onChanged: (value){
-                                        setState(() {
-                                          if(controllers.isNewLeadList[index]["isSelect"]==true){
-                                            controllers.isNewLeadList[index]["isSelect"]=false;
-                                            var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                            apiService.prospectsList.removeAt(i);
-                                          }else{
-                                            controllers.isNewLeadList[index]["isSelect"]=true;
-                                            apiService.prospectsList.add({
-                                              "lead_id":data.userId.toString(),
-                                              "user_id":controllers.storage.read("id"),
-                                              "rating":data.rating ?? "Warm",
-                                              "cos_id":controllers.storage.read("cos_id"),
-                                              "mail_id":data.emailId.toString().split("||")[0]
-                                            });
-                                          }
+                                  if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
+                                      controllers.currentPage.value < controllers.totalPages) {
+                                    controllers.currentPage.value++;
+                                  }
+                                }
+                              }
+                            },
+                            child:  ListView.builder(
+                              controller: _controller,
+                              shrinkWrap: true,
+                              physics: const ScrollPhysics(),
+                              itemCount: controllers.paginatedLeads.length,
+                              itemBuilder: (context, index) {
+                                final data = controllers.paginatedLeads[index];
+                                return Obx(()=>CustomLeadTile(
+                                  pageName: "Suspects",
+                                  saveValue: controllers.isNewLeadList[index]["isSelect"],
+                                  onChanged: (value){
+                                    setState(() {
+                                      if(controllers.isNewLeadList[index]["isSelect"]==true){
+                                        controllers.isNewLeadList[index]["isSelect"]=false;
+                                        var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                        apiService.prospectsList.removeAt(i);
+                                      }else{
+                                        controllers.isNewLeadList[index]["isSelect"]=true;
+                                        apiService.prospectsList.add({
+                                          "lead_id":data.userId.toString(),
+                                          "user_id":controllers.storage.read("id"),
+                                          "rating":data.rating ?? "Warm",
+                                          "cos_id":controllers.storage.read("cos_id"),
+                                          "mail_id":data.emailId.toString().split("||")[0]
                                         });
-                                      },
-                                      visitType: data.visitType.toString(),
-                                      detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
-                                      statusUpdate: data.statusUpdate.toString(),
-                                      index: index,
-                                      points: data.points.toString(),
-                                      quotationStatus: data.quotationStatus.toString(),
-                                      quotationRequired: data.quotationRequired.toString(),
-                                      productDiscussion: data.productDiscussion.toString(),
-                                      discussionPoint: data.discussionPoint.toString(),
-                                      notes: data.notes.toString(),
-                                      linkedin: "",
-                                      x: "",
-                                      name: data.firstname.toString().split("||")[0],
-                                      mobileNumber: data.mobileNumber.toString().split("||")[0],
-                                      email: data.emailId.toString().split("||")[0],
-                                      companyName: data.companyName.toString(),
-                                      mainWhatsApp: data.mobileNumber.toString().split("||")[0],
-                                      emailUpdate: data.quotationUpdate.toString(),
-                                      id: data.userId.toString(),
-                                      status: data.leadStatus ?? "UnQualified",
-                                      rating: data.rating ?? "Warm",
-                                      mainName: data.firstname.toString().split("||")[0],
-                                      mainMobile: data.mobileNumber.toString().split("||")[0],
-                                      mainEmail: data.emailId.toString().split("||")[0],
-                                      title: "",
-                                      whatsappNumber: data.mobileNumber.toString().split("||")[0],
-                                      mainTitle: "",
-                                      addressId: data.addressId ?? "",
-                                      companyWebsite: "",
-                                      companyNumber: "",
-                                      companyEmail: "",
-                                      industry: "",
-                                      productServices: "",
-                                      source:data.source ?? "",
-                                      owner: "",
-                                      budget: "",
-                                      timelineDecision: "",
-                                      serviceInterest: "",
-                                      description: "",
-                                      leadStatus: data.quotationStatus ?? "",
-                                      active: data.active ?? "",
-                                      addressLine1: data.doorNo ?? "",
-                                      addressLine2: data.landmark1 ?? "",
-                                      area: data.area ?? "",
-                                      city: data.city ?? "",
-                                      state: data.state ?? "",
-                                      country: data.country ?? "",
-                                      pinCode: data.pincode ?? "",
-                                      prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
-                                      expectedConvertionDate: data.expectedConvertionDate ?? "",
-                                      numOfHeadcount: data.numOfHeadcount ?? "",
-                                      expectedBillingValue: data.expectedBillingValue ?? "",
-                                      arpuValue: data.arpuValue ?? "",
-                                      updatedTs: data.updatedTs ?? "",
-                                      sourceDetails: data.sourceDetails ?? "",
-                                    ));
+                                      }
+                                    });
                                   },
-                                ),
-                              ),
-                            ):
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                100.height,
-                                Center(
-                                    child: SvgPicture.asset(
-                                        "assets/images/noDataFound.svg")),
-                              ],
-                            )
+                                  visitType: data.visitType.toString(),
+                                  detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
+                                  statusUpdate: data.statusUpdate.toString(),
+                                  index: index,
+                                  points: data.points.toString(),
+                                  quotationStatus: data.quotationStatus.toString(),
+                                  quotationRequired: data.quotationRequired.toString(),
+                                  productDiscussion: data.productDiscussion.toString(),
+                                  discussionPoint: data.discussionPoint.toString(),
+                                  notes: data.notes.toString(),
+                                  linkedin: "",
+                                  x: "",
+                                  name: data.firstname.toString().split("||")[0],
+                                  mobileNumber: data.mobileNumber.toString().split("||")[0],
+                                  email: data.emailId.toString().split("||")[0],
+                                  companyName: data.companyName.toString(),
+                                  mainWhatsApp: data.mobileNumber.toString().split("||")[0],
+                                  emailUpdate: data.quotationUpdate.toString(),
+                                  id: data.userId.toString(),
+                                  status: data.leadStatus ?? "UnQualified",
+                                  rating: data.rating ?? "Warm",
+                                  mainName: data.firstname.toString().split("||")[0],
+                                  mainMobile: data.mobileNumber.toString().split("||")[0],
+                                  mainEmail: data.emailId.toString().split("||")[0],
+                                  title: "",
+                                  whatsappNumber: data.mobileNumber.toString().split("||")[0],
+                                  mainTitle: "",
+                                  addressId: data.addressId ?? "",
+                                  companyWebsite: "",
+                                  companyNumber: "",
+                                  companyEmail: "",
+                                  industry: "",
+                                  productServices: "",
+                                  source:data.source ?? "",
+                                  owner: "",
+                                  budget: "",
+                                  timelineDecision: "",
+                                  serviceInterest: "",
+                                  description: "",
+                                  leadStatus: data.quotationStatus ?? "",
+                                  active: data.active ?? "",
+                                  addressLine1: data.doorNo ?? "",
+                                  addressLine2: data.landmark1 ?? "",
+                                  area: data.area ?? "",
+                                  city: data.city ?? "",
+                                  state: data.state ?? "",
+                                  country: data.country ?? "",
+                                  pinCode: data.pincode ?? "",
+                                  prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
+                                  expectedConvertionDate: data.expectedConvertionDate ?? "",
+                                  numOfHeadcount: data.numOfHeadcount ?? "",
+                                  expectedBillingValue: data.expectedBillingValue ?? "",
+                                  arpuValue: data.arpuValue ?? "",
+                                  updatedTs: data.updatedTs ?? "",
+                                  sourceDetails: data.sourceDetails ?? "",
+                                ));
+                              },
+                            ),
+                          ),
+                        ):
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            100.height,
+                            Center(
+                                child: SvgPicture.asset(
+                                    "assets/images/noDataFound.svg")),
+                          ],
+                        )
                         ),
                       ),
 

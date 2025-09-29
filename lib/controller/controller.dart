@@ -29,9 +29,12 @@ class Controller extends GetxController {
   //  var versionNum = "0.0.14";
   var serverVersion = "".obs,
       currentApk = "".obs,
+      currentUserCount = "".obs,
       currentCRMLink = "".obs,
       versionActive = true.obs,
       updateAvailable = true.obs;
+  var selectedChartMonth = DateTime.now().month.obs;
+  var selectedChartYear = DateTime.now().year.obs;
   String countryDial = "+91";
   var isEyeOpen = false.obs,isLeftOpen=true.obs,isRightOpen=true.obs;
   RxInt selectedIndex = 0.obs,oldIndex=0.obs;

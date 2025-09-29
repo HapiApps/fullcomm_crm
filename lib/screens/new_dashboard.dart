@@ -41,12 +41,32 @@ class _NewDashboardState extends State<NewDashboard> {
       controllers.selectedIndex.value = 0;
       final prefs = await SharedPreferences.getInstance();
       controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
+       apiService.getDayReport(DateTime.now().year.toString(),DateTime.now().month.toString());
     });
     apiService.getDashBoardReport();
     apiService.getRatingReport();
     apiService.getMonthReport();
-    apiService.getDayReport();
   }
+
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   _focusNode = FocusNode();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     _focusNode.requestFocus();
+  //     final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
+  //     employeeData.staffRoleDetailsData(context: context);
+  //   });
+  //   Future.delayed(Duration.zero, () async {
+  //     apiService.currentVersion();
+  //     controllers.selectedIndex.value = 0;
+  //     final prefs = await SharedPreferences.getInstance();
+  //     controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
+  //     apiService.getDayReport(DateTime.now().year.toString(),DateTime.now().month.toString());
+  //   });
+  //   apiService.getDashBoardReport();
+  //   apiService.getRatingReport();
+  //   apiService.getMonthReport();
+  //
+  // }
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -294,37 +314,74 @@ class _NewDashboardState extends State<NewDashboard> {
                                                   isBold: true,
                                                   colors: colorsConst.textColor,
                                                 ),
-                                                CustomText(
-                                                  text: "2025          ",
-                                                  size: 13,
-                                                  colors: colorsConst.textColor,
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    // Month Dropdown
+                                                    Obx(() => DropdownButton<int>(
+                                                      value: controllers.selectedChartMonth.value,
+                                                      items: List.generate(12, (index) {
+                                                        final month = index + 1;
+                                                        return DropdownMenuItem(
+                                                          value: month,
+                                                          child: Text(DateFormat.MMMM().format(DateTime(0, month))),
+                                                        );
+                                                      }),
+                                                      onChanged: (value) {
+                                                        if (value != null) {
+                                                          controllers.selectedChartMonth.value = value;
+                                                         apiService.getDayReport(controllers.selectedChartYear.value.toString().isEmpty?DateTime.now().year.toString():controllers.selectedChartYear.value.toString(), controllers.selectedChartMonth.value.toString());
+                                                        }
+                                                      },
+                                                    )),
+                                                    20.width,
+                                                    // Year Dropdown
+                                                    Obx(() => DropdownButton<int>(
+                                                      value: controllers.selectedChartYear.value,
+                                                      items: List.generate(5, (index) {
+                                                        final year = DateTime.now().year - 4 + index;
+                                                        return DropdownMenuItem(
+                                                          value: year,
+                                                          child: Text(year.toString()),
+                                                        );
+                                                      }),
+                                                      onChanged: (value) {
+                                                        if (value != null) {
+                                                          controllers.selectedChartYear.value = value;
+                                                          apiService.getDayReport(controllers.selectedChartYear.value.toString().isEmpty?DateTime.now().year.toString():controllers.selectedChartYear.value.toString(), controllers.selectedChartMonth.value.toString().isEmpty?DateTime.now().month.toString():controllers.selectedChartMonth.value.toString());
+                                                        }
+                                                      },
+                                                    )),
+                                                    20.width,
+                                                  ],
                                                 ),
+
                                               ],
                                             ),
                                             10.height,
                                             Container(
                                                   alignment: Alignment.center,
                                                   width: (screenWidth-420)/2.1-50,
-                                                  height: 210,
-                                                  child: const DayWiseLineChart()),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                IconButton(
-                                                  icon: const Icon(Icons.arrow_back),
-                                                  onPressed: () => controllers.moveRange(-7),
-                                                ),
-                                                Text(
-                                                  "${DateFormat.MMMd().format(controllers.rangeStart.value)} - "
-                                                      "${DateFormat.MMMd().format(controllers.rangeEnd.value)}",
-                                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(Icons.arrow_forward),
-                                                  onPressed: () => controllers.moveRange(7),
-                                                ),
-                                              ],
-                                            ),
+                                                  height: 230,
+                                                  child: const DayWiseBarChart()),
+                                            // Row(
+                                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            //   children: [
+                                            //     IconButton(
+                                            //       icon: const Icon(Icons.arrow_back),
+                                            //       onPressed: () => controllers.moveRange(-7),
+                                            //     ),
+                                            //     Text(
+                                            //       "${DateFormat.MMMd().format(controllers.rangeStart.value)} - "
+                                            //           "${DateFormat.MMMd().format(controllers.rangeEnd.value)}",
+                                            //       style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                            //     ),
+                                            //     IconButton(
+                                            //       icon: const Icon(Icons.arrow_forward),
+                                            //       onPressed: () => controllers.moveRange(7),
+                                            //     ),
+                                            //   ],
+                                            // ),
 
                                           ],
                                         ),

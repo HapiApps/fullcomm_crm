@@ -219,8 +219,7 @@ class CustomTableHeader extends StatelessWidget {
                   const SizedBox(width: 3),
                   GestureDetector(
                     onTap: onSortDate,
-                    child: Obx(
-                          () => Image.asset(
+                    child: Obx(() => Image.asset(
                         controllers.sortField.value.isEmpty
                             ? "assets/images/arrow.png"
                             : controllers.sortOrder.value == 'asc'
@@ -285,7 +284,7 @@ class CustomTableHeader extends StatelessWidget {
   }
   Widget _headerCell(String text,double width, {TextAlign textAlign = TextAlign.left}) {
     return Container(
-      height: width<=922?55:45,
+      height: width<=922?65:45,
       alignment: textAlign == TextAlign.center
           ? Alignment.center
           : Alignment.centerLeft,
@@ -293,8 +292,8 @@ class CustomTableHeader extends StatelessWidget {
       child: Text(
         text,
         textAlign: textAlign,
-        style: const TextStyle(
-          fontSize: 15,
+        style: TextStyle(
+          fontSize: text=="Details Of Services Required"?13:15,
           color: Colors.white,
           fontFamily: "Lato",
         ),
@@ -304,7 +303,6 @@ class CustomTableHeader extends StatelessWidget {
       ),
     );
   }
-
 
   // Widget _headerCell(String text, {TextAlign textAlign = TextAlign.left}) {
   //   return Container(

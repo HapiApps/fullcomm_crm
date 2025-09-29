@@ -274,7 +274,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                       color: Colors.red,
                                     );
                                   }
-                                  else if(employeeProvider.mobileController.text.isEmpty ){
+                                  else if(employeeProvider.mobileController.text.isEmpty){
                                     employeeProvider.addEmployeeButtonController.reset();
                                     utils.snackBar(
                                       context: context,
