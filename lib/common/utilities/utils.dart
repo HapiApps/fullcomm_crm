@@ -3280,4 +3280,58 @@ class Utils {
     );
   }
 
+  void expiredEmpDialog(){
+    showDialog(
+        context: Get.context!,
+        barrierDismissible: true,
+        builder:(context){
+          return WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: AlertDialog(
+              shape:  RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)
+              ),
+              backgroundColor: Colors.white,
+              title:  Row(
+                children: [
+                  Image.asset("assets/images/warning.png",height: 30,width: 30,),
+                  Text(
+                    "Employee Not Add",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color:colorsConst.textColor,
+                      fontFamily: "Lato",
+                    ),
+                  ),
+                ],
+              ),
+              content: SizedBox(
+                //height: 300,
+                width: 330,
+                child:Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Only after making a payment, you can add employees.",
+                      style: TextStyle(
+                          fontSize:17,
+                          fontWeight: FontWeight.w500,
+                          color:colorsConst.textColor,
+                        fontFamily: "Lato",
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+    );
+  }
+
 }

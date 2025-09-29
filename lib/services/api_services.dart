@@ -2577,6 +2577,7 @@ class ApiService {
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         controllers.serverVersion.value = response[0]["current_version"];
+        controllers.currentUserCount.value = response[0]["user_count"];
         final expiredDate = parseExpiredDate(response[0]["expired_date"]);
         final now = DateTime.now();
         if (expiredDate != null && now.isAfter(expiredDate)) {

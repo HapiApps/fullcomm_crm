@@ -5,8 +5,10 @@ import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/components/custom_textfield.dart';
 import 'package:fullcomm_crm/components/password_text_field.dart';
+import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
+import 'package:web/web.dart';
 
 import '../../common/constant/colors_constant.dart';
 import '../../common/constant/key_constant.dart';
@@ -313,20 +315,27 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                       color: Colors.red,
                                     );
                                   } else {
-                                   employeeProvider.employeeInsert(
-                                     context: context,
-                                     empName: employeeProvider.nameController.text.toString(),
-                                     empMobile: employeeProvider.mobileController.text.toString(),
-                                     empAddress: employeeProvider.door.text.toString(),
-                                     empBonus: employeeProvider.bonus.text.toString(),
-                                     empEmail: employeeProvider.emailController.text.toString(),
-                                     empPassword: employeeProvider.password.text.toString(),
-                                     empJoinDate: employeeProvider.date.text.toString(),
-                                     empRole:employeeProvider.roleId,
-                                     empSalary: employeeProvider.salary.text.toString(),
-                                     empWhatsapp: employeeProvider.mobileController.text.trim().toString(),
-                                     active: employeeProvider.selectedPublication ?? "1",
-                                   );
+                                   if (employeeProvider.filteredStaff.length >= int.parse(controllers.currentUserCount.value)) {
+                                     print("Only after making a payment, you can add employees.");
+                                     utils.expiredEmpDialog();
+                                     employeeProvider.addEmployeeButtonController.reset();
+                                   }else{
+                                     employeeProvider.employeeInsert(
+                                       context: context,
+                                       empName: employeeProvider.nameController.text.toString(),
+                                       empMobile: employeeProvider.mobileController.text.toString(),
+                                       empAddress: employeeProvider.door.text.toString(),
+                                       empBonus: employeeProvider.bonus.text.toString(),
+                                       empEmail: employeeProvider.emailController.text.toString(),
+                                       empPassword: employeeProvider.password.text.toString(),
+                                       empJoinDate: employeeProvider.date.text.toString(),
+                                       empRole:employeeProvider.roleId,
+                                       empSalary: employeeProvider.salary.text.toString(),
+                                       empWhatsapp: employeeProvider.mobileController.text.trim().toString(),
+                                       active: employeeProvider.selectedPublication ?? "1",
+                                     );
+                                   }
+
                                   }
                                 },
                                 child: CustomText(

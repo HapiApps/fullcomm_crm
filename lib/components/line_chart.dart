@@ -28,7 +28,11 @@ class _DayWiseBarChartState extends State<DayWiseBarChart> {
       return BarChart(
         BarChartData(
           maxY: 10,
-          gridData: FlGridData( show: true, drawVerticalLine: true, drawHorizontalLine: true,
+          backgroundColor: Colors.white,
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: true,
+            drawHorizontalLine: true,
             getDrawingHorizontalLine: (value) {
             return FlLine( color: Colors.grey.shade200, strokeWidth: 1, );
             },
@@ -76,16 +80,30 @@ class _DayWiseBarChartState extends State<DayWiseBarChart> {
             rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           ),
           borderData: FlBorderData(show: true),
+          barTouchData: BarTouchData(
+            enabled: true,
+            touchTooltipData: BarTouchTooltipData(
+              getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                return BarTooltipItem(
+                  rod.toY.toString(),
+                  const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
+              },
+            ),
+          ),
           barGroups: fullMonthReport.map((e) {
             final yValue = e.totalCustomers.toDouble();
             return BarChartGroupData(
               x: e.dayNum,
               barRods: [
                 BarChartRodData(
-                  toY: yValue == 0 ? 0.5 : yValue,
+                  toY: yValue == 0 ? 0.1 : yValue,
                   color: colorsConst.primary,
-                  width: 14,
-                  borderRadius: BorderRadius.circular(4),
+                  width: 10,
+                  borderRadius: BorderRadius.zero,
                 ),
               ],
             );
