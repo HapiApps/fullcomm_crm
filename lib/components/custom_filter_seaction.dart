@@ -151,12 +151,15 @@ class FilterSection extends StatelessWidget {
                       shadowColor: Colors.transparent,
                     ),
                     onPressed: onSelectMonth,
-                    child: Obx(() => CustomText(
-                      text: selectedMonth.value != null
+                    child: Obx(() => Text(
+                     selectedMonth.value != null
                           ? DateFormat('MMMM yyyy')
                           .format(selectedMonth.value!)
                           : 'Select Month',
-                      colors: colorsConst.textColor,
+                      style: TextStyle(
+                        fontFamily: "Lato",
+                        color: colorsConst.textColor,
+                      ),
                     )),
                   ),
                 ),
@@ -208,11 +211,15 @@ class FilterSection extends StatelessWidget {
                     padding: const EdgeInsets.all(9),
                     child: Row(
                       children: [
-                        Obx(() => CustomText(
-                          text: selectedSortBy.value.isEmpty
+                        Obx(() => Text(
+                         selectedSortBy.value.isEmpty
                               ? "Filter by Date Range"
                               : selectedSortBy.value,
-                          colors: colorsConst.textColor,
+                          style: TextStyle(
+                            fontFamily: "Lato",
+                            color: colorsConst.textColor,
+                          ),
+
                         )),
                         5.width,
                         Obx(() => Icon(

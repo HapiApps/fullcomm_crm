@@ -301,75 +301,89 @@ class _ViewLeadState extends State<ViewLead> {
                                           )
                                       ),
                                       SizedBox(
-                                        width: 200,
+                                        width: 300,
                                         child: Row(
                                           children: [
-                                            ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: colorsConst.primary,),
-                                                onPressed: (){
-                                                  controllers.leadNameCrt.add(TextEditingController());
-                                                  controllers.leadMobileCrt.add(TextEditingController());
-                                                  controllers.leadTitleCrt.add(TextEditingController());
-                                                  controllers.leadEmailCrt.add(TextEditingController());
-                                                  controllers.leadWhatsCrt.add(TextEditingController());
-                                                  //Get.to(const Suspects(),duration: Duration.zero);
-                                                  Get.to( UpdateLead(
-                                                    visitType: leadData.visitType.toString(),
-                                                    id:widget.id,
-                                                    detailsOfRequired: leadData.detailsOfServiceRequired,
-                                                    linkedin: "",
-                                                    x: "",
-                                                    mainName:leadData.firstname,
-                                                    mainMobile:leadData.mobileNumber,
-                                                    mainEmail:leadData.emailId,
-                                                    mainWhatsApp: leadData.mobileNumber,
-                                                    companyName:leadData.companyName,
-                                                    status:leadData.status,
-                                                    rating:leadData.rating,
-                                                    emailUpdate:leadData.quotationRequired,
-                                                    name:leadData.firstname,
-                                                    title:"",
-                                                    mobileNumber:leadData.mobileNumber,
-                                                    whatsappNumber:leadData.mobileNumber,
-                                                    email:leadData.emailId,
-                                                    mainTitle:"",
-                                                    addressId:leadData.addressId,
-                                                    companyWebsite:"",
-                                                    companyNumber:"",
-                                                    companyEmail:"",
-                                                    industry:"",
-                                                    productServices:"",
-                                                    source:leadData.source,
-                                                    owner:leadData.owner,
-                                                    budget:"",
-                                                    timelineDecision:"",
-                                                    serviceInterest:"",
-                                                    description:"",
-                                                    leadStatus:leadData.leadStatus,
-                                                    active:leadData.active,
-                                                    addressLine1:leadData.doorNo,
-                                                    addressLine2:leadData.landmark1,
-                                                    area:leadData.area,
-                                                    city:leadData.city,
-                                                    state:leadData.state,
-                                                    country:leadData.country,
-                                                    pinCode:leadData.pincode,
-                                                    quotationStatus:leadData.quotationStatus,
-                                                    productDiscussion:leadData.productDiscussion,
-                                                    discussionPoint:leadData.discussionPoint,
-                                                    notes:leadData.notes.toString(),
-                                                    statusUpdate: leadData.statusUpdate,
-                                                    prospectEnrollmentDate: leadData.prospectEnrollmentDate ?? "",
-                                                    expectedConvertionDate: leadData.expectedConvertionDate ?? "",
-                                                    numOfHeadcount: leadData.numOfHeadcount ?? "",
-                                                    expectedBillingValue: leadData.expectedBillingValue ?? "",
-                                                    arpuValue: leadData.arpuValue ?? "",
-                                                    updateTs: leadData.updatedTs.toString(),
-                                                    sourceDetails: leadData.sourceDetails.toString(),));
-                                                  print("address id ${leadData.addressId}");
-                                                },
-                                                child: CustomText(text: "Edit",colors: colorsConst.headColor,)),
+                                            SizedBox(
+                                              width : 120,
+                                              height: 35,
+                                              child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    shadowColor: Colors.transparent,
+                                                    backgroundColor: colorsConst.primary,),
+                                                  onPressed: (){
+                                                    controllers.leadNameCrt.add(TextEditingController());
+                                                    controllers.leadMobileCrt.add(TextEditingController());
+                                                    controllers.leadTitleCrt.add(TextEditingController());
+                                                    controllers.leadEmailCrt.add(TextEditingController());
+                                                    controllers.leadWhatsCrt.add(TextEditingController());
+                                                    //Get.to(const Suspects(),duration: Duration.zero);
+                                                    Get.to(UpdateLead(
+                                                      visitType: leadData.visitType.toString(),
+                                                      id:widget.id,
+                                                      detailsOfRequired: leadData.detailsOfServiceRequired,
+                                                      linkedin: "",
+                                                      x: "",
+                                                      mainName:leadData.firstname.toString()=="null"?"":leadData.firstname.toString().split("||")[0],
+                                                      mainMobile:leadData.mobileNumber.toString()=="null"?"":leadData.mobileNumber.toString().split("||")[0],
+                                                      mainEmail:leadData.emailId.toString()=="null"?"":leadData.emailId.toString().split("||")[0],
+                                                      mainWhatsApp:leadData.mobileNumber.toString()=="null"?"":leadData.mobileNumber.toString().split("||")[0],
+                                                      companyName:leadData.companyName,
+                                                      status:leadData.status,
+                                                      rating:leadData.rating,
+                                                      emailUpdate:leadData.quotationRequired,
+                                                      name:leadData.firstname,
+                                                      title:"",
+                                                      mobileNumber:leadData.mobileNumber,
+                                                      whatsappNumber:leadData.mobileNumber,
+                                                      email:leadData.emailId,
+                                                      mainTitle:"",
+                                                      addressId:leadData.addressId,
+                                                      companyWebsite:"",
+                                                      companyNumber:"",
+                                                      companyEmail:"",
+                                                      industry:"",
+                                                      productServices:"",
+                                                      source:leadData.source,
+                                                      owner:leadData.owner,
+                                                      budget:"",
+                                                      timelineDecision:"",
+                                                      serviceInterest:"",
+                                                      description:"",
+                                                      leadStatus:leadData.leadStatus,
+                                                      active:leadData.active,
+                                                      addressLine1:leadData.doorNo,
+                                                      addressLine2:leadData.landmark1,
+                                                      area:leadData.area,
+                                                      city:leadData.city,
+                                                      state:leadData.state,
+                                                      country:leadData.country,
+                                                      pinCode:leadData.pincode,
+                                                      quotationStatus:leadData.quotationStatus,
+                                                      productDiscussion:leadData.productDiscussion,
+                                                      discussionPoint:leadData.discussionPoint,
+                                                      notes:leadData.notes.toString(),
+                                                      statusUpdate: leadData.statusUpdate,
+                                                      prospectEnrollmentDate: leadData.prospectEnrollmentDate ?? "",
+                                                      expectedConvertionDate: leadData.expectedConvertionDate ?? "",
+                                                      numOfHeadcount: leadData.numOfHeadcount ?? "",
+                                                      expectedBillingValue: leadData.expectedBillingValue ?? "",
+                                                      arpuValue: leadData.arpuValue ?? "",
+                                                      updateTs: leadData.updatedTs.toString(),
+                                                      sourceDetails: leadData.sourceDetails.toString(),));
+                                                    print("address id ${leadData.addressId}");
+                                                  },
+                                                  child: MouseRegion(
+                                                    cursor: SystemMouseCursors.click,
+                                                    child: Text(
+                                                      "Edit",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  )),
+                                            ),
+                                            10.width,
                                             CustomLoadingButton(
                                               callback:(){
                                                 // controllers.mailReceivesList.value=[];
@@ -388,12 +402,11 @@ class _ViewLeadState extends State<ViewLead> {
                                               width: 120,
                                               isImage: false,
                                               text: "Send Email",
-                                              textColor: Colors.black,
+                                              textColor: Colors.white,
                                             ),
                                           ],
                                         ),
                                       ),
-
                                     ],
                                   ),
                                   10.height,
@@ -461,7 +474,7 @@ class _ViewLeadState extends State<ViewLead> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       CustomText(
-                                        text: "Added DateTime : ${formatDateTime(leadData.updatedTs.toString())}",
+                                        text: "Added : ${formatDateTime(leadData.updatedTs.toString())}",
                                         colors: colorsConst.textColor,
                                         size: 12,
                                       )

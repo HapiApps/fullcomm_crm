@@ -1431,7 +1431,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                     height: 60,
                                     controller: controllers.leadCtr,
                                     isLoading:true,
-                                    textColor: Colors.black,
+                                    textColor: Colors.white,
                                     backgroundColor: colorsConst.third,
                                     radius: 10,
                                     width: 180),

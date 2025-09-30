@@ -1097,8 +1097,26 @@ class Controller extends GetxController {
     "Retail",
     "Financial Services",
     "Education",
-    "Information Technology"
+    "Information Technology",
+    "Entertainment",
+    "Tourism & Hospitality",
+    "Real Estate",
+    "Transportation & Logistics",
+    "Agriculture",
+    "Construction",
+    "Energy & Utilities",
+    "Telecommunications",
+    "Media & Advertising",
+    "Automotive",
+    "Pharmaceuticals & Biotechnology",
+    "Government & Public Sector",
+    "Non-Profit & NGOs",
+    "Food & Beverages",
+    "Fashion & Apparel",
+    "E-Commerce",
+    "Sports & Recreation",
   ];
+
   var callTypeList = [
     "Incoming",
     "Outgoing",

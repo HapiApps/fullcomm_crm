@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/components/password_text_field.dart';
@@ -36,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
       controllers.loginNumber.text = mobileNumber.toString();
       controllers.loginPassword.text = password.toString();
       if (kDebugMode) {
-        controllers.loginNumber.text = "9999999991";
+        controllers.loginNumber.text = isRelease==false?"9999999991":"9677281724";
         controllers.loginPassword.text = "12345678";
       }
     });
@@ -95,8 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                       CustomTextField(
                         onChanged: (value) async {
                           SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                          sharedPref.setString(
-                              "loginNumber", value.toString().trim());
+                          sharedPref.setString("loginNumber", value.toString().trim());
                         },
                         width: MediaQuery.of(context).size.width / 3.5,
                         height: 40,

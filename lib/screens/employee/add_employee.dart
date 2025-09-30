@@ -291,7 +291,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                       color: Colors.red,
                                     );
                                   }
-                                  else if(employeeProvider.password.text.isEmpty ){
+                                  else if(employeeProvider.password.text.isEmpty){
                                     employeeProvider.addEmployeeButtonController.reset();
                                     utils.snackBar(
                                       context: context,
@@ -335,7 +335,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                        active: employeeProvider.selectedPublication ?? "1",
                                      );
                                    }
-
                                   }
                                 },
                                 child: CustomText(

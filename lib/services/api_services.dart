@@ -1446,7 +1446,6 @@ class ApiService {
     controllers.isMailLoading.value = true;
     controllers.isOpened.value = false;
     controllers.isReplied.value = false;
-
     try {
       final data = {
         "search_type": "records",
@@ -1467,18 +1466,14 @@ class ApiService {
       if (request.statusCode == 200) {
         final List response = json.decode(request.body);
         controllers.mailActivity.clear();
-
-        final activities = response
-            .map((e) => CustomerActivity.fromJson(e))
-            .toList();
-
+        final activities = response.map((e) => CustomerActivity.fromJson(e)).toList();
         controllers.mailActivity.assignAll(activities);
-        controllers.allSentMails.value =
-            controllers.mailActivity.length.toString();
+        controllers.allSentMails.value = controllers.mailActivity.length.toString();
       } else {
         throw Exception('Failed to load mail activity');
       }
     } catch (e) {
+      controllers.mailActivity.clear();
       controllers.isMailLoading.value = false;
       print("Error in getAllMailActivity: $e");
       rethrow;
