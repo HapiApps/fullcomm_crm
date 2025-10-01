@@ -21,7 +21,6 @@ class _DayWiseBarChartState extends State<DayWiseBarChart> {
           color: colorsConst.primary,
         ));
       }
-
       final sortedReport = [...controllers.dayReport]
         ..sort((a, b) => a.dayNum.compareTo(b.dayNum));
       final fullMonthReport = sortedReport;
@@ -34,10 +33,10 @@ class _DayWiseBarChartState extends State<DayWiseBarChart> {
             drawVerticalLine: true,
             drawHorizontalLine: true,
             getDrawingHorizontalLine: (value) {
-            return FlLine( color: Colors.grey.shade200, strokeWidth: 1, );
+            return FlLine( color: Colors.grey.shade200, strokeWidth: 1);
             },
             getDrawingVerticalLine: (value) {
-            return FlLine( color: Colors.grey.shade200, strokeWidth:1, );
+            return FlLine( color: Colors.grey.shade200, strokeWidth:1);
             },
           ),
           titlesData: FlTitlesData(
@@ -52,31 +51,43 @@ class _DayWiseBarChartState extends State<DayWiseBarChart> {
                 ),
               ),
             ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 32,
-                interval: 1,
-                getTitlesWidget: (value, meta) {
-                  int dayNum = value.toInt();
-                  int today = DateTime.now().day;
-                  int month = controllers.selectedChartMonth.value.toString().isEmpty?DateTime.now().month:controllers.selectedChartMonth.value;
-                  int year = DateTime.now().year;
-                  if (dayNum > today) {
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 32,
+                  interval: 1,
+                  getTitlesWidget: (value, meta) {
+                    int dayNum = value.toInt();
+                    int today = DateTime.now().day;
+                    int currentMonth = DateTime.now().month;
+                    int currentYear = DateTime.now().year;
+
+                    int selectedMonth = controllers.selectedChartMonth.value.toString().isEmpty
+                        ? currentMonth
+                        : controllers.selectedChartMonth.value;
+                    int selectedYear = currentYear;
+                    if (selectedMonth == currentMonth && selectedYear == currentYear) {
+                      if (dayNum > today) {
+                        return const SizedBox.shrink();
+                      }
+                    } else {
+                      int lastDay = DateTime(selectedYear, selectedMonth + 1, 0).day;
+                      if (dayNum > lastDay) {
+                        return const SizedBox.shrink();
+                      }
+                    }
+                    if ((dayNum - 1) % 6 == 0) {
+                      final date = DateTime(selectedYear, selectedMonth, dayNum);
+                      return Text(
+                        DateFormat("d MMM").format(date),
+                        style: const TextStyle(fontSize: 10),
+                      );
+                    }
                     return const SizedBox.shrink();
-                  }
-                  if ((dayNum - 1) % 6 == 0) {
-                    final date = DateTime(year, month, dayNum);
-                    return Text(
-                      DateFormat("d MMM").format(date), // ex: "7 Sep"
-                      style: const TextStyle(fontSize: 10),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
+                  },
+                ),
               ),
-            ),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
             rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           ),
           borderData: FlBorderData(show: true),

@@ -4,7 +4,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../components/custom_text.dart';
-import '../../controller/controller.dart';
 import '../../controller/map_controller.dart';
 import '../constant/colors_constant.dart';
 import '../utilities/utils.dart';

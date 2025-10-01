@@ -21,12 +21,7 @@ import 'package:fullcomm_crm/screens/new_dashboard.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:unique_simple_bar_chart/data_models.dart';
-import 'package:unique_simple_bar_chart/simple_bar_chart.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/screens/customer/view_customer.dart';
@@ -890,11 +885,6 @@ class Utils {
             sideTitles: SideTitles(
               showTitles: true,
               getTitlesWidget: (double value, TitleMeta meta) {
-                const style = TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                );
                 var conData = "";
                 Widget text(String text) {
                   return CustomText(
@@ -903,8 +893,6 @@ class Utils {
                     size: 12,
                   );
                 }
-
-                ;
                 switch (value.toInt()) {
                   case 0:
                     conData = 'Mon';
@@ -3016,10 +3004,6 @@ class Utils {
     final data = await rootBundle.load("assets/easycrm_data_upload_template.xlsx");
     final blob = html.Blob([data.buffer.asUint8List()]);
     final url = html.Url.createObjectUrlFromBlob(blob);
-
-    final anchor = html.AnchorElement(href: url)
-      ..setAttribute("download", "easycrm_data_upload_template.xlsx")
-      ..click();
 
     html.Url.revokeObjectUrl(url);
   }

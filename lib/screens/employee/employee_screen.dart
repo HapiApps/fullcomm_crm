@@ -1,19 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/screens/employee/update_employee.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_text.dart';
-import '../../components/custom_textfield.dart';
-import '../../components/k_card_container.dart';
 import '../../controller/controller.dart';
 import '../../provider/employee_provider.dart';
 import 'add_employee.dart';
