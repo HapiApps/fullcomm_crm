@@ -37,7 +37,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
               colors: colorsConst.textColor,
               size: 13,
             ),
-            widget.isOptional! == true
+            widget.isOptional == true
                 ? const CustomText(
               text: "*",
               colors: Colors.red,
@@ -51,7 +51,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
           height: 40,
           decoration: customDecoration.baseBackgroundDecoration(
               radius: 8,
-              color: Colors.transparent,
+              color: Colors.white,
               borderColor: const Color(0xffE1E5FA)),
           child: DropdownButtonHideUnderline(
             child: ButtonTheme(

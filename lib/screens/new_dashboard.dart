@@ -47,6 +47,24 @@ class _NewDashboardState extends State<NewDashboard> {
     apiService.getRatingReport();
     apiService.getMonthReport();
   }
+  void showWebNotification() {
+    // Ask permission
+    html.Notification.requestPermission().then((permission) {
+      if (permission == "granted") {
+       try{
+         html.Notification(
+           "Hello from Flutter Web 🚀",
+           body: "This is a local notification example.",
+           icon: "icons/Icon-192.png", // optional, must be in web/icons/
+         );
+       }catch(e){
+          print("Error showing notification: $e");
+       }
+      }else{
+        print("Permission not granted for notifications");
+      }
+    });
+  }
 
   // void didChangeAppLifecycleState(AppLifecycleState state) {
   //   _focusNode = FocusNode();
@@ -159,11 +177,24 @@ class _NewDashboardState extends State<NewDashboard> {
                                               return Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: [
-                                                  RatingIndicator(
-                                                    color: Colors.red,
-                                                    label: 'Total Hot',
-                                                    value: hot,
-                                                    percentage: totalCount == 0 ? 0.0 : hot / totalCount,
+                                                  InkWell(
+                                                    onTap: ()async{
+                                                      final permission = await html.Notification.requestPermission();
+                                                      if (permission == "granted") {
+                                                        html.Notification(
+                                                          "Hello from Flutter Web",
+                                                          body: "Local notification test!",
+                                                        );
+                                                      } else {
+                                                        print("Permission not granted");
+                                                      }
+                                                    },
+                                                    child: RatingIndicator(
+                                                      color: Colors.red,
+                                                      label: 'Total Hot',
+                                                      value: hot,
+                                                      percentage: totalCount == 0 ? 0.0 : hot / totalCount,
+                                                    ),
                                                   ),
                                                   RatingIndicator(
                                                     color: Colors.orange,
@@ -266,13 +297,13 @@ class _NewDashboardState extends State<NewDashboard> {
                                                       border: Border.all(
                                                           color:colorsConst.primary,
                                                           width: 2.4)),
-                                                  child: Obx(()=>CustomText(
-                                                    text: controllers.mailActivity.length.toString(),
+                                                  child:CustomText(
+                                                    text: "0",
                                                     colors:
                                                     colorsConst.textColor,
                                                     size: 20,
                                                     isBold: true,
-                                                  ),)
+                                                  ),
                                                 ),
                                                 const Positioned(
                                                   bottom: 0.4,

@@ -82,6 +82,9 @@ dependencies:
   google_fonts:
   web: ^1.1.1
   syncfusion_flutter_pdfviewer:
+  firebase_core: ^4.1.1
+  flutter_local_notifications:
+  firebase_messaging: ^16.0.2
 
 dev_dependencies:
   flutter_test:

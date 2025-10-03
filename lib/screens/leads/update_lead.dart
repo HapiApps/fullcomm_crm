@@ -274,7 +274,7 @@ class _UpdateLeadState extends State<UpdateLead> {
 
   @override
   Widget build(BuildContext context){
-    double textFieldSize=(MediaQuery.of(context).size.width-400)/3.5;
+    double textFieldSize = (MediaQuery.of(context).size.width - 400) / 1.8;
     return SelectionArea(
       child: Scaffold(
           // appBar: PreferredSize(
@@ -350,7 +350,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                               children: [
                                 30.height,
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children:[
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,7 +418,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                   controller: controllers.leadMobileCrt[0],
                                                   textInputAction: TextInputAction.next,
                                                   decoration:InputDecoration(
-                                                    fillColor:Colors.transparent,
+                                                    fillColor:Colors.white,
                                                     filled: true,
                                                     hintStyle: TextStyle(
                                                         color: Colors.grey.shade400, fontSize: 13, fontFamily: "Lato"),
@@ -447,9 +447,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         ),
                                         15.height,
                                       ],
-                                    ),
-                                    SizedBox(
-                                      width: (MediaQuery.of(context).size.width-400)/4.5,
                                     ),
 
                                     Column(
@@ -504,7 +501,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                 ),
                                 20.height,
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children:[
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -580,9 +577,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         15.height,
                                       ],
                                     ),
-                                    SizedBox(
-                                      width: (MediaQuery.of(context).size.width-400)/4.5,
-                                    ),
+
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children:[
@@ -664,7 +659,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                 ),
                                 20.height,
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children:[
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -731,10 +726,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
-                                      width: (MediaQuery.of(context).size.width-400)/4.5,
-                                    ),
-
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children:[
@@ -1106,7 +1097,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                 ),
                                 20.height,
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children:[
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1212,9 +1203,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         // ),
 
                                       ],
-                                    ),
-                                    SizedBox(
-                                      width: (MediaQuery.of(context).size.width-400)/4.5,
                                     ),
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,

@@ -125,7 +125,7 @@ class _AddLeadState extends State<AddLead> {
 
   @override
   Widget build(BuildContext context) {
-    double textFieldSize = (MediaQuery.of(context).size.width - 400) / 2.5;
+    double textFieldSize = (MediaQuery.of(context).size.width - 400) / 1.8;
     return Scaffold(
         // appBar: PreferredSize(
         //   preferredSize: const Size.fromHeight(60),
@@ -155,8 +155,7 @@ class _AddLeadState extends State<AddLead> {
                         ),
                         5.height,
                         CustomText(
-                          text:
-                          "Add your ${controllers.leadCategoryList[0]["value"]} Information",
+                          text: "Add your ${controllers.leadCategoryList[0]["value"]} Information",
                           colors: colorsConst.textColor,
                           size: 12,
                         ),
@@ -429,31 +428,23 @@ class _AddLeadState extends State<AddLead> {
                                           //borderRadius: BorderRadius.circular(20),
                                           spacing: 1,
                                           elevation: 0,
-                                          selectedTextStyle:
-                                          customStyle.textStyle(
+                                          selectedTextStyle: customStyle.textStyle(
                                               colors: colorsConst.third,
                                               size: 16,
                                               isBold: true),
-                                          selectedBorderColor:
-                                          Colors.transparent,
-                                          selectedColor:
-                                          Colors.transparent,
-                                          unselectedBorderColor:
-                                          Colors.transparent,
-                                          unselectedColor:
-                                          Colors.transparent,
+                                          selectedBorderColor: Colors.transparent,
+                                          selectedColor: Colors.transparent,
+                                          unselectedBorderColor: Colors.transparent,
+                                          unselectedColor: Colors.transparent,
                                           unselectedTextStyle:
                                           customStyle.textStyle(
-                                              colors: colorsConst
-                                                  .textColor,
+                                              colors: colorsConst.textColor,
                                               size: 16,
                                               isBold: true),
                                         ),
-                                        onSelected: (name, index,
-                                            isSelected) async {
+                                        onSelected: (name, index, isSelected) async {
                                           setState(() {
-                                            controllers.leadCategory =
-                                                name;
+                                            controllers.leadCategory = name;
                                           });
                                         },
                                         buttons: controllers.leadCategoryGrList,
@@ -501,22 +492,14 @@ class _AddLeadState extends State<AddLead> {
                                     children: [
                                       InkWell(
                                         onTap: () async {
-                                          controllers.isMainPersonList
-                                              .remove(controllers
-                                              .leadPersonalItems);
-                                          controllers.isCoMobileNumberList
-                                              .remove(controllers
-                                              .leadPersonalItems);
+                                          controllers.isMainPersonList.remove(controllers.leadPersonalItems);
+                                          controllers.isCoMobileNumberList.remove(controllers.leadPersonalItems);
                                           controllers.leadPersonalItems--;
 
-                                          controllers.leadNameCrt
-                                              .removeAt(index);
-                                          controllers.leadMobileCrt
-                                              .removeAt(index);
-                                          controllers.leadTitleCrt
-                                              .removeAt(index);
-                                          controllers.leadEmailCrt
-                                              .removeAt(index);
+                                          controllers.leadNameCrt.removeAt(index);
+                                          controllers.leadMobileCrt.removeAt(index);
+                                          controllers.leadTitleCrt.removeAt(index);
+                                          controllers.leadEmailCrt.removeAt(index);
 
                                           SharedPreferences sharedPref = await SharedPreferences.getInstance();
                                           sharedPref.setInt("leadCount", controllers.leadPersonalItems.value);
@@ -541,7 +524,7 @@ class _AddLeadState extends State<AddLead> {
                                   ),
                                   15.height,
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       // Column(
                                       //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -673,10 +656,11 @@ class _AddLeadState extends State<AddLead> {
                                                           hoverColor: Colors.transparent,
                                                           focusColor: Colors.transparent,
                                                           hintText:"Phone No",
-                                                          fillColor: Colors.transparent,
+                                                          fillColor: Colors.white,
                                                           filled: true,
                                                           hintStyle: TextStyle(
-                                                              color: Colors.grey.shade400, fontSize: 13, fontFamily: "Lato"),
+                                                              color: Colors.grey.shade400,
+                                                              fontSize: 13, fontFamily: "Lato"),
                                                           suffixIcon: Obx(() => Checkbox(
                                                                 shape: RoundedRectangleBorder(
                                                                   borderRadius: BorderRadius.circular(5.0),
@@ -803,9 +787,9 @@ class _AddLeadState extends State<AddLead> {
                                           15.height,
                                         ],
                                       ),
-                                      SizedBox(
-                                        width: (MediaQuery.of(context).size.width - 500) / 4.5,
-                                      ),
+                                      // SizedBox(
+                                      //   width: 50,
+                                      // ),
                                       // Column(
                                       //   crossAxisAlignment:
                                       //       CrossAxisAlignment.start,
@@ -938,7 +922,7 @@ class _AddLeadState extends State<AddLead> {
                       ),
                       20.height,
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           // Column(
                           //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1044,10 +1028,7 @@ class _AddLeadState extends State<AddLead> {
                               ),
                             ],
                           ),
-                          SizedBox(
-                            width:
-                            (MediaQuery.of(context).size.width - 400) / 4.5,
-                          ),
+
                           // Column(
                           //   crossAxisAlignment: CrossAxisAlignment.start,
                           //   children: [
@@ -1185,7 +1166,7 @@ class _AddLeadState extends State<AddLead> {
                       ),
                       20.height,
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -1356,9 +1337,6 @@ class _AddLeadState extends State<AddLead> {
                               ),
                               15.height,
                             ],
-                          ),
-                          SizedBox(
-                            width: (MediaQuery.of(context).size.width - 500) / 4.5,
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -1554,7 +1532,7 @@ class _AddLeadState extends State<AddLead> {
                       ),
                       20.height,
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -1675,9 +1653,7 @@ class _AddLeadState extends State<AddLead> {
                               15.height,
                             ],
                           ),
-                          SizedBox(
-                            width: (MediaQuery.of(context).size.width - 500) / 4.5,
-                          ),
+
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             mainAxisAlignment: MainAxisAlignment.start,

@@ -1,4 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:fullcomm_crm/common/extentions/int_extensions.dart';
 import 'package:fullcomm_crm/provider/employee_provider.dart';
 import 'package:fullcomm_crm/screens/new_dashboard.dart';
@@ -16,13 +17,17 @@ import 'common/constant/colors_constant.dart';
 import 'common/widgets/log_in.dart';
 import 'components/custom_text.dart';
 import 'controller/controller.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   await GetStorage.init();
   final prefs = await SharedPreferences.getInstance();
   final loginScreen = prefs.getBool("loginScreen${controllers.versionNum}") ?? false;
-
-  runApp(MultiProvider(
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.web,
+  );
+  runApp(
+      MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => EmployeeProvider()),
       ],child: MyApp(loginScreen: loginScreen,)));

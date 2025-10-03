@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "344835605079",
+    "project_id": "easy-crm-756ad",
+    "storage_bucket": "easy-crm-756ad.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:344835605079:android:214dfc2a50084089e19912",
+        "android_client_info": {
+          "package_name": "com.example.fullcomm_crm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBysxlokB7AWxAht_e2Om4pPezK_2PcNVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

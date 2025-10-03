@@ -7,55 +7,13 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="EasyCRM">
 
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="EasyCRM">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
-
   <title>EasyCRM</title>
   <link rel="manifest" href="manifest.json">
-  <script>
-    window.addEventListener('keydown', function(e) {
-      if (e.metaKey && e.key === 'p') {
-        e.preventDefault();
-        alert("Screenshots disabled!");
-      }
-    });
-  </script>
-  <script>
-    document.addEventListener("keyup", function (e) {
-      if (e.key === "PrintScreen") {
-        navigator.clipboard.writeText(""); // clipboard clear
-        alert("Screenshots disabled!");
-      }
-    });
-  </script>
 </head>
 <body>
-<div id="splash-screen">
-  <style>
-    #splash-screen {
-      position: fixed;
-      background: white;
-      height: 100%;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 24px;
-      font-family: sans-serif;
-      z-index: 9999;
-    }
-  </style>
-  Installing EasyCRM...
-</div>
+<div id="splash-screen">Installing EasyCRM....</div>
 
-<script src="flutter_bootstrap.js" async></script>
-<script src="main.dart.js" type="application/javascript"></script>
 <div id="screenshot-popup" style="
     display:none;
     position: fixed;
@@ -75,16 +33,24 @@
   Screenshots are disabled!
 </div>
 
-<script>
-  document.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
-      e.preventDefault();
-      const popup = document.getElementById('screenshot-popup');
-      popup.style.display = 'block';
-      setTimeout(() => { popup.style.display = 'none'; }, 5000);
-    }
-  });
-</script>
+<style>
+  #splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-family: sans-serif;
+    z-index: 9999;
+  }
+</style>
+
+<script src="flutter_bootstrap.js" async></script>
 
 <script>
   window.addEventListener('flutter-first-frame', function () {
@@ -92,10 +58,25 @@
     if (splash) splash.remove();
   });
 </script>
+
+<script>
+  document.addEventListener("keyup", function (e) {
+    if (e.key === "PrintScreen") {
+      navigator.clipboard.writeText(""); // Clear clipboard
+      const popup = document.getElementById('screenshot-popup');
+      popup.style.display = 'block';
+      setTimeout(() => { popup.style.display = 'none'; }, 3000);
+    }
+  });
+</script>
+
 <script>
   document.addEventListener('keydown', function(e) {
-    if (e.metaKey && e.key === 'p') {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
       e.preventDefault();
+      const popup = document.getElementById('screenshot-popup');
+      popup.style.display = 'block';
+      setTimeout(() => { popup.style.display = 'none'; }, 3000);
     }
   });
 </script>

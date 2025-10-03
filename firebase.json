@@ -1,0 +1,11 @@
+{"flutter":{
+  "platforms":{
+  "android":{"default":{"projectId":"easy-crm-756ad","appId":"1:344835605079:android:214dfc2a50084089e19912",
+    "fileOutput":"android/app/google-services.json"}},
+    "ios":{"default":{"projectId":"easy-crm-756ad","appId":"1:344835605079:ios:99894c0bb2fbb79be19912","uploadDebugSymbols":false,
+      "fileOutput":"ios/Runner/GoogleService-Info.plist"}},
+    "macos":{"default":{"projectId":"easy-crm-756ad","appId":"1:344835605079:ios:99894c0bb2fbb79be19912","uploadDebugSymbols":false,
+      "fileOutput":"macos/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"easy-crm-756ad",
+      "configurations":{"android":"1:344835605079:android:214dfc2a50084089e19912",
+        "ios":"1:344835605079:ios:99894c0bb2fbb79be19912","macos":"1:344835605079:ios:99894c0bb2fbb79be19912",
+        "web":"1:344835605079:web:d85d02377ca6cb39e19912","windows":"1:344835605079:web:1c974d9429573c64e19912"}}}}}}
