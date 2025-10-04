@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:fullcomm_crm/controller/table_controller.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
@@ -828,37 +829,111 @@ class ApiService {
     }
   }
 
+  // Future insertCustomersAPI(BuildContext context, List<Map<String, dynamic>> customerData, List<Map<String, dynamic>> fieldMappings) async {
+  //   try {
+  //     // List<Map<String, dynamic>> formattedData = customerData.map((customer) {
+  //     //   return customer.map((key, value) {
+  //     //     if (key == "additional_fields" && value is List) {
+  //     //       return MapEntry(key, value);
+  //     //     }
+  //     //     return MapEntry(key, value.toString());
+  //     //   });
+  //     // }).toList();
+  //     Map data = {
+  //       "action": "sheet_customers",
+  //       "field_mappings": fieldMappings,
+  //       "cusList": customerData,
+  //     };
+  //     print("Final Data to be sent: ${jsonEncode(data)}");
+  //
+  //     final request = await http.post(
+  //       Uri.parse(scriptApi),
+  //       headers: {
+  //         "Accept": "application/json",
+  //         "Content-Type": "application/json"
+  //       },
+  //       body: jsonEncode(data),
+  //     );
+  //
+  //     print("request ${request.body}");
+  //     Map<String, dynamic> response = json.decode(request.body);
+  //
+  //     if (request.statusCode == 200 && response["message"] == "Customer save process completed.") {
+  //       apiService.allLeadsDetails();
+  //       apiService.allNewLeadsDetails();
+  //       apiService.allGoodLeadsDetails();
+  //       getUserHeading();
+  //       prospectsList.clear();
+  //       qualifiedList.clear();
+  //       customerList.clear();
+  //       int success = response["success"];
+  //       int failed = response["failed"];
+  //       Navigator.pop(context);
+  //       controllers.customerCtr.reset();
+  //
+  //       if (failed == 0) {
+  //         print("All customers saved successfully.");
+  //         utils.snackBar(context:Get.context!,
+  //             msg: "All $success customers saved successfully.",color: Colors.green);
+  //       } else {
+  //         print("⚠️ $success saved, $failed failed.");
+  //         // 👉 Build a readable string
+  //         StringBuffer failMsg = StringBuffer();
+  //         for (var failure in response["failures"]) {
+  //           failMsg.writeln("• ${failure["name"]} (${failure["phone_no"]}) → ${failure["error"]}");
+  //         }
+  //
+  //         cusErrorDialog(
+  //           Get.context!,
+  //           "$success saved, $failed failed.\n\nFailed List:\n$failMsg",
+  //         );
+  //       }
+  //     } else {
+  //       print("insert customers error ${request.body}");
+  //       Navigator.pop(context);
+  //       errorDialog(Get.context!, "Failed to insert customer details.");
+  //       controllers.customerCtr.reset();
+  //     }
+  //   } catch (e) {
+  //     print("Result $e");
+  //     Navigator.pop(context);
+  //     errorDialog(Get.context!, "Failed to insert customer details.");
+  //     controllers.customerCtr.reset();
+  //   }
+  // }
   Future insertCustomersAPI(
-      BuildContext context, List<Map<String, dynamic>> customerData, List<Map<String, dynamic>> fieldMappings) async {
+      BuildContext context,
+      List<Map<String, dynamic>> customerData,
+      List<Map<String, dynamic>> fieldMappings,
+      Uint8List excelBytes,
+      String excelFileName,
+      ) async {
     try {
-      // List<Map<String, dynamic>> formattedData = customerData.map((customer) {
-      //   return customer.map((key, value) {
-      //     if (key == "additional_fields" && value is List) {
-      //       return MapEntry(key, value);
-      //     }
-      //     return MapEntry(key, value.toString());
-      //   });
-      // }).toList();
       Map data = {
         "action": "sheet_customers",
         "field_mappings": fieldMappings,
         "cusList": customerData,
       };
-      print("Final Data to be sent: ${jsonEncode(data)}");
-
-      final request = await http.post(
+      var request = http.MultipartRequest(
+        'POST',
         Uri.parse(scriptApi),
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json"
-        },
-        body: jsonEncode(data),
       );
 
-      print("request ${request.body}");
-      Map<String, dynamic> response = json.decode(request.body);
+      request.fields['jsonData'] = jsonEncode(data);
 
-      if (request.statusCode == 200 && response["message"] == "Customer save process completed.") {
+      request.files.add(http.MultipartFile.fromBytes(
+        'sheet',
+        excelBytes,
+        filename: excelFileName,
+      ));
+
+      var response = await request.send();
+      var responseData = await http.Response.fromStream(response);
+      Map<String, dynamic> res = json.decode(responseData.body);
+
+      print("Server response: $res");
+
+      if (response.statusCode == 200 && res["message"] == "Customer save process completed.") {
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
         apiService.allGoodLeadsDetails();
@@ -866,41 +941,39 @@ class ApiService {
         prospectsList.clear();
         qualifiedList.clear();
         customerList.clear();
-        int success = response["success"];
-        int failed = response["failed"];
+        int success = res["success"];
+        int failed = res["failed"];
         Navigator.pop(context);
         controllers.customerCtr.reset();
 
         if (failed == 0) {
-          print("All customers saved successfully.");
-          utils.snackBar(context:Get.context!,
-              msg: "All $success customers saved successfully.",color: Colors.green);
+          utils.snackBar(
+            context: Get.context!,
+            msg: "All $success customers saved successfully.",
+            color: Colors.green,
+          );
         } else {
-          print("⚠️ $success saved, $failed failed.");
-          // 👉 Build a readable string
           StringBuffer failMsg = StringBuffer();
-          for (var failure in response["failures"]) {
+          for (var failure in res["failures"]) {
             failMsg.writeln("• ${failure["name"]} (${failure["phone_no"]}) → ${failure["error"]}");
           }
-
           cusErrorDialog(
             Get.context!,
             "$success saved, $failed failed.\n\nFailed List:\n$failMsg",
           );
         }
       } else {
-        print("insert customers error ${request.body}");
         Navigator.pop(context);
         errorDialog(Get.context!, "Failed to insert customer details.");
         controllers.customerCtr.reset();
       }
     } catch (e) {
-      print("Result $e");
       Navigator.pop(context);
-      errorDialog(Get.context!, "Failed to insert customer details.");
+      errorDialog(Get.context!, "Failed to insert customer details: $e");
       controllers.customerCtr.reset();
     }
   }
+
 
   Future<void> insertSingleCustomer(context) async {
     try {

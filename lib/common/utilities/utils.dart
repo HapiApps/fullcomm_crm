@@ -2831,16 +2831,22 @@ class Utils {
       }
 
       // ✅ Check first 3 rows are empty
-      for (int i = 0; i < 3; i++) {
-        bool isRowEmpty = rows[i].every((cell) =>
-        cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
-        if (!isRowEmpty) {
-          Navigator.of(context).pop();
-          apiService.errorDialog(context, "Excel format invalid. First 3 rows must be empty.");
-          return;
-        }
-      }
-
+      // for (int i = 0; i < 3; i++) {
+      //   bool isRowEmpty = rows[i].every((cell) =>
+      //   cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
+      //   if (!isRowEmpty) {
+      //     Navigator.of(context).pop();
+      //     apiService.errorDialog(context, "Excel format invalid. First 3 rows must be empty.");
+      //     return;
+      //   }
+      // }
+      const expectedKeys = [
+        "name", "phone_no", "email", "city", "owner", "designation", "department",
+        "company_name", "source", "source_details", "lead_status", "prospect_enrollment_date",
+        "expected_convertion_date", "details_of_service_required", "discussion_point",
+        "product_discussion", "rating", "status_update", "status",
+        "num_of_headcount", "expected_billing_value", "arpu_value", "expected_billing_value",
+      ];
       // ✅ Row 4 = system keys
       List<String> systemKeys = rows[3]
           .map((c) => (c?.value?.toString().trim() ?? ""))
@@ -2851,7 +2857,15 @@ class Utils {
         apiService.errorDialog(context, "Excel format invalid. Row 4 (system fields) cannot be empty.");
         return;
       }
-
+      final missing = expectedKeys.where((key) => !systemKeys.contains(key)).toList();
+      if (missing.isNotEmpty) {
+        Navigator.of(context).pop();
+        apiService.errorDialog(
+          context,
+          "Please enter correct system fields. Missing or incorrect: ${missing.join(', ')}",
+        );
+        return;
+      }
       // ✅ Row 5 = display names
       List<String> displayNames = rows[4]
           .map((c) => (c?.value?.toString().trim() ?? ""))
@@ -2917,7 +2931,7 @@ class Utils {
 
       print("Payload: ${jsonEncode(finalPayload)}");
 
-      await apiService.insertCustomersAPI(context, customerData, fieldMappings);
+      await apiService.insertCustomersAPI(context, customerData, fieldMappings, bytes, "CRMSheet");
     }
   }
 

@@ -75,6 +75,7 @@ class _SuspectsState extends State<Suspects> {
             children: [
               utils.sideBarFunction(context),
               Obx(() => InkWell(
+                mouseCursor: MouseCursor.defer,
                 focusColor: Colors.transparent,
                 hoverColor: Colors.transparent,
                 splashColor: Colors.transparent,
