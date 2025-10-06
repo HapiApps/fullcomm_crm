@@ -901,6 +901,7 @@ class ApiService {
   //     controllers.customerCtr.reset();
   //   }
   // }
+
   Future insertCustomersAPI(
       BuildContext context,
       List<Map<String, dynamic>> customerData,
@@ -909,17 +910,22 @@ class ApiService {
       String excelFileName,
       ) async {
     try {
-      Map data = {
+      Map<String, dynamic> data = {
         "action": "sheet_customers",
         "field_mappings": fieldMappings,
         "cusList": customerData,
       };
+
       var request = http.MultipartRequest(
         'POST',
         Uri.parse(scriptApi),
       );
-
-      request.fields['jsonData'] = jsonEncode(data);
+      // data.forEach((key, value) {
+      //   request.fields[key] = jsonEncode(value);
+      // });
+      request.fields["action"] = "sheet_customers";
+      request.fields["field_mappings"] = jsonEncode(fieldMappings);
+      request.fields["cusList"] = jsonEncode(customerData);
 
       request.files.add(http.MultipartFile.fromBytes(
         'sheet',
@@ -927,13 +933,14 @@ class ApiService {
         filename: excelFileName,
       ));
 
+      print("Server fields: ${request.fields}");
       var response = await request.send();
       var responseData = await http.Response.fromStream(response);
       Map<String, dynamic> res = json.decode(responseData.body);
-
       print("Server response: $res");
 
-      if (response.statusCode == 200 && res["message"] == "Customer save process completed.") {
+      if (response.statusCode == 200 &&
+          res["message"] == "Customer save process completed.") {
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
         apiService.allGoodLeadsDetails();
@@ -941,6 +948,7 @@ class ApiService {
         prospectsList.clear();
         qualifiedList.clear();
         customerList.clear();
+
         int success = res["success"];
         int failed = res["failed"];
         Navigator.pop(context);
@@ -955,7 +963,8 @@ class ApiService {
         } else {
           StringBuffer failMsg = StringBuffer();
           for (var failure in res["failures"]) {
-            failMsg.writeln("• ${failure["name"]} (${failure["phone_no"]}) → ${failure["error"]}");
+            failMsg.writeln(
+                "• ${failure["name"]} (${failure["phone_no"]}) → ${failure["error"]}");
           }
           cusErrorDialog(
             Get.context!,
@@ -969,10 +978,12 @@ class ApiService {
       }
     } catch (e) {
       Navigator.pop(context);
+      print("Customer insert Error: $e");
       errorDialog(Get.context!, "Failed to insert customer details: $e");
       controllers.customerCtr.reset();
     }
   }
+
 
 
   Future<void> insertSingleCustomer(context) async {
@@ -1328,6 +1339,7 @@ class ApiService {
         allQualifiedDetails();
         getUserHeading();
         getRoles();
+        getSheet();
         getAllCustomers();
         getOpenedMailActivity(true);
         getReplyMailActivity(true);
@@ -2573,6 +2585,34 @@ class ApiService {
         throw Exception('Failed to load album');
       }
     } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future getSheet() async {
+    try {
+      Map data = {
+        "search_type": "sample_sheet",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data"
+      };
+
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 200) {
+        final List data = json.decode(request.body);
+          controllers.serverSheet.value = (data[0]["sheet"]);
+      } else {
+        controllers.serverSheet.value = "";
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      controllers.serverSheet.value = "";
       throw Exception('Failed to load album');
     }
   }

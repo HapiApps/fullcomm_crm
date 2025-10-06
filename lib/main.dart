@@ -68,6 +68,7 @@ class _MyAppState extends State<MyApp> {
       apiService.allGoodLeadsDetails();
       apiService.allCustomerDetails();
       apiService.getRoles();
+      apiService.getSheet();
       apiService.getAllCustomers();
       apiService.getOpenedMailActivity(true);
       apiService.getReplyMailActivity(true);

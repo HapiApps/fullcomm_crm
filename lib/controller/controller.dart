@@ -870,7 +870,7 @@ class Controller extends GetxController {
       allMissedCalls = "0".obs,
       allScheduleMeet = "0".obs,
       allCompletedMeet = "0".obs,
-      allCancelled = "0".obs,
+      allCancelled = "0".obs,serverSheet = "0".obs,
       shortBy = "All".obs,
       isCommentsLoading = true.obs,isSent = false.obs,isOpened= false.obs,isReplied = false.obs,isMailLoading = false.obs,isIncoming = false.obs,isOutgoing= false.obs,isMissed = false.obs,isCallLoading = false.obs;
   var roleNameList    = [];
