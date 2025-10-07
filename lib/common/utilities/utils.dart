@@ -18,6 +18,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/screens/mail_comments.dart';
 import 'package:fullcomm_crm/screens/meeting_comments.dart';
 import 'package:fullcomm_crm/screens/new_dashboard.dart';
+import 'package:fullcomm_crm/screens/records.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -1454,13 +1455,13 @@ class Utils {
                 textColor: controllers.selectedIndex.value == 6
                     ? colorsConst.primary
                     : Colors.black,
-                text: "Call Records",
+                text: "Records",
                 onClicked: () {
                   Navigator.push(
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation1, animation2) =>
-                      const CallComments(),
+                      const Records(),
                       transitionDuration: Duration.zero,
                       reverseTransitionDuration: Duration.zero,
                     ),
@@ -1469,50 +1470,50 @@ class Utils {
                   controllers.selectedIndex.value = 6;
                 }),
             ),
-            Obx(() => CustomSideBarText(
-                boxColor: controllers.selectedIndex.value == 7
-                    ? const Color(0xffF3F8FD)
-                    : Colors.white,
-                textColor: controllers.selectedIndex.value == 7
-                    ? colorsConst.primary
-                    : Colors.black,
-                text: "Mail Records",
-                onClicked: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) =>
-                      const MailComments(),
-                      transitionDuration: Duration.zero,
-                      reverseTransitionDuration: Duration.zero,
-                    ),
-                  );
-                  controllers.oldIndex.value = controllers.selectedIndex.value;
-                  controllers.selectedIndex.value = 7;
-                }),
-            ),
-            Obx(() => CustomSideBarText(
-                boxColor: controllers.selectedIndex.value == 8
-                    ? const Color(0xffF3F8FD)
-                    : Colors.white,
-                textColor: controllers.selectedIndex.value == 8
-                    ? colorsConst.primary
-                    : Colors.black,
-                text: "Meeting Records",
-                onClicked: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) =>
-                      const MeetingComments(),
-                      transitionDuration: Duration.zero,
-                      reverseTransitionDuration: Duration.zero,
-                    ),
-                  );
-                  controllers.oldIndex.value = controllers.selectedIndex.value;
-                  controllers.selectedIndex.value = 8;
-                }),
-            ),
+            // Obx(() => CustomSideBarText(
+            //     boxColor: controllers.selectedIndex.value == 7
+            //         ? const Color(0xffF3F8FD)
+            //         : Colors.white,
+            //     textColor: controllers.selectedIndex.value == 7
+            //         ? colorsConst.primary
+            //         : Colors.black,
+            //     text: "Mail Records",
+            //     onClicked: () {
+            //       Navigator.push(
+            //         context,
+            //         PageRouteBuilder(
+            //           pageBuilder: (context, animation1, animation2) =>
+            //           const MailComments(),
+            //           transitionDuration: Duration.zero,
+            //           reverseTransitionDuration: Duration.zero,
+            //         ),
+            //       );
+            //       controllers.oldIndex.value = controllers.selectedIndex.value;
+            //       controllers.selectedIndex.value = 7;
+            //     }),
+            // ),
+            // Obx(() => CustomSideBarText(
+            //     boxColor: controllers.selectedIndex.value == 8
+            //         ? const Color(0xffF3F8FD)
+            //         : Colors.white,
+            //     textColor: controllers.selectedIndex.value == 8
+            //         ? colorsConst.primary
+            //         : Colors.black,
+            //     text: "Meeting Records",
+            //     onClicked: () {
+            //       Navigator.push(
+            //         context,
+            //         PageRouteBuilder(
+            //           pageBuilder: (context, animation1, animation2) =>
+            //           const MeetingComments(),
+            //           transitionDuration: Duration.zero,
+            //           reverseTransitionDuration: Duration.zero,
+            //         ),
+            //       );
+            //       controllers.oldIndex.value = controllers.selectedIndex.value;
+            //       controllers.selectedIndex.value = 8;
+            //     }),
+            // ),
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 9
                     ? const Color(0xffF3F8FD)

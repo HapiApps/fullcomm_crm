@@ -77,7 +77,6 @@ class DashboardController extends GetxController {
                   startRangeSelectionColor: const Color(0xFF004AAD),
                   endRangeSelectionColor: const Color(0xFF004AAD),
                   rangeSelectionColor: const Color(0x22004AAD),
-
                   monthCellStyle: const DateRangePickerMonthCellStyle(
                     textStyle: TextStyle(
                       fontSize: 14,
@@ -95,7 +94,6 @@ class DashboardController extends GetxController {
                     dayFormat: 'EEE',
                     viewHeaderHeight: 28,
                   ),
-
                   selectionTextStyle: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

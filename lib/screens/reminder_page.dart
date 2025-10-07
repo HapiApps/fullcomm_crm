@@ -91,7 +91,6 @@ class _ReminderPageState extends State<ReminderPage> {
                       ),
                       const SizedBox(height: 20),
 
-                      // ✅ Notification Type (Checkbox row wise)
                       const Text("Reminder Type",
                           style: TextStyle(fontSize: 18, color: Colors.black)),
 
@@ -622,7 +621,7 @@ class _ReminderPageState extends State<ReminderPage> {
                           SizedBox(
                             height: 500,
                             child: Center(
-                              child: Container(
+                              child: SizedBox(
                                 width: 330,
                                 child: Theme(
                                   data: Theme.of(context).copyWith(
@@ -1790,67 +1789,6 @@ class _ReminderPageState extends State<ReminderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80),
-        child: AppBar(
-          backgroundColor: Colors.white,
-          flexibleSpace: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Reminder',
-                      style: GoogleFonts.lato(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'View all of your call activity Report',
-                      style: GoogleFonts.lato(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 13,
-                        color: Color(0xff1E1E1E),
-                      ),
-                    ),
-                  ],
-                ),
-                ElevatedButton(
-                  onPressed: _showAddReminderDialog,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff0078D7),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.add, size: 15, color: Colors.white),
-                      const SizedBox(width: 5),
-                      Text(
-                        'Add Reminder',
-                        style: GoogleFonts.lato(
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -1862,6 +1800,58 @@ class _ReminderPageState extends State<ReminderPage> {
            padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
            child: Column(
              children: [
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                 children: [
+                   Column(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                     mainAxisAlignment: MainAxisAlignment.center,
+                     children: [
+                       Text(
+                         'Reminder',
+                         style: GoogleFonts.lato(
+                           fontWeight: FontWeight.bold,
+                           fontSize: 20,
+                           color: Colors.black,
+                         ),
+                       ),
+                       const SizedBox(height: 4),
+                       Text(
+                         'View all of your call activity Report',
+                         style: GoogleFonts.lato(
+                           fontWeight: FontWeight.w500,
+                           fontSize: 13,
+                           color: Color(0xff1E1E1E),
+                         ),
+                       ),
+                     ],
+                   ),
+                   ElevatedButton(
+                     onPressed: _showAddReminderDialog,
+                     style: ElevatedButton.styleFrom(
+                       backgroundColor: const Color(0xff0078D7),
+                       padding: const EdgeInsets.symmetric(
+                           horizontal: 20, vertical: 12),
+                       shape: RoundedRectangleBorder(
+                         borderRadius: BorderRadius.circular(4),
+                       ),
+                     ),
+                     child: Row(
+                       children: [
+                         const Icon(Icons.add, size: 15, color: Colors.white),
+                         const SizedBox(width: 5),
+                         Text(
+                           'Add Reminder',
+                           style: GoogleFonts.lato(
+                             color: Colors.white,
+                             fontSize: 13,
+                           ),
+                         ),
+                       ],
+                     ),
+                   ),
+                 ],
+               ),
                Divider(
                  thickness: 2,
                  color: Colors.grey.shade300,
@@ -1875,7 +1865,6 @@ class _ReminderPageState extends State<ReminderPage> {
                      Row(
                        crossAxisAlignment: CrossAxisAlignment.start,
                        children: [
-                         // ---------------- Follow-up Reminder ----------------
                          GestureDetector(
                            onTap: () {
                              context
