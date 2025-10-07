@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/components/line_chart.dart';
+import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
@@ -46,6 +47,7 @@ class _NewDashboardState extends State<NewDashboard> {
     apiService.getDashBoardReport();
     apiService.getRatingReport();
     apiService.getMonthReport();
+    apiService.getDashboardReport();
   }
   void showWebNotification() {
     // Ask permission
@@ -126,6 +128,115 @@ class _NewDashboardState extends State<NewDashboard> {
                                 size: 20,
                                 isBold: true,
                               ),
+                              Obx(() {
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffE7EEF8),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Wrap(
+                                    spacing: 8,
+                                    children: dashController.filters.map((filter) {
+                                      final bool isSelected = dashController.selectedSortBy.value == filter;
+                                      return GestureDetector(
+                                        onTap: () {
+                                          dashController.selectedSortBy.value = filter;
+                                          DateTime now = DateTime.now();
+                                          switch (filter) {
+                                            case "Today":
+                                              dashController.selectedRange.value = DateTimeRange(
+                                                start: DateTime(now.year, now.month, now.day),
+                                                end: DateTime(now.year, now.month, now.day),
+                                              );
+                                              break;
+
+                                            case "Yesterday":
+                                              DateTime yesterday = now.subtract(Duration(days: 1));
+                                              dashController.selectedRange.value = DateTimeRange(
+                                                start: DateTime(yesterday.year, yesterday.month, yesterday.day),
+                                                end: DateTime(yesterday.year, yesterday.month, yesterday.day),
+                                              );
+                                              break;
+
+                                            case "Last 7 Days":
+                                              dashController.selectedRange.value = DateTimeRange(
+                                                start: now.subtract(Duration(days: 6)),
+                                                end: now,
+                                              );
+                                              break;
+
+                                            case "This Month":
+                                              dashController.selectedRange.value = DateTimeRange(
+                                                start: DateTime(now.year, now.month, 1),
+                                                end: DateTime(now.year, now.month, DateTime(now.year, now.month + 1, 0).day),
+                                              );
+                                              break;
+                                          }
+                                          apiService.getDashboardReport();
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                          decoration: BoxDecoration(
+                                            color: isSelected ? Colors.blueAccent : Colors.white,
+                                            borderRadius: BorderRadius.circular(4),
+                                            border: Border.all(
+                                              color: isSelected ? Colors.blueAccent : Colors.grey.shade400,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            filter,
+                                            style: TextStyle(
+                                              color: isSelected ? Colors.white : Colors.black87,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                );
+                              }),
+                              InkWell(
+                                onTap: (){
+                                  dashController.showDatePickerDialog(context);
+                                },
+                                child: Container(
+                                  width: 210,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.grey.shade400),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Obx(() {
+                                        final range = dashController.selectedRange.value;
+                                        if (range == null) {
+                                          return const Text(
+                                            "Filter by Date Range",
+                                            style: TextStyle(color: Colors.black54),
+                                          );
+                                        }
+                                        return Text(
+                                          "${range.start.day}-${range.start.month}-${range.start.year}  -  ${range.end.day}-${range.end.month}-${range.end.year}",
+                                          style: const TextStyle(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        );
+                                      }),
+                                      const SizedBox(width: 5),
+                                      const Icon(Icons.calendar_today,
+                                          color: Colors.grey, size: 17),
+                                      const SizedBox(width: 10),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
                               CustomText(
                                 text: controllers.version,
                                 colors: colorsConst.third,
@@ -220,15 +331,15 @@ class _NewDashboardState extends State<NewDashboard> {
                                         runSpacing: 10,
                                         children: [
                                           countShown(width: 130, head: "Total Mails",
-                                              count: controllers.mailActivity.length.toString(),icon: Icons.email),
-                                          countShown(width: 130, head: "Total Calls", count: controllers.callActivity.length.toString(),icon: Icons.call),
+                                              count: dashController.totalMails.value.toString(),icon: Icons.email),
+                                          countShown(width: 130, head: "Total Calls", count: dashController.totalCalls.value.toString(),icon: Icons.call),
                                           countShown(width: 130, head: "Total Meetings",
-                                              count: controllers.meetingActivity.length.toString(),
+                                              count: dashController.totalMeetings.value.toString(),
                                               icon: Icons.calendar_month_outlined),
                                           countShown(
                                             width: 130,
                                             head: "Total Employees",
-                                            count: context.watch<EmployeeProvider>().filteredStaff.length.toString(),
+                                            count: dashController.totalEmployees.value.toString(),
                                             icon: Icons.people_outline,
                                           ),
                                         ],
@@ -429,11 +540,11 @@ class _NewDashboardState extends State<NewDashboard> {
                                           height: 200,
                                           child: PieChart(
                                             dataMap: {
-                                              'Suspects': double.parse(controllers.allNewLeadsLength.value.toString()),
-                                              'Prospects': double.parse(controllers.allLeadsLength.value.toString()),
-                                              'Qualified': double.parse(controllers.allGoodLeadsLength.value.toString()),
-                                              'Unqualified': double.parse(controllers.allDisqualifiedLength.value.toString()),  // corrected
-                                              'Customers': double.parse(controllers.allCustomerLength.value.toString()),
+                                              'Suspects': double.parse(dashController.totalSuspects.value.toString()),
+                                              'Prospects': double.parse(dashController.totalProspects.value.toString()),
+                                              'Qualified': double.parse(dashController.totalQualified.value.toString()),
+                                              'Unqualified': double.parse(dashController.totalUnQualified.value.toString()),  // corrected
+                                              'Customers': double.parse(dashController.totalCustomers.value.toString()),
                                             },
                                             animationDuration: const Duration(seconds: 2),
                                             chartLegendSpacing: 32,

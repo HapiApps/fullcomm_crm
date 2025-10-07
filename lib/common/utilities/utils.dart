@@ -39,6 +39,7 @@ import '../constant/assets_constant.dart';
 import '../constant/colors_constant.dart';
 import '../constant/default_constant.dart';
 import '../widgets/camera.dart';
+import 'package:http/http.dart' as http;
 import 'dart:html' as html;
 
 final Utils utils = Utils._();
@@ -1946,15 +1947,29 @@ class Utils {
                   Positioned(
                       left: 85,
                       bottom: 15,
-                      child: Obx(() => CustomText(
-                          text: "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[0]["value"]}\n${controllers.allNewLeadsLength.value}",
-                          colors: controllers.selectedIndex.value == 1
-                              ? Colors.black
-                              : colorsConst.textColor,
-                          size: 15,
-                          isBold: true,
-                        ),
-                      ))
+                      child: Obx(() => Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomText(
+                              text: "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[0]["value"]}",
+                              colors: controllers.selectedIndex.value == 1
+                                  ? Colors.black
+                                  : colorsConst.textColor,
+                              size: 15,
+                              isBold: true,
+                            ),
+                          CustomText(
+                            text: "${controllers.allNewLeadsLength.value}",
+                            colors: controllers.selectedIndex.value == 1
+                                ? colorsConst.primary
+                                : colorsConst.primary,
+                            size: 15,
+                            isBold: true,
+                          ),
+                        ],
+                      ),
+                      )
+                  )
                 ],
               ),
               Stack(
@@ -1969,16 +1984,26 @@ class Utils {
                   Positioned(
                       left: 75,
                       bottom: 15,
-                      child: Obx(
-                            () => CustomText(
-                          text:
-                          "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[1]["value"]}\n${controllers.allLeadsLength.value}",
-                          colors: controllers.selectedIndex.value == 2
-                              ? Colors.black
-                              : colorsConst.textColor,
-                          size: 15,
-                          isBold: true,
-                        ),
+                      child: Obx(() => Column(
+                        children: [
+                          CustomText(
+                              text: "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[1]["value"]}",
+                              colors: controllers.selectedIndex.value == 2
+                                  ? Colors.black
+                                  : colorsConst.textColor,
+                              size: 15,
+                              isBold: true,
+                            ),
+                          CustomText(
+                            text: "${controllers.allLeadsLength.value}",
+                            colors: controllers.selectedIndex.value == 2
+                                ? colorsConst.primary
+                                : colorsConst.primary,
+                            size: 15,
+                            isBold: true,
+                          ),
+                        ],
+                      ),
                       ))
                 ],
               ),
@@ -1996,15 +2021,26 @@ class Utils {
                       left: 70,
                       bottom: 30,
                       child: Obx(
-                            () => CustomText(
-                          text:
-                          "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[2]["value"]}\n${controllers.allGoodLeadsLength.value}",
-                          colors: controllers.selectedIndex.value == 3
-                              ? Colors.black
-                              : colorsConst.textColor,
-                          size: 15,
-                          isBold: true,
-                        ),
+                            () => Column(
+                              children: [
+                                CustomText(text:
+                                "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[2]["value"]}",
+                                                          colors: controllers.selectedIndex.value == 3
+                                  ? Colors.black
+                                  : colorsConst.textColor,
+                                                          size: 15,
+                                                          isBold: true,
+                                                        ),
+                                CustomText(text:
+                                "${controllers.allGoodLeadsLength.value}",
+                                  colors: controllers.selectedIndex.value == 3
+                                      ? colorsConst.primary
+                                      : colorsConst.primary,
+                                  size: 15,
+                                  isBold: true,
+                                ),
+                              ],
+                            ),
                       ))
                 ],
               ),
@@ -2019,16 +2055,26 @@ class Utils {
                   Positioned(
                       left: 20,
                       bottom: 35,
-                      child: Obx(
-                            () => CustomText(
-                          text:
-                          "Customers\n${controllers.allCustomerLength.value}",
-                          colors: controllers.selectedIndex.value == 4
-                              ? Colors.black
-                              : colorsConst.textColor,
-                          size: 13,
-                          isBold: true,
-                        ),
+                      child: Obx(() => Column(
+                        children: [
+                          CustomText(
+                              text: "Customers",
+                              colors: controllers.selectedIndex.value == 4
+                                  ? Colors.black
+                                  : colorsConst.textColor,
+                              size: 13,
+                              isBold: true,
+                            ),
+                          CustomText(
+                            text: "${controllers.allCustomerLength.value}",
+                            colors: controllers.selectedIndex.value == 4
+                                ? colorsConst.primary
+                                : colorsConst.primary,
+                            size: 13,
+                            isBold: true,
+                          ),
+                        ],
+                      ),
                       ))
                 ],
               ),
@@ -3021,6 +3067,28 @@ class Utils {
 
     html.Url.revokeObjectUrl(url);
   }
+  Future<void> downloadSheetFromNetwork(String fileUrl, String fileName) async {
+    try {
+      final response = await http.get(Uri.parse(fileUrl));
+
+      if (response.statusCode == 200) {
+        final blob = html.Blob([response.bodyBytes]);
+
+        final url = html.Url.createObjectUrlFromBlob(blob);
+
+        final anchor = html.AnchorElement(href: url)
+          ..setAttribute('download', fileName)
+          ..click();
+        html.Url.revokeObjectUrl(url);
+      } else {
+        downloadSampleExcel();
+        print('Download failed: ${response.statusCode}');
+      }
+    } catch (e) {
+      downloadSampleExcel();
+      print('Error downloading file: $e');
+    }
+  }
 
   Future<void> showImportDialog(BuildContext context) async {
     return showDialog<void>(
@@ -3066,7 +3134,13 @@ class Utils {
                               borderRadius: BorderRadius.circular(5),
                               side: BorderSide(color: colorsConst.third))),
                       onPressed: () {
-                        downloadSampleExcel();
+                        if(controllers.serverSheet.value.isEmpty){
+                          print("Local Download");
+                          downloadSampleExcel();
+                        }else{
+                          print("Network Download");
+                          downloadSheetFromNetwork(controllers.serverSheet.value, "easycrm_data_upload_template.xlsx");
+                        }
                       },
                       child: const CustomText(
                         text: "Download Sample Excel Sheet",

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'package:fullcomm_crm/controller/table_controller.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:fullcomm_crm/models/comments_obj.dart';
@@ -2852,6 +2853,54 @@ class ApiService {
       throw Exception('Failed to load album');
     }
   }
+
+  Future getDashboardReport() async {
+    final range = dashController.selectedRange.value;
+    var today = DateTime.now();
+    var tomorrow = DateTime.now().add(Duration(days: 1));
+    try {
+      Map data = {
+        "search_type": "dashboard_report",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data",
+        "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+        "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}"
+      };
+
+      log("Dashboard request data: ${data.toString()}");
+      final request = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          "Accept": "application/text",
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: jsonEncode(data),
+        encoding: Encoding.getByName("utf-8"),
+      );
+       print("Dashboard response status: ${request.body}");
+      if (request.statusCode == 200) {
+        var response = jsonDecode(request.body) as List;
+        dashController.totalMails.value       = response[0]["total_mails"] ?? "0";
+        dashController.totalMeetings.value    = response[0]["total_meetings"] ?? "0";
+        dashController.totalCalls.value       = response[0]["total_calls"] ?? "0";
+        dashController.totalEmployees.value   = response[0]["total_employees"] ?? "0";
+        dashController.totalHot.value         = response[0]["hot_total"]?.toString() ?? "0";
+        dashController.totalWarm.value        = response[0]["warm_total"]?.toString() ?? "0";
+        dashController.totalCold.value        = response[0]["cold_total"]?.toString() ?? "0";
+        dashController.totalSuspects.value    = response[0]["total_suspects"]?.toString() ?? "0";
+        dashController.totalProspects.value   = response[0]["total_prospects"]?.toString() ?? "0";
+        dashController.totalQualified.value   = response[0]["total_qualified"]?.toString() ?? "0";
+        dashController.totalUnQualified.value = response[0]["total_disqualified"]?.toString() ?? "0";
+        dashController.totalCustomers.value   = response[0]["total_customers"]?.toString() ?? "0";
+      } else {
+        throw Exception('Failed to load dashboard report');
+      }
+    } catch (e) {
+      print("dashboard_report error: $e");
+      throw Exception('Failed to load dashboard report');
+    }
+  }
+
 
   Future<List<NewLeadObj>> allCustomerDetails() async {
     controllers.isLead.value = false;
