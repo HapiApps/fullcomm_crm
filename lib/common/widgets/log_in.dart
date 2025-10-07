@@ -88,7 +88,6 @@ class _LoginPageState extends State<LoginPage> {
                         color: Colors.black,
                       )
                   ),
-
                   20.height,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

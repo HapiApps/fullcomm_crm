@@ -86,6 +86,7 @@ dependencies:
   flutter_local_notifications:
   firebase_messaging: ^16.0.2
   syncfusion_flutter_datepicker:
+  table_calendar:
 
 dev_dependencies:
   flutter_test:

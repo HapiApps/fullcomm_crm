@@ -34,6 +34,7 @@ import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
 import '../../models/new_lead_obj.dart';
 import '../../screens/leads/disqualified_lead.dart';
+import '../../screens/reminder_page.dart';
 import '../../services/api_services.dart';
 import '../constant/assets_constant.dart';
 import '../constant/colors_constant.dart';
@@ -1532,6 +1533,28 @@ class Utils {
                   );
                   controllers.oldIndex.value = controllers.selectedIndex.value;
                   controllers.selectedIndex.value = 9;
+                }),
+            ),
+            Obx(() => CustomSideBarText(
+                boxColor: controllers.selectedIndex.value == 11
+                    ? const Color(0xffF3F8FD)
+                    : Colors.white,
+                textColor: controllers.selectedIndex.value == 11
+                    ? colorsConst.primary
+                    : Colors.black,
+                text: "Remainder",
+                onClicked: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) =>
+                      const ReminderPage(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
+                  controllers.oldIndex.value = controllers.selectedIndex.value;
+                  controllers.selectedIndex.value = 11;
                 }),
             ),
             Obx(() => CustomSideBarText(

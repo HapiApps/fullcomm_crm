@@ -105,6 +105,16 @@ class Controller extends GetxController {
 
     return outputFormat.format(dateTime.toLocal());
   }
+  String formatDate(String inputDate) {
+    try {
+      String normalized = inputDate.replaceAll('.', '-');
+      DateTime dateTime = DateFormat("dd-MM-yyyy h:mm a").parse(normalized);
+      return DateFormat("dd MMM yyyy").format(dateTime);
+    } catch (e) {
+      return inputDate;
+    }
+  }
+
 
   var currentPage = 1.obs;
   final itemsPerPage = 20; // Adjust based on your needs
@@ -244,6 +254,10 @@ class Controller extends GetxController {
 
   var sortField = ''.obs;
   var sortOrder = 'asc'.obs;
+  var sortPField = ''.obs;
+  var sortPOrder = 'asc'.obs;
+  var sortQField = ''.obs;
+  var sortQOrder = 'asc'.obs;
 
   List<NewLeadObj> get paginatedLeads {
     final query = searchQuery.value.toLowerCase();
@@ -435,6 +449,7 @@ class Controller extends GetxController {
 
     return allNewLeadFuture.sublist(startIndex, endIndex);
   }
+
   List<NewLeadObj> get paginatedQualifiedLeads {
     final query = search.text.trim().toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;
@@ -578,7 +593,6 @@ class Controller extends GetxController {
             valA = '';
             valB = '';
         }
-
         if (valA is DateTime && valB is DateTime) {
           return sortOrder.value == 'asc'
               ? valA.compareTo(valB)

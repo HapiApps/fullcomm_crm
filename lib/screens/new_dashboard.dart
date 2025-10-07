@@ -119,6 +119,7 @@ class _NewDashboardState extends State<NewDashboard> {
                       controller: _controller,
                       child: Column(
                         children: [
+                          10.height,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -128,85 +129,90 @@ class _NewDashboardState extends State<NewDashboard> {
                                 size: 20,
                                 isBold: true,
                               ),
+                              CustomText(
+                                text: controllers.version,
+                                colors: colorsConst.third,
+                                size: 11,
+                              ),
+                            ],
+                          ),
+                          5.height,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
                               Obx(() {
-                                return Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xffE7EEF8),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Wrap(
-                                    spacing: 8,
-                                    children: dashController.filters.map((filter) {
-                                      final bool isSelected = dashController.selectedSortBy.value == filter;
-                                      return GestureDetector(
-                                        onTap: () {
-                                          dashController.selectedSortBy.value = filter;
-                                          DateTime now = DateTime.now();
-                                          switch (filter) {
-                                            case "Today":
-                                              dashController.selectedRange.value = DateTimeRange(
-                                                start: DateTime(now.year, now.month, now.day),
-                                                end: DateTime(now.year, now.month, now.day),
-                                              );
-                                              break;
+                                return Row(
+                                  spacing: 20,
+                                  children: dashController.filters.map((filter) {
+                                    final bool isSelected = dashController.selectedSortBy.value == filter;
+                                    return GestureDetector(
+                                      onTap: () {
+                                        dashController.selectedSortBy.value = filter;
+                                        DateTime now = DateTime.now();
+                                        //DateTime tomorrow = DateTime.now().add(Duration(days: 1));
+                                        switch (filter) {
+                                          case "Today":
+                                            dashController.selectedRange.value = DateTimeRange(
+                                              start: DateTime(now.year, now.month, now.day),
+                                              end: DateTime(now.year, now.month, now.day),
+                                            );
+                                            break;
 
-                                            case "Yesterday":
-                                              DateTime yesterday = now.subtract(Duration(days: 1));
-                                              dashController.selectedRange.value = DateTimeRange(
-                                                start: DateTime(yesterday.year, yesterday.month, yesterday.day),
-                                                end: DateTime(yesterday.year, yesterday.month, yesterday.day),
-                                              );
-                                              break;
-
-                                            case "Last 7 Days":
-                                              dashController.selectedRange.value = DateTimeRange(
-                                                start: now.subtract(Duration(days: 6)),
-                                                end: now,
-                                              );
-                                              break;
-
-                                            case "This Month":
-                                              dashController.selectedRange.value = DateTimeRange(
-                                                start: DateTime(now.year, now.month, 1),
-                                                end: DateTime(now.year, now.month, DateTime(now.year, now.month + 1, 0).day),
-                                              );
-                                              break;
-                                          }
-                                          apiService.getDashboardReport();
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                          decoration: BoxDecoration(
-                                            color: isSelected ? Colors.blueAccent : Colors.white,
-                                            borderRadius: BorderRadius.circular(4),
-                                            border: Border.all(
-                                              color: isSelected ? Colors.blueAccent : Colors.grey.shade400,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            filter,
-                                            style: TextStyle(
-                                              color: isSelected ? Colors.white : Colors.black87,
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                          case "Yesterday":
+                                            DateTime yesterday = now.subtract(Duration(days: 1));
+                                            dashController.selectedRange.value = DateTimeRange(
+                                              start: DateTime(yesterday.year, yesterday.month, yesterday.day),
+                                              end: DateTime(now.year, now.month, now.day),
+                                            );
+                                            break;
+                                          case "Last 7 Days":
+                                            dashController.selectedRange.value = DateTimeRange(
+                                              start: now.subtract(Duration(days: 6)),
+                                              end: now,
+                                            );
+                                            break;
+                                          case "Last 30 Days":
+                                            dashController.selectedRange.value = DateTimeRange(
+                                              start: now.subtract(Duration(days: 30)),
+                                              end: now,
+                                            );
+                                            break;
+                                        }
+                                        apiService.getDashboardReport();
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: isSelected ? Colors.blueAccent : Colors.white,
+                                          borderRadius: BorderRadius.circular(4),
+                                          border: Border.all(
+                                            color: isSelected ? Colors.blueAccent : Colors.grey.shade400,
                                           ),
                                         ),
-                                      );
-                                    }).toList(),
-                                  ),
+                                        child: Text(
+                                          filter,
+                                          style: TextStyle(
+                                            color: isSelected ? Colors.white : Colors.black87,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "Lato",
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
                                 );
                               }),
+                              20.width,
                               InkWell(
                                 onTap: (){
                                   dashController.showDatePickerDialog(context);
                                 },
                                 child: Container(
-                                  width: 210,
+                                  width: 180,
                                   height: 30,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: BorderRadius.circular(5),
                                     border: Border.all(color: Colors.grey.shade400),
                                   ),
                                   child: Row(
@@ -217,7 +223,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                         if (range == null) {
                                           return const Text(
                                             "Filter by Date Range",
-                                            style: TextStyle(color: Colors.black54),
+                                            style: TextStyle(color: Colors.black54,fontFamily: "Lato",),
                                           );
                                         }
                                         return Text(
@@ -225,6 +231,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                           style: const TextStyle(
                                             color: Colors.black87,
                                             fontWeight: FontWeight.w500,
+                                            fontFamily: "Lato",
                                           ),
                                         );
                                       }),
@@ -236,15 +243,10 @@ class _NewDashboardState extends State<NewDashboard> {
                                   ),
                                 ),
                               ),
-
-                              CustomText(
-                                text: controllers.version,
-                                colors: colorsConst.third,
-                                size: 11,
-                              ),
+                              50.width,
                             ],
                           ),
-                          10.height,
+                          20.height,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -282,9 +284,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                               final hot = int.tryParse(controllers.totalHot.value) ?? 0;
                                               final warm = int.tryParse(controllers.totalWarm.value) ?? 0;
                                               final cold = int.tryParse(controllers.totalCold.value) ?? 0;
-
                                               final totalCount = hot + warm + cold;
-
                                               return Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: [
@@ -548,6 +548,10 @@ class _NewDashboardState extends State<NewDashboard> {
                                             },
                                             animationDuration: const Duration(seconds: 2),
                                             chartLegendSpacing: 32,
+                                            centerTextStyle: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: "Lato",
+                                            ),
                                             chartRadius: MediaQuery.of(context).size.width / 2.2,
                                             colorList: const [
                                               Color(0xffE3B552), // Suspects
@@ -560,12 +564,16 @@ class _NewDashboardState extends State<NewDashboard> {
                                             centerText: "",
                                             legendOptions: LegendOptions(
                                               showLegends: true,
-                                              legendTextStyle: TextStyle(color: colorsConst.textColor),
+                                              legendTextStyle: TextStyle(color: colorsConst.textColor,fontFamily: "Lato",),
                                             ),
                                             chartValuesOptions: ChartValuesOptions(
                                               showChartValuesInPercentage: false,
                                               showChartValues: true,
                                               showChartValueBackground: false,
+                                              chartValueStyle: TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: "Lato",
+                                              )
                                             ),
                                           ),
                                         ),

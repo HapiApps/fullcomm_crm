@@ -2858,13 +2858,14 @@ class ApiService {
     final range = dashController.selectedRange.value;
     var today = DateTime.now();
     var tomorrow = DateTime.now().add(Duration(days: 1));
+    final adjustedEnd = range?.end.add(const Duration(days: 1));
     try {
       Map data = {
         "search_type": "dashboard_report",
         "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data",
         "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
-        "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}"
+        "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
       };
 
       log("Dashboard request data: ${data.toString()}");

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
+import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -27,7 +28,7 @@ class DashboardController extends GetxController {
     "Last 7 Days",
     "Last 30 Days",
   ];
-  var selectedSortBy = ''.obs;
+  var selectedSortBy = 'Today'.obs;
   var selectedRange = Rxn<DateTimeRange>(); // null-safe observable
   var isDateRangeSet = false.obs;
 
@@ -139,6 +140,8 @@ class DashboardController extends GetxController {
                         if (tempRange != null) {
                           setDateRange(tempRange);
                         }
+                        apiService.getDashboardReport();
+                        dashController.selectedSortBy.value = "";
                         Navigator.pop(context);
                       },
                       child: const Text(

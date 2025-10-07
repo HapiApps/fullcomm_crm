@@ -2,6 +2,7 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fullcomm_crm/common/extentions/int_extensions.dart';
 import 'package:fullcomm_crm/provider/employee_provider.dart';
+import 'package:fullcomm_crm/provider/reminder_provider.dart';
 import 'package:fullcomm_crm/screens/new_dashboard.dart';
 import 'package:fullcomm_crm/screens/zoom_blocker.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
@@ -30,6 +31,7 @@ Future<void> main() async {
       MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => EmployeeProvider()),
+        ChangeNotifierProvider(create: (_) => ReminderProvider()),
       ],child: MyApp(loginScreen: loginScreen,)));
 }
 

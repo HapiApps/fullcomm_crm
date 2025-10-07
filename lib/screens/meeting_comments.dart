@@ -571,50 +571,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                     topLeft: Radius.circular(5),
                                     topRight: Radius.circular(5))),
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: CustomText(
-                                      textAlign: TextAlign.center,
-                                      text: "Date",
-                                      size: 15,
-                                      isBold: true,
-                                      colors: Colors.white,
-                                    ),
-                                  ),
-                                  // Obx(() => GestureDetector(
-                                  //   onTap: (){
-                                  //     controllers.sortField.value = 'date';
-                                  //     controllers.sortOrder.value = 'asc';
-                                  //   },
-                                  //   child: Icon(
-                                  //     Icons.arrow_upward,
-                                  //     size: 16,
-                                  //     color: (controllers.sortField.value == 'date' &&
-                                  //         controllers.sortOrder.value == 'asc')
-                                  //         ? Colors.white
-                                  //         : Colors.grey,
-                                  //   ),
-                                  // )),
-                                  // Obx(() => GestureDetector(
-                                  //   onTap: (){
-                                  //     controllers.sortField.value = 'date';
-                                  //     controllers.sortOrder.value = 'desc';
-                                  //   },
-                                  //   child: Icon(
-                                  //     Icons.arrow_downward,
-                                  //     size: 16,
-                                  //     color: (controllers.sortField.value == 'date' &&
-                                  //         controllers.sortOrder.value == 'desc')
-                                  //         ? Colors.white
-                                  //         : Colors.grey,
-                                  //   ),
-                                  // )
-                                  // ),
-                                ],
-                              ),
+
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: CustomText(//1
@@ -664,6 +621,50 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                   isBold: true,
                                   colors: Colors.white,
                                 ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: CustomText(
+                                      textAlign: TextAlign.center,
+                                      text: "Date",
+                                      size: 15,
+                                      isBold: true,
+                                      colors: Colors.white,
+                                    ),
+                                  ),
+                                  // Obx(() => GestureDetector(
+                                  //   onTap: (){
+                                  //     controllers.sortField.value = 'date';
+                                  //     controllers.sortOrder.value = 'asc';
+                                  //   },
+                                  //   child: Icon(
+                                  //     Icons.arrow_upward,
+                                  //     size: 16,
+                                  //     color: (controllers.sortField.value == 'date' &&
+                                  //         controllers.sortOrder.value == 'asc')
+                                  //         ? Colors.white
+                                  //         : Colors.grey,
+                                  //   ),
+                                  // )),
+                                  // Obx(() => GestureDetector(
+                                  //   onTap: (){
+                                  //     controllers.sortField.value = 'date';
+                                  //     controllers.sortOrder.value = 'desc';
+                                  //   },
+                                  //   child: Icon(
+                                  //     Icons.arrow_downward,
+                                  //     size: 16,
+                                  //     color: (controllers.sortField.value == 'date' &&
+                                  //         controllers.sortOrder.value == 'desc')
+                                  //         ? Colors.white
+                                  //         : Colors.grey,
+                                  //   ),
+                                  // )
+                                  // ),
+                                ],
                               ),
                               // Padding(
                               //   padding: const EdgeInsets.all(10.0),
@@ -749,15 +750,6 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                         ),
                                         children:[
-                                          Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text: formatFirstDate(data.dates.toString()),
-                                              size: 14,
-                                              colors: colorsConst.textColor,
-                                            ),
-                                          ),
                                           Tooltip(
                                             message: data.cusName.toString()=="null"?"":data.cusName.toString(),
                                             child: Padding(
@@ -810,6 +802,15 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                               text: data.status.toString(),
                                               size: 14,
                                               colors:colorsConst.textColor,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              text: formatFirstDate(data.dates.toString()),
+                                              size: 14,
+                                              colors: colorsConst.textColor,
                                             ),
                                           ),
                                           // Padding(

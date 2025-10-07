@@ -73,7 +73,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               utils.sideBarFunction(context),
-              Container(
+              Obx(()=>Container(
                 width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
                 height: MediaQuery.of(context).size.height,
                 alignment: Alignment.center,
@@ -445,7 +445,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                     20.height,
                   ],
                 ),
-              ),
+              ),)
             ],
           ),
         ),
