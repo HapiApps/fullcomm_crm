@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
+import 'package:fullcomm_crm/common/extentions/extensions.dart';
 
 import '../common/utilities/utils.dart';
 import 'call_comments.dart';
@@ -34,13 +35,39 @@ class _RecordsState extends State<Records> {
                 children: [
                   TabBar(
                     tabs: [
-                      Tab(icon: Icon(Icons.phone,color: colorsConst.primary,), text: 'Call'),
-                      Tab(icon: Icon(Icons.mail,color: colorsConst.primary,), text: 'Mail'),
-                      Tab(icon: Icon(Icons.group,color: colorsConst.primary,), text: 'Meeting'),
+                      Tab(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.phone, color: colorsConst.primary, size: 20),
+                            6.width,
+                            Text('Call', style: TextStyle(color: colorsConst.primary)),
+                          ],
+                        ),
+                      ),
+                      Tab(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.mail, color: colorsConst.primary, size: 20),
+                            6.width,
+                            Text('Mail', style: TextStyle(color: colorsConst.primary)),
+                          ],
+                        ),
+                      ),
+                      Tab(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.group, color: colorsConst.primary, size: 20),
+                            6.width,
+                            Text('Meeting', style: TextStyle(color: colorsConst.primary)),
+                          ],
+                        ),
+                      ),
                     ],
                     labelColor: colorsConst.primary,
                     indicatorColor: colorsConst.primary,
-
                   ),
                   Expanded(
                     child: TabBarView(

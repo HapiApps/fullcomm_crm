@@ -85,6 +85,7 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
         ),
         SizedBox(
           width: widget.width,
+          height: widget.height,
           child: Center(
             child: TextFormField(
               key: ValueKey(widget.text),

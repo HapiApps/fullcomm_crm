@@ -10,6 +10,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -91,8 +92,36 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           title: appName,
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            colorScheme: ColorScheme.fromSeed(seedColor: colorsConst.primary),
             useMaterial3: false,
+            textTheme: GoogleFonts.latoTextTheme(),
+            primaryColor: colorsConst.primary,
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: Colors.white, // Calendar background
+              headerBackgroundColor: colorsConst.primary, // Top header background
+              headerForegroundColor: Colors.white, // Header text color
+              todayForegroundColor: WidgetStateProperty.all(colorsConst.primary),
+              todayBackgroundColor: WidgetStateProperty.all(Colors.blue.withOpacity(0.2)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              surfaceTintColor: Colors.transparent,
+              dayBackgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return colorsConst.primary;
+                }
+                return null;
+              }),
+              dayForegroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return Colors.white;
+                }
+                return null;
+              }),
+              rangeSelectionBackgroundColor:colorsConst.primary,
+              rangeSelectionOverlayColor: WidgetStateProperty.all(
+                Colors.teal.withOpacity(0.25),
+              ),
+              elevation: 4,
+            ),
             scaffoldBackgroundColor: colorsConst.backgroundColor,
             scrollbarTheme: ScrollbarThemeData(
               thumbColor: WidgetStateProperty.all(Colors.grey),

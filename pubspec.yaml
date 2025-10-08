@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.5.3
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -53,15 +53,12 @@ dependencies:
   google_maps_flutter:
   google_maps_flutter_web:
   provider: ^6.1.2
-  syncfusion_flutter_datagrid:
   group_button: ^5.3.4
   image_picker_web: ^3.1.1
   mime_type: ^1.0.0
   intl: ^0.19.0
   toggle_switch: ^2.3.0
   mailer: ^6.1.0
-  sendgrid_mailer: ^0.1.3
-  flutter_mail_server: ^0.0.2
   page_transition: ^2.1.0
   loading_animation_widget: ^1.2.1
   fl_chart: ^0.68.0
@@ -81,11 +78,11 @@ dependencies:
   month_picker_dialog:
   google_fonts:
   web: ^1.1.1
-  syncfusion_flutter_pdfviewer:
   firebase_core: ^4.1.1
   flutter_local_notifications:
   firebase_messaging: ^16.0.2
-  syncfusion_flutter_datepicker:
+  syncfusion_flutter_pdfviewer: ^29.1.38
+  syncfusion_flutter_datepicker: ^29.1.38
   table_calendar:
 
 dev_dependencies:

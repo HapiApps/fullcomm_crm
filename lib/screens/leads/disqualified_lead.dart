@@ -452,7 +452,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                       numOfHeadcount: data.numOfHeadcount ?? "",
                                       expectedBillingValue: data.expectedBillingValue ?? "",
                                       arpuValue: data.arpuValue ?? "",
-                                      updatedTs: data.createdTs ?? "",
+                                      updatedTs: data.updatedTs ?? "",
                                       sourceDetails: data.sourceDetails ?? "",
                                     ));
                                   },

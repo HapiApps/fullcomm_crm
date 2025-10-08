@@ -100,8 +100,7 @@ class Controller extends GetxController {
     }
     final hasTime = inputDateTime.contains(':');
 
-    final outputFormat =
-        hasTime ? DateFormat('yyyy-MM-dd hh:mm a') : DateFormat('yyyy-MM-dd');
+    final outputFormat = hasTime ? DateFormat('yyyy-MM-dd hh:mm a') : DateFormat('yyyy-MM-dd');
 
     return outputFormat.format(dateTime.toLocal());
   }
@@ -144,14 +143,14 @@ class Controller extends GetxController {
       if (lead.prospectEnrollmentDate != null) {
         DateTime? updatedDate;
         try {
-          updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
-        } catch (_) {
-          try {
-            updatedDate = DateTime.tryParse(lead.prospectEnrollmentDate!);
-          } catch (_) {
-            updatedDate = null;
-            matchesSort = false;
+          if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
+            updatedDate = DateTime.tryParse(lead.updatedTs!);
+          } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
+            updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
           }
+        } catch (_) {
+          updatedDate = null;
+          matchesSort = false;
         }
 
         if (updatedDate != null) {
@@ -271,23 +270,21 @@ class Controller extends GetxController {
           (lead.mobileNumber?.toLowerCase().contains(query) ?? false) ||
           (lead.companyName?.toLowerCase().contains(query) ?? false);
 
-      final matchesRating = ratingFilter.isEmpty ||
-          ((lead.rating ?? '').toLowerCase() == ratingFilter.toLowerCase());
+      final matchesRating = ratingFilter.isEmpty || ((lead.rating ?? '').toLowerCase() == ratingFilter.toLowerCase());
 
       bool matchesSort = true;
 
       if (lead.prospectEnrollmentDate != null) {
         DateTime? updatedDate;
         try {
-          updatedDate =
-              DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
-        } catch (_) {
-          try {
-            updatedDate = DateTime.tryParse(lead.prospectEnrollmentDate!);
-          } catch (_) {
-            updatedDate = null;
-            matchesSort = false;
+          if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
+            updatedDate = DateTime.tryParse(lead.updatedTs!);
+          } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
+            updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
           }
+        } catch (_) {
+          updatedDate = null;
+          matchesSort = false;
         }
 
         if (updatedDate != null) {
@@ -314,7 +311,6 @@ class Controller extends GetxController {
                 matchesSort = true;
               }
               break;
-
             case 'All':
             default:
               matchesSort = true;
@@ -389,17 +385,21 @@ class Controller extends GetxController {
               if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
                 dateStr = fallback;
               }
+
+              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                return DateTime(1900);
+              }
               DateTime? parsed;
               try {
-                parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+                parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
               } catch (_) {
-                parsed = DateTime.tryParse(dateStr!);
+                parsed = DateTime.tryParse(dateStr);
               }
               return parsed ?? DateTime(1900);
             }
+            valA = parseDate(a.updatedTs, a.prospectEnrollmentDate);
+            valB = parseDate(b.updatedTs, b.prospectEnrollmentDate);
 
-            valA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
-            valB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
             break;
           default:
             valA = '';
@@ -469,14 +469,14 @@ class Controller extends GetxController {
       if (lead.prospectEnrollmentDate != null) {
         DateTime? updatedDate;
         try {
-          updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
-        } catch (_) {
-          try {
-            updatedDate = DateTime.tryParse(lead.prospectEnrollmentDate!);
-          } catch (_) {
-            updatedDate = null;
-            matchesSort = false;
+          if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
+            updatedDate = DateTime.tryParse(lead.updatedTs!);
+          } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
+            updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
           }
+        } catch (_) {
+          updatedDate = null;
+          matchesSort = false;
         }
 
         if (updatedDate != null) {
@@ -577,17 +577,19 @@ class Controller extends GetxController {
               if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
                 dateStr = fallback;
               }
+              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                return DateTime(1900);
+              }
               DateTime? parsed;
               try {
-                parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+                parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
               } catch (_) {
-                parsed = DateTime.tryParse(dateStr!);
+                parsed = DateTime.tryParse(dateStr);
               }
               return parsed ?? DateTime(1900);
             }
-
-            valA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
-            valB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+            valA = parseDate(a.updatedTs, a.prospectEnrollmentDate);
+            valB = parseDate(b.updatedTs, b.prospectEnrollmentDate);
             break;
           default:
             valA = '';
@@ -633,14 +635,14 @@ class Controller extends GetxController {
       if (lead.prospectEnrollmentDate != null) {
         DateTime? updatedDate;
         try {
-          updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
-        } catch (_) {
-          try {
-            updatedDate = DateTime.tryParse(lead.prospectEnrollmentDate!);
-          } catch (_) {
-            updatedDate = null;
-            matchesSort = false;
+          if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
+            updatedDate = DateTime.tryParse(lead.updatedTs!);
+          } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
+            updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
           }
+        } catch (_) {
+          updatedDate = null;
+          matchesSort = false;
         }
 
         if (updatedDate != null) {
@@ -741,17 +743,20 @@ class Controller extends GetxController {
               if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
                 dateStr = fallback;
               }
+
+              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                return DateTime(1900);
+              }
               DateTime? parsed;
               try {
-                parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+                parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
               } catch (_) {
-                parsed = DateTime.tryParse(dateStr!);
+                parsed = DateTime.tryParse(dateStr);
               }
               return parsed ?? DateTime(1900);
             }
-
-            valA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
-            valB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+            valA = parseDate(a.updatedTs, a.prospectEnrollmentDate);
+            valB = parseDate(b.updatedTs, b.prospectEnrollmentDate);
             break;
           default:
             valA = '';
@@ -799,17 +804,15 @@ class Controller extends GetxController {
       if (lead.prospectEnrollmentDate != null) {
         DateTime? updatedDate;
         try {
-          updatedDate =
-              DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
-        } catch (_) {
-          try {
-            updatedDate = DateTime.tryParse(lead.prospectEnrollmentDate!);
-          } catch (_) {
-            updatedDate = null;
-            matchesSort = false;
+          if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
+            updatedDate = DateTime.tryParse(lead.updatedTs!);
+          } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
+            updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
           }
+        } catch (_) {
+          updatedDate = null;
+          matchesSort = false;
         }
-
         if (updatedDate != null) {
           final diff = now.difference(updatedDate).inDays;
 
@@ -848,7 +851,97 @@ class Controller extends GetxController {
 
       return matchesQuery && matchesRating && matchesSort;
     }).toList();
+    if (sortBy == 'Custom Month') {
+      DateTime parseDate(String? dateStr, String? fallback) {
+        if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+          dateStr = fallback;
+        }
+        DateTime? parsed;
+        try {
+          parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+        } catch (_) {
+          parsed = DateTime.tryParse(dateStr!);
+        }
+        return parsed ?? DateTime(1900);
+      }
 
+      filteredLeads.sort((a, b) {
+        final dateA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
+        final dateB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+        return dateB.compareTo(dateA); // reverse order
+      });
+    }
+
+    if (sortField.isNotEmpty) {
+      filteredLeads.sort((a, b) {
+        dynamic valA;
+        dynamic valB;
+
+        switch (sortField.value) {
+          case 'name':
+            valA = a.firstname ?? '';
+            valB = b.firstname ?? '';
+            break;
+          case 'companyName':
+            valA = a.companyName ?? '';
+            valB = b.companyName ?? '';
+            break;
+          case 'mobile':
+            valA = a.mobileNumber ?? '';
+            valB = b.mobileNumber ?? '';
+            break;
+          case 'serviceRequired':
+            valA = a.detailsOfServiceRequired ?? '';
+            valB = b.detailsOfServiceRequired ?? '';
+            break;
+          case 'sourceOfProspect':
+            valA = a.source ?? '';
+            valB = b.source ?? '';
+            break;
+          case 'city':
+            valA = a.city ?? '';
+            valB = b.city ?? '';
+            break;
+          case 'statusUpdate':
+            valA = a.statusUpdate ?? '';
+            valB = b.statusUpdate ?? '';
+            break;
+          case 'date':
+            DateTime parseDate(String? dateStr, String? fallback) {
+              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                dateStr = fallback;
+              }
+
+              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                return DateTime(1900);
+              }
+              DateTime? parsed;
+              try {
+                parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+              } catch (_) {
+                parsed = DateTime.tryParse(dateStr);
+              }
+              return parsed ?? DateTime(1900);
+            }
+            valA = parseDate(a.updatedTs, a.prospectEnrollmentDate);
+            valB = parseDate(b.updatedTs, b.prospectEnrollmentDate);
+            break;
+          default:
+            valA = '';
+            valB = '';
+        }
+
+        if (valA is DateTime && valB is DateTime) {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        } else {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        }
+      });
+    }
     int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
 
     if (start >= filteredLeads.length) return [];

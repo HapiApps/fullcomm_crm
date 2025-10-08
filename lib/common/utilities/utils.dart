@@ -2162,7 +2162,7 @@ class Utils {
       context: context!,
       initialDate: controllers.dateTime,
       firstDate: DateTime(2010),
-      lastDate: DateTime(2030),
+      lastDate: DateTime.now(),
     ).then((value) {
       controllers.dateTime = value!;
       textEditingController?.text =

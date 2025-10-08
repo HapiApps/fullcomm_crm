@@ -424,7 +424,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                 numOfHeadcount: data.numOfHeadcount ?? "",
                                 expectedBillingValue: data.expectedBillingValue ?? "",
                                 arpuValue: data.arpuValue ?? "",
-                                updatedTs: data.createdTs ?? "",
+                                updatedTs: data.updatedTs ?? "",
                                 sourceDetails: data.sourceDetails ?? "",
                               ));
                             },

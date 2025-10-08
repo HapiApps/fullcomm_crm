@@ -234,13 +234,13 @@ class _AddLeadState extends State<AddLead> {
                                 controllers.leadCtr.reset();
                               } else if (controllers.leadMobileCrt[0].text.isEmpty) {
                                 utils.snackBar(
-                                    msg: "Please Add Mobile Number",
+                                    msg: "Please Add Phone No",
                                     color: Colors.red,
                                     context: context);
                                 controllers.leadCtr.reset();
                               } else if (controllers.leadMobileCrt[0].text.length != 10) {
                                 utils.snackBar(
-                                    msg: "Invalid Mobile Number",
+                                    msg: "Invalid Phone No",
                                     color: Colors.red,
                                     context: context);
                                 controllers.leadCtr.reset();
@@ -879,19 +879,16 @@ class _AddLeadState extends State<AddLead> {
                                             //   }
                                             // }
                                           ),
-                                          Obx(
-                                                () => CustomDateBox(
+                                          Obx(() => CustomDateBox(
                                               text: "Date of Connection",
                                               value: controllers.empDOB.value,
                                               width: textFieldSize,
                                               onTap: () {
                                                 utils.datePicker(
                                                     context: context,
-                                                    textEditingController:
-                                                    controllers
-                                                        .dateOfConCtr,
-                                                    pathVal:
-                                                    controllers.empDOB);
+                                                    textEditingController: controllers.dateOfConCtr,
+                                                    pathVal: controllers.empDOB
+                                                );
                                               },
                                             ),
                                           ),
@@ -958,10 +955,8 @@ class _AddLeadState extends State<AddLead> {
                                       );
                                     }
                                   }
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
-                                  sharedPref.setString(
-                                      "leadCoName", value.toString().trim());
+                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                  sharedPref.setString("leadCoName", value.toString().trim());
                                 },
                               ),
                               CustomTextField(
