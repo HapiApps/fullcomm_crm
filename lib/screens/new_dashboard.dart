@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/components/line_chart.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
+import 'package:fullcomm_crm/screens/records.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
@@ -16,6 +17,8 @@ import '../provider/employee_provider.dart';
 import '../services/api_services.dart';
 import 'dashboard.dart';
 import 'dart:html' as html;
+
+import 'employee/employee_screen.dart';
 
 class NewDashboard extends StatefulWidget {
   const NewDashboard({super.key});
@@ -44,7 +47,8 @@ class _NewDashboardState extends State<NewDashboard> {
       controllers.selectedIndex.value = 0;
       final prefs = await SharedPreferences.getInstance();
       controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
-       apiService.getDayReport(DateTime.now().year.toString(),DateTime.now().month.toString());
+      var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2,'0')}-${DateTime.now().day.toString().padLeft(2,'0')}";
+       apiService.getCustomerReport(today,today);
     });
     apiService.getDashBoardReport();
     apiService.getRatingReport();
@@ -179,6 +183,9 @@ class _NewDashboardState extends State<NewDashboard> {
                                           break;
                                       }
                                       apiService.getDashboardReport();
+                                      final range = dashController.selectedRange.value;
+                                      var today = DateTime.now();
+                                      apiService.getCustomerReport(range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}", range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -246,10 +253,11 @@ class _NewDashboardState extends State<NewDashboard> {
                             50.width,
                           ],
                         ),
-                        20.height,
+                        30.height,
                         Expanded(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
                                   //height: screenHeight-60,
@@ -332,17 +340,79 @@ class _NewDashboardState extends State<NewDashboard> {
                                           spacing: 20,
                                           runSpacing: 10,
                                           children: [
-                                            countShown(width: 130, head: "Total Mails",
-                                                count: dashController.totalMails.value.toString(),icon: Icons.email),
-                                            countShown(width: 130, head: "Total Calls", count: dashController.totalCalls.value.toString(),icon: Icons.call),
-                                            countShown(width: 130, head: "Total Meetings",
-                                                count: dashController.totalMeetings.value.toString(),
-                                                icon: Icons.calendar_month_outlined),
-                                            countShown(
-                                              width: 130,
-                                              head: "Total Employees",
-                                              count: dashController.totalEmployees.value.toString(),
-                                              icon: Icons.people_outline,
+                                            InkWell(
+                                              onTap: (){
+                                                controllers.changeTab(1);
+                                                Navigator.push(
+                                                  context,
+                                                  PageRouteBuilder(
+                                                    pageBuilder: (context, animation1, animation2) =>
+                                                    const Records(),
+                                                    transitionDuration: Duration.zero,
+                                                    reverseTransitionDuration: Duration.zero,
+                                                  ),
+                                                );
+                                                controllers.oldIndex.value = controllers.selectedIndex.value;
+                                                controllers.selectedIndex.value = 6;
+                                              },
+                                              child: countShown(width: 130, head: "Total Mails",
+                                                  count: dashController.totalMails.value.toString(),icon: Icons.email),
+                                            ),
+                                            InkWell(
+                                                  onTap: (){
+                                                    controllers.changeTab(0);
+                                                    Navigator.push(
+                                                      context,
+                                                      PageRouteBuilder(
+                                                        pageBuilder: (context, animation1, animation2) =>
+                                                        const Records(),
+                                                        transitionDuration: Duration.zero,
+                                                        reverseTransitionDuration: Duration.zero,
+                                                      ),
+                                                    );
+                                                    controllers.oldIndex.value = controllers.selectedIndex.value;
+                                                    controllers.selectedIndex.value = 6;
+                                                  },
+                                                child: countShown(width: 130, head: "Total Calls", count: dashController.totalCalls.value.toString(),icon: Icons.call)),
+                                            InkWell(
+                                              onTap: (){
+                                                controllers.changeTab(2);
+                                                Navigator.push(
+                                                  context,
+                                                  PageRouteBuilder(
+                                                    pageBuilder: (context, animation1, animation2) =>
+                                                    const Records(),
+                                                    transitionDuration: Duration.zero,
+                                                    reverseTransitionDuration: Duration.zero,
+                                                  ),
+                                                );
+                                                controllers.oldIndex.value = controllers.selectedIndex.value;
+                                                controllers.selectedIndex.value = 6;
+                                              },
+                                              child: countShown(width: 130, head: "Total Meetings",
+                                                  count: dashController.totalMeetings.value.toString(),
+                                                  icon: Icons.calendar_month_outlined),
+                                            ),
+                                            InkWell(
+                                              onTap: (){
+                                                Navigator.push(
+                                                  context,
+                                                  PageRouteBuilder(
+                                                    pageBuilder: (context, animation1, animation2) =>
+                                                    const EmployeeScreen(),
+                                                    transitionDuration: Duration.zero,
+                                                    reverseTransitionDuration: Duration.zero,
+                                                  ),
+                                                );
+                                                controllers.oldIndex.value = controllers.selectedIndex.value;
+                                                controllers.selectedIndex.value = 9;
+                                              },
+                                              child: countShown(
+                                                width: 130,
+                                                head: "Total Employees",
+                                                count: dashController.totalEmployees.value.toString(),
+                                                icon: Icons.people_outline,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -458,47 +528,47 @@ class _NewDashboardState extends State<NewDashboard> {
                                                     isBold: true,
                                                     colors: colorsConst.textColor,
                                                   ),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      // Month Dropdown
-                                                      Obx(() => DropdownButton<int>(
-                                                        value: controllers.selectedChartMonth.value,
-                                                        items: List.generate(12, (index) {
-                                                          final month = index + 1;
-                                                          return DropdownMenuItem(
-                                                            value: month,
-                                                            child: Text(DateFormat.MMMM().format(DateTime(0, month))),
-                                                          );
-                                                        }),
-                                                        onChanged: (value) {
-                                                          if (value != null) {
-                                                            controllers.selectedChartMonth.value = value;
-                                                           apiService.getDayReport(controllers.selectedChartYear.value.toString().isEmpty?DateTime.now().year.toString():controllers.selectedChartYear.value.toString(), controllers.selectedChartMonth.value.toString());
-                                                          }
-                                                        },
-                                                      )),
-                                                      20.width,
-                                                      // Year Dropdown
-                                                      Obx(() => DropdownButton<int>(
-                                                        value: controllers.selectedChartYear.value,
-                                                        items: List.generate(5, (index) {
-                                                          final year = DateTime.now().year - 4 + index;
-                                                          return DropdownMenuItem(
-                                                            value: year,
-                                                            child: Text(year.toString()),
-                                                          );
-                                                        }),
-                                                        onChanged: (value) {
-                                                          if (value != null) {
-                                                            controllers.selectedChartYear.value = value;
-                                                            apiService.getDayReport(controllers.selectedChartYear.value.toString().isEmpty?DateTime.now().year.toString():controllers.selectedChartYear.value.toString(), controllers.selectedChartMonth.value.toString().isEmpty?DateTime.now().month.toString():controllers.selectedChartMonth.value.toString());
-                                                          }
-                                                        },
-                                                      )),
-                                                      20.width,
-                                                    ],
-                                                  ),
+                                                  // Row(
+                                                  //   mainAxisAlignment: MainAxisAlignment.center,
+                                                  //   children: [
+                                                  //     // Month Dropdown
+                                                  //     Obx(() => DropdownButton<int>(
+                                                  //       value: controllers.selectedChartMonth.value,
+                                                  //       items: List.generate(12, (index) {
+                                                  //         final month = index + 1;
+                                                  //         return DropdownMenuItem(
+                                                  //           value: month,
+                                                  //           child: Text(DateFormat.MMMM().format(DateTime(0, month))),
+                                                  //         );
+                                                  //       }),
+                                                  //       onChanged: (value) {
+                                                  //         if (value != null) {
+                                                  //           controllers.selectedChartMonth.value = value;
+                                                  //          apiService.getDayReport(controllers.selectedChartYear.value.toString().isEmpty?DateTime.now().year.toString():controllers.selectedChartYear.value.toString(), controllers.selectedChartMonth.value.toString());
+                                                  //         }
+                                                  //       },
+                                                  //     )),
+                                                  //     20.width,
+                                                  //     // Year Dropdown
+                                                  //     Obx(() => DropdownButton<int>(
+                                                  //       value: controllers.selectedChartYear.value,
+                                                  //       items: List.generate(5, (index) {
+                                                  //         final year = DateTime.now().year - 4 + index;
+                                                  //         return DropdownMenuItem(
+                                                  //           value: year,
+                                                  //           child: Text(year.toString()),
+                                                  //         );
+                                                  //       }),
+                                                  //       onChanged: (value) {
+                                                  //         if (value != null) {
+                                                  //           controllers.selectedChartYear.value = value;
+                                                  //           apiService.getDayReport(controllers.selectedChartYear.value.toString().isEmpty?DateTime.now().year.toString():controllers.selectedChartYear.value.toString(), controllers.selectedChartMonth.value.toString().isEmpty?DateTime.now().month.toString():controllers.selectedChartMonth.value.toString());
+                                                  //         }
+                                                  //       },
+                                                  //     )),
+                                                  //     20.width,
+                                                  //   ],
+                                                  // ),
 
                                                 ],
                                               ),
@@ -540,46 +610,67 @@ class _NewDashboardState extends State<NewDashboard> {
                                           ),
                                           child: SizedBox(
                                             height: 200,
-                                            child: PieChart(
-                                              dataMap: {
-                                                'Suspects': double.parse(dashController.totalSuspects.value.toString()),
-                                                'Prospects': double.parse(dashController.totalProspects.value.toString()),
-                                                'Qualified': double.parse(dashController.totalQualified.value.toString()),
-                                                'Unqualified': double.parse(dashController.totalUnQualified.value.toString()),  // corrected
-                                                'Customers': double.parse(dashController.totalCustomers.value.toString()),
-                                              },
-                                              animationDuration: const Duration(seconds: 2),
-                                              chartLegendSpacing: 32,
-                                              centerTextStyle: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: "Lato",
-                                              ),
-                                              chartRadius: MediaQuery.of(context).size.width / 2.2,
-                                              colorList: const [
-                                                Color(0xffE3B552), // Suspects
-                                                Color(0xff017EFF), // Prospects (blue)
-                                                Color(0xffF55353), // Qualified (red)
-                                                Color(0xff7456FC), // Unqualified (purple)
-                                                Color(0xffE3528C), // Customers (pink)
-                                              ],
-                                              chartType: ChartType.disc,
-                                              centerText: "",
-                                              legendOptions: LegendOptions(
-                                                showLegends: true,
-                                                legendTextStyle: TextStyle(color: colorsConst.textColor,fontFamily: "Lato",),
-                                              ),
-                                              chartValuesOptions: ChartValuesOptions(
-                                                showChartValuesInPercentage: false,
-                                                showChartValues: true,
-                                                showChartValueBackground: false,
-                                                chartValueStyle: TextStyle(
-                                                  color: Colors.white,
+                                            child: Obx(() {
+                                              final double totalSuspects = double.parse(dashController.totalSuspects.value);
+                                              final double totalProspects = double.parse(dashController.totalProspects.value);
+                                              final double totalQualified = double.parse(dashController.totalQualified.value);
+                                              final double totalUnQualified = double.parse(dashController.totalUnQualified.value);
+                                              final double totalCustomers = double.parse(dashController.totalCustomers.value);
+
+                                              final totalSum = totalSuspects + totalProspects + totalQualified + totalUnQualified + totalCustomers;
+                                              final bool isEmpty = totalSum == 0;
+
+                                              final Map<String, double> dataMap;
+                                              final List<Color> colorList;
+
+                                              if (isEmpty) {
+                                                dataMap = {'Empty': 1.0};
+                                                colorList = [colorsConst.backgroundColor];
+                                              } else {
+                                                dataMap = {
+                                                  'Suspects': totalSuspects,
+                                                  'Prospects': totalProspects,
+                                                  'Qualified': totalQualified,
+                                                  'Unqualified': totalUnQualified,
+                                                  'Customers': totalCustomers,
+                                                };
+                                                colorList = const [
+                                                  Color(0xffE3B552), // Suspects
+                                                  Color(0xff017EFF), // Prospects
+                                                  Color(0xffF55353), // Qualified
+                                                  Color(0xff7456FC), // Unqualified
+                                                  Color(0xffE3528C), // Customers
+                                                ];
+                                              }
+                                              return PieChart(
+                                                dataMap: dataMap,
+                                                animationDuration: const Duration(seconds: 2),
+                                                chartLegendSpacing: 32,
+                                                chartRadius: MediaQuery.of(context).size.width / 2.2,
+                                                colorList: colorList,
+                                                chartType: ChartType.disc,
+                                                centerText: isEmpty ? "No Data" : "",
+                                                centerTextStyle: TextStyle(
+                                                  color: isEmpty ? colorsConst.textColor : Colors.white,
                                                   fontFamily: "Lato",
-                                                )
-                                              ),
-                                            ),
+                                                ),
+                                                legendOptions: LegendOptions(
+                                                  showLegends: !isEmpty,
+                                                  legendTextStyle: TextStyle(color: colorsConst.textColor, fontFamily: "Lato"),
+                                                ),
+                                                chartValuesOptions: ChartValuesOptions(
+                                                    showChartValuesInPercentage: false,
+                                                    showChartValues: !isEmpty,
+                                                    showChartValueBackground: false,
+                                                    chartValueStyle: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: "Lato",
+                                                    )
+                                                ),
+                                              );
+                                            }),
                                           ),
-                                        ),
+                                        )
                                       ],
                                     ),
                                   ),

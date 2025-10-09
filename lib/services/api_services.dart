@@ -2854,6 +2854,37 @@ class ApiService {
     }
   }
 
+  Future getCustomerReport(String stDate,String endDate) async {
+    try {
+      Map data = {
+        "search_type": "customers_count",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data",
+        "stDate":stDate,
+        "enDate":endDate
+      };
+      log("main day wise ${data.toString()}");
+      controllers.dayReport.value = [];
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.dayReport.value = response.map<CustomerDayData>((e) => CustomerDayData.fromJson(e),).toList();
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      print("day_report $e");
+      throw Exception('Failed to load album');
+    }
+  }
+
   Future getDashboardReport() async {
     final range = dashController.selectedRange.value;
     var today = DateTime.now();
@@ -2878,7 +2909,6 @@ class ApiService {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-       print("Dashboard response status: ${request.body}");
       if (request.statusCode == 200) {
         var response = jsonDecode(request.body) as List;
         dashController.totalMails.value       = response[0]["total_mails"] ?? "0";

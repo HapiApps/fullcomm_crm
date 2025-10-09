@@ -37,13 +37,19 @@ class _MeetingCommentsState extends State<MeetingComments> {
   final ScrollController _controller = ScrollController();
   String formatFirstDate(String input) {
     try {
-      String firstDateString = input.split("||")[0];
-      DateTime parsedDate = DateFormat("dd-MM-yyyy").parse(firstDateString);
-      return DateFormat("dd MMM yyyy").format(parsedDate);
+      String firstDateString = input.split("||")[0].trim();
+      DateTime parsedDate;
+      if (firstDateString.contains(':') || firstDateString.toLowerCase().contains('am') || firstDateString.toLowerCase().contains('pm')) {
+        parsedDate = DateFormat("dd-MM-yyyy h:mm a").parse(firstDateString);
+      } else {
+        parsedDate = DateFormat("dd-MM-yyyy").parse(firstDateString);
+      }
+      return DateFormat("dd MMM yyyy, h:mm a").format(parsedDate);
     } catch (e) {
       return "";
     }
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -573,12 +579,37 @@ class _MeetingCommentsState extends State<MeetingComments> {
 
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: CustomText(//1
-                              textAlign: TextAlign.left,
-                              text: "Customer Name",
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
+                            child: Row(
+                              children: [
+                                CustomText(//1
+                                  textAlign: TextAlign.left,
+                                  text: "Customer Name",
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(controllers.sortFieldMeetingActivity.value=='customerName' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                      controllers.sortOrderMeetingActivity.value='desc';
+                                    }else{
+                                      controllers.sortOrderMeetingActivity.value='asc';
+                                    }
+                                    controllers.sortFieldMeetingActivity.value='customerName';
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    controllers.sortFieldMeetingActivity.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : controllers.sortOrderMeetingActivity.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Padding(
@@ -693,6 +724,16 @@ class _MeetingCommentsState extends State<MeetingComments> {
 
                         return matchesCallType && matchesSearch;
                       }).toList();
+                      if (controllers.sortFieldMeetingActivity.value == 'customerName') {
+                        filteredList.sort((a, b) {
+                          final nameA = (a.cusName ?? '').toLowerCase();
+                          final nameB = (b.cusName ?? '').toLowerCase();
+                          final comparison = nameA.compareTo(nameB);
+                          return controllers.sortOrderMeetingActivity.value == 'asc'
+                              ? comparison
+                              : -comparison;
+                        });
+                      }
                       return filteredList.isEmpty?
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,

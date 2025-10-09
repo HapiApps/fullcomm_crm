@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:get/get.dart';
 
 import '../common/utilities/utils.dart';
+import '../controller/controller.dart';
 import 'call_comments.dart';
 import 'cus_mail_comments.dart';
 import 'mail_comments.dart';
@@ -26,14 +28,15 @@ class _RecordsState extends State<Records> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             utils.sideBarFunction(context),
-            Container(
-              width: screenWidth - 150,
+            Obx(()=>Container(
+              width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
               padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
               child: Column(
                 children: [
                   TabBar(
+                    controller: controllers.tabController,
                     tabs: [
                       Tab(
                         child: Row(
@@ -71,6 +74,7 @@ class _RecordsState extends State<Records> {
                   ),
                   Expanded(
                     child: TabBarView(
+                      controller: controllers.tabController,
                       children: [
                         CallComments(),
                         MailComments(),
@@ -80,7 +84,7 @@ class _RecordsState extends State<Records> {
                   ),
                 ],
               ),
-            ),
+            ),)
           ],
         ),
       ),

@@ -153,8 +153,7 @@ class FilterSection extends StatelessWidget {
                     onPressed: onSelectMonth,
                     child: Obx(() => Text(
                      selectedMonth.value != null
-                          ? DateFormat('MMMM yyyy')
-                          .format(selectedMonth.value!)
+                          ? DateFormat('MMMM yyyy').format(selectedMonth.value!)
                           : 'Select Month',
                       style: TextStyle(
                         fontFamily: "Lato",
@@ -187,8 +186,7 @@ class FilterSection extends StatelessWidget {
                     PopupMenuItem(
                         value: "Today",
                         child: Text("Today",
-                            style:
-                            TextStyle(color: colorsConst.textColor))),
+                            style: TextStyle(color: colorsConst.textColor))),
                     PopupMenuItem(
                         value: "Last 7 Days",
                         child: Text("Last 7 Days",

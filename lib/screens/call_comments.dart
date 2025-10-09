@@ -666,12 +666,37 @@ class _CallCommentsState extends State<CallComments> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
-                                child: CustomText(//1
-                                  textAlign: TextAlign.left,
-                                  text: "Customer Name",
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
+                                child: Row(
+                                  children: [
+                                    CustomText(
+                                      textAlign: TextAlign.left,
+                                      text: "Customer Name",
+                                      size: 15,
+                                      isBold: true,
+                                      colors: Colors.white,
+                                    ),
+                                    const SizedBox(width: 3),
+                                    GestureDetector(
+                                      onTap: (){
+                                        if(controllers.sortFieldCallActivity.value=='customerName' && controllers.sortOrderCallActivity.value=='asc'){
+                                          controllers.sortOrderCallActivity.value='desc';
+                                        }else{
+                                          controllers.sortOrderCallActivity.value='asc';
+                                        }
+                                        controllers.sortFieldCallActivity.value='customerName';
+                                      },
+                                      child: Obx(() => Image.asset(
+                                        controllers.sortFieldCallActivity.value.isEmpty
+                                            ? "assets/images/arrow.png"
+                                            : controllers.sortOrderCallActivity.value == 'asc'
+                                            ? "assets/images/arrow_up.png"
+                                            : "assets/images/arrow_down.png",
+                                        width: 15,
+                                        height: 15,
+                                      ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Padding(
@@ -785,7 +810,6 @@ class _CallCommentsState extends State<CallComments> {
                         Expanded(
                           child: Obx((){
                             final searchText = controllers.searchText.value.toLowerCase();
-
                             final filteredList = controllers.callActivity.where((activity) {
                               final matchesCallType = controllers.selectCallType.value.isEmpty ||
                                   activity.callType == controllers.selectCallType.value;
@@ -796,6 +820,16 @@ class _CallCommentsState extends State<CallComments> {
 
                               return matchesCallType && matchesSearch;
                             }).toList();
+                            if (controllers.sortFieldCallActivity.value == 'customerName') {
+                              filteredList.sort((a, b) {
+                                final nameA = (a.customerName ?? '').toLowerCase();
+                                final nameB = (b.customerName ?? '').toLowerCase();
+                                final comparison = nameA.compareTo(nameB);
+                                return controllers.sortOrderCallActivity.value == 'asc'
+                                    ? comparison
+                                    : -comparison;
+                              });
+                            }
                             return filteredList.isEmpty?
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,

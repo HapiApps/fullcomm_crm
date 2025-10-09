@@ -299,6 +299,11 @@ class _QualifiedState extends State<Qualified> {
                     10.height,
                     CustomTableHeader(
                       showCheckbox: true,
+                      onSortName: () {
+                        controllers.sortField.value = 'name';
+                        controllers.sortOrderN.value =
+                        controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
+                      },
                       isAllSelected: controllers.isAllSelected.value,
                       onSelectAll: (value) {
                         if (value == true) {

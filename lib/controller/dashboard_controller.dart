@@ -139,6 +139,9 @@ class DashboardController extends GetxController {
                           setDateRange(tempRange);
                         }
                         apiService.getDashboardReport();
+                        final range = dashController.selectedRange.value;
+                        var today = DateTime.now();
+                        apiService.getCustomerReport(range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}", range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
                         dashController.selectedSortBy.value = "";
                         Navigator.pop(context);
                       },

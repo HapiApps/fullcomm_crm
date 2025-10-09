@@ -161,6 +161,7 @@ class CustomTableHeader extends StatelessWidget {
   final bool isAllSelected;
   final Function(bool?) onSelectAll;
   final VoidCallback onSortDate;
+  final VoidCallback onSortName;
 
   const CustomTableHeader({
     super.key,
@@ -168,6 +169,7 @@ class CustomTableHeader extends StatelessWidget {
     required this.isAllSelected,
     required this.onSelectAll,
     required this.onSortDate,
+    required this.onSortName,
   });
 
   @override
@@ -228,6 +230,44 @@ class CustomTableHeader extends StatelessWidget {
                         width: 15,
                         height: 15,
                       ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }else if(h.toLowerCase() == "customer name"||h.toLowerCase()=="name"){
+            return Container(
+              height: 45,
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      h,
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                        fontFamily: "Lato",
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                    ),
+                  ),
+                  const SizedBox(width: 3),
+                  GestureDetector(
+                    onTap: onSortName,
+                    child: Obx(() => Image.asset(
+                      controllers.sortField.value.isEmpty
+                          ? "assets/images/arrow.png"
+                          : controllers.sortOrderN.value == 'asc'
+                          ? "assets/images/arrow_up.png"
+                          : "assets/images/arrow_down.png",
+                      width: 15,
+                      height: 15,
+                    ),
                     ),
                   ),
                 ],

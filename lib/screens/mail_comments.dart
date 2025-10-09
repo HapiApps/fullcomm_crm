@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/models/mail_receive_obj.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_comment_container.dart';
@@ -384,10 +385,29 @@ class _MailCommentsState extends State<MailComments> {
                                                 ? Builder(
                                               builder: (context) {
                                                 final file = data.attachment.toLowerCase();
+                                                final pdfUrl = "$getImage?path=${Uri.encodeComponent(data.attachment)}"; // PDF-ன் முழு URL
+
                                                 if (file.endsWith(".pdf")) {
-                                                  return SizedBox(
-                                                    height: 50,
-                                                    child: SfPdfViewer.network("$getImage?path=${Uri.encodeComponent(data.attachment)}"),
+                                                  return InkWell(
+                                                    onTap: () async {
+                                                      if (await canLaunchUrl(Uri.parse(pdfUrl))) {
+                                                        await launchUrl(Uri.parse(pdfUrl), mode: LaunchMode.platformDefault);
+                                                      } else {
+                                                        print('Could not launch $pdfUrl');
+                                                        utils.snackBar(context: context, msg: 'Could not launch $pdfUrl', color: Colors.red);
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          const Icon(Icons.picture_as_pdf, color: Colors.red, size: 40),
+                                                          const SizedBox(height: 5),
+                                                          const Text("View PDF", style: TextStyle(fontSize: 12)),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   );
                                                 } else if (file.endsWith(".jpg") ||
                                                     file.endsWith(".jpeg") ||

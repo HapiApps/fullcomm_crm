@@ -810,8 +810,7 @@ class _AddLeadState extends State<AddLead> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           CustomTextField(
-                                            hintText:
-                                            "Account Manager (Optional)",
+                                            hintText: "Account Manager (Optional)",
                                             text: "Account Manager (Optional)",
                                             controller:
                                             controllers.leadTitleCrt[index],

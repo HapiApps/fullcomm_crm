@@ -147,11 +147,11 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
   String formatDate(String inputDate) {
     try {
       DateTime parsedDate = DateFormat("yyyy-MM-dd HH:mm:ss").parse(inputDate);
-      return DateFormat("dd MMM yyyy").format(parsedDate);
+      return DateFormat("dd MMM yyyy h:mm a").format(parsedDate);
     } catch (e1) {
       try {
         DateTime parsedDate = DateFormat("dd.MM.yyyy").parse(inputDate);
-        return DateFormat("dd MMM yyyy").format(parsedDate);
+        return DateFormat("dd MMM yyyy h:mm a").format(parsedDate);
       } catch (e2) {
         return inputDate;
       }

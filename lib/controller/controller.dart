@@ -22,9 +22,37 @@ import '../models/user_heading_obj.dart';
 
 final controllers = Get.put(Controller());
 
-class Controller extends GetxController {
+class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   var version = "Version 0.0.7";
   var versionNum = "0.0.7";
+  late TabController tabController;
+  var tabCurrentIndex = 0.obs;
+
+  final sortFieldCallActivity = ''.obs;
+  final sortOrderCallActivity = 'asc'.obs;
+  final sortFieldMeetingActivity = ''.obs;
+  final sortOrderMeetingActivity = 'asc'.obs;
+  final sortFieldEmployee = ''.obs;
+  final sortOrderEmployee = 'asc'.obs;
+  @override
+  void onInit() {
+    tabController = TabController(length: 3, vsync: this);
+    tabController.addListener(() {
+      tabCurrentIndex.value = tabController.index;
+    });
+    super.onInit();
+  }
+
+  void changeTab(int index) {
+    tabController.animateTo(index);
+    tabCurrentIndex.value = index;
+  }
+
+  @override
+  void onClose() {
+    tabController.dispose();
+    super.onClose();
+  }
   // var version = "Version 0.0.14";
   //  var versionNum = "0.0.14";
   var serverVersion = "".obs,
@@ -108,12 +136,11 @@ class Controller extends GetxController {
     try {
       String normalized = inputDate.replaceAll('.', '-');
       DateTime dateTime = DateFormat("dd-MM-yyyy h:mm a").parse(normalized);
-      return DateFormat("dd MMM yyyy").format(dateTime);
+      return DateFormat("dd MMM yyyy, h:mm a").format(dateTime);
     } catch (e) {
       return inputDate;
     }
   }
-
 
   var currentPage = 1.obs;
   final itemsPerPage = 20; // Adjust based on your needs
@@ -191,16 +218,43 @@ class Controller extends GetxController {
 
       return matchesQuery && matchesRating && matchesSort;
     }).toList();
+    if (sortBy == 'Custom Month') {
+      DateTime parseDate(String? dateStr, String? fallback) {
+        if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+          dateStr = fallback;
+        }
+        DateTime? parsed;
+        try {
+          parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+        } catch (_) {
+          parsed = DateTime.tryParse(dateStr!);
+        }
+        return parsed ?? DateTime(1900);
+      }
 
-    if (disqualifiedSortField.isNotEmpty) {
+      filteredLeads.sort((a, b) {
+        final dateA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
+        final dateB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+        return dateB.compareTo(dateA); // reverse order
+      });
+    }
+    if (sortField.isNotEmpty) {
       filteredLeads.sort((a, b) {
         dynamic valA;
         dynamic valB;
 
-        switch (disqualifiedSortField.value) {
+        switch (sortField.value) {
           case 'name':
-            valA = a.firstname ?? '';
-            valB = b.firstname ?? '';
+            String nameA = a.firstname ?? '';
+            String nameB = b.firstname ?? '';
+            if (nameA.contains('||')) {
+              nameA = nameA.split('||')[0].trim();
+            }
+            if (nameB.contains('||')) {
+              nameB = nameB.split('||')[0].trim();
+            }
+            valA = nameA.toLowerCase();
+            valB = nameB.toLowerCase();
             break;
           case 'companyName':
             valA = a.companyName ?? '';
@@ -227,17 +281,39 @@ class Controller extends GetxController {
             valB = b.statusUpdate ?? '';
             break;
           case 'date':
-            valA = formatDateTime(a.prospectEnrollmentDate.toString().isEmpty||a.prospectEnrollmentDate.toString()=="null"?a.updatedTs.toString():a.prospectEnrollmentDate.toString());
-            valB = formatDateTime(b.prospectEnrollmentDate.toString().isEmpty||b.prospectEnrollmentDate.toString()=="null"?b.updatedTs.toString():b.prospectEnrollmentDate.toString());
+            DateTime parseDate(String? dateStr, String? fallback) {
+              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                dateStr = fallback;
+              }
+
+              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                return DateTime(1900);
+              }
+              DateTime? parsed;
+              try {
+                parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+              } catch (_) {
+                parsed = DateTime.tryParse(dateStr);
+              }
+              return parsed ?? DateTime(1900);
+            }
+            valA = parseDate(a.updatedTs, a.prospectEnrollmentDate);
+            valB = parseDate(b.updatedTs, b.prospectEnrollmentDate);
+
             break;
           default:
             valA = '';
             valB = '';
         }
-        if (disqualifiedSortOrder.value == 'asc') {
-          return valA.compareTo(valB);
+        if (valA is DateTime && valB is DateTime) {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
         } else {
-          return valB.compareTo(valA);
+          print("short ${sortOrderN.value}");
+          return sortOrderN.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
         }
       });
     }
@@ -253,6 +329,7 @@ class Controller extends GetxController {
 
   var sortField = ''.obs;
   var sortOrder = 'asc'.obs;
+  var sortOrderN = 'asc'.obs;
   var sortPField = ''.obs;
   var sortPOrder = 'asc'.obs;
   var sortQField = ''.obs;
@@ -353,8 +430,16 @@ class Controller extends GetxController {
 
         switch (sortField.value) {
           case 'name':
-            valA = a.firstname ?? '';
-            valB = b.firstname ?? '';
+            String nameA = a.firstname ?? '';
+            String nameB = b.firstname ?? '';
+            if (nameA.contains('||')) {
+              nameA = nameA.split('||')[0].trim();
+            }
+            if (nameB.contains('||')) {
+              nameB = nameB.split('||')[0].trim();
+            }
+            valA = nameA.toLowerCase();
+            valB = nameB.toLowerCase();
             break;
           case 'companyName':
             valA = a.companyName ?? '';
@@ -411,7 +496,7 @@ class Controller extends GetxController {
               ? valA.compareTo(valB)
               : valB.compareTo(valA);
         } else {
-          return sortOrder.value == 'asc'
+          return sortOrderN.value == 'asc'
               ? valA.compareTo(valB)
               : valB.compareTo(valA);
         }
@@ -545,8 +630,16 @@ class Controller extends GetxController {
 
         switch (sortField.value) {
           case 'name':
-            valA = a.firstname ?? '';
-            valB = b.firstname ?? '';
+            String nameA = a.firstname ?? '';
+            String nameB = b.firstname ?? '';
+            if (nameA.contains('||')) {
+              nameA = nameA.split('||')[0].trim();
+            }
+            if (nameB.contains('||')) {
+              nameB = nameB.split('||')[0].trim();
+            }
+            valA = nameA.toLowerCase();
+            valB = nameB.toLowerCase();
             break;
           case 'companyName':
             valA = a.companyName ?? '';
@@ -600,7 +693,7 @@ class Controller extends GetxController {
               ? valA.compareTo(valB)
               : valB.compareTo(valA);
         } else {
-          return sortOrder.value == 'asc'
+          return sortOrderN.value == 'asc'
               ? valA.compareTo(valB)
               : valB.compareTo(valA);
         }
@@ -711,8 +804,16 @@ class Controller extends GetxController {
 
         switch (sortField.value) {
           case 'name':
-            valA = a.firstname ?? '';
-            valB = b.firstname ?? '';
+            String nameA = a.firstname ?? '';
+            String nameB = b.firstname ?? '';
+            if (nameA.contains('||')) {
+              nameA = nameA.split('||')[0].trim();
+            }
+            if (nameB.contains('||')) {
+              nameB = nameB.split('||')[0].trim();
+            }
+            valA = nameA.toLowerCase();
+            valB = nameB.toLowerCase();
             break;
           case 'companyName':
             valA = a.companyName ?? '';
@@ -768,7 +869,7 @@ class Controller extends GetxController {
               ? valA.compareTo(valB)
               : valB.compareTo(valA);
         } else {
-          return sortOrder.value == 'asc'
+          return sortOrderN.value == 'asc'
               ? valA.compareTo(valB)
               : valB.compareTo(valA);
         }
@@ -879,8 +980,16 @@ class Controller extends GetxController {
 
         switch (sortField.value) {
           case 'name':
-            valA = a.firstname ?? '';
-            valB = b.firstname ?? '';
+            String nameA = a.firstname ?? '';
+            String nameB = b.firstname ?? '';
+            if (nameA.contains('||')) {
+              nameA = nameA.split('||')[0].trim();
+            }
+            if (nameB.contains('||')) {
+              nameB = nameB.split('||')[0].trim();
+            }
+            valA = nameA.toLowerCase();
+            valB = nameB.toLowerCase();
             break;
           case 'companyName':
             valA = a.companyName ?? '';
@@ -936,7 +1045,7 @@ class Controller extends GetxController {
               ? valA.compareTo(valB)
               : valB.compareTo(valA);
         } else {
-          return sortOrder.value == 'asc'
+          return sortOrderN.value == 'asc'
               ? valA.compareTo(valB)
               : valB.compareTo(valA);
         }

@@ -342,6 +342,11 @@ class _SuspectsState extends State<Suspects> {
                           controllers.sortOrder.value =
                           controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
                         },
+                        onSortName: () {
+                          controllers.sortField.value = 'name';
+                          controllers.sortOrderN.value =
+                          controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
+                        },
                       ),
                       Expanded(
                         //height: MediaQuery.of(context).size.height/1.5,

@@ -299,6 +299,11 @@ class _ViewCustomerState extends State<ViewCustomer> {
                     10.height,
                     CustomTableHeader(
                       showCheckbox: false,
+                      onSortName: () {
+                        controllers.sortField.value = 'name';
+                        controllers.sortOrderN.value =
+                        controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
+                      },
                       isAllSelected: controllers.isAllSelected.value,
                       onSelectAll: (value) {
                         if (value == true) {

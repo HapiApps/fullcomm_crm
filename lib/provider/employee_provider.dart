@@ -42,7 +42,29 @@ class EmployeeProvider with ChangeNotifier {
     _isVisible4 = !_isVisible4;
     notifyListeners();
   }
+  String _sortField = 'name';
+  String _sortOrder = 'asc';
+  String get sortField => _sortField;
+  String get sortOrder => _sortOrder;
+  void sortStaffByName() {
+    _sortField = 'name';
+    if (_sortOrder == 'asc') {
+      _sortOrder = 'desc';
+    } else {
+      _sortOrder = 'asc';
+    }
+    filteredStaff.sort((a, b) {
+      final nameA = a.sName?.toLowerCase() ?? '';
+      final nameB = b.sName?.toLowerCase() ?? '';
 
+      final comparison = nameA.compareTo(nameB);
+      return _sortOrder == 'asc'
+          ? comparison
+          : -comparison;
+    });
+
+    notifyListeners();
+  }
   List<Staff> _staffRoleData = [];
 
   List<Staff> get staffRoleData => _staffRoleData;

@@ -16,21 +16,30 @@ class CustomerMonthData {
 }
 
 class CustomerDayData {
-  final int dayNum;
+  final String dayDate;
   final String? dayName;
   final double totalCustomers;
 
   CustomerDayData({
-    required this.dayNum,
+    required this.dayDate,
     this.dayName,
     required this.totalCustomers,
   });
 
   factory CustomerDayData.fromJson(Map<String, dynamic> json) {
     return CustomerDayData(
-      dayNum: int.tryParse(json['day_num'].toString()) ?? 0,
+      dayDate: json['day_date'] ?? '',
       dayName: json['day_name'],
       totalCustomers: double.tryParse(json['total_customers'].toString()) ?? 0,
     );
   }
+
+  int get dayNum {
+    try {
+      return DateTime.parse(dayDate).day;
+    } catch (e) {
+      return 0;
+    }
+  }
 }
+

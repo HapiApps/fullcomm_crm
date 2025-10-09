@@ -1543,7 +1543,7 @@ class Utils {
                 textColor: controllers.selectedIndex.value == 11
                     ? colorsConst.primary
                     : Colors.black,
-                text: "Remainder",
+                text: "Reminder",
                 onClicked: () {
                   Navigator.push(
                     context,
@@ -1980,14 +1980,14 @@ class Utils {
                                   ? Colors.black
                                   : colorsConst.textColor,
                               size: 15,
-                              isBold: true,
+                              //isBold: true,
                             ),
                           CustomText(
                             text: "${controllers.allNewLeadsLength.value}",
                             colors: controllers.selectedIndex.value == 1
                                 ? colorsConst.primary
                                 : colorsConst.primary,
-                            size: 15,
+                            size: 16,
                             isBold: true,
                           ),
                         ],
@@ -2016,14 +2016,14 @@ class Utils {
                                   ? Colors.black
                                   : colorsConst.textColor,
                               size: 15,
-                              isBold: true,
+                              //isBold: true,
                             ),
                           CustomText(
                             text: "${controllers.allLeadsLength.value}",
                             colors: controllers.selectedIndex.value == 2
                                 ? colorsConst.primary
                                 : colorsConst.primary,
-                            size: 15,
+                            size: 16,
                             isBold: true,
                           ),
                         ],
@@ -2033,8 +2033,7 @@ class Utils {
               ),
               Stack(
                 children: [
-                  Obx(
-                        () => Image.asset(
+                  Obx(() => Image.asset(
                       controllers.selectedIndex.value == 3
                           ? "assets/images/sQualified.png"
                           : "assets/images/qualified.png",
@@ -2053,14 +2052,14 @@ class Utils {
                                   ? Colors.black
                                   : colorsConst.textColor,
                                                           size: 15,
-                                                          isBold: true,
+                                                          //isBold: true,
                                                         ),
                                 CustomText(text:
                                 "${controllers.allGoodLeadsLength.value}",
                                   colors: controllers.selectedIndex.value == 3
                                       ? colorsConst.primary
                                       : colorsConst.primary,
-                                  size: 15,
+                                  size: 16,
                                   isBold: true,
                                 ),
                               ],
@@ -2087,7 +2086,7 @@ class Utils {
                                   ? Colors.black
                                   : colorsConst.textColor,
                               size: 13,
-                              isBold: true,
+                              //isBold: true,
                             ),
                           CustomText(
                             text: "${controllers.allCustomerLength.value}",
@@ -3091,19 +3090,21 @@ class Utils {
 
     html.Url.revokeObjectUrl(url);
   }
+  Future<void> downloadSheetImplementation(String fileName, Uint8List bodyBytes) async {
+    final blob = html.Blob([bodyBytes]);
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.AnchorElement(href: url)
+      ..setAttribute('download', fileName)
+      ..click();
+    html.Url.revokeObjectUrl(url);
+  }
+
   Future<void> downloadSheetFromNetwork(String fileUrl, String fileName) async {
     try {
       final response = await http.get(Uri.parse(fileUrl));
-
       if (response.statusCode == 200) {
-        final blob = html.Blob([response.bodyBytes]);
-
-        final url = html.Url.createObjectUrlFromBlob(blob);
-
-        final anchor = html.AnchorElement(href: url)
-          ..setAttribute('download', fileName)
-          ..click();
-        html.Url.revokeObjectUrl(url);
+        Uint8List bodyBytes = response.bodyBytes;
+        await downloadSheetImplementation(fileName, bodyBytes);
       } else {
         downloadSampleExcel();
         print('Download failed: ${response.statusCode}');
