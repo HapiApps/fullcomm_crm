@@ -92,7 +92,11 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           title: appName,
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: colorsConst.primary),
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: colorsConst.primary,
+              primary: colorsConst.primary,
+              secondary: colorsConst.primary
+            ),
             useMaterial3: false,
             textTheme: GoogleFonts.latoTextTheme(),
             primaryColor: colorsConst.primary,

@@ -4,13 +4,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/models/comments_obj.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_date_box.dart';
-import '../components/custom_dropdown.dart';
 import '../components/custom_loading_button.dart';
 import '../components/custom_search_textfield.dart';
 import '../components/custom_text.dart';
@@ -157,8 +155,8 @@ class _CallCommentsState extends State<CallComments> {
                                                   SizedBox(
                                                     width: 480,
                                                     height: 50,
-                                                    child: Obx(()=>KeyboardDropdownField<AllCustomersObj>(
-                                                      items: controllers.customers.value,
+                                                    child: KeyboardDropdownField<AllCustomersObj>(
+                                                      items: controllers.customers,
                                                       borderRadius: 5,
                                                       borderColor: Colors.grey.shade300,
                                                       hintText: "Customers",
@@ -184,7 +182,7 @@ class _CallCommentsState extends State<CallComments> {
                                                       onClear: () {
                                                         controllers.clearSelectedCustomer();
                                                       },
-                                                    ),)
+                                                    ),
                                                   ),
                                                 ],
                                               ),

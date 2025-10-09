@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 
 import '../common/utilities/utils.dart';
 import '../controller/controller.dart';
 import 'call_comments.dart';
-import 'cus_mail_comments.dart';
 import 'mail_comments.dart';
 import 'meeting_comments.dart';
 
@@ -18,6 +18,12 @@ class Records extends StatefulWidget {
 }
 
 class _RecordsState extends State<Records> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    apiService.getAllCustomers();
+  }
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;

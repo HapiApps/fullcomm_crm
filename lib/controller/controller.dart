@@ -95,11 +95,27 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   final Rxn<DateTime> selectedPMonth = Rxn<DateTime>();
   final Rxn<DateTime> selectedQPMonth = Rxn<DateTime>();
   final Rxn<DateTime> selectedCPMonth = Rxn<DateTime>();
+  ButtonStyle? highlightCurrentMonth(DateTime month) {
+    final now = DateTime.now();
+    if (month.year == now.year && month.month == now.month) {
+      return ButtonStyle(
+        foregroundColor: MaterialStateProperty.all(Colors.green.shade700),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            side: BorderSide(color: Colors.green.shade700, width: 2.0),
+          ),
+        ),
+      );
+    }
+    return null;
+  }
 
   void selectMonth(BuildContext context, RxString sortByKey,
       Rxn<DateTime> selectedMonthTarget) async {
     showMonthPicker(
       context: context,
+      monthStylePredicate: highlightCurrentMonth,
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),

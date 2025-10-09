@@ -2702,8 +2702,13 @@ class Utils {
     final html.FileUploadInputElement input = html.FileUploadInputElement()
       ..accept = '.xlsx, .xls';
     input.click();
-
     input.onChange.listen((event) {
+      if (input.files == null || input.files!.isEmpty) {
+        debugPrint("User cancelled file selection.");
+        controllers.customerCtr.reset();
+        return;
+      }
+
       final file = input.files!.first;
       final reader = html.FileReader();
 
@@ -2714,6 +2719,7 @@ class Utils {
       });
     });
   }
+
 
   List<Map<String, dynamic>> customerData = [];
   List<Map<String, dynamic>> mCustomerData = [];
@@ -2888,6 +2894,7 @@ class Utils {
   // }
   void parseExcelFile(Uint8List bytes, BuildContext context) async {
     customerData = [];
+    controllers.customerCtr.start();
     var excelD = excel.Excel.decodeBytes(bytes);
 
     for (var table in excelD.tables.keys) {
@@ -3208,6 +3215,7 @@ class Utils {
                 CustomLoadingButton(
                   callback: () {
                     pickAndReadExcelFile(context);
+                    controllers.customerCtr.reset();
                   },
                   isLoading: true,
                   backgroundColor: colorsConst.secondary,
