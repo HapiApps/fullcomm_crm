@@ -11,8 +11,11 @@ import 'package:table_calendar/table_calendar.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_text.dart';
+import '../components/keyboard_search.dart';
 import '../controller/controller.dart';
+import '../models/all_customers_obj.dart';
 import '../provider/reminder_provider.dart';
+import '../services/api_services.dart';
 
 class ReminderPage extends StatefulWidget {
   const ReminderPage({super.key});
@@ -868,11 +871,10 @@ class _ReminderPageState extends State<ReminderPage> {
 
     showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (context) {
         return Dialog(
-          insetPadding:
-              const EdgeInsets.symmetric(horizontal: 80, vertical: 50),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 80, vertical: 50),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: StatefulBuilder(
             builder: (context, setState) {
@@ -931,7 +933,6 @@ class _ReminderPageState extends State<ReminderPage> {
                       TextFormField(
                         textCapitalization: TextCapitalization.sentences,
                         style: GoogleFonts.lato(
-                          // 👈 Lato font for input text
                           color: Colors.black,
                           fontSize: 17,
                         ),
@@ -1217,100 +1218,45 @@ class _ReminderPageState extends State<ReminderPage> {
                                                 ),
                                               ),
                                               const SizedBox(height: 5),
-                                              DropdownButtonFormField<String>(
-                                                value: provider
-                                                        .selectedEmployees
-                                                        .isNotEmpty
-                                                    ? provider
-                                                        .selectedEmployees.first
-                                                    : null,
-                                                hint: Text(
-                                                  "",
-                                                  style: GoogleFonts.lato(
-                                                      color: Colors.black,
-                                                      fontSize: 14),
-                                                ),
-                                                dropdownColor: Colors
-                                                    .white, // 👈 dropdown menu background
-                                                style: GoogleFonts.lato(
-                                                  // 👈 text style for selected value
-                                                  color: Colors.black,
-                                                  fontSize: 17,
-                                                ),
-                                                items: provider.allEmployees
-                                                    .map(
-                                                      (e) => DropdownMenuItem(
-                                                        value: e,
-                                                        child: Text(
-                                                          e,
-                                                          style: GoogleFonts.lato(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize:
-                                                                  17), // 👈 dropdown item text
-                                                        ),
-                                                      ),
-                                                    )
-                                                    .toList(),
-                                                onChanged: (val) {
-                                                  if (val != null)
-                                                    provider
-                                                        .selectSingleEmployee(
-                                                            val);
+                                              KeyboardDropdownField<AllEmployeesObj>(
+                                                items: controllers.employees,
+                                                borderRadius: 5,
+                                                borderColor: Colors.grey.shade300,
+                                                hintText: "Employees",
+                                                labelText: "",
+                                                labelBuilder: (customer) =>'${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                                itemBuilder: (customer) {
+                                                  return Container(
+                                                    width: 300,
+                                                    alignment: Alignment.topLeft,
+                                                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                    child: CustomText(
+                                                      text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                                      colors: Colors.black,
+                                                      size: 14,
+                                                      textAlign: TextAlign.start,
+                                                    ),
+                                                  );
                                                 },
-                                                decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Colors
-                                                      .white, // field background
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            4),
-                                                    borderSide: BorderSide(
-                                                        color: Colors
-                                                            .grey.shade300),
-                                                  ),
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            4),
-                                                    borderSide: BorderSide(
-                                                        color: Colors
-                                                            .grey.shade300),
-                                                  ),
-                                                  focusedBorder:
-                                                      OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            4),
-                                                    borderSide: BorderSide(
-                                                        color: Colors
-                                                            .grey.shade300),
-                                                  ),
-                                                  contentPadding:
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 12,
-                                                          vertical: 10),
-                                                ),
+                                                textEditingController: controllers.empController,
+                                                onSelected: (value) {
+                                                  controllers.selectEmployee(value);
+                                                },
+                                                onClear: () {
+                                                  controllers.clearSelectedCustomer();
+                                                },
                                               ),
                                             ],
                                           );
-                                        } else if (provider
-                                                .selectedNotification ==
-                                            "followup") {
+                                        } else if (provider.selectedNotification == "followup") {
                                           // Multi-select checkboxes → blue highlights for selected
                                           return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                "Employees",
+                                              Text("Employees",
                                                 style: GoogleFonts.lato(
                                                   fontSize: 17,
-                                                  color:
-                                                      const Color(0xff737373),
+                                                  color: const Color(0xff737373),
                                                 ),
                                               ),
                                               const SizedBox(height: 5),
@@ -1328,12 +1274,10 @@ class _ReminderPageState extends State<ReminderPage> {
                                                               .selectedText
                                                               .isEmpty
                                                           ? ""
-                                                          : provider
-                                                              .selectedText,
+                                                          : provider.selectedText,
                                                       hintStyle: GoogleFonts.lato(
                                                           color: Colors.black,
-                                                          fontSize:
-                                                              17), // hint size 17
+                                                          fontSize: 17), // hint size 17
                                                       suffixIcon: Icon(
                                                         provider.showDropdown
                                                             ? Icons
@@ -1361,14 +1305,10 @@ class _ReminderPageState extends State<ReminderPage> {
                                                             color: Colors
                                                                 .grey.shade300),
                                                       ),
-                                                      focusedBorder:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(4),
+                                                      focusedBorder: OutlineInputBorder(
+                                                        borderRadius: BorderRadius.circular(4),
                                                         borderSide: BorderSide(
-                                                            color: Colors
-                                                                .grey.shade300),
+                                                            color: Colors.grey.shade300),
                                                       ),
                                                     ),
                                                   ),
@@ -1464,60 +1404,33 @@ class _ReminderPageState extends State<ReminderPage> {
                                           ),
                                         ),
                                         const SizedBox(height: 5),
-                                        DropdownButtonFormField<String>(
-                                          value: assignment,
-                                          isExpanded: true,
-                                          dropdownColor: Colors
-                                              .white, // 👈 dropdown menu background
-                                          style: GoogleFonts.lato(
-                                            // 👈 selected value text style
-                                            color: Colors.black,
-                                            fontSize: 17,
-                                          ),
-                                          items: ["Team A", "Team B", "Team C"]
-                                              .map(
-                                                (e) => DropdownMenuItem(
-                                                  value: e,
-                                                  child: Text(
-                                                    e,
-                                                    style: GoogleFonts.lato(
-                                                      // 👈 dropdown item text style
-                                                      color: Colors.black,
-                                                      fontSize: 17,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                              .toList(),
-                                          onChanged: (v) =>
-                                              setState(() => assignment = v!),
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor: Colors
-                                                .white, // field background
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(6),
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey.shade300),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(6),
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey.shade300),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(6),
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey.shade300),
-                                            ),
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 10),
-                                          ),
+                                        KeyboardDropdownField<AllCustomersObj>(
+                                          items: controllers.customers,
+                                          borderRadius: 5,
+                                          borderColor: Colors.grey.shade300,
+                                          hintText: "Customers",
+                                          labelText: "",
+                                          labelBuilder: (customer) =>'${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                          itemBuilder: (customer) {
+                                            return Container(
+                                              width: 300,
+                                              alignment: Alignment.topLeft,
+                                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                              child: CustomText(
+                                                text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                                colors: Colors.black,
+                                                size: 14,
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            );
+                                          },
+                                          textEditingController: controllers.cusController,
+                                          onSelected: (value) {
+                                            controllers.selectCustomer(value);
+                                          },
+                                          onClear: () {
+                                            controllers.clearSelectedCustomer();
+                                          },
                                         ),
                                       ],
                                     ),
@@ -1789,6 +1702,13 @@ class _ReminderPageState extends State<ReminderPage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    apiService.getAllEmployees();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -1909,10 +1829,10 @@ class _ReminderPageState extends State<ReminderPage> {
                                        Icons.add,
                                        size: 20,
                                      )),
-                                 const SizedBox(width: 7),
+                                 7.width,
                                  SvgPicture.asset('assets/images/edit.svg',
                                      width: 20, height: 20),
-                                 const SizedBox(width: 7),
+                                 7.width,
                                  SvgPicture.asset('assets/images/delete.svg',
                                      width: 20, height: 20),
                                ],
@@ -1928,7 +1848,7 @@ class _ReminderPageState extends State<ReminderPage> {
                              context.read<ReminderProvider>().toggleReminder("meeting");
                            },
                            child: Container(
-                             width: 230,
+                             width: 260,
                              height: 82,
                              padding: const EdgeInsets.symmetric(horizontal: 10),
                              decoration: BoxDecoration(
@@ -1961,6 +1881,15 @@ class _ReminderPageState extends State<ReminderPage> {
                                  ),
                                  Row(
                                    children: [
+                                     IconButton(
+                                         onPressed: () {
+                                           _showFollowUpDialog();
+                                         },
+                                         icon: Icon(
+                                           Icons.add,
+                                           size: 20,
+                                         )),
+                                     7.width,
                                      SvgPicture.asset('assets/images/edit.svg',
                                          width: 20, height: 20),
                                      const SizedBox(width: 7),

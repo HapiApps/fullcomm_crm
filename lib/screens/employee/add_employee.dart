@@ -315,7 +315,8 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                       color: Colors.red,
                                     );
                                   } else {
-                                   if (employeeProvider.filteredStaff.length >= int.parse(controllers.currentUserCount.value)) {
+                                   final int currentLimit = int.tryParse(controllers.currentUserCount.value) ?? 0;
+                                   if (employeeProvider.filteredStaff.length >= currentLimit) {
                                      print("Only after making a payment, you can add employees.");
                                      utils.expiredEmpDialog();
                                      employeeProvider.addEmployeeButtonController.reset();

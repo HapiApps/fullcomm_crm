@@ -1,6 +1,4 @@
-// emp.id,emp.name, emp.emp_id, emp.email, emp.phone_number, emp.address_id,emp.position,emp.doj,emp.manager_name,emp.salary,
-// emp.department,
-// a.address_line_1,a.address_line_2,a.area,a.city,a.state,a.country,a.pincode,emp.active
+
 class EmployeeObj {
   String? id;
   String? name;

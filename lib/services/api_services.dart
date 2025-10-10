@@ -1488,6 +1488,32 @@ class ApiService {
     }
   }
 
+  Future getAllEmployees() async {
+    try {
+      Map data = {
+        "search_type": "allEmployees",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.employees.clear();
+        controllers.employees.value = response.map((e) => AllEmployeesObj.fromJson(e)).toList();
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
   Future getAllCallActivity() async {
     try {
       Map data = {

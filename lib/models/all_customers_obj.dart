@@ -33,3 +33,37 @@ class AllCustomersObj {
     };
   }
 }
+
+
+class AllEmployeesObj {
+  final String id;
+  final String name;
+  final String phoneNo;
+  final String email;
+
+  AllEmployeesObj({
+    required this.id,
+    required this.name,
+    required this.phoneNo,
+    required this.email,
+  });
+
+  factory AllEmployeesObj.fromJson(Map<String, dynamic> json) {
+    return AllEmployeesObj(
+      id: json['id'] ?? '',
+      name: json['s_name'] == 'null' ? '' : json['s_name'] ?? '',
+      phoneNo: json['s_mobile'] ?? '',
+      email: (json['email'] == 'null' || json['email'] == null) ? '' : json['email'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'phone_no': phoneNo,
+      'email': email,
+    };
+  }
+}
+

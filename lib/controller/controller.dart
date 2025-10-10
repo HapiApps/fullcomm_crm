@@ -1108,6 +1108,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   var roleNameList    = [];
   var callNameList    = ["Visit","Call","Email","Meeting","Note"];
   var customers       = <AllCustomersObj>[].obs;
+  var employees       = <AllEmployeesObj>[].obs;
   var callActivity    = <CustomerActivity>[].obs;
   var mailActivity    = <CustomerActivity>[].obs;
   var meetingActivity = <MeetingObj>[].obs;
@@ -1184,13 +1185,32 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     selectedCompanyName.value = '';
   }
 
+  void selectEmployee(AllEmployeesObj c) {
+    selectedEmployeeId.value = c.id;
+    selectedEmployeeName.value = c.name;
+    selectedEmployeeMobile.value = c.phoneNo;
+    selectedEmployeeEmail.value = c.email;
+  }
+  void clearSelectedEmployee() {
+    selectedEmployeeId.value = '';
+    selectedEmployeeName.value = '';
+    selectedEmployeeMobile.value = '';
+    selectedEmployeeEmail.value = '';
+  }
+
   RxString selectedCustomerId = ''.obs;
   RxString selectedCustomerName = ''.obs;
   RxString selectedCustomerMobile = ''.obs;
   RxString selectedCustomerEmail = ''.obs;
   RxString selectedCompanyName = ''.obs;
 
+  RxString selectedEmployeeId = ''.obs;
+  RxString selectedEmployeeName = ''.obs;
+  RxString selectedEmployeeMobile = ''.obs;
+  RxString selectedEmployeeEmail = ''.obs;
+
   TextEditingController cusController   = TextEditingController();
+  TextEditingController empController   = TextEditingController();
   TextEditingController callCommentCont = TextEditingController();
   var roleList = [].obs;
   var stDate = "${DateTime.now().day.toString().padLeft(2, "0")}"
