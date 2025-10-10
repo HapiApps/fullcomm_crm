@@ -13,6 +13,7 @@ import '../common/utilities/utils.dart';
 import '../components/custom_text.dart';
 import '../components/keyboard_search.dart';
 import '../controller/controller.dart';
+import '../controller/reminder_controller.dart';
 import '../models/all_customers_obj.dart';
 import '../provider/reminder_provider.dart';
 import '../services/api_services.dart';
@@ -534,10 +535,6 @@ class _ReminderPageState extends State<ReminderPage> {
   String? _selectedNotification;
   Map<DateTime, TimeOfDay> _selectedStartDatesTimes = {};
   Map<DateTime, TimeOfDay> _selectedEndDatesTimes = {};
-
-  TextEditingController _startController = TextEditingController();
-  TextEditingController _endController = TextEditingController();
-
   TimeOfDay _selectedTime = TimeOfDay.now();
 
   Future<void> _selectDateTime({
@@ -548,7 +545,7 @@ class _ReminderPageState extends State<ReminderPage> {
     Map<DateTime, TimeOfDay> selectedDatesTimes =
         isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
     TextEditingController controller =
-        isStart ? _startController : _endController;
+        isStart ? remController.startController : remController.endController;
 
     // Initialize dialogSelectedTime
     TimeOfDay dialogSelectedTime = selectedDatesTimes.values.isNotEmpty
@@ -942,7 +939,7 @@ class _ReminderPageState extends State<ReminderPage> {
                             color: Color(0xFFCCCCCC),
                             fontSize: 17,
                             fontFamily: GoogleFonts.lato()
-                                .fontFamily, // optional: make hint also Lato
+                                .fontFamily,
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(4),
@@ -1005,39 +1002,6 @@ class _ReminderPageState extends State<ReminderPage> {
                                   ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  // Task Reminder
-                                  Expanded(
-                                    child: RadioListTile(
-                                      title: Text(
-                                        "Task Reminder",
-                                        style: GoogleFonts.lato(
-                                          color: Colors.black,
-                                          fontSize: 17, // adjust size if needed
-                                        ),
-                                      ),
-                                      value: "task",
-                                      groupValue: provider.selectedNotification,
-                                      activeColor: const Color(0xFF0078D7),
-                                      onChanged: (v) =>
-                                          provider.setNotification(v as String),
-                                    ),
-                                  ),
-
-                                  // Payment Reminder
-                                  // Expanded(
-                                  //   child: RadioListTile(
-                                  //     title: const Text("Payment Reminder"),
-                                  //     value: "payment",
-                                  //     groupValue: provider.selectedNotification,
-                                  //     activeColor: const Color(0xFF0078D7),
-                                  //     onChanged: (v) =>
-                                  //         provider.setNotification(v as String),
-                                  //   ),
-                                  // ),
-                                ],
-                              ),
                             ],
                           );
                         },
@@ -1045,7 +1009,6 @@ class _ReminderPageState extends State<ReminderPage> {
 
                       const SizedBox(height: 8),
 
-                      // 🔽 Hide everything below if Task Reminder is selected
                       Consumer<ReminderProvider>(
                         builder: (context, provider, _) {
                           if (provider.selectedNotification == "task") {
@@ -1103,8 +1066,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                                     vertical: 10),
                                           ),
                                           items: ["Online", "Office"]
-                                              .map(
-                                                (e) => DropdownMenuItem(
+                                              .map((e) => DropdownMenuItem(
                                                   value: e,
                                                   child: Text(
                                                     e,
@@ -1436,44 +1398,6 @@ class _ReminderPageState extends State<ReminderPage> {
                                     ),
                                   ),
 
-                                  // Expanded(
-                                  //   child: Column(
-                                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                                  //     children: [
-                                  //       Text("Assigned Customer",
-                                  //           style: GoogleFonts.lato(
-                                  //               fontSize: 17, color: Color(0xff737373))),
-                                  //       const SizedBox(height: 5),
-                                  //       DropdownButtonFormField<String>(
-                                  //         value: assignment,
-                                  //         isExpanded: true,
-                                  //         items: ["Team A", "Team B", "Team C"]
-                                  //             .map((e) => DropdownMenuItem(
-                                  //             value: e, child: Text(e)))
-                                  //             .toList(),
-                                  //         onChanged: (v) => setState(() => assignment = v!),
-                                  //         decoration: InputDecoration(
-                                  //           filled: true,
-                                  //           fillColor: Colors.white,
-                                  //           border: OutlineInputBorder(
-                                  //             borderRadius: BorderRadius.circular(4),
-                                  //             borderSide: BorderSide(color: Colors.grey.shade300, ),
-                                  //           ),
-                                  //           enabledBorder: OutlineInputBorder(
-                                  //             borderRadius: BorderRadius.circular(4),
-                                  //             borderSide: BorderSide(color: Colors.grey.shade300,),
-                                  //           ),
-                                  //           focusedBorder: OutlineInputBorder(
-                                  //             borderRadius: BorderRadius.circular(4),
-                                  //             borderSide: BorderSide(color: Colors.grey.shade300),
-                                  //           ),
-                                  //           contentPadding: const EdgeInsets.symmetric(
-                                  //               horizontal: 12, vertical: 10),
-                                  //         ),
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
                                 ],
                               ),
                               const SizedBox(height: 18),
@@ -1490,7 +1414,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                                 color: Color(0xff737373))),
                                         const SizedBox(height: 5),
                                         TextFormField(
-                                          controller: _startController,
+                                          controller: remController.startController,
                                           readOnly: true,
                                           onTap: () => _selectDateTime(
                                               context: context, isStart: true),
@@ -1543,7 +1467,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                                 color: Color(0xff737373))),
                                         const SizedBox(height: 5),
                                         TextFormField(
-                                          controller: _endController,
+                                          controller: remController.endController,
                                           readOnly: true,
                                           onTap: () => _selectDateTime(
                                               context: context, isStart: false),
@@ -1791,6 +1715,7 @@ class _ReminderPageState extends State<ReminderPage> {
                          GestureDetector(
                            onTap: () {
                              context.read<ReminderProvider>().toggleReminder("followup");
+                             remController.allReminders("1");
                            },
                            child: Container(
                              width: 270,
@@ -1846,6 +1771,7 @@ class _ReminderPageState extends State<ReminderPage> {
                          GestureDetector(
                            onTap: () {
                              context.read<ReminderProvider>().toggleReminder("meeting");
+                             remController.allReminders("2");
                            },
                            child: Container(
                              width: 260,
@@ -1905,59 +1831,85 @@ class _ReminderPageState extends State<ReminderPage> {
                          const SizedBox(width: 50),
 
                          // ---------------- Calendar (only for Follow-up) ----------------
-                         if (context.watch<ReminderProvider>().isFollowUpActive)
-                           Container(
-                             width: 340,
-                             height: 400,
-                             decoration: BoxDecoration(
-                               color: Colors.white,
-                               borderRadius: BorderRadius.circular(7),
-                               boxShadow: [
-                                 BoxShadow(
-                                   color: Colors.grey.shade300,
-                                   offset: Offset(0, 1),
-                                   blurRadius: 5,
-                                   spreadRadius: 3,
-                                 )
-                               ],
-                             ),
-                             child: TableCalendar(
-                               firstDay: DateTime(2020),
-                               lastDay: DateTime(2100),
-                               focusedDay: DateTime.now(),
-                               selectedDayPredicate: (day) {
-                                 return context
-                                     .watch<ReminderProvider>()
-                                     .followUpSelectedDays
-                                     .any((d) => isSameDay(d, day));
-                               },
-                               onDaySelected: (selectedDay, focusedDay) {
-                                 context
-                                     .read<ReminderProvider>()
-                                     .toggleFollowUpDay(selectedDay);
-                               },
-                               calendarStyle: CalendarStyle(
-                                 isTodayHighlighted: true,
-                                 selectedDecoration: BoxDecoration(
-                                   color: Color(0xFF0078D7),
-                                   shape: BoxShape.circle,
-                                 ),
-                                 todayDecoration: BoxDecoration(
-                                   color: Colors.grey.shade300,
-                                   shape: BoxShape.circle,
-                                 ),
-                               ),
-                               headerStyle: HeaderStyle(
-                                 formatButtonVisible: false,
-                                 titleCentered: true,
-                               ),
-                             ),
-                           ),
+                         // if (context.watch<ReminderProvider>().isFollowUpActive)
+                         //   Container(
+                         //     width: 340,
+                         //     height: 400,
+                         //     decoration: BoxDecoration(
+                         //       color: Colors.white,
+                         //       borderRadius: BorderRadius.circular(7),
+                         //       boxShadow: [
+                         //         BoxShadow(
+                         //           color: Colors.grey.shade300,
+                         //           offset: Offset(0, 1),
+                         //           blurRadius: 5,
+                         //           spreadRadius: 3,
+                         //         )
+                         //       ],
+                         //     ),
+                         //     child: TableCalendar(
+                         //       firstDay: DateTime(2020),
+                         //       lastDay: DateTime(2100),
+                         //       focusedDay: DateTime.now(),
+                         //       selectedDayPredicate: (day) {
+                         //         return context
+                         //             .watch<ReminderProvider>()
+                         //             .followUpSelectedDays
+                         //             .any((d) => isSameDay(d, day));
+                         //       },
+                         //       onDaySelected: (selectedDay, focusedDay) {
+                         //         context
+                         //             .read<ReminderProvider>()
+                         //             .toggleFollowUpDay(selectedDay);
+                         //       },
+                         //       calendarStyle: CalendarStyle(
+                         //         isTodayHighlighted: true,
+                         //         selectedDecoration: BoxDecoration(
+                         //           color: Color(0xFF0078D7),
+                         //           shape: BoxShape.circle,
+                         //         ),
+                         //         todayDecoration: BoxDecoration(
+                         //           color: Colors.grey.shade300,
+                         //           shape: BoxShape.circle,
+                         //         ),
+                         //       ),
+                         //       headerStyle: HeaderStyle(
+                         //         formatButtonVisible: false,
+                         //         titleCentered: true,
+                         //       ),
+                         //     ),
+                         //   ),
                        ],
                      )
                    ],
                  ),
                ),
+               Expanded(
+                 child: Obx(() {
+                   if (remController.isLoadingReminders.value) {
+                     return const Center(child: CircularProgressIndicator());
+                   }
+
+                   if (remController.reminderList.isEmpty) {
+                     return const Center(child: Text("No reminders found"));
+                   }
+
+                   return ListView.builder(
+                     itemCount: remController.reminderList.length,
+                     itemBuilder: (context, index) {
+                       final reminder = remController.reminderList[index];
+                       return ListTile(
+                         title: Text(reminder.title),
+                         subtitle: Text(
+                           "${reminder.employeeName} - ${reminder.customerName}\n${reminder.startDt} to ${reminder.endDt}",
+                         ),
+                         isThreeLine: true,
+                       );
+                     },
+                   );
+                 }),
+               )
+
              ],
            ),
          ),)

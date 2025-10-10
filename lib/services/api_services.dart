@@ -22,7 +22,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/models/product_obj.dart';
 import 'package:fullcomm_crm/screens/customer/view_customer.dart';
-import 'package:fullcomm_crm/screens/products/view_product.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_text.dart';
@@ -356,80 +355,6 @@ class ApiService {
     }
   }
 
-  Future insertProductAPI(BuildContext context) async {
-    try {
-      Map data = {
-        "name": controllers.prodNameController.text.trim(),
-        "brand": controllers.prodBrandController.text.trim(),
-        "category": controllers.categoryController.text.trim(),
-        "sub_category": controllers.subCategory,
-        "compare_price": controllers.comparePriceController.text.trim(),
-        "tax": controllers.tax,
-        "cos_id": controllers.storage.read("cos_id"),
-        "discount": controllers.discountOnMRPController.text.trim(),
-        "product_price": controllers.productPriceController.text.trim(),
-        "description": controllers.prodDescriptionController.text.trim(),
-        "net_price": controllers.netPriceController.text.trim(),
-        "max_discount": controllers.discountController.text.trim(),
-        "code": controllers.hsnController.text.trim(),
-        "mark_as_top": controllers.topProduct,
-      };
-
-      print("data ${data.toString()}");
-      final request = await http.post(
-        Uri.parse(scriptApi),
-        // headers: {
-        //   "Accept": "application/text",
-        //   "Content-Type": "application/x-www-form-urlencoded"
-        // },
-        body: jsonEncode(data),
-        // encoding: Encoding.getByName("utf-8")
-      );
-      print("request ${request.body}");
-      // Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200) {
-        utils.snackBar(
-            msg: "Your product created successfully",
-            color: colorsConst.primary,
-            context: Get.context!);
-        //final prefs =await SharedPreferences.getInstance();
-        controllers.prodNameController.clear();
-        controllers.prodBrandController.clear();
-        controllers.categoryController.clear();
-        controllers.subCategory = null;
-        controllers.comparePriceController.clear();
-        controllers.tax = null;
-        controllers.discountOnMRPController.clear();
-        controllers.productPriceController.clear();
-        controllers.prodDescriptionController.clear();
-        controllers.netPriceController.clear();
-        controllers.discountController.clear();
-        controllers.hsnController.clear();
-        controllers.topProduct = null;
-        //Get.to(const CompanyCamera(),transition: Transition.downToUp,duration: const Duration(seconds: 2));
-        controllers.allProductFuture = apiService.allProductDetails();
-        await Future.delayed(const Duration(milliseconds: 100));
-        // Navigator.push(context,
-        //   PageRouteBuilder(
-        //     pageBuilder: (context, animation1, animation2) => const ViewProduct(),
-        //     transitionDuration: Duration.zero,
-        //     reverseTransitionDuration: Duration.zero,
-        //   ),
-        // );
-        Get.to(
-          const ViewProduct(),
-          duration: Duration.zero,
-        );
-        controllers.productCtr.reset();
-      } else {
-        errorDialog(Get.context!, request.body);
-        controllers.productCtr.reset();
-      }
-    } catch (e) {
-      errorDialog(Get.context!, e.toString());
-      controllers.productCtr.reset();
-    }
-  }
 
   List<Map<String, String>> prospectsList = [];
 
