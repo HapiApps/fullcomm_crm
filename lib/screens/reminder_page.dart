@@ -897,14 +897,14 @@ class _ReminderPageState extends State<ReminderPage> {
                           ),
                           Row(
                             children: [
-                              Text(
-                                "=",
-                                style: GoogleFonts.lato(
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
+                              // Text(
+                              //   "=",
+                              //   style: GoogleFonts.lato(
+                              //     fontSize: 19,
+                              //     fontWeight: FontWeight.bold,
+                              //     color: Colors.black,
+                              //   ),
+                              // ),
                               const SizedBox(width: 10),
                               GestureDetector(
                                 onTap: () => Navigator.pop(context),
@@ -1925,9 +1925,7 @@ class _ReminderPageState extends State<ReminderPage> {
                          // ---------------- Meeting Reminder ----------------
                          GestureDetector(
                            onTap: () {
-                             context
-                                 .read<ReminderProvider>()
-                                 .toggleReminder("meeting");
+                             context.read<ReminderProvider>().toggleReminder("meeting");
                            },
                            child: Container(
                              width: 230,

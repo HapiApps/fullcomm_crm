@@ -1444,7 +1444,6 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("Visit Type res ${request.body}");
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         controllers.callNameList = [];
@@ -1477,7 +1476,6 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("Customer Res ${request.body}");
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         controllers.customers.clear();
