@@ -263,6 +263,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     colors: Colors.white,
                                   ),
                                 ),
+
                                 // Obx(() => GestureDetector(
                                 //   onTap: (){
                                 //     controllers.sortField.value = 'date';
@@ -293,6 +294,16 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                 // )
                                 // ),
                               ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(
+                                textAlign: TextAlign.left,
+                                text: "Action",
+                                size: 15,
+                                isBold: true,
+                                colors: Colors.white,
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
@@ -343,16 +354,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                 colors: Colors.white,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: CustomText(
-                                textAlign: TextAlign.left,
-                                text: "Action",
-                                size: 15,
-                                isBold: true,
-                                colors: Colors.white,
-                              ),
-                            ),
+
                             // Padding(
                             //   padding: const EdgeInsets.all(10.0),
                             //   child: CustomText(//9
@@ -414,39 +416,6 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                             ],
                                           ),
                                         ),
-                                        Tooltip(
-                                          message: staffData.sName.toString()=="null"?"":staffData.sName.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text: "${staffData.sName}",
-                                              size: 14,
-                                              colors:colorsConst.textColor,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            textAlign: TextAlign.left,
-                                            text:employeeProvider.getRoleName(staffData.role.toString()=="null"?"1":staffData.role.toString()),
-                                            size: 14,
-                                            colors: colorsConst.textColor,
-                                          ),
-                                        ),
-                                        Tooltip(
-                                          message: staffData.sMobile.toString()=="null"?"":staffData.sMobile.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text: staffData.sMobile.toString(),
-                                              size: 14,
-                                              colors:colorsConst.textColor,
-                                            ),
-                                          ),
-                                        ),
                                         Padding(
                                           padding: const EdgeInsets.all(3.0),
                                           child: Row(
@@ -458,7 +427,11 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                       employeeData :staffData ,
                                                     )));
                                                   },
-                                                  icon: Icon(Icons.edit,color: Colors.green,)),
+                                                  icon: SvgPicture.asset(
+                                                    "assets/images/a_edit.svg",
+                                                    width: 16,
+                                                    height: 16,
+                                                  )),
                                               IconButton(
                                                   onPressed: (){
                                                     showDialog(
@@ -522,8 +495,45 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                       },
                                                     );
                                                   },
-                                                  icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
+                                                  icon: SvgPicture.asset(
+                                                    "assets/images/a_delete.svg",
+                                                    width: 16,
+                                                    height: 16,
+                                                  ))
                                             ],
+                                          ),
+                                        ),
+                                        Tooltip(
+                                          message: staffData.sName.toString()=="null"?"":staffData.sName.toString(),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              text: "${staffData.sName}",
+                                              size: 14,
+                                              colors:colorsConst.textColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            textAlign: TextAlign.left,
+                                            text:employeeProvider.getRoleName(staffData.role.toString()=="null"?"1":staffData.role.toString()),
+                                            size: 14,
+                                            colors: colorsConst.textColor,
+                                          ),
+                                        ),
+                                        Tooltip(
+                                          message: staffData.sMobile.toString()=="null"?"":staffData.sMobile.toString(),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              text: staffData.sMobile.toString(),
+                                              size: 14,
+                                              colors:colorsConst.textColor,
+                                            ),
                                           ),
                                         ),
 

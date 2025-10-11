@@ -19,6 +19,7 @@ import 'common/constant/colors_constant.dart';
 import 'common/widgets/log_in.dart';
 import 'components/custom_text.dart';
 import 'controller/controller.dart';
+import 'controller/reminder_controller.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -80,6 +81,7 @@ class _MyAppState extends State<MyApp> {
       apiService.getAllMeetingActivity();
       apiService.getAllNoteActivity();
       apiService.getUserHeading();
+      remController.allReminders("2");
     }
   }
   @override
