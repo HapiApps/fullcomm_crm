@@ -97,17 +97,12 @@ class _ReminderPageState extends State<ReminderPage> {
                           ),
                         ),
                         onSelectionChanged: (args) {
-                          if (args.value is PickerDateRange) {
-                            DateTime? start = args.value.startDate;
-                            DateTime? end =
-                                args.value.endDate ?? args.value.startDate;
-                            if (start != null && end != null) {
-                              setDialogState(() {
-                                selectedDatesTimes.clear();
-                                selectedDatesTimes[start] = dialogSelectedTime;
-                                selectedDatesTimes[end] = dialogSelectedTime;
-                              });
-                            }
+                          if (args.value is DateTime) {
+                            DateTime selectedDate = args.value;
+                            setDialogState(() {
+                              selectedDatesTimes.clear();
+                              selectedDatesTimes[selectedDate] = dialogSelectedTime;
+                            });
                           }
                         },
                       ),
@@ -309,27 +304,16 @@ class _ReminderPageState extends State<ReminderPage> {
                           ),
                           onPressed: () {
                             setState(() {
-                              // Update selected dates with final time
-                              // selectedDatesTimes.updateAll(
-                              //     (key, value) => dialogSelectedTime);
-                              //
-                              // final sortedDates = selectedDatesTimes.keys
-                              //     .toList()
-                              //   ..sort((a, b) => a.compareTo(b));
-                              // controller.text =
-                              //     "${sortedDates.first.day}-${sortedDates.first.month}-${sortedDates.first.year} - "
-                              //     "${sortedDates.last.day}-${sortedDates.last.month}-${sortedDates.last.year} "
-                              //     "${dialogSelectedTime.format(context)}";
-            selectedDatesTimes.updateAll(
-            (key, value) => dialogSelectedTime,
-            );
-            if (selectedDatesTimes.isNotEmpty) {
-              final selectedDate = selectedDatesTimes.keys.first;
-              controller.text =
-              "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
-                  "${dialogSelectedTime.format(context)}";
-            }
-            print("Selected ${isStart?"start":"end"} dates & times: $selectedDatesTimes");
+                              selectedDatesTimes.updateAll(
+                                    (key, value) => dialogSelectedTime,
+                              );
+                              if (selectedDatesTimes.isNotEmpty) {
+                                final selectedDate = selectedDatesTimes.keys.first;
+                                controller.text =
+                                "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
+                                    "${dialogSelectedTime.format(context)}";
+                              }
+                              print("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
                             });
                             Navigator.pop(context);
                           },
@@ -518,8 +502,7 @@ class _ReminderPageState extends State<ReminderPage> {
                         },
                       ),
 
-                      const SizedBox(height: 8),
-
+                     8.height,
                       Consumer<ReminderProvider>(
                         builder: (context, provider, _) {
                           if (provider.selectedNotification == "task") {
@@ -541,7 +524,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                                 color: Color(0xff737373))),
                                         const SizedBox(height: 5),
                                         DropdownButtonFormField<String>(
-                                          value: location,
+                                          value: remController.location,
                                           dropdownColor: Colors
                                               .white, // 👈 dropdown menu background
                                           style: GoogleFonts.lato(
@@ -591,7 +574,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                               )
                                               .toList(),
                                           onChanged: (v) =>
-                                              setState(() => location = v),
+                                              setState(() => remController.location = v),
                                         ),
                                       ],
                                     ),
@@ -608,7 +591,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                                 color: Color(0xff737373))),
                                         const SizedBox(height: 5),
                                         DropdownButtonFormField<String>(
-                                          value: repeat,
+                                          value: remController.repeat,
                                           dropdownColor: Colors
                                               .white, // 👈 dropdown menu background
                                           style: GoogleFonts.lato(
@@ -659,7 +642,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                               )
                                               .toList(),
                                           onChanged: (v) =>
-                                              setState(() => repeat = v),
+                                              setState(() => remController.repeat = v),
                                         ),
                                       ],
                                     ),
@@ -1032,8 +1015,8 @@ class _ReminderPageState extends State<ReminderPage> {
                                           color: Color(0xff737373))),
                                   const SizedBox(height: 5),
                                   TextFormField(
-                                    textCapitalization:
-                                        TextCapitalization.sentences,
+                                    textCapitalization: TextCapitalization.sentences,
+                                    controller: remController.detailsController,
                                     maxLines: 2,
                                     style: GoogleFonts.lato(
                                       // 👈 Lato font for typed text
@@ -1113,7 +1096,10 @@ class _ReminderPageState extends State<ReminderPage> {
                                   borderRadius: BorderRadius.circular(7),
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                final provider = Provider.of<ReminderProvider>(context, listen: false);
+                                remController.insertReminderAPI(context, provider.selectedNotification);
+                              },
                               child: const Text(
                                 "Save Reminder",
                                 style: TextStyle(

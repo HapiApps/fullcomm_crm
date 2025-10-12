@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,7 @@ final remController = Get.put(ReminderController());
 
 class ReminderController extends GetxController with GetSingleTickerProviderStateMixin {
   TextEditingController titleController   = TextEditingController();
+  TextEditingController detailsController   = TextEditingController();
   String? location;
   String? repeat;
   TextEditingController startController = TextEditingController();
@@ -81,5 +83,44 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     }
   }
 
+  Future insertReminderAPI(BuildContext context,String type) async {
+    try{
+      Map data = {
+        "action": "insert_reminder",
+        "title": titleController.text.trim(),
+        "type": type,
+        "location": location,
+        "repeat_type": repeat,
+        "employee": controllers.selectedEmployeeId.value,
+        "customer": controllers.selectedCustomerId.value,
+        "start_dt": startController.text.trim(),
+        "end_dt": endController.text.trim(),
+        "details": detailsController.text.trim(),
+        "created_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id")
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"]=="Reminder added successfully"){
+        allReminders(type);
+        Navigator.pop(context);
+        controllers.productCtr.reset();
+      } else {
+        apiService.errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      apiService.errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
 
 }
