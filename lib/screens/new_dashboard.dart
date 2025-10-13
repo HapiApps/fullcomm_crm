@@ -48,7 +48,8 @@ class _NewDashboardState extends State<NewDashboard> {
       final prefs = await SharedPreferences.getInstance();
       controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
       var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2,'0')}-${DateTime.now().day.toString().padLeft(2,'0')}";
-       apiService.getCustomerReport(today,today);
+      var last7days = DateTime.now().subtract(Duration(days: 7));
+       apiService.getCustomerReport("${last7days.year}-${last7days.month.toString().padLeft(2,'0')}-${last7days.day.toString().padLeft(2,'0')}",today);
     });
     apiService.getDashBoardReport();
     apiService.getRatingReport();
@@ -185,7 +186,14 @@ class _NewDashboardState extends State<NewDashboard> {
                                       apiService.getDashboardReport();
                                       final range = dashController.selectedRange.value;
                                       var today = DateTime.now();
-                                      apiService.getCustomerReport(range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}", range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
+                                      if(dashController.selectedSortBy.value!="Today"&&dashController.selectedSortBy.value!="Yesterday"){
+                                        apiService.getCustomerReport(range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}", range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
+                                      }
+                                      else{
+                                        var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2,'0')}-${DateTime.now().day.toString().padLeft(2,'0')}";
+                                        var last7days = DateTime.now().subtract(Duration(days: 7));
+                                        apiService.getCustomerReport("${last7days.year}-${last7days.month.toString().padLeft(2,'0')}-${last7days.day.toString().padLeft(2,'0')}",today);
+                                      }
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -611,37 +619,34 @@ class _NewDashboardState extends State<NewDashboard> {
                                           child: SizedBox(
                                             height: 200,
                                             child: Obx(() {
-                                              final double totalSuspects = double.parse(dashController.totalSuspects.value);
-                                              final double totalProspects = double.parse(dashController.totalProspects.value);
-                                              final double totalQualified = double.parse(dashController.totalQualified.value);
-                                              final double totalUnQualified = double.parse(dashController.totalUnQualified.value);
-                                              final double totalCustomers = double.parse(dashController.totalCustomers.value);
+                                              final double totalSuspects = double.parse(dashController.totalSuspects.value).roundToDouble();
+                                              final double totalProspects = double.parse(dashController.totalProspects.value).roundToDouble();
+                                              final double totalQualified = double.parse(dashController.totalQualified.value).roundToDouble();
+                                              final double totalUnQualified = double.parse(dashController.totalUnQualified.value).roundToDouble();
+                                              final double totalCustomers = double.parse(dashController.totalCustomers.value).roundToDouble();
 
                                               final totalSum = totalSuspects + totalProspects + totalQualified + totalUnQualified + totalCustomers;
                                               final bool isEmpty = totalSum == 0;
 
-                                              final Map<String, double> dataMap;
-                                              final List<Color> colorList;
+                                              final Map<String, double> dataMap = isEmpty
+                                                  ? {'No customers': 1}
+                                                  : {
+                                                'Suspects': totalSuspects,
+                                                'Prospects': totalProspects,
+                                                'Qualified': totalQualified,
+                                                'Unqualified': totalUnQualified,
+                                                'Customers': totalCustomers,
+                                              };
+                                              final List<Color> colorList = isEmpty
+                                                  ? [Color(0xffE0E0E0)] // Grey color for "No customers"
+                                                  : [
+                                                Color(0xffE3B552), // Suspects
+                                                Color(0xff017EFF), // Prospects
+                                                Color(0xffF55353), // Qualified
+                                                Color(0xff7456FC), // Unqualified
+                                                Color(0xffE3528C), // Customers
+                                              ];
 
-                                              if (isEmpty) {
-                                                dataMap = {'Empty': 1.0};
-                                                colorList = [colorsConst.backgroundColor];
-                                              } else {
-                                                dataMap = {
-                                                  'Suspects': totalSuspects,
-                                                  'Prospects': totalProspects,
-                                                  'Qualified': totalQualified,
-                                                  'Unqualified': totalUnQualified,
-                                                  'Customers': totalCustomers,
-                                                };
-                                                colorList = const [
-                                                  Color(0xffE3B552), // Suspects
-                                                  Color(0xff017EFF), // Prospects
-                                                  Color(0xffF55353), // Qualified
-                                                  Color(0xff7456FC), // Unqualified
-                                                  Color(0xffE3528C), // Customers
-                                                ];
-                                              }
                                               return PieChart(
                                                 dataMap: dataMap,
                                                 animationDuration: const Duration(seconds: 2),
@@ -649,27 +654,29 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 chartRadius: MediaQuery.of(context).size.width / 2.2,
                                                 colorList: colorList,
                                                 chartType: ChartType.disc,
-                                                centerText: isEmpty ? "No Data" : "",
+                                                centerText: totalSum == 0 ? "0" : "",
                                                 centerTextStyle: TextStyle(
-                                                  color: isEmpty ? colorsConst.textColor : Colors.white,
+                                                  color: colorsConst.textColor,
                                                   fontFamily: "Lato",
                                                 ),
                                                 legendOptions: LegendOptions(
-                                                  showLegends: !isEmpty,
+                                                  showLegends: true,
                                                   legendTextStyle: TextStyle(color: colorsConst.textColor, fontFamily: "Lato"),
                                                 ),
                                                 chartValuesOptions: ChartValuesOptions(
-                                                    showChartValuesInPercentage: false,
-                                                    showChartValues: !isEmpty,
-                                                    showChartValueBackground: false,
-                                                    chartValueStyle: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontFamily: "Lato",
-                                                    )
+                                                  showChartValuesInPercentage: false,
+                                                  showChartValues: true,
+                                                  showChartValueBackground: false,
+                                                  chartValueStyle:  TextStyle(
+                                                    color: totalSum == 0 ?Color(0xffE0E0E0):Colors.white,
+                                                    fontFamily: "Lato",
+                                                  ),
+                                                  decimalPlaces: 0,
                                                 ),
                                               );
                                             }),
                                           ),
+
                                         )
                                       ],
                                     ),

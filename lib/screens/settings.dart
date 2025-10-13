@@ -4,7 +4,9 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
+import '../components/custom_text.dart';
 import '../controller/controller.dart';
 import '../controller/reminder_controller.dart';
 import '../provider/reminder_provider.dart';
@@ -32,7 +34,7 @@ class _SettingsState extends State<Settings> {
             builder: (context, setState) {
               return SizedBox(
                 width: 480,
-                height: 480,
+                height: 390,
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -82,10 +84,8 @@ class _SettingsState extends State<Settings> {
                         color: Colors.grey.shade300,
                       ),
                       const SizedBox(height: 20),
-
                       const Text("Reminder Type",
                           style: TextStyle(fontSize: 18, color: Colors.black)),
-
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Consumer<ReminderProvider>(
@@ -322,121 +322,121 @@ class _SettingsState extends State<Settings> {
                         ),
                       ),
                       30.height,
-                      const Text("Repeat (Optional)",
-                          style: TextStyle(fontSize: 18, color: Colors.black)),
-                      Consumer<ReminderProvider>(
-                        builder: (context, cp, child) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () => cp.setRepeatOption("None"),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Radio<String>(
-                                        value: "None",
-                                        groupValue: cp.repeatOption,
-                                        onChanged: (v) =>
-                                            cp.setRepeatOption(v!),
-                                        activeColor: const Color(
-                                            0xFF0078D7), // blue when selected
-                                      ),
-                                      4.width,
-                                      Text(
-                                        "None",
-                                        style: GoogleFonts.lato(
-                                          color: Colors.black,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () => cp.setRepeatOption("Daily"),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Radio<String>(
-                                        value: "Daily",
-                                        groupValue: cp.repeatOption,
-                                        onChanged: (v) =>
-                                            cp.setRepeatOption(v!),
-                                        activeColor: const Color(
-                                            0xFF0078D7), // blue when selected
-                                      ),
-                                      4.width,
-                                      Text(
-                                        "Daily",
-                                        style: GoogleFonts.lato(
-                                          color: Colors.black,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () => cp.setRepeatOption("Weekly"),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Radio<String>(
-                                        value: "Weekly",
-                                        groupValue: cp.repeatOption,
-                                        onChanged: (v) =>
-                                            cp.setRepeatOption(v!),
-                                        activeColor: const Color(
-                                            0xFF0078D7), // blue when selected
-                                      ),
-                                      4.width,
-                                      Text(
-                                        "Weekly",
-                                        style: GoogleFonts.lato(
-                                          color: Colors.black,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () => cp.setRepeatOption("Monthly"),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Radio<String>(
-                                        value: "Monthly",
-                                        groupValue: cp.repeatOption,
-                                        onChanged: (v) =>
-                                            cp.setRepeatOption(v!),
-                                        activeColor: const Color(
-                                            0xFF0078D7), // blue when selected
-                                      ),
-                                      4.width, // reduced space between radio & text
-                                      Text(
-                                        "Monthly",
-                                        style: GoogleFonts.lato(
-                                          color: Colors.black,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
+                      // const Text("Repeat (Optional)",
+                      //     style: TextStyle(fontSize: 18, color: Colors.black)),
+                      // Consumer<ReminderProvider>(
+                      //   builder: (context, cp, child) {
+                      //     return Row(
+                      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //       children: [
+                      //         Expanded(
+                      //           child: InkWell(
+                      //             onTap: () => cp.setRepeatOption("None"),
+                      //             child: Row(
+                      //               mainAxisSize: MainAxisSize.min,
+                      //               children: [
+                      //                 Radio<String>(
+                      //                   value: "None",
+                      //                   groupValue: cp.repeatOption,
+                      //                   onChanged: (v) =>
+                      //                       cp.setRepeatOption(v!),
+                      //                   activeColor: const Color(
+                      //                       0xFF0078D7), // blue when selected
+                      //                 ),
+                      //                 4.width,
+                      //                 Text(
+                      //                   "None",
+                      //                   style: GoogleFonts.lato(
+                      //                     color: Colors.black,
+                      //                     fontSize: 18,
+                      //                   ),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         Expanded(
+                      //           child: InkWell(
+                      //             onTap: () => cp.setRepeatOption("Daily"),
+                      //             child: Row(
+                      //               mainAxisSize: MainAxisSize.min,
+                      //               children: [
+                      //                 Radio<String>(
+                      //                   value: "Daily",
+                      //                   groupValue: cp.repeatOption,
+                      //                   onChanged: (v) =>
+                      //                       cp.setRepeatOption(v!),
+                      //                   activeColor: const Color(
+                      //                       0xFF0078D7), // blue when selected
+                      //                 ),
+                      //                 4.width,
+                      //                 Text(
+                      //                   "Daily",
+                      //                   style: GoogleFonts.lato(
+                      //                     color: Colors.black,
+                      //                     fontSize: 18,
+                      //                   ),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         Expanded(
+                      //           child: InkWell(
+                      //             onTap: () => cp.setRepeatOption("Weekly"),
+                      //             child: Row(
+                      //               mainAxisSize: MainAxisSize.min,
+                      //               children: [
+                      //                 Radio<String>(
+                      //                   value: "Weekly",
+                      //                   groupValue: cp.repeatOption,
+                      //                   onChanged: (v) =>
+                      //                       cp.setRepeatOption(v!),
+                      //                   activeColor: const Color(
+                      //                       0xFF0078D7), // blue when selected
+                      //                 ),
+                      //                 4.width,
+                      //                 Text(
+                      //                   "Weekly",
+                      //                   style: GoogleFonts.lato(
+                      //                     color: Colors.black,
+                      //                     fontSize: 18,
+                      //                   ),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         Expanded(
+                      //           child: InkWell(
+                      //             onTap: () => cp.setRepeatOption("Monthly"),
+                      //             child: Row(
+                      //               mainAxisSize: MainAxisSize.min,
+                      //               children: [
+                      //                 Radio<String>(
+                      //                   value: "Monthly",
+                      //                   groupValue: cp.repeatOption,
+                      //                   onChanged: (v) =>
+                      //                       cp.setRepeatOption(v!),
+                      //                   activeColor: const Color(
+                      //                       0xFF0078D7), // blue when selected
+                      //                 ),
+                      //                 4.width, // reduced space between radio & text
+                      //                 Text(
+                      //                   "Monthly",
+                      //                   style: GoogleFonts.lato(
+                      //                     color: Colors.black,
+                      //                     fontSize: 18,
+                      //                   ),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     );
+                      //   },
+                      // ),
 
                       const SizedBox(height: 50),
                       Row(
@@ -518,6 +518,27 @@ class _SettingsState extends State<Settings> {
            padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
            child: Column(
              children: [
+               Row(
+                 children: [
+                   Column(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                     children: [
+                       CustomText(
+                         text: "Settings",
+                         colors: colorsConst.textColor,
+                         size: 20,
+                         isBold: true,
+                       ),
+                       10.height,
+                       CustomText(
+                         text: "Manage all your application settings in one place",
+                         colors: colorsConst.textColor,
+                         size: 14,
+                       ),
+                     ],
+                   ),
+                 ],
+               ),
                Padding(
                  padding: const EdgeInsets.all(20.0),
                  child: Row(

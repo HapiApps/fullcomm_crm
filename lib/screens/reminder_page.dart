@@ -11,6 +11,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_loading_button.dart';
+import '../components/custom_search_textfield.dart';
 import '../components/custom_text.dart';
 import '../components/keyboard_search.dart';
 import '../controller/controller.dart';
@@ -83,15 +84,15 @@ class _ReminderPageState extends State<ReminderPage> {
                         selectionMode: DateRangePickerSelectionMode.single,
                         extendableRangeSelectionDirection:
                             ExtendableRangeSelectionDirection.none,
-                        selectionColor: const Color(0xff0078D7),
-                        startRangeSelectionColor: const Color(0xff0078D7),
-                        endRangeSelectionColor: const Color(0xff0078D7),
+                        selectionColor: colorsConst.primary,
+                        startRangeSelectionColor: colorsConst.primary,
+                        endRangeSelectionColor: colorsConst.primary,
                         rangeSelectionColor: const Color(0xffD9ECFF),
-                        todayHighlightColor: const Color(0xff0078D7),
+                        todayHighlightColor: colorsConst.primary,
                         headerStyle: DateRangePickerHeaderStyle(
                           backgroundColor: Colors.white,
                           textStyle: TextStyle(
-                            color: Color(0xff0078D7),
+                            color: colorsConst.primary,
                             // fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -122,81 +123,80 @@ class _ReminderPageState extends State<ReminderPage> {
                             height: 500,
                             child: Center(
                               child: SizedBox(
-                                width: 330,
-                                child: Theme(
-                                  data: Theme.of(context).copyWith(
-                                    timePickerTheme: TimePickerThemeData(
-                                      // Overall dialog background
-                                      backgroundColor: const Color(0xFFE7EEF8),
-                                      // Hour / Minute boxes
-                                      hourMinuteShape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                                        side: BorderSide(color: Colors.black26),
-                                      ),
-                                      hourMinuteColor: Colors.white,
-                                      hourMinuteTextColor: const Color(0xff0078D7),
-                                      // timeSelectorSeparatorColor:  MaterialStateColor.resolveWith((states) {
-                                      //   if (states.contains(MaterialState.selected)) {
-                                      //     return Colors.white;
-                                      //   }
-                                      //   return Colors.black;
-                                      // }),
-                                      // AM / PM buttons
-                                      dayPeriodShape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(Radius.circular(6)),
-                                        side: BorderSide(color: Color(0xff0078D7)),
-                                      ),
-                                      dayPeriodColor: MaterialStateColor.resolveWith((states) {
-                                        if (states.contains(MaterialState.selected)) {
-                                          return const Color(0xff0078D7);
-                                        }
-                                        return Colors.white;
-                                      }),
-                                      dayPeriodTextColor: MaterialStateColor.resolveWith((states) {
-                                        if (states.contains(MaterialState.selected)) {
+                                  width: 330,
+                                  child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                      timePickerTheme: TimePickerThemeData(
+                                        backgroundColor: const Color(0xFFE7EEF8),
+                                        hourMinuteShape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                                          side: BorderSide(color: Colors.black26),
+                                        ),
+                                        hourMinuteColor: MaterialStateColor.resolveWith((states) {
+                                          if (states.contains(MaterialState.selected)) {
+                                            return const Color(0xff0078D7);
+                                          }
                                           return Colors.white;
-                                        }
-                                        return Colors.black;
-                                      }),
-
-                                      // Analog clock circle
-                                      dialBackgroundColor: Colors.white, // normal clock circle
-                                      dialHandColor: const Color(0xff0078D7), // blue hand
-
-                                      // Clock numbers
-                                      dialTextColor: Colors.black, // unselected numbers
-                                      dialTextStyle: MaterialStateTextStyle.resolveWith((states) {
-                                        if (states.contains(MaterialState.selected)) {
+                                        }),
+                                        hourMinuteTextColor: WidgetStateColor.resolveWith((states) {
+                                          if (states.contains(WidgetState.selected)) {
+                                            return Colors.white;
+                                          }
+                                          return colorsConst.primary;
+                                        }),
+                                        timeSelectorSeparatorColor:  WidgetStateColor.resolveWith((states) {
+                                          if (states.contains(WidgetState.selected)) {
+                                            return Colors.white;
+                                          }
+                                          return Colors.black;
+                                        }),
+                                        dayPeriodShape:  RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                                          side: BorderSide(color: colorsConst.primary),
+                                        ),
+                                        dayPeriodColor: WidgetStateColor.resolveWith((states) {
+                                          if (states.contains(WidgetState.selected)) {
+                                            return colorsConst.primary;
+                                          }
+                                          return Colors.white;
+                                        }),
+                                        dayPeriodTextColor: WidgetStateColor.resolveWith((states) {
+                                          if (states.contains(WidgetState.selected)) {
+                                            return Colors.white;
+                                          }
+                                          return Colors.black;
+                                        }),
+                                        dialBackgroundColor: Colors.white,
+                                        dialHandColor:colorsConst.primary,
+                                        dialTextColor: Colors.black, // unselected numbers
+                                        dialTextStyle: WidgetStateTextStyle.resolveWith((states) {
+                                          if (states.contains(WidgetState.selected)) {
+                                            return const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            );
+                                          }
                                           return const TextStyle(
-                                            color: Colors.white, // selected number
-                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
                                             fontSize: 18,
                                           );
-                                        }
-                                        return const TextStyle(
-                                          color: Colors.black, // unselected numbers
-                                          fontSize: 18,
-                                        );
-                                      }),
-
-                                      // Selected time at the top
-                                      hourMinuteTextStyle: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 50,
-                                        fontWeight: FontWeight.bold,
+                                        }),
+                                        hourMinuteTextStyle: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 50,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  child: TimePickerDialog(
-                                    initialTime: dialogSelectedTime,
-                                    orientation: Orientation.portrait,
-                                    cancelText: "",
-                                    confirmText: "",
-                                  ),
-                                )
-
-
-                              ),
+                                    child: TimePickerDialog(
+                                      initialTime: dialogSelectedTime,
+                                      orientation: Orientation.portrait,
+                                      cancelText: "",
+                                      confirmText: "",
+                                    ),
+                                  )
+                              )
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -361,7 +361,7 @@ class _ReminderPageState extends State<ReminderPage> {
     String? location;
     String? repeat;
     String? assignment;
-
+    final scaffoldContext = context;
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -579,74 +579,74 @@ class _ReminderPageState extends State<ReminderPage> {
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(width: 20),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text("Repeat",
-                                            style: GoogleFonts.lato(
-                                                fontSize: 17,
-                                                color: Color(0xff737373))),
-                                        const SizedBox(height: 5),
-                                        DropdownButtonFormField<String>(
-                                          value: remController.repeat,
-                                          dropdownColor: Colors
-                                              .white, // 👈 dropdown menu background
-                                          style: GoogleFonts.lato(
-                                            // 👈 text style for selected value
-                                            color: Colors.black,
-                                            fontSize: 14,
-                                          ),
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor: Colors
-                                                .white, // field background
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey.shade300),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey.shade300),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey.shade300),
-                                            ),
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 10),
-                                          ),
-                                          items: ["Every Day", "Every Week"]
-                                              .map(
-                                                (e) => DropdownMenuItem(
-                                                  value: e,
-                                                  child: Text(
-                                                    e,
-                                                    style: GoogleFonts.lato(
-                                                      // 👈 text style for dropdown items
-                                                      color: Colors.black,
-                                                      fontSize: 17,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                              .toList(),
-                                          onChanged: (v) =>
-                                              setState(() => remController.repeat = v),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  // const SizedBox(width: 20),
+                                  // Expanded(
+                                  //   child: Column(
+                                  //     crossAxisAlignment:
+                                  //         CrossAxisAlignment.start,
+                                  //     children: [
+                                  //       Text("Repeat",
+                                  //           style: GoogleFonts.lato(
+                                  //               fontSize: 17,
+                                  //               color: Color(0xff737373))),
+                                  //       const SizedBox(height: 5),
+                                  //       DropdownButtonFormField<String>(
+                                  //         value: remController.repeat,
+                                  //         dropdownColor: Colors
+                                  //             .white, // 👈 dropdown menu background
+                                  //         style: GoogleFonts.lato(
+                                  //           // 👈 text style for selected value
+                                  //           color: Colors.black,
+                                  //           fontSize: 14,
+                                  //         ),
+                                  //         decoration: InputDecoration(
+                                  //           filled: true,
+                                  //           fillColor: Colors
+                                  //               .white, // field background
+                                  //           border: OutlineInputBorder(
+                                  //             borderRadius:
+                                  //                 BorderRadius.circular(4),
+                                  //             borderSide: BorderSide(
+                                  //                 color: Colors.grey.shade300),
+                                  //           ),
+                                  //           enabledBorder: OutlineInputBorder(
+                                  //             borderRadius:
+                                  //                 BorderRadius.circular(4),
+                                  //             borderSide: BorderSide(
+                                  //                 color: Colors.grey.shade300),
+                                  //           ),
+                                  //           focusedBorder: OutlineInputBorder(
+                                  //             borderRadius:
+                                  //                 BorderRadius.circular(4),
+                                  //             borderSide: BorderSide(
+                                  //                 color: Colors.grey.shade300),
+                                  //           ),
+                                  //           contentPadding:
+                                  //               const EdgeInsets.symmetric(
+                                  //                   horizontal: 12,
+                                  //                   vertical: 10),
+                                  //         ),
+                                  //         items: ["Every Day", "Every Week"]
+                                  //             .map(
+                                  //               (e) => DropdownMenuItem(
+                                  //                 value: e,
+                                  //                 child: Text(
+                                  //                   e,
+                                  //                   style: GoogleFonts.lato(
+                                  //                     // 👈 text style for dropdown items
+                                  //                     color: Colors.black,
+                                  //                     fontSize: 17,
+                                  //                   ),
+                                  //                 ),
+                                  //               ),
+                                  //             )
+                                  //             .toList(),
+                                  //         onChanged: (v) =>
+                                  //             setState(() => remController.repeat = v),
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
                                 ],
                               ),
 
@@ -658,8 +658,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                   Expanded(
                                     child: Consumer<ReminderProvider>(
                                       builder: (context, provider, _) {
-                                        if (provider.selectedNotification ==
-                                            "meeting") {
+                                        if (provider.selectedNotification == "meeting") {
                                           // Single dropdown for Meeting Reminder → heading visible, no checkboxes
                                           return Column(
                                             crossAxisAlignment:
@@ -1072,8 +1071,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                 foregroundColor: Colors.black,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(7),
-                                  side: const BorderSide(
-                                      color: Color(0xff0078D7)),
+                                  side: const BorderSide(color: Color(0xff0078D7)),
                                 ),
                                 padding: EdgeInsets.zero,
                                 elevation: 0,
@@ -1097,8 +1095,48 @@ class _ReminderPageState extends State<ReminderPage> {
                                 ),
                               ),
                               onPressed: () {
-                                final provider = Provider.of<ReminderProvider>(context, listen: false);
-                                remController.insertReminderAPI(context, provider.selectedNotification);
+                                if(remController.titleController.text.trim().isEmpty){
+                                  utils.snackBar(
+                                      context: scaffoldContext, // 👈 use outer context
+                                      msg: "Please enter reminder title",
+                                      color: Colors.red
+                                  );
+                                  return;
+                                }
+                                if (remController.startController.text.trim().isEmpty) {
+                                  utils.snackBar(
+                                      context: scaffoldContext,
+                                      msg: "Please select start date & time",
+                                      color: Colors.red
+                                  );
+                                  return;
+                                }
+                                if (remController.endController.text.trim().isEmpty) {
+                                  utils.snackBar(
+                                      context: scaffoldContext,
+                                      msg: "Please select end date & time",
+                                      color: Colors.red
+                                  );
+                                  return;
+                                }
+                                if (controllers.selectedEmployeeId.value.isEmpty) {
+                                  utils.snackBar(
+                                      context: scaffoldContext,
+                                      msg: "Please select employee",
+                                      color: Colors.red
+                                  );
+                                  return;
+                                }
+                                if (controllers.selectedCustomerId.value.isEmpty) {
+                                  utils.snackBar(
+                                      context: scaffoldContext,
+                                      msg: "Please select customer",
+                                      color: Colors.red
+                                  );
+                                  return;
+                                }
+                                final provider = Provider.of<ReminderProvider>(scaffoldContext, listen: false);
+                                remController.insertReminderAPI(scaffoldContext, provider.selectedNotification);
                               },
                               child: const Text(
                                 "Save Reminder",
@@ -1132,7 +1170,6 @@ class _ReminderPageState extends State<ReminderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -1239,6 +1276,111 @@ class _ReminderPageState extends State<ReminderPage> {
                  color: colorsConst.secondary,
                ),
                10.height,
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                 children: [
+                   CustomSearchTextField(
+                     controller: controllers.search,
+                     hintText: "Search Customer Name, Employee Name, Reminder Title",
+                     onChanged: (value) {
+                       remController.searchText.value = value.toString().trim();
+                     },
+                   ),
+                   remController.selectedReminderIds.isNotEmpty?
+                   InkWell(
+                     focusColor: Colors.transparent,
+                     hoverColor: Colors.transparent,
+                     onTap: (){
+                       showDialog(
+                         context: context,
+                         builder: (BuildContext context) {
+                           return AlertDialog(
+                             content: CustomText(
+                               text: "Are you sure delete this reminder?",
+                               size: 16,
+                               isBold: true,
+                               colors: colorsConst.textColor,
+                             ),
+                             actions: [
+                               Row(
+                                 mainAxisAlignment: MainAxisAlignment.end,
+                                 children: [
+                                   Container(
+                                     decoration: BoxDecoration(
+                                         border: Border.all(color: colorsConst.primary),
+                                         color: Colors.white),
+                                     width: 80,
+                                     height: 25,
+                                     child: ElevatedButton(
+                                         style: ElevatedButton.styleFrom(
+                                           shape: const RoundedRectangleBorder(
+                                             borderRadius: BorderRadius.zero,
+                                           ),
+                                           backgroundColor: Colors.white,
+                                         ),
+                                         onPressed: () {
+                                           Navigator.pop(context);
+                                         },
+                                         child: CustomText(
+                                           text: "Cancel",
+                                           colors: colorsConst.primary,
+                                           size: 14,
+                                         )),
+                                   ),
+                                   10.width,
+                                   CustomLoadingButton(
+                                     callback: ()async{
+                                       remController.deleteReminderAPI(context);
+                                     },
+                                     height: 35,
+                                     isLoading: true,
+                                     backgroundColor: colorsConst.primary,
+                                     radius: 2,
+                                     width: 80,
+                                     controller: controllers.productCtr,
+                                     isImage: false,
+                                     text: "Delete",
+                                     textColor: Colors.white,
+                                   ),
+                                 ],
+                               ),
+                             ],
+                           );
+                         },
+                       );
+                     },
+                     child: Container(
+                       height: 40,
+                       width: 100,
+                       decoration: BoxDecoration(
+                         color: colorsConst.secondary,
+                         borderRadius: BorderRadius.circular(4),
+                         boxShadow: [
+                           BoxShadow(
+                             color: Colors.black.withOpacity(0.2),
+                             spreadRadius: 1,
+                             blurRadius: 5,
+                           ),
+                         ],
+                       ),
+                       child:  Row(
+                         mainAxisAlignment: MainAxisAlignment.center,
+                         children: [
+                           Image.asset("assets/images/action_delete.png"),
+                           10.width,
+                           CustomText(
+                             text: "Delete",
+                             colors: colorsConst.textColor,
+                             size: 14,
+                             isBold: true,
+                           ),
+                         ],
+                       ),
+                     ),
+                   ):1.width
+                 ],
+               ),
+               10.height,
                Table(
                  columnWidths: const {
                    0: FlexColumnWidth(1),
@@ -1327,32 +1469,110 @@ class _ReminderPageState extends State<ReminderPage> {
                          ),
                          Padding(
                            padding: const EdgeInsets.all(10.0),
-                           child: CustomText(
-                             textAlign: TextAlign.left,
-                             text: "Employee Name",
-                             size: 15,
-                             isBold: true,
-                             colors: Colors.white,
+                           child: Row(
+                             children: [
+                               CustomText(
+                                 textAlign: TextAlign.left,
+                                 text: "Employee Name",
+                                 size: 15,
+                                 isBold: true,
+                                 colors: Colors.white,
+                               ),
+                               const SizedBox(width: 3),
+                               GestureDetector(
+                                 onTap: (){
+                                   if(remController.sortFieldCallActivity.value=='employeeName' && remController.sortOrderCallActivity.value=='asc'){
+                                     remController.sortOrderCallActivity.value='desc';
+                                   }else{
+                                     remController.sortOrderCallActivity.value='asc';
+                                   }
+                                   remController.sortFieldCallActivity.value='employeeName';
+                                   remController.sortReminders();
+                                 },
+                                 child: Obx(() => Image.asset(
+                                   controllers.sortFieldCallActivity.value.isEmpty
+                                       ? "assets/images/arrow.png"
+                                       : controllers.sortOrderCallActivity.value == 'asc'
+                                       ? "assets/images/arrow_up.png"
+                                       : "assets/images/arrow_down.png",
+                                   width: 15,
+                                   height: 15,
+                                 ),
+                                 ),
+                               ),
+                             ],
                            ),
                          ),
                          Padding(
                            padding: const EdgeInsets.all(10.0),
-                           child: CustomText(//4
-                             textAlign: TextAlign.left,
-                             text: "Customer Name",
-                             size: 15,
-                             isBold: true,
-                             colors: Colors.white,
+                           child: Row(
+                             children: [
+                               CustomText(//4
+                                 textAlign: TextAlign.left,
+                                 text: "Customer Name",
+                                 size: 15,
+                                 isBold: true,
+                                 colors: Colors.white,
+                               ),
+                               const SizedBox(width: 3),
+                               GestureDetector(
+                                 onTap: (){
+                                   if(remController.sortBy.value=='customerName' && remController.sortOrderCallActivity.value=='asc'){
+                                     remController.sortOrderCallActivity.value='desc';
+                                   }else{
+                                     remController.sortOrderCallActivity.value='asc';
+                                   }
+                                   remController.sortBy.value='customerName';
+                                   remController.sortReminders();
+                                 },
+                                 child: Obx(() => Image.asset(
+                                   remController.sortBy.value.isEmpty
+                                       ? "assets/images/arrow.png"
+                                       : controllers.sortOrderCallActivity.value == 'asc'
+                                       ? "assets/images/arrow_up.png"
+                                       : "assets/images/arrow_down.png",
+                                   width: 15,
+                                   height: 15,
+                                 ),
+                                 ),
+                               ),
+                             ],
                            ),
                          ),
                          Padding(
                            padding: const EdgeInsets.all(10.0),
-                           child: CustomText(//4
-                             textAlign: TextAlign.left,
-                             text: "Start Date - Time",
-                             size: 15,
-                             isBold: true,
-                             colors: Colors.white,
+                           child: Row(
+                             children: [
+                               CustomText(//4
+                                 textAlign: TextAlign.left,
+                                 text: "Start Date",
+                                 size: 15,
+                                 isBold: true,
+                                 colors: Colors.white,
+                               ),
+                               const SizedBox(width: 3),
+                               GestureDetector(
+                                 onTap: (){
+                                   if(remController.sortFieldCallActivity.value=='startDate' && remController.sortOrderCallActivity.value=='asc'){
+                                     remController.sortOrderCallActivity.value='desc';
+                                   }else{
+                                     remController.sortOrderCallActivity.value='asc';
+                                   }
+                                   remController.sortFieldCallActivity.value='startDate';
+                                   remController.sortReminders();
+                                 },
+                                 child: Obx(() => Image.asset(
+                                   controllers.sortFieldCallActivity.value.isEmpty
+                                       ? "assets/images/arrow.png"
+                                       : controllers.sortOrderCallActivity.value == 'asc'
+                                       ? "assets/images/arrow_up.png"
+                                       : "assets/images/arrow_down.png",
+                                   width: 15,
+                                   height: 15,
+                                 ),
+                                 ),
+                               ),
+                             ],
                            ),
                          ),
                          Row(
@@ -1360,12 +1580,38 @@ class _ReminderPageState extends State<ReminderPage> {
                            children: [
                              Padding(
                                padding: const EdgeInsets.all(10.0),
-                               child: CustomText(
-                                 textAlign: TextAlign.left,
-                                 text: "End Date - Time",//6
-                                 size: 15,
-                                 isBold: true,
-                                 colors: Colors.white,
+                               child: Row(
+                                 children: [
+                                   CustomText(
+                                     textAlign: TextAlign.left,
+                                     text: "End Date",//6
+                                     size: 15,
+                                     isBold: true,
+                                     colors: Colors.white,
+                                   ),
+                                   const SizedBox(width: 3),
+                                   GestureDetector(
+                                     onTap: (){
+                                       if(remController.sortFieldCallActivity.value=='endDate' && remController.sortOrderCallActivity.value=='asc'){
+                                         remController.sortOrderCallActivity.value='desc';
+                                       }else{
+                                         remController.sortOrderCallActivity.value='asc';
+                                       }
+                                       remController.sortFieldCallActivity.value='endDate';
+                                       remController.sortReminders();
+                                     },
+                                     child: Obx(() => Image.asset(
+                                       controllers.sortFieldCallActivity.value.isEmpty
+                                           ? "assets/images/arrow.png"
+                                           : controllers.sortOrderCallActivity.value == 'asc'
+                                           ? "assets/images/arrow_up.png"
+                                           : "assets/images/arrow_down.png",
+                                       width: 15,
+                                       height: 15,
+                                     ),
+                                     ),
+                                   ),
+                                 ],
                                ),
                              ),
                              // Obx(() => GestureDetector(
@@ -1415,17 +1661,24 @@ class _ReminderPageState extends State<ReminderPage> {
 
                Expanded(
                  child: Obx(() {
+                   final searchText = remController.searchText.value.toLowerCase();
+                   final filteredList = remController.reminderList.where((activity) {
+                     final matchesSearch = searchText.isEmpty ||
+                         (activity.customerName.toString().toLowerCase().contains(searchText)) ||
+                         (activity.employeeName.toString().toLowerCase().contains(searchText)) ||
+                         (activity.title.toString().toLowerCase().contains(searchText));
+                     return matchesSearch;
+                   }).toList();
                    if (remController.isLoadingReminders.value) {
                      return const Center(child: CircularProgressIndicator());
                    }
-                   if (remController.reminderList.isEmpty) {
+                   if (filteredList.isEmpty) {
                      return const Center(child: Text("No reminders found"));
                    }
-
                    return ListView.builder(
-                     itemCount: remController.reminderList.length,
+                     itemCount: filteredList.length,
                      itemBuilder: (context, index) {
-                       final reminder = remController.reminderList[index];
+                       final reminder = filteredList[index];
                        return Table(
                          columnWidths:const {
                            0: FlexColumnWidth(1),
@@ -1488,7 +1741,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                                builder: (BuildContext context) {
                                                  return AlertDialog(
                                                    content: CustomText(
-                                                     text: "Are you sure delete this employees?",
+                                                     text: "Are you sure delete this reminder?",
                                                      size: 16,
                                                      isBold: true,
                                                      colors: colorsConst.textColor,
@@ -1521,11 +1774,8 @@ class _ReminderPageState extends State<ReminderPage> {
                                                        10.width,
                                                        CustomLoadingButton(
                                                          callback: ()async{
-                                                           // employeeProvider.employeeDelete(
-                                                           //     eId:staffData.id,
-                                                           //     context: context
-                                                           // );
-
+                                                           remController.selectedReminderIds.add(reminder.id.toString());
+                                                            remController.deleteReminderAPI(context);
                                                          },
                                                          height: 35,
                                                          isLoading: true,

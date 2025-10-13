@@ -73,7 +73,7 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
           fillColor: Colors.white,
           filled: true,
           enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white),
+              borderSide: BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.circular(5)),
           focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(

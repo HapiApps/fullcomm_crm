@@ -34,6 +34,7 @@ import '../../components/custom_text.dart';
 import '../../components/dialog_button.dart';
 import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
+import '../../main.dart';
 import '../../models/new_lead_obj.dart';
 import '../../screens/leads/disqualified_lead.dart';
 import '../../screens/reminder_page.dart';
@@ -1070,23 +1071,21 @@ class Utils {
   //   return '$hourStr:$minuteStr $period';
   // }
 
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar(
-      {required BuildContext context,
-      required String msg,
-      required Color color}) {
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar({required BuildContext context,
+  required String msg,
+  required Color color}) {
     var snack = SnackBar(
-        width: 500,
-        content: Center(child: Text(msg)),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 4),
-        backgroundColor: color,
-        //margin: const EdgeInsets.all(50),
-        elevation: 30,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20))));
-    return ScaffoldMessenger.of(context).showSnackBar(
-      snack,
+      width: 500,
+      content: Center(child: Text(msg)),
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 4),
+      backgroundColor: color,
+      elevation: 30,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
     );
+    return rootScaffoldMessengerKey.currentState!.showSnackBar(snack);
   }
 
   // Widget leadCon(
@@ -1545,7 +1544,7 @@ class Utils {
                 textColor: controllers.selectedIndex.value == 7
                     ? colorsConst.primary
                     : Colors.black,
-                text: "Setting",
+                text: "Settings",
                 onClicked: () {
                   Navigator.push(
                     context,

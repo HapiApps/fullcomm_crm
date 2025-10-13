@@ -2829,7 +2829,7 @@ class ApiService {
         List response = json.decode(request.body);
         controllers.dayReport.value = response.map<CustomerDayData>((e) => CustomerDayData.fromJson(e),).toList();
       } else {
-        throw Exception('Failed to load album');
+        throw Exception('Failed to load album ${request.body}');
       }
     } catch (e) {
       print("day_report $e");

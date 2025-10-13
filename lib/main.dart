@@ -22,6 +22,8 @@ import 'controller/controller.dart';
 import 'controller/reminder_controller.dart';
 import 'firebase_options.dart';
 
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 Future<void> main() async {
   await GetStorage.init();
   final prefs = await SharedPreferences.getInstance();
@@ -91,6 +93,7 @@ class _MyAppState extends State<MyApp> {
         data: 42,
         child: GetMaterialApp(
           scrollBehavior: MyCustomScrollBehavior(),
+          scaffoldMessengerKey: rootScaffoldMessengerKey,
           debugShowCheckedModeBanner: false,
           title: appName,
           theme: ThemeData(
