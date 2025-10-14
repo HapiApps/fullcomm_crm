@@ -5,7 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 class ReminderProvider extends ChangeNotifier {
   // Notification types
   bool web = false;
-  bool email = false;
+  bool email = true;
   bool sms = false;
   bool app = false;
 

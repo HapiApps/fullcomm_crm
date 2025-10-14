@@ -15,17 +15,41 @@ import 'controller.dart';
 final remController = Get.put(ReminderController());
 
 class ReminderController extends GetxController with GetSingleTickerProviderStateMixin {
-  TextEditingController titleController   = TextEditingController();
-  TextEditingController detailsController   = TextEditingController();
+  TextEditingController titleController       = TextEditingController();
+  TextEditingController roleController        = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController detailsController     = TextEditingController();
+  TextEditingController startController       = TextEditingController();
+  TextEditingController endController         = TextEditingController();
   String? location;
+  String? permission;
   String? repeat;
+
+  TextEditingController updateTitleController   = TextEditingController();
+  TextEditingController updateDetailsController = TextEditingController();
+  TextEditingController updateStartController   = TextEditingController();
+  TextEditingController updateEndController     = TextEditingController();
+  String? updateLocation;
+  String? updateRepeat;
+
   var sortFieldCallActivity = ''.obs;
   var sortOrderCallActivity = 'asc'.obs;
   var searchText = ''.obs;
-  TextEditingController startController = TextEditingController();
-  TextEditingController endController = TextEditingController();
   var reminderList = <ReminderModel>[].obs;
   var selectedReminderIds = <String>[].obs;
+  List<String> permissionList = [
+    "Add Lead",
+    "Suspects Edit, Delete",
+    "Prospects Edit, Delete",
+    "Qualified Edit, Delete",
+    "Unqualified Edit, Delete",
+    "Customers Edit, Delete",
+    "Import",
+    "Settings",
+    "Call Activities",
+    "Meetings",
+    "Reminders",
+  ];
   var sortBy = ''.obs;
   var ascending = true.obs;
   void sortReminders() {
@@ -93,7 +117,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     } else {
       selectedReminderIds.add(id);
     }
-    print("Select Ids $selectedReminderIds");
   }
   var isLoadingReminders = false.obs;
   var followUpReminderCount = 0.obs;
@@ -178,6 +201,81 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         allReminders(type);
         Navigator.pop(context);
         utils.snackBar(context: context, msg: "Reminder added successfully", color: Colors.green);
+        controllers.productCtr.reset();
+      } else {
+        apiService.errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      apiService.errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+
+  Future updateReminderAPI(BuildContext context,String type,String id) async {
+    try{
+      Map data = {
+        "action": "update_reminder",
+        "id": id,
+        "title": updateTitleController.text.trim(),
+        "type": type,
+        "location": updateLocation,
+        "repeat_type": updateRepeat,
+        "employee": controllers.selectedEmployeeId.value,
+        "customer": controllers.selectedCustomerId.value,
+        "start_dt": updateStartController.text.trim(),
+        "end_dt": updateEndController.text.trim(),
+        "details": updateDetailsController.text.trim(),
+        "updated_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id")
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"]=="Reminder updated successfully"){
+        allReminders(type);
+        Navigator.pop(context);
+        utils.snackBar(context: context, msg: "Reminder updated successfully", color: Colors.green);
+        controllers.productCtr.reset();
+      } else {
+        apiService.errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      apiService.errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+
+  Future insertSettingsReminderAPI(BuildContext context,String time) async {
+    try{
+      Map data = {
+        "action": "insert_settings_reminder",
+        "type": "Email",
+        "time": time,
+        "created_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id")
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"]=="Settings added successfully"){
+        Navigator.pop(context);
+        utils.snackBar(context: context, msg: "Settings added successfully", color: Colors.green);
         controllers.productCtr.reset();
       } else {
         apiService.errorDialog(Get.context!,request.body);

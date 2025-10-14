@@ -6,6 +6,7 @@ import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/components/custom_textfield.dart';
 import 'package:fullcomm_crm/components/password_text_field.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import 'package:web/web.dart';
@@ -59,15 +60,26 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Center(
-                          child: CustomText(
-                            text: "Add Employee Details",
-                            size: 20,
-                            colors: Colors.black,
-                            isBold: true,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            IconButton(
+                                onPressed: (){
+                                  Get.back();
+                                },
+                                icon: Icon(Icons.arrow_back,color: colorsConst.third,)),
+                            20.width,
+                            Center(
+                              child: CustomText(
+                                text: "Add Employee Details",
+                                size: 20,
+                                colors: Colors.black,
+                                isBold: true,
+                              ),
+                            ),
+                          ],
                         ),
-                        20.height,
+                        50.height,
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,

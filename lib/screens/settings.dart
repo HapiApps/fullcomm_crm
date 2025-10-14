@@ -10,6 +10,7 @@ import '../components/custom_text.dart';
 import '../controller/controller.dart';
 import '../controller/reminder_controller.dart';
 import '../provider/reminder_provider.dart';
+import 'employee/role_management.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -54,14 +55,14 @@ class _SettingsState extends State<Settings> {
                           ),
                           Row(
                             children: [
-                              Text(
-                                "=",
-                                style: GoogleFonts.lato(
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black, // optional color
-                                ),
-                              ),
+                              // Text(
+                              //   "=",
+                              //   style: GoogleFonts.lato(
+                              //     fontSize: 19,
+                              //     fontWeight: FontWeight.bold,
+                              //     color: Colors.black, // optional color
+                              //   ),
+                              // ),
                               const SizedBox(width: 10),
                               GestureDetector(
                                 onTap: () => Navigator.pop(context),
@@ -93,53 +94,6 @@ class _SettingsState extends State<Settings> {
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                // Web
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(
-                                      width: 10,
-                                      height: 10,
-                                      child: Checkbox(
-                                        value: cp.web,
-                                        onChanged: cp.toggleWeb,
-                                        materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                        side: const BorderSide(
-                                          // 👈 border color when unchecked
-                                          color: Color(0xFF757575),
-                                        ),
-                                        fillColor: MaterialStateProperty
-                                            .resolveWith<Color>((states) {
-                                          if (states.contains(
-                                              MaterialState.selected)) {
-                                            return const Color(
-                                                0xFF0078D7); // blue when checked
-                                          }
-                                          return Colors
-                                              .white; // white background when unchecked
-                                        }),
-                                        checkColor:
-                                        Colors.white, // checkmark color
-                                      ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      "Web",
-                                      style: GoogleFonts.lato(
-                                        color: Colors.black,
-                                        fontSize: 16,
-
-                                        // fontWeight: FontWeight.bold,
-                                      ),
-                                      // TextStyle(
-                                      //     fontSize: 16,
-                                      //     color: Colors.black)
-                                    ),
-                                  ],
-                                ),
-
-                                // Email
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -152,18 +106,13 @@ class _SettingsState extends State<Settings> {
                                         materialTapTargetSize:
                                         MaterialTapTargetSize.shrinkWrap,
                                         side: const BorderSide(
-                                          // 👈 border color when unchecked
                                           color: Color(0xFF757575),
                                         ),
-                                        fillColor: MaterialStateProperty
-                                            .resolveWith<Color>((states) {
-                                          if (states.contains(
-                                              MaterialState.selected)) {
-                                            return Color(
-                                                0xFF0078D7); // blue when checked
+                                        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                                          if (states.contains(WidgetState.selected)) {
+                                            return Color(0xFF0078D7);
                                           }
-                                          return Colors
-                                              .white; // white when unchecked
+                                          return Colors.white;
                                         }),
                                         checkColor: Colors.white,
                                       ),
@@ -178,8 +127,6 @@ class _SettingsState extends State<Settings> {
                                     ),
                                   ],
                                 ),
-
-                                // SMS
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -188,24 +135,15 @@ class _SettingsState extends State<Settings> {
                                       height: 16,
                                       child: Checkbox(
                                         value: cp.sms,
-                                        onChanged: cp.toggleSms,
-                                        materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
+                                        onChanged: null,
+                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                         side: const BorderSide(
-                                          // 👈 border color when unchecked
-                                          color: Color(0xFF757575),
+                                          color: Color(0xFFBDBDBD),
                                         ),
-                                        fillColor: MaterialStateProperty
-                                            .resolveWith<Color>((states) {
-                                          if (states.contains(
-                                              MaterialState.selected)) {
-                                            return Color(
-                                                0xFF0078D7); // blue when checked
-                                          }
-                                          return Colors
-                                              .white; // white when unchecked
+                                        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                                          return Colors.grey.shade200;
                                         }),
-                                        checkColor: Colors.white,
+                                        checkColor: Colors.grey,
                                       ),
                                     ),
                                     const SizedBox(width: 6),
@@ -218,7 +156,35 @@ class _SettingsState extends State<Settings> {
                                     ),
                                   ],
                                 ),
-
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: 10,
+                                      height: 10,
+                                      child: Checkbox(
+                                        value: cp.web,
+                                        onChanged: null,
+                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        side: const BorderSide(
+                                          color: Color(0xFFBDBDBD),
+                                        ),
+                                        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                                          return Colors.grey.shade200;
+                                        }),
+                                        checkColor: Colors.grey,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      "Web",
+                                      style: GoogleFonts.lato(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -227,24 +193,15 @@ class _SettingsState extends State<Settings> {
                                       height: 16,
                                       child: Checkbox(
                                         value: cp.app,
-                                        onChanged: cp.toggleApp,
-                                        materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
+                                        onChanged: null,
+                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                         side: const BorderSide(
-                                          // 👈 border color when unchecked
-                                          color: Color(0xFF757575),
+                                          color: Color(0xFFBDBDBD),
                                         ),
-                                        fillColor: MaterialStateProperty
-                                            .resolveWith<Color>((states) {
-                                          if (states.contains(
-                                              MaterialState.selected)) {
-                                            return Color(
-                                                0xFF0078D7); // blue when checked
-                                          }
-                                          return Colors
-                                              .white; // white when unchecked
+                                        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                                          return Colors.grey.shade200;
                                         }),
-                                        checkColor: Colors.white,
+                                        checkColor: Colors.grey,
                                       ),
                                     ),
                                     const SizedBox(width: 6),
@@ -473,14 +430,15 @@ class _SettingsState extends State<Settings> {
                             height: 35,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                const Color(0xff0078D7), // fill color
+                                backgroundColor: const Color(0xff0078D7), // fill color
                                 shape: RoundedRectangleBorder(
                                   borderRadius:
                                   BorderRadius.circular(7), // border radius
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                remController.insertSettingsReminderAPI(context, _defaultTime);
+                              },
                               child: const Text(
                                 "Save Reminder",
                                 style: TextStyle(
@@ -519,6 +477,7 @@ class _SettingsState extends State<Settings> {
            child: Column(
              children: [
                Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                  children: [
                    Column(
                      crossAxisAlignment: CrossAxisAlignment.start,
@@ -536,6 +495,30 @@ class _SettingsState extends State<Settings> {
                          size: 14,
                        ),
                      ],
+                   ),
+                   SizedBox(
+                     height: 40,
+                     child: ElevatedButton(
+                       onPressed: (){
+                         Navigator.push(context, MaterialPageRoute(builder: (context)=> const RoleManagement()));
+                       },
+                       style: ElevatedButton.styleFrom(
+                         backgroundColor: const Color(0xff0078D7),
+                         padding: const EdgeInsets.symmetric(
+                             horizontal: 20, vertical: 12),
+                         shape: RoundedRectangleBorder(
+                           borderRadius: BorderRadius.circular(4),
+                         ),
+                       ),
+                       child: Text(
+                         'Role Management',
+                         style: GoogleFonts.lato(
+                             color: Colors.white,
+                             fontSize: 14,
+                             fontWeight: FontWeight.bold
+                         ),
+                       ),
+                     ),
                    ),
                  ],
                ),
@@ -563,9 +546,7 @@ class _SettingsState extends State<Settings> {
                                    : Colors.white,
                                borderRadius: BorderRadius.circular(6),
                                border: Border.all(
-                                 color: context
-                                     .watch<ReminderProvider>()
-                                     .isFollowUpActive
+                                 color: context.watch<ReminderProvider>().isFollowUpActive
                                      ? Colors.blue
                                      : Colors.grey.shade300,
                                  width: 2,
