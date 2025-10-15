@@ -5,8 +5,9 @@ import 'package:csc_picker_plus/dropdown_with_search.dart';
 import 'package:excel/excel.dart' as excel;
 import 'package:fullcomm_crm/common/styles/styles.dart';
 import 'package:fullcomm_crm/common/widgets/log_in.dart';
-import 'package:fullcomm_crm/screens/call_comments.dart';
+import 'package:fullcomm_crm/screens/records/call_comments.dart';
 import 'package:fullcomm_crm/screens/employee/employee_screen.dart';
+import 'package:fullcomm_crm/screens/employee/role_management.dart';
 import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
@@ -15,11 +16,13 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fullcomm_crm/screens/mail_comments.dart';
-import 'package:fullcomm_crm/screens/meeting_comments.dart';
+import 'package:fullcomm_crm/screens/records/mail_comments.dart';
+import 'package:fullcomm_crm/screens/records/meeting_comments.dart';
 import 'package:fullcomm_crm/screens/new_dashboard.dart';
-import 'package:fullcomm_crm/screens/records.dart';
-import 'package:fullcomm_crm/screens/settings.dart';
+import 'package:fullcomm_crm/screens/records/records.dart';
+import 'package:fullcomm_crm/screens/settings/general_settings.dart';
+import 'package:fullcomm_crm/screens/settings/reminder_settings.dart';
+import 'package:fullcomm_crm/screens/settings/user_plan.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -1266,14 +1269,13 @@ class Utils {
   Widget sideBarFunction(BuildContext context) {
     return Obx(() => controllers.isLeftOpen.value
         ? Container(
-      width: 145,
+      width: 150,
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
-            //spreadRadius: 10,
             blurRadius: 2,
             offset: const Offset(0, 3), // changes position of shadow
           ),
@@ -1302,16 +1304,6 @@ class Utils {
               ],
             ),
            Image.asset("assets/images/logo.png"),
-           // Text(
-           //    appName,
-           //    style: TextStyle(
-           //      color: colorsConst.primary,
-           //      fontWeight: FontWeight.bold,
-           //      fontSize: 20,
-           //      fontFamily: "Lato",
-           //    ),
-           //  ),
-            //20.height,
             Obx(() => CustomSideBarText(
                   text: constValue.dashboard,
                   boxColor: controllers.selectedIndex.value == 0
@@ -1323,6 +1315,7 @@ class Utils {
                   onClicked: () {
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 0;
+                    controllers.isSettingsExpanded.value=false;
                     Navigator.push(
                       context,
                       PageRouteBuilder(
@@ -1355,6 +1348,7 @@ class Utils {
                     );
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 1;
+                    controllers.isSettingsExpanded.value=false;
                   }),
             ),
             Obx(() => CustomSideBarText(
@@ -1378,6 +1372,7 @@ class Utils {
                     );
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 2;
+                    controllers.isSettingsExpanded.value=false;
                   }),
             ),
             Obx(() => CustomSideBarText(
@@ -1401,6 +1396,7 @@ class Utils {
                     controllers.isEmployee.value = true;
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 3;
+                    controllers.isSettingsExpanded.value=false;
                   }),
             ),
             Obx(() => CustomSideBarText(
@@ -1424,6 +1420,7 @@ class Utils {
                     controllers.isCustomer.value = true;
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 4;
+                    controllers.isSettingsExpanded.value=false;
                   }),
             ),
             Obx(() => CustomSideBarText(
@@ -1446,6 +1443,7 @@ class Utils {
                     //controllers.isDisqualified.value = true;
                     controllers.oldIndex.value = controllers.selectedIndex.value;
                     controllers.selectedIndex.value = 5;
+                    controllers.isSettingsExpanded.value=false;
                   }),
             ),
             Obx(() => CustomSideBarText(
@@ -1468,53 +1466,31 @@ class Utils {
                   );
                   controllers.oldIndex.value = controllers.selectedIndex.value;
                   controllers.selectedIndex.value = 6;
+                  controllers.isSettingsExpanded.value=false;
                 }),
             ),
-
             // Obx(() => CustomSideBarText(
-            //     boxColor: controllers.selectedIndex.value == 8
+            //     boxColor: controllers.selectedIndex.value == 9
             //         ? const Color(0xffF3F8FD)
             //         : Colors.white,
-            //     textColor: controllers.selectedIndex.value == 8
+            //     textColor: controllers.selectedIndex.value == 9
             //         ? colorsConst.primary
             //         : Colors.black,
-            //     text: "Meeting Records",
+            //     text: "Employees",
             //     onClicked: () {
             //       Navigator.push(
             //         context,
             //         PageRouteBuilder(
             //           pageBuilder: (context, animation1, animation2) =>
-            //           const MeetingComments(),
+            //           const EmployeeScreen(),
             //           transitionDuration: Duration.zero,
             //           reverseTransitionDuration: Duration.zero,
             //         ),
             //       );
             //       controllers.oldIndex.value = controllers.selectedIndex.value;
-            //       controllers.selectedIndex.value = 8;
+            //       controllers.selectedIndex.value = 9;
             //     }),
             // ),
-            Obx(() => CustomSideBarText(
-                boxColor: controllers.selectedIndex.value == 9
-                    ? const Color(0xffF3F8FD)
-                    : Colors.white,
-                textColor: controllers.selectedIndex.value == 9
-                    ? colorsConst.primary
-                    : Colors.black,
-                text: "Employees",
-                onClicked: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) =>
-                      const EmployeeScreen(),
-                      transitionDuration: Duration.zero,
-                      reverseTransitionDuration: Duration.zero,
-                    ),
-                  );
-                  controllers.oldIndex.value = controllers.selectedIndex.value;
-                  controllers.selectedIndex.value = 9;
-                }),
-            ),
             Obx(() => CustomSideBarText(
                 boxColor: controllers.selectedIndex.value == 11
                     ? const Color(0xffF3F8FD)
@@ -1535,29 +1511,55 @@ class Utils {
                   );
                   controllers.oldIndex.value = controllers.selectedIndex.value;
                   controllers.selectedIndex.value = 11;
+                  controllers.isSettingsExpanded.value=false;
                 }),
             ),
-            Obx(() => CustomSideBarText(
-                boxColor: controllers.selectedIndex.value == 7
-                    ? const Color(0xffF3F8FD)
-                    : Colors.white,
-                textColor: controllers.selectedIndex.value == 7
-                    ? colorsConst.primary
-                    : Colors.black,
-                text: "Settings",
-                onClicked: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) =>
-                      const Settings(),
-                      transitionDuration: Duration.zero,
-                      reverseTransitionDuration: Duration.zero,
+            Obx(() => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                15.height,
+                InkWell(
+                  onTap: (){
+                    controllers.oldIndex.value = controllers.selectedIndex.value;
+                    controllers.selectedIndex.value =7;
+                    controllers.isSettingsExpanded.toggle();
+                  },
+                  child: Row(
+                    children: [
+                      12.width,
+                      Text(
+                        "Settings",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: controllers.selectedIndex.value == 7
+                                ? colorsConst.primary
+                                : Colors.black,
+                            fontSize: 15,
+                            fontFamily: "Lato",
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                if (controllers.isSettingsExpanded.value) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 22, top: 8,),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 5,
+                      children: [
+                        subItem(context, "General Setting", 701, const GeneralSettings()),
+                        subItem(context, "Role Management", 702, const RoleManagement()),
+                        subItem(context, "User Plan & Access", 703, const UserPlan()),
+                        subItem(context, "User Management", 704, const EmployeeScreen()),
+                        subItem(context, "Reminder Setting", 705, const ReminderSettings()),
+                      ],
                     ),
-                  );
-                  controllers.oldIndex.value = controllers.selectedIndex.value;
-                  controllers.selectedIndex.value = 7;
-                }),
+                  ),
+                ],
+                controllers.isSettingsExpanded.value?1.height:15.height,
+              ],
+            )
             ),
             Obx(() => CustomSideBarText(
                       boxColor: controllers.selectedIndex.value == 10
@@ -1674,6 +1676,36 @@ class Utils {
             ),
           ));
   }
+
+  Widget subItem(BuildContext context, String text, int index, Widget page) {
+    return Obx(() => InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => page,
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        controllers.selectedSettingsIndex.value = index;
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Text(
+          text,
+          style: TextStyle(
+              color: controllers.selectedSettingsIndex.value == index
+                  ? colorsConst.primary
+                  : Colors.black,
+              fontSize: 15,
+              fontFamily: "Lato",
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+    ));
+  }
+
   void showBlockedDialog(BuildContext context) {
     showDialog(
       context: context,

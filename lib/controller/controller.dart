@@ -65,7 +65,8 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   var selectedChartYear = DateTime.now().year.obs;
   String countryDial = "+91";
   var isEyeOpen = false.obs,isLeftOpen=true.obs,isRightOpen=true.obs;
-  RxInt selectedIndex = 0.obs,oldIndex=0.obs;
+  RxInt selectedIndex = 0.obs,oldIndex=0.obs,selectedSettingsIndex = 0.obs;
+  var isSettingsExpanded = false.obs;
   bool extended =false;
   RxString searchText = ''.obs;
   final RxString searchQuery = ''.obs,searchProspects = ''.obs,searchQualified = ''.obs;

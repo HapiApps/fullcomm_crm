@@ -306,175 +306,202 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                         isMenuOpen: controllers.isMenuOpen,
                       ),
                       10.height,
-                      CustomTableHeader(
-                        showCheckbox: true,
-                        onSortName: () {
-                          controllers.sortField.value = 'name';
-                          controllers.sortOrderN.value =
-                          controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
-                        },
-                        isAllSelected: controllers.isAllSelected.value,
-                        onSelectAll: (value) {
-                          if (value == true) {
-                            controllers.isAllSelected.value = true;
-                            setState(() {
-                              for (int j = 0; j < controllers.isDisqualifiedList.length; j++) {
-                                controllers.isDisqualifiedList[j]["isSelect"] = true;
-                                apiService.prospectsList.add({
-                                  "lead_id": controllers.isDisqualifiedList[j]["lead_id"],
-                                  "user_id": controllers.storage.read("id"),
-                                  "rating": controllers.isDisqualifiedList[j]["rating"],
-                                  "cos_id": controllers.storage.read("cos_id"),
-                                  "mail": controllers.isDisqualifiedList[j]["mail_id"],
-                                });
-                              }
-                            });
-                          } else {
-                            controllers.isAllSelected.value = false;
-                            for (int j = 0; j < controllers.isDisqualifiedList.length; j++) {
-                              controllers.isDisqualifiedList[j]["isSelect"] = false;
-                              setState(() {
-                                var i = apiService.prospectsList.indexWhere((element) =>
-                                element["lead_id"] == controllers.isDisqualifiedList[j]["lead_id"]);
-                                apiService.prospectsList.removeAt(i);
-                              });
+                      Focus(
+                        autofocus: true,
+                        focusNode: _focusNode,
+                        onKey: (node, event) {
+                          if (event is RawKeyDownEvent) {
+                            if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                              _verticalController.animateTo(
+                                _verticalController.offset + 100,
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeInOut,
+                              );
+                              return KeyEventResult.handled;
+                            } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                              _verticalController.animateTo(
+                                _verticalController.offset - 100,
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeInOut,
+                              );
+                              return KeyEventResult.handled;
+                            } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+                              _horizontalController.animateTo(
+                                _horizontalController.offset + 100,
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeInOut,
+                              );
+                              return KeyEventResult.handled;
+                            } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+                              _horizontalController.animateTo(
+                                _horizontalController.offset - 100,
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeInOut,
+                              );
+                              return KeyEventResult.handled;
                             }
                           }
+                          return KeyEventResult.ignored;
                         },
-                        onSortDate: () {
-                          controllers.sortField.value = 'date';
-                          controllers.sortOrder.value =
-                          controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
-                        },
-                      ),
-                      Expanded(
-                        child: Obx(
-                                () => controllers.isLead.value == false
-                                ? const Center(child: CircularProgressIndicator())
-                                : controllers.paginatedDisqualified.isNotEmpty?
-                            GestureDetector(
-                              onTap: () {
-                                _focusNode.requestFocus();
-                              },
-                              child: RawKeyboardListener(
-                                focusNode: _focusNode,
-                                autofocus: true,
-                                onKey: (event) {
-                                  if (event is RawKeyDownEvent) {
-                                    if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                                      _controller.animateTo(
-                                        _controller.offset + 100,
-                                        duration: const Duration(milliseconds: 200),
-                                        curve: Curves.easeInOut,
-                                      );
-                                    } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                                      _controller.animateTo(
-                                        _controller.offset - 100,
-                                        duration: const Duration(milliseconds: 200),
-                                        curve: Curves.easeInOut,
-                                      );
-                                    }
-                                  }
-                                },
-                                child:  ListView.builder(
-                                  controller: _controller,
-                                  shrinkWrap: true,
-                                  physics: const ScrollPhysics(),
-                                  itemCount: controllers.paginatedDisqualified.length,
-                                  itemBuilder: (context, index) {
-                                    final data = controllers.paginatedDisqualified[index];
-                                    return Obx(()=>CustomLeadTile(
-                                      pageName: "Disqualified",
-                                        onChanged: (value){
-                                          setState(() {
-                                            if(controllers.isDisqualifiedList[index]["isSelect"]==true){
-                                              controllers.isDisqualifiedList[index]["isSelect"]=false;
-                                              var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                              apiService.prospectsList.removeAt(i);
-                                            }else{
-                                              controllers.isDisqualifiedList[index]["isSelect"]=true;
-                                              apiService.prospectsList.add({
-                                                "lead_id":data.userId.toString(),
-                                                "user_id":controllers.storage.read("id"),
-                                                "rating":data.rating.toString(),
-                                                "cos_id":controllers.storage.read("cos_id"),
-                                                "mail":data.emailId.toString(),
-                                              });
-                                            }
+                        child: SingleChildScrollView(
+                          controller: _horizontalController,
+                          scrollDirection: Axis.horizontal,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 45,
+                                width: 4000,
+                                child: CustomTableHeader(
+                                  showCheckbox: true,
+                                  onSortName: () {
+                                    controllers.sortField.value = 'name';
+                                    controllers.sortOrderN.value =
+                                    controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
+                                  },
+                                  isAllSelected: controllers.isAllSelected.value,
+                                  onSelectAll: (value) {
+                                    if (value == true) {
+                                      controllers.isAllSelected.value = true;
+                                      setState(() {
+                                        for (int j = 0; j < controllers.isDisqualifiedList.length; j++) {
+                                          controllers.isDisqualifiedList[j]["isSelect"] = true;
+                                          apiService.prospectsList.add({
+                                            "lead_id": controllers.isDisqualifiedList[j]["lead_id"],
+                                            "user_id": controllers.storage.read("id"),
+                                            "rating": controllers.isDisqualifiedList[j]["rating"],
+                                            "cos_id": controllers.storage.read("cos_id"),
+                                            "mail": controllers.isDisqualifiedList[j]["mail_id"],
                                           });
-                                        },
-                                        saveValue: controllers.isDisqualifiedList[index]["isSelect"],
-                                      visitType: data.visitType.toString(),
-                                      detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
-                                      statusUpdate: data.statusUpdate.toString(),
-                                      index: index,
-                                      points: data.points.toString(),
-                                      quotationStatus: data.quotationStatus.toString(),
-                                      quotationRequired: data.quotationRequired.toString(),
-                                      productDiscussion: data.productDiscussion.toString(),
-                                      discussionPoint: data.discussionPoint.toString(),
-                                      notes: data.notes.toString(),
-                                      linkedin: "",
-                                      x: "",
-                                      name: data.firstname.toString().split("||")[0],
-                                      mobileNumber: data.mobileNumber.toString().split("||")[0],
-                                      email: data.emailId.toString().split("||")[0],
-                                      companyName: data.companyName.toString(),
-                                      mainWhatsApp: data.mobileNumber.toString().split("||")[0],
-                                      emailUpdate: data.quotationUpdate.toString(),
-                                      id: data.userId.toString(),
-                                      status: data.leadStatus ?? "UnQualified",
-                                      rating: data.rating ?? "Warm",
-                                      mainName: data.firstname.toString().split("||")[0],
-                                      mainMobile: data.mobileNumber.toString().split("||")[0],
-                                      mainEmail: data.emailId.toString().split("||")[0],
-                                      title: "",
-                                      whatsappNumber: data.mobileNumber.toString().split("||")[0],
-                                      mainTitle: "",
-                                      addressId: data.addressId ?? "",
-                                      companyWebsite: "",
-                                      companyNumber: "",
-                                      companyEmail: "",
-                                      industry: "",
-                                      productServices: "",
-                                      source:data.source ?? "",
-                                      owner: "",
-                                      budget: "",
-                                      timelineDecision: "",
-                                      serviceInterest: "",
-                                      description: "",
-                                      leadStatus: data.quotationStatus ?? "",
-                                      active: data.active ?? "",
-                                      addressLine1: data.doorNo ?? "",
-                                      addressLine2: data.landmark1 ?? "",
-                                      area: data.area ?? "",
-                                      city: data.city ?? "",
-                                      state: data.state ?? "",
-                                      country: data.country ?? "",
-                                      pinCode: data.pincode ?? "",
-                                      prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
-                                      expectedConvertionDate: data.expectedConvertionDate ?? "",
-                                      numOfHeadcount: data.numOfHeadcount ?? "",
-                                      expectedBillingValue: data.expectedBillingValue ?? "",
-                                      arpuValue: data.arpuValue ?? "",
-                                      updatedTs: data.updatedTs ?? "",
-                                      sourceDetails: data.sourceDetails ?? "",
-                                    ));
+                                        }
+                                      });
+                                    } else {
+                                      controllers.isAllSelected.value = false;
+                                      for (int j = 0; j < controllers.isDisqualifiedList.length; j++) {
+                                        controllers.isDisqualifiedList[j]["isSelect"] = false;
+                                        setState(() {
+                                          var i = apiService.prospectsList.indexWhere((element) =>
+                                          element["lead_id"] == controllers.isDisqualifiedList[j]["lead_id"]);
+                                          apiService.prospectsList.removeAt(i);
+                                        });
+                                      }
+                                    }
+                                  },
+                                  onSortDate: () {
+                                    controllers.sortField.value = 'date';
+                                    controllers.sortOrder.value =
+                                    controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
                                   },
                                 ),
                               ),
-                            ):
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                100.height,
-                                Center(
-                                    child: SvgPicture.asset(
-                                        "assets/images/noDataFound.svg")),
-                              ],
-                            )
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height - 340,
+                                width: 4000,
+                                child: Obx(
+                                        () => controllers.isLead.value == false
+                                        ? const Center(child: CircularProgressIndicator())
+                                        : controllers.paginatedDisqualified.isNotEmpty?
+                                    ListView.builder(
+                                      controller: _verticalController,
+                                      shrinkWrap: true,
+                                      physics: const ScrollPhysics(),
+                                      itemCount: controllers.paginatedDisqualified.length,
+                                      itemBuilder: (context, index) {
+                                        final data = controllers.paginatedDisqualified[index];
+                                        return Obx(()=>CustomLeadTile(
+                                          pageName: "Disqualified",
+                                          onChanged: (value){
+                                            setState(() {
+                                              if(controllers.isDisqualifiedList[index]["isSelect"]==true){
+                                                controllers.isDisqualifiedList[index]["isSelect"]=false;
+                                                var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                                apiService.prospectsList.removeAt(i);
+                                              }else{
+                                                controllers.isDisqualifiedList[index]["isSelect"]=true;
+                                                apiService.prospectsList.add({
+                                                  "lead_id":data.userId.toString(),
+                                                  "user_id":controllers.storage.read("id"),
+                                                  "rating":data.rating.toString(),
+                                                  "cos_id":controllers.storage.read("cos_id"),
+                                                  "mail":data.emailId.toString(),
+                                                });
+                                              }
+                                            });
+                                          },
+                                          saveValue: controllers.isDisqualifiedList[index]["isSelect"],
+                                          visitType: data.visitType.toString(),
+                                          detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
+                                          statusUpdate: data.statusUpdate.toString(),
+                                          index: index,
+                                          points: data.points.toString(),
+                                          quotationStatus: data.quotationStatus.toString(),
+                                          quotationRequired: data.quotationRequired.toString(),
+                                          productDiscussion: data.productDiscussion.toString(),
+                                          discussionPoint: data.discussionPoint.toString(),
+                                          notes: data.notes.toString(),
+                                          linkedin: "",
+                                          x: "",
+                                          name: data.firstname.toString().split("||")[0],
+                                          mobileNumber: data.mobileNumber.toString().split("||")[0],
+                                          email: data.emailId.toString().split("||")[0],
+                                          companyName: data.companyName.toString(),
+                                          mainWhatsApp: data.mobileNumber.toString().split("||")[0],
+                                          emailUpdate: data.quotationUpdate.toString(),
+                                          id: data.userId.toString(),
+                                          status: data.leadStatus ?? "UnQualified",
+                                          rating: data.rating ?? "Warm",
+                                          mainName: data.firstname.toString().split("||")[0],
+                                          mainMobile: data.mobileNumber.toString().split("||")[0],
+                                          mainEmail: data.emailId.toString().split("||")[0],
+                                          title: "",
+                                          whatsappNumber: data.mobileNumber.toString().split("||")[0],
+                                          mainTitle: "",
+                                          addressId: data.addressId ?? "",
+                                          companyWebsite: "",
+                                          companyNumber: "",
+                                          companyEmail: "",
+                                          industry: "",
+                                          productServices: "",
+                                          source:data.source ?? "",
+                                          owner: "",
+                                          budget: "",
+                                          timelineDecision: "",
+                                          serviceInterest: "",
+                                          description: "",
+                                          leadStatus: data.quotationStatus ?? "",
+                                          active: data.active ?? "",
+                                          addressLine1: data.doorNo ?? "",
+                                          addressLine2: data.landmark1 ?? "",
+                                          area: data.area ?? "",
+                                          city: data.city ?? "",
+                                          state: data.state ?? "",
+                                          country: data.country ?? "",
+                                          pinCode: data.pincode ?? "",
+                                          prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
+                                          expectedConvertionDate: data.expectedConvertionDate ?? "",
+                                          numOfHeadcount: data.numOfHeadcount ?? "",
+                                          expectedBillingValue: data.expectedBillingValue ?? "",
+                                          arpuValue: data.arpuValue ?? "",
+                                          updatedTs: data.updatedTs ?? "",
+                                          sourceDetails: data.sourceDetails ?? "",
+                                        ));
+                                      },
+                                    ):
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        100.height,
+                                        Center(
+                                            child: SvgPicture.asset(
+                                                "assets/images/noDataFound.svg")),
+                                      ],
+                                    )
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+
                       // Pagination
                       // Obx(() {
                       //   final totalPages = controllers.totalPages == 0 ? 1 : controllers.totalPages;

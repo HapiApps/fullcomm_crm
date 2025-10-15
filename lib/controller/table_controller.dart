@@ -41,7 +41,7 @@ class TableController extends GetxController {
         final List<dynamic> decoded = jsonDecode(saved);
         tableHeadings.value = decoded.cast<String>();
       } else {
-        tableHeadings.value = headingFields.take(8).toList();
+        tableHeadings.value = headingFields.toList();
       }
     }catch(e){
       print("Set Heading fields $e");
@@ -54,7 +54,7 @@ class TableController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    tableHeadings.value = headingFields.take(8).toList();
+    tableHeadings.value = headingFields.toList();
   }
 
   // Swap positions in drag-drop
@@ -67,7 +67,7 @@ class TableController extends GetxController {
   // Apply changes (first 8 update table headings)
   void applyChanges()async{
     isTableLoading.value = true;
-    tableHeadings.value = headingFields.take(8).toList();
+    tableHeadings.value = headingFields.toList();
     isTableLoading.value =false;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
@@ -98,7 +98,7 @@ class TableController extends GetxController {
     //   "Expected Billing Value",
     //   "Arpu Value"
     // ];
-    tableHeadings.value = headingFields.take(8).toList();
+    tableHeadings.value = headingFields.toList();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
   }

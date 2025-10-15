@@ -5,10 +5,10 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/models/mail_receive_obj.dart';
-import '../common/constant/colors_constant.dart';
-import '../components/custom_comment_container.dart';
-import '../components/custom_text.dart';
-import '../controller/controller.dart';
+import '../../common/constant/colors_constant.dart';
+import '../../components/custom_comment_container.dart';
+import '../../components/custom_text.dart';
+import '../../controller/controller.dart';
 
 class CusMailComments extends StatefulWidget {
   final String? id;

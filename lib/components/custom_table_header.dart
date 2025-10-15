@@ -200,6 +200,7 @@ class CustomTableHeader extends StatelessWidget {
           if (h.toLowerCase() == "added date"||h.toLowerCase()=="prospect enrollment date") {
             return Container(
               height: 45,
+              width: 200,
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Row(
@@ -277,32 +278,40 @@ class CustomTableHeader extends StatelessWidget {
           return _headerCell(h,screenWidth,);
         }),
       ];
-
+      final int totalColumns = headings.length + 1 + (showCheckbox ? 1 : 0);
+      final Map<int, TableColumnWidth> columnWidths = {};
+      columnWidths[0] =  showCheckbox?FlexColumnWidth(1):FlexColumnWidth(3); // Actions / checkbox
+      columnWidths[1] = const FlexColumnWidth(3); // Name
+      columnWidths[2] = const FlexColumnWidth(2.5); // Company / next
+      for (int i = 3; i < totalColumns; i++) {
+        columnWidths[i] = const FlexColumnWidth(2);
+      }
       return Table(
-        columnWidths: showCheckbox
-            ? {
-          0: FlexColumnWidth(1),
-          1: const FlexColumnWidth(3),
-          2: const FlexColumnWidth(2),
-          3: const FlexColumnWidth(2.5),
-          4: const FlexColumnWidth(2),
-          5: const FlexColumnWidth(3),
-          6: const FlexColumnWidth(2),
-          7: const FlexColumnWidth(2),
-          8: const FlexColumnWidth(2),
-          9: const FlexColumnWidth(3),
-        }
-            : {
-          0: const FlexColumnWidth(3),
-          1: const FlexColumnWidth(2),
-          2: const FlexColumnWidth(2.5),
-          3: const FlexColumnWidth(2),
-          4: const FlexColumnWidth(3),
-          5: const FlexColumnWidth(2),
-          6: const FlexColumnWidth(2),
-          7: const FlexColumnWidth(2),
-          8: const FlexColumnWidth(3),
-        },
+        columnWidths: columnWidths,
+        // columnWidths: showCheckbox
+        //     ? {
+        //   0: FlexColumnWidth(1),
+        //   1: const FlexColumnWidth(3),
+        //   2: const FlexColumnWidth(2),
+        //   3: const FlexColumnWidth(2.5),
+        //   4: const FlexColumnWidth(2),
+        //   5: const FlexColumnWidth(3),
+        //   6: const FlexColumnWidth(2),
+        //   7: const FlexColumnWidth(2),
+        //   8: const FlexColumnWidth(2),
+        //   9: const FlexColumnWidth(3),
+        // }
+        //     : {
+        //   0: const FlexColumnWidth(3),
+        //   1: const FlexColumnWidth(2),
+        //   2: const FlexColumnWidth(2.5),
+        //   3: const FlexColumnWidth(2),
+        //   4: const FlexColumnWidth(3),
+        //   5: const FlexColumnWidth(2),
+        //   6: const FlexColumnWidth(2),
+        //   7: const FlexColumnWidth(2),
+        //   8: const FlexColumnWidth(3),
+        // },
         border: TableBorder(
           horizontalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
           verticalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -325,6 +334,7 @@ class CustomTableHeader extends StatelessWidget {
   Widget _headerCell(String text,double width, {TextAlign textAlign = TextAlign.left}) {
     return Container(
       height: width<=922?65:45,
+      width: 150,
       alignment: textAlign == TextAlign.center
           ? Alignment.center
           : Alignment.centerLeft,
@@ -343,19 +353,4 @@ class CustomTableHeader extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _headerCell(String text, {TextAlign textAlign = TextAlign.left}) {
-  //   return Container(
-  //     height: 45,
-  //     alignment:
-  //     textAlign == TextAlign.center ? Alignment.center : Alignment.centerLeft,
-  //     padding: const EdgeInsets.symmetric(horizontal: 5),
-  //     child: CustomText(
-  //       textAlign: textAlign,
-  //       text: text,
-  //       size: 15,
-  //       colors: Colors.white,
-  //     ),
-  //   );
-  // }
 }

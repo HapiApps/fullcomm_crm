@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/screens/call_comments.dart';
-import 'package:fullcomm_crm/screens/mail_comments.dart';
-import 'package:fullcomm_crm/screens/meeting_comments.dart';
+import 'package:fullcomm_crm/screens/records/call_comments.dart';
+import 'package:fullcomm_crm/screens/records/mail_comments.dart';
+import 'package:fullcomm_crm/screens/records/meeting_comments.dart';
 import 'package:fullcomm_crm/screens/new_dashboard.dart';
 import 'package:fullcomm_crm/screens/notes_comment.dart';
 import 'package:get/get.dart';

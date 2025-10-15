@@ -4,22 +4,22 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../common/constant/colors_constant.dart';
-import '../common/utilities/utils.dart';
-import '../components/custom_text.dart';
-import '../controller/controller.dart';
-import '../controller/reminder_controller.dart';
-import '../provider/reminder_provider.dart';
-import 'employee/role_management.dart';
+import '../../common/constant/colors_constant.dart';
+import '../../common/utilities/utils.dart';
+import '../../components/custom_text.dart';
+import '../../controller/controller.dart';
+import '../../controller/reminder_controller.dart';
+import '../../provider/reminder_provider.dart';
+import '../employee/role_management.dart';
 
-class Settings extends StatefulWidget {
-  const Settings({super.key});
+class ReminderSettings extends StatefulWidget {
+  const ReminderSettings({super.key});
 
   @override
-  State<Settings> createState() => _SettingsState();
+  State<ReminderSettings> createState() => _ReminderSettingsState();
 }
 
-class _SettingsState extends State<Settings> {
+class _ReminderSettingsState extends State<ReminderSettings> {
   String _defaultTime = "Immediately";
   String? _selectedNotification;
   void _showFollowUpDialog() {
@@ -239,8 +239,7 @@ class _SettingsState extends State<Settings> {
                           color: Colors.black,
                           fontSize: 16,
                         ),
-                        items: ["Immediately", "5 mins", "10 mins", "30 mins"]
-                            .map(
+                        items: ["Immediately", "5 mins", "10 mins", "30 mins"].map(
                               (e) => DropdownMenuItem(
                             value: e,
                             child: Text(

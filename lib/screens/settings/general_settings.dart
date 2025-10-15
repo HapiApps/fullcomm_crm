@@ -3,8 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
@@ -13,256 +11,14 @@ import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
 
-class RoleManagement extends StatefulWidget {
-  const RoleManagement({super.key});
+class GeneralSettings extends StatefulWidget {
+  const GeneralSettings({super.key});
 
   @override
-  State<RoleManagement> createState() => _RoleManagementState();
+  State<GeneralSettings> createState() => _GeneralSettingsState();
 }
 
-class _RoleManagementState extends State<RoleManagement> {
-  void _showAddRoleDialog() {
-    String? roleError;
-    String? descriptionError;
-    String? permissionError;
-
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              insetPadding: const EdgeInsets.symmetric(horizontal: 80, vertical: 50),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              contentPadding: EdgeInsets.zero,
-              content: Container(
-                width: 630,
-                color: Colors.white,
-                padding: const EdgeInsets.all(20),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      /// Header
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Add Role",
-                            style: GoogleFonts.lato(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: const Text(
-                              "×",
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Divider(thickness: 1, color: Colors.grey.shade300),
-                      const SizedBox(height: 8),
-
-                      /// Role Name
-                      Text("Role Name",
-                          style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
-                      const SizedBox(height: 5),
-                      TextFormField(
-                        textCapitalization: TextCapitalization.sentences,
-                        controller: remController.roleController,
-                        style: GoogleFonts.lato(
-                          color: Colors.black,
-                          fontSize: 17,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: "Role Name",
-                          errorText: roleError,
-                          hintStyle: TextStyle(
-                            color: const Color(0xFFCCCCCC),
-                            fontSize: 17,
-                            fontFamily: GoogleFonts.lato().fontFamily,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide(color: colorsConst.primary),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-
-                      /// Description
-                      Text("Description",
-                          style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
-                      const SizedBox(height: 5),
-                      SizedBox(
-                        height: 100,
-                        width: 600,
-                        child: TextFormField(
-                          textCapitalization: TextCapitalization.sentences,
-                          controller: remController.detailsController,
-                          maxLines: 3,
-                          style: GoogleFonts.lato(
-                            color: Colors.black,
-                            fontSize: 17,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: "Description",
-                            errorText: descriptionError,
-                            hintStyle: GoogleFonts.lato(
-                              color: const Color(0xFFCCCCCC),
-                              fontSize: 17,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(4),
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade300,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(4),
-                              borderSide: BorderSide(color: Colors.grey.shade300),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(4),
-                              borderSide: BorderSide(color: colorsConst.primary),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-
-                      Text("Permissions",
-                          style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
-                      const SizedBox(height: 5),
-                      DropdownButtonFormField<String>(
-                        value: remController.permission,
-                        dropdownColor: Colors.white,
-                        style: GoogleFonts.lato(
-                          color: Colors.black,
-                          fontSize: 14,
-                        ),
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide(color: colorsConst.primary),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                        ),
-                        items: remController.permissionList.map(
-                              (e) => DropdownMenuItem(
-                            value: e,
-                            child: Text(
-                              e,
-                              style: GoogleFonts.lato(
-                                color: Colors.black,
-                                fontSize: 17,
-                              ),
-                            ),
-                          ),
-                        ).toList(),
-                        onChanged: (v) => setState(() => remController.permission = v),
-                      ),
-                      15.height,
-
-                      /// Action Buttons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          SizedBox(
-                            width: 80,
-                            height: 35,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(7),
-                                  side: const BorderSide(color: Color(0xff0078D7)),
-                                ),
-                                padding: EdgeInsets.zero,
-                                elevation: 0,
-                              ),
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text(
-                                "Cancel",
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          CustomLoadingButton(
-                            callback: () async {
-                              setState(() {
-                                roleError = remController.roleController.text.trim().isEmpty
-                                    ? "Please enter role name"
-                                    : null;
-                                descriptionError = remController.detailsController.text.trim().isEmpty
-                                    ? "Please enter description"
-                                    : null;
-                                permissionError = remController.location == null
-                                    ? "Please select location"
-                                    : null;
-                              });
-
-                              if (roleError == null &&
-                                  descriptionError == null &&
-                                  permissionError == null) {
-                                /// ✅ Call your API here
-                                // await remController.addRoleAPI();
-                              } else {
-                                controllers.productCtr.reset();
-                              }
-                            },
-                            height: 40,
-                            isLoading: true,
-                            backgroundColor: colorsConst.primary,
-                            radius: 7,
-                            width: 120,
-                            controller: controllers.productCtr,
-                            isImage: false,
-                            text: "Save Role",
-                            textColor: Colors.white,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-
+class _GeneralSettingsState extends State<GeneralSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -284,14 +40,14 @@ class _RoleManagementState extends State<RoleManagement> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(
-                          text: "Role Management",
+                          text: "General Settings",
                           colors: colorsConst.textColor,
                           size: 20,
                           isBold: true,
                         ),
                         10.height,
                         CustomText(
-                          text: "Define what each user can access",
+                          text: "View all of your call activity Report",
                           colors: colorsConst.textColor,
                           size: 14,
                         ),
@@ -308,10 +64,10 @@ class _RoleManagementState extends State<RoleManagement> {
                           ),
                         ),
                         onPressed: (){
-                          _showAddRoleDialog();
+
                         },
                         label: CustomText(
-                          text: "Add Role",
+                          text: "Add Office Hours",
                           colors: Colors.white,
                           isBold :true,
                           size: 14,
@@ -323,7 +79,7 @@ class _RoleManagementState extends State<RoleManagement> {
                 Row(
                   children: [
                     CustomText(
-                      text: "Roles",
+                      text: "Shift",
                       colors: colorsConst.primary,
                       isBold: true,
                       size: 15,
@@ -351,7 +107,7 @@ class _RoleManagementState extends State<RoleManagement> {
                   children: [
                     CustomSearchTextField(
                       controller: controllers.search,
-                      hintText: "Search Role Name",
+                      hintText: "Search Employee Name, Shift Name",
                       onChanged: (value) {
                         remController.searchText.value = value.toString().trim();
                       },
@@ -453,10 +209,14 @@ class _RoleManagementState extends State<RoleManagement> {
                 10.height,
                 Table(
                   columnWidths: const {
-                    0: FlexColumnWidth(3),//Actions
-                    1: FlexColumnWidth(2),//Role
-                    2: FlexColumnWidth(3),//Description
-                    3: FlexColumnWidth(2),//Permissions
+                    0: FlexColumnWidth(1),//Check Box
+                    1: FlexColumnWidth(3),//Actions
+                    2: FlexColumnWidth(2),//Employee
+                    3: FlexColumnWidth(3),//Shift Name
+                    4: FlexColumnWidth(2),//From
+                    5: FlexColumnWidth(2),//To
+                    6: FlexColumnWidth(2),//days
+                    7: FlexColumnWidth(2),//Updated On
                   },
                   border: TableBorder(
                     horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -474,6 +234,16 @@ class _RoleManagementState extends State<RoleManagement> {
                             padding: const EdgeInsets.all(10.0),
                             child: CustomText(
                               textAlign: TextAlign.left,
+                              text: "S.No",
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: CustomText(
+                              textAlign: TextAlign.left,
                               text: "Actions",//0
                               size: 15,
                               isBold: true,
@@ -486,7 +256,7 @@ class _RoleManagementState extends State<RoleManagement> {
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.left,
-                                  text: "Role",//1
+                                  text: "Employee",//1
                                   size: 15,
                                   isBold: true,
                                   colors: Colors.white,
@@ -522,7 +292,7 @@ class _RoleManagementState extends State<RoleManagement> {
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.left,
-                                  text: "Description",//2
+                                  text: "Shift Name",//2
                                   size: 15,
                                   isBold: true,
                                   colors: Colors.white,
@@ -554,38 +324,42 @@ class _RoleManagementState extends State<RoleManagement> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                              children: [
-                                CustomText(
-                                  textAlign: TextAlign.left,
-                                  text: "Permissions",//3
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
-                                ),
-                                const SizedBox(width: 3),
-                                GestureDetector(
-                                  onTap: (){
-                                    if(remController.sortFieldCallActivity.value=='employeeName' && remController.sortOrderCallActivity.value=='asc'){
-                                      remController.sortOrderCallActivity.value='desc';
-                                    }else{
-                                      remController.sortOrderCallActivity.value='asc';
-                                    }
-                                    remController.sortFieldCallActivity.value='employeeName';
-                                    remController.sortReminders();
-                                  },
-                                  child: Obx(() => Image.asset(
-                                    controllers.sortFieldCallActivity.value.isEmpty
-                                        ? "assets/images/arrow.png"
-                                        : controllers.sortOrderCallActivity.value == 'asc'
-                                        ? "assets/images/arrow_up.png"
-                                        : "assets/images/arrow_down.png",
-                                    width: 15,
-                                    height: 15,
-                                  ),
-                                  ),
-                                ),
-                              ],
+                            child: CustomText(
+                              textAlign: TextAlign.left,
+                              text: "From",//3
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: CustomText(
+                              textAlign: TextAlign.left,
+                              text: "To",//4
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: CustomText(
+                              textAlign: TextAlign.left,
+                              text: "Days",//4
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: CustomText(
+                              textAlign: TextAlign.left,
+                              text: "Updated On",//4
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
                             ),
                           ),
                         ]),
@@ -613,10 +387,14 @@ class _RoleManagementState extends State<RoleManagement> {
                         final reminder = filteredList[index];
                         return Table(
                           columnWidths:const {
-                            0: FlexColumnWidth(3),//Actions
-                            1: FlexColumnWidth(2),//Role
-                            2: FlexColumnWidth(3),//Description
-                            3: FlexColumnWidth(2),//Permissions
+                            0: FlexColumnWidth(1),//Check Box
+                            1: FlexColumnWidth(3),//Actions
+                            2: FlexColumnWidth(2),//Employee
+                            3: FlexColumnWidth(3),//Shift Name
+                            4: FlexColumnWidth(2),//From
+                            5: FlexColumnWidth(2),//To
+                            6: FlexColumnWidth(2),//days
+                            7: FlexColumnWidth(2),//Updated On
                           },
                           border: TableBorder(
                             horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -629,6 +407,20 @@ class _RoleManagementState extends State<RoleManagement> {
                                   color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                 ),
                                 children:[
+                                  SizedBox(
+                                    width:100,
+                                    child: Row(
+                                      children: [
+                                        Checkbox(
+                                          value: true,
+                                          onChanged: (value) {
+                                            //employeeProvider.toggleSelectionEmployee(staffId);
+                                          },
+                                        ),
+                                        CustomText(text: "${index + 1}"),
+                                      ],
+                                    ),
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.all(3.0),
                                     child: Row(
@@ -722,7 +514,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                       padding: const EdgeInsets.all(10.0),
                                       child: CustomText(
                                         textAlign: TextAlign.left,
-                                        text:"role",
+                                        text:"Employee",//1
                                         size: 14,
                                         colors:colorsConst.textColor,
                                       ),
@@ -732,7 +524,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
                                       textAlign: TextAlign.left,
-                                      text: "Meeting",
+                                      text: "Shift",//2
                                       size: 14,
                                       colors:colorsConst.textColor,
                                     ),
@@ -741,7 +533,34 @@ class _RoleManagementState extends State<RoleManagement> {
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
                                       textAlign: TextAlign.left,
-                                      text:"Permissions",
+                                      text:"From",
+                                      size: 14,
+                                      colors: colorsConst.textColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: CustomText(
+                                      textAlign: TextAlign.left,
+                                      text:"To",
+                                      size: 14,
+                                      colors: colorsConst.textColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: CustomText(
+                                      textAlign: TextAlign.left,
+                                      text:"Days",
+                                      size: 14,
+                                      colors: colorsConst.textColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: CustomText(
+                                      textAlign: TextAlign.left,
+                                      text:"Updated On",
                                       size: 14,
                                       colors: colorsConst.textColor,
                                     ),

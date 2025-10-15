@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/components/line_chart.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
-import 'package:fullcomm_crm/screens/records.dart';
+import 'package:fullcomm_crm/screens/records/records.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';

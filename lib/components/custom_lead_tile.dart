@@ -8,10 +8,10 @@ import 'package:fullcomm_crm/components/custom_checkbox.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
-import 'package:fullcomm_crm/screens/mail_comments.dart';
+import 'package:fullcomm_crm/screens/records/mail_comments.dart';
 import '../common/constant/api.dart';
 import '../controller/table_controller.dart';
-import '../screens/cus_mail_comments.dart';
+import '../screens/records/cus_mail_comments.dart';
 import '../screens/leads/update_lead.dart';
 import '../services/api_services.dart';
 import 'custom_loading_button.dart';
@@ -247,6 +247,14 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
 
   @override
   Widget build(BuildContext context) {
+    final int totalColumns = tableController.tableHeadings.length + 1 + (widget.showCheckbox ? 1 : 0);
+    final Map<int, TableColumnWidth> columnWidths = {};
+    columnWidths[0] =  widget.showCheckbox?FlexColumnWidth(1):FlexColumnWidth(3); // Actions / checkbox
+    columnWidths[1] = const FlexColumnWidth(3); // Name
+    columnWidths[2] = const FlexColumnWidth(2.5); // Company / next
+    for (int i = 3; i < totalColumns; i++) {
+      columnWidths[i] = const FlexColumnWidth(2);
+    }
     return Obx(()=>tableController.isTableLoading.value?CircularProgressIndicator():InkWell(
       onTap: () {
         Get.to(
@@ -304,30 +312,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
             duration: Duration.zero);
       },
       child: Table(
-        columnWidths: widget.showCheckbox
-            ? {
-          0: FlexColumnWidth(1),
-          1: const FlexColumnWidth(3),
-          2: const FlexColumnWidth(2),
-          3: const FlexColumnWidth(2.5),
-          4: const FlexColumnWidth(2),
-          5: const FlexColumnWidth(3),
-          6: const FlexColumnWidth(2),
-          7: const FlexColumnWidth(2),
-          8: const FlexColumnWidth(2),
-          9: const FlexColumnWidth(3),
-        }
-            : {
-          0: const FlexColumnWidth(3),
-          1: const FlexColumnWidth(2),
-          2: const FlexColumnWidth(2.5),
-          3: const FlexColumnWidth(2),
-          4: const FlexColumnWidth(3),
-          5: const FlexColumnWidth(2),
-          6: const FlexColumnWidth(2),
-          7: const FlexColumnWidth(2),
-          8: const FlexColumnWidth(3),
-        },
+        columnWidths: columnWidths,
         border: TableBorder(
           horizontalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
           verticalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -350,7 +335,6 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         onChanged: widget.onChanged,
                         saveValue: widget.saveValue),
                   ),
-
                 Container(
                   height: 45,
                   alignment: Alignment.center,
@@ -703,26 +687,13 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                           CustomLoadingButton(
                                             callback: () {
                                               final deleteData = {
-                                                "lead_id":
-                                                widget.id.toString(),
-                                                "user_id": controllers
-                                                    .storage
-                                                    .read("id")
-                                                    .toString(),
-                                                "rating": (widget.rating ??
-                                                    "Warm")
-                                                    .toString(),
-                                                "cos_id": controllers
-                                                    .storage
-                                                    .read("cos_id")
-                                                    .toString(),
-                                                "mail_id": widget.mainEmail
-                                                    .toString(),
+                                                "lead_id": widget.id.toString(),
+                                                "user_id": controllers.storage.read("id").toString(),
+                                                "rating": (widget.rating ?? "Warm").toString(),
+                                                "cos_id": controllers.storage.read("cos_id").toString(),
+                                                "mail_id": widget.mainEmail.toString(),
                                               };
-                                              apiService
-                                                  .disqualifiedCustomersAPI(
-                                                  context,
-                                                  [deleteData]);
+                                              apiService.disqualifiedCustomersAPI(context, [deleteData]);
                                             },
                                             height: 35,
                                             isLoading: true,
@@ -898,517 +869,6 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                   }
                 }),
               ]),
-
-          // TableRow(
-          //     decoration: BoxDecoration(
-          //       color: int.parse(widget.index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-          //     ),
-          //     children:[
-          //       if (widget.showCheckbox)
-          //           Container(
-          //             height: 45,
-          //             alignment: Alignment.center,
-          //             child: CustomCheckBox(
-          //                 text: "",
-          //                 onChanged: widget.onChanged,
-          //                 saveValue: widget.saveValue),
-          //           ),
-          //
-          //       Container(
-          //         height: 45,
-          //         alignment: Alignment.center,
-          //         child: Row(
-          //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //           children: [
-          //             InkWell(
-          //                 onTap: (){
-          //                   Get.to(UpdateLead(
-          //                     visitType: widget.visitType.toString(),
-          //                     id:widget.id,
-          //                     detailsOfRequired: "",
-          //                     linkedin: "",
-          //                     x: "",
-          //                     mainName:widget.mainName,
-          //                     mainMobile:widget.mobileNumber,
-          //                     mainEmail:widget.email,
-          //                     mainWhatsApp: widget.mobileNumber,
-          //                     companyName:widget.companyName,
-          //                     status:widget.status,
-          //                     rating:widget.rating,
-          //                     emailUpdate:widget.quotationRequired,
-          //                     name:widget.mainName,
-          //                     title:"",
-          //                     mobileNumber:widget.mobileNumber,
-          //                     whatsappNumber:widget.mobileNumber,
-          //                     email:widget.email,
-          //                     mainTitle:"",
-          //                     addressId:widget.addressId,
-          //                     companyWebsite:"",
-          //                     companyNumber:"",
-          //                     companyEmail:"",
-          //                     industry:"",
-          //                     productServices:"",
-          //                     source:widget.source,
-          //                     owner:widget.owner,
-          //                     budget:"",
-          //                     timelineDecision:"",
-          //                     serviceInterest:"",
-          //                     description:"",
-          //                     leadStatus:widget.leadStatus,
-          //                     active:widget.active,
-          //                     addressLine1:widget.addressLine1,
-          //                     addressLine2:widget.addressLine2,
-          //                     area:widget.area,
-          //                     city:widget.city,
-          //                     state:widget.state,
-          //                     country:widget.country,
-          //                     pinCode:widget.pinCode,
-          //                     quotationStatus:widget.quotationStatus,
-          //                     productDiscussion:widget.productDiscussion,
-          //                     discussionPoint:widget.discussionPoint,
-          //                     notes:widget.notes.toString(),
-          //                     statusUpdate: widget.statusUpdate,
-          //                     prospectEnrollmentDate: widget.prospectEnrollmentDate ?? "",
-          //                     expectedConvertionDate: widget.expectedConvertionDate ?? "",
-          //                     numOfHeadcount: widget.numOfHeadcount ?? "",
-          //                     expectedBillingValue: widget.expectedBillingValue ?? "",
-          //                     arpuValue: widget.arpuValue ?? "",
-          //                     updateTs: widget.updatedTs.toString(),
-          //                     sourceDetails: widget.sourceDetails.toString(),));
-          //                 },
-          //                 child: SvgPicture.asset("assets/images/a_edit.svg",width: 16,height: 16,)),
-          //             InkWell(
-          //                 onTap: (){
-          //                   showDialog(
-          //                       context: context,
-          //                       barrierDismissible: false,
-          //                       builder: (context) {
-          //                         return AlertDialog(
-          //                           content: CustomText(
-          //                             text: "Are you sure delete this customers?",
-          //                             size: 16,
-          //                             isBold: true,
-          //                             colors: colorsConst.textColor,
-          //                           ),
-          //                           actions: [
-          //                             Row(
-          //                               mainAxisAlignment: MainAxisAlignment.end,
-          //                               children: [
-          //                                 Container(
-          //                                   decoration: BoxDecoration(
-          //                                       border: Border.all(color: colorsConst.primary),
-          //                                       color: Colors.white),
-          //                                   width: 80,
-          //                                   height: 25,
-          //                                   child: ElevatedButton(
-          //                                       style: ElevatedButton.styleFrom(
-          //                                         shape: const RoundedRectangleBorder(
-          //                                           borderRadius: BorderRadius.zero,
-          //                                         ),
-          //                                         backgroundColor: Colors.white,
-          //                                       ),
-          //                                       onPressed: () {
-          //                                         Navigator.pop(context);
-          //                                       },
-          //                                       child: CustomText(
-          //                                         text: "Cancel",
-          //                                         colors: colorsConst.primary,
-          //                                         size: 14,
-          //                                       )),
-          //                                 ),
-          //                                 10.width,
-          //                                 CustomLoadingButton(
-          //                                   callback: ()async{
-          //                                     final deleteData = {
-          //                                       "lead_id": widget.id.toString(),
-          //                                       "user_id": controllers.storage.read("id").toString(),
-          //                                       "rating": (widget.rating ?? "Warm").toString(),
-          //                                       "cos_id": controllers.storage.read("cos_id").toString(),
-          //                                       "mail_id": widget.mainEmail.toString(),
-          //                                     };
-          //
-          //                                     await apiService.deleteCustomersAPI(context, [deleteData]);
-          //
-          //                                   },
-          //                                   height: 35,
-          //                                   isLoading: true,
-          //                                   backgroundColor: colorsConst.primary,
-          //                                   radius: 2,
-          //                                   width: 80,
-          //                                   controller: controllers.productCtr,
-          //                                   isImage: false,
-          //                                   text: "Delete",
-          //                                   textColor: Colors.white,
-          //                                 ),
-          //                                 5.width
-          //                               ],
-          //                             ),
-          //                           ],
-          //                         );
-          //                       });
-          //                 },
-          //                 child: SvgPicture.asset("assets/images/a_delete.svg",width: 16,height: 16,)),
-          //             InkWell(
-          //               onTap: (){
-          //                 controllers.customMailFuture = apiService.mailCommentDetails(widget.id.toString());
-          //                 Get.to(CusMailComments(
-          //                   mainEmail: widget.mainEmail,
-          //                   mainMobile: widget.mainMobile,
-          //                   mainName: widget.mainName,
-          //                   city: widget.city,
-          //                   id: widget.id,
-          //                   companyName: widget.companyName,
-          //                 ));
-          //               },
-          //               child: SvgPicture.asset("assets/images/a_email.svg",width: 16,height: 16,),
-          //             ),
-          //             widget.pageName=="Customers"?0.width:InkWell(
-          //                 onTap: (){
-          //                   showDialog(
-          //                       context: context,
-          //                       barrierDismissible: false,
-          //                       builder: (context) {
-          //                         return AlertDialog(
-          //                           content: CustomText(
-          //                             text: "Are you moving to the next level?",
-          //                             size: 16,
-          //                             isBold: true,
-          //                             colors: colorsConst.textColor,
-          //                           ),
-          //                           actions: [
-          //                             Row(
-          //                               mainAxisAlignment: MainAxisAlignment.end,
-          //                               children: [
-          //                                 Container(
-          //                                   decoration: BoxDecoration(
-          //                                       border: Border.all(color: colorsConst.primary),
-          //                                       color: Colors.white),
-          //                                   width: 80,
-          //                                   height: 25,
-          //                                   child: ElevatedButton(
-          //                                       style: ElevatedButton.styleFrom(
-          //                                         shape: const RoundedRectangleBorder(
-          //                                           borderRadius: BorderRadius.zero,
-          //                                         ),
-          //                                         backgroundColor: Colors.white,
-          //                                       ),
-          //                                       onPressed: () {
-          //                                         Navigator.pop(context);
-          //                                       },
-          //                                       child: CustomText(
-          //                                         text: "Cancel",
-          //                                         colors: colorsConst.primary,
-          //                                         size: 14,
-          //                                       )),
-          //                                 ),
-          //                                 10.width,
-          //                                 CustomLoadingButton(
-          //                                   callback: ()async{
-          //                                     final deleteData = {
-          //                                       "lead_id": widget.id.toString(),
-          //                                       "user_id": controllers.storage.read("id").toString(),
-          //                                       "rating": (widget.rating ?? "Warm").toString(),
-          //                                       "cos_id": controllers.storage.read("cos_id").toString(),
-          //                                       "mail_id": widget.mainEmail.toString(),
-          //                                     };
-          //                                     if(widget.pageName=="Prospects"){
-          //                                       await apiService.insertQualifiedAPI(context, [deleteData]);
-          //                                     } else if(widget.pageName=="Qualified"){
-          //                                       await apiService.insertPromoteCustomerAPI(context, [deleteData]);
-          //                                     } else if(widget.pageName=="Disqualified"){
-          //                                       await apiService.qualifiedCustomersAPI(context, [deleteData]);
-          //                                     }else{
-          //                                       await apiService.insertProspectsAPI(context, [deleteData]);
-          //                                     }
-          //
-          //
-          //                                   },
-          //                                   height: 35,
-          //                                   isLoading: true,
-          //                                   backgroundColor: colorsConst.primary,
-          //                                   radius: 2,
-          //                                   width: 80,
-          //                                   controller: controllers.productCtr,
-          //                                   isImage: false,
-          //                                   text: "Move",
-          //                                   textColor: Colors.white,
-          //                                 ),
-          //                                 5.width
-          //                               ],
-          //                             ),
-          //                           ],
-          //                         );
-          //                       });
-          //                 },
-          //                 child: SvgPicture.asset("assets/images/a_qualified.svg",width: 16,height: 16,)),
-          //             widget.pageName=="Disqualified"||widget.pageName=="Customers"?0.width:InkWell(
-          //                 onTap: (){
-          //                   showDialog(
-          //                       context: context,
-          //                       barrierDismissible: true,
-          //                       builder: (context) {
-          //                         return AlertDialog(
-          //                           content: CustomText(
-          //                             text: "Are you sure disqualify this customers?",
-          //                             size: 16,
-          //                             isBold: true,
-          //                             colors: colorsConst.textColor,
-          //                           ),
-          //                           actions: [
-          //                             Row(
-          //                               mainAxisAlignment: MainAxisAlignment.end,
-          //                               children: [
-          //                                 Container(
-          //                                   decoration: BoxDecoration(
-          //                                       border: Border.all(color: colorsConst.primary),
-          //                                       color: Colors.white),
-          //                                   width: 80,
-          //                                   height: 25,
-          //                                   child: ElevatedButton(
-          //                                       style: ElevatedButton.styleFrom(
-          //                                         shape: const RoundedRectangleBorder(
-          //                                           borderRadius: BorderRadius.zero,
-          //                                         ),
-          //                                         backgroundColor: Colors.white,
-          //                                       ),
-          //                                       onPressed: () {
-          //                                         Navigator.pop(context);
-          //                                       },
-          //                                       child: CustomText(
-          //                                         text: "Cancel",
-          //                                         colors: colorsConst.primary,
-          //                                         size: 14,
-          //                                       )),
-          //                                 ),
-          //                                 10.width,
-          //                                 CustomLoadingButton(
-          //                                   callback: (){
-          //                                     final deleteData = {
-          //                                       "lead_id": widget.id.toString(),
-          //                                       "user_id": controllers.storage.read("id").toString(),
-          //                                       "rating": (widget.rating ?? "Warm").toString(),
-          //                                       "cos_id": controllers.storage.read("cos_id").toString(),
-          //                                       "mail_id": widget.mainEmail.toString(),
-          //                                     };
-          //                                     apiService.disqualifiedCustomersAPI(context, [deleteData]);
-          //                                   },
-          //                                   height: 35,
-          //                                   isLoading: true,
-          //                                   backgroundColor:
-          //                                   colorsConst.primary,
-          //                                   radius: 2,
-          //                                   width: 100,
-          //                                   controller: controllers.productCtr,
-          //                                   isImage: false,
-          //                                   text: "Disqualified",
-          //                                   textColor:Colors.white,
-          //                                 ),
-          //                                 5.width
-          //                               ],
-          //                             ),
-          //                           ],
-          //                         );
-          //                       });
-          //                 },
-          //                 child: SvgPicture.asset("assets/images/a_disqualified.svg",width: 16,height: 16,)),
-          //           ],
-          //         ),
-          //       ),
-          //       // SingleChildScrollView(
-          //       //   scrollDirection: Axis.horizontal,
-          //       //   child: Row(
-          //       //     mainAxisAlignment: MainAxisAlignment.center,
-          //       //     children:[
-          //       //       70.height,
-          //       //       InkWell(
-          //       //         onTap: (){
-          //       //           controllers.customMailFuture = apiService.mailCommentDetails(widget.id.toString());
-          //       //           Get.to(MailComments(
-          //       //               mainEmail: widget.mainEmail,
-          //       //               mainMobile: widget.mainMobile,
-          //       //               mainName: widget.mainName,
-          //       //               city: widget.city,
-          //       //               id: widget.id,
-          //       //               companyName: widget.companyName,
-          //       //           ));
-          //       //           // Get.to(Quotations(
-          //       //           //   mainEmail: widget.mainEmail,
-          //       //           //   mainMobile: widget.mainMobile,
-          //       //           //   mainName: widget.mainName,
-          //       //           //   city: widget.city,
-          //       //           //   id: widget.id,
-          //       //           //   companyName: widget.companyName,
-          //       //           // ));
-          //       //         },
-          //       //         child: Row(
-          //       //           children: [
-          //       //             CircleAvatar(
-          //       //               backgroundColor: const Color(0xffAFC8D9),
-          //       //               radius: 13,
-          //       //               child: Icon(Icons.call,
-          //       //                 color: colorsConst.primary,
-          //       //                 size: 15,),
-          //       //
-          //       //             ),
-          //       //             4.width,
-          //       //             Container(
-          //       //               height: 30,
-          //       //               width: 130,
-          //       //               padding: const EdgeInsets.only(
-          //       //                 left:10,
-          //       //                 right: 10
-          //       //               ),
-          //       //               alignment: Alignment.center,
-          //       //               decoration: BoxDecoration(
-          //       //                   color:const Color(0xffAFC8D9),
-          //       //                   borderRadius: BorderRadius.circular(15)
-          //       //               ),
-          //       //               child: Tooltip(
-          //       //                 message:  widget.emailUpdate.toString().isEmpty||widget.emailUpdate=="null"?
-          //       //                 "No Code Sent":widget.emailUpdate.toString(),
-          //       //                 child: Text(
-          //       //                     widget.emailUpdate.toString().isEmpty||widget.emailUpdate=="null"?
-          //       //                     "No Code Sent":widget.emailUpdate.toString(),
-          //       //                   overflow: TextOverflow.ellipsis,
-          //       //                   maxLines: 1,
-          //       //                   textAlign: TextAlign.center,
-          //       //                   style: TextStyle(
-          //       //                     color: colorsConst.primary,
-          //       //                     fontSize: 12,
-          //       //                     fontWeight:FontWeight.bold,
-          //       //                     fontFamily:"Lato",
-          //       //                   ),
-          //       //                 ),
-          //       //                 //child: Text(widget.updatedTs.toString()),
-          //       //               ),
-          //       //             )
-          //       //           ],
-          //       //         ),
-          //       //       ),
-          //       //     ],
-          //       //   ),
-          //       // ),
-          //       Container(
-          //         height: 45,
-          //         alignment: Alignment.centerLeft,
-          //         padding: EdgeInsets.only(left: 5,right: 5),
-          //         child: CustomText(
-          //           textAlign: TextAlign.left,
-          //           text: widget.mainName.toString()=="null"?"":widget.mainName.toString(),
-          //           size: 14,
-          //           colors: colorsConst.textColor,
-          //         ),
-          //       ),
-          //       Tooltip(
-          //         message: widget.companyName.toString()=="null"?"":widget.companyName.toString(),
-          //         child: Container(
-          //           height: 45,
-          //           alignment: Alignment.centerLeft,
-          //           padding: EdgeInsets.only(left: 5,right: 5),
-          //           child: CustomText(
-          //             textAlign: TextAlign.left,
-          //             text: widget.companyName.toString()=="null"?"":widget.companyName.toString(),
-          //             size: 14,
-          //             colors:colorsConst.textColor,
-          //           ),
-          //         ),
-          //       ),
-          //       Container(
-          //         height: 45,
-          //         alignment: Alignment.centerLeft,
-          //         padding: EdgeInsets.only(left: 5,right: 5),
-          //         child: CustomText(
-          //           textAlign: TextAlign.left,
-          //           text:widget.mainMobile.toString()=="null"?"":widget.mainMobile.toString(),
-          //           size: 14,
-          //           colors: colorsConst.textColor,
-          //         ),
-          //       ),
-          //       Tooltip(
-          //         message: widget.detailsOfServiceReq.toString()=="null"?"":widget.detailsOfServiceReq.toString(),
-          //         child: Container(
-          //           height: 45,
-          //           alignment: Alignment.centerLeft,
-          //           padding: EdgeInsets.only(left: 5,right: 5),
-          //           child: CustomText(
-          //             textAlign: TextAlign.left,
-          //             text: widget.detailsOfServiceReq.toString(),
-          //             size: 14,
-          //             colors:colorsConst.textColor,
-          //           ),
-          //         ),
-          //       ),
-          //       Tooltip(
-          //         message: widget.source.toString()=="null"?"":widget.source.toString(),
-          //         child: Container(
-          //           height: 45,
-          //           alignment: Alignment.centerLeft,
-          //           padding: EdgeInsets.only(left: 5,right: 5),
-          //           child: CustomText(
-          //             textAlign: TextAlign.left,
-          //             text: widget.source.toString(),
-          //             size: 14,
-          //             colors:colorsConst.textColor,
-          //           ),
-          //         ),
-          //       ),
-          //       Container(
-          //         height: 45,
-          //         alignment: Alignment.centerLeft,
-          //         padding: EdgeInsets.only(left: 5,right: 5),
-          //         child: CustomText(
-          //           textAlign: TextAlign.left,
-          //           text: formatDate(widget.prospectEnrollmentDate.toString().isEmpty||widget.prospectEnrollmentDate.toString()=="null"?widget.updatedTs.toString():widget.prospectEnrollmentDate.toString()),
-          //           size: 14,
-          //           colors:colorsConst.textColor,
-          //         ),
-          //       ),
-          //       Tooltip(
-          //         message: widget.city.toString(),
-          //         child: Container(
-          //           height: 45,
-          //           alignment: Alignment.centerLeft,
-          //           padding: EdgeInsets.only(left: 5,right: 5),
-          //           child: CustomText(
-          //             textAlign: TextAlign.left,
-          //             text: widget.city.toString()=="null"?"":widget.city.toString(),
-          //             size: 14,
-          //             colors:colorsConst.textColor,
-          //           ),
-          //         ),
-          //       ),
-          //       Tooltip(
-          //         message: widget.statusUpdate.toString()=="null"?"":widget.statusUpdate.toString(),
-          //         child: Container(
-          //           height: 45,
-          //           alignment: Alignment.centerLeft,
-          //           padding: const EdgeInsets.only(left: 6,right: 5,bottom: 5),
-          //           child: TextField(
-          //             controller: statusController,
-          //             textAlign: TextAlign.left,
-          //             cursorColor: colorsConst.textColor,
-          //             style: TextStyle(
-          //               color: colorsConst.textColor,
-          //               fontSize: 14,
-          //               fontFamily: "Lato",
-          //               fontWeight: FontWeight.normal,
-          //             ),
-          //             decoration: const InputDecoration(
-          //               border: InputBorder.none,
-          //             ),
-          //             onSubmitted: (value) async {
-          //               apiService.updateLeadStatusUpdateAPI(
-          //                 context,
-          //                 widget.id.toString(),
-          //                 widget.mainMobile.toString(),
-          //                 value,
-          //               );
-          //             },
-          //           ),
-          //         ),
-          //       ),
-          //     ]
-          // ),
         ],
       ),
     ));
