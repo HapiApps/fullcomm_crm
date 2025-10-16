@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -16,13 +15,10 @@ final remController = Get.put(ReminderController());
 
 class ReminderController extends GetxController with GetSingleTickerProviderStateMixin {
   TextEditingController titleController       = TextEditingController();
-  TextEditingController roleController        = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
   TextEditingController detailsController     = TextEditingController();
   TextEditingController startController       = TextEditingController();
   TextEditingController endController         = TextEditingController();
   String? location;
-  String? permission;
   String? repeat;
 
   TextEditingController updateTitleController   = TextEditingController();
@@ -37,19 +33,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   var searchText = ''.obs;
   var reminderList = <ReminderModel>[].obs;
   var selectedReminderIds = <String>[].obs;
-  List<String> permissionList = [
-    "Add Lead",
-    "Suspects Edit, Delete",
-    "Prospects Edit, Delete",
-    "Qualified Edit, Delete",
-    "Unqualified Edit, Delete",
-    "Customers Edit, Delete",
-    "Import",
-    "Settings",
-    "Call Activities",
-    "Meetings",
-    "Reminders",
-  ];
+
   var sortBy = ''.obs;
   var ascending = true.obs;
   void sortReminders() {
@@ -149,7 +133,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
           followUpReminderCount.value = followUpCount;
           meetingReminderCount.value = meetingCount;
-
         } else {
           reminderList.value = [];
           followUpReminderCount.value = 0;
@@ -198,6 +181,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"]=="Reminder added successfully"){
+         titleController.clear();
+         location=null;
+         repeat=null;
+         controllers.clearSelectedEmployee();
+         controllers.clearSelectedCustomer();
+         startController.clear();
+         endController.clear();
+         detailsController.clear();
         allReminders(type);
         Navigator.pop(context);
         utils.snackBar(context: context, msg: "Reminder added successfully", color: Colors.green);

@@ -1,6 +1,7 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fullcomm_crm/common/extentions/int_extensions.dart';
+import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/provider/employee_provider.dart';
 import 'package:fullcomm_crm/provider/reminder_provider.dart';
 import 'package:fullcomm_crm/screens/new_dashboard.dart';
@@ -84,6 +85,8 @@ class _MyAppState extends State<MyApp> {
       apiService.getAllNoteActivity();
       apiService.getUserHeading();
       remController.allReminders("2");
+      settingsController.allRoles();
+      settingsController.allOfficeHours();
     }
   }
   @override

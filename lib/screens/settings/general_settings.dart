@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/controller/settings_controller.dart';
+import 'package:fullcomm_crm/screens/settings/add_office_hours.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../common/constant/colors_constant.dart';
@@ -10,6 +12,7 @@ import '../../components/custom_search_textfield.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
+import '../../services/api_services.dart';
 
 class GeneralSettings extends StatefulWidget {
   const GeneralSettings({super.key});
@@ -19,6 +22,12 @@ class GeneralSettings extends StatefulWidget {
 }
 
 class _GeneralSettingsState extends State<GeneralSettings> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    apiService.getAllEmployees();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +73,15 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                           ),
                         ),
                         onPressed: (){
-
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) =>
+                              const AddOfficeHours(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
+                            ),
+                          );
                         },
                         label: CustomText(
                           text: "Add Office Hours",
@@ -88,11 +105,11 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     CircleAvatar(
                       backgroundColor: colorsConst.primary,
                       radius: 17,
-                      child: CustomText(
-                        text: "3",
+                      child: Obx(()=>CustomText(
+                        text: settingsController.officeHoursCount.value.toString(),
                         colors: Colors.white,
                         size: 13,
-                      ),
+                      ),)
                     ),
                   ],
                 ),
@@ -109,10 +126,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       controller: controllers.search,
                       hintText: "Search Employee Name, Shift Name",
                       onChanged: (value) {
-                        remController.searchText.value = value.toString().trim();
+                        settingsController.searchOfficeText.value = value.toString().trim();
                       },
                     ),
-                    remController.selectedReminderIds.isNotEmpty?
+                    settingsController.selectedRoleIds.isNotEmpty?
                     InkWell(
                       focusColor: Colors.transparent,
                       hoverColor: Colors.transparent,
@@ -209,14 +226,20 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                 10.height,
                 Table(
                   columnWidths: const {
-                    0: FlexColumnWidth(1),//Check Box
-                    1: FlexColumnWidth(3),//Actions
-                    2: FlexColumnWidth(2),//Employee
-                    3: FlexColumnWidth(3),//Shift Name
-                    4: FlexColumnWidth(2),//From
-                    5: FlexColumnWidth(2),//To
-                    6: FlexColumnWidth(2),//days
-                    7: FlexColumnWidth(2),//Updated On
+                    // 0: FlexColumnWidth(1),//Check Box
+                    // 1: FlexColumnWidth(3),//Actions
+                    // 2: FlexColumnWidth(2),//Employee
+                    // 3: FlexColumnWidth(3),//Shift Name
+                    // 4: FlexColumnWidth(2),//From
+                    // 5: FlexColumnWidth(2),//To
+                    // 6: FlexColumnWidth(2),//days
+                    // 7: FlexColumnWidth(2),//Updated On
+                    0: FlexColumnWidth(2),//Employee
+                    1: FlexColumnWidth(3),//Shift Name
+                    2: FlexColumnWidth(2),//From
+                    3: FlexColumnWidth(2),//To
+                    4: FlexColumnWidth(2),//days
+                    5: FlexColumnWidth(2),//Updated On
                   },
                   border: TableBorder(
                     horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -230,26 +253,26 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                 topLeft: Radius.circular(5),
                                 topRight: Radius.circular(5))),
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: CustomText(
-                              textAlign: TextAlign.left,
-                              text: "S.No",
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: CustomText(
-                              textAlign: TextAlign.left,
-                              text: "Actions",//0
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.all(10.0),
+                          //   child: CustomText(
+                          //     textAlign: TextAlign.left,
+                          //     text: "S.No",
+                          //     size: 15,
+                          //     isBold: true,
+                          //     colors: Colors.white,
+                          //   ),
+                          // ),
+                          // Padding(
+                          //   padding: const EdgeInsets.all(10.0),
+                          //   child: CustomText(
+                          //     textAlign: TextAlign.left,
+                          //     text: "Actions",//0
+                          //     size: 15,
+                          //     isBold: true,
+                          //     colors: Colors.white,
+                          //   ),
+                          // ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Row(
@@ -367,15 +390,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                 ),
                 Expanded(
                   child: Obx(() {
-                    final searchText = remController.searchText.value.toLowerCase();
-                    final filteredList = remController.reminderList.where((activity) {
+                    final searchText = settingsController.searchOfficeText.value.toLowerCase();
+                    final filteredList = settingsController.officeHoursList.where((activity) {
                       final matchesSearch = searchText.isEmpty ||
-                          (activity.customerName.toString().toLowerCase().contains(searchText)) ||
-                          (activity.employeeName.toString().toLowerCase().contains(searchText)) ||
-                          (activity.title.toString().toLowerCase().contains(searchText));
+                          (activity.shiftName.toString().toLowerCase().contains(searchText)) ||
+                          (activity.employeeName.toString().toLowerCase().contains(searchText));
                       return matchesSearch;
                     }).toList();
-                    if (remController.isLoadingReminders.value) {
+                    if (settingsController.isLoadingOfficeHours.value) {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (filteredList.isEmpty) {
@@ -384,17 +406,23 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     return ListView.builder(
                       itemCount: filteredList.length,
                       itemBuilder: (context, index) {
-                        final reminder = filteredList[index];
+                        final officeHour = filteredList[index];
                         return Table(
                           columnWidths:const {
-                            0: FlexColumnWidth(1),//Check Box
-                            1: FlexColumnWidth(3),//Actions
-                            2: FlexColumnWidth(2),//Employee
-                            3: FlexColumnWidth(3),//Shift Name
-                            4: FlexColumnWidth(2),//From
-                            5: FlexColumnWidth(2),//To
-                            6: FlexColumnWidth(2),//days
-                            7: FlexColumnWidth(2),//Updated On
+                            // 0: FlexColumnWidth(1),//Check Box
+                            // 1: FlexColumnWidth(3),//Actions
+                            // 2: FlexColumnWidth(2),//Employee
+                            // 3: FlexColumnWidth(3),//Shift Name
+                            // 4: FlexColumnWidth(2),//From
+                            // 5: FlexColumnWidth(2),//To
+                            // 6: FlexColumnWidth(2),//days
+                            // 7: FlexColumnWidth(2),//Updated On
+                            0: FlexColumnWidth(2),//Employee
+                            1: FlexColumnWidth(3),//Shift Name
+                            2: FlexColumnWidth(2),//From
+                            3: FlexColumnWidth(2),//To
+                            4: FlexColumnWidth(2),//days
+                            5: FlexColumnWidth(2),//Updated On
                           },
                           border: TableBorder(
                             horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -407,114 +435,110 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                 ),
                                 children:[
-                                  SizedBox(
-                                    width:100,
-                                    child: Row(
-                                      children: [
-                                        Checkbox(
-                                          value: true,
-                                          onChanged: (value) {
-                                            //employeeProvider.toggleSelectionEmployee(staffId);
-                                          },
-                                        ),
-                                        CustomText(text: "${index + 1}"),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        IconButton(
-                                            onPressed: (){
-                                              remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
-                                              remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
-                                              remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
-                                              remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
-                                              remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
-                                              //_showUpdateReminderDialog(reminder.id.toString());
-                                            },
-                                            icon:  SvgPicture.asset(
-                                              "assets/images/a_edit.svg",
-                                              width: 16,
-                                              height: 16,
-                                            )),
-                                        IconButton(
-                                            onPressed: (){
-                                              showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return AlertDialog(
-                                                    content: CustomText(
-                                                      text: "Are you sure delete this reminder?",
-                                                      size: 16,
-                                                      isBold: true,
-                                                      colors: colorsConst.textColor,
-                                                    ),                                                                  actions: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                      children: [
-                                                        Container(
-                                                          decoration: BoxDecoration(
-                                                              border: Border.all(color: colorsConst.primary),
-                                                              color: Colors.white),
-                                                          width: 80,
-                                                          height: 25,
-                                                          child: ElevatedButton(
-                                                              style: ElevatedButton.styleFrom(
-                                                                shape: const RoundedRectangleBorder(
-                                                                  borderRadius: BorderRadius.zero,
-                                                                ),
-                                                                backgroundColor: Colors.white,
-                                                              ),
-                                                              onPressed: () {
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: CustomText(
-                                                                text: "Cancel",
-                                                                colors: colorsConst.primary,
-                                                                size: 14,
-                                                              )),
-                                                        ),
-                                                        10.width,
-                                                        CustomLoadingButton(
-                                                          callback: ()async{
-                                                            remController.selectedReminderIds.add(reminder.id.toString());
-                                                            remController.deleteReminderAPI(context);
-                                                          },
-                                                          height: 35,
-                                                          isLoading: true,
-                                                          backgroundColor: colorsConst.primary,
-                                                          radius: 2,
-                                                          width: 80,
-                                                          controller: controllers.productCtr,
-                                                          isImage: false,
-                                                          text: "Delete",
-                                                          textColor: Colors.white,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                  );
-                                                },
-                                              );
-                                            },
-                                            icon: SvgPicture.asset(
-                                              "assets/images/a_delete.svg",
-                                              width: 16,
-                                              height: 16,
-                                            ))
-                                      ],
-                                    ),
-                                  ),
+                                  // SizedBox(
+                                  //   width:100,
+                                  //   child: Row(
+                                  //     children: [
+                                  //       Checkbox(
+                                  //         value: true,
+                                  //         onChanged: (value) {
+                                  //           //employeeProvider.toggleSelectionEmployee(staffId);
+                                  //         },
+                                  //       ),
+                                  //       CustomText(text: "${index + 1}"),
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.all(3.0),
+                                  //   child: Row(
+                                  //     mainAxisAlignment: MainAxisAlignment.start,
+                                  //     children: [
+                                  //       IconButton(
+                                  //           onPressed: (){
+                                  //
+                                  //             //_showUpdateReminderDialog(reminder.id.toString());
+                                  //           },
+                                  //           icon:  SvgPicture.asset(
+                                  //             "assets/images/a_edit.svg",
+                                  //             width: 16,
+                                  //             height: 16,
+                                  //           )),
+                                  //       IconButton(
+                                  //           onPressed: (){
+                                  //             showDialog(
+                                  //               context: context,
+                                  //               builder: (BuildContext context) {
+                                  //                 return AlertDialog(
+                                  //                   content: CustomText(
+                                  //                     text: "Are you sure delete this reminder?",
+                                  //                     size: 16,
+                                  //                     isBold: true,
+                                  //                     colors: colorsConst.textColor,
+                                  //                   ),                                                                  actions: [
+                                  //                   Row(
+                                  //                     mainAxisAlignment: MainAxisAlignment.end,
+                                  //                     children: [
+                                  //                       Container(
+                                  //                         decoration: BoxDecoration(
+                                  //                             border: Border.all(color: colorsConst.primary),
+                                  //                             color: Colors.white),
+                                  //                         width: 80,
+                                  //                         height: 25,
+                                  //                         child: ElevatedButton(
+                                  //                             style: ElevatedButton.styleFrom(
+                                  //                               shape: const RoundedRectangleBorder(
+                                  //                                 borderRadius: BorderRadius.zero,
+                                  //                               ),
+                                  //                               backgroundColor: Colors.white,
+                                  //                             ),
+                                  //                             onPressed: () {
+                                  //                               Navigator.pop(context);
+                                  //                             },
+                                  //                             child: CustomText(
+                                  //                               text: "Cancel",
+                                  //                               colors: colorsConst.primary,
+                                  //                               size: 14,
+                                  //                             )),
+                                  //                       ),
+                                  //                       10.width,
+                                  //                       CustomLoadingButton(
+                                  //                         callback: ()async{
+                                  //                           remController.selectedReminderIds.add(officeHour.id.toString());
+                                  //                           remController.deleteReminderAPI(context);
+                                  //                         },
+                                  //                         height: 35,
+                                  //                         isLoading: true,
+                                  //                         backgroundColor: colorsConst.primary,
+                                  //                         radius: 2,
+                                  //                         width: 80,
+                                  //                         controller: controllers.productCtr,
+                                  //                         isImage: false,
+                                  //                         text: "Delete",
+                                  //                         textColor: Colors.white,
+                                  //                       ),
+                                  //                     ],
+                                  //                   ),
+                                  //                 ],
+                                  //                 );
+                                  //               },
+                                  //             );
+                                  //           },
+                                  //           icon: SvgPicture.asset(
+                                  //             "assets/images/a_delete.svg",
+                                  //             width: 16,
+                                  //             height: 16,
+                                  //           ))
+                                  //     ],
+                                  //   ),
+                                  // ),
                                   Tooltip(
-                                    message: "role",
+                                    message: officeHour.employeeName,
                                     child: Padding(
                                       padding: const EdgeInsets.all(10.0),
                                       child: CustomText(
                                         textAlign: TextAlign.left,
-                                        text:"Employee",//1
+                                        text:officeHour.employeeName,//1
                                         size: 14,
                                         colors:colorsConst.textColor,
                                       ),
@@ -524,7 +548,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
                                       textAlign: TextAlign.left,
-                                      text: "Shift",//2
+                                      text: officeHour.shiftName,//2
                                       size: 14,
                                       colors:colorsConst.textColor,
                                     ),
@@ -533,7 +557,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
                                       textAlign: TextAlign.left,
-                                      text:"From",
+                                      text:officeHour.fromTime,
                                       size: 14,
                                       colors: colorsConst.textColor,
                                     ),
@@ -542,7 +566,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
                                       textAlign: TextAlign.left,
-                                      text:"To",
+                                      text:officeHour.toTime,
                                       size: 14,
                                       colors: colorsConst.textColor,
                                     ),
@@ -551,7 +575,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
                                       textAlign: TextAlign.left,
-                                      text:"Days",
+                                      text:officeHour.days,
                                       size: 14,
                                       colors: colorsConst.textColor,
                                     ),
@@ -560,7 +584,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
                                       textAlign: TextAlign.left,
-                                      text:"Updated On",
+                                      text:controllers.formatDateTime(officeHour.updatedTs),
                                       size: 14,
                                       colors: colorsConst.textColor,
                                     ),

@@ -47,10 +47,8 @@ class _ReminderPageState extends State<ReminderPage> {
     required bool isStart,
   })
   async {
-    Map<DateTime, TimeOfDay> selectedDatesTimes =
-        isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
-    TextEditingController controller =
-        isStart ? remController.startController : remController.endController;
+    Map<DateTime, TimeOfDay> selectedDatesTimes = isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
+    TextEditingController controller = isStart ? remController.startController : remController.endController;
 
     // Initialize dialogSelectedTime
     TimeOfDay dialogSelectedTime = selectedDatesTimes.values.isNotEmpty

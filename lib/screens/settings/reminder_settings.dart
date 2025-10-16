@@ -476,7 +476,7 @@ class _ReminderSettingsState extends State<ReminderSettings> {
            child: Column(
              children: [
                Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                 mainAxisAlignment: MainAxisAlignment.start,
                  children: [
                    Column(
                      crossAxisAlignment: CrossAxisAlignment.start,
@@ -495,30 +495,30 @@ class _ReminderSettingsState extends State<ReminderSettings> {
                        ),
                      ],
                    ),
-                   SizedBox(
-                     height: 40,
-                     child: ElevatedButton(
-                       onPressed: (){
-                         Navigator.push(context, MaterialPageRoute(builder: (context)=> const RoleManagement()));
-                       },
-                       style: ElevatedButton.styleFrom(
-                         backgroundColor: const Color(0xff0078D7),
-                         padding: const EdgeInsets.symmetric(
-                             horizontal: 20, vertical: 12),
-                         shape: RoundedRectangleBorder(
-                           borderRadius: BorderRadius.circular(4),
-                         ),
-                       ),
-                       child: Text(
-                         'Role Management',
-                         style: GoogleFonts.lato(
-                             color: Colors.white,
-                             fontSize: 14,
-                             fontWeight: FontWeight.bold
-                         ),
-                       ),
-                     ),
-                   ),
+                   // SizedBox(
+                   //   height: 40,
+                   //   child: ElevatedButton(
+                   //     onPressed: (){
+                   //       Navigator.push(context, MaterialPageRoute(builder: (context)=> const RoleManagement()));
+                   //     },
+                   //     style: ElevatedButton.styleFrom(
+                   //       backgroundColor: const Color(0xff0078D7),
+                   //       padding: const EdgeInsets.symmetric(
+                   //           horizontal: 20, vertical: 12),
+                   //       shape: RoundedRectangleBorder(
+                   //         borderRadius: BorderRadius.circular(4),
+                   //       ),
+                   //     ),
+                   //     child: Text(
+                   //       'Role Management',
+                   //       style: GoogleFonts.lato(
+                   //           color: Colors.white,
+                   //           fontSize: 14,
+                   //           fontWeight: FontWeight.bold
+                   //       ),
+                   //     ),
+                   //   ),
+                   // ),
                  ],
                ),
                Padding(
@@ -569,12 +569,12 @@ class _ReminderSettingsState extends State<ReminderSettings> {
                                        Icons.add,
                                        size: 20,
                                      )),
-                                 7.width,
-                                 SvgPicture.asset('assets/images/edit.svg',
-                                     width: 20, height: 20),
-                                 7.width,
-                                 SvgPicture.asset('assets/images/delete.svg',
-                                     width: 20, height: 20),
+                                 // 7.width,
+                                 // SvgPicture.asset('assets/images/edit.svg',
+                                 //     width: 20, height: 20),
+                                 // 7.width,
+                                 // SvgPicture.asset('assets/images/delete.svg',
+                                 //     width: 20, height: 20),
                                ],
                              ),
                            ),
@@ -630,12 +630,12 @@ class _ReminderSettingsState extends State<ReminderSettings> {
                                            Icons.add,
                                            size: 20,
                                          )),
-                                     7.width,
-                                     SvgPicture.asset('assets/images/edit.svg',
-                                         width: 20, height: 20),
-                                     const SizedBox(width: 7),
-                                     SvgPicture.asset('assets/images/delete.svg',
-                                         width: 20, height: 20),
+                                     // 7.width,
+                                     // SvgPicture.asset('assets/images/edit.svg',
+                                     //     width: 20, height: 20),
+                                     // const SizedBox(width: 7),
+                                     // SvgPicture.asset('assets/images/delete.svg',
+                                     //     width: 20, height: 20),
                                    ],
                                  ),
                                ],

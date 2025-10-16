@@ -28,6 +28,7 @@ import '../components/custom_text.dart';
 import '../controller/controller.dart';
 import '../controller/image_controller.dart';
 import '../controller/reminder_controller.dart';
+import '../controller/settings_controller.dart';
 import '../models/customer_activity.dart';
 import '../models/employee_obj.dart';
 import '../models/mail_receive_obj.dart';
@@ -1271,6 +1272,8 @@ class ApiService {
         getOpenedMailActivity(true);
         getReplyMailActivity(true);
         remController.allReminders("2");
+        settingsController.allRoles();
+        settingsController.allOfficeHours();
         utils.snackBar(
           context: Get.context!,
           msg: "Login Successfully",

@@ -99,6 +99,79 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     isOptional: true,
                                   ),
                                   10.height,
+                                  // SizedBox(
+                                  //   width: textFieldSize,
+                                  //   height: 50,
+                                  //   child: TextFormField(
+                                  //       style: TextStyle(
+                                  //           color: colorsConst.textColor,
+                                  //           fontSize: 14,
+                                  //           fontFamily: "Lato"),
+                                  //       cursorColor: colorsConst.primary,
+                                  //       onTap: () {},
+                                  //       keyboardType: TextInputType.number,
+                                  //       inputFormatters: constInputFormatters.mobileNumberInput,
+                                  //       textCapitalization: TextCapitalization.none,
+                                  //       controller: employeeProvider.mobileController,
+                                  //       textInputAction: TextInputAction.next,
+                                  //       decoration: InputDecoration(
+                                  //         hoverColor: Colors.transparent,
+                                  //         focusColor: Colors.transparent,
+                                  //         hintText:"Phone No",
+                                  //         fillColor: Colors.white,
+                                  //         filled: true,
+                                  //         hintStyle: TextStyle(
+                                  //             color: Colors.grey.shade400,
+                                  //             fontSize: 13, fontFamily: "Lato"),
+                                  //         suffixIcon: Obx(() => Checkbox(
+                                  //             shape: RoundedRectangleBorder(
+                                  //               borderRadius: BorderRadius.circular(5.0),
+                                  //             ),
+                                  //             side: MaterialStateBorderSide.resolveWith(
+                                  //                   (states) => BorderSide(
+                                  //                   width: 1.0,
+                                  //                   color: colorsConst.textColor),
+                                  //             ),
+                                  //             hoverColor: Colors.transparent,
+                                  //             activeColor: colorsConst.third,
+                                  //             value: controllers.isCoMobileNumberList[index],
+                                  //             onChanged: (value) {
+                                  //               setState(() {
+                                  //                 controllers.isCoMobileNumberList[index] = value!;
+                                  //                 if (controllers.isCoMobileNumberList[index] == true) {
+                                  //                   controllers.leadWhatsCrt[index].text = controllers.leadMobileCrt[index].text;
+                                  //                 } else {
+                                  //                   print("in");
+                                  //                   controllers.leadWhatsCrt[index].text = "";
+                                  //                 }
+                                  //               });
+                                  //             }),
+                                  //         ),
+                                  //         enabledBorder: OutlineInputBorder(
+                                  //             borderSide: BorderSide(
+                                  //               color: Colors.grey.shade200,
+                                  //             ),
+                                  //             borderRadius: BorderRadius.circular(5)),
+                                  //         focusedBorder:
+                                  //         OutlineInputBorder(
+                                  //             borderSide: BorderSide(
+                                  //               color: Colors.grey.shade200,
+                                  //             ),
+                                  //             borderRadius: BorderRadius.circular(5)),
+                                  //         focusedErrorBorder: OutlineInputBorder(
+                                  //             borderSide: BorderSide(
+                                  //                 color: Colors.grey.shade200),
+                                  //             borderRadius: BorderRadius.circular(5)),
+                                  //         // errorStyle: const TextStyle(height:0.05,fontSize: 12),
+                                  //         contentPadding: const EdgeInsets.symmetric(
+                                  //             vertical: 10.0,
+                                  //             horizontal: 10.0),
+                                  //         errorBorder: OutlineInputBorder(
+                                  //             borderSide: BorderSide(
+                                  //                 color: Colors.grey.shade200),
+                                  //             borderRadius: BorderRadius.circular(5)),
+                                  //       )),
+                                  // ),
                                   CustomTextField(
                                     width: textFieldSize,
                                     text: "Phone No",
@@ -107,6 +180,16 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     controller: employeeProvider.mobileController,
                                     textInputAction: TextInputAction.next,
                                     isOptional: true,
+                                  ),
+                                  10.height,
+                                  CustomTextField(
+                                    width: textFieldSize,
+                                    text: "Whatsapp No",
+                                    hintText: "Enter Whatsapp No",
+                                    isOptional: false,
+                                    controller: employeeProvider.WhatsappController,
+                                    textInputAction: TextInputAction.next,
+                                    inputFormatters: constInputFormatters.mobileNumberInput,
                                   ),
                                   10.height,
                                   CustomPasswordTextField(
@@ -120,7 +203,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     iconData : employeeProvider.isVisible ?
                                     Icons.visibility_off : Icons.visibility,
                                   ),
-                                  10.height,
+                                  //10.height,
                               //     SizedBox(
                               //   width: isWebView ? textFieldSize : screenWidth * 0.90,
                               //   child: CustomTextField(
@@ -137,6 +220,16 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                               //
                               //   ),
                               // ),
+
+                                  20.height,
+                                ],
+                              ),
+                            ),
+                            20.width,
+                            /// Right Column
+                            Expanded(
+                              child: Column(
+                                children: [
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -201,24 +294,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                         ),
                                       ),
                                     ],
-                                  ),
-                                  20.height,
-                                ],
-                              ),
-                            ),
-                            20.width,
-                            /// Right Column
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  CustomTextField(
-                                    width: textFieldSize,
-                                    text: "Whatsapp No",
-                                    hintText: "Enter Whatsapp No",
-                                    isOptional: false,
-                                    controller: employeeProvider.WhatsappController,
-                                    textInputAction: TextInputAction.next,
-                                    inputFormatters: constInputFormatters.mobileNumberInput,
                                   ),
                                   10.height,
                                   CustomTextField(

@@ -745,10 +745,8 @@ class _AddLeadState extends State<AddLead> {
                                             inputFormatters: constInputFormatters.mobileNumberInput,
                                             onChanged: (value) async {
                                               SharedPreferences sharedPref =
-                                              await SharedPreferences
-                                                  .getInstance();
-                                              sharedPref.setString(
-                                                  "leadWhats$index",
+                                              await SharedPreferences.getInstance();
+                                              sharedPref.setString("leadWhats$index",
                                                   value.toString().trim());
                                             },
                                             // validator:(value){

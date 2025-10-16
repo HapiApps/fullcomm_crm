@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -72,16 +73,33 @@ class _RoleManagementState extends State<RoleManagement> {
                       const SizedBox(height: 8),
 
                       /// Role Name
-                      Text("Role Name",
-                          style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
-                      const SizedBox(height: 5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Role Name",
+                              style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
+                          const CustomText(
+                            text: "*",
+                            colors: Colors.red,
+                            size: 25,
+                          )
+                        ],
+                      ),
+                      5.height,
                       TextFormField(
                         textCapitalization: TextCapitalization.sentences,
-                        controller: remController.roleController,
+                        controller: settingsController.roleController,
                         style: GoogleFonts.lato(
                           color: Colors.black,
                           fontSize: 17,
                         ),
+                        onChanged: (value){
+                          if(settingsController.roleController.text.trim().isNotEmpty){
+                            setState(() {
+                              roleError = null;
+                            });
+                          }
+                        },
                         decoration: InputDecoration(
                           hintText: "Role Name",
                           errorText: roleError,
@@ -104,18 +122,17 @@ class _RoleManagementState extends State<RoleManagement> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
-
+                      15.height,
                       /// Description
                       Text("Description",
                           style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
-                      const SizedBox(height: 5),
+                      5.height,
                       SizedBox(
                         height: 100,
                         width: 600,
                         child: TextFormField(
                           textCapitalization: TextCapitalization.sentences,
-                          controller: remController.detailsController,
+                          controller: settingsController.descriptionController,
                           maxLines: 3,
                           style: GoogleFonts.lato(
                             color: Colors.black,
@@ -145,13 +162,22 @@ class _RoleManagementState extends State<RoleManagement> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
-
-                      Text("Permissions",
-                          style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
-                      const SizedBox(height: 5),
+                      5.height,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Permissions",
+                              style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
+                          const CustomText(
+                            text: "*",
+                            colors: Colors.red,
+                            size: 25,
+                          )
+                        ],
+                      ),
+                      5.height,
                       DropdownButtonFormField<String>(
-                        value: remController.permission,
+                        value: settingsController.permission,
                         dropdownColor: Colors.white,
                         style: GoogleFonts.lato(
                           color: Colors.black,
@@ -160,6 +186,7 @@ class _RoleManagementState extends State<RoleManagement> {
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
+                          errorText: permissionError,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(4),
                             borderSide: BorderSide(color: Colors.grey.shade300),
@@ -174,7 +201,7 @@ class _RoleManagementState extends State<RoleManagement> {
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                         ),
-                        items: remController.permissionList.map(
+                        items: settingsController.permissionList.map(
                               (e) => DropdownMenuItem(
                             value: e,
                             child: Text(
@@ -186,7 +213,14 @@ class _RoleManagementState extends State<RoleManagement> {
                             ),
                           ),
                         ).toList(),
-                        onChanged: (v) => setState(() => remController.permission = v),
+                        onChanged: (v) {
+                          setState(() {
+                            settingsController.permission = v;
+                            if(settingsController.permission!=null){
+                              permissionError = null;
+                            }
+                          });
+                        },
                       ),
                       15.height,
 
@@ -219,22 +253,15 @@ class _RoleManagementState extends State<RoleManagement> {
                           CustomLoadingButton(
                             callback: () async {
                               setState(() {
-                                roleError = remController.roleController.text.trim().isEmpty
+                                roleError = settingsController.roleController.text.trim().isEmpty
                                     ? "Please enter role name"
                                     : null;
-                                descriptionError = remController.detailsController.text.trim().isEmpty
-                                    ? "Please enter description"
-                                    : null;
-                                permissionError = remController.location == null
-                                    ? "Please select location"
+                                permissionError = settingsController.permission == null
+                                    ? "Please select permission"
                                     : null;
                               });
-
-                              if (roleError == null &&
-                                  descriptionError == null &&
-                                  permissionError == null) {
-                                /// ✅ Call your API here
-                                // await remController.addRoleAPI();
+                              if (roleError == null && permissionError == null) {
+                                 await settingsController.insertRoleAPI(context);
                               } else {
                                 controllers.productCtr.reset();
                               }
@@ -262,7 +289,272 @@ class _RoleManagementState extends State<RoleManagement> {
     );
   }
 
+  void _showUpdateRoleDialog(String id) {
+    String? roleError;
+    String? descriptionError;
+    String? permissionError;
 
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              insetPadding: const EdgeInsets.symmetric(horizontal: 80, vertical: 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                width: 630,
+                color: Colors.white,
+                padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      /// Header
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Update Role",
+                            style: GoogleFonts.lato(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const Text(
+                              "×",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Divider(thickness: 1, color: Colors.grey.shade300),
+                      const SizedBox(height: 8),
+
+                      /// Role Name
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Role Name",
+                              style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
+                          const CustomText(
+                            text: "*",
+                            colors: Colors.red,
+                            size: 25,
+                          )
+                        ],
+                      ),
+                      5.height,
+                      TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        controller: settingsController.updateRoleController,
+                        style: GoogleFonts.lato(
+                          color: Colors.black,
+                          fontSize: 17,
+                        ),
+                        onChanged: (value){
+                          if(settingsController.updateRoleController.text.trim().isNotEmpty){
+                            setState(() {
+                              roleError = null;
+                            });
+                          }
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Role Name",
+                          errorText: roleError,
+                          hintStyle: TextStyle(
+                            color: const Color(0xFFCCCCCC),
+                            fontSize: 17,
+                            fontFamily: GoogleFonts.lato().fontFamily,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: colorsConst.primary),
+                          ),
+                        ),
+                      ),
+                      15.height,
+                      /// Description
+                      Text("Description",
+                          style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
+                      5.height,
+                      SizedBox(
+                        height: 100,
+                        width: 600,
+                        child: TextFormField(
+                          textCapitalization: TextCapitalization.sentences,
+                          controller: settingsController.upDescriptionController,
+                          maxLines: 3,
+                          style: GoogleFonts.lato(
+                            color: Colors.black,
+                            fontSize: 17,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: "Description",
+                            errorText: descriptionError,
+                            hintStyle: GoogleFonts.lato(
+                              color: const Color(0xFFCCCCCC),
+                              fontSize: 17,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              borderSide: BorderSide(color: Colors.grey.shade300),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              borderSide: BorderSide(color: colorsConst.primary),
+                            ),
+                          ),
+                        ),
+                      ),
+                      5.height,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Permissions",
+                              style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
+                          const CustomText(
+                            text: "*",
+                            colors: Colors.red,
+                            size: 25,
+                          )
+                        ],
+                      ),
+                      5.height,
+                      DropdownButtonFormField<String>(
+                        value: settingsController.updatePermission,
+                        dropdownColor: Colors.white,
+                        style: GoogleFonts.lato(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          errorText: permissionError,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: colorsConst.primary),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        ),
+                        items: settingsController.permissionList.map(
+                              (e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(
+                              e,
+                              style: GoogleFonts.lato(
+                                color: Colors.black,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ),
+                        ).toList(),
+                        onChanged: (v) {
+                          setState(() {
+                            settingsController.updatePermission = v;
+                            if(settingsController.updatePermission!=null){
+                              permissionError = null;
+                            }
+                          });
+                        },
+                      ),
+                      15.height,
+
+                      /// Action Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            width: 80,
+                            height: 35,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(7),
+                                  side: const BorderSide(color: Color(0xff0078D7)),
+                                ),
+                                padding: EdgeInsets.zero,
+                                elevation: 0,
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text(
+                                "Cancel",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          CustomLoadingButton(
+                            callback: () async {
+                              setState(() {
+                                roleError = settingsController.updateRoleController.text.trim().isEmpty
+                                    ? "Please enter role name"
+                                    : null;
+                                permissionError = settingsController.updatePermission == null
+                                    ? "Please select permission"
+                                    : null;
+                              });
+                              if (roleError == null && permissionError == null) {
+                                await settingsController.updateRoleAPI(context,id);
+                              } else {
+                                controllers.productCtr.reset();
+                              }
+                            },
+                            height: 40,
+                            isLoading: true,
+                            backgroundColor: colorsConst.primary,
+                            radius: 7,
+                            width: 120,
+                            controller: controllers.productCtr,
+                            isImage: false,
+                            text: "Update Role",
+                            textColor: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -332,11 +624,11 @@ class _RoleManagementState extends State<RoleManagement> {
                     CircleAvatar(
                       backgroundColor: colorsConst.primary,
                       radius: 17,
-                      child: CustomText(
-                        text: "3",
+                      child: Obx(()=>CustomText(
+                        text: settingsController.rolesCount.value.toString(),
                         colors: Colors.white,
                         size: 13,
-                      ),
+                      ),)
                     ),
                   ],
                 ),
@@ -353,10 +645,10 @@ class _RoleManagementState extends State<RoleManagement> {
                       controller: controllers.search,
                       hintText: "Search Role Name",
                       onChanged: (value) {
-                        remController.searchText.value = value.toString().trim();
+                        settingsController.searchText.value = value.toString().trim();
                       },
                     ),
-                    remController.selectedReminderIds.isNotEmpty?
+                    settingsController.selectedRoleIds.isNotEmpty?
                     InkWell(
                       focusColor: Colors.transparent,
                       hoverColor: Colors.transparent,
@@ -366,7 +658,7 @@ class _RoleManagementState extends State<RoleManagement> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               content: CustomText(
-                                text: "Are you sure delete this reminder?",
+                                text: "Are you sure delete this role?",
                                 size: 16,
                                 isBold: true,
                                 colors: colorsConst.textColor,
@@ -400,7 +692,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                     10.width,
                                     CustomLoadingButton(
                                       callback: ()async{
-                                        remController.deleteReminderAPI(context);
+                                        settingsController.deleteRoleAPI(context);
                                       },
                                       height: 35,
                                       isLoading: true,
@@ -453,10 +745,10 @@ class _RoleManagementState extends State<RoleManagement> {
                 10.height,
                 Table(
                   columnWidths: const {
-                    0: FlexColumnWidth(3),//Actions
+                    0: FlexColumnWidth(1),//Actions
                     1: FlexColumnWidth(2),//Role
-                    2: FlexColumnWidth(3),//Description
-                    3: FlexColumnWidth(2),//Permissions
+                    2: FlexColumnWidth(3.5),//Description
+                    3: FlexColumnWidth(3.5),//Permissions
                   },
                   border: TableBorder(
                     horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -494,18 +786,12 @@ class _RoleManagementState extends State<RoleManagement> {
                                 const SizedBox(width: 3),
                                 GestureDetector(
                                   onTap: (){
-                                    if(remController.sortFieldCallActivity.value=='employeeName' && remController.sortOrderCallActivity.value=='asc'){
-                                      remController.sortOrderCallActivity.value='desc';
-                                    }else{
-                                      remController.sortOrderCallActivity.value='asc';
-                                    }
-                                    remController.sortFieldCallActivity.value='employeeName';
-                                    remController.sortReminders();
+                                    settingsController.sortRoleByName();
                                   },
                                   child: Obx(() => Image.asset(
-                                    controllers.sortFieldCallActivity.value.isEmpty
+                                    settingsController.sortRoleField.value.isEmpty
                                         ? "assets/images/arrow.png"
-                                        : controllers.sortOrderCallActivity.value == 'asc'
+                                        : settingsController.sortRoleOrder.value == 'asc'
                                         ? "assets/images/arrow_up.png"
                                         : "assets/images/arrow_down.png",
                                     width: 15,
@@ -518,74 +804,22 @@ class _RoleManagementState extends State<RoleManagement> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                              children: [
-                                CustomText(
-                                  textAlign: TextAlign.left,
-                                  text: "Description",//2
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
-                                ),
-                                const SizedBox(width: 3),
-                                GestureDetector(
-                                  onTap: (){
-                                    if(remController.sortFieldCallActivity.value=='employeeName' && remController.sortOrderCallActivity.value=='asc'){
-                                      remController.sortOrderCallActivity.value='desc';
-                                    }else{
-                                      remController.sortOrderCallActivity.value='asc';
-                                    }
-                                    remController.sortFieldCallActivity.value='employeeName';
-                                    remController.sortReminders();
-                                  },
-                                  child: Obx(() => Image.asset(
-                                    controllers.sortFieldCallActivity.value.isEmpty
-                                        ? "assets/images/arrow.png"
-                                        : controllers.sortOrderCallActivity.value == 'asc'
-                                        ? "assets/images/arrow_up.png"
-                                        : "assets/images/arrow_down.png",
-                                    width: 15,
-                                    height: 15,
-                                  ),
-                                  ),
-                                ),
-                              ],
+                            child: CustomText(
+                              textAlign: TextAlign.left,
+                              text: "Description",//2
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                              children: [
-                                CustomText(
-                                  textAlign: TextAlign.left,
-                                  text: "Permissions",//3
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
-                                ),
-                                const SizedBox(width: 3),
-                                GestureDetector(
-                                  onTap: (){
-                                    if(remController.sortFieldCallActivity.value=='employeeName' && remController.sortOrderCallActivity.value=='asc'){
-                                      remController.sortOrderCallActivity.value='desc';
-                                    }else{
-                                      remController.sortOrderCallActivity.value='asc';
-                                    }
-                                    remController.sortFieldCallActivity.value='employeeName';
-                                    remController.sortReminders();
-                                  },
-                                  child: Obx(() => Image.asset(
-                                    controllers.sortFieldCallActivity.value.isEmpty
-                                        ? "assets/images/arrow.png"
-                                        : controllers.sortOrderCallActivity.value == 'asc'
-                                        ? "assets/images/arrow_up.png"
-                                        : "assets/images/arrow_down.png",
-                                    width: 15,
-                                    height: 15,
-                                  ),
-                                  ),
-                                ),
-                              ],
+                            child: CustomText(
+                              textAlign: TextAlign.left,
+                              text: "Permissions",//3
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
                             ),
                           ),
                         ]),
@@ -593,30 +827,28 @@ class _RoleManagementState extends State<RoleManagement> {
                 ),
                 Expanded(
                   child: Obx(() {
-                    final searchText = remController.searchText.value.toLowerCase();
-                    final filteredList = remController.reminderList.where((activity) {
+                    final searchText = settingsController.searchText.value.toLowerCase();
+                    final filteredList = settingsController.roleList.where((activity) {
                       final matchesSearch = searchText.isEmpty ||
-                          (activity.customerName.toString().toLowerCase().contains(searchText)) ||
-                          (activity.employeeName.toString().toLowerCase().contains(searchText)) ||
-                          (activity.title.toString().toLowerCase().contains(searchText));
+                          (activity.roleName.toString().toLowerCase().contains(searchText));
                       return matchesSearch;
                     }).toList();
-                    if (remController.isLoadingReminders.value) {
+                    if (settingsController.isLoadingRoles.value) {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (filteredList.isEmpty) {
-                      return const Center(child: Text("No reminders found"));
+                      return const Center(child: Text("No roles found"));
                     }
                     return ListView.builder(
                       itemCount: filteredList.length,
                       itemBuilder: (context, index) {
-                        final reminder = filteredList[index];
+                        final role = filteredList[index];
                         return Table(
                           columnWidths:const {
-                            0: FlexColumnWidth(3),//Actions
+                            0: FlexColumnWidth(1),//Actions
                             1: FlexColumnWidth(2),//Role
-                            2: FlexColumnWidth(3),//Description
-                            3: FlexColumnWidth(2),//Permissions
+                            2: FlexColumnWidth(3.5),//Description
+                            3: FlexColumnWidth(3.5),//Permissions
                           },
                           border: TableBorder(
                             horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -636,12 +868,10 @@ class _RoleManagementState extends State<RoleManagement> {
                                       children: [
                                         IconButton(
                                             onPressed: (){
-                                              remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
-                                              remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
-                                              remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
-                                              remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
-                                              remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
-                                              //_showUpdateReminderDialog(reminder.id.toString());
+                                              settingsController.updateRoleController.text = role.roleName.toString();
+                                              settingsController.upDescriptionController.text = role.description.toString();
+                                              settingsController.updatePermission = role.permission.toString();
+                                              _showUpdateRoleDialog(role.id.toString());
                                             },
                                             icon:  SvgPicture.asset(
                                               "assets/images/a_edit.svg",
@@ -655,7 +885,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                                 builder: (BuildContext context) {
                                                   return AlertDialog(
                                                     content: CustomText(
-                                                      text: "Are you sure delete this reminder?",
+                                                      text: "Are you sure delete this role?",
                                                       size: 16,
                                                       isBold: true,
                                                       colors: colorsConst.textColor,
@@ -688,8 +918,8 @@ class _RoleManagementState extends State<RoleManagement> {
                                                         10.width,
                                                         CustomLoadingButton(
                                                           callback: ()async{
-                                                            remController.selectedReminderIds.add(reminder.id.toString());
-                                                            remController.deleteReminderAPI(context);
+                                                            settingsController.selectedRoleIds.add(role.id.toString());
+                                                            settingsController.deleteRoleAPI(context);
                                                           },
                                                           height: 35,
                                                           isLoading: true,
@@ -722,7 +952,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                       padding: const EdgeInsets.all(10.0),
                                       child: CustomText(
                                         textAlign: TextAlign.left,
-                                        text:"role",
+                                        text: role.roleName.toString(),
                                         size: 14,
                                         colors:colorsConst.textColor,
                                       ),
@@ -732,7 +962,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
                                       textAlign: TextAlign.left,
-                                      text: "Meeting",
+                                      text: role.description.toString(),
                                       size: 14,
                                       colors:colorsConst.textColor,
                                     ),
@@ -741,7 +971,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
                                       textAlign: TextAlign.left,
-                                      text:"Permissions",
+                                      text:role.permission.toString(),
                                       size: 14,
                                       colors: colorsConst.textColor,
                                     ),
