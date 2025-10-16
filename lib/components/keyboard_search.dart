@@ -113,11 +113,12 @@ class _KeyboardDropdownFieldState<T extends Object>
                     widget.onClear!();
                   }
                 },
-                icon: const Icon(
-                  Icons.clear,
+                icon: Icon(
+                  controller.text.isEmpty?Icons.arrow_drop_down:Icons.clear,
                   color: Colors.black,
                   size: 14,
-                )),
+                )
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(widget.borderRadius),
               borderSide: BorderSide(

@@ -82,8 +82,7 @@ class _ReminderPageState extends State<ReminderPage> {
                         backgroundColor: Colors.white,
                         view: DateRangePickerView.month,
                         selectionMode: DateRangePickerSelectionMode.single,
-                        extendableRangeSelectionDirection:
-                            ExtendableRangeSelectionDirection.none,
+                        extendableRangeSelectionDirection: ExtendableRangeSelectionDirection.none,
                         selectionColor: colorsConst.primary,
                         startRangeSelectionColor: colorsConst.primary,
                         endRangeSelectionColor: colorsConst.primary,
@@ -132,8 +131,8 @@ class _ReminderPageState extends State<ReminderPage> {
                                           borderRadius: BorderRadius.all(Radius.circular(8)),
                                           side: BorderSide(color: Colors.black26),
                                         ),
-                                        hourMinuteColor: MaterialStateColor.resolveWith((states) {
-                                          if (states.contains(MaterialState.selected)) {
+                                        hourMinuteColor: WidgetStateColor.resolveWith((states) {
+                                          if (states.contains(WidgetState.selected)) {
                                             return const Color(0xff0078D7);
                                           }
                                           return Colors.white;
@@ -194,13 +193,16 @@ class _ReminderPageState extends State<ReminderPage> {
                                       orientation: Orientation.portrait,
                                       cancelText: "",
                                       confirmText: "",
+                                      onEntryModeChanged: (value){
+                                        print("Time $value");
+                                       // _selectedTime=value;
+                                      },
                                     ),
                                   )
                               )
                             ),
                           ),
                           const SizedBox(height: 12),
-
                           // Quick action buttons
                           Column(
                             children: [
@@ -316,6 +318,20 @@ class _ReminderPageState extends State<ReminderPage> {
                             });
                             Navigator.pop(context);
                           },
+                          // onPressed: () {
+                          //   setState(() {
+                          //     selectedDatesTimes.updateAll(
+                          //           (key, value) => dialogSelectedTime,
+                          //     );
+                          //     if (selectedDatesTimes.isNotEmpty) {
+                          //       final selectedDate = selectedDatesTimes.keys.first;
+                          //       controller.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
+                          //           "${dialogSelectedTime.format(context)}";
+                          //     }
+                          //     print("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
+                          //   });
+                          //   Navigator.pop(context);
+                          // },
                           child: const Text(
                             "Set Time",
                             style: TextStyle(
@@ -406,13 +422,29 @@ class _ReminderPageState extends State<ReminderPage> {
                       const SizedBox(height: 8),
 
                       /// Reminder title
-                      Text("Reminder Title",
-                          style: GoogleFonts.lato(
-                              fontSize: 17, color: Color(0xff737373))),
+                      Row(
+                        children: [
+                          Text("Reminder Title",
+                              style: GoogleFonts.lato(
+                                  fontSize: 17, color: Color(0xff737373))),
+                          const CustomText(
+                            text: "*",
+                            colors: Colors.red,
+                            size: 25,
+                          )
+                        ],
+                      ),
                       const SizedBox(height: 5),
                       TextFormField(
                         textCapitalization: TextCapitalization.sentences,
                         controller: remController.titleController,
+                        onChanged: (value){
+                          if(remController.titleController.text.trim().isNotEmpty){
+                            setState(() {
+                              titleError = null;
+                            });
+                          }
+                        },
                         style: GoogleFonts.lato(
                           color: Colors.black,
                           fontSize: 17,
@@ -572,12 +604,21 @@ class _ReminderPageState extends State<ReminderPage> {
                                       crossAxisAlignment:
                                       CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "Employees",
-                                          style: GoogleFonts.lato(
-                                            fontSize: 17,
-                                            color: const Color(0xff737373),
-                                          ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Employees",
+                                              style: GoogleFonts.lato(
+                                                fontSize: 17,
+                                                color: const Color(0xff737373),
+                                              ),
+                                            ),
+                                            const CustomText(
+                                              text: "*",
+                                              colors: Colors.red,
+                                              size: 25,
+                                            )
+                                          ],
                                         ),
                                         5.height,
                                         KeyboardDropdownField<AllEmployeesObj>(
@@ -606,7 +647,11 @@ class _ReminderPageState extends State<ReminderPage> {
                                           textEditingController:
                                           controllers.empController,
                                           onSelected: (value) {
+                                            setState((){
+                                              employeeError=null;
+                                            });
                                             controllers.selectEmployee(value);
+
                                           },
                                           onClear: () {
                                             controllers.clearSelectedCustomer();
@@ -614,8 +659,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                         ),
                                         if (employeeError != null)
                                           Padding(
-                                            padding:
-                                            const EdgeInsets.only(top: 4.0),
+                                            padding: const EdgeInsets.only(top: 4.0),
                                             child: Text(
                                               employeeError!,
                                               style: const TextStyle(
@@ -629,15 +673,23 @@ class _ReminderPageState extends State<ReminderPage> {
                                   20.width,
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "Assigned Customer",
-                                          style: GoogleFonts.lato(
-                                            fontSize: 17,
-                                            color: const Color(0xff737373),
-                                          ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Assigned Customer",
+                                              style: GoogleFonts.lato(
+                                                fontSize: 17,
+                                                color: const Color(0xff737373),
+                                              ),
+                                            ),
+                                            const CustomText(
+                                              text: "*",
+                                              colors: Colors.red,
+                                              size: 25,
+                                            )
+                                          ],
                                         ),
                                         const SizedBox(height: 5),
                                         KeyboardDropdownField<AllCustomersObj>(
@@ -663,9 +715,11 @@ class _ReminderPageState extends State<ReminderPage> {
                                               ),
                                             );
                                           },
-                                          textEditingController:
-                                          controllers.cusController,
+                                          textEditingController: controllers.cusController,
                                           onSelected: (value) {
+                                            setState((){
+                                              customerError=null;
+                                            });
                                             controllers.selectCustomer(value);
                                           },
                                           onClear: () {
@@ -696,19 +750,28 @@ class _ReminderPageState extends State<ReminderPage> {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("Start Date & Time",
-                                            style: GoogleFonts.lato(
-                                                fontSize: 17,
-                                                color:
-                                                const Color(0xff737373))),
+                                        Row(
+                                          children: [
+                                            Text("Start Date & Time",
+                                                style: GoogleFonts.lato(
+                                                    fontSize: 17,
+                                                    color:
+                                                    const Color(0xff737373))),
+                                            const CustomText(
+                                              text: "*",
+                                              colors: Colors.red,
+                                              size: 25,
+                                            )
+                                          ],
+                                        ),
                                         const SizedBox(height: 5),
                                         TextFormField(
                                           controller:
                                           remController.startController,
                                           readOnly: true,
+
                                           onTap: () => _selectDateTime(
                                               context: context, isStart: true),
                                           style: GoogleFonts.lato(
@@ -723,8 +786,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                             ),
                                             errorText: startError,
                                             border: OutlineInputBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(4),
+                                              borderRadius: BorderRadius.circular(4),
                                               borderSide: BorderSide(
                                                 color: Colors.grey.shade300,
                                               ),
@@ -737,14 +799,22 @@ class _ReminderPageState extends State<ReminderPage> {
                                   const SizedBox(width: 20),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("End Date & Time",
-                                            style: GoogleFonts.lato(
-                                                fontSize: 17,
-                                                color:
-                                                const Color(0xff737373))),
+                                        Row(
+                                          children: [
+                                            Text("End Date & Time",
+                                                style: GoogleFonts.lato(
+                                                    fontSize: 17,
+                                                    color:
+                                                    const Color(0xff737373))),
+                                            const CustomText(
+                                              text: "*",
+                                              colors: Colors.red,
+                                              size: 25,
+                                            )
+                                          ],
+                                        ),
                                         const SizedBox(height: 5),
                                         TextFormField(
                                           controller: remController.endController,
@@ -777,7 +847,6 @@ class _ReminderPageState extends State<ReminderPage> {
                                 ],
                               ),
                               10.height,
-
                               /// Details field
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -871,9 +940,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                   endError == null &&
                                   employeeError == null &&
                                   customerError == null) {
-                                final provider = Provider.of<ReminderProvider>(
-                                    context,
-                                    listen: false);
+                                final provider = Provider.of<ReminderProvider>(context, listen: false);
                                 remController.insertReminderAPI(
                                     context, provider.selectedNotification);
                               }else{

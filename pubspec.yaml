@@ -85,6 +85,7 @@ dependencies:
   syncfusion_flutter_datepicker: ^29.1.38
   table_calendar:
   universal_html: ^2.2.4
+  flutter_time_picker_spinner: ^2.0.0
 
 dev_dependencies:
   flutter_test:

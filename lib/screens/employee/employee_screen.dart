@@ -234,8 +234,9 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                       0: FlexColumnWidth(2),//S.No
                       1: FlexColumnWidth(3.5),//Employee Name
                       2: FlexColumnWidth(3),//Role.
-                      3: FlexColumnWidth(3),//Mobile No
-                      4: FlexColumnWidth(3.5),//Action
+                      3: FlexColumnWidth(2),//Mobile No
+                      4: FlexColumnWidth(3),//Email
+                      5: FlexColumnWidth(3.5),//Action
                       //6: FlexColumnWidth(4.5),//Actions
                     },
                     border: TableBorder(
@@ -354,6 +355,16 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                 colors: Colors.white,
                               ),
                             ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(
+                                textAlign: TextAlign.left,
+                                text: "Email",
+                                size: 15,
+                                isBold: true,
+                                colors: Colors.white,
+                              ),
+                            ),
 
                             // Padding(
                             //   padding: const EdgeInsets.all(10.0),
@@ -385,11 +396,12 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                               },
                               child: Table(
                                 columnWidths:const {
-                                  0: FlexColumnWidth(2),//date
-                                  1: FlexColumnWidth(3.5),//Customer Name
-                                  2: FlexColumnWidth(3),//Mobile No.
-                                  3: FlexColumnWidth(3),//Call Type
-                                  4: FlexColumnWidth(3.5),
+                                  0: FlexColumnWidth(2),//S.No
+                                  1: FlexColumnWidth(3.5),//Employee Name
+                                  2: FlexColumnWidth(3),//Role.
+                                  3: FlexColumnWidth(2),//Mobile No
+                                  4: FlexColumnWidth(3),//Email
+                                  5: FlexColumnWidth(3.5),//Action
                                 },
                                 border: TableBorder(
                                   horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -536,7 +548,18 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                             ),
                                           ),
                                         ),
-
+                                        Tooltip(
+                                          message: staffData.email.toString()=="null"?"":staffData.email.toString(),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              text: staffData.email.toString(),
+                                              size: 14,
+                                              colors:colorsConst.textColor,
+                                            ),
+                                          ),
+                                        ),
                                         // Visibility(
                                         //   visible: employeeProvider.selectedEmployeeIndex == index,
                                         //   child: Column(

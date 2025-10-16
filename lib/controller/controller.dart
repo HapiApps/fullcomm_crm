@@ -1184,6 +1184,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     selectedCustomerMobile.value = '';
     selectedCustomerEmail.value = '';
     selectedCompanyName.value = '';
+    controllers.cusController.clear();
   }
 
   void selectEmployee(AllEmployeesObj c) {
@@ -1197,6 +1198,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     selectedEmployeeName.value = '';
     selectedEmployeeMobile.value = '';
     selectedEmployeeEmail.value = '';
+    controllers.empController.clear();
   }
 
   RxString selectedCustomerId = ''.obs;
