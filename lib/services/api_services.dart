@@ -2868,6 +2868,8 @@ class ApiService {
       Map data = {
         "search_type": "dashboard_report",
         "cos_id": controllers.storage.read("cos_id"),
+        "role": controllers.storage.read("role"),
+        "id": controllers.storage.read("id"),
         "action": "get_data",
         "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
         "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"

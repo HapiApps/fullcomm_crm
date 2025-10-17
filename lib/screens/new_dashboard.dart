@@ -51,9 +51,7 @@ class _NewDashboardState extends State<NewDashboard> {
       var last7days = DateTime.now().subtract(Duration(days: 7));
        apiService.getCustomerReport("${last7days.year}-${last7days.month.toString().padLeft(2,'0')}-${last7days.day.toString().padLeft(2,'0')}",today);
     });
-    apiService.getDashBoardReport();
     apiService.getRatingReport();
-    apiService.getMonthReport();
     apiService.getDashboardReport();
   }
   void showWebNotification() {

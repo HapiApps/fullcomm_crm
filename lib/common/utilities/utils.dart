@@ -1522,7 +1522,7 @@ class Utils {
                   controllers.isSettingsExpanded.value=false;
                 }),
             ),
-            Obx(() => Column(
+            controllers.storage.read("role")!="See All Customer Records"?0.height:Obx(() => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 15.height,
