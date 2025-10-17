@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:csc_picker_plus/dropdown_with_search.dart';
 import 'package:excel/excel.dart' as excel;
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:fullcomm_crm/common/styles/styles.dart';
 import 'package:fullcomm_crm/common/widgets/log_in.dart';
 import 'package:fullcomm_crm/screens/records/call_comments.dart';
@@ -3657,315 +3658,347 @@ class Utils {
   //     print("Selected ${isStart ? 'start' : 'end'}: $selectedDatesTimes");
   //   }
   // }
-
   Future<void> _selectDateTime({
     required BuildContext context,
     required bool isStart,
-  })
-  async {
-    Map<DateTime, TimeOfDay> selectedDatesTimes = isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
-    TextEditingController controller = isStart ? remController.startController : remController.endController;
+  }) async {
+    Map<DateTime, TimeOfDay> selectedDatesTimes =
+    isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
+    TextEditingController controller =
+    isStart ? remController.startController : remController.endController;
 
-    // Initialize dialogSelectedTime
-    TimeOfDay dialogSelectedTime = selectedDatesTimes.values.isNotEmpty
-        ? selectedDatesTimes.values.first
-        : _selectedTime;
+    await picker.DatePicker.showDateTimePicker(
+      context,
+      showTitleActions: true,
+      theme: const picker.DatePickerTheme(
+        backgroundColor: Color(0xFFE7EEF8),
+        itemStyle: TextStyle(color: Colors.black, fontSize: 18),
+        doneStyle: TextStyle(color: Color(0xff0078D7), fontWeight: FontWeight.bold),
+        cancelStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+      ),
+      currentTime: DateTime.now(),
+      locale: picker.LocaleType.en,
+      onConfirm: (date) {
+        TimeOfDay selectedTime = TimeOfDay(hour: date.hour, minute: date.minute);
 
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              insetPadding: const EdgeInsets.all(20),
-              contentPadding: const EdgeInsets.all(8),
-              title: Text(
-                isStart ? "Select Start Date & Time" : "Select End Date & Time",
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold),
-              ),
-              content: SizedBox(
-                height: 630,
-                width: 700,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: SfDateRangePicker(
-                        backgroundColor: Colors.white,
-                        view: DateRangePickerView.month,
-                        selectionMode: DateRangePickerSelectionMode.single,
-                        extendableRangeSelectionDirection: ExtendableRangeSelectionDirection.none,
-                        selectionColor: colorsConst.primary,
-                        startRangeSelectionColor: colorsConst.primary,
-                        endRangeSelectionColor: colorsConst.primary,
-                        rangeSelectionColor: const Color(0xffD9ECFF),
-                        todayHighlightColor: colorsConst.primary,
-                        headerStyle: DateRangePickerHeaderStyle(
-                          backgroundColor: Colors.white,
-                          textStyle: TextStyle(
-                            color: colorsConst.primary,
-                            // fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        onSelectionChanged: (args) {
-                          if (args.value is DateTime) {
-                            DateTime selectedDate = args.value;
-                            setDialogState(() {
-                              selectedDatesTimes.clear();
-                              selectedDatesTimes[selectedDate] = dialogSelectedTime;
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                    Container(
-                      width: 1,
-                      height: 600,
-                      color: Colors.grey.shade300,
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
-                    ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            height: 500,
-                            child: Center(
-                                child: SizedBox(
-                                    width: 330,
-                                    child: Theme(
-                                      data: Theme.of(context).copyWith(
-                                        timePickerTheme: TimePickerThemeData(
-                                          backgroundColor: const Color(0xFFE7EEF8),
-                                          hourMinuteShape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                                            side: BorderSide(color: Colors.black26),
-                                          ),
-                                          hourMinuteColor: WidgetStateColor.resolveWith((states) {
-                                            if (states.contains(WidgetState.selected)) {
-                                              return const Color(0xff0078D7);
-                                            }
-                                            return Colors.white;
-                                          }),
-                                          hourMinuteTextColor: WidgetStateColor.resolveWith((states) {
-                                            if (states.contains(WidgetState.selected)) {
-                                              return Colors.white;
-                                            }
-                                            return colorsConst.primary;
-                                          }),
-                                          timeSelectorSeparatorColor:  WidgetStateColor.resolveWith((states) {
-                                            if (states.contains(WidgetState.selected)) {
-                                              return Colors.white;
-                                            }
-                                            return Colors.black;
-                                          }),
-                                          dayPeriodShape:  RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(6)),
-                                            side: BorderSide(color: colorsConst.primary),
-                                          ),
-                                          dayPeriodColor: WidgetStateColor.resolveWith((states) {
-                                            if (states.contains(WidgetState.selected)) {
-                                              return colorsConst.primary;
-                                            }
-                                            return Colors.white;
-                                          }),
-                                          dayPeriodTextColor: WidgetStateColor.resolveWith((states) {
-                                            if (states.contains(WidgetState.selected)) {
-                                              return Colors.white;
-                                            }
-                                            return Colors.black;
-                                          }),
-                                          dialBackgroundColor: Colors.white,
-                                          dialHandColor:colorsConst.primary,
-                                          dialTextColor: Colors.black, // unselected numbers
-                                          dialTextStyle: WidgetStateTextStyle.resolveWith((states) {
-                                            if (states.contains(WidgetState.selected)) {
-                                              return const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18,
-                                              );
-                                            }
-                                            return const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 18,
-                                            );
-                                          }),
-                                          hourMinuteTextStyle: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 50,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      child: TimePickerDialog(
-                                        initialTime: dialogSelectedTime,
-                                        orientation: Orientation.portrait,
-                                        cancelText: "",
-                                        confirmText:"",
-                                        onEntryModeChanged: (value){
-                                          print("Time $value");
-                                          // _selectedTime=value;
-                                        },
-                                      ),
-                                    )
-                                )
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          // Quick action buttons
-                          Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  _quickButton("+15 min", () {
-                                    final t = dialogSelectedTime.replacing(
-                                      minute:
-                                      (dialogSelectedTime.minute + 15) % 60,
-                                      hour: (dialogSelectedTime.hour +
-                                          (dialogSelectedTime.minute +
-                                              15) ~/
-                                              60) %
-                                          24,
-                                    );
-                                    setDialogState(
-                                            () => dialogSelectedTime = t);
-                                  }),
-                                  _quickButton("+30 min", () {
-                                    final t = dialogSelectedTime.replacing(
-                                      minute:
-                                      (dialogSelectedTime.minute + 30) % 60,
-                                      hour: (dialogSelectedTime.hour +
-                                          (dialogSelectedTime.minute +
-                                              30) ~/
-                                              60) %
-                                          24,
-                                    );
-                                    setDialogState(
-                                            () => dialogSelectedTime = t);
-                                  }),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  _quickButton("+1 hour", () {
-                                    setDialogState(() {
-                                      dialogSelectedTime = TimeOfDay(
-                                        hour:
-                                        (dialogSelectedTime.hour + 1) % 24,
-                                        minute: dialogSelectedTime.minute,
-                                      );
-                                    });
-                                  }),
-                                  _quickButton("End of Day", () {
-                                    setDialogState(() => dialogSelectedTime =
-                                    const TimeOfDay(hour: 23, minute: 59));
-                                  }),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 25, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        width: 116,
-                        height: 40,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFE7EEF8),
-                            foregroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(7),
-                              side: const BorderSide(color: Color(0xff0078D7)),
-                            ),
-                            padding: EdgeInsets.zero,
-                            elevation: 0,
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text(
-                            "Cancel",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      SizedBox(
-                        width: 116,
-                        height: 40,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xff0078D7),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(7),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context, dialogSelectedTime);
-                              selectedDatesTimes.updateAll(
-                                    (key, value) => dialogSelectedTime,
-                              );
-                              if (selectedDatesTimes.isNotEmpty) {
-                                final selectedDate = selectedDatesTimes.keys.first;
-                                controller.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
-                                    "${dialogSelectedTime.format(context)}";
-                              }
-                              print("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
-                          },
-                          // onPressed: () {
-                          //   setState(() {
-                          //     selectedDatesTimes.updateAll(
-                          //           (key, value) => dialogSelectedTime,
-                          //     );
-                          //     if (selectedDatesTimes.isNotEmpty) {
-                          //       final selectedDate = selectedDatesTimes.keys.first;
-                          //       controller.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
-                          //           "${dialogSelectedTime.format(context)}";
-                          //     }
-                          //     print("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
-                          //   });
-                          //   Navigator.pop(context);
-                          // },
-                          child: const Text(
-                            "Set Time",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
-        );
+        selectedDatesTimes.clear();
+        selectedDatesTimes[date] = selectedTime;
+
+        controller.text =
+        "${date.day}-${date.month}-${date.year} ${selectedTime.format(context)}";
+
+        print("Selected ${isStart ? 'start' : 'end'} date & time: $selectedDatesTimes");
       },
     );
   }
+  // Future<void> _selectDateTime({
+  //   required BuildContext context,
+  //   required bool isStart,
+  // })
+  // async {
+  //   Map<DateTime, TimeOfDay> selectedDatesTimes = isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
+  //   TextEditingController controller = isStart ? remController.startController : remController.endController;
+  //
+  //   // Initialize dialogSelectedTime
+  //   TimeOfDay dialogSelectedTime = selectedDatesTimes.values.isNotEmpty
+  //       ? selectedDatesTimes.values.first
+  //       : _selectedTime;
+  //
+  //   await showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return StatefulBuilder(
+  //         builder: (context, setDialogState) {
+  //           return AlertDialog(
+  //             backgroundColor: Colors.white,
+  //             insetPadding: const EdgeInsets.all(20),
+  //             contentPadding: const EdgeInsets.all(8),
+  //             title: Text(
+  //               isStart ? "Select Start Date & Time" : "Select End Date & Time",
+  //               style: const TextStyle(
+  //                   color: Colors.black,
+  //                   fontSize: 17,
+  //                   fontWeight: FontWeight.bold),
+  //             ),
+  //             content: SizedBox(
+  //               height: 630,
+  //               width: 700,
+  //               child: Row(
+  //                 children: [
+  //                   Expanded(
+  //                     flex: 2,
+  //                     child: SfDateRangePicker(
+  //                       backgroundColor: Colors.white,
+  //                       view: DateRangePickerView.month,
+  //                       selectionMode: DateRangePickerSelectionMode.single,
+  //                       extendableRangeSelectionDirection: ExtendableRangeSelectionDirection.none,
+  //                       selectionColor: colorsConst.primary,
+  //                       startRangeSelectionColor: colorsConst.primary,
+  //                       endRangeSelectionColor: colorsConst.primary,
+  //                       rangeSelectionColor: const Color(0xffD9ECFF),
+  //                       todayHighlightColor: colorsConst.primary,
+  //                       headerStyle: DateRangePickerHeaderStyle(
+  //                         backgroundColor: Colors.white,
+  //                         textStyle: TextStyle(
+  //                           color: colorsConst.primary,
+  //                           // fontWeight: FontWeight.bold,
+  //                           fontSize: 16,
+  //                         ),
+  //                       ),
+  //                       onSelectionChanged: (args) {
+  //                         if (args.value is DateTime) {
+  //                           DateTime selectedDate = args.value;
+  //                           setDialogState(() {
+  //                             selectedDatesTimes.clear();
+  //                             selectedDatesTimes[selectedDate] = dialogSelectedTime;
+  //                           });
+  //                         }
+  //                       },
+  //                     ),
+  //                   ),
+  //                   Container(
+  //                     width: 1,
+  //                     height: 600,
+  //                     color: Colors.grey.shade300,
+  //                     margin: const EdgeInsets.symmetric(horizontal: 10),
+  //                   ),
+  //                   Align(
+  //                     alignment: Alignment.topCenter,
+  //                     child: Column(
+  //                       mainAxisSize: MainAxisSize.min,
+  //                       children: [
+  //                         SizedBox(
+  //                           height: 500,
+  //                           child: Center(
+  //                               child: SizedBox(
+  //                                   width: 330,
+  //                                   child: Theme(
+  //                                     data: Theme.of(context).copyWith(
+  //                                       timePickerTheme: TimePickerThemeData(
+  //                                         backgroundColor: const Color(0xFFE7EEF8),
+  //                                         hourMinuteShape: const RoundedRectangleBorder(
+  //                                           borderRadius: BorderRadius.all(Radius.circular(8)),
+  //                                           side: BorderSide(color: Colors.black26),
+  //                                         ),
+  //                                         hourMinuteColor: WidgetStateColor.resolveWith((states) {
+  //                                           if (states.contains(WidgetState.selected)) {
+  //                                             return const Color(0xff0078D7);
+  //                                           }
+  //                                           return Colors.white;
+  //                                         }),
+  //                                         hourMinuteTextColor: WidgetStateColor.resolveWith((states) {
+  //                                           if (states.contains(WidgetState.selected)) {
+  //                                             return Colors.white;
+  //                                           }
+  //                                           return colorsConst.primary;
+  //                                         }),
+  //                                         timeSelectorSeparatorColor:  WidgetStateColor.resolveWith((states) {
+  //                                           if (states.contains(WidgetState.selected)) {
+  //                                             return Colors.white;
+  //                                           }
+  //                                           return Colors.black;
+  //                                         }),
+  //                                         dayPeriodShape:  RoundedRectangleBorder(
+  //                                           borderRadius: BorderRadius.all(Radius.circular(6)),
+  //                                           side: BorderSide(color: colorsConst.primary),
+  //                                         ),
+  //                                         dayPeriodColor: WidgetStateColor.resolveWith((states) {
+  //                                           if (states.contains(WidgetState.selected)) {
+  //                                             return colorsConst.primary;
+  //                                           }
+  //                                           return Colors.white;
+  //                                         }),
+  //                                         dayPeriodTextColor: WidgetStateColor.resolveWith((states) {
+  //                                           if (states.contains(WidgetState.selected)) {
+  //                                             return Colors.white;
+  //                                           }
+  //                                           return Colors.black;
+  //                                         }),
+  //                                         dialBackgroundColor: Colors.white,
+  //                                         dialHandColor:colorsConst.primary,
+  //                                         dialTextColor: Colors.black, // unselected numbers
+  //                                         dialTextStyle: WidgetStateTextStyle.resolveWith((states) {
+  //                                           if (states.contains(WidgetState.selected)) {
+  //                                             return const TextStyle(
+  //                                               color: Colors.white,
+  //                                               fontWeight: FontWeight.bold,
+  //                                               fontSize: 18,
+  //                                             );
+  //                                           }
+  //                                           return const TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontSize: 18,
+  //                                           );
+  //                                         }),
+  //                                         hourMinuteTextStyle: const TextStyle(
+  //                                           color: Colors.black,
+  //                                           fontSize: 50,
+  //                                           fontWeight: FontWeight.bold,
+  //                                         ),
+  //                                       ),
+  //                                     ),
+  //                                     child: TimePickerDialog(
+  //                                       initialTime: dialogSelectedTime,
+  //                                       orientation: Orientation.portrait,
+  //                                       cancelText: "",
+  //                                       confirmText:"",
+  //                                       onEntryModeChanged: (value){
+  //                                         print("Time $value");
+  //                                         // _selectedTime=value;
+  //                                       },
+  //                                     ),
+  //                                   )
+  //                               )
+  //                           ),
+  //                         ),
+  //                         const SizedBox(height: 12),
+  //                         // Quick action buttons
+  //                         Column(
+  //                           children: [
+  //                             Row(
+  //                               mainAxisAlignment: MainAxisAlignment.center,
+  //                               children: [
+  //                                 _quickButton("+15 min", () {
+  //                                   final t = dialogSelectedTime.replacing(
+  //                                     minute:
+  //                                     (dialogSelectedTime.minute + 15) % 60,
+  //                                     hour: (dialogSelectedTime.hour +
+  //                                         (dialogSelectedTime.minute +
+  //                                             15) ~/
+  //                                             60) %
+  //                                         24,
+  //                                   );
+  //                                   setDialogState(
+  //                                           () => dialogSelectedTime = t);
+  //                                 }),
+  //                                 _quickButton("+30 min", () {
+  //                                   final t = dialogSelectedTime.replacing(
+  //                                     minute:
+  //                                     (dialogSelectedTime.minute + 30) % 60,
+  //                                     hour: (dialogSelectedTime.hour +
+  //                                         (dialogSelectedTime.minute +
+  //                                             30) ~/
+  //                                             60) %
+  //                                         24,
+  //                                   );
+  //                                   setDialogState(
+  //                                           () => dialogSelectedTime = t);
+  //                                 }),
+  //                               ],
+  //                             ),
+  //                             Row(
+  //                               mainAxisAlignment: MainAxisAlignment.center,
+  //                               children: [
+  //                                 _quickButton("+1 hour", () {
+  //                                   setDialogState(() {
+  //                                     dialogSelectedTime = TimeOfDay(
+  //                                       hour:
+  //                                       (dialogSelectedTime.hour + 1) % 24,
+  //                                       minute: dialogSelectedTime.minute,
+  //                                     );
+  //                                   });
+  //                                 }),
+  //                                 _quickButton("End of Day", () {
+  //                                   setDialogState(() => dialogSelectedTime =
+  //                                   const TimeOfDay(hour: 23, minute: 59));
+  //                                 }),
+  //                               ],
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //             actions: [
+  //               Padding(
+  //                 padding: const EdgeInsets.fromLTRB(0, 0, 25, 0),
+  //                 child: Row(
+  //                   mainAxisAlignment: MainAxisAlignment.end,
+  //                   children: [
+  //                     SizedBox(
+  //                       width: 116,
+  //                       height: 40,
+  //                       child: ElevatedButton(
+  //                         style: ElevatedButton.styleFrom(
+  //                           backgroundColor: const Color(0xFFE7EEF8),
+  //                           foregroundColor: Colors.black,
+  //                           shape: RoundedRectangleBorder(
+  //                             borderRadius: BorderRadius.circular(7),
+  //                             side: const BorderSide(color: Color(0xff0078D7)),
+  //                           ),
+  //                           padding: EdgeInsets.zero,
+  //                           elevation: 0,
+  //                         ),
+  //                         onPressed: () => Navigator.pop(context),
+  //                         child: const Text(
+  //                           "Cancel",
+  //                           style: TextStyle(
+  //                             fontWeight: FontWeight.bold,
+  //                             fontSize: 12,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     const SizedBox(width: 10),
+  //                     SizedBox(
+  //                       width: 116,
+  //                       height: 40,
+  //                       child: ElevatedButton(
+  //                         style: ElevatedButton.styleFrom(
+  //                           backgroundColor: const Color(0xff0078D7),
+  //                           shape: RoundedRectangleBorder(
+  //                             borderRadius: BorderRadius.circular(7),
+  //                           ),
+  //                         ),
+  //                         onPressed: () {
+  //                           Navigator.pop(context, dialogSelectedTime);
+  //                             selectedDatesTimes.updateAll(
+  //                                   (key, value) => dialogSelectedTime,
+  //                             );
+  //                             if (selectedDatesTimes.isNotEmpty) {
+  //                               final selectedDate = selectedDatesTimes.keys.first;
+  //                               controller.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
+  //                                   "${dialogSelectedTime.format(context)}";
+  //                             }
+  //                             print("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
+  //                         },
+  //                         // onPressed: () {
+  //                         //   setState(() {
+  //                         //     selectedDatesTimes.updateAll(
+  //                         //           (key, value) => dialogSelectedTime,
+  //                         //     );
+  //                         //     if (selectedDatesTimes.isNotEmpty) {
+  //                         //       final selectedDate = selectedDatesTimes.keys.first;
+  //                         //       controller.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
+  //                         //           "${dialogSelectedTime.format(context)}";
+  //                         //     }
+  //                         //     print("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
+  //                         //   });
+  //                         //   Navigator.pop(context);
+  //                         // },
+  //                         child: const Text(
+  //                           "Set Time",
+  //                           style: TextStyle(
+  //                             color: Colors.white,
+  //                             fontWeight: FontWeight.bold,
+  //                             fontSize: 14,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _quickButton(String text, VoidCallback onTap) {
     return Container(
@@ -4571,7 +4604,7 @@ class Utils {
                             isLoading: true,
                             backgroundColor: colorsConst.primary,
                             radius: 7,
-                            width: 120,
+                            width: 150,
                             controller: controllers.productCtr,
                             isImage: false,
                             text: "Save Reminder",
@@ -4618,7 +4651,7 @@ class Utils {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Add Reminder",
+                            "Update Reminder",
                             style: GoogleFonts.lato(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -4989,7 +5022,7 @@ class Utils {
                             isLoading: true,
                             backgroundColor: colorsConst.primary,
                             radius: 7,
-                            width: 120,
+                            width: 150,
                             controller: controllers.productCtr,
                             isImage: false,
                             text: "Update Reminder",
