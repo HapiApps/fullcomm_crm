@@ -596,9 +596,15 @@ class ApiService {
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
-        apiService.insertMeetEmailAPI(context, controllers.selectedCustomerId.value,
-            imageController.photo1.value);
         getAllMeetingActivity();
+        controllers.clearSelectedCustomer();
+        controllers.meetingTitleCrt.text = "";
+        controllers.meetingVenueCrt.text = "";
+        controllers.fDate.value = "";
+        controllers.toDate.value = "";
+        controllers.fTime.value = "";
+        controllers.toTime.value = "";
+        controllers.callCommentCont.text = "";
         Navigator.pop(context);
         controllers.productCtr.reset();
       } else {
@@ -1019,6 +1025,10 @@ class ApiService {
         controllers.sourceCrt.clear();
         controllers.prospectEnrollmentDateCrt.clear();
         controllers.statusCrt.clear();
+        controllers.empDOB.value = "";
+        controllers.exDate.value = "";
+        controllers.prospectDate.value = "";
+        controllers.stateController.text = "";
         prefs.remove("leadName");
         prefs.remove("leadCount");
         prefs.remove("leadMobileNumber");
@@ -1244,7 +1254,7 @@ class ApiService {
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200) {
         controllers.storage.write("f_name", response["s_name"]);
-        controllers.storage.write("role", "2");
+        controllers.storage.write("role", response["permission"]);
         controllers.storage.write("role_name", "Admin");
         controllers.storage.write("id", response["id"]);
         controllers.storage.write("cos_id", response["cos_id"]);
@@ -2289,6 +2299,14 @@ class ApiService {
     final url = Uri.parse(scriptApi);
     controllers.allLeadsLength.value = 0;
     try {
+      print("leads data ${{
+        "search_type": "leads",
+        "cos_id": controllers.storage.read("cos_id"),
+        "role": controllers.storage.read("role"),
+        "id": controllers.storage.read("id"),
+        "lead_id": "2",
+        "action": "get_data"
+      }}");
       final response = await http.post(
         url,
         body: jsonEncode({
@@ -2300,6 +2318,7 @@ class ApiService {
           "action": "get_data"
         }),
       );
+
       controllers.isLead.value = true;
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List; // Cast to List
@@ -2518,7 +2537,7 @@ class ApiService {
   Future getRoles() async {
     try {
       Map data = {
-        "search_type": "allroles",
+        "search_type": "all_roles",
         "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data"
       };

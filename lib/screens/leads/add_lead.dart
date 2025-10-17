@@ -740,8 +740,7 @@ class _AddLeadState extends State<AddLead> {
                                             width: textFieldSize,
                                             isOptional: false,
                                             keyboardType: TextInputType.number,
-                                            textInputAction:
-                                            TextInputAction.next,
+                                            textInputAction: TextInputAction.next,
                                             inputFormatters: constInputFormatters.mobileNumberInput,
                                             onChanged: (value) async {
                                               SharedPreferences sharedPref =
@@ -929,96 +928,99 @@ class _AddLeadState extends State<AddLead> {
                           //     utils.textFieldNearText('Linkedin', false),
                           //   ],
                           // ),
-                          // 5.width,
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              CustomTextField(
-                                hintText: "Company Name",
-                                text: "Company Name",
-                                controller: controllers.leadCoNameCrt,
-                                width: textFieldSize,
-                                keyboardType: TextInputType.text,
-                                textInputAction: TextInputAction.next,
-                                isOptional: false,
-                                inputFormatters: constInputFormatters.textInput,
-                                onChanged: (value) async {
-                                  if (value.toString().isNotEmpty) {
-                                    String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
-                                    if (newValue != value) {
-                                      controllers.leadCoNameCrt.value = controllers.leadCoNameCrt.value.copyWith(
-                                        text: newValue,
-                                        selection: TextSelection.collapsed(offset: newValue.length),
-                                      );
-                                    }
-                                  }
-                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                  sharedPref.setString("leadCoName", value.toString().trim());
-                                },
-                              ),
-                              CustomTextField(
-                                hintText: "Company Phone No.",
-                                text: "Company Phone No.",
-                                controller: controllers.leadCoMobileCrt,
-                                width: textFieldSize,
-                                keyboardType: TextInputType.text,
-                                textInputAction: TextInputAction.next,
-                                isOptional: false,
 
-                                inputFormatters:
-                                constInputFormatters.mobileNumberInput,
-                                onChanged: (value) async {
-                                  if (value.toString().isNotEmpty) {
-                                    String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
-                                    if (newValue != value) {
-                                      controllers.leadCoMobileCrt.value = controllers.leadCoMobileCrt.value.copyWith(
-                                        text: newValue,
-                                        selection: TextSelection.collapsed(offset: newValue.length),
-                                      );
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                CustomTextField(
+                                  hintText: "Company Name",
+                                  text: "Company Name",
+                                  controller: controllers.leadCoNameCrt,
+                                  width: textFieldSize,
+                                  keyboardType: TextInputType.text,
+                                  textInputAction: TextInputAction.next,
+                                  isOptional: false,
+                                  inputFormatters: constInputFormatters.textInput,
+                                  onChanged: (value) async {
+                                    if (value.toString().isNotEmpty) {
+                                      String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                                      if (newValue != value) {
+                                        controllers.leadCoNameCrt.value = controllers.leadCoNameCrt.value.copyWith(
+                                          text: newValue,
+                                          selection: TextSelection.collapsed(offset: newValue.length),
+                                        );
+                                      }
                                     }
-                                  }
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
-                                  sharedPref.setString(
-                                      "leadCoMobile", value.toString().trim());
-                                },
-                                // }
-                              ),
-                              CustomDropDown(
-                                saveValue: controllers.industry,
-                                valueList: controllers.industryList,
-                                text: "Industry",
-                                width: textFieldSize,
-                                //inputFormatters: constInputFormatters.textInput,
-                                onChanged: (value) async {
-                                  setState(() {
-                                    controllers.industry = value;
-                                  });
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
-                                  sharedPref.setString(
-                                      "industry", value.toString().trim());
-                                },
-                              ),
-                              10.height,
-                              CustomTextField(
-                                hintText: "Linkedin (Optional)",
-                                text: "Linkedin (Optional)",
-                                controller: controllers.leadLinkedinCrt,
-                                width: textFieldSize,
-                                keyboardType: TextInputType.text,
-                                isOptional: false,
-                                textInputAction: TextInputAction.next,
-                                inputFormatters:
-                                constInputFormatters.socialInput,
-                                onChanged: (value) async {
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
-                                  sharedPref.setString(
-                                      "leadLinkedin", value.toString().trim());
-                                },
-                              ),
-                            ],
+                                    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                    sharedPref.setString("leadCoName", value.toString().trim());
+                                  },
+                                ),
+                                CustomTextField(
+                                  hintText: "Company Phone No.",
+                                  text: "Company Phone No.",
+                                  controller: controllers.leadCoMobileCrt,
+                                  width: textFieldSize,
+                                  keyboardType: TextInputType.text,
+                                  textInputAction: TextInputAction.next,
+                                  isOptional: false,
+
+                                  inputFormatters:
+                                  constInputFormatters.mobileNumberInput,
+                                  onChanged: (value) async {
+                                    if (value.toString().isNotEmpty) {
+                                      String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                                      if (newValue != value) {
+                                        controllers.leadCoMobileCrt.value = controllers.leadCoMobileCrt.value.copyWith(
+                                          text: newValue,
+                                          selection: TextSelection.collapsed(offset: newValue.length),
+                                        );
+                                      }
+                                    }
+                                    SharedPreferences sharedPref =
+                                    await SharedPreferences.getInstance();
+                                    sharedPref.setString(
+                                        "leadCoMobile", value.toString().trim());
+                                  },
+                                  // }
+                                ),
+                                CustomDropDown(
+                                  saveValue: controllers.industry,
+                                  valueList: controllers.industryList,
+                                  text: "Industry",
+                                  width: textFieldSize,
+                                  //inputFormatters: constInputFormatters.textInput,
+                                  onChanged: (value) async {
+                                    setState(() {
+                                      controllers.industry = value;
+                                    });
+                                    SharedPreferences sharedPref =
+                                    await SharedPreferences.getInstance();
+                                    sharedPref.setString(
+                                        "industry", value.toString().trim());
+                                  },
+                                ),
+                                10.height,
+                                CustomTextField(
+                                  hintText: "Linkedin (Optional)",
+                                  text: "Linkedin (Optional)",
+                                  controller: controllers.leadLinkedinCrt,
+                                  width: textFieldSize,
+                                  keyboardType: TextInputType.text,
+                                  isOptional: false,
+                                  textInputAction: TextInputAction.next,
+                                  inputFormatters:
+                                  constInputFormatters.socialInput,
+                                  onChanged: (value) async {
+                                    SharedPreferences sharedPref =
+                                    await SharedPreferences.getInstance();
+                                    sharedPref.setString(
+                                        "leadLinkedin", value.toString().trim());
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
 
                           // Column(
@@ -1160,175 +1162,178 @@ class _AddLeadState extends State<AddLead> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              CustomTextField(
-                                hintText: "Actions to be taken",
-                                text: "Actions to be taken",
-                                controller: controllers.leadActions,
-                                width: textFieldSize,
-                                keyboardType: TextInputType.text,
-                                isOptional: false,
-                                textInputAction: TextInputAction.next,
-                                inputFormatters:
-                                constInputFormatters.textInput,
-                                onChanged: (value) async {
-                                  if (value.toString().isNotEmpty) {
-                                    String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
-                                    if (newValue != value) {
-                                      controllers.leadActions.value = controllers.leadActions.value.copyWith(
-                                        text: newValue,
-                                        selection: TextSelection.collapsed(offset: newValue.length),
-                                      );
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                CustomTextField(
+                                  hintText: "Actions to be taken",
+                                  text: "Actions to be taken",
+                                  controller: controllers.leadActions,
+                                  width: textFieldSize,
+                                  keyboardType: TextInputType.text,
+                                  isOptional: false,
+                                  textInputAction: TextInputAction.next,
+                                  inputFormatters:
+                                  constInputFormatters.textInput,
+                                  onChanged: (value) async {
+                                    if (value.toString().isNotEmpty) {
+                                      String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                                      if (newValue != value) {
+                                        controllers.leadActions.value = controllers.leadActions.value.copyWith(
+                                          text: newValue,
+                                          selection: TextSelection.collapsed(offset: newValue.length),
+                                        );
+                                      }
                                     }
-                                  }
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
-                                  sharedPref.setString("leadActions",
-                                      value.toString().trim());
-                                },
-                              ),
-                              CustomTextField(
-                                hintText: "Source Of Prospect",
-                                text: "Source Of Prospect",
-                                controller: controllers.leadDisPointsCrt,
-                                width: textFieldSize,
-                                isOptional: false,
-                                keyboardType: TextInputType.text,
-                                textInputAction: TextInputAction.next,
-                                onChanged: (value) async {
-                                  if (value.toString().isNotEmpty) {
-                                    String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
-                                    if (newValue != value) {
-                                      controllers.leadDisPointsCrt.value = controllers.leadDisPointsCrt.value.copyWith(
-                                        text: newValue,
-                                        selection: TextSelection.collapsed(offset: newValue.length),
-                                      );
+                                    SharedPreferences sharedPref =
+                                    await SharedPreferences.getInstance();
+                                    sharedPref.setString("leadActions",
+                                        value.toString().trim());
+                                  },
+                                ),
+                                CustomTextField(
+                                  hintText: "Source Of Prospect",
+                                  text: "Source Of Prospect",
+                                  controller: controllers.leadDisPointsCrt,
+                                  width: textFieldSize,
+                                  isOptional: false,
+                                  keyboardType: TextInputType.text,
+                                  textInputAction: TextInputAction.next,
+                                  onChanged: (value) async {
+                                    if (value.toString().isNotEmpty) {
+                                      String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                                      if (newValue != value) {
+                                        controllers.leadDisPointsCrt.value = controllers.leadDisPointsCrt.value.copyWith(
+                                          text: newValue,
+                                          selection: TextSelection.collapsed(offset: newValue.length),
+                                        );
+                                      }
                                     }
-                                  }
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
-                                  sharedPref.setString("leadDisPoints",
-                                      value.toString().trim());
-                                },
-                                // }
-                              ),
-                              CustomTextField(
-                                hintText: "Product Discussed",
-                                text: "Product Discussed",
-                                controller:
-                                controllers.prodDescriptionController,
-                                width: textFieldSize,
-                                isOptional: false,
-                                keyboardType: TextInputType.text,
-                                textInputAction: TextInputAction.next,
-                                onChanged: (value) async {
-                                  if (value.toString().isNotEmpty) {
-                                    String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
-                                    if (newValue != value) {
-                                      controllers.prodDescriptionController.value = controllers.prodDescriptionController.value.copyWith(
-                                        text: newValue,
-                                        selection: TextSelection.collapsed(offset: newValue.length),
-                                      );
+                                    SharedPreferences sharedPref =
+                                    await SharedPreferences.getInstance();
+                                    sharedPref.setString("leadDisPoints",
+                                        value.toString().trim());
+                                  },
+                                  // }
+                                ),
+                                CustomTextField(
+                                  hintText: "Product Discussed",
+                                  text: "Product Discussed",
+                                  controller:
+                                  controllers.prodDescriptionController,
+                                  width: textFieldSize,
+                                  isOptional: false,
+                                  keyboardType: TextInputType.text,
+                                  textInputAction: TextInputAction.next,
+                                  onChanged: (value) async {
+                                    if (value.toString().isNotEmpty) {
+                                      String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                                      if (newValue != value) {
+                                        controllers.prodDescriptionController.value = controllers.prodDescriptionController.value.copyWith(
+                                          text: newValue,
+                                          selection: TextSelection.collapsed(offset: newValue.length),
+                                        );
+                                      }
                                     }
-                                  }
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
-                                  sharedPref.setString("leadProdDis",
-                                      value.toString().trim());
-                                },
-                                // }
-                              ),
-                              CustomTextField(
-                                hintText: "Expected Monthly Billing Value",
-                                text: "Expected Monthly Billing Value",
-                                controller:
-                                controllers.exMonthBillingValCrt,
-                                width: textFieldSize,
-                                isOptional: false,
-                                keyboardType: TextInputType.text,
-                                textInputAction: TextInputAction.next,
-                                onChanged: (value) async {
-                                  if (value.toString().isNotEmpty) {
-                                    String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
-                                    if (newValue != value) {
-                                      controllers.exMonthBillingValCrt.value =  controllers.exMonthBillingValCrt.value.copyWith(
-                                        text: newValue,
-                                        selection: TextSelection.collapsed(offset: newValue.length),
-                                      );
+                                    SharedPreferences sharedPref =
+                                    await SharedPreferences.getInstance();
+                                    sharedPref.setString("leadProdDis",
+                                        value.toString().trim());
+                                  },
+                                  // }
+                                ),
+                                CustomTextField(
+                                  hintText: "Expected Monthly Billing Value",
+                                  text: "Expected Monthly Billing Value",
+                                  controller:
+                                  controllers.exMonthBillingValCrt,
+                                  width: textFieldSize,
+                                  isOptional: false,
+                                  keyboardType: TextInputType.text,
+                                  textInputAction: TextInputAction.next,
+                                  onChanged: (value) async {
+                                    if (value.toString().isNotEmpty) {
+                                      String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                                      if (newValue != value) {
+                                        controllers.exMonthBillingValCrt.value =  controllers.exMonthBillingValCrt.value.copyWith(
+                                          text: newValue,
+                                          selection: TextSelection.collapsed(offset: newValue.length),
+                                        );
+                                      }
                                     }
-                                  }
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
-                                  sharedPref.setString("leadExMonthBillingVal", value.toString().trim());
-                                },
-                                // }
-                              ),
-                              CustomTextField(
-                                hintText: "ARPU Value",
-                                text: "ARPU Value",
-                                controller: controllers.arpuCrt,
-                                width: textFieldSize,
-                                isOptional: false,
-                                keyboardType: TextInputType.text,
-                                textInputAction: TextInputAction.next,
-                                onChanged: (value) async {
-                                  if (value.toString().isNotEmpty) {
-                                    String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
-                                    if (newValue != value) {
-                                      controllers.arpuCrt.value = controllers.arpuCrt.value.copyWith(
-                                        text: newValue,
-                                        selection: TextSelection.collapsed(offset: newValue.length),
-                                      );
+                                    SharedPreferences sharedPref =
+                                    await SharedPreferences.getInstance();
+                                    sharedPref.setString("leadExMonthBillingVal", value.toString().trim());
+                                  },
+                                  // }
+                                ),
+                                CustomTextField(
+                                  hintText: "ARPU Value",
+                                  text: "ARPU Value",
+                                  controller: controllers.arpuCrt,
+                                  width: textFieldSize,
+                                  isOptional: false,
+                                  keyboardType: TextInputType.text,
+                                  textInputAction: TextInputAction.next,
+                                  onChanged: (value) async {
+                                    if (value.toString().isNotEmpty) {
+                                      String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                                      if (newValue != value) {
+                                        controllers.arpuCrt.value = controllers.arpuCrt.value.copyWith(
+                                          text: newValue,
+                                          selection: TextSelection.collapsed(offset: newValue.length),
+                                        );
+                                      }
                                     }
-                                  }
-                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                  sharedPref.setString(
-                                      "leadARPU", value.toString().trim());
-                                },
-                                // }
-                              ),
-                              // CustomTextField(
-                              //   hintText: "",
-                              //   text: "Source Of Details",
-                              //   controller: controllers.sourceCrt,
-                              //   width: textFieldSize,
-                              //   isOptional: false,
-                              //   keyboardType: TextInputType.text,
-                              //   textInputAction: TextInputAction.next,
-                              //   onChanged: (value) async {
-                              //     SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                              //     sharedPref.setString("leadSource", value.toString().trim());
-                              //   },
-                              //   // }
-                              // ),
-                              CustomTextField(
-                                hintText: "Prospect Grading",
-                                text: "Prospect Grading",
-                                controller: controllers.prospectGradingCrt,
-                                width: textFieldSize,
-                                isOptional: false,
-                                keyboardType: TextInputType.text,
-                                textInputAction: TextInputAction.next,
-                                onChanged: (value) async {
-                                  if (value.toString().isNotEmpty) {
-                                    String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
-                                    if (newValue != value) {
-                                      controllers.prospectGradingCrt.value = controllers.prospectGradingCrt.value.copyWith(
-                                        text: newValue,
-                                        selection: TextSelection.collapsed(offset: newValue.length),
-                                      );
+                                    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                    sharedPref.setString(
+                                        "leadARPU", value.toString().trim());
+                                  },
+                                  // }
+                                ),
+                                // CustomTextField(
+                                //   hintText: "",
+                                //   text: "Source Of Details",
+                                //   controller: controllers.sourceCrt,
+                                //   width: textFieldSize,
+                                //   isOptional: false,
+                                //   keyboardType: TextInputType.text,
+                                //   textInputAction: TextInputAction.next,
+                                //   onChanged: (value) async {
+                                //     SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                //     sharedPref.setString("leadSource", value.toString().trim());
+                                //   },
+                                //   // }
+                                // ),
+                                CustomTextField(
+                                  hintText: "Prospect Grading",
+                                  text: "Prospect Grading",
+                                  controller: controllers.prospectGradingCrt,
+                                  width: textFieldSize,
+                                  isOptional: false,
+                                  keyboardType: TextInputType.text,
+                                  textInputAction: TextInputAction.next,
+                                  onChanged: (value) async {
+                                    if (value.toString().isNotEmpty) {
+                                      String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                                      if (newValue != value) {
+                                        controllers.prospectGradingCrt.value = controllers.prospectGradingCrt.value.copyWith(
+                                          text: newValue,
+                                          selection: TextSelection.collapsed(offset: newValue.length),
+                                        );
+                                      }
                                     }
-                                  }
-                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                  sharedPref.setString("leadSource", value.toString().trim());
-                                },
-                                // }
-                              ),
-                              15.height,
-                            ],
+                                    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                    sharedPref.setString("leadSource", value.toString().trim());
+                                  },
+                                  // }
+                                ),
+                                15.height,
+                              ],
+                            ),
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -1380,7 +1385,11 @@ class _AddLeadState extends State<AddLead> {
                                 width: textFieldSize,
                                 isOptional: false,
                                 keyboardType: TextInputType.number,
-                                inputFormatters: constInputFormatters.numberInput,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                                  LengthLimitingTextInputFormatter(10),
+                                ],
                                 textInputAction: TextInputAction.next,
                                 onChanged: (value) async {
                                   SharedPreferences sharedPref =
@@ -1402,6 +1411,7 @@ class _AddLeadState extends State<AddLead> {
                                   },
                                 ),
                               ),
+                              20.height,
                               // CustomTextField(
                               //   hintText: "Expected Conversion Date",
                               //   text: "Expected Conversion Date",
@@ -1438,8 +1448,7 @@ class _AddLeadState extends State<AddLead> {
                                       );
                                     }
                                   }
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
+                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
                                   sharedPref.setString(
                                       "Prospect Source Details",
                                       value.toString().trim());
@@ -1458,6 +1467,7 @@ class _AddLeadState extends State<AddLead> {
                                 },
                               ),
                               ),
+                              20.height,
                               // CustomTextField(
                               //   hintText: "Prospect Enrollment Date",
                               //   text: "Prospect Enrollment Date",
@@ -1562,6 +1572,15 @@ class _AddLeadState extends State<AddLead> {
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,
                                 onChanged: (value) async {
+                                  if (value.toString().isNotEmpty) {
+                                    String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                                    if (newValue != value) {
+                                      controllers.areaController.value = controllers.areaController.value.copyWith(
+                                        text: newValue,
+                                        selection: TextSelection.collapsed(offset: newValue.length),
+                                      );
+                                    }
+                                  }
                                   SharedPreferences sharedPref =
                                   await SharedPreferences.getInstance();
                                   sharedPref.setString(
@@ -1702,8 +1721,7 @@ class _AddLeadState extends State<AddLead> {
                                 textInputAction: TextInputAction.next,
                                 isOptional: false,
                                 onChanged: (value) async {
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
+                                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
                                   sharedPref.setString("leadState", value.toString().trim());
                                 },
                                 // validator:(value){

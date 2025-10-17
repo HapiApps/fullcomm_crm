@@ -1178,6 +1178,13 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     selectedCustomerEmail.value = c.email;
     selectedCompanyName.value = c.companyName;
   }
+  void selectNCustomer(String id, String name, String email, String mobile) {
+    selectedCustomerId.value = id;
+    selectedCustomerName.value = name;
+    selectedCustomerEmail.value = email;
+    selectedCustomerMobile.value = mobile;
+    cusController.text = "$name - $mobile";
+  }
   void clearSelectedCustomer() {
     selectedCustomerId.value = '';
     selectedCustomerName.value = '';
@@ -1193,6 +1200,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     selectedEmployeeMobile.value = c.phoneNo;
     selectedEmployeeEmail.value = c.email;
   }
+
   void clearSelectedEmployee() {
     selectedEmployeeId.value = '';
     selectedEmployeeName.value = '';

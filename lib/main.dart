@@ -87,6 +87,7 @@ class _MyAppState extends State<MyApp> {
       remController.allReminders("2");
       settingsController.allRoles();
       settingsController.allOfficeHours();
+      apiService.getAllEmployees();
     }
   }
   @override

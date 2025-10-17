@@ -24,9 +24,12 @@ import 'package:fullcomm_crm/screens/settings/general_settings.dart';
 import 'package:fullcomm_crm/screens/settings/reminder_settings.dart';
 import 'package:fullcomm_crm/screens/settings/user_plan.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/screens/customer/view_customer.dart';
@@ -35,10 +38,14 @@ import '../../components/custom_loading_button.dart';
 import '../../components/custom_sidebar_text.dart';
 import '../../components/custom_text.dart';
 import '../../components/dialog_button.dart';
+import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
+import '../../controller/reminder_controller.dart';
 import '../../main.dart';
+import '../../models/all_customers_obj.dart';
 import '../../models/new_lead_obj.dart';
+import '../../provider/reminder_provider.dart';
 import '../../screens/leads/disqualified_lead.dart';
 import '../../screens/reminder_page.dart';
 import '../../services/api_services.dart';
@@ -3128,16 +3135,29 @@ class Utils {
     final blob = html.Blob([data.buffer.asUint8List()]);
     final url = html.Url.createObjectUrlFromBlob(blob);
 
-    html.Url.revokeObjectUrl(url);
+    final anchor = html.AnchorElement(href: url)
+      ..setAttribute('download', 'easycrm_data_upload_template.xlsx')
+      ..click();
+
+    // Revoke after a short delay
+    Future.delayed(const Duration(seconds: 1), () {
+      html.Url.revokeObjectUrl(url);
+    });
   }
+
   Future<void> downloadSheetImplementation(String fileName, Uint8List bodyBytes) async {
     final blob = html.Blob([bodyBytes]);
     final url = html.Url.createObjectUrlFromBlob(blob);
+
     final anchor = html.AnchorElement(href: url)
       ..setAttribute('download', fileName)
       ..click();
-    html.Url.revokeObjectUrl(url);
+
+    Future.delayed(const Duration(seconds: 1), () {
+      html.Url.revokeObjectUrl(url);
+    });
   }
+
 
   Future<void> downloadSheetFromNetwork(String fileUrl, String fileName) async {
     try {
@@ -3199,13 +3219,13 @@ class Utils {
                               borderRadius: BorderRadius.circular(5),
                               side: BorderSide(color: colorsConst.third))),
                       onPressed: () {
-                        if(controllers.serverSheet.value.isEmpty){
+                       // if(controllers.serverSheet.value.isEmpty){
                           print("Local Download");
                           downloadSampleExcel();
-                        }else{
-                          print("Network Download");
-                          downloadSheetFromNetwork(controllers.serverSheet.value, "easycrm_data_upload_template.xlsx");
-                        }
+                        // }else{
+                        //   print("Network Download");
+                        //   downloadSheetFromNetwork(controllers.serverSheet.value, "easycrm_data_upload_template.xlsx");
+                        // }
                       },
                       child: const CustomText(
                         text: "Download Sample Excel Sheet",
@@ -3469,6 +3489,1522 @@ class Utils {
             ),
           );
         }
+    );
+  }
+
+  bool showFollowUpCalendar = false;
+  bool showMeetingCalendar = false;
+
+  DateTime followUpSelectedDay = DateTime.now();
+  DateTime meetingSelectedDay = DateTime.now();
+
+// State for dropdown & repeat
+  Map<DateTime, TimeOfDay> _selectedStartDatesTimes = {};
+  Map<DateTime, TimeOfDay> _selectedEndDatesTimes = {};
+  TimeOfDay _selectedTime = TimeOfDay.now();
+
+  // Future<void> _selectDateTime({
+  //   required BuildContext context,
+  //   required bool isStart,
+  // })
+  // async {
+  //   Map<DateTime, TimeOfDay> selectedDatesTimes =
+  //   isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
+  //   TextEditingController controller =
+  //   isStart ? remController.startController : remController.endController;
+  //
+  //   DateTime selectedDate =
+  //   selectedDatesTimes.keys.isNotEmpty ? selectedDatesTimes.keys.first : DateTime.now();
+  //   TimeOfDay dialogSelectedTime =
+  //   selectedDatesTimes.values.isNotEmpty ? selectedDatesTimes.values.first : TimeOfDay.now();
+  //
+  //   final TimeOfDay? pickedTime = await showDialog<TimeOfDay>(
+  //     context: context,
+  //     builder: (context) {
+  //       return StatefulBuilder(builder: (context, setDialogState) {
+  //         return AlertDialog(
+  //           backgroundColor: Colors.white,
+  //           insetPadding: const EdgeInsets.all(20),
+  //           contentPadding: const EdgeInsets.all(10),
+  //           title: Text(
+  //             isStart ? "Select Start Date & Time" : "Select End Date & Time",
+  //             style: const TextStyle(
+  //               fontWeight: FontWeight.bold,
+  //               color: Colors.black,
+  //               fontSize: 17,
+  //             ),
+  //           ),
+  //           content: SizedBox(
+  //             height: 420,
+  //             width: 600,
+  //             child: Row(
+  //               children: [
+  //                 // ---------- Date Picker ----------
+  //                 Expanded(
+  //                   flex: 2,
+  //                   child: SfDateRangePicker(
+  //                     view: DateRangePickerView.month,
+  //                     selectionMode: DateRangePickerSelectionMode.single,
+  //                     todayHighlightColor: colorsConst.primary,
+  //                     selectionColor: colorsConst.primary,
+  //                     onSelectionChanged: (args) {
+  //                       if (args.value is DateTime) {
+  //                         setDialogState(() {
+  //                           selectedDate = args.value;
+  //                         });
+  //                       }
+  //                     },
+  //                   ),
+  //                 ),
+  //
+  //                 Container(
+  //                   width: 1,
+  //                   height: double.infinity,
+  //                   color: Colors.grey.shade300,
+  //                   margin: const EdgeInsets.symmetric(horizontal: 8),
+  //                 ),
+  //
+  //                 // ---------- Time Picker + Quick Buttons ----------
+  //                 Expanded(
+  //                   flex: 1,
+  //                   child: Column(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     children: [
+  //                       TimePickerDialog(
+  //                         initialTime: dialogSelectedTime,
+  //                         cancelText: "",
+  //                         confirmText: "",
+  //                         orientation: Orientation.portrait,
+  //                         onEntryModeChanged: (mode) {},
+  //                       ),
+  //                       const SizedBox(height: 12),
+  //                       Row(
+  //                         mainAxisAlignment: MainAxisAlignment.center,
+  //                         children: [
+  //                           _quickButton("+15m", () {
+  //                             final t = dialogSelectedTime.replacing(
+  //                               minute: (dialogSelectedTime.minute + 15) % 60,
+  //                               hour: (dialogSelectedTime.hour +
+  //                                   (dialogSelectedTime.minute + 15) ~/ 60) %
+  //                                   24,
+  //                             );
+  //                             setDialogState(() => dialogSelectedTime = t);
+  //                           }),
+  //                           const SizedBox(width: 8),
+  //                           _quickButton("+30m", () {
+  //                             final t = dialogSelectedTime.replacing(
+  //                               minute: (dialogSelectedTime.minute + 30) % 60,
+  //                               hour: (dialogSelectedTime.hour +
+  //                                   (dialogSelectedTime.minute + 30) ~/ 60) %
+  //                                   24,
+  //                             );
+  //                             setDialogState(() => dialogSelectedTime = t);
+  //                           }),
+  //                         ],
+  //                       ),
+  //                       const SizedBox(height: 8),
+  //                       Row(
+  //                         mainAxisAlignment: MainAxisAlignment.center,
+  //                         children: [
+  //                           _quickButton("+1h", () {
+  //                             setDialogState(() {
+  //                               dialogSelectedTime = TimeOfDay(
+  //                                 hour: (dialogSelectedTime.hour + 1) % 24,
+  //                                 minute: dialogSelectedTime.minute,
+  //                               );
+  //                             });
+  //                           }),
+  //                           const SizedBox(width: 8),
+  //                           _quickButton("End of Day", () {
+  //                             setDialogState(() {
+  //                               dialogSelectedTime =
+  //                               const TimeOfDay(hour: 23, minute: 59);
+  //                             });
+  //                           }),
+  //                         ],
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () => Navigator.pop(context),
+  //               child: const Text("Cancel"),
+  //             ),
+  //             ElevatedButton(
+  //               style: ElevatedButton.styleFrom(
+  //                 backgroundColor: colorsConst.primary,
+  //               ),
+  //               onPressed: () => Navigator.pop(context, dialogSelectedTime),
+  //               child: const Text(
+  //                 "Set Time",
+  //                 style: TextStyle(color: Colors.white),
+  //               ),
+  //             ),
+  //           ],
+  //         );
+  //       });
+  //     },
+  //   );
+  //   if (pickedTime != null) {
+  //     selectedDatesTimes.clear();
+  //     selectedDatesTimes[selectedDate] = pickedTime;
+  //     controller.text =
+  //     "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} ${pickedTime.format(context)}";
+  //     print("Selected ${isStart ? 'start' : 'end'}: $selectedDatesTimes");
+  //   }
+  // }
+
+  Future<void> _selectDateTime({
+    required BuildContext context,
+    required bool isStart,
+  })
+  async {
+    Map<DateTime, TimeOfDay> selectedDatesTimes = isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
+    TextEditingController controller = isStart ? remController.startController : remController.endController;
+
+    // Initialize dialogSelectedTime
+    TimeOfDay dialogSelectedTime = selectedDatesTimes.values.isNotEmpty
+        ? selectedDatesTimes.values.first
+        : _selectedTime;
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              insetPadding: const EdgeInsets.all(20),
+              contentPadding: const EdgeInsets.all(8),
+              title: Text(
+                isStart ? "Select Start Date & Time" : "Select End Date & Time",
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold),
+              ),
+              content: SizedBox(
+                height: 630,
+                width: 700,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: SfDateRangePicker(
+                        backgroundColor: Colors.white,
+                        view: DateRangePickerView.month,
+                        selectionMode: DateRangePickerSelectionMode.single,
+                        extendableRangeSelectionDirection: ExtendableRangeSelectionDirection.none,
+                        selectionColor: colorsConst.primary,
+                        startRangeSelectionColor: colorsConst.primary,
+                        endRangeSelectionColor: colorsConst.primary,
+                        rangeSelectionColor: const Color(0xffD9ECFF),
+                        todayHighlightColor: colorsConst.primary,
+                        headerStyle: DateRangePickerHeaderStyle(
+                          backgroundColor: Colors.white,
+                          textStyle: TextStyle(
+                            color: colorsConst.primary,
+                            // fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        onSelectionChanged: (args) {
+                          if (args.value is DateTime) {
+                            DateTime selectedDate = args.value;
+                            setDialogState(() {
+                              selectedDatesTimes.clear();
+                              selectedDatesTimes[selectedDate] = dialogSelectedTime;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                    Container(
+                      width: 1,
+                      height: 600,
+                      color: Colors.grey.shade300,
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: 500,
+                            child: Center(
+                                child: SizedBox(
+                                    width: 330,
+                                    child: Theme(
+                                      data: Theme.of(context).copyWith(
+                                        timePickerTheme: TimePickerThemeData(
+                                          backgroundColor: const Color(0xFFE7EEF8),
+                                          hourMinuteShape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                                            side: BorderSide(color: Colors.black26),
+                                          ),
+                                          hourMinuteColor: WidgetStateColor.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) {
+                                              return const Color(0xff0078D7);
+                                            }
+                                            return Colors.white;
+                                          }),
+                                          hourMinuteTextColor: WidgetStateColor.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) {
+                                              return Colors.white;
+                                            }
+                                            return colorsConst.primary;
+                                          }),
+                                          timeSelectorSeparatorColor:  WidgetStateColor.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) {
+                                              return Colors.white;
+                                            }
+                                            return Colors.black;
+                                          }),
+                                          dayPeriodShape:  RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                                            side: BorderSide(color: colorsConst.primary),
+                                          ),
+                                          dayPeriodColor: WidgetStateColor.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) {
+                                              return colorsConst.primary;
+                                            }
+                                            return Colors.white;
+                                          }),
+                                          dayPeriodTextColor: WidgetStateColor.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) {
+                                              return Colors.white;
+                                            }
+                                            return Colors.black;
+                                          }),
+                                          dialBackgroundColor: Colors.white,
+                                          dialHandColor:colorsConst.primary,
+                                          dialTextColor: Colors.black, // unselected numbers
+                                          dialTextStyle: WidgetStateTextStyle.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) {
+                                              return const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18,
+                                              );
+                                            }
+                                            return const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18,
+                                            );
+                                          }),
+                                          hourMinuteTextStyle: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 50,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      child: TimePickerDialog(
+                                        initialTime: dialogSelectedTime,
+                                        orientation: Orientation.portrait,
+                                        cancelText: "",
+                                        confirmText:"",
+                                        onEntryModeChanged: (value){
+                                          print("Time $value");
+                                          // _selectedTime=value;
+                                        },
+                                      ),
+                                    )
+                                )
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // Quick action buttons
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  _quickButton("+15 min", () {
+                                    final t = dialogSelectedTime.replacing(
+                                      minute:
+                                      (dialogSelectedTime.minute + 15) % 60,
+                                      hour: (dialogSelectedTime.hour +
+                                          (dialogSelectedTime.minute +
+                                              15) ~/
+                                              60) %
+                                          24,
+                                    );
+                                    setDialogState(
+                                            () => dialogSelectedTime = t);
+                                  }),
+                                  _quickButton("+30 min", () {
+                                    final t = dialogSelectedTime.replacing(
+                                      minute:
+                                      (dialogSelectedTime.minute + 30) % 60,
+                                      hour: (dialogSelectedTime.hour +
+                                          (dialogSelectedTime.minute +
+                                              30) ~/
+                                              60) %
+                                          24,
+                                    );
+                                    setDialogState(
+                                            () => dialogSelectedTime = t);
+                                  }),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  _quickButton("+1 hour", () {
+                                    setDialogState(() {
+                                      dialogSelectedTime = TimeOfDay(
+                                        hour:
+                                        (dialogSelectedTime.hour + 1) % 24,
+                                        minute: dialogSelectedTime.minute,
+                                      );
+                                    });
+                                  }),
+                                  _quickButton("End of Day", () {
+                                    setDialogState(() => dialogSelectedTime =
+                                    const TimeOfDay(hour: 23, minute: 59));
+                                  }),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 25, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                        width: 116,
+                        height: 40,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFE7EEF8),
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7),
+                              side: const BorderSide(color: Color(0xff0078D7)),
+                            ),
+                            padding: EdgeInsets.zero,
+                            elevation: 0,
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text(
+                            "Cancel",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      SizedBox(
+                        width: 116,
+                        height: 40,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xff0078D7),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context, dialogSelectedTime);
+                              selectedDatesTimes.updateAll(
+                                    (key, value) => dialogSelectedTime,
+                              );
+                              if (selectedDatesTimes.isNotEmpty) {
+                                final selectedDate = selectedDatesTimes.keys.first;
+                                controller.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
+                                    "${dialogSelectedTime.format(context)}";
+                              }
+                              print("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
+                          },
+                          // onPressed: () {
+                          //   setState(() {
+                          //     selectedDatesTimes.updateAll(
+                          //           (key, value) => dialogSelectedTime,
+                          //     );
+                          //     if (selectedDatesTimes.isNotEmpty) {
+                          //       final selectedDate = selectedDatesTimes.keys.first;
+                          //       controller.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
+                          //           "${dialogSelectedTime.format(context)}";
+                          //     }
+                          //     print("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
+                          //   });
+                          //   Navigator.pop(context);
+                          // },
+                          child: const Text(
+                            "Set Time",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _quickButton(String text, VoidCallback onTap) {
+    return Container(
+      width: 120,
+      height: 40,
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      child: OutlinedButton(
+        onPressed: onTap,
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          side: BorderSide(color: Colors.grey.shade300),
+          foregroundColor: Colors.black,
+        ),
+        child: Text(text, style: const TextStyle(fontSize: 13)),
+      ),
+    );
+  }
+
+  final DateFormat formatter = DateFormat("yyyy-MM-dd HH:mm");
+
+  void showAddReminderDialog(BuildContext context) {
+    String? titleError;
+    String? startError;
+    String? endError;
+    String? employeeError;
+    String? customerError;
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              insetPadding: const EdgeInsets.symmetric(horizontal: 80, vertical: 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                width: 630,
+                color: Colors.white,
+                padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Add Reminder",
+                            style: GoogleFonts.lato(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const Text(
+                              "×",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Divider(thickness: 1, color: Colors.grey.shade300),
+                      const SizedBox(height: 8),
+
+                      /// Reminder title
+                      Row(
+                        children: [
+                          Text("Reminder Title",
+                              style: GoogleFonts.lato(
+                                  fontSize: 17, color: Color(0xff737373))),
+                          const CustomText(
+                            text: "*",
+                            colors: Colors.red,
+                            size: 25,
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        controller: remController.titleController,
+                        onChanged: (value){
+                            if (value.toString().isNotEmpty) {
+                              String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                              if (newValue != value) {
+                                remController.titleController.value = remController.titleController.value.copyWith(
+                                  text: newValue,
+                                  selection: TextSelection.collapsed(offset: newValue.length),
+                                );
+                              }
+                            }
+                          if(remController.titleController.text.trim().isNotEmpty){
+                            setState(() {
+                              titleError = null;
+                            });
+                          }
+                        },
+                        style: GoogleFonts.lato(
+                          color: Colors.black,
+                          fontSize: 17,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: "Reminder title",
+                          errorText: titleError,
+                          hintStyle: TextStyle(
+                            color: Color(0xFFCCCCCC),
+                            fontSize: 17,
+                            fontFamily: GoogleFonts.lato().fontFamily,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      Text("Notification Type",
+                          style: GoogleFonts.lato(
+                              fontSize: 17, color: const Color(0xff737373))),
+                      Consumer<ReminderProvider>(
+                        builder: (context, provider, _) {
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: RadioListTile(
+                                  title: Text(
+                                    "Follow-up Reminder",
+                                    style: GoogleFonts.lato(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  value: "followup",
+                                  groupValue: provider.selectedNotification,
+                                  activeColor: const Color(0xFF0078D7),
+                                  onChanged: (v) =>
+                                      provider.setNotification(v as String),
+                                ),
+                              ),
+                              Expanded(
+                                child: RadioListTile(
+                                  title: Text(
+                                    "Meeting Reminder",
+                                    style: GoogleFonts.lato(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  value: "meeting",
+                                  groupValue: provider.selectedNotification,
+                                  activeColor: const Color(0xFF0078D7),
+                                  onChanged: (v) =>
+                                      provider.setNotification(v as String),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+
+                      8.height,
+                      Consumer<ReminderProvider>(
+                        builder: (context, provider, _) {
+                          if (provider.selectedNotification == "task") {
+                            return const SizedBox.shrink();
+                          }
+                          return Column(
+                            children: [
+                              /// Location
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Location",
+                                            style: GoogleFonts.lato(
+                                                fontSize: 17,
+                                                color: const Color(0xff737373))),
+                                        const SizedBox(height: 5),
+                                        DropdownButtonFormField<String>(
+                                          value: remController.location,
+                                          dropdownColor: Colors.white,
+                                          style: GoogleFonts.lato(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                          ),
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey.shade300),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey.shade300),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey.shade300),
+                                            ),
+                                            contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 12,
+                                                vertical: 10),
+                                          ),
+                                          items: ["Online", "Office"]
+                                              .map(
+                                                (e) => DropdownMenuItem(
+                                              value: e,
+                                              child: Text(
+                                                e,
+                                                style: GoogleFonts.lato(
+                                                  color: Colors.black,
+                                                  fontSize: 17,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                              .toList(),
+                                          onChanged: (v) => setState(
+                                                  () => remController.location = v),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              13.height,
+
+                              /// Employee and Customer fields
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Employees",
+                                              style: GoogleFonts.lato(
+                                                fontSize: 17,
+                                                color: const Color(0xff737373),
+                                              ),
+                                            ),
+                                            const CustomText(
+                                              text: "*",
+                                              colors: Colors.red,
+                                              size: 25,
+                                            )
+                                          ],
+                                        ),
+                                        5.height,
+                                        KeyboardDropdownField<AllEmployeesObj>(
+                                          items: controllers.employees,
+                                          borderRadius: 5,
+                                          borderColor: Colors.grey.shade300,
+                                          hintText: "Employees",
+                                          labelText: "",
+                                          labelBuilder: (customer) =>
+                                          '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                          itemBuilder: (customer) {
+                                            return Container(
+                                              width: 300,
+                                              alignment: Alignment.topLeft,
+                                              padding: const EdgeInsets.fromLTRB(
+                                                  10, 5, 10, 5),
+                                              child: CustomText(
+                                                text:
+                                                '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                                colors: Colors.black,
+                                                size: 14,
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            );
+                                          },
+                                          textEditingController: controllers.empController,
+                                          onSelected: (value) {
+                                            setState((){
+                                              employeeError=null;
+                                            });
+                                            controllers.selectEmployee(value);
+                                          },
+                                          onClear: () {
+                                            controllers.clearSelectedCustomer();
+                                          },
+                                        ),
+                                        if (employeeError != null)
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 4.0),
+                                            child: Text(
+                                              employeeError!,
+                                              style: const TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 13),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  20.width,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Assigned Customer",
+                                              style: GoogleFonts.lato(
+                                                fontSize: 17,
+                                                color: const Color(0xff737373),
+                                              ),
+                                            ),
+                                            const CustomText(
+                                              text: "*",
+                                              colors: Colors.red,
+                                              size: 25,
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(height: 5),
+                                        KeyboardDropdownField<AllCustomersObj>(
+                                          items: controllers.customers,
+                                          borderRadius: 5,
+                                          borderColor: Colors.grey.shade300,
+                                          hintText: "Customers",
+                                          labelText: "",
+                                          labelBuilder: (customer) =>
+                                          '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                          itemBuilder: (customer) {
+                                            return Container(
+                                              width: 300,
+                                              alignment: Alignment.topLeft,
+                                              padding: const EdgeInsets.fromLTRB(
+                                                  10, 5, 10, 5),
+                                              child: CustomText(
+                                                text:
+                                                '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                                colors: Colors.black,
+                                                size: 14,
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            );
+                                          },
+                                          textEditingController: controllers.cusController,
+                                          onSelected: (value) {
+                                            setState((){
+                                              customerError=null;
+                                            });
+                                            controllers.selectCustomer(value);
+                                          },
+                                          onClear: () {
+                                            controllers.clearSelectedCustomer();
+                                          },
+                                        ),
+                                        if (customerError != null)
+                                          Padding(
+                                            padding:
+                                            const EdgeInsets.only(top: 4.0),
+                                            child: Text(
+                                              customerError!,
+                                              style: const TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 13),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 18),
+
+                              /// Start & End Date/Time
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text("Start Date & Time",
+                                                style: GoogleFonts.lato(
+                                                    fontSize: 17,
+                                                    color:
+                                                    const Color(0xff737373))),
+                                            const CustomText(
+                                              text: "*",
+                                              colors: Colors.red,
+                                              size: 25,
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(height: 5),
+                                        TextFormField(
+                                          controller:
+                                          remController.startController,
+                                          readOnly: true,
+
+                                          onTap: () => _selectDateTime(
+                                              context: context, isStart: true),
+                                          style: GoogleFonts.lato(
+                                            color: Colors.black,
+                                            fontSize: 17,
+                                          ),
+                                          decoration: InputDecoration(
+                                            suffixIcon: const Icon(
+                                              Icons.calendar_today_outlined,
+                                              size: 20,
+                                              color: Colors.grey,
+                                            ),
+                                            errorText: startError,
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.shade300,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text("End Date & Time",
+                                                style: GoogleFonts.lato(
+                                                    fontSize: 17,
+                                                    color:
+                                                    const Color(0xff737373))),
+                                            const CustomText(
+                                              text: "*",
+                                              colors: Colors.red,
+                                              size: 25,
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(height: 5),
+                                        TextFormField(
+                                          controller: remController.endController,
+                                          readOnly: true,
+                                          onTap: () => _selectDateTime(
+                                              context: context, isStart: false),
+                                          style: GoogleFonts.lato(
+                                            color: Colors.black,
+                                            fontSize: 17,
+                                          ),
+                                          decoration: InputDecoration(
+                                            suffixIcon: const Icon(
+                                              Icons.calendar_today_outlined,
+                                              size: 20,
+                                              color: Colors.grey,
+                                            ),
+                                            errorText: endError,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.shade300,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              10.height,
+                              /// Details field
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Details",
+                                      style: GoogleFonts.lato(
+                                          fontSize: 17,
+                                          color: Color(0xff737373))),
+                                  const SizedBox(height: 5),
+                                  TextFormField(
+                                    textCapitalization:
+                                    TextCapitalization.sentences,
+                                    controller:
+                                    remController.detailsController,
+                                    maxLines: 2,
+                                    style: GoogleFonts.lato(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: "Meeting Points",
+                                      hintStyle: GoogleFonts.lato(
+                                        color: const Color(0xFFCCCCCC),
+                                        fontSize: 17,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(4),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+
+                      13.height,
+
+                      /// Action buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            width: 80,
+                            height: 30,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(7),
+                                  side: const BorderSide(color: Color(0xff0078D7)),
+                                ),
+                                padding: EdgeInsets.zero,
+                                elevation: 0,
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text(
+                                "Cancel",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          CustomLoadingButton(
+                            callback: ()async{
+                              setState(() {
+                                titleError = remController.titleController.text.trim().isEmpty
+                                    ? "Please enter reminder title"
+                                    : null;
+                                startError = remController.startController.text.trim().isEmpty
+                                    ? "Please select start date & time"
+                                    : null;
+                                endError = remController.endController.text.trim().isEmpty
+                                    ? "Please select end date & time"
+                                    : null;
+                                employeeError = controllers.selectedEmployeeId.value.isEmpty
+                                    ? "Please select employee"
+                                    : null;
+                                customerError = controllers.selectedCustomerId.value.isEmpty
+                                    ? "Please select customer"
+                                    : null;
+                              });
+                              if (titleError == null &&
+                                  startError == null &&
+                                  endError == null &&
+                                  employeeError == null &&
+                                  customerError == null) {
+                                final provider = Provider.of<ReminderProvider>(context, listen: false);
+                                remController.insertReminderAPI(context, provider.selectedNotification);
+                              }else{
+                                controllers.productCtr.reset();
+                              }
+                            },
+                            height: 40,
+                            isLoading: true,
+                            backgroundColor: colorsConst.primary,
+                            radius: 7,
+                            width: 120,
+                            controller: controllers.productCtr,
+                            isImage: false,
+                            text: "Save Reminder",
+                            textColor: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void showUpdateReminderDialog(String id,BuildContext context) {
+    String? titleError;
+    String? startError;
+    String? endError;
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              insetPadding: const EdgeInsets.symmetric(horizontal: 80, vertical: 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                width: 630,
+                color: Colors.white,
+                padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Add Reminder",
+                            style: GoogleFonts.lato(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const Text(
+                              "×",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Divider(thickness: 1, color: Colors.grey.shade300),
+                      const SizedBox(height: 8),
+
+                      /// Reminder title
+                      Text("Reminder Title",
+                          style: GoogleFonts.lato(
+                              fontSize: 17, color: Color(0xff737373))),
+                      const SizedBox(height: 5),
+                      TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        controller: remController.updateTitleController,
+                        onChanged: (value) {
+                          if (value.toString().isNotEmpty) {
+                            String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                            if (newValue != value) {
+                              remController.updateTitleController.value = remController.updateTitleController.value.copyWith(
+                                text: newValue,
+                                selection: TextSelection.collapsed(offset: newValue.length),
+                              );
+                            }
+                          }
+                          if (value.trim().isNotEmpty) {
+                            setState(() {
+                              titleError = null;
+                            });
+                          }
+                        },
+                        style: GoogleFonts.lato(
+                          color: Colors.black,
+                          fontSize: 17,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: "Reminder title",
+                          errorText: titleError,
+                          hintStyle: TextStyle(
+                            color: Color(0xFFCCCCCC),
+                            fontSize: 17,
+                            fontFamily: GoogleFonts.lato().fontFamily,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      Text("Notification Type",
+                          style: GoogleFonts.lato(
+                              fontSize: 17, color: const Color(0xff737373))),
+                      Consumer<ReminderProvider>(
+                        builder: (context, provider, _) {
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: RadioListTile(
+                                  title: Text(
+                                    "Follow-up Reminder",
+                                    style: GoogleFonts.lato(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  value: "followup",
+                                  groupValue: provider.selectedNotification,
+                                  activeColor: const Color(0xFF0078D7),
+                                  onChanged: (v) =>
+                                      provider.setNotification(v as String),
+                                ),
+                              ),
+                              Expanded(
+                                child: RadioListTile(
+                                  title: Text(
+                                    "Meeting Reminder",
+                                    style: GoogleFonts.lato(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  value: "meeting",
+                                  groupValue: provider.selectedNotification,
+                                  activeColor: const Color(0xFF0078D7),
+                                  onChanged: (v) =>
+                                      provider.setNotification(v as String),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+
+                      8.height,
+                      Consumer<ReminderProvider>(
+                        builder: (context, provider, _) {
+                          if (provider.selectedNotification == "task") {
+                            return const SizedBox.shrink();
+                          }
+                          return Column(
+                            children: [
+                              /// Location
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Location",
+                                            style: GoogleFonts.lato(
+                                                fontSize: 17,
+                                                color: const Color(0xff737373))),
+                                        const SizedBox(height: 5),
+                                        DropdownButtonFormField<String>(
+                                          value: remController.updateLocation,
+                                          dropdownColor: Colors.white,
+                                          style: GoogleFonts.lato(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                          ),
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey.shade300),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey.shade300),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey.shade300),
+                                            ),
+                                            contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 12,
+                                                vertical: 10),
+                                          ),
+                                          items: ["Online", "Office"]
+                                              .map(
+                                                (e) => DropdownMenuItem(
+                                              value: e,
+                                              child: Text(
+                                                e,
+                                                style: GoogleFonts.lato(
+                                                  color: Colors.black,
+                                                  fontSize: 17,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                              .toList(),
+                                          onChanged: (v) => setState(
+                                                  () => remController.updateLocation = v),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 18),
+                              /// Start & End Date/Time
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Start Date & Time",
+                                            style: GoogleFonts.lato(
+                                                fontSize: 17,
+                                                color:
+                                                const Color(0xff737373))),
+                                        const SizedBox(height: 5),
+                                        TextFormField(
+                                          controller:
+                                          remController.updateStartController,
+                                          readOnly: true,
+                                          onTap: () => _selectDateTime(
+                                              context: context, isStart: true),
+                                          style: GoogleFonts.lato(
+                                            color: Colors.black,
+                                            fontSize: 17,
+                                          ),
+                                          decoration: InputDecoration(
+                                            suffixIcon: const Icon(
+                                              Icons.calendar_today_outlined,
+                                              size: 20,
+                                              color: Colors.grey,
+                                            ),
+                                            errorText: startError,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.shade300,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text("End Date & Time",
+                                            style: GoogleFonts.lato(
+                                                fontSize: 17,
+                                                color:
+                                                const Color(0xff737373))),
+                                        const SizedBox(height: 5),
+                                        TextFormField(
+                                          controller: remController.updateEndController,
+                                          readOnly: true,
+                                          onTap: () => _selectDateTime(
+                                              context: context, isStart: false),
+                                          style: GoogleFonts.lato(
+                                            color: Colors.black,
+                                            fontSize: 17,
+                                          ),
+                                          decoration: InputDecoration(
+                                            suffixIcon: const Icon(
+                                              Icons.calendar_today_outlined,
+                                              size: 20,
+                                              color: Colors.grey,
+                                            ),
+                                            errorText: endError,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.shade300,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              10.height,
+
+                              /// Details field
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Details",
+                                      style: GoogleFonts.lato(
+                                          fontSize: 17,
+                                          color: Color(0xff737373))),
+                                  const SizedBox(height: 5),
+                                  TextFormField(
+                                    textCapitalization:
+                                    TextCapitalization.sentences,
+                                    controller: remController.updateDetailsController,
+                                    maxLines: 2,
+                                    style: GoogleFonts.lato(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: "Meeting Points",
+                                      hintStyle: GoogleFonts.lato(
+                                        color: const Color(0xFFCCCCCC),
+                                        fontSize: 17,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(4),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+
+                      13.height,
+
+                      /// Action buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            width: 80,
+                            height: 30,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(7),
+                                  side: const BorderSide(color: Color(0xff0078D7)),
+                                ),
+                                padding: EdgeInsets.zero,
+                                elevation: 0,
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text(
+                                "Cancel",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          CustomLoadingButton(
+                            callback: ()async{
+                              setState(() {
+                                titleError = remController.updateTitleController.text.trim().isEmpty
+                                    ? "Please enter reminder title"
+                                    : null;
+                                startError = remController.updateStartController.text.trim().isEmpty
+                                    ? "Please select start date & time"
+                                    : null;
+                                endError = remController.updateEndController.text.trim().isEmpty
+                                    ? "Please select end date & time"
+                                    : null;
+                              });
+                              if (titleError == null && startError == null && endError == null) {
+                                final provider = Provider.of<ReminderProvider>(context, listen: false);
+                                remController.updateReminderAPI(context, provider.selectedNotification,id);
+                              }else{
+                                controllers.productCtr.reset();
+                              }
+                            },
+                            height: 40,
+                            isLoading: true,
+                            backgroundColor: colorsConst.primary,
+                            radius: 7,
+                            width: 120,
+                            controller: controllers.productCtr,
+                            isImage: false,
+                            text: "Update Reminder",
+                            textColor: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

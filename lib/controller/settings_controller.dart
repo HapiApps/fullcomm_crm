@@ -87,7 +87,8 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
         "description": upDescriptionController.text.trim(),
         "permission": updatePermission,
         "updated_by": controllers.storage.read("id"),
-        "cos_id": controllers.storage.read("cos_id")
+        "cos_id": controllers.storage.read("cos_id"),
+        "id": id
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {

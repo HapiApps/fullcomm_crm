@@ -236,7 +236,10 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                       2: FlexColumnWidth(3),//Role.
                       3: FlexColumnWidth(2),//Mobile No
                       4: FlexColumnWidth(3),//Email
-                      5: FlexColumnWidth(3.5),//Action
+                      5: FlexColumnWidth(2.5),//Action
+                      6: FlexColumnWidth(2.5),
+                      7: FlexColumnWidth(2.5),
+                      8: FlexColumnWidth(2.5),
                       //6: FlexColumnWidth(4.5),//Actions
                     },
                     border: TableBorder(
@@ -365,7 +368,36 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                 colors: Colors.white,
                               ),
                             ),
-
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(
+                                textAlign: TextAlign.left,
+                                text: "Address",
+                                size: 15,
+                                isBold: true,
+                                colors: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(
+                                textAlign: TextAlign.left,
+                                text: "Salery",
+                                size: 15,
+                                isBold: true,
+                                colors: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(
+                                textAlign: TextAlign.left,
+                                text: "Bonus",
+                                size: 15,
+                                isBold: true,
+                                colors: Colors.white,
+                              ),
+                            ),
                             // Padding(
                             //   padding: const EdgeInsets.all(10.0),
                             //   child: CustomText(//9
@@ -401,7 +433,10 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   2: FlexColumnWidth(3),//Role.
                                   3: FlexColumnWidth(2),//Mobile No
                                   4: FlexColumnWidth(3),//Email
-                                  5: FlexColumnWidth(3.5),//Action
+                                  5: FlexColumnWidth(2.5),//Action
+                                  6: FlexColumnWidth(2.5),
+                                  7: FlexColumnWidth(2.5),
+                                  8: FlexColumnWidth(2.5),
                                 },
                                 border: TableBorder(
                                   horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -555,6 +590,42 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                             child: CustomText(
                                               textAlign: TextAlign.left,
                                               text: staffData.email.toString(),
+                                              size: 14,
+                                              colors:colorsConst.textColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Tooltip(
+                                          message: staffData.sAddress.toString()=="null"?"":staffData.sAddress.toString(),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              text: staffData.sAddress.toString(),
+                                              size: 14,
+                                              colors:colorsConst.textColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Tooltip(
+                                          message: staffData.salary.toString()=="null"?"":staffData.salary.toString(),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              text: staffData.salary.toString(),
+                                              size: 14,
+                                              colors:colorsConst.textColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Tooltip(
+                                          message: staffData.bonus.toString()=="null"?"":staffData.bonus.toString(),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              text: staffData.bonus.toString(),
                                               size: 14,
                                               colors:colorsConst.textColor,
                                             ),

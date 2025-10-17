@@ -165,6 +165,7 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.leadMobileCrt.clear();
       controllers.leadTitleCrt.clear();
       controllers.leadEmailCrt.clear();
+      controllers.leadWhatsCrt.clear();
       // if(widget.name.toString().contains("||")){
       //   leadPersonalCount=widget.name.toString().split("||").length;
       //
@@ -198,10 +199,12 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.leadMobileCrt.add(TextEditingController());
       controllers.leadTitleCrt.add(TextEditingController());
       controllers.leadEmailCrt.add(TextEditingController());
+      controllers.leadWhatsCrt.add(TextEditingController());
       controllers.leadNameCrt[0].text=widget.mainName.toString();
       print("lead count error ${widget.mainName} ${controllers.leadNameCrt[0].text}");
       controllers.leadMobileCrt[0].text=widget.mainMobile.toString();
       controllers.leadEmailCrt[0].text=widget.mainEmail.toString();
+      controllers.leadWhatsCrt[0].text=widget.mainMobile.toString();
       controllers.leadTitleCrt[0].text=widget.owner.toString();
       controllers.visitType = widget.visitType.isEmpty?null:controllers.callNameList.contains(widget.visitType)?widget.visitType:null;
       controllers.leadCoNameCrt.text=companyName.toString();
@@ -446,6 +449,26 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           ],
                                         ),
                                         15.height,
+                                        CustomTextField(
+                                          hintText: "Whatsapp No",
+                                          text: "Whatsapp",
+                                          controller:
+                                          controllers.leadWhatsCrt[0],
+                                          width: textFieldSize,
+                                          isOptional: false,
+                                          keyboardType: TextInputType.number,
+                                          textInputAction: TextInputAction.next,
+                                          inputFormatters: constInputFormatters.mobileNumberInput,
+                                          // validator:(value){
+                                          //   if(value.toString().isEmpty){
+                                          //     return "This field is required";
+                                          //   }else if(value.toString().trim().length!=10){
+                                          //     return "Check Your Phone Number";
+                                          //   }else{
+                                          //     return null;
+                                          //   }
+                                          // }
+                                        ),
                                       ],
                                     ),
 
@@ -477,6 +500,19 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             SharedPreferences sharedPref = await SharedPreferences.getInstance();
                                             //sharedPref.setString("leadEmail$index", value.toString().trim());
                                           },
+                                        ),
+                                        Obx(() => CustomDateBox(
+                                          text: "Date of Connection",
+                                          value: controllers.empDOB.value,
+                                          width: textFieldSize,
+                                          onTap: () {
+                                            utils.datePicker(
+                                                context: context,
+                                                textEditingController: controllers.dateOfConCtr,
+                                                pathVal: controllers.empDOB
+                                            );
+                                          },
+                                        ),
                                         ),
                                         15.height,
                                       ],

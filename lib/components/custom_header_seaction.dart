@@ -10,7 +10,7 @@ import '../screens/leads/add_lead.dart';
 import 'custom_loading_button.dart';
 import 'custom_text.dart';
 
-class HeaderSection extends StatelessWidget {
+class HeaderSection extends StatefulWidget {
   final String title;
   final String subtitle;
 
@@ -20,6 +20,11 @@ class HeaderSection extends StatelessWidget {
     required this.subtitle,
   });
 
+  @override
+  State<HeaderSection> createState() => _HeaderSectionState();
+}
+
+class _HeaderSectionState extends State<HeaderSection> {
   @override
   Widget build(BuildContext context) {
     final controllers = Get.find<Controller>();
@@ -31,14 +36,14 @@ class HeaderSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomText(
-              text: title,
+              text: widget.title,
               colors: colorsConst.textColor,
               size: 25,
               isBold: true,
             ),
             10.height,
             CustomText(
-              text: subtitle,
+              text: widget.subtitle,
               colors: colorsConst.textColor,
               size: 14,
             ),
@@ -76,7 +81,9 @@ class HeaderSection extends StatelessWidget {
                 }
                 controllers.leadCoNameCrt.text = sharedPref.getString("leadCoName") ?? "";
                 controllers.leadCoMobileCrt.text = sharedPref.getString("leadCoMobile") ?? "";
-
+                setState(() {
+                  controllers.visitType = null;
+                });
                 _focusNode.requestFocus();
                 Get.to(const AddLead(), duration: Duration.zero);
               },

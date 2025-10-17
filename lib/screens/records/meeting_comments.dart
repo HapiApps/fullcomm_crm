@@ -37,18 +37,39 @@ class _MeetingCommentsState extends State<MeetingComments> {
   final ScrollController _controller = ScrollController();
   String formatFirstDate(String input) {
     try {
-      String firstDateString = input.split("||")[0].trim();
-      DateTime parsedDate;
-      if (firstDateString.contains(':') || firstDateString.toLowerCase().contains('am') || firstDateString.toLowerCase().contains('pm')) {
-        parsedDate = DateFormat("dd-MM-yyyy h:mm a").parse(firstDateString);
-      } else {
-        parsedDate = DateFormat("dd-MM-yyyy").parse(firstDateString);
+      List<String> parts = input.split("||").map((e) => e.trim()).toList();
+      String datePart = parts.isNotEmpty ? parts.first : "";
+      String? timePart;
+      if (parts.length >= 2) {
+        for (String p in parts.reversed) {
+          if (p.contains(':') ||
+              p.toLowerCase().contains('am') ||
+              p.toLowerCase().contains('pm')) {
+            timePart = p;
+            break;
+          }
+        }
       }
-      return DateFormat("dd MMM yyyy, h:mm a").format(parsedDate);
+      datePart = datePart.replaceAll('.', '-');
+      String combined = timePart != null && timePart.isNotEmpty
+          ? "$datePart $timePart"
+          : datePart;
+      DateTime parsedDate;
+      if (combined.contains(':') ||
+          combined.toLowerCase().contains('am') ||
+          combined.toLowerCase().contains('pm')) {
+        parsedDate = DateFormat("dd-MM-yyyy h:mm a").parse(combined);
+        return DateFormat("dd-MM-yyyy h:mm a").format(parsedDate);
+      } else {
+        parsedDate = DateFormat("dd-MM-yyyy").parse(combined);
+        return DateFormat("dd-MM-yyyy").format(parsedDate);
+      }
     } catch (e) {
+      print("Error parsing: $e");
       return "";
     }
   }
+
 
   @override
   void initState() {
@@ -419,9 +440,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                       controller: controllers.search,
                       hintText: "Search Name, Customer Name, Company Name",
                       onChanged: (value) {
-                        setState(() {
-                          searchText = value.toString().trim();
-                        });
+                        controllers.searchText.value = value.toString().trim();
                       },
                     ),
                     10.width,
@@ -712,15 +731,13 @@ class _MeetingCommentsState extends State<MeetingComments> {
                 // Table Body
                 Expanded(
                     child: Obx((){
-                      final searchTexts = searchText.toLowerCase();
-
+                      final searchTexts =  controllers.searchText.value.toLowerCase();
                       final filteredList = controllers.meetingActivity.where((activity) {
                         final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
                             activity.status == controllers.selectMeetingType.value;
-
                         final matchesSearch = searchTexts.isEmpty ||
-                            (activity.comName.toString().toLowerCase().contains(searchText) ?? false) ||
-                            (activity.cusName.toString().toLowerCase().contains(searchText) ?? false);
+                            (activity.comName.toString().toLowerCase().contains(searchTexts) ||
+                            (activity.cusName.toString().toLowerCase().contains(searchTexts)));
 
                         return matchesCallType && matchesSearch;
                       }).toList();
@@ -734,6 +751,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               : -comparison;
                         });
                       }
+
                       return filteredList.isEmpty?
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -848,7 +866,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                         padding: const EdgeInsets.all(10.0),
                                         child: CustomText(
                                           textAlign: TextAlign.left,
-                                          text: formatFirstDate(data.dates.toString()),
+                                          text: formatFirstDate("${data.dates} ${data.time}"),
                                           size: 14,
                                           colors: colorsConst.textColor,
                                         ),

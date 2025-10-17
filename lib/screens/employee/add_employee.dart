@@ -93,6 +93,17 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     text: "Employee Name",
                                     hintText: "Enter Employee Name",
                                     controller: employeeProvider.nameController,
+                                    onChanged: (value){
+                                      if (value.toString().isNotEmpty) {
+                                        String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                                        if (newValue != value) {
+                                          employeeProvider.nameController.value = employeeProvider.nameController.value.copyWith(
+                                            text: newValue,
+                                            selection: TextSelection.collapsed(offset: newValue.length),
+                                          );
+                                        }
+                                      }
+                                    },
                                     keyboardType: TextInputType.name,
                                     textInputAction: TextInputAction.next,
                                     inputFormatters: constInputFormatters.textInput,
@@ -315,7 +326,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     isOptional: false,
                                     inputFormatters: constInputFormatters.addressInput,
                                   ),
-
                                   CustomTextField(
                                     text: "Salary",
                                     width: textFieldSize,

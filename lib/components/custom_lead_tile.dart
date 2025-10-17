@@ -1,5 +1,6 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/screens/leads/view_lead.dart';
 import 'package:flutter/material.dart';
@@ -495,6 +496,12 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                             width: 16,
                             height: 16,
                           )),
+                      IconButton(onPressed: (){
+                        controllers.selectNCustomer(widget.id.toString(), widget.mainName.toString(), widget.mainEmail.toString(),
+                            widget.mainMobile.toString());
+                        utils.showAddReminderDialog(context);
+                      },
+                          icon: Icon(Icons.notifications,color: Colors.pink,)),
                       InkWell(
                         onTap: () {
                           controllers.customMailFuture = apiService
