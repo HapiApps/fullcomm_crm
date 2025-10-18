@@ -357,6 +357,7 @@ class _SuspectsState extends State<Suspects> {
                                   showCheckbox: true,
                                   isAllSelected: controllers.isAllSelected.value,
                                   onSelectAll: (value) {
+                                    print("value ${controllers.isNewLeadList}");
                                     if (value == true) {
                                       controllers.isAllSelected.value = true;
                                       setState(() {
@@ -367,7 +368,7 @@ class _SuspectsState extends State<Suspects> {
                                             "user_id": controllers.storage.read("id"),
                                             "rating": controllers.isNewLeadList[j]["rating"],
                                             "cos_id": controllers.storage.read("cos_id"),
-                                            "mail_id":controllers.isNewLeadList[j]["mail_id"]
+                                            "mail_id":controllers.isNewLeadList[j]["mail"]
                                           });
                                         }
                                       });

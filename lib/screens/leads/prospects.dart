@@ -392,7 +392,11 @@ class _ProspectsState extends State<Prospects> {
                                 width: 4000,
                                 child: Obx(
                                         () => controllers.isLead.value == false
-                                        ? const Center(child: CircularProgressIndicator())
+                                        ? Container(
+                                          width: MediaQuery.of(context).size.width,
+                                            height: MediaQuery.of(context).size.height - 340,
+                                            alignment: Alignment.center,
+                                            child: const Center(child: CircularProgressIndicator()))
                                         : controllers.paginatedProspectsLeads.isNotEmpty?
                                     ListView.builder(
                                       controller: _verticalController,

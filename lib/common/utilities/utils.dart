@@ -6,7 +6,6 @@ import 'package:excel/excel.dart' as excel;
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:fullcomm_crm/common/styles/styles.dart';
 import 'package:fullcomm_crm/common/widgets/log_in.dart';
-import 'package:fullcomm_crm/screens/records/call_comments.dart';
 import 'package:fullcomm_crm/screens/employee/employee_screen.dart';
 import 'package:fullcomm_crm/screens/employee/role_management.dart';
 import 'package:fullcomm_crm/screens/leads/prospects.dart';
@@ -17,8 +16,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fullcomm_crm/screens/records/mail_comments.dart';
-import 'package:fullcomm_crm/screens/records/meeting_comments.dart';
 import 'package:fullcomm_crm/screens/new_dashboard.dart';
 import 'package:fullcomm_crm/screens/records/records.dart';
 import 'package:fullcomm_crm/screens/settings/general_settings.dart';
@@ -61,22 +58,6 @@ final Utils utils = Utils._();
 
 class Utils {
   Utils._();
-  Widget headingBox({double? width, String? text}) {
-    return Container(
-      alignment: Alignment.center,
-      width: width,
-      height: 50,
-      decoration: BoxDecoration(
-          color: Colors.grey.shade300, borderRadius: BorderRadius.circular(8)),
-      child: CustomText(
-        textAlign: TextAlign.center,
-        colors: colorsConst.primary,
-        size: 18,
-        isBold: true,
-        text: text.toString(),
-      ),
-    );
-  }
   void bulkEmailDialog(FocusNode focusNode, {required List<Map<String, String>> list}) {
     int total = list.length;
     int withMail = list.where((e) => (e["mail_id"] != null && e["mail_id"]!.trim().isNotEmpty && e["mail_id"]!.trim() != "null")).length;
@@ -882,102 +863,6 @@ class Utils {
         });
   }
 
-  Widget barChart() {
-    return BarChart(
-      BarChartData(
-        alignment: BarChartAlignment.spaceAround,
-        maxY: 10,
-        barGroups: [
-          makeGroupData(0, 5),
-          makeGroupData(1, 6),
-          makeGroupData(2, 8),
-          makeGroupData(3, 2),
-          makeGroupData(4, 5),
-          makeGroupData(5, 7),
-        ],
-        titlesData: FlTitlesData(
-          show: true,
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (double value, TitleMeta meta) {
-                var conData = "";
-                Widget text(String text) {
-                  return CustomText(
-                    text: text,
-                    colors: Colors.black,
-                    size: 12,
-                  );
-                }
-                switch (value.toInt()) {
-                  case 0:
-                    conData = 'Mon';
-                    break;
-                  case 1:
-                    conData = 'Tue';
-                    break;
-                  case 2:
-                    conData = 'Wed';
-                    break;
-                  case 3:
-                    conData = 'Thur';
-                    break;
-                  case 4:
-                    conData = 'Fri';
-                    break;
-                  case 5:
-                    conData = 'Sat';
-                    break;
-                  default:
-                    conData = '';
-                    break;
-                }
-                return SideTitleWidget(
-                  axisSide: meta.axisSide,
-                  space: 8.0, // margin between the chart and the titles
-                  child: text(conData),
-                );
-              },
-            ),
-          ),
-          leftTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-        ),
-        borderData: FlBorderData(
-          show: false,
-        ),
-        barTouchData: BarTouchData(
-          touchTooltipData: BarTouchTooltipData(
-            tooltipPadding: const EdgeInsets.all(5),
-            tooltipBorder: const BorderSide(color: Colors.grey),
-          ),
-        ),
-        gridData: const FlGridData(show: false),
-      ),
-    );
-  }
-
-  BarChartGroupData makeGroupData(int x, double y) {
-    return BarChartGroupData(
-      barsSpace: 4,
-      x: x,
-      barRods: [
-        BarChartRodData(
-          color: Colors.cyanAccent,
-          width: 20,
-          toY: y,
-        )
-      ],
-    );
-  }
-
   makingWebsite({String? web}) async {
     final url = Uri.parse('https://www.$web.com');
     if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
@@ -998,90 +883,6 @@ class Utils {
       imageController.photo1.value = pickedFile.path;
     }
   }
-
-  Widget imageContainer(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        showImagePickerDialog(context);
-      },
-      child: Stack(
-        children: [
-          Obx(
-            () => Container(
-                height: 150,
-                width: 150,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                padding: const EdgeInsets.all(8),
-                child: imageController.photo1.value == ""
-                    ? Image.asset(assets.addStall)
-                    : Image.file(
-                        File(imageController.photo1.value),
-                        fit: BoxFit.fill,
-                      )),
-          ),
-          Obx(
-            () => imageController.photo1.value == ""
-                ? const SizedBox()
-                : Positioned(
-                    bottom: 100,
-                    right: 0.7,
-                    left: 100,
-                    child: Card(
-                      color: Colors.white,
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(35.0),
-                      ),
-                      child: ClipOval(
-                        child: Material(
-                          color: Colors.red,
-                          child: InkWell(
-                            splashColor: Colors.redAccent,
-                            child: const SizedBox(
-                              width: 35,
-                              height: 35,
-                              child: Icon(
-                                Icons.remove_circle_outline,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                            onTap: () {
-                              imageController.photo1.value = "";
-                              imageController.imagePath1 = "";
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-          ),
-          const Positioned(
-            bottom: 5,
-            right: 5,
-            child: Icon(
-              Icons.camera_alt,
-              size: 25,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  // String _formatTime12Hour(TimeOfDay time,BuildContext context){
-  //   int hour = time.hourOfPeriod;
-  //   String period = time.period == DayPeriod.am ? 'AM' : 'PM';
-  //
-  //   String hourStr = hour.toString().padLeft(2, '0');
-  //   String minuteStr = time.minute.toString().padLeft(2, '0');
-  //
-  //   return '$hourStr:$minuteStr $period';
-  // }
-
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar({required BuildContext context,
   required String msg,
   required Color color}) {
@@ -1098,125 +899,6 @@ class Utils {
     );
     return rootScaffoldMessengerKey.currentState!.showSnackBar(snack);
   }
-
-  // Widget leadCon(
-  //     BuildContext context,int index,String id,String mainName,String mainMobile,String mainEmail,String companyName,
-  // String status,String rating,String emailUpdate,String name,String title,String mobileNumber,String whatsappNumber,
-  // String email,String mainTitle,String addressId,String companyWebsite,String companyNumber,String companyEmail,
-  // String industry,String productServices,String source,String owner,String budget,String timelineDecision,
-  // String serviceInterest,String description,String leadStatus,String active,String addressLine1,String addressLine2,
-  // String area,String city,String state,String country,String pinCode){
-  //   return Container(
-  //     width: MediaQuery.of(context).size.width/4.5,
-  //     height: 245,
-  //     decoration: BoxDecoration(
-  //       color: colorsConst.secondary,
-  //       borderRadius: BorderRadius.circular(2)
-  //     ),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children:[
-  //         10.height,
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children:[
-  //             CustomText(
-  //               text: "       $mainName",
-  //               isBold: true,
-  //               colors: colorsConst.textColor,
-  //               size: 18,
-  //             ),
-  //             Container(
-  //               width:32,
-  //               alignment: Alignment.center,
-  //               child: CustomCheckBox(
-  //                   text: "",
-  //                   onChanged: (value){
-  //                     setState(() {
-  //                       if(controllers.isNewLeadList[widget.index!]==true){
-  //                         controllers.isNewLeadList[widget.index!]=false;
-  //                         var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==widget.id.toString());
-  //                         apiService.prospectsList.removeAt(i);
-  //                       }else{
-  //                         controllers.isNewLeadList[widget.index!]=true;
-  //                         apiService.prospectsList.add({
-  //                           "lead_id":widget.id.toString(),
-  //                           "user_id":controllers.storage.read("id"),
-  //                           "rating":widget.rating.toString(),
-  //                           "cos_id":cosId,
-  //                         });
-  //                       }
-  //                       print(apiService.prospectsList);
-  //                     });
-  //                     },
-  //                   saveValue: controllers.isNewLeadList[widget.index!]),
-  //             ),
-  //           ],
-  //         ),
-  //         CustomText(
-  //           text: "       $mainMobile",
-  //           colors: colorsConst.textColor,
-  //           size: 16,
-  //         ),
-  //         10.height,
-  //         CustomText(
-  //           text: "       $mainEmail",
-  //           colors: colorsConst.textColor,
-  //           size: 16,
-  //         ),
-  //         10.height,
-  //         CustomText(
-  //           text: "       $city",
-  //           colors: colorsConst.textColor,
-  //           size: 16,
-  //         ),
-  //         10.height,
-  //         CustomText(
-  //           text: "        $companyName",
-  //           colors: colorsConst.textColor,
-  //           size: 15,
-  //           isBold: true,
-  //         ),
-  //         10.height,
-  //         CustomText(
-  //           text: "        $status",
-  //           colors: colorsConst.third,
-  //           size: 16,
-  //           isBold: true,
-  //         ),
-  //         10.height,
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.end,
-  //           children:[
-  //             Container(
-  //               width: 150,
-  //               height: 25,
-  //               alignment: Alignment.center,
-  //               decoration: BoxDecoration(
-  //                 color: Color(0xffAFC8D9),
-  //                 borderRadius: BorderRadius.circular(10)
-  //               ),
-  //               child: CustomText(
-  //                 text: emailUpdate,
-  //                 colors: colorsConst.primary,
-  //                 size: 12,
-  //                 isBold: true,
-  //               ),
-  //             ),
-  //             5.width,
-  //             const CircleAvatar(
-  //               radius: 15,
-  //               backgroundColor: Color(0xffAFC8D9),
-  //               child: Icon(Icons.call,color: Colors.black,size: 18,),
-  //             ),
-  //             5.width
-  //           ],
-  //         ),
-  //         10.height
-  //       ],
-  //     ),
-  //   );
-  // }
   Future<bool> showExitDialog(BuildContext context) async {
     bool? exit = await showDialog(
       context: context,
@@ -1551,7 +1233,7 @@ class Utils {
                 ),
                 if (controllers.isSettingsExpanded.value) ...[
                   Padding(
-                    padding: const EdgeInsets.only(left: 22, top: 8,),
+                    padding: const EdgeInsets.only(left: 12, top: 8,),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 5,
@@ -1714,22 +1396,6 @@ class Utils {
     ));
   }
 
-  void showBlockedDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Screenshot Blocked"),
-        content: const Text("Screenshots are not allowed on this website."),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("OK"),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget paginationButton(IconData icon, bool isEnabled, VoidCallback onPressed) {
     return Container(
       decoration: BoxDecoration(
@@ -1860,79 +1526,6 @@ class Utils {
       ),
     );
   }
-
-
-  Widget leadFirstCon(String image, String count, String day) {
-    return Container(
-      width: 150,
-      height: 140,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          color: Colors.transparent, borderRadius: BorderRadius.circular(10)),
-      child: Column(
-        //crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              Container(
-                width: 75,
-                height: 75,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: colorsConst.primary,
-                    borderRadius: BorderRadius.circular(50),
-                    border:
-                        Border.all(color: const Color(0xff5D5FEF), width: 2.4)),
-                child: CustomText(
-                  text: count,
-                  colors: colorsConst.textColor,
-                  size: 20,
-                  isBold: true,
-                ),
-              ),
-              const Positioned(
-                bottom: 1,
-                right: 15,
-                child: CircleAvatar(
-                  radius: 5,
-                  backgroundColor: Color(0xff5D5FEF),
-                ),
-              )
-            ],
-          ),
-          // Row(
-          //   children:[
-          //     10.width,
-          //     CustomText(
-          //       text: count,
-          //       size: 25,
-          //       isBold: true,
-          //       colors: colorsConst.textColor,
-          //     ),
-          //   ],
-          // ),
-          5.height,
-          CustomText(
-            text: day,
-            size: 15,
-            colors: colorsConst.textColor,
-          ),
-          10.height,
-          // Row(
-          //   children:[
-          //     10.width,
-          //     const CustomText(
-          //       text: "+8% from yesterday",
-          //       size: 14,
-          //       colors: Color(0xff5D5FEF),
-          //     ),
-          //   ],
-          // ),
-        ],
-      ),
-    );
-  }
-
   Widget leadText({String? text, Color? color}) {
     return CustomText(
       textAlign: TextAlign.start,
@@ -2222,20 +1815,6 @@ class Utils {
     });
   }
 
-  bool isAdult() {
-    String birthDateString = controllers.emDOBController.text;
-
-    String datePattern = "dd-mm-yyyy";
-
-    DateTime birthDate = DateFormat(datePattern).parse(birthDateString);
-    DateTime today = DateTime.now();
-
-    int yearDiff = today.year - birthDate.year;
-    int monthDiff = today.month - birthDate.month;
-    int dayDiff = today.day - birthDate.day;
-
-    return yearDiff > 18 || yearDiff == 18 && monthDiff >= 0 && dayDiff >= 0;
-  }
 
   Future<void> chooseFile({RxList? mediaDataV, RxString? fileName, RxString? pathName}) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -2249,174 +1828,6 @@ class Utils {
       pathName?.value = base64.encode(result.files.single.bytes!.toList());
     } else {
       print('No file selected');
-    }
-  }
-
-  //Add a country to country list
-  void addCountryToList(data) {
-    // var model = Country();
-    // model.name = data['name'];
-    // model.emoji = data['emoji'];
-    // //if (!mounted) return;
-    // //setState(() {
-    //   CountryFlag.DISABLE == CountryFlag.ENABLE ||
-    //       CountryFlag.DISABLE == CountryFlag.SHOW_IN_DROP_DOWN_ONLY
-    //       ? controllers.allCountry.add("${model.emoji!}    ${model.name!}") /* : _country.add(model.name)*/
-    //       : controllers.allCountry.add(model.name);
-    // });
-  }
-
-  Future<dynamic> getResponse() async {
-    var res = await rootBundle
-        .loadString('packages/csc_picker/lib/assets/country.json');
-    return jsonDecode(res);
-  }
-
-  //get countries from json response
-  Future<List<String?>> getCountries() async {
-    controllers.allCountry.clear();
-    var countries = await getResponse() as List;
-    for (var data in countries) {
-      addCountryToList(data);
-    }
-    return controllers.allCountry;
-  }
-
-  ///get states from json response
-  Future<List<String?>> getStates() async {
-    controllers.allStates.clear();
-    //print(_selectedCountry);
-    var response = await getResponse();
-    // var takeState = CountryFlag.DISABLE == CountryFlag.ENABLE ||
-    //     CountryFlag.DISABLE == CountryFlag.SHOW_IN_DROP_DOWN_ONLY
-    //     ? response
-    //     .map((map) => Country.fromJson(map))
-    //     .where(
-    //         (item) => item.emoji + "    " + item.name == controllers.selectedCountry.value)
-    //     .map((item) => item.state)
-    //     .toList()
-    //     : response
-    //     .map((map) => Country.fromJson(map))
-    //     .where((item) => item.name == controllers.selectedCountry.value)
-    //     .map((item) => item.state)
-    //     .toList();
-    var states = [];
-    for (var f in states) {
-      // setState(() {
-      var name = f.map((item) => item.name).toList();
-      for (var stateName in name) {
-        //print(stateName.toString());
-        controllers.allStates.add(stateName.toString());
-      }
-      //});
-    }
-    controllers.allStates.sort((a, b) => a!.compareTo(b!));
-    return controllers.allStates;
-  }
-
-  ///get cities from json response
-  Future<List<String?>> getCities() async {
-    controllers.allCities.clear();
-    var response = await getResponse();
-    // var takeCity = CountryFlag.DISABLE == CountryFlag.ENABLE ||
-    //     CountryFlag.DISABLE == CountryFlag.SHOW_IN_DROP_DOWN_ONLY
-    //     ? response
-    //     .map((map) => Country.fromJson(map))
-    //     .where(
-    //         (item) => item.emoji + "    " + item.name == controllers.selectedCountry.value)
-    //     .map((item) => item.state)
-    //     .toList()
-    //     : response
-    //     .map((map) => Country.fromJson(map))
-    //     .where((item) => item.name == controllers.selectedCountry.value)
-    //     .map((item) => item.state)
-    //     .toList();
-    var cities = [];
-    for (var f in cities) {
-      var name =
-          f.where((item) => item.name == controllers.selectedState.value);
-      var cityName = name.map((item) => item.city).toList();
-      cityName.forEach((ci) {
-        var citiesName = ci.map((item) => item.name).toList();
-        for (var cityName in citiesName) {
-          //print(cityName.toString());
-          controllers.allCities.add(cityName.toString());
-        }
-      });
-    }
-    controllers.allCities.sort((a, b) => a!.compareTo(b!));
-    return controllers.allCities;
-  }
-
-  void _onSelectedCountry(
-      String value,
-      TextEditingController cityController,
-      TextEditingController stateController,
-      TextEditingController countryController) {
-    // if (CountryFlag.DISABLE == CountryFlag.SHOW_IN_DROP_DOWN_ONLY) {
-    //   try {
-    //     value.substring(6).trim();
-    //   } catch (e) {print(e);}
-    // } else {
-    //   value;
-    // }
-    //code added in if condition
-    if (value != controllers.selectedCountry.value) {
-      controllers.allStates.clear();
-      controllers.allCities.clear();
-      controllers.selectedState.value = "State";
-      controllers.selectedCity.value = "City";
-      null;
-      null;
-      controllers.selectedCountry.value = value;
-      countryController.text = controllers.selectedCountry.value;
-      print("country ${controllers.selectedCountry}");
-      stateController.text = "";
-      cityController.text = "";
-      getStates();
-    } else {
-      controllers.selectedState;
-      controllers.selectedCity;
-      stateController.text = controllers.selectedState.value;
-      cityController.text = controllers.selectedCity.value;
-    }
-  }
-
-  Future<void> _onSelectedState(
-      String value,
-      TextEditingController cityController,
-      TextEditingController stateController) async {
-    value;
-    try {
-      if (value != controllers.selectedState.value) {
-        controllers.allCities.clear();
-        null;
-        controllers.selectedState.value = value;
-        stateController.text = controllers.selectedState.value;
-        cityController.text = "";
-        await getCities();
-        controllers.selectedCity.value = controllers.allCities.first.toString();
-      } else {
-        controllers.selectedCity.value;
-        cityController.text = controllers.selectedCity.value;
-      }
-    } catch (e) {
-      print("e $e");
-    }
-  }
-
-  void onSelectedCity(String value, TextEditingController cityController) {
-    if (value != controllers.selectedCity.value) {
-      controllers.selectedCity.value = value;
-      cityController.text = controllers.selectedCity.value;
-      print(controllers.coCityController.text);
-      value;
-      // controllers.selectPinCodeList = controllers.pinCodeList
-      //     .where((location) =>
-      // location["STATE"] == controllers.selectedState &&
-      //     location["DISTRICT"] == controllers.selectedCity)
-      //     .map((location) => location["PINCODE"])
-      //     .toList();
     }
   }
 
@@ -2486,166 +1897,6 @@ class Utils {
           colors: colorsConst.textColor,
         ),
       ),
-    );
-  }
-  ///Country Dropdown Widget
-
-  Widget countryDropdown(
-      double width,
-      TextEditingController cityController,
-      TextEditingController stateController,
-      TextEditingController countryController) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        25.width,
-        SizedBox(
-          width: width,
-          height: 50,
-          child: Obx(() => DropdownWithSearch(
-                title: "",
-                placeHolder: "",
-                selectedItemStyle:
-                    customStyle.textStyle(colors: Colors.white, size: 14),
-                dropdownHeadingStyle: customStyle.textStyle(
-                  colors: Colors.white,
-                  size: 17,
-                  isBold: true,
-                ),
-                itemStyle:
-                    customStyle.textStyle(colors: Colors.white, size: 14),
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                    color: Colors.transparent,
-                    border: Border.all(color: Colors.grey.shade200, width: 1)),
-                disabledDecoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                    color: Colors.transparent,
-                    border: Border.all(color: Colors.grey.shade200, width: 1)),
-                disabled: false,
-                dialogRadius: 10.0,
-                searchBarRadius: 10.0,
-                label: "Country",
-                items: controllers.allCountry.map((String? dropDownStringItem) {
-                  return dropDownStringItem;
-                }).toList(),
-                selected: controllers.selectedCountry.value,
-                //selected: _selectedCountry != null ? _selectedCountry : "Country",
-                //onChanged: (value) => _onSelectedCountry(value),
-                onChanged: (value) {
-                  if (value != null) {
-                    _onSelectedCountry(value, cityController, stateController,
-                        countryController);
-                  }
-                },
-              )),
-        ),
-      ],
-    );
-  }
-
-  ///State Dropdown Widget
-  Widget stateDropdown(
-      double width,
-      TextEditingController cityController,
-      TextEditingController stateController,
-      TextEditingController countryController) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        25.width,
-        SizedBox(
-            width: width,
-            height: 50,
-            child: Obx(
-              () => DropdownWithSearch(
-                title: "",
-                placeHolder: "",
-                disabled: controllers.allStates.isEmpty ? true : false,
-                items: controllers.allStates.map((String? dropDownStringItem) {
-                  return dropDownStringItem;
-                }).toList(),
-                selectedItemStyle:
-                    customStyle.textStyle(colors: Colors.white, size: 14),
-                dropdownHeadingStyle: customStyle.textStyle(
-                    colors: Colors.white, size: 17, isBold: true),
-                itemStyle:
-                    customStyle.textStyle(colors: Colors.black, size: 14),
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                    color: Colors.transparent,
-                    border: Border.all(color: Colors.grey.shade200, width: 1)),
-                disabledDecoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                    color: Colors.transparent,
-                    border: Border.all(color: Colors.grey.shade200, width: 1)),
-                dialogRadius: 10.0,
-                searchBarRadius: 10.0,
-                selected: controllers.selectedState.value,
-                label: "",
-                //onChanged: (value) => _onSelectedState(value),
-                onChanged: (value) {
-                  //print("stateChanged $value $_selectedState");
-                  value != null
-                      ? _onSelectedState(value, cityController, stateController)
-                      : _onSelectedState(controllers.selectedState.value,
-                          cityController, stateController);
-                },
-              ),
-            )),
-      ],
-    );
-  }
-
-  ///City Dropdown Widget
-  Widget cityDropdown(
-      double width,
-      TextEditingController cityController,
-      TextEditingController stateController,
-      TextEditingController countryController,
-      ValueChanged<String?>? onChanged) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        25.width,
-        SizedBox(
-            width: width,
-            height: 50,
-            child: Obx(
-              () => DropdownWithSearch(
-                  title: "",
-                  placeHolder: "",
-                  disabled: controllers.allCities.isEmpty ? true : false,
-                  items:
-                      controllers.allCities.map((String? dropDownStringItem) {
-                    return dropDownStringItem;
-                  }).toList(),
-                  selectedItemStyle: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                  ),
-                  dropdownHeadingStyle: customStyle.textStyle(
-                      colors: Colors.white, isBold: true, size: 17),
-                  itemStyle:
-                      customStyle.textStyle(colors: Colors.black, size: 14),
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                      color: Colors.transparent,
-                      border:
-                          Border.all(color: Colors.grey.shade200, width: 1)),
-                  disabledDecoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                      color: Colors.transparent,
-                      border:
-                          Border.all(color: Colors.grey.shade200, width: 1)),
-                  dialogRadius: 10.0,
-                  searchBarRadius: 10.0,
-                  selected: controllers.selectedCity.value,
-                  label: "",
-                  //onChanged: (value) => _onSelectedCity(value),
-                  onChanged: onChanged!),
-            )),
-      ],
     );
   }
 
@@ -2765,174 +2016,6 @@ class Utils {
   List<Map<String, dynamic>> customerData = [];
   List<Map<String, dynamic>> mCustomerData = [];
 
-  // void parseExcelFile(Uint8List bytes, BuildContext context) async {
-  //   customerData = [];
-  //   var excelD = excel.Excel.decodeBytes(bytes);
-  //
-  //   Map<String, List<String>> keyMapping = {
-  //     "company_name": ["NAME OF THE CUSTOMER", "CUSTOMER NAME", "CLIENT NAME", "CUSTOMER"],
-  //     "city": ["SITE LOCATION DETAILS", "City", "Location"],
-  //     "lead_status": ["LEAD / PROSPECT"],
-  //     "status": ["CURRENT STATUS"],
-  //     "details_of_service_required": ["DETAILS OF SERVICES REQUIRED"],
-  //     "owner": ["NAME OF THE ACCOUNT MANAGER", "Owner"],
-  //     "prospect_enrollment_date": ["PROSPECT ENROLLMENT DATE"],
-  //     "expected_convertion_date": ["EXPECTED CONVERSION DATE"],
-  //     "status_update": ["STATUS UPDATE"],
-  //     "num_of_headcount": ["TOTAL NUMBER OF HEAD COUNT"],
-  //     "expected_billing_value": ["EXPECTED MONTHLY BILLING VALUE"],
-  //     "arpu_value": ["ARPU VALUE"],
-  //     "name": ["KEY CONTACT PERSON", "Name"],
-  //     "email": ["EMAIL ID", "Email"],
-  //     "phone_no": ["CONTACT NUMBER", "Phone No", "Mobile No", "Number"],
-  //     "source": ["SOURCE OF PROSPECT (either BNI or social)"],
-  //     "source_details": ["PROSPECT SOURCE DETAILS"],
-  //     "rating": ["PROSPECT GRADING"],
-  //   };
-  //
-  //   for (var table in excelD.tables.keys) {
-  //     var rows = excelD.tables[table]!.rows;
-  //     List<String> headers = rows.first
-  //         .map((cell) => (cell?.value.toString().trim().toUpperCase()) ?? "")
-  //         .toList();
-  //
-  //     for (var i = 1; i < rows.length; i++) {
-  //       var row = rows[i];
-  //       Map<String, dynamic> rowData = {};
-  //       Map<String, dynamic> formattedData = {};
-  //       List<Map<String, String>> additionalFields = [];
-  //
-  //       bool isRowEmpty = row.every((cell) =>
-  //       cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
-  //       if (isRowEmpty) continue;
-  //
-  //       // Fill rowData with header→value mapping
-  //       for (var j = 0; j < headers.length; j++) {
-  //         String header = headers[j];
-  //         rowData[header] = row[j]?.value;
-  //       }
-  //
-  //       // Map fields into formattedData + capture extras
-  //       rowData.forEach((key, value) {
-  //         bool matched = false;
-  //         for (var entry in keyMapping.entries) {
-  //           if (entry.value
-  //               .map((e) => e.toUpperCase().trim())
-  //               .contains(key.toUpperCase().trim())) {
-  //             matched = true;
-  //
-  //             if (entry.key == "rating") {
-  //               formattedData[entry.key] = (value != null && value.toString().trim().isNotEmpty)
-  //                   ? value.toString().trim()
-  //                   : "WARM";
-  //             } else if (entry.key == "prospect_enrollment_date") {
-  //               if (value == null ||
-  //                   value.toString().trim().isEmpty ||
-  //                   value.toString().trim().toLowerCase() == "null") {
-  //                 formattedData[entry.key] =
-  //                     DateFormat('dd.MM.yyyy').format(DateTime.now());
-  //               } else {
-  //                 formattedData[entry.key] = value.toString().trim();
-  //               }
-  //             } else {
-  //               formattedData[entry.key] =
-  //               (value == null || value.toString().trim().isEmpty || value.toString().trim().toLowerCase() == "null")
-  //                   ? ""
-  //                   : value.toString().trim();
-  //             }
-  //           }
-  //         }
-  //
-  //         // Extra field → additional_fields
-  //         if (!matched) {
-  //           additionalFields.add({
-  //             "field_name": key,
-  //             "field_value": value?.toString().trim() ?? "",
-  //           });
-  //         }
-  //       });
-  //
-  //       if (rowData.keys.any((k) => k.toUpperCase().trim() == "CONTACT NUMBER")) {
-  //         formattedData["whatsapp_no"] = rowData.entries.firstWhere(
-  //               (e) => e.key.toUpperCase().trim() == "CONTACT NUMBER",
-  //           orElse: () => const MapEntry("", null),
-  //         ).value;
-  //       }
-  //
-  //       // Extra fields common
-  //       formattedData["user_id"] = controllers.storage.read("id");
-  //       formattedData["cos_id"] = cosId;
-  //       formattedData["door_no"] = "";
-  //       formattedData["area"] = "";
-  //       formattedData["country"] = "India";
-  //       formattedData["state"] = "Tamil Nadu";
-  //       formattedData["pincode"] = "";
-  //       formattedData["product_discussion"] = "";
-  //       formattedData["discussion_point"] = "";
-  //       formattedData["points"] = "";
-  //       formattedData["department"] = "";
-  //       formattedData["designation"] = "";
-  //       if (!formattedData.containsKey("source")) {
-  //         formattedData["source"] = "";
-  //       }
-  //
-  //       // Attach additional fields
-  //       formattedData["additional_fields"] = additionalFields;
-  //
-  //       // Validate and add to list
-  //       if ((formattedData["phone_no"] != null &&
-  //           formattedData["phone_no"].toString().isNotEmpty) ||
-  //           (formattedData["name"] != null &&
-  //               formattedData["name"].toString().isNotEmpty)) {
-  //         customerData.add(formattedData);
-  //       } else {
-  //         if (formattedData["email"] != null &&
-  //             formattedData["email"].toString().isNotEmpty) {
-  //           customerData.add(formattedData);
-  //         } else {
-  //           mCustomerData.add(formattedData);
-  //         }
-  //       }
-  //     }
-  //   }
-  //
-  //   print("mCustomerData ${mCustomerData.length}");
-  //   print("customerData ${customerData.length}");
-  //
-  //   if (customerData.isEmpty) {
-  //     Navigator.of(context).pop();
-  //     showDialog(
-  //       context: context,
-  //       builder: (context) => AlertDialog(
-  //         backgroundColor: colorsConst.primary,
-  //         content: SingleChildScrollView(
-  //           child: Text(
-  //             "Some entries under KEY CONTACT PERSON and CONTACT NUMBER are empty in your Excel sheet. Please check and re-upload.",
-  //             style: TextStyle(
-  //               color: colorsConst.textColor,
-  //               fontSize: 16,
-  //             ),
-  //             textAlign: TextAlign.left,
-  //             softWrap: true,
-  //           ),
-  //         ),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () => Navigator.of(context).pop(),
-  //             child: CustomText(
-  //               text: "OK",
-  //               colors: colorsConst.textColor,
-  //               size: 16,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     );
-  //     return;
-  //   } else {
-  //     await apiService.insertCustomersAPI(context, customerData);
-  //   }
-  // }
   void parseExcelFile(Uint8List bytes, BuildContext context) async {
     customerData = [];
     controllers.customerCtr.start();
@@ -2946,17 +2029,6 @@ class Utils {
         apiService.errorDialog(context, "Excel format is invalid. Needs min 6 rows (3 empty, system, display, data).");
         return;
       }
-
-      // ✅ Check first 3 rows are empty
-      // for (int i = 0; i < 3; i++) {
-      //   bool isRowEmpty = rows[i].every((cell) =>
-      //   cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
-      //   if (!isRowEmpty) {
-      //     Navigator.of(context).pop();
-      //     apiService.errorDialog(context, "Excel format invalid. First 3 rows must be empty.");
-      //     return;
-      //   }
-      // }
       const expectedKeys = [
         "name", "phone_no", "email", "city", "owner", "designation", "department",
         "company_name", "source", "source_details", "lead_status", "prospect_enrollment_date",
@@ -3052,85 +2124,6 @@ class Utils {
     }
   }
 
-  // void parseExcelFile(Uint8List bytes, BuildContext context) async {
-  //   customerData = [];
-  //   var excelD = excel.Excel.decodeBytes(bytes);
-  //
-  //   for (var table in excelD.tables.keys) {
-  //     var rows = excelD.tables[table]!.rows;
-  //
-  //     if (rows.length < 6) {
-  //       print("Excel needs min 6 rows (3 empty, system, display, data)");
-  //       return;
-  //     }
-  //
-  //     // Row 4 = system keys (index 3)
-  //     List<String> systemKeys = rows[3]
-  //         .map((c) => (c?.value?.toString().trim() ?? ""))
-  //         .toList();
-  //
-  //     // Row 5 = display names (index 4)
-  //     List<String> displayNames = rows[4]
-  //         .map((c) => (c?.value?.toString().trim() ?? ""))
-  //         .toList();
-  //
-  //     // Build field mappings
-  //     List<Map<String, String>> fieldMappings = [];
-  //     for (int i = 0; i < systemKeys.length; i++) {
-  //       if (systemKeys[i].isNotEmpty) {
-  //         fieldMappings.add({
-  //           "cos_id": controllers.storage.read("cos_id"),
-  //           "system_field": systemKeys[i],
-  //           "display_name": (i < displayNames.length && displayNames[i].isNotEmpty)
-  //               ? displayNames[i]
-  //               : systemKeys[i],
-  //           "created_by": controllers.storage.read("id").toString(),
-  //         });
-  //       }
-  //     }
-  //
-  //     // Parse data rows (from row 6 → index 5 onwards)
-  //     for (var i = 5; i < rows.length; i++) {
-  //       var row = rows[i];
-  //       bool isRowEmpty = row.every((cell) =>
-  //       cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
-  //       if (isRowEmpty) continue;
-  //
-  //       Map<String, dynamic> formattedData = {};
-  //       List<Map<String, String>> additionalFields = [];
-  //
-  //       for (int j = 0; j < systemKeys.length; j++) {
-  //         String key = systemKeys[j];
-  //         var value = row[j]?.value?.toString().trim() ?? "";
-  //
-  //         if (key.isNotEmpty) {
-  //           formattedData[key] = value;
-  //         } else {
-  //           additionalFields.add({
-  //             "field_name": (j < displayNames.length) ? displayNames[j] : "",
-  //             "field_value": value,
-  //           });
-  //         }
-  //       }
-  //
-  //       formattedData["user_id"] = controllers.storage.read("id");
-  //       formattedData["cos_id"] = controllers.storage.read("cos_id");
-  //       formattedData["additional_fields"] = additionalFields;
-  //
-  //       customerData.add(formattedData);
-  //     }
-  //
-  //     // Final Payload
-  //     Map<String, dynamic> finalPayload = {
-  //       "field_mappings": fieldMappings,
-  //       "cusList": customerData,
-  //     };
-  //
-  //     print("Payload: ${jsonEncode(finalPayload)}");
-  //
-  //     await apiService.insertCustomersAPI(context, customerData, fieldMappings);
-  //   }
-  // }
   Future<void> downloadSampleExcel() async {
     final data = await rootBundle.load("assets/easycrm_data_upload_template.xlsx");
     final blob = html.Blob([data.buffer.asUint8List()]);
@@ -3658,347 +2651,327 @@ class Utils {
   //     print("Selected ${isStart ? 'start' : 'end'}: $selectedDatesTimes");
   //   }
   // }
-  Future<void> _selectDateTime({
-    required BuildContext context,
-    required bool isStart,
-  }) async {
-    Map<DateTime, TimeOfDay> selectedDatesTimes =
-    isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
-    TextEditingController controller =
-    isStart ? remController.startController : remController.endController;
 
-    await picker.DatePicker.showDateTimePicker(
-      context,
-      showTitleActions: true,
-      theme: const picker.DatePickerTheme(
-        backgroundColor: Color(0xFFE7EEF8),
-        itemStyle: TextStyle(color: Colors.black, fontSize: 18),
-        doneStyle: TextStyle(color: Color(0xff0078D7), fontWeight: FontWeight.bold),
-        cancelStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-      ),
-      currentTime: DateTime.now(),
-      locale: picker.LocaleType.en,
-      onConfirm: (date) {
-        TimeOfDay selectedTime = TimeOfDay(hour: date.hour, minute: date.minute);
-
-        selectedDatesTimes.clear();
-        selectedDatesTimes[date] = selectedTime;
-
-        controller.text =
-        "${date.day}-${date.month}-${date.year} ${selectedTime.format(context)}";
-
-        print("Selected ${isStart ? 'start' : 'end'} date & time: $selectedDatesTimes");
-      },
-    );
-  }
   // Future<void> _selectDateTime({
   //   required BuildContext context,
   //   required bool isStart,
-  // })
-  // async {
-  //   Map<DateTime, TimeOfDay> selectedDatesTimes = isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
-  //   TextEditingController controller = isStart ? remController.startController : remController.endController;
+  // }) async {
+  //   Map<DateTime, TimeOfDay> selectedDatesTimes =
+  //   isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
+  //   TextEditingController controller =
+  //   isStart ? remController.startController : remController.endController;
   //
-  //   // Initialize dialogSelectedTime
-  //   TimeOfDay dialogSelectedTime = selectedDatesTimes.values.isNotEmpty
-  //       ? selectedDatesTimes.values.first
-  //       : _selectedTime;
+  //   await picker.DatePicker.showDateTimePicker(
+  //     context,
+  //     showTitleActions: true,
+  //     theme: const picker.DatePickerTheme(
+  //       backgroundColor: Color(0xFFE7EEF8),
+  //       itemStyle: TextStyle(color: Colors.black, fontSize: 18),
+  //       doneStyle: TextStyle(color: Color(0xff0078D7), fontWeight: FontWeight.bold),
+  //       cancelStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+  //     ),
+  //     currentTime: DateTime.now(),
+  //     locale: picker.LocaleType.en,
+  //     onConfirm: (date) {
+  //       TimeOfDay selectedTime = TimeOfDay(hour: date.hour, minute: date.minute);
   //
-  //   await showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return StatefulBuilder(
-  //         builder: (context, setDialogState) {
-  //           return AlertDialog(
-  //             backgroundColor: Colors.white,
-  //             insetPadding: const EdgeInsets.all(20),
-  //             contentPadding: const EdgeInsets.all(8),
-  //             title: Text(
-  //               isStart ? "Select Start Date & Time" : "Select End Date & Time",
-  //               style: const TextStyle(
-  //                   color: Colors.black,
-  //                   fontSize: 17,
-  //                   fontWeight: FontWeight.bold),
-  //             ),
-  //             content: SizedBox(
-  //               height: 630,
-  //               width: 700,
-  //               child: Row(
-  //                 children: [
-  //                   Expanded(
-  //                     flex: 2,
-  //                     child: SfDateRangePicker(
-  //                       backgroundColor: Colors.white,
-  //                       view: DateRangePickerView.month,
-  //                       selectionMode: DateRangePickerSelectionMode.single,
-  //                       extendableRangeSelectionDirection: ExtendableRangeSelectionDirection.none,
-  //                       selectionColor: colorsConst.primary,
-  //                       startRangeSelectionColor: colorsConst.primary,
-  //                       endRangeSelectionColor: colorsConst.primary,
-  //                       rangeSelectionColor: const Color(0xffD9ECFF),
-  //                       todayHighlightColor: colorsConst.primary,
-  //                       headerStyle: DateRangePickerHeaderStyle(
-  //                         backgroundColor: Colors.white,
-  //                         textStyle: TextStyle(
-  //                           color: colorsConst.primary,
-  //                           // fontWeight: FontWeight.bold,
-  //                           fontSize: 16,
-  //                         ),
-  //                       ),
-  //                       onSelectionChanged: (args) {
-  //                         if (args.value is DateTime) {
-  //                           DateTime selectedDate = args.value;
-  //                           setDialogState(() {
-  //                             selectedDatesTimes.clear();
-  //                             selectedDatesTimes[selectedDate] = dialogSelectedTime;
-  //                           });
-  //                         }
-  //                       },
-  //                     ),
-  //                   ),
-  //                   Container(
-  //                     width: 1,
-  //                     height: 600,
-  //                     color: Colors.grey.shade300,
-  //                     margin: const EdgeInsets.symmetric(horizontal: 10),
-  //                   ),
-  //                   Align(
-  //                     alignment: Alignment.topCenter,
-  //                     child: Column(
-  //                       mainAxisSize: MainAxisSize.min,
-  //                       children: [
-  //                         SizedBox(
-  //                           height: 500,
-  //                           child: Center(
-  //                               child: SizedBox(
-  //                                   width: 330,
-  //                                   child: Theme(
-  //                                     data: Theme.of(context).copyWith(
-  //                                       timePickerTheme: TimePickerThemeData(
-  //                                         backgroundColor: const Color(0xFFE7EEF8),
-  //                                         hourMinuteShape: const RoundedRectangleBorder(
-  //                                           borderRadius: BorderRadius.all(Radius.circular(8)),
-  //                                           side: BorderSide(color: Colors.black26),
-  //                                         ),
-  //                                         hourMinuteColor: WidgetStateColor.resolveWith((states) {
-  //                                           if (states.contains(WidgetState.selected)) {
-  //                                             return const Color(0xff0078D7);
-  //                                           }
-  //                                           return Colors.white;
-  //                                         }),
-  //                                         hourMinuteTextColor: WidgetStateColor.resolveWith((states) {
-  //                                           if (states.contains(WidgetState.selected)) {
-  //                                             return Colors.white;
-  //                                           }
-  //                                           return colorsConst.primary;
-  //                                         }),
-  //                                         timeSelectorSeparatorColor:  WidgetStateColor.resolveWith((states) {
-  //                                           if (states.contains(WidgetState.selected)) {
-  //                                             return Colors.white;
-  //                                           }
-  //                                           return Colors.black;
-  //                                         }),
-  //                                         dayPeriodShape:  RoundedRectangleBorder(
-  //                                           borderRadius: BorderRadius.all(Radius.circular(6)),
-  //                                           side: BorderSide(color: colorsConst.primary),
-  //                                         ),
-  //                                         dayPeriodColor: WidgetStateColor.resolveWith((states) {
-  //                                           if (states.contains(WidgetState.selected)) {
-  //                                             return colorsConst.primary;
-  //                                           }
-  //                                           return Colors.white;
-  //                                         }),
-  //                                         dayPeriodTextColor: WidgetStateColor.resolveWith((states) {
-  //                                           if (states.contains(WidgetState.selected)) {
-  //                                             return Colors.white;
-  //                                           }
-  //                                           return Colors.black;
-  //                                         }),
-  //                                         dialBackgroundColor: Colors.white,
-  //                                         dialHandColor:colorsConst.primary,
-  //                                         dialTextColor: Colors.black, // unselected numbers
-  //                                         dialTextStyle: WidgetStateTextStyle.resolveWith((states) {
-  //                                           if (states.contains(WidgetState.selected)) {
-  //                                             return const TextStyle(
-  //                                               color: Colors.white,
-  //                                               fontWeight: FontWeight.bold,
-  //                                               fontSize: 18,
-  //                                             );
-  //                                           }
-  //                                           return const TextStyle(
-  //                                             color: Colors.black,
-  //                                             fontSize: 18,
-  //                                           );
-  //                                         }),
-  //                                         hourMinuteTextStyle: const TextStyle(
-  //                                           color: Colors.black,
-  //                                           fontSize: 50,
-  //                                           fontWeight: FontWeight.bold,
-  //                                         ),
-  //                                       ),
-  //                                     ),
-  //                                     child: TimePickerDialog(
-  //                                       initialTime: dialogSelectedTime,
-  //                                       orientation: Orientation.portrait,
-  //                                       cancelText: "",
-  //                                       confirmText:"",
-  //                                       onEntryModeChanged: (value){
-  //                                         print("Time $value");
-  //                                         // _selectedTime=value;
-  //                                       },
-  //                                     ),
-  //                                   )
-  //                               )
-  //                           ),
-  //                         ),
-  //                         const SizedBox(height: 12),
-  //                         // Quick action buttons
-  //                         Column(
-  //                           children: [
-  //                             Row(
-  //                               mainAxisAlignment: MainAxisAlignment.center,
-  //                               children: [
-  //                                 _quickButton("+15 min", () {
-  //                                   final t = dialogSelectedTime.replacing(
-  //                                     minute:
-  //                                     (dialogSelectedTime.minute + 15) % 60,
-  //                                     hour: (dialogSelectedTime.hour +
-  //                                         (dialogSelectedTime.minute +
-  //                                             15) ~/
-  //                                             60) %
-  //                                         24,
-  //                                   );
-  //                                   setDialogState(
-  //                                           () => dialogSelectedTime = t);
-  //                                 }),
-  //                                 _quickButton("+30 min", () {
-  //                                   final t = dialogSelectedTime.replacing(
-  //                                     minute:
-  //                                     (dialogSelectedTime.minute + 30) % 60,
-  //                                     hour: (dialogSelectedTime.hour +
-  //                                         (dialogSelectedTime.minute +
-  //                                             30) ~/
-  //                                             60) %
-  //                                         24,
-  //                                   );
-  //                                   setDialogState(
-  //                                           () => dialogSelectedTime = t);
-  //                                 }),
-  //                               ],
-  //                             ),
-  //                             Row(
-  //                               mainAxisAlignment: MainAxisAlignment.center,
-  //                               children: [
-  //                                 _quickButton("+1 hour", () {
-  //                                   setDialogState(() {
-  //                                     dialogSelectedTime = TimeOfDay(
-  //                                       hour:
-  //                                       (dialogSelectedTime.hour + 1) % 24,
-  //                                       minute: dialogSelectedTime.minute,
-  //                                     );
-  //                                   });
-  //                                 }),
-  //                                 _quickButton("End of Day", () {
-  //                                   setDialogState(() => dialogSelectedTime =
-  //                                   const TimeOfDay(hour: 23, minute: 59));
-  //                                 }),
-  //                               ],
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //             actions: [
-  //               Padding(
-  //                 padding: const EdgeInsets.fromLTRB(0, 0, 25, 0),
-  //                 child: Row(
-  //                   mainAxisAlignment: MainAxisAlignment.end,
-  //                   children: [
-  //                     SizedBox(
-  //                       width: 116,
-  //                       height: 40,
-  //                       child: ElevatedButton(
-  //                         style: ElevatedButton.styleFrom(
-  //                           backgroundColor: const Color(0xFFE7EEF8),
-  //                           foregroundColor: Colors.black,
-  //                           shape: RoundedRectangleBorder(
-  //                             borderRadius: BorderRadius.circular(7),
-  //                             side: const BorderSide(color: Color(0xff0078D7)),
-  //                           ),
-  //                           padding: EdgeInsets.zero,
-  //                           elevation: 0,
-  //                         ),
-  //                         onPressed: () => Navigator.pop(context),
-  //                         child: const Text(
-  //                           "Cancel",
-  //                           style: TextStyle(
-  //                             fontWeight: FontWeight.bold,
-  //                             fontSize: 12,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     const SizedBox(width: 10),
-  //                     SizedBox(
-  //                       width: 116,
-  //                       height: 40,
-  //                       child: ElevatedButton(
-  //                         style: ElevatedButton.styleFrom(
-  //                           backgroundColor: const Color(0xff0078D7),
-  //                           shape: RoundedRectangleBorder(
-  //                             borderRadius: BorderRadius.circular(7),
-  //                           ),
-  //                         ),
-  //                         onPressed: () {
-  //                           Navigator.pop(context, dialogSelectedTime);
-  //                             selectedDatesTimes.updateAll(
-  //                                   (key, value) => dialogSelectedTime,
-  //                             );
-  //                             if (selectedDatesTimes.isNotEmpty) {
-  //                               final selectedDate = selectedDatesTimes.keys.first;
-  //                               controller.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
-  //                                   "${dialogSelectedTime.format(context)}";
-  //                             }
-  //                             print("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
-  //                         },
-  //                         // onPressed: () {
-  //                         //   setState(() {
-  //                         //     selectedDatesTimes.updateAll(
-  //                         //           (key, value) => dialogSelectedTime,
-  //                         //     );
-  //                         //     if (selectedDatesTimes.isNotEmpty) {
-  //                         //       final selectedDate = selectedDatesTimes.keys.first;
-  //                         //       controller.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
-  //                         //           "${dialogSelectedTime.format(context)}";
-  //                         //     }
-  //                         //     print("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
-  //                         //   });
-  //                         //   Navigator.pop(context);
-  //                         // },
-  //                         child: const Text(
-  //                           "Set Time",
-  //                           style: TextStyle(
-  //                             color: Colors.white,
-  //                             fontWeight: FontWeight.bold,
-  //                             fontSize: 14,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
+  //       selectedDatesTimes.clear();
+  //       selectedDatesTimes[date] = selectedTime;
+  //
+  //       controller.text =
+  //       "${date.day}-${date.month}-${date.year} ${selectedTime.format(context)}";
+  //
+  //       print("Selected ${isStart ? 'start' : 'end'} date & time: $selectedDatesTimes");
   //     },
   //   );
   // }
+
+  Future<void> _selectDateTime({
+    required BuildContext context,
+    required bool isStart,
+  })
+  async {
+    Map<DateTime, TimeOfDay> selectedDatesTimes = isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
+    TextEditingController controller = isStart ? remController.startController : remController.endController;
+    TimeOfDay dialogSelectedTime = selectedDatesTimes.values.isNotEmpty
+        ? selectedDatesTimes.values.first
+        : _selectedTime;
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              insetPadding: const EdgeInsets.all(20),
+              contentPadding: const EdgeInsets.all(8),
+              title: Text(
+                isStart ? "Select Start Date & Time" : "Select End Date & Time",
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold),
+              ),
+              content: SizedBox(
+                height: 630,
+                width: 700,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: SfDateRangePicker(
+                        backgroundColor: Colors.white,
+                        view: DateRangePickerView.month,
+                        selectionMode: DateRangePickerSelectionMode.single,
+                        extendableRangeSelectionDirection: ExtendableRangeSelectionDirection.none,
+                        selectionColor: colorsConst.primary,
+                        startRangeSelectionColor: colorsConst.primary,
+                        endRangeSelectionColor: colorsConst.primary,
+                        rangeSelectionColor: const Color(0xffD9ECFF),
+                        todayHighlightColor: colorsConst.primary,
+                        headerStyle: DateRangePickerHeaderStyle(
+                          backgroundColor: Colors.white,
+                          textStyle: TextStyle(color: colorsConst.primary, fontSize: 16,),
+                        ),
+                        onSelectionChanged: (args) {
+                          if (args.value is DateTime) {
+                            DateTime selectedDate = args.value;
+                            setDialogState(() {
+                              selectedDatesTimes.clear();
+                              selectedDatesTimes[selectedDate] = dialogSelectedTime;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                    Container(
+                      width: 1,
+                      height: 600,
+                      color: Colors.grey.shade300,
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: 500,
+                            child: Center(
+                                child: SizedBox(
+                                    width: 330,
+                                    child: Theme(
+                                      data: Theme.of(context).copyWith(
+                                        timePickerTheme: TimePickerThemeData(
+                                          backgroundColor: const Color(0xFFE7EEF8),
+                                          hourMinuteShape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                                            side: BorderSide(color: Colors.black26),
+                                          ),
+                                          hourMinuteColor: WidgetStateColor.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) {
+                                              return const Color(0xff0078D7);
+                                            }
+                                            return Colors.white;
+                                          }),
+                                          hourMinuteTextColor: WidgetStateColor.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) {
+                                              return Colors.white;
+                                            }
+                                            return colorsConst.primary;
+                                          }),
+                                          timeSelectorSeparatorColor:  WidgetStateColor.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) {
+                                              return Colors.white;
+                                            }
+                                            return Colors.black;
+                                          }),
+                                          dayPeriodShape:  RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                                            side: BorderSide(color: colorsConst.primary),
+                                          ),
+                                          dayPeriodColor: WidgetStateColor.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) {
+                                              return colorsConst.primary;
+                                            }
+                                            return Colors.white;
+                                          }),
+                                          dayPeriodTextColor: WidgetStateColor.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) {
+                                              return Colors.white;
+                                            }
+                                            return Colors.black;
+                                          }),
+                                          dialBackgroundColor: Colors.white,
+                                          dialHandColor:colorsConst.primary,
+                                          dialTextColor: Colors.black, // unselected numbers
+                                          dialTextStyle: WidgetStateTextStyle.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) {
+                                              return const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18,
+                                              );
+                                            }
+                                            return const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18,
+                                            );
+                                          }),
+                                          hourMinuteTextStyle: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 50,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      child: TimePickerDialog(
+                                        initialTime: dialogSelectedTime,
+                                        orientation: Orientation.portrait,
+                                        cancelText: "",
+                                        confirmText:"",
+                                        onEntryModeChanged: (value){
+                                          print("Time $value");
+                                          // _selectedTime=value;
+                                        },
+                                      ),
+                                    )
+                                )
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  _quickButton("+15 min", () {
+                                    final t = dialogSelectedTime.replacing(
+                                      minute:
+                                      (dialogSelectedTime.minute + 15) % 60,
+                                      hour: (dialogSelectedTime.hour +
+                                          (dialogSelectedTime.minute +
+                                              15) ~/
+                                              60) %
+                                          24,
+                                    );
+                                    setDialogState(
+                                            () => dialogSelectedTime = t);
+                                  }),
+                                  _quickButton("+30 min", () {
+                                    final t = dialogSelectedTime.replacing(
+                                      minute:
+                                      (dialogSelectedTime.minute + 30) % 60,
+                                      hour: (dialogSelectedTime.hour +
+                                          (dialogSelectedTime.minute +
+                                              30) ~/
+                                              60) %
+                                          24,
+                                    );
+                                    setDialogState(
+                                            () => dialogSelectedTime = t);
+                                  }),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  _quickButton("+1 hour", () {
+                                    setDialogState(() {
+                                      dialogSelectedTime = TimeOfDay(
+                                        hour:
+                                        (dialogSelectedTime.hour + 1) % 24,
+                                        minute: dialogSelectedTime.minute,
+                                      );
+                                    });
+                                  }),
+                                  _quickButton("End of Day", () {
+                                    setDialogState(() => dialogSelectedTime =
+                                    const TimeOfDay(hour: 23, minute: 59));
+                                  }),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 25, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                        width: 116,
+                        height: 40,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFE7EEF8),
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7),
+                              side: const BorderSide(color: Color(0xff0078D7)),
+                            ),
+                            padding: EdgeInsets.zero,
+                            elevation: 0,
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text(
+                            "Cancel",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      SizedBox(
+                        width: 116,
+                        height: 40,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xff0078D7),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context, dialogSelectedTime);
+                              selectedDatesTimes.updateAll(
+                                    (key, value) => dialogSelectedTime,
+                              );
+                              if (selectedDatesTimes.isNotEmpty) {
+                                final selectedDate = selectedDatesTimes.keys.first;
+                                controller.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
+                                    "${dialogSelectedTime.format(context)}";
+                              }
+                              print("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
+                          },
+                          child: const Text(
+                            "Set Time",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
   Widget _quickButton(String text, VoidCallback onTap) {
     return Container(

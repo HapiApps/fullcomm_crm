@@ -126,7 +126,6 @@ class _UpdateLeadState extends State<UpdateLead> {
 
   Future<void> setDefaults() async {
     setState(() => controllers.selectedCountry.value = "India");
-    await utils.getStates();
 
     // setState(() =>controllers.selectedState.value = "Tamil Nadu");
     // await utils.getCities();
@@ -245,13 +244,6 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.leadXCrt.text=twitter.toString();
       controllers.leadLinkedinCrt.text=linkedin.toString();
       controllers.selectPinCodeList=[];
-      controllers.selectPinCodeList = controllers.pinCodeList
-          .where((location) =>
-      location["STATE"] == controllers.selectedState &&
-          location["DISTRICT"] == controllers.selectedCity)
-          .map((location) => location["PINCODE"].toString())
-          .toList();
-
       //controllers.leadWhatsCrt[0].text=whatsApp.toString();
     });
   }

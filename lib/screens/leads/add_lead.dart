@@ -28,11 +28,8 @@ class AddLead extends StatefulWidget {
 class _AddLeadState extends State<AddLead> {
   Future<void> setDefaults() async {
     controllers.selectedCountry.value = "India";
-    await utils.getStates();
 
     controllers.selectedState.value = "Tamil Nadu";
-    await utils.getCities();
-
     //setState(() => controllers.selectedCity = controllers.coCityController.text);
   }
 

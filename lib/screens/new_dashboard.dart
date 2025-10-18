@@ -644,7 +644,6 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 Color(0xff7456FC), // Unqualified
                                                 Color(0xffE3528C), // Customers
                                               ];
-
                                               return PieChart(
                                                 dataMap: dataMap,
                                                 animationDuration: const Duration(seconds: 2),

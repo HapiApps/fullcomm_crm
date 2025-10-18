@@ -2319,7 +2319,6 @@ class ApiService {
         }),
       );
 
-      controllers.isLead.value = true;
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List; // Cast to List
         controllers.allLeadsLength.value = data.length;
@@ -2330,11 +2329,12 @@ class ApiService {
             "isSelect": false,
             "lead_id": data[i]["user_id"].toString(),
             "rating": data[i]["rating"].toString(),
+            "mail": data[i]["email_id"].toString(),
           });
         }
         controllers.allLeadFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
-        controllers.allLeads.value =
-            data.map((json) => NewLeadObj.fromJson(json)).toList();
+        controllers.allLeads.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        controllers.isLead.value = true;
         return data.map((json) => NewLeadObj.fromJson(json)).toList();
       } else {
         throw Exception(
@@ -2420,6 +2420,7 @@ class ApiService {
             "isSelect": false,
             "lead_id": data[i]["user_id"].toString(),
             "rating": data[i]["rating"].toString(),
+            "mail": data[i]["email_id"].toString(),
           });
         }
         // Update the observable list with the fetched data
@@ -2437,7 +2438,9 @@ class ApiService {
       controllers.allNewLeadFuture.value = [];
       print('Unexpected error: ${e.toString()}');
       throw Exception('Unexpected error: ${e.toString()}');
-    }
+    }finally{
+      controllers.isLead.value = true;
+  }
   }
 
   // Future<List<NewLeadObj>> allNewLeadsDetails() async {
@@ -2513,6 +2516,7 @@ class ApiService {
             "isSelect": false,
             "lead_id": data[i]["user_id"].toString(),
             "rating": data[i]["rating"].toString(),
+            "mail": data[i]["email_id"].toString(),
           });
         }
         controllers.allQualifiedLeadFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();

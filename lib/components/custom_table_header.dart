@@ -197,7 +197,7 @@ class CustomTableHeader extends StatelessWidget {
           ),
         _headerCell("Actions", screenWidth,textAlign: TextAlign.center),
         ...headings.map((h) {
-          if (h.toLowerCase() == "added date"||h.toLowerCase()=="prospect enrollment date") {
+          if (h.toLowerCase() == "added date"||h.toLowerCase()=="prospect enrollment date"||h.toLowerCase()=="date") {
             return Container(
               height: 45,
               width: 200,
@@ -236,7 +236,7 @@ class CustomTableHeader extends StatelessWidget {
                 ],
               ),
             );
-          }else if(h.toLowerCase() == "customer name"||h.toLowerCase()=="name"){
+          }else if(h.toLowerCase() == "customer name"||h.toLowerCase()=="name"||h.toLowerCase()=="client name"||h.toLowerCase()=="client"||h.toLowerCase()=="full name"){
             return Container(
               height: 45,
               alignment: Alignment.centerLeft,

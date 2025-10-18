@@ -475,11 +475,11 @@ class _DashboardState extends State<Dashboard> {
                                         ],
                                       ),
                                       10.height,
-                                      Container(
-                                          height: 400,
-                                          width: screenWidth / 4.5<500 ? 500 : screenWidth / 4.5,
-                                          alignment: Alignment.center,
-                                          child: utils.barChart()),
+                                      // Container(
+                                      //     height: 400,
+                                      //     width: screenWidth / 4.5<500 ? 500 : screenWidth / 4.5,
+                                      //     alignment: Alignment.center,
+                                      //     child: utils.barChart()),
                                     ],
                                   ),
                                 ),
