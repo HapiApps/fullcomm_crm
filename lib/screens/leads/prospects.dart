@@ -387,7 +387,8 @@ class _ProspectsState extends State<Prospects> {
                                   },
                                 ),
                               ),
-                              SizedBox(
+                              Container(
+                                alignment: Alignment.topLeft,
                                 height: MediaQuery.of(context).size.height - 340,
                                 width: 4000,
                                 child: Obx(
@@ -483,14 +484,12 @@ class _ProspectsState extends State<Prospects> {
                                         ));
                                       },
                                     ):
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        100.height,
-                                        Center(
-                                            child: SvgPicture.asset(
-                                                "assets/images/noDataFound.svg")),
-                                      ],
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: MediaQuery.of(context).size.height,
+                                      child: Center(
+                                          child: SvgPicture.asset(
+                                              "assets/images/noDataFound.svg")),
                                     )
                                 ),
                               ),

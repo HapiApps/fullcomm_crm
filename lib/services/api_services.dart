@@ -2410,12 +2410,14 @@ class ApiService {
           "action": "get_data"
         }),
       );
-      controllers.isLead.value = true;
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
+
         controllers.allNewLeadsLength.value = data.length;
         controllers.isNewLeadList.clear();
-        for (int i = 0; i < controllers.allNewLeadsLength.value; i++) {
+
+        for (int i = 0; i < data.length; i++) {
           controllers.isNewLeadList.add({
             "isSelect": false,
             "lead_id": data[i]["user_id"].toString(),
@@ -2423,8 +2425,9 @@ class ApiService {
             "mail": data[i]["email_id"].toString(),
           });
         }
-        // Update the observable list with the fetched data
+
         controllers.allNewLeadFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        controllers.isLead.value = true;
       } else {
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
@@ -2438,10 +2441,9 @@ class ApiService {
       controllers.allNewLeadFuture.value = [];
       print('Unexpected error: ${e.toString()}');
       throw Exception('Unexpected error: ${e.toString()}');
-    }finally{
-      controllers.isLead.value = true;
+    }
   }
-  }
+
 
   // Future<List<NewLeadObj>> allNewLeadsDetails() async {
   //   controllers.isLead.value=false;
@@ -2838,6 +2840,8 @@ class ApiService {
         "search_type": "customers_count",
         "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data",
+        "role": controllers.storage.read("role"),
+        "id": controllers.storage.read("id"),
         "stDate":stDate,
         "enDate":endDate
       };
