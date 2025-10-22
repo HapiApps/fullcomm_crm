@@ -116,7 +116,7 @@ class _KeyboardDropdownFieldState<T extends Object>
                 icon: Icon(
                   controller.text.isEmpty?Icons.arrow_drop_down:Icons.clear,
                   color: Colors.black,
-                  size: 14,
+                  size: 25,
                 )
             ),
             enabledBorder: OutlineInputBorder(

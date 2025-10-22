@@ -3040,7 +3040,64 @@ class Utils {
                       const SizedBox(height: 8),
                       Divider(thickness: 1, color: Colors.grey.shade300),
                       const SizedBox(height: 8),
-
+                      Row(
+                        children: [
+                          Text("Default Time (Optional)",
+                            style: GoogleFonts.lato(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      DropdownButtonFormField<String>(
+                        value: remController.defaultTime,
+                        isExpanded: true,
+                        dropdownColor: Colors.white,
+                        style: GoogleFonts.lato(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                        items: ["Immediately", "5 mins", "10 mins", "30 mins"].map(
+                              (e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(
+                              e,
+                              style: GoogleFonts.lato(
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        )
+                            .toList(),
+                        onChanged: (v) => setState(() => remController.defaultTime = v!),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor:
+                          Colors.white, // white background for input box
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
+                        ),
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: Colors.black, // 👈 dropdown arrow color
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                       /// Reminder title
                       Row(
                         children: [
@@ -3509,6 +3566,7 @@ class Utils {
                                   ),
                                 ],
                               ),
+
                             ],
                           );
                         },

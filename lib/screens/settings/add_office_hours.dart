@@ -10,6 +10,7 @@ import '../../components/custom_text.dart';
 import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
 import '../../models/all_customers_obj.dart';
+import '../../services/api_services.dart';
 
 class AddOfficeHours extends StatefulWidget {
   const AddOfficeHours({super.key});
@@ -19,6 +20,12 @@ class AddOfficeHours extends StatefulWidget {
 }
 
 class _AddOfficeHoursState extends State<AddOfficeHours> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    apiService.getAllEmployees();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +54,7 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                         ),
                         10.height,
                         CustomText(
-                          text: "View all of your call activity Report",
+                          text: "View all of your office hours",
                           colors: colorsConst.textColor,
                           size: 14,
                         ),
@@ -56,14 +63,17 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                     CustomLoadingButton(
                       callback: () async {
                           if(settingsController.shiftController.text.isEmpty) {
+                            controllers.productCtr.reset();
                             utils.snackBar(msg: "Please enter shift name",
                                 context: context,
                                 color: Colors.red);
                           }else if(settingsController.daysController.text.isEmpty){
+                            controllers.productCtr.reset();
                             utils.snackBar(msg: "Please enter days",
                                 context: context,
                                 color: Colors.red);
                           }else if(controllers.selectedEmployeeId.value.isEmpty){
+                            controllers.productCtr.reset();
                             utils.snackBar(msg: "Please select employee",
                                 context: context,
                                 color: Colors.red);
@@ -102,16 +112,25 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                   children: [
                     SizedBox(
                       width: 300,
-                      height: 80,
+                      height: 85,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Employees",
-                            style: GoogleFonts.lato(
-                              fontSize: 15,
-                              color: const Color(0xff737373),
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                "Employees",
+                                style: GoogleFonts.lato(
+                                  fontSize: 15,
+                                  color: const Color(0xff737373),
+                                ),
+                              ),
+                              const CustomText(
+                                text: "*",
+                                colors: Colors.red,
+                                size: 25,
+                              )
+                            ],
                           ),
                           5.height,
                           KeyboardDropdownField<AllEmployeesObj>(
@@ -151,14 +170,23 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                     20.width,
                     SizedBox(
                       width: 300,
-                      height: 80,
+                      height: 90,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Shift Name",
-                              style: GoogleFonts.lato(
-                                  fontSize: 17,
-                                  color: Color(0xff737373))),
+                          Row(
+                            children: [
+                              Text("Shift Name",
+                                  style: GoogleFonts.lato(
+                                      fontSize: 17,
+                                      color: Color(0xff737373))),
+                              const CustomText(
+                                text: "*",
+                                colors: Colors.red,
+                                size: 25,
+                              )
+                            ],
+                          ),
                           const SizedBox(height: 5),
                           TextFormField(
                             textCapitalization: TextCapitalization.sentences,
@@ -200,16 +228,25 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                   children: [
                     SizedBox(
                       width: 300,
-                      height: 80,
+                      height: 85,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "From",
-                            style: GoogleFonts.lato(
-                              fontSize: 15,
-                              color: const Color(0xff737373),
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                "From",
+                                style: GoogleFonts.lato(
+                                  fontSize: 15,
+                                  color: const Color(0xff737373),
+                                ),
+                              ),
+                              const CustomText(
+                                text: "*",
+                                colors: Colors.red,
+                                size: 25,
+                              )
+                            ],
                           ),
                           5.height,
                           TextField(
@@ -252,16 +289,25 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                     20.width,
                     SizedBox(
                       width: 300,
-                      height: 80,
+                      height: 85,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "To",
-                            style: GoogleFonts.lato(
-                              fontSize: 15,
-                              color: const Color(0xff737373),
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                "To",
+                                style: GoogleFonts.lato(
+                                  fontSize: 15,
+                                  color: const Color(0xff737373),
+                                ),
+                              ),
+                              const CustomText(
+                                text: "*",
+                                colors: Colors.red,
+                                size: 25,
+                              )
+                            ],
                           ),
                           5.height,
                           TextField(
@@ -302,14 +348,23 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                     20.width,
                     SizedBox(
                       width: 300,
-                      height: 80,
+                      height: 90,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Days",
-                              style: GoogleFonts.lato(
-                                  fontSize: 17,
-                                  color: Color(0xff737373))),
+                          Row(
+                            children: [
+                              Text("Days",
+                                  style: GoogleFonts.lato(
+                                      fontSize: 17,
+                                      color: Color(0xff737373))),
+                              const CustomText(
+                                text: "*",
+                                colors: Colors.red,
+                                size: 25,
+                              )
+                            ],
+                          ),
                           const SizedBox(height: 5),
                           TextFormField(
                             textCapitalization: TextCapitalization.sentences,

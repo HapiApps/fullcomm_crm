@@ -418,20 +418,63 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                      utils.expiredEmpDialog();
                                      employeeProvider.addEmployeeButtonController.reset();
                                    }else{
-                                     employeeProvider.employeeInsert(
-                                       context: context,
-                                       empName: employeeProvider.nameController.text.toString(),
-                                       empMobile: employeeProvider.mobileController.text.toString(),
-                                       empAddress: employeeProvider.door.text.toString(),
-                                       empBonus: employeeProvider.bonus.text.toString(),
-                                       empEmail: employeeProvider.emailController.text.toString(),
-                                       empPassword: employeeProvider.password.text.toString(),
-                                       empJoinDate: employeeProvider.date.text.toString(),
-                                       empRole:employeeProvider.roleId,
-                                       empSalary: employeeProvider.salary.text.toString(),
-                                       empWhatsapp: employeeProvider.mobileController.text.trim().toString(),
-                                       active: employeeProvider.selectedPublication ?? "1",
-                                     );
+                                     if(employeeProvider.emailController.text.isEmpty){
+                                       employeeProvider.employeeInsert(
+                                         context: context,
+                                         empName: employeeProvider.nameController.text.toString(),
+                                         empMobile: employeeProvider.mobileController.text.toString(),
+                                         empAddress: employeeProvider.door.text.toString(),
+                                         empBonus: employeeProvider.bonus.text.toString(),
+                                         empEmail: employeeProvider.emailController.text.toString(),
+                                         empPassword: employeeProvider.password.text.toString(),
+                                         empJoinDate: employeeProvider.date.text.toString(),
+                                         empRole:employeeProvider.roleId,
+                                         empSalary: employeeProvider.salary.text.toString(),
+                                         empWhatsapp: employeeProvider.mobileController.text.trim().toString(),
+                                         active: employeeProvider.selectedPublication ?? "1",
+                                       );
+                                     }else{
+                                         if (employeeProvider.emailController.text.isEmpty) {
+                                           employeeProvider.employeeInsert(
+                                             context: context,
+                                             empName: employeeProvider.nameController.text.toString(),
+                                             empMobile: employeeProvider.mobileController.text.toString(),
+                                             empAddress: employeeProvider.door.text.toString(),
+                                             empBonus: employeeProvider.bonus.text.toString(),
+                                             empEmail: employeeProvider.emailController.text.toString(),
+                                             empPassword: employeeProvider.password.text.toString(),
+                                             empJoinDate: employeeProvider.date.text.toString(),
+                                             empRole:employeeProvider.roleId,
+                                             empSalary: employeeProvider.salary.text.toString(),
+                                             empWhatsapp: employeeProvider.WhatsappController.text.trim().toString(),
+                                             active: employeeProvider.selectedPublication ?? "1",
+                                           );
+                                         } else {
+                                           if(employeeProvider.emailController.text.isEmail){
+                                             employeeProvider.employeeInsert(
+                                               context: context,
+                                               empName: employeeProvider.nameController.text.toString(),
+                                               empMobile: employeeProvider.mobileController.text.toString(),
+                                               empAddress: employeeProvider.door.text.toString(),
+                                               empBonus: employeeProvider.bonus.text.toString(),
+                                               empEmail: employeeProvider.emailController.text.toString(),
+                                               empPassword: employeeProvider.password.text.toString(),
+                                               empJoinDate: employeeProvider.date.text.toString(),
+                                               empRole:employeeProvider.roleId,
+                                               empSalary: employeeProvider.salary.text.toString(),
+                                               empWhatsapp: employeeProvider.WhatsappController.text.trim().toString(),
+                                               active: employeeProvider.selectedPublication ?? "1",
+                                             );
+                                           }else{
+                                             employeeProvider.addEmployeeButtonController.reset();
+                                             utils.snackBar(
+                                               context: context,
+                                               msg: "Please Enter Valid Email",
+                                               color: Colors.red,
+                                             );
+                                           }
+                                         }
+                                     }
                                    }
                                   }
                                 },

@@ -64,6 +64,37 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
 
     roleList.refresh();
   }
+  var sortOfficeHourField = 'name'.obs;
+  var sortOfficeHourOrder = 'asc'.obs;
+  void sortOfficeHour() {
+    officeHoursList.sort((a, b) {
+      int comparison = 0;
+      if (sortOfficeHourField.value == 'name') {
+        final nameA = a.employeeName.toLowerCase();
+        final nameB = b.employeeName.toLowerCase();
+        comparison = nameA.compareTo(nameB);
+        if (comparison == 0) {
+          final shiftA = a.shiftName.toLowerCase();
+          final shiftB = b.shiftName.toLowerCase();
+          comparison = shiftA.compareTo(shiftB);
+        }
+      } else if (sortOfficeHourField.value == 'shift') {
+        final shiftA = a.shiftName.toLowerCase();
+        final shiftB = b.shiftName.toLowerCase();
+        comparison = shiftA.compareTo(shiftB);
+        if (comparison == 0) {
+          final nameA = a.employeeName.toLowerCase();
+          final nameB = b.employeeName.toLowerCase();
+          comparison = nameA.compareTo(nameB);
+        }
+      }
+
+      return sortOfficeHourOrder.value == 'asc' ? comparison : -comparison;
+    });
+
+    officeHoursList.refresh();
+  }
+
   List<String> permissionList = [
     "See All Customer Records",
     "Only My Customer Records"

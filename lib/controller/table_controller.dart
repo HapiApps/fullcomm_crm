@@ -31,22 +31,27 @@ class TableController extends GetxController {
     "Arpu Value"
   ];
   var headingFields = <String>[].obs;
-  void setHeadingFields(List<dynamic> data) async{
-    try{
-      headingFields.value = data.map((e) => controllers.formatHeading(e['user_heading'].toString())).toList();
+  void setHeadingFields(List<dynamic> data) async {
+    try {
+      headingFields.value =
+          data.map((e) => controllers.formatHeading(e['user_heading'].toString())).toList();
       final prefs = await SharedPreferences.getInstance();
       final saved = prefs.getString('tableHeadings');
-
       if (saved != null) {
         final List<dynamic> decoded = jsonDecode(saved);
-        tableHeadings.value = decoded.cast<String>();
+        final savedHeadings = decoded.cast<String>();
+        final combined = {...savedHeadings, ...headingFields}.toList();
+        tableHeadings.value = combined;
       } else {
         tableHeadings.value = headingFields.toList();
       }
-    }catch(e){
-      print("Set Heading fields $e");
+      await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
+
+    } catch (e) {
+      print("Set Heading fields error: $e");
     }
   }
+
 
   RxBool isTableLoading = false.obs;
   RxList<String> tableHeadings = <String>[].obs;
@@ -54,7 +59,7 @@ class TableController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    tableHeadings.value = headingFields.toList();
+    tableHeadings.value = headingFields.toSet().toList();
   }
 
   // Swap positions in drag-drop
@@ -67,7 +72,7 @@ class TableController extends GetxController {
   // Apply changes (first 8 update table headings)
   void applyChanges()async{
     isTableLoading.value = true;
-    tableHeadings.value = headingFields.toList();
+    tableHeadings.value = headingFields.toSet().toList();
     isTableLoading.value =false;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
@@ -98,7 +103,7 @@ class TableController extends GetxController {
     //   "Expected Billing Value",
     //   "Arpu Value"
     // ];
-    tableHeadings.value = headingFields.toList();
+    tableHeadings.value = headingFields.toSet().toList();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
   }

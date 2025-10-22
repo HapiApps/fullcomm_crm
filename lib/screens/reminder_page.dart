@@ -3,23 +3,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:table_calendar/table_calendar.dart';
-
 import '../common/constant/colors_constant.dart';
-import '../common/constant/key_constant.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_loading_button.dart';
 import '../components/custom_search_textfield.dart';
 import '../components/custom_text.dart';
-import '../components/custom_textfield.dart';
-import '../components/keyboard_search.dart';
 import '../controller/controller.dart';
 import '../controller/reminder_controller.dart';
-import '../models/all_customers_obj.dart';
-import '../provider/reminder_provider.dart';
 import '../services/api_services.dart';
 
 class ReminderPage extends StatefulWidget {

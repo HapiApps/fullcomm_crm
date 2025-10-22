@@ -113,7 +113,8 @@ class _MyAppState extends State<MyApp> {
               backgroundColor: Colors.white, // Calendar background
               headerBackgroundColor: colorsConst.primary, // Top header background
               headerForegroundColor: Colors.white, // Header text color
-              todayForegroundColor: WidgetStateProperty.all(colorsConst.primary),
+              yearForegroundColor: WidgetStateProperty.all(Colors.black),
+              todayForegroundColor: WidgetStateProperty.all(Colors.black),
               todayBackgroundColor: WidgetStateProperty.all(Colors.blue.withOpacity(0.2)),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               surfaceTintColor: Colors.transparent,
@@ -127,7 +128,7 @@ class _MyAppState extends State<MyApp> {
                 if (states.contains(WidgetState.selected)) {
                   return Colors.white;
                 }
-                return null;
+                return Colors.black;
               }),
               rangeSelectionBackgroundColor:colorsConst.primary,
               rangeSelectionOverlayColor: WidgetStateProperty.all(

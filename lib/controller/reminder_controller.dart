@@ -20,6 +20,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   TextEditingController endController         = TextEditingController();
   String? location;
   String? repeat;
+  String defaultTime = "Immediately";
 
   TextEditingController updateTitleController   = TextEditingController();
   TextEditingController updateDetailsController = TextEditingController();

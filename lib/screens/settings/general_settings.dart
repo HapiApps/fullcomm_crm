@@ -56,7 +56,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         ),
                         10.height,
                         CustomText(
-                          text: "View all of your call activity Report",
+                          text: "View all of your office hours",
                           colors: colorsConst.textColor,
                           size: 14,
                         ),
@@ -287,18 +287,18 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                 const SizedBox(width: 3),
                                 GestureDetector(
                                   onTap: (){
-                                    if(remController.sortFieldCallActivity.value=='employeeName' && remController.sortOrderCallActivity.value=='asc'){
-                                      remController.sortOrderCallActivity.value='desc';
+                                    if(settingsController.sortOfficeHourField.value=='name' && settingsController.sortOfficeHourOrder.value=='asc'){
+                                      settingsController.sortOfficeHourOrder.value='desc';
                                     }else{
-                                      remController.sortOrderCallActivity.value='asc';
+                                      settingsController.sortOfficeHourOrder.value='asc';
                                     }
-                                    remController.sortFieldCallActivity.value='employeeName';
-                                    remController.sortReminders();
+                                    settingsController.sortOfficeHourField.value='name';
+                                    settingsController.sortOfficeHour();
                                   },
                                   child: Obx(() => Image.asset(
-                                    controllers.sortFieldCallActivity.value.isEmpty
+                                    settingsController.sortOfficeHourField.value.isEmpty
                                         ? "assets/images/arrow.png"
-                                        : controllers.sortOrderCallActivity.value == 'asc'
+                                        : settingsController.sortOfficeHourOrder.value == 'asc'
                                         ? "assets/images/arrow_up.png"
                                         : "assets/images/arrow_down.png",
                                     width: 15,
@@ -323,18 +323,18 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                 const SizedBox(width: 3),
                                 GestureDetector(
                                   onTap: (){
-                                    if(remController.sortFieldCallActivity.value=='employeeName' && remController.sortOrderCallActivity.value=='asc'){
-                                      remController.sortOrderCallActivity.value='desc';
+                                    if(settingsController.sortOfficeHourField.value=='shift' && settingsController.sortOfficeHourOrder.value=='asc'){
+                                      settingsController.sortOfficeHourOrder.value='desc';
                                     }else{
-                                      remController.sortOrderCallActivity.value='asc';
+                                      settingsController.sortOfficeHourOrder.value='asc';
                                     }
-                                    remController.sortFieldCallActivity.value='employeeName';
-                                    remController.sortReminders();
+                                    settingsController.sortOfficeHourField.value='shift';
+                                    settingsController.sortOfficeHour();
                                   },
                                   child: Obx(() => Image.asset(
-                                    controllers.sortFieldCallActivity.value.isEmpty
+                                    settingsController.sortOfficeHourField.value.isEmpty
                                         ? "assets/images/arrow.png"
-                                        : controllers.sortOrderCallActivity.value == 'asc'
+                                        : settingsController.sortOfficeHourOrder.value == 'asc'
                                         ? "assets/images/arrow_up.png"
                                         : "assets/images/arrow_down.png",
                                     width: 15,

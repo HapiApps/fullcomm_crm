@@ -112,11 +112,23 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     return null;
   }
 
-  void selectMonth(BuildContext context, RxString sortByKey,
-      Rxn<DateTime> selectedMonthTarget) async {
+  void selectMonth(BuildContext context, RxString sortByKey, Rxn<DateTime> selectedMonthTarget) async {
     showMonthPicker(
       context: context,
-      monthStylePredicate: highlightCurrentMonth,
+      monthStylePredicate: (month) {
+        final now = DateTime.now();
+        if (month.month == now.month && month.year == now.year) {
+          return ButtonStyle(
+            foregroundColor: WidgetStateProperty.all(Colors.white),
+            backgroundColor: WidgetStateProperty.all(Colors.blue.withOpacity(0.2)),
+          );
+        } else {
+          return ButtonStyle(
+            foregroundColor: WidgetStateProperty.all(Colors.black),
+            backgroundColor: WidgetStateProperty.all(Colors.transparent),
+          );
+        }
+      },
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
