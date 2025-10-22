@@ -469,9 +469,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                                 widget.mainEmail.toString(),
                                               };
 
-                                              await apiService
-                                                  .deleteCustomersAPI(
-                                                  context, [deleteData]);
+                                              await apiService.deleteCustomersAPI(context, [deleteData]);
                                             },
                                             height: 35,
                                             isLoading: true,

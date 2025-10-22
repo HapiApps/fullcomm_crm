@@ -580,8 +580,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                     2: FlexColumnWidth(2),//Mobile No.
                     3: FlexColumnWidth(3),//Call Type
                     4: FlexColumnWidth(3.5),//Message
-                    5: FlexColumnWidth(2.5),//Status
-                    6: FlexColumnWidth(4.5),//Actions
+                    5: FlexColumnWidth(4.5),//Actions
                   },
                   border: TableBorder(
                     horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -656,16 +655,6 @@ class _MeetingCommentsState extends State<MeetingComments> {
                             child: CustomText(
                               textAlign: TextAlign.left,
                               text: "Notes",
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: CustomText(//4
-                              textAlign: TextAlign.left,
-                              text: "Status",
                               size: 15,
                               isBold: true,
                               colors: Colors.white,
@@ -853,15 +842,15 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           ),
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: CustomText(
-                                          textAlign: TextAlign.left,
-                                          text: data.status.toString(),
-                                          size: 14,
-                                          colors:colorsConst.textColor,
-                                        ),
-                                      ),
+                                      // Padding(
+                                      //   padding: const EdgeInsets.all(10.0),
+                                      //   child: CustomText(
+                                      //     textAlign: TextAlign.left,
+                                      //     text: data.status.toString(),
+                                      //     size: 14,
+                                      //     colors:colorsConst.textColor,
+                                      //   ),
+                                      // ),
                                       Padding(
                                         padding: const EdgeInsets.all(10.0),
                                         child: CustomText(

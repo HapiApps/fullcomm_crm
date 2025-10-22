@@ -744,9 +744,10 @@ class ApiService {
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
         print("success");
-        apiService.allLeadsDetails();
-        apiService.allNewLeadsDetails();
-        apiService.allGoodLeadsDetails();
+        allLeadsDetails();
+        allNewLeadsDetails();
+        allGoodLeadsDetails();
+        allCustomerDetails();
         prospectsList.clear();
         qualifiedList.clear();
         customerList.clear();

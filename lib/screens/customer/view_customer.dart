@@ -288,7 +288,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                       },
                       searchController: controllers.search,
                       onSearchChanged: (value) {
-                        controllers.searchQualified.value = value.toString();
+                        controllers.searchCustomers.value = value.toString();
                       },
                       onSelectMonth: () {
                         controllers.selectMonth(

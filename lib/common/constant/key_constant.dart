@@ -49,7 +49,7 @@ class InputFormatters {
   ];
 
   final List<TextInputFormatter> numberInput = [
-    LengthLimitingTextInputFormatter(15),
+    LengthLimitingTextInputFormatter(10),
     FilteringTextInputFormatter.digitsOnly,
     FilteringTextInputFormatter.allow(RegExp("[0-9]"))
   ];

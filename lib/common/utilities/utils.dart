@@ -2193,7 +2193,7 @@ class Utils {
                   SizedBox(
                     width: 340,
                     child: Text(
-                      "In this CRM template, \n1. Place your column names on Row 5. This will appear in EasyCRM as Heading.\n2. Place your data from Row 6. \n3. Pick the CRM internal field designators from Row 4 and place it over correct heading on Row 5.\n4. Save the sheet and upload to EasyCRM and start managing your Leads and Customers.",
+                      "In this CRM template, \n\n1. Place your column names on Row 5. This will appear in EasyCRM as Heading.\n\n2. Place your data from Row 6. \n\n3. Pick the CRM internal field designators from Row 4 and place it over correct heading on Row 5.\n\n4. Save the sheet and upload to EasyCRM and start managing your Leads and Customers.",
                       style: TextStyle(
                         color: colorsConst.textColor,
                         fontSize: 15,
@@ -3566,7 +3566,6 @@ class Utils {
                                   ),
                                 ],
                               ),
-
                             ],
                           );
                         },

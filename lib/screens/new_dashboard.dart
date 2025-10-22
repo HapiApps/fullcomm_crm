@@ -632,7 +632,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 'Suspects': totalSuspects,
                                                 'Prospects': totalProspects,
                                                 'Qualified': totalQualified,
-                                                'Unqualified': totalUnQualified,
+                                                'Disqualified': totalUnQualified,
                                                 'Customers': totalCustomers,
                                               };
                                               final List<Color> colorList = isEmpty

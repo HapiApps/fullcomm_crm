@@ -315,7 +315,7 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                   if (employeeProvider.nameController.text.isEmpty) {
                                     utils.snackBar(
                                       context: context,
-                                      msg: "Please Enter Name",
+                                      msg: "Please Enter Employee Name",
                                       color: Colors.red,
                                     );
                                     employeeProvider.addEmployeeButtonController.reset();

@@ -69,7 +69,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   var isSettingsExpanded = false.obs;
   bool extended =false;
   RxString searchText = ''.obs;
-  final RxString searchQuery = ''.obs,searchProspects = ''.obs,searchQualified = ''.obs;
+  final RxString searchQuery = ''.obs,searchProspects = ''.obs,searchQualified = ''.obs,searchCustomers = ''.obs;
   Future<List<NewLeadObj>>? allCustomerFuture;
   Future<List<EmployeeObj>>? allEmployeeFuture;
   Future<List<ProductObj>>? allProductFuture;
@@ -565,7 +565,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   }
 
   List<NewLeadObj> get paginatedQualifiedLeads {
-    final query = search.text.trim().toLowerCase();
+    final query = searchQualified.value.trim().toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;
     final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
 
@@ -739,7 +739,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   }
 
   List<NewLeadObj> get paginatedCustomerLeads {
-    final query = search.text.trim().toLowerCase();
+    final query = searchCustomers.value.trim().toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;
     final sortBy = selectedCustomerSortBy.value;
 

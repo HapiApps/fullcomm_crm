@@ -222,142 +222,97 @@ class _AddLeadState extends State<AddLead> {
                             width: 160),
                         10.width,
                         CustomLoadingButton(
-                            callback: () {
-                              if (controllers.leadNameCrt[0].text.isEmpty) {
-                                utils.snackBar(
-                                    msg: "Please add name",
-                                    color: Colors.red,
-                                    context: context);
-                                controllers.leadCtr.reset();
-                              } else if (controllers.leadMobileCrt[0].text.isEmpty) {
-                                utils.snackBar(
-                                    msg: "Please Add Phone No",
-                                    color: Colors.red,
-                                    context: context);
-                                controllers.leadCtr.reset();
-                              } else if (controllers.leadMobileCrt[0].text.length != 10) {
-                                utils.snackBar(
-                                    msg: "Invalid Phone No",
-                                    color: Colors.red,
-                                    context: context);
-                                controllers.leadCtr.reset();
-                              } else if (controllers.visitType == null || controllers.visitType.toString().isEmpty) {
-                                utils.snackBar(
-                                    msg: "Please Select Call Visit Type",
-                                    color: Colors.red,
-                                    context: context);
-                                controllers.leadCtr.reset();
-                              } else {
-                                if(controllers.leadEmailCrt[0].text.isNotEmpty){
-                                  if (controllers.leadEmailCrt[0].text.isEmail) {
-                                    if(controllers.pinCodeController.text.isEmpty){
-                                      apiService.insertSingleCustomer(context);
-                                    }else{
-                                      if(controllers.pinCodeController.text.length==6){
-                                        apiService.insertSingleCustomer(context);
-                                      }else{
-                                        utils.snackBar(msg: "Please add 6 digits pin code",
-                                            color: colorsConst.primary,context:context);
-                                        controllers.leadCtr.reset();
-                                      }
-                                    }
-                                  }else{
-                                      utils.snackBar(msg: "Please add valid email",
-                                          color: colorsConst.primary,context:context);
-                                      controllers.leadCtr.reset();
-                                  }
-                                }else{
-                                  if(controllers.pinCodeController.text.isEmpty){
+                          callback: () {
+                            if (controllers.leadNameCrt[0].text.isEmpty) {
+                              utils.snackBar(
+                                  msg: "Please add name",
+                                  color: Colors.red,
+                                  context: context);
+                              controllers.leadCtr.reset();
+                            } else if (controllers.leadMobileCrt[0].text.isEmpty) {
+                              utils.snackBar(
+                                  msg: "Please Add Phone No",
+                                  color: Colors.red,
+                                  context: context);
+                              controllers.leadCtr.reset();
+                            } else if (controllers.leadMobileCrt[0].text.length != 10) {
+                              utils.snackBar(
+                                  msg: "Invalid Phone No",
+                                  color: Colors.red,
+                                  context: context);
+                              controllers.leadCtr.reset();
+                            } else if (controllers.visitType == null ||
+                                controllers.visitType.toString().isEmpty) {
+                              utils.snackBar(
+                                  msg: "Please Select Call Visit Type",
+                                  color: Colors.red,
+                                  context: context);
+                              controllers.leadCtr.reset();
+                            }
+                            else if (controllers.leadCoMobileCrt.text.isNotEmpty &&
+                                controllers.leadCoMobileCrt.text.length != 10) {
+                              utils.snackBar(
+                                  msg: "Invalid Co-Mobile No",
+                                  color: Colors.red,
+                                  context: context);
+                              controllers.leadCtr.reset();
+                            } else if (controllers.leadCoEmailCrt.text.isNotEmpty &&
+                                !controllers.leadCoEmailCrt.text.isEmail) {
+                              utils.snackBar(
+                                  msg: "Please add valid Co-Email",
+                                  color: Colors.red,
+                                  context: context);
+                              controllers.leadCtr.reset();
+                            }
+                            else {
+                              if (controllers.leadEmailCrt[0].text.isNotEmpty) {
+                                if (controllers.leadEmailCrt[0].text.isEmail) {
+                                  if (controllers.pinCodeController.text.isEmpty) {
                                     apiService.insertSingleCustomer(context);
-                                  }else{
-                                    if(controllers.pinCodeController.text.length==6){
+                                  } else {
+                                    if (controllers.pinCodeController.text.length == 6) {
                                       apiService.insertSingleCustomer(context);
-                                    }else{
-                                      utils.snackBar(msg: "Please add 6 digits pin code",
-                                          color: colorsConst.primary,context:context);
+                                    } else {
+                                      utils.snackBar(
+                                          msg: "Please add 6 digits pin code",
+                                          color: colorsConst.primary,
+                                          context: context);
                                       controllers.leadCtr.reset();
                                     }
+                                  }
+                                } else {
+                                  utils.snackBar(
+                                      msg: "Please add valid email",
+                                      color: colorsConst.primary,
+                                      context: context);
+                                  controllers.leadCtr.reset();
+                                }
+                              } else {
+                                if (controllers.pinCodeController.text.isEmpty) {
+                                  apiService.insertSingleCustomer(context);
+                                } else {
+                                  if (controllers.pinCodeController.text.length == 6) {
+                                    apiService.insertSingleCustomer(context);
+                                  } else {
+                                    utils.snackBar(
+                                        msg: "Please add 6 digits pin code",
+                                        color: colorsConst.primary,
+                                        context: context);
+                                    controllers.leadCtr.reset();
                                   }
                                 }
-
-                                // if (controllers.leadEmailCrt[0].text.isEmail) {
-                                //   if (controllers.leadCoEmailCrt.text.isEmail) {
-                                //     apiService.insertLeadAPI(context);
-                                //   } else {
-                                //     utils.snackBar(
-                                //         msg: "Invalid Company Email",
-                                //         color: colorsConst.primary,
-                                //         context: context);
-                                //     controllers.leadCtr.reset();
-                                //   }
-                                // } else {
-                                //   utils.snackBar(
-                                //       msg: "Invalid Email",
-                                //       color: colorsConst.primary,
-                                //       context: context);
-                                //   controllers.leadCtr.reset();
-                                // }
-                                // else if(controllers.leadTitleCrt[0].text.isEmpty){
-                                //   utils.snackBar(msg: "Please add title",
-                                //       color: colorsConst.primary,context:context);
-                                //   controllers.leadCtr.reset();
-                                // }else if(controllers.leadCoNameCrt.text.isEmpty){
-                                //   utils.snackBar(msg: "Please add company name",
-                                //       color: colorsConst.primary,context:context);
-                                //   controllers.leadCtr.reset();
-                                // }else if(controllers.leadCoMobileCrt.text.length!=10){
-                                //   utils.snackBar(msg: "Invalid Company Mobile Number",
-                                //       color: colorsConst.primary,context:context);
-                                //   controllers.leadCtr.reset();
-                                // }else if(controllers.industry==null){
-                                //   utils.snackBar(msg: "Please add industry",
-                                //       color: colorsConst.primary,context:context);
-                                //   controllers.leadCtr.reset();
-                                // }else if(controllers.leadProduct.text.isEmpty){
-                                //   utils.snackBar(msg: "Please add product/services",
-                                //       color: colorsConst.primary,context:context);
-                                //   controllers.leadCtr.reset();
-                                // }else if(controllers.pinCode==null){
-                                //   utils.snackBar(msg: "Please add pin code",
-                                //       color: colorsConst.primary,context:context);
-                                //   controllers.leadCtr.reset();
-                                // }else if(controllers.selectedCity.isEmpty){
-                                //   utils.snackBar(msg: "Please add city",
-                                //       color: colorsConst.primary,context:context);
-                                //   controllers.leadCtr.reset();
-                                // }else if(controllers.status==null){
-                                //   utils.snackBar(msg: "Please add status",
-                                //       color: colorsConst.primary,context:context);
-                                //   controllers.leadCtr.reset();
-                                // }else if(controllers.leadOwnerNameCrt.text.isEmpty){
-                                //   utils.snackBar(msg: "Please add lead owner",
-                                //       color: colorsConst.primary,context:context);
-                                //   controllers.leadCtr.reset();
-                                // }else{
-                                //   if(controllers.leadEmailCrt[0].text.isEmail){
-                                //     if(controllers.leadCoEmailCrt.text.isEmail){
-                                //       apiService.insertLeadAPI(context);
-                                //     }else{
-                                //       utils.snackBar(msg: "Invalid Company Email",
-                                //           color: colorsConst.primary,context:context);
-                                //       controllers.leadCtr.reset();
-                                //     }
-                                //
-                                //   }else{
-                                //     utils.snackBar(msg: "Invalid Email",
-                                //         color: colorsConst.primary,context:context);
-                                //     controllers.leadCtr.reset();
-                                //   }
                               }
-                            },
-                            text: "Save Lead",
-                            height: 45,
-                            controller: controllers.leadCtr,
-                            isLoading: true,
-                            textColor: Colors.white,
-                            backgroundColor: colorsConst.third,
-                            radius: 10,
-                            width: 160),
+                            }
+                          },
+                          text: "Save Lead",
+                          height: 45,
+                          controller: controllers.leadCtr,
+                          isLoading: true,
+                          textColor: Colors.white,
+                          backgroundColor: colorsConst.third,
+                          radius: 10,
+                          width: 160,
+                        )
                       ],
                     ),
                   ],

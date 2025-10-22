@@ -369,7 +369,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     employeeProvider.addEmployeeButtonController.reset();
                                     utils.snackBar(
                                       context: context,
-                                      msg: "Please Enter Name",
+                                      msg: "Please Enter Employee Name",
                                       color: Colors.red,
                                     );
                                   }
