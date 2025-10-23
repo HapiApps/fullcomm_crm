@@ -27,6 +27,7 @@ class CustomTextField extends StatelessWidget {
   final IconData? iconData;
   final String? image;
   final String? prefixText;
+  final String? errorText;
   final VoidCallback? onPressed;
   final VoidCallback? onEdit;
 
@@ -53,6 +54,7 @@ class CustomTextField extends StatelessWidget {
       this.onPressed,
       this.prefixText,
       this.onEdit,
+        this.errorText,
       this.isOptional});
 
   @override
@@ -109,9 +111,11 @@ class CustomTextField extends StatelessWidget {
                     image: image,
                     isIcon: isIcon,
                     isLogin: isLogin,
+                    errorText: errorText,
                     onPressed: onPressed)),
           ),
         ),
+
         hintText!.isEmpty ? 10.height : 20.height,
       ],
     );

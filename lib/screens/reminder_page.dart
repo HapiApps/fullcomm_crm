@@ -684,7 +684,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                      padding: const EdgeInsets.all(10.0),
                                      child: CustomText(
                                        textAlign: TextAlign.left,
-                                       text: reminder.type.toString()=="1"?"Follow-up":"Meeting",
+                                       text: reminder.type.toString()=="1"?"Follow-up":"Appointment",
                                        size: 14,
                                        colors:colorsConst.textColor,
                                      ),

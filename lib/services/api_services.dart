@@ -548,7 +548,7 @@ class ApiService {
           controllers.callType = null;
           controllers.callStatus = null;
         controllers.callCommentCont.text = "";
-        getAllCallActivity();
+        getAllCallActivity("");
         Navigator.pop(context);
         controllers.productCtr.reset();
       } else {
@@ -596,7 +596,7 @@ class ApiService {
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
-        getAllMeetingActivity();
+        getAllMeetingActivity("");
         controllers.clearSelectedCustomer();
         controllers.meetingTitleCrt.text = "";
         controllers.meetingVenueCrt.text = "";
@@ -1266,9 +1266,9 @@ class ApiService {
         prefs.setBool("isAdmin", controllers.isAdmin.value);
         prefs.remove("loginNumber");
         prefs.remove("loginPassword");
-        getAllCallActivity();
+        getAllCallActivity("");
         getAllMailActivity();
-        getAllMeetingActivity();
+        getAllMeetingActivity("");
         getAllNoteActivity();
         loginHistoryApi();
         allLeadsDetails();
@@ -1455,13 +1455,14 @@ class ApiService {
     }
   }
 
-  Future getAllCallActivity() async {
+  Future getAllCallActivity(String cusId) async {
     try {
       Map data = {
         "search_type": "records",
         "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data",
-        "type":"7"
+        "type": "7",
+        "cus_id": cusId
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -1486,9 +1487,11 @@ class ApiService {
         controllers.allOutgoingCalls.value = outgoing.length.toString();
         controllers.allMissedCalls.value = missed.length.toString();
       } else {
+        controllers.callActivity.clear();
         throw Exception('Failed to load album');
       }
     } catch (e) {
+      controllers.callActivity.clear();
       throw Exception('Failed to load album');
     }
   }
@@ -1603,12 +1606,13 @@ class ApiService {
     }
   }
 
-  Future getAllMeetingActivity() async {
+  Future getAllMeetingActivity(String cusId) async {
     try {
       Map data = {
         "search_type": "meeting_details",
         "cos_id": controllers.storage.read("cos_id"),
-        "action": "get_data"
+        "action": "get_data",
+        "cus_id": cusId
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -1764,6 +1768,7 @@ class ApiService {
           encoding: Encoding.getByName("utf-8"));
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
+        print("response $response");
         controllers.fields.clear();
         controllers.fields.value = response.map((e) => CustomerField.fromJson(e)).toList();
         tableController.setHeadingFields(response);
@@ -2898,6 +2903,8 @@ class ApiService {
         var response = jsonDecode(request.body) as List;
         dashController.totalMails.value       = response[0]["total_mails"] ?? "0";
         dashController.totalMeetings.value    = response[0]["total_meetings"] ?? "0";
+        dashController.pendingMeetings.value  = response[0]["pending_meetings"] ?? "0";
+        dashController.completedMeetings.value = response[0]["completed_meetings"] ?? "0";
         dashController.totalCalls.value       = response[0]["total_calls"] ?? "0";
         dashController.totalEmployees.value   = response[0]["total_employees"] ?? "0";
         dashController.totalHot.value         = response[0]["hot_total"]?.toString() ?? "0";

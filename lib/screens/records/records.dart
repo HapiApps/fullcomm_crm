@@ -23,6 +23,8 @@ class _RecordsState extends State<Records> {
     // TODO: implement initState
     super.initState();
     apiService.getAllCustomers();
+    // apiService.getAllCallActivity("");
+    // apiService.getAllMeetingActivity("");
   }
   @override
   Widget build(BuildContext context) {

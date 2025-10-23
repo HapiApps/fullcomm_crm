@@ -387,7 +387,14 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                       msg: "Please Enter 10 digit Mobile Number",
                                       color: Colors.red,
                                     );
-                                  }
+                                  }else if(employeeProvider.WhatsappController.text.isNotEmpty&&employeeProvider.WhatsappController.text.length!=10){
+                                   employeeProvider.addEmployeeButtonController.reset();
+                                   utils.snackBar(
+                                     context: context,
+                                     msg: "Please Enter 10 digit Mobile Number",
+                                     color: Colors.red,
+                                   );
+                                 }
                                   else if(employeeProvider.password.text.isEmpty){
                                     employeeProvider.addEmployeeButtonController.reset();
                                     utils.snackBar(

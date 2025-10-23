@@ -497,6 +497,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           text: "Date of Connection",
                                           value: controllers.empDOB.value,
                                           width: textFieldSize,
+                                          isOptional: false,
                                           onTap: () {
                                             utils.datePicker(
                                                 context: context,
@@ -1266,6 +1267,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         ),
                                         Obx(() => CustomDateBox(
                                           text: "Expected Conversion Date",
+                                          isOptional: false,
                                           value: controllers.exDate.value,
                                           width: textFieldSize,
                                           onTap: () {
@@ -1294,6 +1296,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           text: "Prospect Enrollment Date",
                                           value: controllers.prospectDate.value,
                                           width: textFieldSize,
+                                          isOptional: false,
                                           onTap: () {
                                             utils.datePicker(
                                                 context: context,

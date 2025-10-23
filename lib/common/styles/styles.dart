@@ -22,7 +22,7 @@ class CustomStyle {
   }
 
   InputDecoration inputDecoration(
-      {String? text,
+      {String? text,String? errorText,
       bool? isIcon,
       bool? isLogin,
       IconData? iconData,
@@ -32,7 +32,8 @@ class CustomStyle {
       hoverColor: Colors.transparent,
       focusColor: Colors.transparent,
        hintText:text,
-      //hintText: "",
+      errorText: errorText,
+      errorStyle: TextStyle(color: Colors.red, fontSize: 13, fontFamily: "Lato"),
       hintStyle: TextStyle(
           color: Colors.grey.shade400, fontSize: 13, fontFamily: "Lato"),
       fillColor:

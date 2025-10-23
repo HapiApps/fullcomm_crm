@@ -207,6 +207,11 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"]=="Office hour added successfully"){
+        controllers.clearSelectedEmployee();
+        shiftController.clear();
+        fromTime.value = TimeOfDay(hour: 9, minute: 0);
+        toTime.value = TimeOfDay(hour: 18, minute: 0);
+        daysController.clear();
         allOfficeHours();
         Navigator.pop(context);
         utils.snackBar(context: context, msg: "Office hour added successfully", color: Colors.green);

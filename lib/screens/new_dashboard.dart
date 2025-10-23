@@ -366,6 +366,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                             ),
                                             InkWell(
                                                   onTap: (){
+
                                                     controllers.changeTab(0);
                                                     Navigator.push(
                                                       context,
@@ -395,7 +396,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 controllers.oldIndex.value = controllers.selectedIndex.value;
                                                 controllers.selectedIndex.value = 6;
                                               },
-                                              child: countShown(width: 130, head: "Total Meetings",
+                                              child: countShown(width: 135, head: "Total Appointments",
                                                   count: dashController.totalMeetings.value.toString(),
                                                   icon: Icons.calendar_month_outlined),
                                             ),
@@ -731,8 +732,36 @@ class _NewDashboardState extends State<NewDashboard> {
           CustomText(
             text: head,
             colors: colorsConst.textColor,
-            size: 16,
+            size: 15,
           ),
+          5.height,
+          head=="Total Appointments"?Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade100,
+                    border: Border.all(
+                      color: Colors.green
+                    ),
+                    borderRadius: BorderRadius.circular(5)
+                  ),
+                  child: Obx(()=>CustomText(text: dashController.completedMeetings.value,colors: Colors.green,size: 14,isBold: true,))
+              ),
+              Container(
+                  padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                  decoration: BoxDecoration(
+                      color: Colors.red.shade100,
+                      border: Border.all(
+                          color: Colors.red
+                      ),
+                      borderRadius: BorderRadius.circular(5)
+                  ),
+                  child: Obx(()=>CustomText(text: dashController.pendingMeetings.value,colors: Colors.red,size: 14,isBold: true,))
+              ),
+            ],
+          ):0.height
         ],
       ),
     );

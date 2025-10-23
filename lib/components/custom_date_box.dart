@@ -5,25 +5,39 @@ import 'custom_text.dart';
 
 class CustomDateBox extends StatelessWidget {
   final String text;
+  final String? errorText;
   final String value;
   final double? width;
   final void Function()? onTap;
+  final bool isOptional;
   const CustomDateBox(
       {super.key,
       this.width,
       required this.text,
       required this.value,
-      this.onTap});
+      this.onTap,this.isOptional=false,this.errorText
+      });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomText(
-          text:text,
-          colors:colorsConst.textColor,
-          size:13,
+        Row(
+          children: [
+            CustomText(
+              text:text,
+              colors:colorsConst.textColor,
+              size:13,
+            ),
+            isOptional == true
+                ? const CustomText(
+              text: "*",
+              colors: Colors.red,
+              size: 25,
+            )
+                : 0.width
+          ],
         ),
         InkWell(
           onTap: onTap,
@@ -46,6 +60,12 @@ class CustomDateBox extends StatelessWidget {
               ],
             ),
           ),
+        ),
+        errorText==null?0.height:CustomText(
+          text: errorText.toString(),
+          textAlign: TextAlign.start,
+          colors: Colors.red,
+          size: 13,
         ),
       ],
     );

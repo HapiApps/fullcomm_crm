@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/controller/table_controller.dart';
 import 'package:get/get.dart';
@@ -134,7 +135,23 @@ class _HeaderSectionState extends State<HeaderSection> {
                       for (int i = 0; i < tableController.headingFields.length; i++)
                         ListTile(
                           key: ValueKey(tableController.headingFields[i]),
-                          title: Text(tableController.headingFields[i]),
+                          title: TextFormField(
+                            initialValue: tableController.headingFields[i],
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(40),
+                            ],
+                            onChanged: (val) {
+                              //tableController.headingFields[i] = val; // update the list
+                            },
+                            onFieldSubmitted: (value){
+                              final id = controllers.fields[i].id;
+                              tableController.updateColumnNameAPI(context, value, id);
+                            },
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                            ),
+                          ), // optional drag handle
                         ),
                     ],
                   );

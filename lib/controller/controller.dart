@@ -513,7 +513,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
             }
             valA = parseDate(a.updatedTs, a.prospectEnrollmentDate);
             valB = parseDate(b.updatedTs, b.prospectEnrollmentDate);
-
             break;
           default:
             valA = '';
@@ -1119,7 +1118,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       shortBy = "All".obs,
       isCommentsLoading = true.obs,isSent = false.obs,isOpened= false.obs,isReplied = false.obs,isMailLoading = false.obs,isIncoming = false.obs,isOutgoing= false.obs,isMissed = false.obs,isCallLoading = false.obs;
   var roleNameList    = [];
-  var callNameList    = ["Visit","Call","Email","Meeting","Note"];
+  var callNameList    = ["Visit","Call","Email","Appointment","Note"];
   var customers       = <AllCustomersObj>[].obs;
   var employees       = <AllEmployeesObj>[].obs;
   var callActivity    = <CustomerActivity>[].obs;

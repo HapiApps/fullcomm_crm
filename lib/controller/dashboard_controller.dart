@@ -10,6 +10,8 @@ class DashboardController extends GetxController {
   var totalMails       = "0".obs;
   var totalEmployees   = "0".obs;
   var totalMeetings    = "0".obs;
+  var pendingMeetings  = "0".obs;
+  var completedMeetings = "0".obs;
   var totalCalls       = "0".obs;
   var totalWarm        = "0".obs;
   var totalCold        = "0".obs;

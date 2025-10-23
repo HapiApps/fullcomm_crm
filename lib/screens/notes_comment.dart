@@ -253,7 +253,7 @@ class _NotesCommentState extends State<NotesComment> {
                           });
                     },
                     child: CustomText(
-                      text: "Add Meeting Comment",
+                      text: "Add Appointment Comment",
                       colors: colorsConst.textColor,
                       size: 14,
                     ),)

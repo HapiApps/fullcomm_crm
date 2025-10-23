@@ -1,8 +1,13 @@
 import 'dart:convert';
-
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../common/constant/api.dart';
+import '../common/utilities/utils.dart';
+import '../services/api_services.dart';
 
 
 final tableController = Get.put(TableController());
@@ -33,24 +38,37 @@ class TableController extends GetxController {
   var headingFields = <String>[].obs;
   void setHeadingFields(List<dynamic> data) async {
     try {
-      headingFields.value =
-          data.map((e) => controllers.formatHeading(e['user_heading'].toString())).toList();
+      headingFields.value = data
+          .map((e) => controllers.formatHeading(e['user_heading'].toString()))
+          .toList();
+
       final prefs = await SharedPreferences.getInstance();
       final saved = prefs.getString('tableHeadings');
       if (saved != null) {
         final List<dynamic> decoded = jsonDecode(saved);
         final savedHeadings = decoded.cast<String>();
-        final combined = {...savedHeadings, ...headingFields}.toList();
+
+        final combined = List<String>.from(savedHeadings);
+        for (var i = 0; i < headingFields.length; i++) {
+          if (i < combined.length) {
+            combined[i] = headingFields[i];
+          } else {
+            combined.add(headingFields[i]);
+          }
+        }
+
         tableHeadings.value = combined;
       } else {
-        tableHeadings.value = headingFields.toList();
+        tableHeadings.value = List<String>.from(headingFields);
       }
+      print("Saved Headings: $headingFields");
+      print("tableHeadings Headings: $tableHeadings");
       await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
-
     } catch (e) {
       print("Set Heading fields error: $e");
     }
   }
+
 
 
   RxBool isTableLoading = false.obs;
@@ -107,4 +125,39 @@ class TableController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
   }
+
+  Future updateColumnNameAPI(BuildContext context,String heading,String id) async {
+    try{
+      Map data = {
+        "action": "update_column_name",
+        "id": id,
+        "user_heading": heading,
+        "updated_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id")
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"]=="Heading updated successfully"){
+        apiService.getUserHeading();
+        Navigator.pop(context);
+        utils.snackBar(context: context, msg: "Heading updated successfully", color: Colors.green);
+        controllers.productCtr.reset();
+      } else {
+        apiService.errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      apiService.errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+
 }

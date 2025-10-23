@@ -612,7 +612,7 @@ class _ReminderSettingsState extends State<ReminderSettings> {
                                children: [
                                  Expanded(
                                    child: Text(
-                                     "Meeting Reminder",
+                                     "Appointment Reminder",
                                      style: GoogleFonts.lato(
                                        fontSize: 16,
                                        fontWeight: FontWeight.bold,

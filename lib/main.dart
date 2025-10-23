@@ -79,9 +79,9 @@ class _MyAppState extends State<MyApp> {
       apiService.getAllCustomers();
       apiService.getOpenedMailActivity(true);
       apiService.getReplyMailActivity(true);
-      apiService.getAllCallActivity();
+      apiService.getAllCallActivity("");
       apiService.getAllMailActivity();
-      apiService.getAllMeetingActivity();
+      apiService.getAllMeetingActivity("");
       apiService.getAllNoteActivity();
       apiService.getUserHeading();
       remController.allReminders("2");
@@ -170,9 +170,9 @@ class _SplashScreenState extends State<SplashScreen> {
     apiService.getAllCustomers();
     apiService.getOpenedMailActivity(true);
     apiService.getReplyMailActivity(true);
-    apiService.getAllCallActivity();
+    apiService.getAllCallActivity("");
     apiService.getAllMailActivity();
-    apiService.getAllMeetingActivity();
+    apiService.getAllMeetingActivity("");
     apiService.getAllNoteActivity();
     apiService.getUserHeading();
     if (widget.loginScreen) {

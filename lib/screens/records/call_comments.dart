@@ -210,6 +210,7 @@ class _CallCommentsState extends State<CallComments> {
                                                 children: [
                                                   Obx(() => CustomDateBox(
                                                       text: "Date",
+                                                      isOptional: false,
                                                       value: controllers.empDOB.value,
                                                       width: 235,
                                                       onTap: () {
@@ -223,6 +224,7 @@ class _CallCommentsState extends State<CallComments> {
                                                   15.width,
                                                   Obx(() => CustomDateBox(
                                                       text: "Time",
+                                                    isOptional: false,
                                                       value: controllers.callTime.value,
                                                       width: 235,
                                                       onTap: () {

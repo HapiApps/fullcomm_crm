@@ -3185,7 +3185,7 @@ class Utils {
                               Expanded(
                                 child: RadioListTile(
                                   title: Text(
-                                    "Meeting Reminder",
+                                    "Appointment Reminder",
                                     style: GoogleFonts.lato(
                                       color: Colors.black,
                                       fontSize: 17,
@@ -3551,7 +3551,7 @@ class Utils {
                                       fontSize: 17,
                                     ),
                                     decoration: InputDecoration(
-                                      hintText: "Meeting Points",
+                                      hintText: "Appointment Points",
                                       hintStyle: GoogleFonts.lato(
                                         color: const Color(0xFFCCCCCC),
                                         fontSize: 17,
@@ -3778,7 +3778,7 @@ class Utils {
                               Expanded(
                                 child: RadioListTile(
                                   title: Text(
-                                    "Meeting Reminder",
+                                    "Appointment Reminder",
                                     style: GoogleFonts.lato(
                                       color: Colors.black,
                                       fontSize: 17,
@@ -3979,7 +3979,7 @@ class Utils {
                                       fontSize: 17,
                                     ),
                                     decoration: InputDecoration(
-                                      hintText: "Meeting Points",
+                                      hintText: "Appointment Points",
                                       hintStyle: GoogleFonts.lato(
                                         color: const Color(0xFFCCCCCC),
                                         fontSize: 17,

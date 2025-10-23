@@ -54,7 +54,7 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                         ),
                         10.height,
                         CustomText(
-                          text: "View all of your office hours",
+                          text: "Add your office hours",
                           colors: colorsConst.textColor,
                           size: 14,
                         ),
