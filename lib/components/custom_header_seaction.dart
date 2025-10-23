@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/components/custom_textfield.dart';
 import 'package:fullcomm_crm/controller/table_controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -115,6 +116,61 @@ class _HeaderSectionState extends State<HeaderSection> {
       ],
     );
   }
+  void showAddColumnDialog(BuildContext context) {
+    TextEditingController columnNameController = TextEditingController();
+    var errorText;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context,setState){
+          return AlertDialog(
+            title: CustomText(
+              text:'Add column name',
+              colors: colorsConst.primary,
+              isBold: true,
+            ),
+            content: SizedBox(
+              width: 300,
+              height: 100,
+              child: CustomTextField(
+                text: "Name",
+                controller: columnNameController,
+                isOptional: true,
+                hintText: "Enter name here",
+                width: 300,
+                onChanged: (value){
+                  setState(() {
+                    errorText = null;
+                  });
+                },
+                errorText: errorText,
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  if(columnNameController.text.isEmpty){
+                    setState((){
+                      errorText = "Please enter name";
+                    });
+                    return;
+                  }
+                  tableController.addColumnNameAPI(context, columnNameController.text);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+      },
+    );}
 
   void showDragDropDialog(BuildContext context) {
     Get.dialog(
@@ -125,7 +181,18 @@ class _HeaderSectionState extends State<HeaderSection> {
           padding: EdgeInsets.all(16),
           child: Column(
             children: [
-              Text("Reorder Columns", style: TextStyle(fontSize: 18)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Reorder Columns", style: TextStyle(fontSize: 18)),
+                  IconButton(
+                    tooltip: "Add Column",
+                      onPressed: (){
+                      showAddColumnDialog(context);
+                      },
+                      icon: Icon(Icons.add))
+                ],
+              ),
               Divider(),
               Expanded(
                 child: Obx(() {

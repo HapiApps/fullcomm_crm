@@ -160,4 +160,37 @@ class TableController extends GetxController {
     }
   }
 
+  Future addColumnNameAPI(BuildContext context,String heading) async {
+    try{
+      Map data = {
+        "action": "add_column_name",
+        "user_heading": heading,
+        "created_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id")
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"]=="Heading added successfully"){
+        apiService.getUserHeading();
+        Navigator.pop(context);
+        utils.snackBar(context: context, msg: "Heading added successfully", color: Colors.green);
+        controllers.productCtr.reset();
+      } else {
+        apiService.errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      apiService.errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+
 }

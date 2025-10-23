@@ -1464,6 +1464,7 @@ class ApiService {
         "type": "7",
         "cus_id": cusId
       };
+      print("Call data $data");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
