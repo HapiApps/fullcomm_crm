@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../common/constant/colors_constant.dart';
 import '../controller/controller.dart';
 import '../controller/table_controller.dart';
+import '../models/user_heading_obj.dart';
 import 'custom_text.dart';
 
 class CustomTableHeader extends StatelessWidget {
@@ -110,7 +111,16 @@ class CustomTableHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: 3),
                   GestureDetector(
-                    onTap: onSortName,
+                    onTap: (){
+                      final selected = controllers.fields.firstWhere(
+                            (f) => f.userHeading == h,
+                        orElse: () => CustomerField(userHeading: h, systemField: h.toLowerCase(), id: '', isRequired: ''),
+                      );
+                      controllers.sortField.value = selected.systemField;
+                      print("Field ${controllers.sortField.value}");
+                      controllers.sortOrderN.value =
+                      controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
+                    },
                     child: Obx(() => Image.asset(
                       controllers.sortField.value.isEmpty
                           ? "assets/images/arrow.png"

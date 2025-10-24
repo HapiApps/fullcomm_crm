@@ -388,9 +388,9 @@ class _SuspectsState extends State<Suspects> {
                                     controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
                                   },
                                   onSortName: () {
-                                    controllers.sortField.value = 'name';
-                                    controllers.sortOrderN.value =
-                                    controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
+                                    // controllers.sortField.value = 'name';
+                                    // controllers.sortOrderN.value =
+                                    // controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
                                   },
                                 ),
                               ),
