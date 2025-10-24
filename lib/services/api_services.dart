@@ -2740,45 +2740,6 @@ class ApiService {
     }
   }
 
-  Future getRatingReport() async {
-    try {
-      Map data = {
-        "search_type": "rating_report",
-        "cos_id": controllers.storage.read("cos_id"),
-        "action": "get_data",
-      };
-      log("main ${data.toString()}");
-      final request = await http.post(Uri.parse(scriptApi),
-          headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: jsonEncode(data),
-          encoding: Encoding.getByName("utf-8"));
-      print("view dashboard report");
-      print(request.body);
-      controllers.totalCold.value = "0";
-      controllers.totalHot.value = "0";
-      controllers.totalWarm.value = "0";
-
-      if (request.statusCode == 200) {
-        List response = json.decode(request.body);
-        controllers.totalCold.value = response[0]["cold_total"].toString()=="null"?"0":response[0]["cold_total"];
-        controllers.totalHot.value = response[0]["hot_total"].toString()=="null"?"0":response[0]["hot_total"];
-        controllers.totalWarm.value = response[0]["warm_total"].toString()=="null"?"0":response[0]["warm_total"];
-      } else {
-        controllers.totalCold.value = "0";
-        controllers.totalHot.value = "0";
-        controllers.totalWarm.value = "0";
-        throw Exception('Failed to load album');
-      }
-    } catch (e) {
-      controllers.totalCold.value = "0";
-      controllers.totalHot.value = "0";
-      controllers.totalWarm.value = "0";
-      throw Exception('Failed to load album');
-    }
-  }
 
   Future getMonthReport() async {
     try {
@@ -2818,7 +2779,7 @@ class ApiService {
         "month":month
       };
       log("main day wise ${data.toString()}");
-      controllers.dayReport.value = [];
+      dashController.dayReport.value = [];
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
@@ -2829,7 +2790,7 @@ class ApiService {
 
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
-        controllers.dayReport.value = response.map<CustomerDayData>(
+        dashController.dayReport.value = response.map<CustomerDayData>(
               (e) => CustomerDayData.fromJson(e),
         ).toList();
       } else {
@@ -2838,90 +2799,6 @@ class ApiService {
     } catch (e) {
       print("day_report $e");
       throw Exception('Failed to load album');
-    }
-  }
-
-  Future getCustomerReport(String stDate,String endDate) async {
-    try {
-      Map data = {
-        "search_type": "customers_count",
-        "cos_id": controllers.storage.read("cos_id"),
-        "action": "get_data",
-        "role": controllers.storage.read("role"),
-        "id": controllers.storage.read("id"),
-        "stDate":stDate,
-        "enDate":endDate
-      };
-      log("main day wise ${data.toString()}");
-      controllers.dayReport.value = [];
-      final request = await http.post(Uri.parse(scriptApi),
-          headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: jsonEncode(data),
-          encoding: Encoding.getByName("utf-8"));
-
-      if (request.statusCode == 200) {
-        List response = json.decode(request.body);
-        controllers.dayReport.value = response.map<CustomerDayData>((e) => CustomerDayData.fromJson(e),).toList();
-      } else {
-        throw Exception('Failed to load album ${request.body}');
-      }
-    } catch (e) {
-      print("day_report $e");
-      throw Exception('Failed to load album');
-    }
-  }
-
-  Future getDashboardReport() async {
-    final range = dashController.selectedRange.value;
-    var today = DateTime.now();
-    var tomorrow = DateTime.now().add(Duration(days: 1));
-    final adjustedEnd = range?.end.add(const Duration(days: 1));
-    try {
-      Map data = {
-        "search_type": "dashboard_report",
-        "cos_id": controllers.storage.read("cos_id"),
-        "role": controllers.storage.read("role"),
-        "id": controllers.storage.read("id"),
-        "action": "get_data",
-        "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
-        "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
-      };
-
-      log("Dashboard request data: ${data.toString()}");
-      final request = await http.post(
-        Uri.parse(scriptApi),
-        headers: {
-          "Accept": "application/text",
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: jsonEncode(data),
-        encoding: Encoding.getByName("utf-8"),
-      );
-      if (request.statusCode == 200) {
-        var response = jsonDecode(request.body) as List;
-        dashController.totalMails.value       = response[0]["total_mails"] ?? "0";
-        dashController.totalMeetings.value    = response[0]["total_meetings"] ?? "0";
-        dashController.pendingMeetings.value  = response[0]["pending_meetings"] ?? "0";
-        dashController.completedMeetings.value = response[0]["completed_meetings"] ?? "0";
-        dashController.totalCalls.value       = response[0]["total_calls"] ?? "0";
-        dashController.totalEmployees.value   = response[0]["total_employees"] ?? "0";
-        dashController.totalHot.value         = response[0]["hot_total"]?.toString() ?? "0";
-        dashController.totalWarm.value        = response[0]["warm_total"]?.toString() ?? "0";
-        dashController.totalCold.value        = response[0]["cold_total"]?.toString() ?? "0";
-        dashController.totalSuspects.value    = response[0]["total_suspects"]?.toString() ?? "0";
-        dashController.totalProspects.value   = response[0]["total_prospects"]?.toString() ?? "0";
-        dashController.totalQualified.value   = response[0]["total_qualified"]?.toString() ?? "0";
-        dashController.totalUnQualified.value = response[0]["total_disqualified"]?.toString() ?? "0";
-        dashController.totalCustomers.value   = response[0]["total_customers"]?.toString() ?? "0";
-      } else {
-        throw Exception('Failed to load dashboard report');
-      }
-    } catch (e) {
-      print("dashboard_report error: $e");
-      throw Exception('Failed to load dashboard report');
     }
   }
 

@@ -4,20 +4,17 @@ import 'package:fullcomm_crm/components/line_chart.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'package:fullcomm_crm/screens/records/records.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
+import '../components/custom_rating.dart';
 import '../components/custom_text.dart';
 import '../controller/controller.dart';
-import '../main.dart';
 import '../provider/employee_provider.dart';
 import '../services/api_services.dart';
-import 'dashboard.dart';
 import 'dart:html' as html;
-
 import 'employee/employee_screen.dart';
 
 class NewDashboard extends StatefulWidget {
@@ -49,10 +46,10 @@ class _NewDashboardState extends State<NewDashboard> {
       controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
       var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2,'0')}-${DateTime.now().day.toString().padLeft(2,'0')}";
       var last7days = DateTime.now().subtract(Duration(days: 7));
-       apiService.getCustomerReport("${last7days.year}-${last7days.month.toString().padLeft(2,'0')}-${last7days.day.toString().padLeft(2,'0')}",today);
+       dashController.getCustomerReport("${last7days.year}-${last7days.month.toString().padLeft(2,'0')}-${last7days.day.toString().padLeft(2,'0')}",today);
     });
-    apiService.getRatingReport();
-    apiService.getDashboardReport();
+    dashController.getRatingReport();
+    dashController.getDashboardReport();
   }
   void showWebNotification() {
     // Ask permission
@@ -181,16 +178,16 @@ class _NewDashboardState extends State<NewDashboard> {
                                           );
                                           break;
                                       }
-                                      apiService.getDashboardReport();
+                                      dashController.getDashboardReport();
                                       final range = dashController.selectedRange.value;
                                       var today = DateTime.now();
                                       if(dashController.selectedSortBy.value!="Today"&&dashController.selectedSortBy.value!="Yesterday"){
-                                        apiService.getCustomerReport(range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}", range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
+                                        dashController.getCustomerReport(range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}", range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
                                       }
                                       else{
                                         var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2,'0')}-${DateTime.now().day.toString().padLeft(2,'0')}";
                                         var last7days = DateTime.now().subtract(Duration(days: 7));
-                                        apiService.getCustomerReport("${last7days.year}-${last7days.month.toString().padLeft(2,'0')}-${last7days.day.toString().padLeft(2,'0')}",today);
+                                        dashController.getCustomerReport("${last7days.year}-${last7days.month.toString().padLeft(2,'0')}-${last7days.day.toString().padLeft(2,'0')}",today);
                                       }
                                     },
                                     child: Container(
@@ -297,9 +294,9 @@ class _NewDashboardState extends State<NewDashboard> {
                                               ),
                                               30.height,
                                               Obx(() {
-                                                final hot = int.tryParse(controllers.totalHot.value) ?? 0;
-                                                final warm = int.tryParse(controllers.totalWarm.value) ?? 0;
-                                                final cold = int.tryParse(controllers.totalCold.value) ?? 0;
+                                                final hot = int.tryParse(dashController.totalHot.value) ?? 0;
+                                                final warm = int.tryParse(dashController.totalWarm.value) ?? 0;
+                                                final cold = int.tryParse(dashController.totalCold.value) ?? 0;
                                                 final totalCount = hot + warm + cold;
                                                 return Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -366,7 +363,6 @@ class _NewDashboardState extends State<NewDashboard> {
                                             ),
                                             InkWell(
                                                   onTap: (){
-
                                                     controllers.changeTab(0);
                                                     Navigator.push(
                                                       context,

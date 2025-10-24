@@ -1102,9 +1102,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   var directVisit = "".obs,
       telephoneCalls = "".obs,
       allDirectVisit = "0".obs,
-      totalWarm = "".obs,
-      totalCold = "".obs,
-      totalHot = "".obs,
+
       allTelephoneCalls = "0".obs,
       allSentMails = "0".obs,
       allOpenedMails = "0".obs,
@@ -1632,7 +1630,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   TextEditingController coCountryController =
       TextEditingController(text: "India");
   var monthData = <CustomerMonthData>[].obs;
-  var dayReport = <CustomerDayData>[].obs;
+
   var rangeStart = DateTime.now().subtract(const Duration(days: 6)).obs;
   var rangeEnd = DateTime.now().obs;
 

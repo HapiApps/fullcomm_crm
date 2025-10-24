@@ -1,10 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
-import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import '../controller/dashboard_controller.dart';
 
 class DayWiseBarChart extends StatelessWidget {
@@ -14,12 +12,12 @@ class DayWiseBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final sortBy = dashController.selectedSortBy.value;
-      if (controllers.dayReport.isEmpty) {
+      if (dashController.dayReport.isEmpty) {
         return Center(
           child: CircularProgressIndicator(color: colorsConst.primary),
         );
       }
-      final report = [...controllers.dayReport];
+      final report = [...dashController.dayReport];
       report.sort((a, b) => a.dayDate.compareTo(b.dayDate));
       final int showInterval = report.length > 20 ? 7 : 1;
       String targetDateString = '';
