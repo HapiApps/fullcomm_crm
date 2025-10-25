@@ -240,6 +240,7 @@ class _ViewLeadState extends State<ViewLead> {
                             controller: _controller,
                             itemBuilder: (context,index){
                               final leadData = snapshot.data![index];
+                              print("pincode ${leadData.pincode}");
                               List<String> additionalInfoList = [];
                               if (leadData.additionalInfo != null && leadData.additionalInfo.toString().isNotEmpty) {
                                 additionalInfoList = leadData.additionalInfo.toString().split("||");
@@ -787,7 +788,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                         size: 16,
                                                       ),
                                                       20.height,
-                                                      utils.leadText(text: "Street",color: colorsConst.primary),
+                                                      utils.leadText(text: "Pincode",color: colorsConst.primary),
                                                       20.height,
                                                       utils.leadText(text: "City",color: colorsConst.primary),
                                                       20.height,
@@ -805,7 +806,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                         size: 16,
                                                       ),
                                                       20.height,
-                                                      utils.leadText(text: leadData.landmark1.toString()=="null"?"":leadData.landmark1,color:colorsConst.textColor),
+                                                      utils.leadText(text: leadData.pincode.toString()=="null"?"":leadData.pincode,color:colorsConst.textColor),
                                                       20.height,
                                                       utils.leadText(text: leadData.city.toString()=="null"?"":
                                                       leadData.city,color: colorsConst.textColor),
@@ -873,13 +874,13 @@ class _ViewLeadState extends State<ViewLead> {
                                                         size: 16,
                                                       ),
                                                       20.height,
-                                                      utils.leadText(text: leadData.companyName.toString()=="null"?"":widget.companyName,color: colorsConst.textColor),
+                                                      utils.leadText(text: leadData.companyName.toString()=="null"?"":leadData.companyName.toString(),color: colorsConst.textColor),
                                                       20.height,
-                                                      utils.leadText(text: widget.companyNumber.toString()=="null"?"":widget.companyNumber,color: colorsConst.textColor),
+                                                      utils.leadText(text: leadData.companyNumber.toString()=="null"?"":leadData.companyNumber,color: colorsConst.textColor),
                                                       20.height,
                                                       utils.leadText(text: widget.industry.toString()=="null"?"":widget.industry,color: colorsConst.textColor),
                                                       20.height,
-                                                      utils.leadText(text: widget.linkedin.toString()=="null"?"":widget.linkedin,color: colorsConst.textColor),
+                                                      utils.leadText(text: leadData.linkedin.toString()=="null"?"":leadData.linkedin,color: colorsConst.textColor),
                                                     ],
                                                   ),
                                                 ],
@@ -920,9 +921,9 @@ class _ViewLeadState extends State<ViewLead> {
                                                         size: 16,
                                                       ),
                                                       20.height,
-                                                      utils.leadText(text: widget.companyWebsite.toString()=="null"?"":widget.companyWebsite,color:colorsConst.textColor),
+                                                      utils.leadText(text: leadData.companyWebsite.toString()=="null"?"":leadData.companyWebsite,color:colorsConst.textColor),
                                                       20.height,
-                                                      utils.leadText(text: widget.companyEmail.toString()=="null"?"":widget.companyEmail,color: colorsConst.textColor),
+                                                      utils.leadText(text: leadData.companyEmail.toString()=="null"?"":leadData.companyEmail,color: colorsConst.textColor),
                                                       20.height,
                                                       utils.leadText(text: widget.productServices.toString()=="null"?"":widget.productServices,color: colorsConst.textColor),
                                                       20.height,

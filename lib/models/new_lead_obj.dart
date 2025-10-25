@@ -7,6 +7,7 @@ class NewLeadObj {
   final String? emergencyName;
   final String? emergencyNumber;
   final String? emailId;
+  final String? whatsapp;
   final String? type;
   final String? referredBy;
   final String? img1;
@@ -22,6 +23,10 @@ class NewLeadObj {
   final String? lat;
   final String? lng;
   final String? companyName;
+  final String? companyNumber;
+  final String? companyWebsite;
+  final String? companyEmail;
+  final String? linkedin;
   final String? leadStatus;
   final String? rating;
   final String? quotationUpdate;
@@ -54,7 +59,8 @@ class NewLeadObj {
 
   NewLeadObj(
       {this.userId,
-      this.addressId,
+        this.companyNumber, this.companyWebsite, this.companyEmail, this.linkedin,
+        this.addressId,
       this.firstname,
       this.lineId,
       this.mobileNumber,
@@ -103,7 +109,8 @@ class NewLeadObj {
       this.accountManager,
       this.prospectGrading,
       this.detailsOfServiceRequired,
-        this.additionalInfo
+        this.additionalInfo,
+        this.whatsapp
       });
   factory NewLeadObj.fromJson(Map<String, dynamic> json) {
     return NewLeadObj(
@@ -129,6 +136,11 @@ class NewLeadObj {
         tier: json["tier"],
         lat: json["lat"],
         lng: json["lng"],
+        companyEmail: json["company_email"],
+        companyNumber: json["company_number"],
+        companyWebsite: json["company_website"],
+        linkedin: json["linkedin"],
+         active: json["active"],
         quotationUpdate: json["quotation_update"],
         companyName: json["company_name"],
         leadStatus: json["lead_status"],
@@ -156,7 +168,8 @@ class NewLeadObj {
         accountManager: json['account_manager'],
         prospectGrading: json['prospect_grading'],
         detailsOfServiceRequired: json['details_of_service_required'],
-      additionalInfo: json["additional_info"]
+      additionalInfo: json["additional_info"],
+        whatsapp: json["whatsapp"]
     );
   }
 
@@ -210,6 +223,11 @@ class NewLeadObj {
       "prospect_grading": prospectGrading,
       "details_of_service_required": detailsOfServiceRequired,
       "additional_info": additionalInfo,
+      "whatsapp": whatsapp,
+      "company_email": companyEmail,
+      "company_website": companyWebsite,
+      "company_number": companyNumber,
+      "linkedin": linkedin,
     };
   }
 }

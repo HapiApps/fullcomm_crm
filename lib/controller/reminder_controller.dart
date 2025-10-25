@@ -30,6 +30,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   String? updateRepeat;
 
   var sortFieldCallActivity = ''.obs;
+  var setType = ''.obs;
   var sortOrderCallActivity = 'asc'.obs;
   var searchText = ''.obs;
   var reminderList = <ReminderModel>[].obs;
@@ -168,6 +169,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         "start_dt": startController.text.trim(),
         "end_dt": endController.text.trim(),
         "details": detailsController.text.trim(),
+        "set_time": defaultTime,
+        "set_type": "Email",
         "created_by": controllers.storage.read("id"),
         "cos_id": controllers.storage.read("cos_id")
       };

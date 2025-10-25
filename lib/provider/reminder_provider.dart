@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/controller/reminder_controller.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ReminderProvider extends ChangeNotifier {
@@ -16,11 +17,25 @@ class ReminderProvider extends ChangeNotifier {
 
   void toggleEmail(bool? val) {
     email = val ?? false;
+
+    List<String> types = [];
+
+    if (email) types.add("Email");
+    if (sms) types.add("SMS");
+
+    remController.setType.value = types.join(", ");
     notifyListeners();
   }
 
   void toggleSms(bool? val) {
     sms = val ?? false;
+
+    List<String> types = [];
+
+    if (email) types.add("Email");
+    if (sms) types.add("SMS");
+
+    remController.setType.value = types.join(", ");
     notifyListeners();
   }
 

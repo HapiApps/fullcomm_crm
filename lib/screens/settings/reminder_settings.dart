@@ -135,15 +135,18 @@ class _ReminderSettingsState extends State<ReminderSettings> {
                                       height: 16,
                                       child: Checkbox(
                                         value: cp.sms,
-                                        onChanged: null,
+                                        onChanged: cp.toggleSms,
                                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                         side: const BorderSide(
-                                          color: Color(0xFFBDBDBD),
+                                          color: Color(0xFF757575),
                                         ),
                                         fillColor: WidgetStateProperty.resolveWith<Color>((states) {
-                                          return Colors.grey.shade200;
+                                          if (states.contains(WidgetState.selected)) {
+                                            return Color(0xFF0078D7);
+                                          }
+                                          return Colors.white;
                                         }),
-                                        checkColor: Colors.grey,
+                                        checkColor: Colors.white,
                                       ),
                                     ),
                                     const SizedBox(width: 6),

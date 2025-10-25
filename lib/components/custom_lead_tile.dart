@@ -362,7 +362,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                 mainName: widget.mainName,
                                 mainMobile: widget.mobileNumber,
                                 mainEmail: widget.email,
-                                mainWhatsApp: widget.mobileNumber,
+                                mainWhatsApp: widget.whatsappNumber,
                                 companyName: widget.companyName,
                                 status: widget.status,
                                 rating: widget.rating,
@@ -527,7 +527,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                             context,
                             PageRouteBuilder(
                               pageBuilder: (context, animation1, animation2) =>
-                              const Records(),
+                              const Records(isReload: "false",),
                               transitionDuration: Duration.zero,
                               reverseTransitionDuration: Duration.zero,
                             ),
@@ -547,7 +547,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                             context,
                             PageRouteBuilder(
                               pageBuilder: (context, animation1, animation2) =>
-                              const Records(),
+                              const Records(isReload: "false",),
                               transitionDuration: Duration.zero,
                               reverseTransitionDuration: Duration.zero,
                             ),

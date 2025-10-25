@@ -11,7 +11,8 @@ import 'mail_comments.dart';
 import 'meeting_comments.dart';
 
 class Records extends StatefulWidget {
-  const Records({super.key});
+  final String isReload;
+  const Records({super.key, required this.isReload});
 
   @override
   State<Records> createState() => _RecordsState();
@@ -23,6 +24,11 @@ class _RecordsState extends State<Records> {
     // TODO: implement initState
     super.initState();
     apiService.getAllCustomers();
+    if(widget.isReload=="true"){
+      apiService.getAllCallActivity("");
+      apiService.getAllMeetingActivity("");
+    }
+    // apiService.getAllMailActivity("");
     // apiService.getAllCallActivity("");
     // apiService.getAllMeetingActivity("");
   }
@@ -72,7 +78,7 @@ class _RecordsState extends State<Records> {
                           children: [
                             Icon(Icons.group, color: colorsConst.primary, size: 20),
                             6.width,
-                            Text('Meeting', style: TextStyle(color: colorsConst.primary)),
+                            Text('Appointment', style: TextStyle(color: colorsConst.primary)),
                           ],
                         ),
                       ),

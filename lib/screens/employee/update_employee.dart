@@ -330,6 +330,15 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                     employeeProvider.addEmployeeButtonController.reset();
                                     return;
                                   }
+                                   if(employeeProvider.WhatsappController.text.isNotEmpty&&employeeProvider.WhatsappController.text.length!=10){
+                                    employeeProvider.addEmployeeButtonController.reset();
+                                    utils.snackBar(
+                                      context: context,
+                                      msg: "Please Enter 10 digit Whatsapp Number",
+                                      color: Colors.red,
+                                    );
+                                    return;
+                                  }
                                   if (employeeProvider.mobileController.text.length != 10) {
                                     employeeProvider.addEmployeeButtonController
                                         .reset();
@@ -368,31 +377,68 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                     );
                                     return;
                                   }
-                                  employeeProvider.employeeUpdate(
-                                    context: context,
-                                    id: widget.employeeData?.id.toString(),
-                                    empName: employeeProvider.nameController
-                                        .text.trim(),
-                                    empMobile: employeeProvider.mobileController
-                                        .text.trim(),
-                                    empAddress: employeeProvider.door.text
-                                        .trim(),
-                                    empBonus: employeeProvider.bonus.text
-                                        .trim(),
-                                    empEmail: employeeProvider.emailController
-                                        .text.trim(),
-                                    empPassword: employeeProvider.password.text
-                                        .trim(),
-                                    empJoinDate: employeeProvider.date.text
-                                        .trim(),
-                                    empRole: employeeProvider.roleId,
-                                    empSalary: employeeProvider.salary.text
-                                        .trim(),
-                                    empWhatsapp: employeeProvider
-                                        .mobileController.text.trim(),
-                                    active: employeeProvider
-                                        .selectedPublication ?? "1",
-                                  );
+                                 if(employeeProvider.emailController.text.isEmpty){
+                                   employeeProvider.employeeUpdate(
+                                     context: context,
+                                     id: widget.employeeData?.id.toString(),
+                                     empName: employeeProvider.nameController
+                                         .text.trim(),
+                                     empMobile: employeeProvider.mobileController
+                                         .text.trim(),
+                                     empAddress: employeeProvider.door.text
+                                         .trim(),
+                                     empBonus: employeeProvider.bonus.text
+                                         .trim(),
+                                     empEmail: employeeProvider.emailController
+                                         .text.trim(),
+                                     empPassword: employeeProvider.password.text
+                                         .trim(),
+                                     empJoinDate: employeeProvider.date.text
+                                         .trim(),
+                                     empRole: employeeProvider.roleId,
+                                     empSalary: employeeProvider.salary.text
+                                         .trim(),
+                                     empWhatsapp: employeeProvider.WhatsappController.text.trim(),
+                                     active: employeeProvider
+                                         .selectedPublication ?? "1",
+                                   );
+                                 }else{
+                                   if(!employeeProvider.emailController.text.trim().isEmail){
+                                     employeeProvider.addEmployeeButtonController.reset();
+                                     utils.snackBar(
+                                       context: context,
+                                       msg: "Please Enter Valid Email",
+                                       color: Colors.red,
+                                     );
+                                     return;
+                                   }else{
+                                     employeeProvider.employeeUpdate(
+                                       context: context,
+                                       id: widget.employeeData?.id.toString(),
+                                       empName: employeeProvider.nameController
+                                           .text.trim(),
+                                       empMobile: employeeProvider.mobileController
+                                           .text.trim(),
+                                       empAddress: employeeProvider.door.text
+                                           .trim(),
+                                       empBonus: employeeProvider.bonus.text
+                                           .trim(),
+                                       empEmail: employeeProvider.emailController
+                                           .text.trim(),
+                                       empPassword: employeeProvider.password.text
+                                           .trim(),
+                                       empJoinDate: employeeProvider.date.text
+                                           .trim(),
+                                       empRole: employeeProvider.roleId,
+                                       empSalary: employeeProvider.salary.text
+                                           .trim(),
+                                       empWhatsapp: employeeProvider
+                                           .WhatsappController.text.trim(),
+                                       active: employeeProvider
+                                           .selectedPublication ?? "1",
+                                     );
+                                   }
+                                 }
 
                                 },
                                 child: CustomText(

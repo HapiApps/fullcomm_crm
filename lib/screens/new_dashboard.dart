@@ -350,7 +350,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                   context,
                                                   PageRouteBuilder(
                                                     pageBuilder: (context, animation1, animation2) =>
-                                                    const Records(),
+                                                    const Records(isReload: "true",),
                                                     transitionDuration: Duration.zero,
                                                     reverseTransitionDuration: Duration.zero,
                                                   ),
@@ -368,7 +368,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                       context,
                                                       PageRouteBuilder(
                                                         pageBuilder: (context, animation1, animation2) =>
-                                                        const Records(),
+                                                        const Records(isReload: "true",),
                                                         transitionDuration: Duration.zero,
                                                         reverseTransitionDuration: Duration.zero,
                                                       ),
@@ -384,7 +384,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                   context,
                                                   PageRouteBuilder(
                                                     pageBuilder: (context, animation1, animation2) =>
-                                                    const Records(),
+                                                    const Records(isReload: "true",),
                                                     transitionDuration: Duration.zero,
                                                     reverseTransitionDuration: Duration.zero,
                                                   ),

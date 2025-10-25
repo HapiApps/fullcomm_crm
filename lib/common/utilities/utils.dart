@@ -1149,7 +1149,7 @@ class Utils {
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation1, animation2) =>
-                      const Records(),
+                      const Records(isReload: "true",),
                       transitionDuration: Duration.zero,
                       reverseTransitionDuration: Duration.zero,
                     ),
@@ -3040,6 +3040,144 @@ class Utils {
                       const SizedBox(height: 8),
                       Divider(thickness: 1, color: Colors.grey.shade300),
                       const SizedBox(height: 8),
+                      const Text("Reminder Type",
+                          style: TextStyle(fontSize: 18, color: Colors.black)),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Consumer<ReminderProvider>(
+                          builder: (context, cp, child) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: Checkbox(
+                                        value: cp.email,
+                                        onChanged: cp.toggleEmail,
+                                        materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                        side: const BorderSide(
+                                          color: Color(0xFF757575),
+                                        ),
+                                        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                                          if (states.contains(WidgetState.selected)) {
+                                            return Color(0xFF0078D7);
+                                          }
+                                          return Colors.white;
+                                        }),
+                                        checkColor: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      "Email",
+                                      style: GoogleFonts.lato(
+                                          fontSize: 16, color: Colors.black
+                                        // fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: Checkbox(
+                                        value: cp.sms,
+                                        onChanged: cp.toggleSms,
+                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        side: const BorderSide(
+                                          color: Color(0xFF757575),
+                                        ),
+                                        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                                          if (states.contains(WidgetState.selected)) {
+                                            return Color(0xFF0078D7);
+                                          }
+                                          return Colors.white;
+                                        }),
+                                        checkColor: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      "SMS",
+                                      style: GoogleFonts.lato(
+                                          fontSize: 16, color: Colors.black
+                                        // fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: 10,
+                                      height: 10,
+                                      child: Checkbox(
+                                        value: cp.web,
+                                        onChanged: null,
+                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        side: const BorderSide(
+                                          color: Color(0xFFBDBDBD),
+                                        ),
+                                        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                                          return Colors.grey.shade200;
+                                        }),
+                                        checkColor: Colors.grey,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      "Web",
+                                      style: GoogleFonts.lato(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: Checkbox(
+                                        value: cp.app,
+                                        onChanged: null,
+                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        side: const BorderSide(
+                                          color: Color(0xFFBDBDBD),
+                                        ),
+                                        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                                          return Colors.grey.shade200;
+                                        }),
+                                        checkColor: Colors.grey,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      "App",
+                                      style: GoogleFonts.lato(
+                                          fontSize: 16, color: Colors.black
+                                        // fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                       Row(
                         children: [
                           Text("Default Time (Optional)",
@@ -3070,8 +3208,7 @@ class Utils {
                               ),
                             ),
                           ),
-                        )
-                            .toList(),
+                        ).toList(),
                         onChanged: (v) => setState(() => remController.defaultTime = v!),
                         decoration: InputDecoration(
                           filled: true,

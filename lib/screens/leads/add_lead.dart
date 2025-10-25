@@ -252,14 +252,14 @@ class _AddLeadState extends State<AddLead> {
                             else if (controllers.leadCoMobileCrt.text.isNotEmpty &&
                                 controllers.leadCoMobileCrt.text.length != 10) {
                               utils.snackBar(
-                                  msg: "Invalid Co-Mobile No",
+                                  msg: "Invalid Company Phone No",
                                   color: Colors.red,
                                   context: context);
                               controllers.leadCtr.reset();
                             } else if (controllers.leadCoEmailCrt.text.isNotEmpty &&
                                 !controllers.leadCoEmailCrt.text.isEmail) {
                               utils.snackBar(
-                                  msg: "Please add valid Co-Email",
+                                  msg: "Please add valid Company Email",
                                   color: Colors.red,
                                   context: context);
                               controllers.leadCtr.reset();
@@ -323,7 +323,8 @@ class _AddLeadState extends State<AddLead> {
                   width: MediaQuery.of(context).size.width - 180,
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    child: Column(children: [
+                    child: Column(
+                        children: [
                       30.height,
                       Obx(() => ListView.builder(
                             shrinkWrap: true,
@@ -1582,41 +1583,6 @@ class _AddLeadState extends State<AddLead> {
                                 //   }
                                 // }
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  25.width,
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      CustomText(
-                                        text:"Country",
-                                        colors: colorsConst.textColor,
-                                        size: 15,
-                                      ),
-                                      Container(
-                                          alignment: Alignment.centerLeft,
-                                          width: textFieldSize,
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                              color: Colors.transparent,
-                                              borderRadius:
-                                              BorderRadius.circular(5),
-                                              border: Border.all(
-                                                  color: Colors.grey.shade200)),
-                                          child: Obx(
-                                                () => CustomText(
-                                              text: "    ${controllers.selectedCountry.value}",
-                                              colors: colorsConst.textColor,
-                                              size: 15,
-                                            ),
-                                          )),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              15.height,
                             ],
                           ),
 
@@ -1624,31 +1590,31 @@ class _AddLeadState extends State<AddLead> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              CustomTextField(
-                                hintText: "Street (Optional)",
-                                text: "Street (Optional)",
-                                controller:
-                                controllers.streetNameController,
-                                width: textFieldSize,
-                                keyboardType: TextInputType.text,
-                                textInputAction: TextInputAction.next,
-                                isOptional: false,
-                                onChanged: (value) async {
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
-                                  sharedPref.setString("leadStreet",
-                                      value.toString().trim());
-                                },
-                                // validator:(value){
-                                //   if(value.toString().isEmpty){
-                                //     return "This field is required";
-                                //   }else if(value.toString().trim().length!=10){
-                                //     return "Check Your Phone Number";
-                                //   }else{
-                                //     return null;
-                                //   }
-                                // }
-                              ),
+                              // CustomTextField(
+                              //   hintText: "Street (Optional)",
+                              //   text: "Street (Optional)",
+                              //   controller:
+                              //   controllers.streetNameController,
+                              //   width: textFieldSize,
+                              //   keyboardType: TextInputType.text,
+                              //   textInputAction: TextInputAction.next,
+                              //   isOptional: false,
+                              //   onChanged: (value) async {
+                              //     SharedPreferences sharedPref =
+                              //     await SharedPreferences.getInstance();
+                              //     sharedPref.setString("leadStreet",
+                              //         value.toString().trim());
+                              //   },
+                              //   // validator:(value){
+                              //   //   if(value.toString().isEmpty){
+                              //   //     return "This field is required";
+                              //   //   }else if(value.toString().trim().length!=10){
+                              //   //     return "Check Your Phone Number";
+                              //   //   }else{
+                              //   //     return null;
+                              //   //   }
+                              //   // }
+                              // ),
                               CustomTextField(
                                 hintText: "Pincode",
                                 text: "Pincode",
@@ -1689,11 +1655,43 @@ class _AddLeadState extends State<AddLead> {
                                 //   }
                                 // }
                               ),
-
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  25.width,
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      CustomText(
+                                        text:"Country",
+                                        size: 13,
+                                        colors: Color(0xff4B5563),
+                                      ),
+                                      Container(
+                                          alignment: Alignment.centerLeft,
+                                          width: textFieldSize,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                              BorderRadius.circular(5),
+                                              border: Border.all(color: Colors.grey.shade200)),
+                                          child: Obx(() => CustomText(
+                                              text: "    ${controllers.selectedCountry.value}",
+                                              colors: colorsConst.textColor,
+                                              size: 15,
+                                            ),
+                                          )),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ],
                           ),
                         ],
                       ),
+                          15.height,
                     ]),
                   ),
                 ),

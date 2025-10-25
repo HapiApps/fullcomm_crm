@@ -952,7 +952,7 @@ class ApiService {
         "name": controllers.leadNameCrt[0].text.trim(),
         "email": controllers.leadEmailCrt[0].text.trim(),
         "phone_no": controllers.leadMobileCrt[0].text.trim(),
-        "whatsapp_no": controllers.leadMobileCrt[0].text.trim(),
+        "whatsapp_no": controllers.leadWhatsCrt[0].text.trim(),
         "created_by": controllers.storage.read("id"),
         "platform": "3",
         "department": "",
@@ -996,7 +996,7 @@ class ApiService {
         'expected_convertion_date': controllers.exDate.value.isEmpty?"${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}":controllers.exDate.value,
         'status_update': controllers.statusCrt.text.trim(),
         'num_of_headcount': controllers.noOfHeadCountCrt.text.trim(),
-        'expected_billing_value': controllers.expectedConversionDateCrt.text.trim(),
+        'expected_billing_value': controllers.exMonthBillingValCrt.text.trim(),
         'arpu_value': controllers.arpuCrt.text.trim(),
         'details_of_service_required': controllers.sourceCrt.text.trim(),
         'rating': controllers.prospectGradingCrt.text.trim(),
@@ -1069,7 +1069,10 @@ class ApiService {
         Navigator.pop(context);
         //Get.to(const Prospects(),duration: Duration.zero);
         controllers.productCtr.reset();
-      } else {
+      }else if(request.body.toString().contains("Phone number already exists")){
+        errorDialog(Get.context!, "Phone number already exists");
+        controllers.productCtr.reset();
+  }else {
         errorDialog(Get.context!, request.body);
         controllers.productCtr.reset();
       }
@@ -1488,10 +1491,16 @@ class ApiService {
         controllers.allOutgoingCalls.value = outgoing.length.toString();
         controllers.allMissedCalls.value = missed.length.toString();
       } else {
+        controllers.allIncomingCalls.value = "0";
+        controllers.allOutgoingCalls.value = "0";
+        controllers.allMissedCalls.value = "0";
         controllers.callActivity.clear();
         throw Exception('Failed to load album');
       }
     } catch (e) {
+      controllers.allIncomingCalls.value = "0";
+      controllers.allOutgoingCalls.value = "0";
+      controllers.allMissedCalls.value = "0";
       controllers.callActivity.clear();
       throw Exception('Failed to load album');
     }
@@ -2379,6 +2388,7 @@ class ApiService {
       controllers.isLeadLoading.value = false;
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
+        print("pincode ${data[0]['pincode']}");
         //controllers.allLeads.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         return data.map((json) => NewLeadObj.fromJson(json)).toList();
       } else {
@@ -2838,6 +2848,7 @@ class ApiService {
     } on HttpException catch (e) {
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
+      controllers.allCustomerLeadFuture.clear();
       throw Exception('Unexpected error lead: ${e.toString()}');
     }
   }
