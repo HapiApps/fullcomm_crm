@@ -842,7 +842,6 @@ class _AddLeadState extends State<AddLead> {
                                               },
                                             ),
                                           ),
-                                          15.height,
                                         ],
                                       ),
                                     ],
@@ -919,9 +918,7 @@ class _AddLeadState extends State<AddLead> {
                                   keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.next,
                                   isOptional: false,
-
-                                  inputFormatters:
-                                  constInputFormatters.mobileNumberInput,
+                                  inputFormatters: constInputFormatters.mobileNumberInput,
                                   onChanged: (value) async {
                                     if (value.toString().isNotEmpty) {
                                       String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
@@ -955,7 +952,6 @@ class _AddLeadState extends State<AddLead> {
                                         "industry", value.toString().trim());
                                   },
                                 ),
-                                10.height,
                                 CustomTextField(
                                   hintText: "Linkedin (Optional)",
                                   text: "Linkedin (Optional)",
@@ -1176,8 +1172,7 @@ class _AddLeadState extends State<AddLead> {
                                 CustomTextField(
                                   hintText: "Product Discussed",
                                   text: "Product Discussed",
-                                  controller:
-                                  controllers.prodDescriptionController,
+                                  controller: controllers.prodDescriptionController,
                                   width: textFieldSize,
                                   isOptional: false,
                                   keyboardType: TextInputType.text,
@@ -1366,7 +1361,6 @@ class _AddLeadState extends State<AddLead> {
                                   },
                                 ),
                               ),
-                              20.height,
                               // CustomTextField(
                               //   hintText: "Expected Conversion Date",
                               //   text: "Expected Conversion Date",
@@ -1423,7 +1417,6 @@ class _AddLeadState extends State<AddLead> {
                                 },
                               ),
                               ),
-                              20.height,
                               // CustomTextField(
                               //   hintText: "Prospect Enrollment Date",
                               //   text: "Prospect Enrollment Date",
@@ -1674,8 +1667,7 @@ class _AddLeadState extends State<AddLead> {
                                           height: 40,
                                           decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius:
-                                              BorderRadius.circular(5),
+                                              borderRadius: BorderRadius.circular(5),
                                               border: Border.all(color: Colors.grey.shade200)),
                                           child: Obx(() => CustomText(
                                               text: "    ${controllers.selectedCountry.value}",

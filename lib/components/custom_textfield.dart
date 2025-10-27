@@ -82,6 +82,7 @@ class CustomTextField extends StatelessWidget {
                       : 0.width
                 ],
               ),
+        isOptional! == true ? 0.height : 5.height,
         SizedBox(
           width: width,
           height:40,

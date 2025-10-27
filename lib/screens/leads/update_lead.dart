@@ -463,10 +463,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         ),
                                       ],
                                     ),
-
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children:[
+                                        10.height,
                                         CustomTextField(
                                           hintText:"Account Manager (Optional)",
                                           text:"Account Manager (Optional)",
@@ -476,9 +476,9 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           keyboardType: TextInputType.text,
                                           textInputAction: TextInputAction.next,
                                           inputFormatters: constInputFormatters.textInput,
-                                          onChanged:(value) async {
-                                          },
+                                          onChanged:(value) async {},
                                         ),
+                                        7.height,
                                         CustomTextField(
                                           hintText:"Email Id (Optional)",
                                           text:"Email Id",
@@ -493,6 +493,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             //sharedPref.setString("leadEmail$index", value.toString().trim());
                                           },
                                         ),
+                                        10.height,
                                         Obx(() => CustomDateBox(
                                           text: "Date of Connection",
                                           value: controllers.empDOB.value,
@@ -551,7 +552,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         ),
                                         CustomTextField(
                                           hintText:"Company Phone No",
-                                          text:"Company\n Phone No.",
+                                          text:"Company Phone No.",
                                           controller: controllers.leadCoMobileCrt,
                                           width:textFieldSize,
                                           isOptional: false,
@@ -588,7 +589,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             sharedPref.setString("industry", value.toString().trim());
                                           },
                                         ),
-                                        10.height,
                                         CustomTextField(
                                           hintText:"Linkedin(Optional)",
                                           text:"Linkedin(Optional)",
@@ -739,6 +739,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         //     controllers.cityController,
                                         //     controllers.stateController,
                                         //     controllers.countryController),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children:[
                                         CustomTextField(
                                           hintText:"PIN",
                                           text:"PIN",
@@ -753,25 +758,20 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             sharedPref.setString("leadPinCode", value.toString().trim());
                                           },
                                         ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children:[
-                                        CustomTextField(
-                                          hintText:"Street(Optional)",
-                                          text:"Street(Optional)",
-                                          controller: controllers.streetNameController,
-                                          width:textFieldSize,
-                                          isOptional: false,
-                                          keyboardType: TextInputType.text,
-                                          textInputAction: TextInputAction.next,
-                                          inputFormatters: constInputFormatters.addressInput,
-                                          onChanged:(value) async {
-                                            SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                            sharedPref.setString("leadStreet", value.toString().trim());
-                                          },
-                                        ),
+                                        // CustomTextField(
+                                        //   hintText:"Street(Optional)",
+                                        //   text:"Street(Optional)",
+                                        //   controller: controllers.streetNameController,
+                                        //   width:textFieldSize,
+                                        //   isOptional: false,
+                                        //   keyboardType: TextInputType.text,
+                                        //   textInputAction: TextInputAction.next,
+                                        //   inputFormatters: constInputFormatters.addressInput,
+                                        //   onChanged:(value) async {
+                                        //     SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                        //     sharedPref.setString("leadStreet", value.toString().trim());
+                                        //   },
+                                        // ),
                                         CustomTextField(
                                           hintText: "City (Optional)",
                                           text: "City (Optional)",
@@ -795,23 +795,34 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         //         : utils.onSelectedCity(controllers.selectedCity.value,controllers.cityController);
                                         //   },
                                         // ),
-                                        Container(
-                                            alignment: Alignment.centerLeft,
-                                            width: textFieldSize,
-                                            height: 50,
-                                            decoration: BoxDecoration(
-                                                color: Colors.transparent,
-                                                borderRadius:BorderRadius.circular(5),
-                                                border: Border.all(
-                                                    color: Colors.grey.shade200
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            CustomText(
+                                              text:"Country",
+                                              size: 13,
+                                              colors: Color(0xff4B5563),
+                                            ),
+                                            Container(
+                                                alignment: Alignment.centerLeft,
+                                                width: textFieldSize,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:BorderRadius.circular(5),
+                                                    border: Border.all(
+                                                        color: Colors.grey.shade200
+                                                    )
+                                                ),
+                                                child:Obx(() =>  CustomText(
+                                                  text: "    ${controllers.selectedCountry.value}",
+                                                  colors:colorsConst.textColor,
+                                                  size: 15,
+                                                ),
                                                 )
                                             ),
-                                            child:Obx(() =>  CustomText(
-                                              text: "    ${controllers.selectedCountry.value}",
-                                              colors:colorsConst.textColor,
-                                              size: 15,
-                                            ),
-                                            )
+                                          ],
                                         )
                                         // utils.countryDropdown(
                                         //     textFieldSize,

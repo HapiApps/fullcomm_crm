@@ -979,6 +979,7 @@ class ApiService {
         "co_number": controllers.leadCoMobileCrt.text.trim(),
         "co_email": controllers.leadCoEmailCrt.text.trim(),
         "linkedin": controllers.leadLinkedinCrt.text.trim(),
+        "x": controllers.leadXCrt.text.trim(),
         "gst_number": controllers.leadGstNumCrt.text.trim(),
         "gst_DOR": controllers.leadDOR.value,
         "gst_location": controllers.leadGstLocationCrt.text.trim(),

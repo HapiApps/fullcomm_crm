@@ -46,6 +46,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
                 : 0.width
           ],
         ),
+        widget.isOptional == true ? 0.height : 5.height,
         Container(
           width: widget.width,
           height: 40,
@@ -88,7 +89,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
             ),
           ),
         ),
-        20.height
+        widget.text.isEmpty ? 10.height : 20.height,
       ],
     );
   }

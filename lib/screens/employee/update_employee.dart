@@ -35,19 +35,20 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
     super.initState();
     final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
    // EmployeeData.clearAllEmployeeControllers();
-    employeeData.nameController.text      = widget.employeeData!.sName.toString();
-    employeeData.mobileController.text    = widget.employeeData!.sMobile.toString();
-    employeeData.password.text            = widget.employeeData!.password.toString();
-    employeeData.date.text                = widget.employeeData!.joiningDate.toString();
-    employeeData.roleController.text      = widget.employeeData!.role.toString();
-    employeeData.otherRoleController.text = widget.employeeData!.otherRoles.toString();
-    employeeData.emailController.text     = widget.employeeData!.email.toString();
-    employeeData.addressController.text   = widget.employeeData!.sAddress.toString();
-    employeeData.salary.text              = widget.employeeData!.salary.toString();
-    employeeData.bonus.text               = widget.employeeData!.bonus.toString();
-    employeeData.WhatsappController.text  = widget.employeeData!.whatsapp.toString();
+
   Future.delayed(Duration.zero,(){
     setState(() {
+      employeeData.nameController.text      = widget.employeeData!.sName.toString().isEmpty||widget.employeeData!.sName.toString()=='null'?"":widget.employeeData!.sName.toString();
+      employeeData.mobileController.text    = widget.employeeData!.sMobile.toString().isEmpty||widget.employeeData!.sMobile.toString()=='null'?"":widget.employeeData!.sMobile.toString();
+      employeeData.password.text            = widget.employeeData!.password.toString().isEmpty||widget.employeeData!.password.toString()=='null'?"":widget.employeeData!.password.toString();
+      employeeData.date.text                = widget.employeeData!.joiningDate.toString().isEmpty||widget.employeeData!.joiningDate.toString()=='null'?"":widget.employeeData!.joiningDate.toString();
+      employeeData.roleController.text      = widget.employeeData!.role.toString().isEmpty||widget.employeeData!.role.toString()=='null'?"":widget.employeeData!.role.toString();
+      employeeData.otherRoleController.text = widget.employeeData!.otherRoles.toString().isEmpty||widget.employeeData!.otherRoles.toString()=='null'?"":widget.employeeData!.otherRoles.toString();
+      employeeData.emailController.text     = widget.employeeData!.email.toString().isEmpty||widget.employeeData!.email.toString()=='null'?"":widget.employeeData!.email.toString();
+      employeeData.door.text                = widget.employeeData!.sAddress.toString().isEmpty||widget.employeeData!.sAddress.toString()=='null'?"":widget.employeeData!.sAddress.toString();
+      employeeData.salary.text              = widget.employeeData!.salary.toString().isEmpty||widget.employeeData!.salary.toString()=='null'?"":widget.employeeData!.salary.toString();
+      employeeData.bonus.text               = widget.employeeData!.bonus.toString().isEmpty||widget.employeeData!.bonus.toString()=='null'?"":widget.employeeData!.bonus.toString();
+      employeeData.WhatsappController.text  = widget.employeeData!.whatsapp.toString().isEmpty||widget.employeeData!.whatsapp.toString()=='null'?"":widget.employeeData!.whatsapp.toString();
       final roleId = widget.employeeData!.role?.toString();
       if (roleId != null && roleId != "null") {
         final match = employeeData.roleList.firstWhere(
@@ -415,27 +416,17 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                      employeeProvider.employeeUpdate(
                                        context: context,
                                        id: widget.employeeData?.id.toString(),
-                                       empName: employeeProvider.nameController
-                                           .text.trim(),
-                                       empMobile: employeeProvider.mobileController
-                                           .text.trim(),
-                                       empAddress: employeeProvider.door.text
-                                           .trim(),
-                                       empBonus: employeeProvider.bonus.text
-                                           .trim(),
-                                       empEmail: employeeProvider.emailController
-                                           .text.trim(),
-                                       empPassword: employeeProvider.password.text
-                                           .trim(),
-                                       empJoinDate: employeeProvider.date.text
-                                           .trim(),
+                                       empName: employeeProvider.nameController.text.trim(),
+                                       empMobile: employeeProvider.mobileController.text.trim(),
+                                       empAddress: employeeProvider.door.text.trim(),
+                                       empBonus: employeeProvider.bonus.text.trim(),
+                                       empEmail: employeeProvider.emailController.text.trim(),
+                                       empPassword: employeeProvider.password.text.trim(),
+                                       empJoinDate: employeeProvider.date.text.trim(),
                                        empRole: employeeProvider.roleId,
-                                       empSalary: employeeProvider.salary.text
-                                           .trim(),
-                                       empWhatsapp: employeeProvider
-                                           .WhatsappController.text.trim(),
-                                       active: employeeProvider
-                                           .selectedPublication ?? "1",
+                                       empSalary: employeeProvider.salary.text.trim(),
+                                       empWhatsapp: employeeProvider.WhatsappController.text.trim(),
+                                       active: employeeProvider.selectedPublication ?? "1",
                                      );
                                    }
                                  }

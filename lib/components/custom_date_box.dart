@@ -39,6 +39,7 @@ class CustomDateBox extends StatelessWidget {
                 : 0.width
           ],
         ),
+        isOptional == true ? 0.height : 5.height,
         InkWell(
           onTap: onTap,
           child: Container(
@@ -67,6 +68,7 @@ class CustomDateBox extends StatelessWidget {
           colors: Colors.red,
           size: 13,
         ),
+        text.isEmpty ? 10.height : 20.height,
       ],
     );
   }
