@@ -269,71 +269,60 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     }
     if (sortField.isNotEmpty) {
       filteredLeads.sort((a, b) {
-        dynamic valA;
-        dynamic valB;
+        dynamic getFieldValue(NewLeadObj lead, String field) {
+          switch (field) {
+            case 'name':
+              var name = lead.firstname ?? '';
+              if (name.contains('||')) name = name.split('||')[0].trim();
+              return name.toLowerCase();
 
-        switch (sortField.value) {
-          case 'name':
-            String nameA = a.firstname ?? '';
-            String nameB = b.firstname ?? '';
-            if (nameA.contains('||')) {
-              nameA = nameA.split('||')[0].trim();
-            }
-            if (nameB.contains('||')) {
-              nameB = nameB.split('||')[0].trim();
-            }
-            valA = nameA.toLowerCase();
-            valB = nameB.toLowerCase();
-            break;
-          case 'companyName':
-            valA = a.companyName ?? '';
-            valB = b.companyName ?? '';
-            break;
-          case 'mobile':
-            valA = a.mobileNumber ?? '';
-            valB = b.mobileNumber ?? '';
-            break;
-          case 'serviceRequired':
-            valA = a.detailsOfServiceRequired ?? '';
-            valB = b.detailsOfServiceRequired ?? '';
-            break;
-          case 'sourceOfProspect':
-            valA = a.source ?? '';
-            valB = b.source ?? '';
-            break;
-          case 'city':
-            valA = a.city ?? '';
-            valB = b.city ?? '';
-            break;
-          case 'statusUpdate':
-            valA = a.statusUpdate ?? '';
-            valB = b.statusUpdate ?? '';
-            break;
-          case 'date':
-            DateTime parseDate(String? dateStr, String? fallback) {
-              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-                dateStr = fallback;
-              }
+            case 'company_name':
+              return (lead.companyName ?? '').toLowerCase();
 
-              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-                return DateTime(1900);
-              }
-              DateTime? parsed;
-              try {
-                parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
-              } catch (_) {
-                parsed = DateTime.tryParse(dateStr);
-              }
-              return parsed ?? DateTime(1900);
-            }
-            valA = parseDate(a.updatedTs, a.prospectEnrollmentDate);
-            valB = parseDate(b.updatedTs, b.prospectEnrollmentDate);
+            case 'mobile_number':
+              return (lead.mobileNumber ?? '').toLowerCase();
 
-            break;
-          default:
-            valA = '';
-            valB = '';
+            case 'detailsOfServiceRequired':
+              return (lead.detailsOfServiceRequired ?? '').toLowerCase();
+
+            case 'source':
+              return (lead.source ?? '').toLowerCase();
+
+            case 'city':
+              return (lead.city ?? '').toLowerCase();
+
+            case 'status_update':
+              return (lead.statusUpdate ?? '').toLowerCase();
+
+            case 'updatedTs':
+            case 'prospect_enrollment_date':
+              DateTime parseDate(String? dateStr, String? fallback) {
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  dateStr = fallback;
+                }
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  return DateTime(1900);
+                }
+                DateTime? parsed;
+                try {
+                  parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+                } catch (_) {
+                  parsed = DateTime.tryParse(dateStr);
+                }
+                return parsed ?? DateTime(1900);
+              }
+              return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
+            default:
+            //final value = field;
+              final value = lead.asMap()[field];
+              print("Dafault value $value $field");
+              return value.toString().toLowerCase();
+          }
         }
+
+        final valA = getFieldValue(a, sortField.value);
+        final valB = getFieldValue(b, sortField.value);
+
         if (valA is DateTime && valB is DateTime) {
           return sortOrder.value == 'asc'
               ? valA.compareTo(valB)
@@ -637,72 +626,62 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
         return dateB.compareTo(dateA); // reverse order
       });
     }
-
     if (sortField.isNotEmpty) {
       filteredLeads.sort((a, b) {
-        dynamic valA;
-        dynamic valB;
+        dynamic getFieldValue(NewLeadObj lead, String field) {
+          switch (field) {
+            case 'name':
+              var name = lead.firstname ?? '';
+              if (name.contains('||')) name = name.split('||')[0].trim();
+              return name.toLowerCase();
 
-        switch (sortField.value) {
-          case 'name':
-            String nameA = a.firstname ?? '';
-            String nameB = b.firstname ?? '';
-            if (nameA.contains('||')) {
-              nameA = nameA.split('||')[0].trim();
-            }
-            if (nameB.contains('||')) {
-              nameB = nameB.split('||')[0].trim();
-            }
-            valA = nameA.toLowerCase();
-            valB = nameB.toLowerCase();
-            break;
-          case 'companyName':
-            valA = a.companyName ?? '';
-            valB = b.companyName ?? '';
-            break;
-          case 'mobile':
-            valA = a.mobileNumber ?? '';
-            valB = b.mobileNumber ?? '';
-            break;
-          case 'serviceRequired':
-            valA = a.detailsOfServiceRequired ?? '';
-            valB = b.detailsOfServiceRequired ?? '';
-            break;
-          case 'sourceOfProspect':
-            valA = a.source ?? '';
-            valB = b.source ?? '';
-            break;
-          case 'city':
-            valA = a.city ?? '';
-            valB = b.city ?? '';
-            break;
-          case 'statusUpdate':
-            valA = a.statusUpdate ?? '';
-            valB = b.statusUpdate ?? '';
-            break;
-          case 'date':
-            DateTime parseDate(String? dateStr, String? fallback) {
-              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-                dateStr = fallback;
+            case 'company_name':
+              return (lead.companyName ?? '').toLowerCase();
+
+            case 'mobile_number':
+              return (lead.mobileNumber ?? '').toLowerCase();
+
+            case 'detailsOfServiceRequired':
+              return (lead.detailsOfServiceRequired ?? '').toLowerCase();
+
+            case 'source':
+              return (lead.source ?? '').toLowerCase();
+
+            case 'city':
+              return (lead.city ?? '').toLowerCase();
+
+            case 'status_update':
+              return (lead.statusUpdate ?? '').toLowerCase();
+
+            case 'updatedTs':
+            case 'prospect_enrollment_date':
+              DateTime parseDate(String? dateStr, String? fallback) {
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  dateStr = fallback;
+                }
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  return DateTime(1900);
+                }
+                DateTime? parsed;
+                try {
+                  parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+                } catch (_) {
+                  parsed = DateTime.tryParse(dateStr);
+                }
+                return parsed ?? DateTime(1900);
               }
-              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-                return DateTime(1900);
-              }
-              DateTime? parsed;
-              try {
-                parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
-              } catch (_) {
-                parsed = DateTime.tryParse(dateStr);
-              }
-              return parsed ?? DateTime(1900);
-            }
-            valA = parseDate(a.updatedTs, a.prospectEnrollmentDate);
-            valB = parseDate(b.updatedTs, b.prospectEnrollmentDate);
-            break;
-          default:
-            valA = '';
-            valB = '';
+              return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
+            default:
+            //final value = field;
+              final value = lead.asMap()[field];
+              print("Dafault value $value $field");
+              return value.toString().toLowerCase();
+          }
         }
+
+        final valA = getFieldValue(a, sortField.value);
+        final valB = getFieldValue(b, sortField.value);
+
         if (valA is DateTime && valB is DateTime) {
           return sortOrder.value == 'asc'
               ? valA.compareTo(valB)
@@ -760,11 +739,9 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
             case 'Today':
               matchesSort = isSameDate(updatedDate, now);
               break;
-
             case 'Last 7 Days':
               matchesSort = diff <= 7;
               break;
-
             case 'Last 30 Days':
               matchesSort = diff <= 30;
               break;
@@ -804,80 +781,67 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
         }
         return parsed ?? DateTime(1900);
       }
-
       filteredLeads.sort((a, b) {
         final dateA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
         final dateB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
         return dateB.compareTo(dateA); // reverse order
       });
     }
-
     if (sortField.isNotEmpty) {
       filteredLeads.sort((a, b) {
-        dynamic valA;
-        dynamic valB;
+        dynamic getFieldValue(NewLeadObj lead, String field) {
+          switch (field) {
+            case 'name':
+              var name = lead.firstname ?? '';
+              if (name.contains('||')) name = name.split('||')[0].trim();
+              return name.toLowerCase();
 
-        switch (sortField.value) {
-          case 'name':
-            String nameA = a.firstname ?? '';
-            String nameB = b.firstname ?? '';
-            if (nameA.contains('||')) {
-              nameA = nameA.split('||')[0].trim();
-            }
-            if (nameB.contains('||')) {
-              nameB = nameB.split('||')[0].trim();
-            }
-            valA = nameA.toLowerCase();
-            valB = nameB.toLowerCase();
-            break;
-          case 'companyName':
-            valA = a.companyName ?? '';
-            valB = b.companyName ?? '';
-            break;
-          case 'mobile':
-            valA = a.mobileNumber ?? '';
-            valB = b.mobileNumber ?? '';
-            break;
-          case 'serviceRequired':
-            valA = a.detailsOfServiceRequired ?? '';
-            valB = b.detailsOfServiceRequired ?? '';
-            break;
-          case 'sourceOfProspect':
-            valA = a.source ?? '';
-            valB = b.source ?? '';
-            break;
-          case 'city':
-            valA = a.city ?? '';
-            valB = b.city ?? '';
-            break;
-          case 'statusUpdate':
-            valA = a.statusUpdate ?? '';
-            valB = b.statusUpdate ?? '';
-            break;
-          case 'date':
-            DateTime parseDate(String? dateStr, String? fallback) {
-              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-                dateStr = fallback;
-              }
+            case 'company_name':
+              return (lead.companyName ?? '').toLowerCase();
 
-              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-                return DateTime(1900);
+            case 'mobile_number':
+              return (lead.mobileNumber ?? '').toLowerCase();
+
+            case 'detailsOfServiceRequired':
+              return (lead.detailsOfServiceRequired ?? '').toLowerCase();
+
+            case 'source':
+              return (lead.source ?? '').toLowerCase();
+
+            case 'city':
+              return (lead.city ?? '').toLowerCase();
+
+            case 'status_update':
+              return (lead.statusUpdate ?? '').toLowerCase();
+
+            case 'updatedTs':
+            case 'prospect_enrollment_date':
+              DateTime parseDate(String? dateStr, String? fallback) {
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  dateStr = fallback;
+                }
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  return DateTime(1900);
+                }
+                DateTime? parsed;
+                try {
+                  parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+                } catch (_) {
+                  parsed = DateTime.tryParse(dateStr);
+                }
+                return parsed ?? DateTime(1900);
               }
-              DateTime? parsed;
-              try {
-                parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
-              } catch (_) {
-                parsed = DateTime.tryParse(dateStr);
-              }
-              return parsed ?? DateTime(1900);
-            }
-            valA = parseDate(a.updatedTs, a.prospectEnrollmentDate);
-            valB = parseDate(b.updatedTs, b.prospectEnrollmentDate);
-            break;
-          default:
-            valA = '';
-            valB = '';
+              return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
+            default:
+            //final value = field;
+              final value = lead.asMap()[field];
+              print("Dafault value $value $field");
+              return value.toString().toLowerCase();
+          }
         }
+
+        final valA = getFieldValue(a, sortField.value);
+        final valB = getFieldValue(b, sortField.value);
 
         if (valA is DateTime && valB is DateTime) {
           return sortOrder.value == 'asc'
@@ -990,70 +954,59 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
 
     if (sortField.isNotEmpty) {
       filteredLeads.sort((a, b) {
-        dynamic valA;
-        dynamic valB;
+        dynamic getFieldValue(NewLeadObj lead, String field) {
+          switch (field) {
+            case 'name':
+              var name = lead.firstname ?? '';
+              if (name.contains('||')) name = name.split('||')[0].trim();
+              return name.toLowerCase();
 
-        switch (sortField.value) {
-          case 'name':
-            String nameA = a.firstname ?? '';
-            String nameB = b.firstname ?? '';
-            if (nameA.contains('||')) {
-              nameA = nameA.split('||')[0].trim();
-            }
-            if (nameB.contains('||')) {
-              nameB = nameB.split('||')[0].trim();
-            }
-            valA = nameA.toLowerCase();
-            valB = nameB.toLowerCase();
-            break;
-          case 'companyName':
-            valA = a.companyName ?? '';
-            valB = b.companyName ?? '';
-            break;
-          case 'mobile':
-            valA = a.mobileNumber ?? '';
-            valB = b.mobileNumber ?? '';
-            break;
-          case 'serviceRequired':
-            valA = a.detailsOfServiceRequired ?? '';
-            valB = b.detailsOfServiceRequired ?? '';
-            break;
-          case 'sourceOfProspect':
-            valA = a.source ?? '';
-            valB = b.source ?? '';
-            break;
-          case 'city':
-            valA = a.city ?? '';
-            valB = b.city ?? '';
-            break;
-          case 'statusUpdate':
-            valA = a.statusUpdate ?? '';
-            valB = b.statusUpdate ?? '';
-            break;
-          case 'date':
-            DateTime parseDate(String? dateStr, String? fallback) {
-              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-                dateStr = fallback;
-              }
+            case 'company_name':
+              return (lead.companyName ?? '').toLowerCase();
 
-              if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-                return DateTime(1900);
+            case 'mobile_number':
+              return (lead.mobileNumber ?? '').toLowerCase();
+
+            case 'detailsOfServiceRequired':
+              return (lead.detailsOfServiceRequired ?? '').toLowerCase();
+
+            case 'source':
+              return (lead.source ?? '').toLowerCase();
+
+            case 'city':
+              return (lead.city ?? '').toLowerCase();
+
+            case 'status_update':
+              return (lead.statusUpdate ?? '').toLowerCase();
+
+            case 'updatedTs':
+            case 'prospect_enrollment_date':
+              DateTime parseDate(String? dateStr, String? fallback) {
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  dateStr = fallback;
+                }
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  return DateTime(1900);
+                }
+                DateTime? parsed;
+                try {
+                  parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+                } catch (_) {
+                  parsed = DateTime.tryParse(dateStr);
+                }
+                return parsed ?? DateTime(1900);
               }
-              DateTime? parsed;
-              try {
-                parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
-              } catch (_) {
-                parsed = DateTime.tryParse(dateStr);
-              }
-              return parsed ?? DateTime(1900);
-            }
-            valA = parseDate(a.updatedTs, a.prospectEnrollmentDate);
-            valB = parseDate(b.updatedTs, b.prospectEnrollmentDate);
-            break;
-          default:
-            valA = '';
-            valB = '';
+              return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
+            default:
+            //final value = field;
+              final value = lead.asMap()[field];
+              print("Dafault value $value $field");
+              return value.toString().toLowerCase();
+          }
         }
+
+        final valA = getFieldValue(a, sortField.value);
+        final valB = getFieldValue(b, sortField.value);
 
         if (valA is DateTime && valB is DateTime) {
           return sortOrder.value == 'asc'

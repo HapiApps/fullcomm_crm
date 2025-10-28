@@ -906,6 +906,7 @@ class Utils {
                                     fontSize: 14, fontWeight: FontWeight.bold))),
                         Expanded(
                           child: TextFormField(
+                            controller: controllers.emailToCtr,
                             style: const TextStyle(fontSize: 14),
                             decoration: const InputDecoration(
                               isDense: true,
@@ -1322,6 +1323,8 @@ class Utils {
                       : Colors.black,
                   text: "Suspects",
                   onClicked: () {
+                    controllers.selectedMonth.value=null;
+                    controllers.selectedProspectSortBy.value="";
                     controllers.isLead.value = true;
                     Navigator.push(
                       context,
@@ -1346,6 +1349,8 @@ class Utils {
                       : Colors.black,
                   text: "Prospects",
                   onClicked: () {
+                    controllers.selectedPMonth.value=null;
+                    controllers.selectedQualifiedSortBy.value="";
                     //controllers.isLead.value=true;
                     Navigator.push(
                       context,
@@ -1370,6 +1375,8 @@ class Utils {
                       : Colors.black,
                   text: "Qualified",
                   onClicked: () {
+                    controllers.selectedPMonth.value=null;
+                    controllers.selectedQualifiedSortBy.value="";
                     Navigator.push(
                       context,
                       PageRouteBuilder(
@@ -1394,6 +1401,8 @@ class Utils {
                       : Colors.black,
                   text: constValue.customer,
                   onClicked: () {
+                    controllers.selectedQPMonth.value=null;
+                    controllers.selectedCustomerSortBy.value="";
                     Navigator.push(
                       context,
                       PageRouteBuilder(
@@ -1418,6 +1427,8 @@ class Utils {
                       : Colors.black,
                   text: "Disqualified",
                   onClicked: () {
+                    controllers.selectedMonth.value=null;
+                    controllers.selectedProspectSortBy.value="";
                     Navigator.push(context,
                       PageRouteBuilder(
                         pageBuilder: (context, animation1, animation2) =>
@@ -2091,7 +2102,7 @@ class Utils {
       context: context!,
       initialDate: controllers.dateTime,
       firstDate: DateTime(2010),
-      lastDate: DateTime.now(),
+      lastDate: DateTime(2030),
     ).then((value) {
       controllers.dateTime = value!;
       textEditingController?.text =
@@ -3544,7 +3555,7 @@ class Utils {
                           )
                         ],
                       ),
-                      const SizedBox(height: 5),
+                      5.height,
                       TextFormField(
                         textCapitalization: TextCapitalization.sentences,
                         controller: remController.titleController,

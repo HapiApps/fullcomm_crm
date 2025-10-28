@@ -6,9 +6,11 @@ import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../common/constant/api.dart';
 import '../models/reminder_obj.dart';
+import '../provider/reminder_provider.dart';
 import 'controller.dart';
 
 final remController = Get.put(ReminderController());
@@ -192,6 +194,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
          startController.clear();
          endController.clear();
          detailsController.clear();
+         final provider = Provider.of<ReminderProvider>(context, listen: false);
+         provider.selectedNotification = "followup";
         allReminders(type);
         Navigator.pop(context);
         utils.snackBar(context: context, msg: "Reminder added successfully", color: Colors.green);
