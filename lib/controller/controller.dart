@@ -1092,6 +1092,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   ];
 
   String formatHeading(String heading) {
+
     String cleaned = heading.replaceAll(",", "").trim();
     return cleaned
         .split(" ")
