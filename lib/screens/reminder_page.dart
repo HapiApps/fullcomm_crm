@@ -149,98 +149,7 @@ class _ReminderPageState extends State<ReminderPage> {
                        remController.searchText.value = value.toString().trim();
                      },
                    ),
-                   remController.selectedReminderIds.isNotEmpty?
-                   InkWell(
-                     focusColor: Colors.transparent,
-                     hoverColor: Colors.transparent,
-                     onTap: (){
-                       showDialog(
-                         context: context,
-                         builder: (BuildContext context) {
-                           return AlertDialog(
-                             content: CustomText(
-                               text: "Are you sure delete this reminder?",
-                               size: 16,
-                               isBold: true,
-                               colors: colorsConst.textColor,
-                             ),
-                             actions: [
-                               Row(
-                                 mainAxisAlignment: MainAxisAlignment.end,
-                                 children: [
-                                   Container(
-                                     decoration: BoxDecoration(
-                                         border: Border.all(color: colorsConst.primary),
-                                         color: Colors.white),
-                                     width: 80,
-                                     height: 25,
-                                     child: ElevatedButton(
-                                         style: ElevatedButton.styleFrom(
-                                           shape: const RoundedRectangleBorder(
-                                             borderRadius: BorderRadius.zero,
-                                           ),
-                                           backgroundColor: Colors.white,
-                                         ),
-                                         onPressed: () {
-                                           Navigator.pop(context);
-                                         },
-                                         child: CustomText(
-                                           text: "Cancel",
-                                           colors: colorsConst.primary,
-                                           size: 14,
-                                         )),
-                                   ),
-                                   10.width,
-                                   CustomLoadingButton(
-                                     callback: ()async{
-                                       remController.deleteReminderAPI(context);
-                                     },
-                                     height: 35,
-                                     isLoading: true,
-                                     backgroundColor: colorsConst.primary,
-                                     radius: 2,
-                                     width: 80,
-                                     controller: controllers.productCtr,
-                                     isImage: false,
-                                     text: "Delete",
-                                     textColor: Colors.white,
-                                   ),
-                                 ],
-                               ),
-                             ],
-                           );
-                         },
-                       );
-                     },
-                     child: Container(
-                       height: 40,
-                       width: 100,
-                       decoration: BoxDecoration(
-                         color: colorsConst.secondary,
-                         borderRadius: BorderRadius.circular(4),
-                         boxShadow: [
-                           BoxShadow(
-                             color: Colors.black.withOpacity(0.2),
-                             spreadRadius: 1,
-                             blurRadius: 5,
-                           ),
-                         ],
-                       ),
-                       child:  Row(
-                         mainAxisAlignment: MainAxisAlignment.center,
-                         children: [
-                           Image.asset("assets/images/action_delete.png"),
-                           10.width,
-                           CustomText(
-                             text: "Delete",
-                             colors: colorsConst.textColor,
-                             size: 14,
-                             isBold: true,
-                           ),
-                         ],
-                       ),
-                     ),
-                   ):1.width
+                   1.width
                  ],
                ),
                10.height,
@@ -273,7 +182,7 @@ class _ReminderPageState extends State<ReminderPage> {
                            padding: const EdgeInsets.all(10.0),
                            child: CustomText(
                              textAlign: TextAlign.left,
-                             text: "S.No",//0
+                             text: "",//0
                              size: 15,
                              isBold: true,
                              colors: Colors.white,
@@ -577,7 +486,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                            });
                                          },
                                        ),
-                                       CustomText(text: "${index + 1}"),
+                                       //CustomText(text: "${index + 1}"),
                                      ],
                                    ),
                                  ),

@@ -173,6 +173,7 @@ class _HeaderSectionState extends State<HeaderSection> {
     );}
 
   void showDragDropDialog(BuildContext context) {
+    tableController.isLoading.value = false;
     Get.dialog(
       Dialog(
         child: Container(
@@ -196,34 +197,73 @@ class _HeaderSectionState extends State<HeaderSection> {
               Divider(),
               Expanded(
                 child: Obx(() {
-                  return ReorderableListView(
-                    onReorder: tableController.reorderWords,
+                  return Stack(
                     children: [
-                      for (int i = 0; i < tableController.headingFields.length; i++)
-                        ListTile(
-                          key: ValueKey(tableController.headingFields[i]),
-                          title: TextFormField(
-                            initialValue: tableController.headingFields[i],
-                            inputFormatters: [
-                              LengthLimitingTextInputFormatter(40),
-                            ],
-                            onChanged: (val) {
-                              //tableController.headingFields[i] = val; // update the list
-                            },
-                            onFieldSubmitted: (value){
-                              final id = controllers.fields[i].id;
-                              tableController.updateColumnNameAPI(context, value, id);
-                            },
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      ReorderableListView(
+                        onReorder: tableController.reorderWords,
+                        children: [
+                          for (int i = 0; i < tableController.headingFields.length; i++)
+                            ListTile(
+                              key: ValueKey(tableController.headingFields[i]),
+                              title: TextFormField(
+                                initialValue: tableController.headingFields[i],
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(40),
+                                ],
+                                onFieldSubmitted: (value) {
+                                  tableController.isLoading.value = true;
+                                  final id = controllers.fields[i].id;
+                                  tableController.updateColumnNameAPI(context, value, id);
+                                },
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                ),
+                              ),
                             ),
-                          ), // optional drag handle
+                        ],
+                      ),
+                      if (tableController.isLoading.value)
+                        Container(
+                          color: colorsConst.secondary,
+                          child: Center(
+                            child: CircularProgressIndicator(color: Colors.blue),
+                          ),
                         ),
                     ],
                   );
                 }),
               ),
+              // Expanded(
+              //   child: Obx(() {
+              //     return ReorderableListView(
+              //       onReorder: tableController.reorderWords,
+              //       children: [
+              //         for (int i = 0; i < tableController.headingFields.length; i++)
+              //           ListTile(
+              //             key: ValueKey(tableController.headingFields[i]),
+              //             title: TextFormField(
+              //               initialValue: tableController.headingFields[i],
+              //               inputFormatters: [
+              //                 LengthLimitingTextInputFormatter(40),
+              //               ],
+              //               onChanged: (val) {
+              //                 //tableController.headingFields[i] = val; // update the list
+              //               },
+              //               onFieldSubmitted: (value){
+              //                 final id = controllers.fields[i].id;
+              //                 tableController.updateColumnNameAPI(context, value, id);
+              //               },
+              //               decoration: InputDecoration(
+              //                 border: InputBorder.none,
+              //                 contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              //               ),
+              //             ), // optional drag handle
+              //           ),
+              //       ],
+              //     );
+              //   }),
+              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

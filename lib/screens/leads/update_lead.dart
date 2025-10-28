@@ -69,6 +69,7 @@ class UpdateLead extends StatefulWidget {
   final String? numOfHeadcount;
   final String? expectedBillingValue;
   final String? detailsOfRequired;
+  final String? points;
   final String visitType;
   String updateTs;
   UpdateLead({super.key,
@@ -109,6 +110,7 @@ class UpdateLead extends StatefulWidget {
     this.country,
     this.pinCode,
     this.linkedin,
+    this.points,
     this.x, this.quotationStatus,
     this.productDiscussion, this.discussionPoint,
     this.quotationRequired, this.arpuValue,
@@ -156,8 +158,8 @@ class _UpdateLeadState extends State<UpdateLead> {
       final budget=widget.budget ?? "";
       final state=widget.state ?? "Tamil Nadu";
       final country=widget.country ?? "India";
-      final twitter=widget.x=="null"?"":widget.x;
-      final linkedin=widget.linkedin=="null"?"":widget.linkedin;
+      final twitter=widget.x.toString()=="null"?"":widget.x;
+      final linkedin=widget.linkedin.toString()=="null"?"":widget.linkedin;
       final time=widget.timelineDecision ?? "";
       final leadDescription=widget.description ?? "";
       controllers.leadNameCrt.clear();
@@ -239,10 +241,14 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.selectedCity.value=city.toString();
       controllers.cityController.text=city.toString();
       controllers.pinCode=pinCode.toString();
+      controllers.pinCodeController.text=pinCode.toString();
+      controllers.stateController.text=state.toString();
       controllers.selectedState.value=state.toString();
       controllers.countryController.text=country.toString();
       controllers.leadXCrt.text=twitter.toString();
       controllers.leadLinkedinCrt.text=linkedin.toString();
+      controllers.leadActions.text=widget.points.toString();
+      controllers.prospectGradingCrt.text=widget.rating.toString();
       controllers.selectPinCodeList=[];
       //controllers.leadWhatsCrt[0].text=whatsApp.toString();
     });
@@ -493,22 +499,22 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             //sharedPref.setString("leadEmail$index", value.toString().trim());
                                           },
                                         ),
-                                        10.height,
-                                        Obx(() => CustomDateBox(
-                                          text: "Date of Connection",
-                                          value: controllers.empDOB.value,
-                                          width: textFieldSize,
-                                          isOptional: false,
-                                          onTap: () {
-                                            utils.datePicker(
-                                                context: context,
-                                                textEditingController: controllers.dateOfConCtr,
-                                                pathVal: controllers.empDOB
-                                            );
-                                          },
-                                        ),
-                                        ),
-                                        15.height,
+                                        // 10.height,
+                                        // Obx(() => CustomDateBox(
+                                        //   text: "Date of Connection",
+                                        //   value: controllers.empDOB.value,
+                                        //   width: textFieldSize,
+                                        //   isOptional: false,
+                                        //   onTap: () {
+                                        //     utils.datePicker(
+                                        //         context: context,
+                                        //         textEditingController: controllers.dateOfConCtr,
+                                        //         pathVal: controllers.empDOB
+                                        //     );
+                                        //   },
+                                        // ),
+                                        // ),
+                                        40.height,
                                       ],
                                     ),
                                   ],
@@ -572,14 +578,12 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           //     return null;
                                           //   }
                                           // }
-
                                         ),
                                         CustomDropDown(
                                           saveValue: controllers.industry,
                                           valueList: controllers.industryList,
                                           text:"Industry",
                                           width:textFieldSize,
-
                                           //inputFormatters: constInputFormatters.textInput,
                                           onChanged:(value) async {
                                             setState((){
@@ -912,8 +916,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           keyboardType: TextInputType.text,
                                           textInputAction: TextInputAction.next,
                                           inputFormatters: constInputFormatters.textInput,
-                                          onChanged:(value) async {
-                                          },
+                                          onChanged:(value) async {},
                                         ),
                                         CustomTextField(
                                           hintText:"Source Of Prospect",

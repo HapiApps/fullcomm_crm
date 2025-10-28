@@ -48,7 +48,7 @@ class _SignUpState extends State<SignUp> {
         controllers.signWhatsappNumber.text =
             prefs.getString("sign_whatsapp_number") ?? "";
         controllers.signPassword.text = prefs.getString("sign_password") ?? "";
-        controllers.signEmailID.text = prefs.getString("sign_email_id") ?? "";
+        //controllers.signEmailID.text = prefs.getString("sign_email_id") ?? "";
       });
     });
   }
@@ -166,21 +166,21 @@ class _SignUpState extends State<SignUp> {
                                     "sign_last_name", value.toString().trim());
                               },
                             ),
-                            CustomTextField(
-                              text: "E-mail",
-                              controller: controllers.signEmailID,
-                              width: MediaQuery.of(context).size.width / 5,
-                              height: 40,
-                              textInputAction: TextInputAction.next,
-                              inputFormatters: constInputFormatters.emailInput,
-                              keyboardType: TextInputType.emailAddress,
-                              onChanged: (value) async {
-                                SharedPreferences sharedPref =
-                                    await SharedPreferences.getInstance();
-                                sharedPref.setString(
-                                    "sign_email_id", value.toString().trim());
-                              },
-                            ),
+                            // CustomTextField(
+                            //   text: "E-mail",
+                            //   controller: controllers.signEmailID,
+                            //   width: MediaQuery.of(context).size.width / 5,
+                            //   height: 40,
+                            //   textInputAction: TextInputAction.next,
+                            //   inputFormatters: constInputFormatters.emailInput,
+                            //   keyboardType: TextInputType.emailAddress,
+                            //   onChanged: (value) async {
+                            //     SharedPreferences sharedPref =
+                            //         await SharedPreferences.getInstance();
+                            //     sharedPref.setString(
+                            //         "sign_email_id", value.toString().trim());
+                            //   },
+                            // ),
                             CustomText(
                               textAlign: TextAlign.end,
                               text: "Whatsapp No",
@@ -399,15 +399,11 @@ class _SignUpState extends State<SignUp> {
                               color: colorsConst.primary);
                           controllers.loginCtr.reset();
                         } else {
-                          if (controllers.signEmailID.text.isEmail) {
-                            apiService.insertUsersPHP(context);
-                          } else {
                             utils.snackBar(
                                 context: Get.context!,
                                 msg: "Please enter Email",
                                 color: colorsConst.primary);
                             controllers.loginCtr.reset();
-                          }
                         }
                       },
                       isLoading: true,

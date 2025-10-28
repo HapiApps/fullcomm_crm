@@ -129,7 +129,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
           );
         }
       },
-      initialDate: DateTime.now(),
+      initialDate: selectedMonthTarget.value,
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
     ).then((selected) {
@@ -189,7 +189,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     final filteredLeads = disqualifiedFuture.where((lead) {
       final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
           (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
-          (lead.emailId ?? '').toLowerCase().contains(query);
+          (lead.email ?? '').toLowerCase().contains(query);
 
       final matchesRating = ratingFilter.isEmpty ||
           (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
@@ -339,7 +339,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
               ? valA.compareTo(valB)
               : valB.compareTo(valA);
         } else {
-          print("short ${sortOrderN.value}");
           return sortOrderN.value == 'asc'
               ? valA.compareTo(valB)
               : valB.compareTo(valA);
@@ -495,12 +494,12 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
                 }
                 return parsed ?? DateTime(1900);
               }
-
               return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
-
             default:
+              //final value = field;
               final value = lead.asMap()[field];
-              return value?.toString().toLowerCase() ?? '';
+              print("Dafault value $value $field");
+              return value.toString().toLowerCase();
           }
         }
 
@@ -561,7 +560,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     final filteredLeads = allQualifiedLeadFuture.where((lead) {
       final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
           (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
-          (lead.emailId ?? '').toLowerCase().contains(query);
+          (lead.email ?? '').toLowerCase().contains(query);
 
       final matchesRating = ratingFilter.isEmpty ||
           (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
@@ -735,7 +734,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     final filteredLeads = allCustomerLeadFuture.where((lead) {
       final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
           (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
-          (lead.emailId ?? '').toLowerCase().contains(query);
+          (lead.email ?? '').toLowerCase().contains(query);
 
       final matchesRating = ratingFilter.isEmpty ||
           (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
@@ -912,7 +911,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       final matchesQuery =
           (lead.firstname ?? '').toLowerCase().contains(query) ||
               (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
-              (lead.emailId ?? '').toLowerCase().contains(query);
+              (lead.email ?? '').toLowerCase().contains(query);
 
       final matchesRating = ratingFilter.isEmpty ||
           (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
@@ -1348,8 +1347,8 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       status,
       rating,
       industry,
-  callType,
-      callStatus,
+      callType="Incoming",
+      callStatus="Completed",
       visitType,
       qStatus,
       coIndustry,
@@ -1448,7 +1447,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   TextEditingController signFirstName = TextEditingController();
   TextEditingController signLastName = TextEditingController();
   TextEditingController signMobileNumber = TextEditingController();
-  TextEditingController signEmailID = TextEditingController();
+  TextEditingController signemail = TextEditingController();
   TextEditingController signWhatsappNumber = TextEditingController();
   TextEditingController signPassword = TextEditingController();
   TextEditingController signReferBy = TextEditingController();

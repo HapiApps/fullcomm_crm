@@ -187,6 +187,60 @@ class ReminderProvider extends ChangeNotifier {
     selectedText = employee;
     notifyListeners();
   }
+
   bool get isMeetingReminder => selectedNotification == "meeting";
   bool get isFollowUpReminder => selectedNotification == "followup";
+  bool _isBold = false;
+  bool _isItalic = false;
+  bool _isUnderline = false;
+  bool _isLink = false;
+
+  bool get isBold => _isBold;
+  bool get isItalic => _isItalic;
+  bool get isUnderline => _isUnderline;
+  bool get isLink => _isLink;
+
+  void toggleBold() {
+    _isBold = !_isBold;
+    notifyListeners();
+  }
+
+  void toggleItalic() {
+    _isItalic = !_isItalic;
+    notifyListeners();
+  }
+
+  void toggleUnderline() {
+    _isUnderline = !_isUnderline;
+    notifyListeners();
+  }
+
+  void toggleLink() {
+    _isLink = !_isLink;
+    notifyListeners();
+  }
+
+  TextStyle get subjectTextStyle {
+    return TextStyle(
+      fontSize: 14,
+      fontWeight: _isBold ? FontWeight.bold : FontWeight.normal,
+      fontStyle: _isItalic ? FontStyle.italic : FontStyle.normal,
+      decoration: _isUnderline || _isLink
+          ? TextDecoration.underline
+          : TextDecoration.none,
+      color: _isLink ? Colors.blue : Colors.black87,
+    );
+  }
+  void resetFormatting() {
+    _isBold = false;
+    _isItalic = false;
+    _isUnderline = false;
+    _isLink = false;
+    notifyListeners();
+  }
+
+  void removeLink() {
+    _isLink = false;
+    notifyListeners();
+  }
 }

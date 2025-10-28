@@ -112,8 +112,9 @@ class _MailCommentsState extends State<MailComments> {
                                 ),
                               ),
                               onPressed: (){
-                                utils.sendEmailDialog(id: "1", name: "Customer",
-                                    mobile:"Customer", coName: "Customer");
+                                utils.showComposeMail(context);
+                                // utils.sendEmailDialog(id: "1", name: "Customer",
+                                //     mobile:"Customer", coName: "Customer");
                               },
                               label: CustomText(
                                 text: "Compose Mail",

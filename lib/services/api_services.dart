@@ -249,8 +249,19 @@ class ApiService {
         "source_details": controllers.sourceCrt.text,
         "product_discussion": controllers.prodDescriptionController.text,
         "company_name": controllers.leadCoNameCrt.text.trim(),
+        "co_website": controllers.leadWebsite.text.trim(),
+        "co_number": controllers.leadCoMobileCrt.text.trim(),
+        "co_email": controllers.leadCoEmailCrt.text.trim(),
+        "linkedin": controllers.leadLinkedinCrt.text.trim(),
+        "x": controllers.leadXCrt.text.trim(),
+        "industry": controllers.industry,
+        "product": controllers.leadProduct.text.trim(),
         "points": controllers.additionalNotesCrt.text,
+        'status_update': controllers.statusCrt.text.trim(),
+        'owner': controllers.leadTitleCrt[0].text.trim(),
         "status": controllers.status,
+        'details_of_service_required': controllers.sourceCrt.text.trim(),
+        'rating': controllers.prospectGradingCrt.text.trim(),
         //"owner":controllers.leadOwnerNameCrt.text.trim(),
         'prospect_enrollment_date': controllers.prospectDate.value.isEmpty?"${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}":controllers.prospectDate.value,
         'expected_convertion_date': controllers.exDate.value.isEmpty?"${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}":controllers.exDate.value,
@@ -545,8 +556,8 @@ class ApiService {
         controllers.clearSelectedCustomer();
         controllers.empDOB.value = "";
         controllers.callTime.value = "";
-          controllers.callType = null;
-          controllers.callStatus = null;
+        controllers.callType = "Incoming";
+        controllers.callStatus = "Completed";
         controllers.callCommentCont.text = "";
         getAllCallActivity("");
         Navigator.pop(context);
@@ -980,6 +991,9 @@ class ApiService {
         "co_email": controllers.leadCoEmailCrt.text.trim(),
         "linkedin": controllers.leadLinkedinCrt.text.trim(),
         "x": controllers.leadXCrt.text.trim(),
+        "industry": controllers.industry,
+        "product": controllers.leadProduct.text.trim(),
+        "source_details": controllers.leadProduct.text.trim(),
         "gst_number": controllers.leadGstNumCrt.text.trim(),
         "gst_DOR": controllers.leadDOR.value,
         "gst_location": controllers.leadGstLocationCrt.text.trim(),
@@ -1013,8 +1027,7 @@ class ApiService {
           encoding: Encoding.getByName("utf-8"));
       print("request ${request.body}");
       //Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200 &&
-          request.body.toString().contains("Customer saved successfully.")) {
+      if (request.statusCode == 200 && request.body.toString().contains("Customer saved successfully.")) {
         final prefs = await SharedPreferences.getInstance();
         controllers.leadActions.clear();
         controllers.leadDisPointsCrt.clear();
@@ -1764,7 +1777,6 @@ class ApiService {
   }
 
   Future getUserHeading() async {
-    print("Inn Fields");
     try {
       Map data = {
         "search_type": "user_field_head",
@@ -1792,85 +1804,6 @@ class ApiService {
         controllers.fields.value = controllers.defaultFields.map((e) => CustomerField.fromJson(e)).toList();
       tableController.setHeadingFields(controllers.defaultFields);
       throw Exception('Failed to load album');
-    }
-  }
-
-  Future insertUsersPHP(BuildContext context) async {
-    try {
-      var roleId;
-      for (var role in controllers.roleList) {
-        if (role['role'] == controllers.role) {
-          roleId = role['id'];
-          break;
-        }
-      }
-      controllers.roleId = roleId.toString();
-      Map data = {
-        "firstname": controllers.signFirstName.text.trim(),
-        "surname": controllers.signLastName.text.trim(),
-        "mobile_number": controllers.signMobileNumber.text.trim(),
-        "whatsapp_number": controllers.signWhatsappNumber.text.trim(),
-        "email_id": controllers.signEmailID.text.trim(),
-        "referred_by": controllers.signReferBy.text.trim(),
-        "password": controllers.signPassword.text.trim(),
-        "role": controllers.roleId,
-        "created_by": controllers.storage.read("id"),
-        "boss_id": controllers.storage.read("id"),
-        "cos_id": controllers.storage.read("cos_id"),
-        "platform": "3"
-      };
-      final request = await http.post(Uri.parse(scriptApi),
-          headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: jsonEncode(data),
-          encoding: Encoding.getByName("utf-8"));
-      //Map<String, dynamic> res = json.decode(request.body);
-      if (request.statusCode == 200) {
-        utils.snackBar(
-            context: Get.context!,
-            msg: "User created successfully",
-            color: Colors.green);
-        controllers.loginCtr.success();
-
-        final prefs = await SharedPreferences.getInstance();
-        prefs.remove("sign_first_name");
-        prefs.remove("sign_mobile_number");
-        prefs.remove("sign_whatsapp_number");
-        prefs.remove("sign_password");
-        prefs.remove("sign_email_id");
-        controllers.signFirstName.clear();
-        controllers.signLastName.clear();
-        controllers.signMobileNumber.clear();
-        controllers.signWhatsappNumber.clear();
-        controllers.signPassword.clear();
-        controllers.signEmailID.clear();
-        controllers.signReferBy.clear();
-        controllers.role = null;
-      } else if (request.body == '{"fail":"Phone number already exits"}') {
-        errorDialog(
-            Get.context!, "Employee with this Phone Number already exits");
-        // utils.snackBar(context: Get.context!, msg:"Employee with this Phone Number already exits",color:colorsConst.primary,);
-        //Get.to(const SignUp());
-        controllers.loginCtr.reset();
-      } else {
-        errorDialog(Get.context!, request.body);
-        //utils.snackBar(context: Get.context!, msg: "Your Request Failed",color:colorsConst.primary,);
-        controllers.loginCtr.reset();
-      }
-    } on SocketException {
-      controllers.loginCtr.reset();
-      errorDialog(Get.context!, 'No internet connection');
-      //throw Exception('No internet connection'); // Handle network errors
-    } on HttpException catch (e) {
-      controllers.loginCtr.reset();
-      errorDialog(Get.context!, 'Server error employee: ${e.toString()}');
-      //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
-    } catch (e) {
-      controllers.loginCtr.reset();
-      errorDialog(Get.context!, 'Unexpected error Signup: ${e.toString()}');
-      //throw Exception('Unexpected error employee: ${e.toString()}'); // Catch other exceptions
     }
   }
 

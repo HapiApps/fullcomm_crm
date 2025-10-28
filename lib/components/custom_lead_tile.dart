@@ -208,15 +208,15 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
       "linkedin": widget.linkedin,
       "x": widget.x,
       "quotationStatus": widget.quotationStatus,
-      "productDiscussion": widget.productDiscussion,
-      "discussionPoint": widget.discussionPoint,
+      "product_discussion": widget.productDiscussion,
+      "discussion_point": widget.discussionPoint,
       "notes": widget.notes,
       "quotationRequired": widget.quotationRequired,
       "arpu_value": widget.arpuValue,
       "source_details": widget.sourceDetails,
       "prospect_enrollment_date": widget.prospectEnrollmentDate,
       "expected_convertion_date": widget.expectedConvertionDate,
-      "statusUpdate": widget.statusUpdate,
+      "status_update": widget.statusUpdate,
       "num_of_headcount": widget.numOfHeadcount,
       "expected_billing_value": widget.expectedBillingValue,
       "visit_type": widget.visitType,
@@ -356,9 +356,9 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                               Get.to(UpdateLead(
                                 visitType: widget.visitType.toString(),
                                 id: widget.id,
-                                detailsOfRequired: "",
-                                linkedin: "",
-                                x: "",
+                                detailsOfRequired: widget.detailsOfServiceReq,
+                                linkedin: widget.linkedin,
+                                x: widget.x,
                                 mainName: widget.mainName,
                                 mainMobile: widget.mobileNumber,
                                 mainEmail: widget.email,
@@ -368,23 +368,24 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                 rating: widget.rating,
                                 emailUpdate: widget.quotationRequired,
                                 name: widget.mainName,
-                                title: "",
+                                title: widget.title,
                                 mobileNumber: widget.mobileNumber,
                                 whatsappNumber: widget.mobileNumber,
                                 email: widget.email,
-                                mainTitle: "",
+                                mainTitle: widget.title,
                                 addressId: widget.addressId,
-                                companyWebsite: "",
-                                companyNumber: "",
-                                companyEmail: "",
-                                industry: "",
-                                productServices: "",
+                                companyWebsite: widget.companyWebsite,
+                                companyNumber: widget.companyNumber,
+                                companyEmail: widget.companyEmail,
+                                industry: widget.industry,
+                                productServices: widget.productServices,
                                 source: widget.source,
                                 owner: widget.owner,
-                                budget: "",
-                                timelineDecision: "",
-                                serviceInterest: "",
-                                description: "",
+                                budget: widget.budget,
+                                points: widget.points,
+                                timelineDecision: widget.timelineDecision,
+                                serviceInterest: widget.serviceInterest,
+                                description: widget.description,
                                 leadStatus: widget.leadStatus,
                                 active: widget.active,
                                 addressLine1: widget.addressLine1,
@@ -397,15 +398,13 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                                 quotationStatus: widget.quotationStatus,
                                 productDiscussion: widget.productDiscussion,
                                 discussionPoint: widget.discussionPoint,
+
                                 notes: widget.notes.toString(),
                                 statusUpdate: widget.statusUpdate,
-                                prospectEnrollmentDate:
-                                widget.prospectEnrollmentDate ?? "",
-                                expectedConvertionDate:
-                                widget.expectedConvertionDate ?? "",
+                                prospectEnrollmentDate: widget.prospectEnrollmentDate ?? "",
+                                expectedConvertionDate: widget.expectedConvertionDate ?? "",
                                 numOfHeadcount: widget.numOfHeadcount ?? "",
-                                expectedBillingValue:
-                                widget.expectedBillingValue ?? "",
+                                expectedBillingValue: widget.expectedBillingValue ?? "",
                                 arpuValue: widget.arpuValue ?? "",
                                 updateTs: widget.updatedTs.toString(),
                                 sourceDetails: widget.sourceDetails.toString(),
@@ -918,8 +917,10 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                       ),
                     );
                   } else {
+                    String normalize(String s) =>
+                        s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
                     final key = controllers.fields
-                        .firstWhereOrNull((f) => f.userHeading.toLowerCase() == heading.toLowerCase())
+                        .firstWhereOrNull((f) => normalize(f.userHeading) == normalize(heading))
                         ?.systemField;
                     final value = key != null ? toJson()[key] ?? "" : "";
                     return Tooltip(

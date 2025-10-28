@@ -69,7 +69,7 @@ class _CustomAppbarState extends State<CustomAppbar> {
               ? Center(
                   child: IconButton(
                       onPressed: () {
-                        Get.to(const SignUp(), duration: Duration.zero);
+                        //Get.to(const SignUp(), duration: Duration.zero);
                       },
                       icon: SvgPicture.asset(
                         assets.add,

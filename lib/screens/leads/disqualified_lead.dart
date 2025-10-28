@@ -427,7 +427,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                                   "user_id":controllers.storage.read("id"),
                                                   "rating":data.rating.toString(),
                                                   "cos_id":controllers.storage.read("cos_id"),
-                                                  "mail":data.emailId.toString(),
+                                                  "mail":data.email.toString(),
                                                 });
                                               }
                                             });
@@ -447,7 +447,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                           x: "",
                                           name: data.firstname.toString().split("||")[0],
                                           mobileNumber: data.mobileNumber.toString().split("||")[0],
-                                          email: data.emailId.toString().split("||")[0],
+                                          email: data.email.toString().split("||")[0],
                                           companyName: data.companyName.toString(),
                                           mainWhatsApp: data.mobileNumber.toString().split("||")[0],
                                           emailUpdate: data.quotationUpdate.toString(),
@@ -456,7 +456,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                           rating: data.rating ?? "Warm",
                                           mainName: data.firstname.toString().split("||")[0],
                                           mainMobile: data.mobileNumber.toString().split("||")[0],
-                                          mainEmail: data.emailId.toString().split("||")[0],
+                                          mainEmail: data.email.toString().split("||")[0],
                                           title: "",
                                           whatsappNumber: data.mobileNumber.toString().split("||")[0],
                                           mainTitle: "",

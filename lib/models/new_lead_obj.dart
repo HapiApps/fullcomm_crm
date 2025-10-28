@@ -6,7 +6,7 @@ class NewLeadObj {
   final String? mobileNumber;
   final String? emergencyName;
   final String? emergencyNumber;
-  final String? emailId;
+  final String? email;
   final String? whatsapp;
   final String? type;
   final String? referredBy;
@@ -51,11 +51,13 @@ class NewLeadObj {
   final String? points;
   final String? discussionPoints;
   final String? visitType;
-  //c.source_details, c.details_of_service_required, c.prospect_grading
   final String? accountManager;
   final String? prospectGrading;
   final String? detailsOfServiceRequired;
   final String? additionalInfo;
+  final String? industry;
+  final String? product;
+  final String? x;
 
   NewLeadObj(
       {this.userId,
@@ -66,7 +68,7 @@ class NewLeadObj {
       this.mobileNumber,
       this.emergencyName,
       this.emergencyNumber,
-      this.emailId,
+      this.email,
       this.type,
       this.referredBy,
       this.img1,
@@ -110,7 +112,7 @@ class NewLeadObj {
       this.prospectGrading,
       this.detailsOfServiceRequired,
         this.additionalInfo,
-        this.whatsapp
+        this.whatsapp,this.industry,this.product,this.x
       });
   factory NewLeadObj.fromJson(Map<String, dynamic> json) {
     return NewLeadObj(
@@ -121,7 +123,7 @@ class NewLeadObj {
         mobileNumber: json["phone"],
         emergencyName: json["emergency_name"],
         emergencyNumber: json["emergency_number"],
-        emailId: json["email_id"],
+        email: json["email"],
         type: json["type"],
         referredBy: json["referred_by"],
         img1: json["img1"],
@@ -169,7 +171,10 @@ class NewLeadObj {
         prospectGrading: json['prospect_grading'],
         detailsOfServiceRequired: json['details_of_service_required'],
       additionalInfo: json["additional_info"],
-        whatsapp: json["whatsapp"]
+        whatsapp: json["whatsapp"],
+        product: json["product"],
+        industry: json["industry"],
+        x: json["x"]
     );
   }
 
@@ -182,7 +187,7 @@ class NewLeadObj {
       "phone": mobileNumber,
       "emergency_name": emergencyName,
       "emergency_number": emergencyNumber,
-      "email_id": emailId,
+      "email": email,
       "type": type,
       "referred_by": referredBy,
       "img1": img1,
@@ -206,28 +211,32 @@ class NewLeadObj {
       "product_discussion": productDiscussion,
       "discussion_point": discussionPoint,
       "points": notes,
-      "arpu_value": arpuValue,
-      "source": source,
-      "source_details": sourceDetails,
+      "arpu value": arpuValue,
+      "source of prospect": source,
+      "prospect source details": sourceDetails,
       "status": status,
-      "owner": owner,
-      "prospect_enrollment_date": prospectEnrollmentDate,
-      "expected_convertion_date": expectedConvertionDate,
+      "status update": statusUpdate,
+      "ac manager": owner,
+      "prospect enrollment date": prospectEnrollmentDate,
+      "expected conversion date": expectedConvertionDate,
       "status_update": statusUpdate,
-      "num_of_headcount": numOfHeadcount,
-      "expected_billing_value": expectedBillingValue,
-      "updated_ts": updatedTs,
+      "num of headcount": numOfHeadcount,
+      "expected billing value": expectedBillingValue,
+      "date": updatedTs,
       "created_ts": createdTs,
       "visit_type": visitType,
       "account_manager": accountManager,
       "prospect_grading": prospectGrading,
-      "details_of_service_required": detailsOfServiceRequired,
+      "details of services required": detailsOfServiceRequired,
       "additional_info": additionalInfo,
       "whatsapp": whatsapp,
       "company_email": companyEmail,
       "company_website": companyWebsite,
       "company_number": companyNumber,
       "linkedin": linkedin,
+      "industry": industry,
+      "product": product,
+      "x": x
     };
   }
 }

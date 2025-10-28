@@ -71,21 +71,21 @@ class Utils {
       final subList = allLeads.sublist(start, end);
       total = subList.length;
       withMail = subList.where((e) =>
-      e.emailId != null &&
-          e.emailId!.trim().isNotEmpty &&
-          e.emailId!.trim() != "null").length;
+      e.email != null &&
+          e.email!.trim().isNotEmpty &&
+          e.email!.trim() != "null").length;
       withoutMail = total - withMail;
       apiService.prospectsList.addAll(
         subList.where((data) =>
-        data.emailId != null &&
-            data.emailId!.trim().isNotEmpty &&
-            data.emailId!.trim() != "null") // mail check
+        data.email != null &&
+            data.email!.trim().isNotEmpty &&
+            data.email!.trim() != "null") // mail check
             .map((data) => {
           "lead_id": data.userId.toString(),
           "user_id": controllers.storage.read("id"),
           "rating": data.rating ?? "Warm",
           "cos_id": controllers.storage.read("cos_id"),
-          "mail_id": data.emailId!.split("||")[0]
+          "mail_id": data.email!.split("||")[0]
         }),
       );
     }
@@ -818,14 +818,10 @@ class Utils {
                                                             msg: "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
                                                             subject: "Exclusive Promotion for You - \nLimited Time Offer!"),
                                                         utils.emailRow(context,
-                                                            isCheck: controllers
-                                                                .isAdd,
-                                                            templateName:
-                                                                "Follow-Up",
-                                                            msg:
-                                                                "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
-                                                            subject:
-                                                                "Follow-up on Recent Service Interaction"),
+                                                            isCheck: controllers.isAdd,
+                                                            templateName: "Follow-Up",
+                                                            msg: "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+                                                            subject: "Follow-up on Recent Service Interaction"),
                                                         utils.emailRow(context,
                                                             msg: "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
                                                             isCheck: controllers.isAdd,
@@ -861,6 +857,306 @@ class Utils {
                 )),
           );
         });
+  }
+
+  void showComposeMail(BuildContext context) {
+    controllers.emailSubjectCtr.clear();
+    final formatProvider = Provider.of<ReminderProvider>(context, listen: false);
+    formatProvider.resetFormatting();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+          child: Consumer<ReminderProvider>(
+            builder: (context, formatProvider, child) {
+              return Container(
+                width: 650,
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Compose Mail",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close, size: 15, color: Colors.black),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                    Divider(color: Colors.grey.shade300),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const SizedBox(
+                            width: 70,
+                            child: Text("To",
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.bold))),
+                        Expanded(
+                          child: TextFormField(
+                            style: const TextStyle(fontSize: 14),
+                            decoration: const InputDecoration(
+                              isDense: true,
+                              border: InputBorder.none,
+                              hintText: "",
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    10.height,
+                    Divider(color: Colors.grey.shade300),
+                    10.height,
+                    Row(
+                      children: [
+                        const SizedBox(
+                            width: 70,
+                            child: Text("CC",
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.bold))),
+                        Expanded(
+                          child: TextFormField(
+                            style: const TextStyle(fontSize: 14),
+                            decoration: const InputDecoration(
+                              isDense: true,
+                              border: InputBorder.none,
+                              hintText: "",
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    10.height,
+                    Divider(color: Colors.grey.shade300),
+                    10.height,
+                    Row(
+                      children: [
+                        const SizedBox(
+                          width: 70,
+                          child: Text(
+                            "Subject",
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Expanded(
+                          child: Stack(
+                            alignment: Alignment.centerRight,
+                            children: [
+                              InkWell(
+                                onTap: () async {
+                                  if (formatProvider.isLink && controllers.emailSubjectCtr.text.isNotEmpty) {
+                                    final text = controllers.emailSubjectCtr.text.trim();
+                                    final url = text.startsWith("http") ? text : "https://$text";
+                                    final uri = Uri.parse(url);
+                                    if (await canLaunchUrl(uri)) {
+                                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                    }
+                                  }
+                                },
+                                child: IgnorePointer(
+                                  ignoring: formatProvider.isLink,
+                                  child: TextFormField(
+                                    controller: controllers.emailSubjectCtr,
+                                    readOnly: formatProvider.isLink,
+                                    style: formatProvider.subjectTextStyle,
+                                    decoration: const InputDecoration(
+                                      isDense: true,
+                                      border: InputBorder.none,
+                                      hintText: "",
+                                      contentPadding: EdgeInsets.only(right: 30),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              if (formatProvider.isLink)
+                                IconButton(
+                                  icon: const Icon(Icons.close, size: 18, color: Colors.red),
+                                  onPressed: () {
+                                    controllers.emailSubjectCtr.clear();
+                                    formatProvider.removeLink();
+                                  },
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    10.height,
+                    Divider(color: Colors.grey.shade300),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.format_bold,
+                            size: 20,
+                            color: Colors.black87, // always black
+                          ),
+                          onPressed: () {
+                            formatProvider.toggleBold();
+                          },
+                        ),
+
+                        IconButton(
+                          icon: Icon(
+                            Icons.format_italic,
+                            size: 20,
+                            color: Colors.black87,
+                          ),
+                          onPressed: () => formatProvider.toggleItalic(),
+                        ),
+
+                        IconButton(
+                          icon: Icon(
+                            Icons.format_underline,
+                            size: 20,
+                            color: Colors.black87,
+                          ),
+                          onPressed: () => formatProvider.toggleUnderline(),
+                        ),
+
+                        IconButton(
+                          icon: const Icon(Icons.link, size: 20, color: Colors.black87),
+                          onPressed: () {
+                            if (controllers.emailSubjectCtr.text.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Subject is empty!")),
+                              );
+                              return;
+                            }
+                            formatProvider.toggleLink();
+                          },
+                        ),
+
+                      ],
+                    ),
+                    10.height,
+                    Container(
+                      height: 120,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: TextField(
+                        maxLines: null,
+                        expands: true,
+                        controller: controllers.emailMessageCtr,
+                        style: TextStyle(fontSize: 14),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(8),
+                          border: InputBorder.none,
+                          hintText: "",
+                        ),
+                      ),
+                    ),
+                   14.height,
+                     InkWell(
+                       onTap: (){
+                          utils.chooseFile(
+                              mediaDataV: imageController.empMediaData,
+                              fileName: imageController.empFileName,
+                              pathName: imageController.photo1);
+                       },
+                       child: Row(
+                        children: [
+                          Icon(Icons.attach_file, size: 18, color: Colors.black),
+                          SizedBox(width: 6),
+                          Text("Attach File",
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold)),
+                        ],
+                                           ),
+                     ),
+                    10.height,
+                    Obx(() => imageController.photo1.value.isEmpty
+                        ? 0.height
+                        :  Container( padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Color(0xff86BAE3FF),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Obx(()=>CustomText(text: imageController.empFileName.value)),
+                          SizedBox(width: 10,),
+                          IconButton( padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: () {
+                              imageController.photo1.value = "";
+                            }, icon: const Icon(Icons.close, size: 10),
+                          ),
+                        ],
+                      ),
+                    ),),
+                    Divider(color: Colors.grey.shade300),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        10.width,
+                        Row(
+                          children: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.black87,
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                              ),
+                              child: const Text("Discard",
+                                  style: TextStyle(
+                                      fontSize: 13, fontWeight: FontWeight.bold)),
+                            ),
+                            8.width,
+                            CustomLoadingButton(
+                              callback: () {
+                                if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                  snackBar(context: context, msg: "Subject is empty!", color: Colors.red);
+                                  return;
+                                }
+                                if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                  snackBar(context: context, msg: "Message is empty!", color: Colors.red);
+                                  return;
+                                }
+                                apiService.insertEmailAPI(context, "1",
+                                    imageController.photo1.value);
+                              },
+                              controller: controllers.emailCtr,
+                              isImage: false,
+                              isLoading: true,
+                              backgroundColor: colorsConst.primary,
+                              radius: 5,
+                              width: controllers.emailCount.value == 0 ||
+                                  controllers.emailCount.value == 1
+                                  ? 90
+                                  : 200,
+                              height: 50,
+                              text:"Save",
+                              textColor: Colors.white,
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 
   makingWebsite({String? web}) async {

@@ -35,6 +35,7 @@ class TableController extends GetxController {
     "Expected Billing Value",
     "Arpu Value"
   ];
+  var isLoading = false.obs;
   var headingFields = <String>[].obs;
   void setHeadingFields(List<dynamic> data) async {
     try {
@@ -56,7 +57,6 @@ class TableController extends GetxController {
             combined.add(headingFields[i]);
           }
         }
-
         tableHeadings.value = combined;
       } else {
         tableHeadings.value = List<String>.from(headingFields);

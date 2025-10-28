@@ -8,7 +8,6 @@ import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/constant/default_constant.dart';
 import 'package:fullcomm_crm/common/extentions/lib_extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
-import 'package:fullcomm_crm/components/custom_checkbox.dart';
 import 'package:fullcomm_crm/components/custom_dropdown.dart';
 import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
@@ -245,6 +244,13 @@ class _AddLeadState extends State<AddLead> {
                                 controllers.visitType.toString().isEmpty) {
                               utils.snackBar(
                                   msg: "Please Select Call Visit Type",
+                                  color: Colors.red,
+                                  context: context);
+                              controllers.leadCtr.reset();
+                            } else if (controllers.leadWhatsCrt[0].text.isNotEmpty &&
+                                controllers.leadWhatsCrt[0].text.length != 10) {
+                              utils.snackBar(
+                                  msg: "Invalid Whats No",
                                   color: Colors.red,
                                   context: context);
                               controllers.leadCtr.reset();
@@ -762,8 +768,7 @@ class _AddLeadState extends State<AddLead> {
                                           CustomTextField(
                                             hintText: "Account Manager (Optional)",
                                             text: "Account Manager (Optional)",
-                                            controller:
-                                            controllers.leadTitleCrt[index],
+                                            controller: controllers.leadTitleCrt[index],
                                             width: textFieldSize,
                                             keyboardType: TextInputType.text,
                                             textInputAction:

@@ -47,7 +47,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     sorted.sort((a, b) {
       dynamic aValue;
       dynamic bValue;
-
       switch (sortFieldCallActivity.value) {
         case 'customerName':
           aValue = a.customerName.toLowerCase();
