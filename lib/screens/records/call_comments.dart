@@ -497,6 +497,11 @@ class _CallCommentsState extends State<CallComments> {
                     10.height,
                     Row(
                       children: [
+                        Obx(()=>utils.selectHeatingType("All",
+                            controllers.selectCallType.value=="All", (){
+                              controllers.selectCallType.value="All";
+                            }, false,controllers.allCalls),),
+                        10.width,
                         Obx(()=> utils.selectHeatingType("Incoming",
                             controllers.selectCallType.value=="Incoming", (){
                           controllers.selectCallType.value="Incoming";
@@ -879,19 +884,21 @@ class _CallCommentsState extends State<CallComments> {
                           child: Obx((){
                             final searchText = controllers.searchText.value.toLowerCase();
                             final filteredList = controllers.callActivity.where((activity) {
-                              final matchesCallType = controllers.selectCallType.value.isEmpty ||
-                                  activity.callType == controllers.selectCallType.value;
+                              final matchesCallType =
+                                  controllers.selectCallType.value.isEmpty ||
+                                      controllers.selectCallType.value == "All" ||
+                                      activity.callType == controllers.selectCallType.value;
 
                               final matchesSearch = searchText.isEmpty ||
-                                  (activity.customerName.toString().toLowerCase().contains(searchText) ?? false) ||
-                                  (activity.toData.toString().toLowerCase().contains(searchText) ?? false);
+                                  (activity.customerName.toString().toLowerCase().contains(searchText)) ||
+                                  (activity.toData.toString().toLowerCase().contains(searchText));
 
                               return matchesCallType && matchesSearch;
                             }).toList();
                             if (controllers.sortFieldCallActivity.value == 'customerName') {
                               filteredList.sort((a, b) {
-                                final nameA = (a.customerName ?? '').toLowerCase();
-                                final nameB = (b.customerName ?? '').toLowerCase();
+                                final nameA = (a.customerName).toLowerCase();
+                                final nameB = (b.customerName).toLowerCase();
                                 final comparison = nameA.compareTo(nameB);
                                 return controllers.sortOrderCallActivity.value == 'asc'
                                     ? comparison

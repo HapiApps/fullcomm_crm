@@ -1,9 +1,5 @@
 class AllCustomersObj {
-  final String id;
-  final String name;
-  final String companyName;
-  final String phoneNo;
-  final String email;
+  final String id, name, companyName, phoneNo, email;
 
   AllCustomersObj({
     required this.id,

@@ -636,10 +636,10 @@ class _NewDashboardState extends State<NewDashboard> {
                                                   ? [Color(0xffE0E0E0)] // Grey color for "No customers"
                                                   : [
                                                 Color(0xffE3B552), // Suspects
-                                                Color(0xff017EFF), // Prospects
-                                                Color(0xffF55353), // Qualified
-                                                Color(0xff7456FC), // Unqualified
-                                                Color(0xffE3528C), // Customers
+                                                Color(0xff0070F8), // Prospects
+                                                Color(0xffFF43D6), // Qualified
+                                                Color(0xffF53B37), // Unqualified
+                                                Color(0xff45B72F), // Customers
                                               ];
                                               return PieChart(
                                                 dataMap: dataMap,

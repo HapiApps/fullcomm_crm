@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/services/api_services.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/constant/key_constant.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/custom_appbar.dart';
-import '../../components/custom_area_textfield.dart';
 import '../../components/custom_checkbox.dart';
 import '../../components/custom_dropdown.dart';
 import '../../components/custom_loading_button.dart';
@@ -346,11 +344,10 @@ class _AddCustomerState extends State<AddCustomer> {
                                               // }
                                             ),
                                             20.height,
-                                            CustomAreaTextField(
+                                            CustomTextField(
                                               hintText: "Area",
                                               text: "Area",
-                                              controller: controllers
-                                                  .customerAreaController,
+                                              controller: controllers.customerAreaController,
                                               width: textFieldSize,
                                               keyboardType: TextInputType.text,
                                               textInputAction:

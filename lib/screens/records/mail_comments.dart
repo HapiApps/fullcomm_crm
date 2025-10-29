@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/models/mail_receive_obj.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/utils.dart';
-import '../../components/custom_comment_container.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
 

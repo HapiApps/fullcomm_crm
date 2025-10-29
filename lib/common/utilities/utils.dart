@@ -1,10 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
-import 'package:csc_picker_plus/dropdown_with_search.dart';
 import 'package:excel/excel.dart' as excel;
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
-import 'package:fullcomm_crm/common/styles/styles.dart';
 import 'package:fullcomm_crm/common/widgets/log_in.dart';
 import 'package:fullcomm_crm/screens/employee/employee_screen.dart';
 import 'package:fullcomm_crm/screens/employee/role_management.dart';
@@ -12,7 +8,6 @@ import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,7 +18,6 @@ import 'package:fullcomm_crm/screens/settings/reminder_settings.dart';
 import 'package:fullcomm_crm/screens/settings/user_plan.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,7 +44,6 @@ import '../../services/api_services.dart';
 import '../constant/assets_constant.dart';
 import '../constant/colors_constant.dart';
 import '../constant/default_constant.dart';
-import '../widgets/camera.dart';
 import 'package:http/http.dart' as http;
 import 'dart:html' as html;
 
@@ -1167,19 +1160,6 @@ class Utils {
     }
   }
 
-  Future<void> pickImage() async {
-    XFile? pickedFile;
-    try {
-      pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    } on Exception catch (e) {
-      // Handle exception
-      log('Image capture failed: $e');
-    }
-
-    if (pickedFile != null) {
-      imageController.photo1.value = pickedFile.path;
-    }
-  }
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar({required BuildContext context,
   required String msg,
   required Color color}) {
@@ -2269,34 +2249,6 @@ class Utils {
           ),
         ]);
   }
-
-  Future<void> showImagePickerDialog(BuildContext context) async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return CustomAlertDialog(
-          title: constValue.img,
-          onPressed: () async {
-            imageController.imagePath1 = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const CameraWidget(
-                        cameraPosition: CameraType.back,
-                      )),
-            );
-            imageController.photo1.value = imageController.imagePath1;
-            Get.back(); // Close the dialog
-          },
-          positiveBtnText: constValue.gallery,
-          cancelOnPressed: () async {
-            pickImage();
-            Navigator.pop(context); // Close the dialog
-          },
-        );
-      },
-    );
-  }
-
   void pickAndReadExcelFile(BuildContext context) {
     final html.FileUploadInputElement input = html.FileUploadInputElement()
       ..accept = '.xlsx, .xls';

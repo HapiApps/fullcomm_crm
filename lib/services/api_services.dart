@@ -1504,6 +1504,7 @@ class ApiService {
         controllers.allIncomingCalls.value = incoming.length.toString();
         controllers.allOutgoingCalls.value = outgoing.length.toString();
         controllers.allMissedCalls.value = missed.length.toString();
+        controllers.allCalls.value = response.length.toString();
       } else {
         controllers.allIncomingCalls.value = "0";
         controllers.allOutgoingCalls.value = "0";

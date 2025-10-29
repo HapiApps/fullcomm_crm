@@ -4,8 +4,8 @@ import 'package:fullcomm_crm/common/extentions/int_extensions.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/provider/employee_provider.dart';
 import 'package:fullcomm_crm/provider/reminder_provider.dart';
+import 'package:fullcomm_crm/screens/mobile_dashboard.dart';
 import 'package:fullcomm_crm/screens/new_dashboard.dart';
-import 'package:fullcomm_crm/screens/zoom_blocker.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +22,7 @@ import 'components/custom_text.dart';
 import 'controller/controller.dart';
 import 'controller/reminder_controller.dart';
 import 'firebase_options.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -92,8 +93,7 @@ class _MyAppState extends State<MyApp> {
   }
   @override
   Widget build(BuildContext context) {
-    return ZoomBlocker(
-      child: MyInheritedWidget(
+    return MyInheritedWidget(
         data: 42,
         child: GetMaterialApp(
           scrollBehavior: MyCustomScrollBehavior(),
@@ -145,10 +145,9 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
           home: SelectionArea(
-              child:widget.loginScreen == false ? const LoginPage() : const NewDashboard()),
+              child:widget.loginScreen == false ? const LoginPage() : kIsWeb?NewDashboard():MobileDashboard()),
         ),
-      ),
-    );
+      );
   }
 }
 

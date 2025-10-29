@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:group_button/group_button.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import '../models/comments_obj.dart';
@@ -1049,6 +1048,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       allReplyMails = "0".obs,
       allIncomingCalls = "0".obs,
       allOutgoingCalls = "0".obs,
+      allCalls = "0".obs,
       allMissedCalls = "0".obs,
       allScheduleMeet = "0".obs,
       allCompletedMeet = "0".obs,
@@ -1291,7 +1291,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       allCompanyLength = 0.obs,
       allCustomerLength = 0.obs,
       allProductLength = 0.obs,
-      allEmployeeLength = 0.obs, selectCallType = "".obs,selectMeetingType = "".obs;
+      allEmployeeLength = 0.obs, selectCallType = "All".obs,selectMeetingType = "".obs;
 
   var states,
       upState,
@@ -1336,7 +1336,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     "assets/image/itinerary1.jpeg"
   ];
 
-  final picker = ImagePicker();
   Future<List>? imageListFuture;
   late List<String> userdata = [];
   List contactsID = [];

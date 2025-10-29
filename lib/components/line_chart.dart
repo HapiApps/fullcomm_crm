@@ -70,12 +70,30 @@ class DayWiseBarChart extends StatelessWidget {
           barTouchData: BarTouchData(
             enabled: true,
             touchTooltipData: BarTouchTooltipData(
+              tooltipRoundedRadius: 8,
               getTooltipItem: (group, groupIndex, rod, rodIndex) {
                 final date = report[group.x.toInt()].dayDate;
                 final formatted = DateFormat("dd MMM yyyy").format(DateTime.parse(date));
                 return BarTooltipItem(
-                  "$formatted\n${rod.toY.toInt()} customers",
-                  const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  '',
+                  const TextStyle(),
+                  children: [
+                    TextSpan(
+                      text: "$formatted\n",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    ),
+                    TextSpan(
+                      text: "${rod.toY.toInt()} customers",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
                 );
               },
             ),

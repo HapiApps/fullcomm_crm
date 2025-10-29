@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/components/password_text_field.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,8 +13,8 @@ import '../../components/custom_loading_button.dart';
 import '../../components/custom_textfield.dart';
 import '../../controller/controller.dart';
 import '../constant/key_constant.dart';
-import '../utilities/utils.dart';
-import 'dart:html' as html;
+import '../utilities/mobile_snackbar.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -53,12 +53,21 @@ class _LoginPageState extends State<LoginPage> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
-        if (!didPop) {
-          final shouldExit = await utils.showExitDialog(context);
-          if (shouldExit) {
-            html.window.open("https://www.google.com", "_self");
-          }
+        if (back == 0) {
+          utils.snackBar(
+              context: Get.context!,
+              msg: "Press back button again to exit !",
+              color: Colors.red);
+          back = 1;
+        } else {
+          SystemNavigator.pop();
         }
+        // if (!didPop) {
+        //   final shouldExit = await utils.showExitDialog(context);
+        //   if (shouldExit) {
+        //     html.window.open("https://www.google.com", "_self");
+        //   }
+        // }
       },
       child: Scaffold(
         body: Row(

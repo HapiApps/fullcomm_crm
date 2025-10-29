@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-
 import '../common/constant/colors_constant.dart';
 
 class RatingIndicator extends StatelessWidget {
@@ -9,6 +8,7 @@ class RatingIndicator extends StatelessWidget {
   final String label;
   final int value;
   final double percentage;
+  final TextStyle? labelStyle;
 
   const RatingIndicator({
     super.key,
@@ -16,6 +16,7 @@ class RatingIndicator extends StatelessWidget {
     required this.label,
     required this.value,
     required this.percentage,
+    this.labelStyle,
   });
 
   @override
@@ -27,7 +28,6 @@ class RatingIndicator extends StatelessWidget {
           lineWidth: 13.0,
           animation: true,
           percent: percentage,
-          //restartAnimation: true,
           reverse: true,
           center: Text(
             '$value',
@@ -39,15 +39,17 @@ class RatingIndicator extends StatelessWidget {
           ),
           circularStrokeCap: CircularStrokeCap.square,
           progressColor: color,
-          backgroundColor: Color(0xffF9FAFB),
+          backgroundColor: const Color(0xffF9FAFB),
         ),
         10.height,
         Text(
           label,
-          style: TextStyle(
-            color: colorsConst.textColor,
-            fontSize: 16,
-          ),
+          style: labelStyle ??
+              TextStyle(
+                color: colorsConst.textColor,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
         ),
       ],
     );
