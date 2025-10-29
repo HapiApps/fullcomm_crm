@@ -73,7 +73,7 @@ class FilterSection extends StatelessWidget {
             ),
 
             // --- Action Buttons ---
-            itemList.isEmpty||title=="Customers"
+            itemList.isEmpty
                 ? 0.height
                 : title=="Disqualified"?ActionButton(
               width: 100,
@@ -102,7 +102,7 @@ class FilterSection extends StatelessWidget {
                   callback: onMail,
                 ),
                 10.width,
-                ActionButton(
+                title=="Customers"?0.height:ActionButton(
                   width: 100,
                   image: "assets/images/action_promote.png",
                   name: "Promote",
@@ -188,6 +188,10 @@ class FilterSection extends StatelessWidget {
                         child: Text("Today",
                             style: TextStyle(color: colorsConst.textColor))),
                     PopupMenuItem(
+                        value: "Yesterday",
+                        child: Text("Yesterday",
+                            style: TextStyle(color: colorsConst.textColor))),
+                    PopupMenuItem(
                         value: "Last 7 Days",
                         child: Text("Last 7 Days",
                             style:
@@ -197,11 +201,11 @@ class FilterSection extends StatelessWidget {
                         child: Text("Last 30 Days",
                             style:
                             TextStyle(color: colorsConst.textColor))),
-                    PopupMenuItem(
-                        value: "All",
-                        child: Text("All",
-                            style:
-                            TextStyle(color: colorsConst.textColor))),
+                    // PopupMenuItem(
+                    //     value: "All",
+                    //     child: Text("All",
+                    //         style:
+                    //         TextStyle(color: colorsConst.textColor))),
                   ],
                   child: Container(
                     color: colorsConst.secondary,

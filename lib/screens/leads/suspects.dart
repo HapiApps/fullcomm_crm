@@ -57,8 +57,6 @@ class _SuspectsState extends State<Suspects> {
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return PopScope(

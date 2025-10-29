@@ -345,7 +345,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                               height: 45,
                               width: 4000,
                               child: CustomTableHeader(
-                                showCheckbox: false,
+                                showCheckbox: true,
                                 onSortName: () {
                                   controllers.sortField.value = 'name';
                                   controllers.sortOrderN.value =
@@ -386,7 +386,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                   final data = controllers.paginatedCustomerLeads[index];
                                   return Obx(()=>CustomLeadTile(
                                     pageName: "Customers",
-                                    showCheckbox: false,
+                                    showCheckbox: true,
                                     saveValue: controllers.isNewLeadList[index]["isSelect"],
                                     onChanged: (value){
                                       setState(() {

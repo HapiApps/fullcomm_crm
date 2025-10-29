@@ -215,7 +215,9 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
             case 'Today':
               matchesSort = isSameDate(updatedDate, now);
               break;
-
+            case 'Yesterday':
+              matchesSort = diff <= 1;
+              break;
             case 'Last 7 Days':
               matchesSort = diff <= 7;
               break;
@@ -387,7 +389,9 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
             case 'Today':
               matchesSort = isSameDate(updatedDate, now);
               break;
-
+            case 'Yesterday':
+              matchesSort = diff <= 1;
+              break;
             case 'Last 7 Days':
               matchesSort = diff <= 7;
               break;
@@ -574,7 +578,9 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
             case 'Today':
               matchesSort = isSameDate(updatedDate, now);
               break;
-
+            case 'Yesterday':
+              matchesSort = diff <= 1;
+              break;
             case 'Last 7 Days':
               matchesSort = diff <= 7;
               break;
@@ -738,6 +744,9 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
             case 'Today':
               matchesSort = isSameDate(updatedDate, now);
               break;
+            case 'Yesterday':
+              matchesSort = diff <= 1;
+              break;
             case 'Last 7 Days':
               matchesSort = diff <= 7;
               break;
@@ -753,7 +762,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
                 matchesSort = true;
               }
               break;
-
             case 'All':
             default:
               matchesSort = true;
@@ -899,7 +907,9 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
             case 'Today':
               matchesSort = isSameDate(updatedDate, now);
               break;
-
+            case 'Yesterday':
+              matchesSort = diff <= 1;
+              break;
             case 'Last 7 Days':
               matchesSort = diff <= 7;
               break;

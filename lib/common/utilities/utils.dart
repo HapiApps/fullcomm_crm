@@ -1304,7 +1304,7 @@ class Utils {
                   text: "Suspects",
                   onClicked: () {
                     controllers.selectedMonth.value=null;
-                    controllers.selectedProspectSortBy.value="";
+                    controllers.selectedProspectSortBy.value="Today";
                     controllers.isLead.value = true;
                     Navigator.push(
                       context,
@@ -1330,7 +1330,7 @@ class Utils {
                   text: "Prospects",
                   onClicked: () {
                     controllers.selectedPMonth.value=null;
-                    controllers.selectedQualifiedSortBy.value="";
+                    controllers.selectedQualifiedSortBy.value="Today";
                     //controllers.isLead.value=true;
                     Navigator.push(
                       context,
@@ -1356,7 +1356,7 @@ class Utils {
                   text: "Qualified",
                   onClicked: () {
                     controllers.selectedPMonth.value=null;
-                    controllers.selectedQualifiedSortBy.value="";
+                    controllers.selectedQualifiedSortBy.value="Today";
                     Navigator.push(
                       context,
                       PageRouteBuilder(
@@ -1382,7 +1382,7 @@ class Utils {
                   text: constValue.customer,
                   onClicked: () {
                     controllers.selectedQPMonth.value=null;
-                    controllers.selectedCustomerSortBy.value="";
+                    controllers.selectedCustomerSortBy.value="Today";
                     Navigator.push(
                       context,
                       PageRouteBuilder(
@@ -1408,7 +1408,7 @@ class Utils {
                   text: "Disqualified",
                   onClicked: () {
                     controllers.selectedMonth.value=null;
-                    controllers.selectedProspectSortBy.value="";
+                    controllers.selectedProspectSortBy.value="Today";
                     Navigator.push(context,
                       PageRouteBuilder(
                         pageBuilder: (context, animation1, animation2) =>
