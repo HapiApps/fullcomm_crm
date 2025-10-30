@@ -1358,7 +1358,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
 
   var dateList = [].obs,
       isMainPersonList = [].obs,
-      isNewLeadList = [].obs,isDisqualifiedList=[].obs,
+      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,
       isLeadsList = [].obs,
       isGoodLeadList = [].obs,
       isCoMobileNumberList = [].obs,

@@ -161,68 +161,6 @@ class _ViewCustomerState extends State<ViewCustomer> {
                         utils.bulkEmailDialog(_focusNode, list: apiService.prospectsList);
                       },
                       onPromote: () {
-                        showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) {
-                              return AlertDialog(
-                                content: CustomText(
-                                  text: "Are you moving to the next level?",
-                                  size: 16,
-                                  isBold: true,
-                                  colors: colorsConst.textColor,
-                                ),
-                                actions: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(color: colorsConst.primary),
-                                            color: Colors.white),
-                                        width: 80,
-                                        height: 25,
-                                        child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.zero,
-                                              ),
-                                              backgroundColor: Colors.white,
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: CustomText(
-                                              text: "Cancel",
-                                              colors: colorsConst.primary,
-                                              size: 14,
-                                            )),
-                                      ),
-                                      10.width,
-                                      CustomLoadingButton(
-                                        callback: ()async{
-                                          _focusNode.requestFocus();
-                                          await apiService.insertProspectsAPI(context, apiService.prospectsList);
-                                          setState(() {
-                                            apiService.prospectsList.clear();
-                                          });
-                                        },
-                                        height: 35,
-                                        isLoading: true,
-                                        backgroundColor: colorsConst.primary,
-                                        radius: 2,
-                                        width: 80,
-                                        controller: controllers.productCtr,
-                                        isImage: false,
-                                        text: "Move",
-                                        textColor: Colors.white,
-                                      ),
-                                      5.width
-                                    ],
-                                  ),
-                                ],
-                              );
-                            });
                       },
                       onDisqualify: () {
                         showDialog(
@@ -345,7 +283,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                               height: 45,
                               width: 4000,
                               child: CustomTableHeader(
-                                showCheckbox: true,
+                                showCheckbox: false,
                                 onSortName: () {
                                   controllers.sortField.value = 'name';
                                   controllers.sortOrderN.value =
@@ -386,7 +324,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                   final data = controllers.paginatedCustomerLeads[index];
                                   return Obx(()=>CustomLeadTile(
                                     pageName: "Customers",
-                                    showCheckbox: true,
+                                    showCheckbox: false,
                                     saveValue: controllers.isNewLeadList[index]["isSelect"],
                                     onChanged: (value){
                                       setState(() {
@@ -416,13 +354,13 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                     productDiscussion: data.productDiscussion.toString(),
                                     discussionPoint: data.discussionPoint.toString(),
                                     notes: data.notes.toString(),
-                                    linkedin: "",
-                                    x: "",
+                                    linkedin: data.linkedin,
+                                    x: data.x,
                                     name: data.firstname.toString().split("||")[0],
                                     mobileNumber: data.mobileNumber.toString().split("||")[0],
                                     email: data.email.toString().split("||")[0],
                                     companyName: data.companyName.toString(),
-                                    mainWhatsApp: data.mobileNumber.toString().split("||")[0],
+                                    mainWhatsApp: data.whatsapp.toString().split("||")[0],
                                     emailUpdate: data.quotationUpdate.toString(),
                                     id: data.userId.toString(),
                                     status: data.leadStatus ?? "UnQualified",
@@ -431,21 +369,20 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                     mainMobile: data.mobileNumber.toString().split("||")[0],
                                     mainEmail: data.email.toString().split("||")[0],
                                     title: "",
-                                    whatsappNumber: data.mobileNumber.toString().split("||")[0],
+                                    whatsappNumber: data.whatsapp.toString().split("||")[0],
                                     mainTitle: "",
                                     addressId: data.addressId ?? "",
-                                    companyWebsite: "",
-                                    companyNumber: "",
-                                    companyEmail: "",
-                                    industry: "",
-                                    productServices: "",
+                                    companyWebsite: data.companyWebsite ?? "",
+                                    companyNumber: data.companyNumber ?? "",
+                                    companyEmail: data.companyEmail ?? "",
+                                    industry: data.industry ?? "",
+                                    productServices: data.product ?? "",
                                     source:data.source ?? "",
-                                    owner: "",
-                                    budget: "",
+                                    owner: data.owner ?? "",
                                     timelineDecision: "",
                                     serviceInterest: "",
                                     description: "",
-                                    leadStatus: data.quotationStatus ?? "",
+                                    leadStatus: data.leadStatus ?? "",
                                     active: data.active ?? "",
                                     addressLine1: data.doorNo ?? "",
                                     addressLine2: data.landmark1 ?? "",

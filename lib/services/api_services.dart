@@ -245,7 +245,7 @@ class ApiService {
       Map data = {
         "cos_id": controllers.storage.read("cos_id"),
         "city": controllers.cityController.text,
-        "source": controllers.source,
+        "source": controllers.leadDisPointsCrt.text.trim(),
         "source_details": controllers.sourceCrt.text,
         "product_discussion": controllers.prodDescriptionController.text,
         "company_name": controllers.leadCoNameCrt.text.trim(),
@@ -254,9 +254,14 @@ class ApiService {
         "co_email": controllers.leadCoEmailCrt.text.trim(),
         "linkedin": controllers.leadLinkedinCrt.text.trim(),
         "x": controllers.leadXCrt.text.trim(),
+        "door_no": controllers.doorNumberController.text.trim(),
+        "area": controllers.areaController.text.trim(),
+        "country": controllers.selectedCountry.value,
+        "state": controllers.stateController.text.trim(),
+        "pincode": controllers.pinCodeController.text.trim(),
         "industry": controllers.industry,
         "product": controllers.leadProduct.text.trim(),
-        "points": controllers.additionalNotesCrt.text,
+        "points": controllers.leadActions.text.trim(),
         'status_update': controllers.statusCrt.text.trim(),
         'owner': controllers.leadTitleCrt[0].text.trim(),
         "status": controllers.status,
@@ -653,6 +658,7 @@ class ApiService {
       );
       controllers.isLead.value=true;
       if (response.statusCode == 200) {
+        controllers.selectedProspectSortBy.value="Today";
         final data = jsonDecode(response.body) as List;
         controllers.allDisqualifiedLength.value = data.length;
         controllers.isDisqualifiedList.clear();
@@ -2271,6 +2277,7 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
+        controllers.selectedQualifiedSortBy.value="Today";
         final data = jsonDecode(response.body) as List; // Cast to List
         controllers.allLeadsLength.value = data.length;
         controllers.isLeadsList.value = [];
@@ -2364,6 +2371,7 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
+        controllers.selectedProspectSortBy.value="Today";
         final data = jsonDecode(response.body) as List;
 
         controllers.allNewLeadsLength.value = data.length;
@@ -2461,6 +2469,7 @@ class ApiService {
       //print("lead ${response.body}");
       controllers.isLead.value = true;
       if (response.statusCode == 200) {
+        controllers.selectedQualifiedSortBy.value="Today";
         final data = jsonDecode(response.body) as List; // Cast to List
         controllers.allGoodLeadsLength.value = data.length;
         controllers.isGoodLeadList.value = [];
@@ -2767,6 +2776,7 @@ class ApiService {
       //print("Customer ${response.body}");
       controllers.isLead.value = true;
       if (response.statusCode == 200) {
+        controllers.selectedCustomerSortBy.value="Today";
         final data = jsonDecode(response.body) as List;
         controllers.allCustomerLength.value = data.length;
         // controllers.isGoodLeadList.value=[];

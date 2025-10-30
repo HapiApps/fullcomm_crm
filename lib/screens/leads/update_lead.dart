@@ -1031,6 +1031,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           hintText:"Total Number Of Head Count",
                                           text:"Total Number Of Head Count",
                                           isOptional: false,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.digitsOnly,
+                                            FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                                            LengthLimitingTextInputFormatter(10),
+                                          ],
                                           controller: controllers.noOfHeadCountCrt,
                                           width:textFieldSize,
                                           keyboardType: TextInputType.text,

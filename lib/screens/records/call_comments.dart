@@ -14,6 +14,7 @@ import '../../components/custom_search_textfield.dart';
 import '../../components/custom_text.dart';
 import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
+import 'package:intl/intl.dart';
 
 class CallComments extends StatefulWidget {
   const CallComments({super.key});
@@ -748,7 +749,7 @@ class _CallCommentsState extends State<CallComments> {
                                       isBold: true,
                                       colors: Colors.white,
                                     ),
-                                    const SizedBox(width: 3),
+                                    3.width,
                                     GestureDetector(
                                       onTap: (){
                                         if(controllers.sortFieldCallActivity.value=='customerName' && controllers.sortOrderCallActivity.value=='asc'){
@@ -774,12 +775,37 @@ class _CallCommentsState extends State<CallComments> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
-                                child: CustomText(//2
-                                  textAlign: TextAlign.left,
-                                  text: "Mobile No",
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
+                                child: Row(
+                                  children: [
+                                    CustomText(//2
+                                      textAlign: TextAlign.left,
+                                      text: "Mobile No",
+                                      size: 15,
+                                      isBold: true,
+                                      colors: Colors.white,
+                                    ),
+                                    3.width,
+                                    GestureDetector(
+                                      onTap: (){
+                                        if(controllers.sortFieldCallActivity.value=='mobile' && controllers.sortOrderCallActivity.value=='asc'){
+                                          controllers.sortOrderCallActivity.value='desc';
+                                        }else{
+                                          controllers.sortOrderCallActivity.value='asc';
+                                        }
+                                        controllers.sortFieldCallActivity.value='mobile';
+                                      },
+                                      child: Obx(() => Image.asset(
+                                        controllers.sortFieldCallActivity.value.isEmpty
+                                            ? "assets/images/arrow.png"
+                                            : controllers.sortOrderCallActivity.value == 'asc'
+                                            ? "assets/images/arrow_up.png"
+                                            : "assets/images/arrow_down.png",
+                                        width: 15,
+                                        height: 15,
+                                      ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Padding(
@@ -827,12 +853,37 @@ class _CallCommentsState extends State<CallComments> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
-                                    child: CustomText(
-                                      textAlign: TextAlign.left,
-                                      text: "Date",
-                                      size: 15,
-                                      isBold: true,
-                                      colors: Colors.white,
+                                    child: Row(
+                                      children: [
+                                        CustomText(
+                                          textAlign: TextAlign.left,
+                                          text: "Date",
+                                          size: 15,
+                                          isBold: true,
+                                          colors: Colors.white,
+                                        ),
+                                        3.width,
+                                        GestureDetector(
+                                          onTap: (){
+                                            if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
+                                              controllers.sortOrderCallActivity.value='desc';
+                                            }else{
+                                              controllers.sortOrderCallActivity.value='asc';
+                                            }
+                                            controllers.sortFieldCallActivity.value='date';
+                                          },
+                                          child: Obx(() => Image.asset(
+                                            controllers.sortFieldCallActivity.value.isEmpty
+                                                ? "assets/images/arrow.png"
+                                                : controllers.sortOrderCallActivity.value == 'asc'
+                                                ? "assets/images/arrow_up.png"
+                                                : "assets/images/arrow_down.png",
+                                            width: 15,
+                                            height: 15,
+                                          ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   // Obx(() => GestureDetector(
@@ -900,6 +951,33 @@ class _CallCommentsState extends State<CallComments> {
                                 final nameA = (a.customerName).toLowerCase();
                                 final nameB = (b.customerName).toLowerCase();
                                 final comparison = nameA.compareTo(nameB);
+                                return controllers.sortOrderCallActivity.value == 'asc'
+                                    ? comparison
+                                    : -comparison;
+                              });
+                            }
+                            if (controllers.sortFieldCallActivity.value == 'mobile') {
+                              filteredList.sort((a, b) {
+                                final nameA = (a.toData).toLowerCase();
+                                final nameB = (b.toData).toLowerCase();
+                                final comparison = nameA.compareTo(nameB);
+                                return controllers.sortOrderCallActivity.value == 'asc'
+                                    ? comparison
+                                    : -comparison;
+                              });
+                            }
+                            if (controllers.sortFieldCallActivity.value == 'date') {
+                              filteredList.sort((a, b) {
+                                DateTime parseDate(String dateStr) {
+                                  try {
+                                    return DateFormat("dd.MM.yyyy hh:mm a").parse(dateStr);
+                                  } catch (e) {
+                                    return DateTime(1900);
+                                  }
+                                }
+                                final dateA = parseDate(a.sentDate);
+                                final dateB = parseDate(b.sentDate);
+                                final comparison = dateA.compareTo(dateB);
                                 return controllers.sortOrderCallActivity.value == 'asc'
                                     ? comparison
                                     : -comparison;
