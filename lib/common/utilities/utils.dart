@@ -1491,36 +1491,51 @@ class Utils {
                   controllers.isSettingsExpanded.value=false;
                 }),
             ),
-            controllers.storage.read("role")!="See All Customer Records"?0.height:Obx(() => Column(
+            controllers.storage.read("role") != "See All Customer Records"
+                ? 0.height
+                : Obx(() => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 15.height,
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     controllers.oldIndex.value = controllers.selectedIndex.value;
-                    controllers.selectedIndex.value =7;
+                    controllers.selectedIndex.value = 7;
                     controllers.isSettingsExpanded.toggle();
                   },
                   child: Row(
                     children: [
                       12.width,
-                      Text(
-                        "Settings",
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
+                      Expanded(
+                        child: Text(
+                          "Settings",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
                             color: controllers.selectedIndex.value == 7
                                 ? colorsConst.primary
                                 : Colors.black,
                             fontSize: 15,
                             fontFamily: "Lato",
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
+                      Icon(
+                        controllers.isSettingsExpanded.value
+                            ? Icons.keyboard_arrow_up   // 👆 arrow up when open
+                            : Icons.keyboard_arrow_down, // 👇 arrow down when closed
+                        color: controllers.selectedIndex.value == 7
+                            ? colorsConst.primary
+                            : Colors.black,
+                        size: 22,
+                      ),
+                      12.width,
                     ],
                   ),
                 ),
                 if (controllers.isSettingsExpanded.value) ...[
                   Padding(
-                    padding: const EdgeInsets.only(left: 12, top: 8,),
+                    padding: const EdgeInsets.only(left: 12, top: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 5,
@@ -1534,10 +1549,10 @@ class Utils {
                     ),
                   ),
                 ],
-                controllers.isSettingsExpanded.value?1.height:15.height,
+                controllers.isSettingsExpanded.value ? 1.height : 15.height,
               ],
-            )
-            ),
+            )),
+
             Obx(() => CustomSideBarText(
                       boxColor: controllers.selectedIndex.value == 10
                           ? const Color(0xffF3F8FD)
@@ -1861,166 +1876,264 @@ class Utils {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 180, 0),
-                child: Tooltip(
-                  message: "Click to close the side panel.",
-                  child: Obx(()=>InkWell(
-                      focusColor: Colors.transparent,
-                      onTap: (){
-                        controllers.isRightOpen.value=!controllers.isRightOpen.value;
-                      },
-                      // icon: Icon(controllers.isRightOpen.value?Icons.arrow_forward_ios:Icons.arrow_back_ios,
-                      //   color: colorsConst.third,)
-                    child: CircleAvatar(
-                      backgroundColor: colorsConst.secondary,
-                      child: Icon(controllers.isRightOpen.value?Icons.chevron_right:
-                      Icons.chevron_left,color: Colors.black,),
-                    )
-                  ),
-                  ),
+                padding: const EdgeInsets.only(right: 50.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Tooltip(
+                      message: "Click to close the side panel.",
+                      child: Obx(() => InkWell(
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          controllers.isRightOpen.value = !controllers.isRightOpen.value;
+                        },
+                        child: CircleAvatar(
+                          radius: 16,
+                          backgroundColor: colorsConst.secondary,
+                          child: Icon(
+                            controllers.isRightOpen.value
+                                ? Icons.chevron_right
+                                : Icons.chevron_left,
+                            color: Colors.black,
+                            size: 18,
+                          ),
+                        ),
+                      )),
+                    ),
+                    40.width,
+                    IgnorePointer(
+                      child: CustomText(
+                        text: "Lead Stages",
+                        colors: Colors.black,
+                        size: 16,
+                        isBold: true,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Stack(
-                children: [
-                  Obx(() => Image.asset(
-                      controllers.selectedIndex.value == 1
-                          ? "assets/images/sSuspects.png"
-                          : "assets/images/suspects.png",
-                          width: 220,
-                    ),
-                  ),
-                  Positioned(
-                      left: 85,
-                      bottom: 15,
-                      child: Obx(() => Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomText(
-                              text: "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[0]["value"]}",
-                              colors: controllers.selectedIndex.value == 1
-                                  ? Colors.black
-                                  : colorsConst.textColor,
-                              size: 15,
-                              //isBold: true,
-                            ),
-                          CustomText(
-                            text: "${controllers.allNewLeadsLength.value}",
-                            colors: controllers.selectedIndex.value == 1
-                                ? colorsConst.primary
-                                : colorsConst.primary,
-                            size: 16,
-                            isBold: true,
-                          ),
-                        ],
-                      ),
-                      )
-                  )
-                ],
-              ),
-              Stack(
-                children: [
-                  Obx(() => Image.asset(
-                      controllers.selectedIndex.value == 2
-                          ? "assets/images/sProspects.png"
-                          : "assets/images/prospects.png",
 
-                    ),
-                  ),
-                  Positioned(
-                      left: 75,
-                      bottom: 15,
-                      child: Obx(() => Column(
-                        children: [
-                          CustomText(
-                              text: "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[1]["value"]}",
-                              colors: controllers.selectedIndex.value == 2
-                                  ? Colors.black
-                                  : colorsConst.textColor,
-                              size: 15,
-                              //isBold: true,
-                            ),
-                          CustomText(
-                            text: "${controllers.allLeadsLength.value}",
-                            colors: controllers.selectedIndex.value == 2
-                                ? colorsConst.primary
-                                : colorsConst.primary,
-                            size: 16,
-                            isBold: true,
-                          ),
-                        ],
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Suspects(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
                       ),
-                      ))
-                ],
-              ),
-              Stack(
-                children: [
-                  Obx(() => Image.asset(
-                      controllers.selectedIndex.value == 3
-                          ? "assets/images/sQualified.png"
-                          : "assets/images/qualified.png",
-                          width: 200,
-                    ),
-                  ),
-                  Positioned(
-                      left: 70,
-                      bottom: 30,
-                      child: Obx(
-                            () => Column(
-                              children: [
-                                CustomText(text:
-                                "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[2]["value"]}",
-                                                          colors: controllers.selectedIndex.value == 3
-                                  ? Colors.black
-                                  : colorsConst.textColor,
-                                                          size: 15,
-                                                          //isBold: true,
-                                                        ),
-                                CustomText(text:
-                                "${controllers.allGoodLeadsLength.value}",
-                                  colors: controllers.selectedIndex.value == 3
+                    );
+                  },
+                  child: Stack(
+                    children: [
+                      Obx(() => Image.asset(
+                          controllers.selectedIndex.value == 1
+                              ? "assets/images/sSuspects.png"
+                              : "assets/images/suspects.png",
+                              width: 220,
+                        ),
+                      ),
+                      Positioned(
+                          left: 85,
+                          bottom: 15,
+                          child: Obx(() => Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IgnorePointer(
+                                child: CustomText(
+                                    text: "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[0]["value"]}",
+                                    colors: controllers.selectedIndex.value == 1
+                                        ? Colors.black
+                                        : colorsConst.textColor,
+                                    size: 15,
+                                    //isBold: true,
+                                  ),
+                              ),
+                              IgnorePointer(
+                                child: CustomText(
+                                  text: "${controllers.allNewLeadsLength.value}",
+                                  colors: controllers.selectedIndex.value == 1
                                       ? colorsConst.primary
                                       : colorsConst.primary,
                                   size: 16,
                                   isBold: true,
                                 ),
-                              ],
-                            ),
-                      ))
-                ],
-              ),
-              Stack(
-                children: [
-                  Obx(() => Image.asset(
-                      controllers.selectedIndex.value == 4
-                          ? "assets/images/sCustomer.png"
-                          : "assets/images/customer.png",
-                    ),
-                  ),
-                  Positioned(
-                      left: 20,
-                      bottom: 35,
-                      child: Obx(() => Column(
-                        children: [
-                          CustomText(
-                              text: "Customers",
-                              colors: controllers.selectedIndex.value == 4
-                                  ? Colors.black
-                                  : colorsConst.textColor,
-                              size: 13,
-                              //isBold: true,
-                            ),
-                          CustomText(
-                            text: "${controllers.allCustomerLength.value}",
-                            colors: controllers.selectedIndex.value == 4
-                                ? colorsConst.primary
-                                : colorsConst.primary,
-                            size: 13,
-                            isBold: true,
+                              ),
+                            ],
                           ),
-                        ],
+                          )
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Prospects(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
                       ),
-                      ))
-                ],
+                    );
+                  },
+                  child: Stack(
+                    children: [
+                      Obx(() => Image.asset(
+                          controllers.selectedIndex.value == 2
+                              ? "assets/images/sProspects.png"
+                              : "assets/images/prospects.png",
+
+                        ),
+                      ),
+                      Positioned(
+                          left: 75,
+                          bottom: 15,
+                          child: Obx(() => Column(
+                            children: [
+                              IgnorePointer(
+                                child: CustomText(
+                                    text: "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[1]["value"]}",
+                                    colors: controllers.selectedIndex.value == 2
+                                        ? Colors.black
+                                        : colorsConst.textColor,
+                                    size: 15,
+                                    //isBold: true,
+                                  ),
+                              ),
+                              IgnorePointer(
+                                child: CustomText(
+                                  text: "${controllers.allLeadsLength.value}",
+                                  colors: controllers.selectedIndex.value == 2
+                                      ? colorsConst.primary
+                                      : colorsConst.primary,
+                                  size: 16,
+                                  isBold: true,
+                                ),
+                              ),
+                            ],
+                          ),
+                          ))
+                    ],
+                  ),
+                ),
+              ),
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const Qualified(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                  },
+                  child: Stack(
+                    children: [
+                      Obx(() => Image.asset(
+                          controllers.selectedIndex.value == 3
+                              ? "assets/images/sQualified.png"
+                              : "assets/images/qualified.png",
+                              width: 200,
+                        ),
+                      ),
+                      Positioned(
+                          left: 70,
+                          bottom: 30,
+                          child: Obx(
+                                () => Column(
+                                  children: [
+                                    IgnorePointer(
+                                      child: CustomText(text:
+                                      "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[2]["value"]}",
+                                                                colors: controllers.selectedIndex.value == 3
+                                        ? Colors.black
+                                        : colorsConst.textColor,
+                                                                size: 15,
+                                                                //isBold: true,
+                                                              ),
+                                    ),
+                                    IgnorePointer(
+                                      child: CustomText(text:
+                                      "${controllers.allGoodLeadsLength.value}",
+                                        colors: controllers.selectedIndex.value == 3
+                                            ? colorsConst.primary
+                                            : colorsConst.primary,
+                                        size: 16,
+                                        isBold: true,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                          ))
+                    ],
+                  ),
+                ),
+              ),
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                        const ViewCustomer(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                  },
+                  child: Stack(
+                    children: [
+                      Obx(() => Image.asset(
+                          controllers.selectedIndex.value == 4
+                              ? "assets/images/sCustomer.png"
+                              : "assets/images/customer.png",
+                        ),
+                      ),
+                      Positioned(
+                          left: 20,
+                          bottom: 35,
+                          child: Obx(() => Column(
+                            children: [
+                              IgnorePointer(
+                                child: CustomText(
+                                    text: "Customers",
+                                    colors: controllers.selectedIndex.value == 4
+                                        ? Colors.black
+                                        : colorsConst.textColor,
+                                    size: 13,
+                                    //isBold: true,
+                                  ),
+                              ),
+                              IgnorePointer(
+                                child: CustomText(
+                                  text: "${controllers.allCustomerLength.value}",
+                                  colors: controllers.selectedIndex.value == 4
+                                      ? colorsConst.primary
+                                      : colorsConst.primary,
+                                  size: 13,
+                                  isBold: true,
+                                ),
+                              ),
+                            ],
+                          ),
+                          ))
+                    ],
+                  ),
+                ),
               ),
               15.height
             ],
@@ -4151,6 +4264,422 @@ class Utils {
                       Text("Notification Type",
                           style: GoogleFonts.lato(
                               fontSize: 17, color: const Color(0xff737373))),
+                      Consumer<ReminderProvider>(
+                        builder: (context, provider, _) {
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: RadioListTile(
+                                  title: Text(
+                                    "Follow-up Reminder",
+                                    style: GoogleFonts.lato(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  value: "followup",
+                                  groupValue: provider.selectedNotification,
+                                  activeColor: const Color(0xFF0078D7),
+                                  onChanged: (v) =>
+                                      provider.setNotification(v as String),
+                                ),
+                              ),
+                              Expanded(
+                                child: RadioListTile(
+                                  title: Text(
+                                    "Appointment Reminder",
+                                    style: GoogleFonts.lato(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  value: "meeting",
+                                  groupValue: provider.selectedNotification,
+                                  activeColor: const Color(0xFF0078D7),
+                                  onChanged: (v) =>
+                                      provider.setNotification(v as String),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+
+                      8.height,
+                      Consumer<ReminderProvider>(
+                        builder: (context, provider, _) {
+                          if (provider.selectedNotification == "task") {
+                            return const SizedBox.shrink();
+                          }
+                          return Column(
+                            children: [
+                              /// Location
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Location",
+                                            style: GoogleFonts.lato(
+                                                fontSize: 17,
+                                                color: const Color(0xff737373))),
+                                        const SizedBox(height: 5),
+                                        DropdownButtonFormField<String>(
+                                          value: remController.updateLocation,
+                                          dropdownColor: Colors.white,
+                                          style: GoogleFonts.lato(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                          ),
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey.shade300),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey.shade300),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey.shade300),
+                                            ),
+                                            contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 12,
+                                                vertical: 10),
+                                          ),
+                                          items: ["Online", "Office"]
+                                              .map(
+                                                (e) => DropdownMenuItem(
+                                              value: e,
+                                              child: Text(
+                                                e,
+                                                style: GoogleFonts.lato(
+                                                  color: Colors.black,
+                                                  fontSize: 17,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                              .toList(),
+                                          onChanged: (v) => setState(
+                                                  () => remController.updateLocation = v),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 18),
+                              /// Start & End Date/Time
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Start Date & Time",
+                                            style: GoogleFonts.lato(
+                                                fontSize: 17,
+                                                color:
+                                                const Color(0xff737373))),
+                                        const SizedBox(height: 5),
+                                        TextFormField(
+                                          controller:
+                                          remController.updateStartController,
+                                          readOnly: true,
+                                          onTap: () => _selectDateTime(
+                                              context: context, isStart: true),
+                                          style: GoogleFonts.lato(
+                                            color: Colors.black,
+                                            fontSize: 17,
+                                          ),
+                                          decoration: InputDecoration(
+                                            suffixIcon: const Icon(
+                                              Icons.calendar_today_outlined,
+                                              size: 20,
+                                              color: Colors.grey,
+                                            ),
+                                            errorText: startError,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.shade300,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text("End Date & Time",
+                                            style: GoogleFonts.lato(
+                                                fontSize: 17,
+                                                color:
+                                                const Color(0xff737373))),
+                                        const SizedBox(height: 5),
+                                        TextFormField(
+                                          controller: remController.updateEndController,
+                                          readOnly: true,
+                                          onTap: () => _selectDateTime(
+                                              context: context, isStart: false),
+                                          style: GoogleFonts.lato(
+                                            color: Colors.black,
+                                            fontSize: 17,
+                                          ),
+                                          decoration: InputDecoration(
+                                            suffixIcon: const Icon(
+                                              Icons.calendar_today_outlined,
+                                              size: 20,
+                                              color: Colors.grey,
+                                            ),
+                                            errorText: endError,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.shade300,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              10.height,
+
+                              /// Details field
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Details",
+                                      style: GoogleFonts.lato(
+                                          fontSize: 17,
+                                          color: Color(0xff737373))),
+                                  const SizedBox(height: 5),
+                                  TextFormField(
+                                    textCapitalization:
+                                    TextCapitalization.sentences,
+                                    controller: remController.updateDetailsController,
+                                    maxLines: 2,
+                                    style: GoogleFonts.lato(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: "Appointment Points",
+                                      hintStyle: GoogleFonts.lato(
+                                        color: const Color(0xFFCCCCCC),
+                                        fontSize: 17,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(4),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+
+                      13.height,
+
+                      /// Action buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            width: 80,
+                            height: 30,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(7),
+                                  side: const BorderSide(color: Color(0xff0078D7)),
+                                ),
+                                padding: EdgeInsets.zero,
+                                elevation: 0,
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text(
+                                "Cancel",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          CustomLoadingButton(
+                            callback: ()async{
+                              setState(() {
+                                titleError = remController.updateTitleController.text.trim().isEmpty
+                                    ? "Please enter reminder title"
+                                    : null;
+                                startError = remController.updateStartController.text.trim().isEmpty
+                                    ? "Please select start date & time"
+                                    : null;
+                                endError = remController.updateEndController.text.trim().isEmpty
+                                    ? "Please select end date & time"
+                                    : null;
+                              });
+                              if (titleError == null && startError == null && endError == null) {
+                                final provider = Provider.of<ReminderProvider>(context, listen: false);
+                                remController.updateReminderAPI(context, provider.selectedNotification,id);
+                              }else{
+                                controllers.productCtr.reset();
+                              }
+                            },
+                            height: 40,
+                            isLoading: true,
+                            backgroundColor: colorsConst.primary,
+                            radius: 7,
+                            width: 150,
+                            controller: controllers.productCtr,
+                            isImage: false,
+                            text: "Update Reminder",
+                            textColor: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void showUpdateRecordDialog(String id,BuildContext context) {
+    String? titleError;
+    String? startError;
+    String? endError;
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              insetPadding: const EdgeInsets.symmetric(horizontal: 80, vertical: 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                width: 630,
+                color: Colors.white,
+                padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Update Appointment",
+                            style: GoogleFonts.lato(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const Text(
+                              "×",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Divider(thickness: 1, color: Colors.grey.shade300),
+                      const SizedBox(height: 8),
+
+                      /// Reminder title
+                      Text("Appointment Title",
+                          style: GoogleFonts.lato(
+                              fontSize: 17, color: Color(0xff737373))),
+                      const SizedBox(height: 5),
+                      TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        controller: remController.updateTitleController,
+                        onChanged: (value) {
+                          if (value.toString().isNotEmpty) {
+                            String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                            if (newValue != value) {
+                              remController.updateTitleController.value = remController.updateTitleController.value.copyWith(
+                                text: newValue,
+                                selection: TextSelection.collapsed(offset: newValue.length),
+                              );
+                            }
+                          }
+                          if (value.trim().isNotEmpty) {
+                            setState(() {
+                              titleError = null;
+                            });
+                          }
+                        },
+                        style: GoogleFonts.lato(
+                          color: Colors.black,
+                          fontSize: 17,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: "Appointment title",
+                          errorText: titleError,
+                          hintStyle: TextStyle(
+                            color: Color(0xFFCCCCCC),
+                            fontSize: 17,
+                            fontFamily: GoogleFonts.lato().fontFamily,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+
                       Consumer<ReminderProvider>(
                         builder: (context, provider, _) {
                           return Row(

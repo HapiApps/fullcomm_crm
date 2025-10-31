@@ -16,6 +16,8 @@ import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
 import 'package:intl/intl.dart';
 
+import '../../controller/reminder_controller.dart';
+
 class CallComments extends StatefulWidget {
   const CallComments({super.key});
 
@@ -535,6 +537,98 @@ class _CallCommentsState extends State<CallComments> {
                               controllers.searchText.value = value.toString().trim();
                           },
                         ),
+                        remController.selectedRecordCallIds.isNotEmpty?
+                        InkWell(
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          onTap: (){
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: CustomText(
+                                    text: "Are you sure delete this Call records?",
+                                    size: 16,
+                                    isBold: true,
+                                    colors: colorsConst.textColor,
+                                  ),
+                                  actions: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(color: colorsConst.primary),
+                                              color: Colors.white),
+                                          width: 80,
+                                          height: 25,
+                                          child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                shape: const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.zero,
+                                                ),
+                                                backgroundColor: Colors.white,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: CustomText(
+                                                text: "Cancel",
+                                                colors: colorsConst.primary,
+                                                size: 14,
+                                              )),
+                                        ),
+                                        10.width,
+                                        CustomLoadingButton(
+                                          callback: ()async{
+                                            remController.deleteRecordCallAPI(context);
+                                          },
+                                          height: 35,
+                                          isLoading: true,
+                                          backgroundColor: colorsConst.primary,
+                                          radius: 2,
+                                          width: 80,
+                                          controller: controllers.productCtr,
+                                          isImage: false,
+                                          text: "Delete",
+                                          textColor: Colors.white,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: colorsConst.secondary,
+                              borderRadius: BorderRadius.circular(4),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                ),
+                              ],
+                            ),
+                            child:  Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset("assets/images/action_delete.png"),
+                                10.width,
+                                CustomText(
+                                  text: "Delete",
+                                  colors: colorsConst.textColor,
+                                  size: 14,
+                                  isBold: true,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ):1.width,
                         10.width,
                         // Obx(() => Radio(
                         //       activeColor: colorsConst.third,
@@ -742,6 +836,20 @@ class _CallCommentsState extends State<CallComments> {
                                 padding: const EdgeInsets.all(10.0),
                                 child: Row(
                                   children: [
+                                    CustomText(
+                                      textAlign: TextAlign.left,
+                                      text: "S.NO",//0
+                                      size: 15,
+                                      isBold: true,
+                                      colors: Colors.white,
+                                    ),
+                                    CustomText(
+                                      textAlign: TextAlign.left,
+                                      text: "Actions",//1
+                                      size: 15,
+                                      isBold: true,
+                                      colors: Colors.white,
+                                    ),
                                     CustomText(
                                       textAlign: TextAlign.left,
                                       text: "Customer Name",
@@ -1049,6 +1157,109 @@ class _CallCommentsState extends State<CallComments> {
                                             color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                           ),
                                           children:[
+                                            SizedBox(
+                                              width: 50,
+                                              child: Row(
+                                                children: [
+                                                  Checkbox(
+                                                    value: remController.isCheckedRecordCall(data.id.toString()),
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        remController.toggleRecordSelectionCall(data.id.toString());
+                                                      });
+                                                    },
+                                                  ),
+                                                  //CustomText(text: "${index + 1}"),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  IconButton(
+                                                      onPressed: (){
+                                                        // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
+                                                        // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
+                                                        // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
+                                                        // remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
+                                                        // remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
+                                                        utils.showUpdateRecordDialog("",context);
+                                                      },
+                                                      icon:  SvgPicture.asset(
+                                                        "assets/images/a_edit.svg",
+                                                        width: 16,
+                                                        height: 16,
+                                                      )),
+                                                  IconButton(
+                                                      onPressed: (){
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext context) {
+                                                            return AlertDialog(
+                                                              content: CustomText(
+                                                                text: "Are you sure delete this Call records?",
+                                                                size: 16,
+                                                                isBold: true,
+                                                                colors: colorsConst.textColor,
+                                                              ),                                                                  actions: [
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                                children: [
+                                                                  Container(
+                                                                    decoration: BoxDecoration(
+                                                                        border: Border.all(color: colorsConst.primary),
+                                                                        color: Colors.white),
+                                                                    width: 80,
+                                                                    height: 25,
+                                                                    child: ElevatedButton(
+                                                                        style: ElevatedButton.styleFrom(
+                                                                          shape: const RoundedRectangleBorder(
+                                                                            borderRadius: BorderRadius.zero,
+                                                                          ),
+                                                                          backgroundColor: Colors.white,
+                                                                        ),
+                                                                        onPressed: () {
+                                                                          Navigator.pop(context);
+                                                                        },
+                                                                        child: CustomText(
+                                                                          text: "Cancel",
+                                                                          colors: colorsConst.primary,
+                                                                          size: 14,
+                                                                        )),
+                                                                  ),
+                                                                  10.width,
+                                                                  CustomLoadingButton(
+                                                                    callback: ()async{
+                                                                      remController.selectedRecordCallIds.add(data.id.toString());
+                                                                      remController.deleteRecordCallAPI(context);
+                                                                    },
+                                                                    height: 35,
+                                                                    isLoading: true,
+                                                                    backgroundColor: colorsConst.primary,
+                                                                    radius: 2,
+                                                                    width: 80,
+                                                                    controller: controllers.productCtr,
+                                                                    isImage: false,
+                                                                    text: "Delete",
+                                                                    textColor: Colors.white,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                            );
+                                                          },
+                                                        );
+                                                      },
+                                                      icon: SvgPicture.asset(
+                                                        "assets/images/a_delete.svg",
+                                                        width: 16,
+                                                        height: 16,
+                                                      ))
+                                                ],
+                                              ),
+                                            ),
                                             Tooltip(
                                               message: data.customerName.toString()=="null"?"":data.customerName.toString(),
                                               child: Padding(

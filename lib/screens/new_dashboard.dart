@@ -136,120 +136,201 @@ class _NewDashboardState extends State<NewDashboard> {
                             ),
                           ],
                         ),
-                        5.height,
+                        7.height,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Obx(() {
-                              return Row(
-                                spacing: 20,
-                                children: dashController.filters.map((filter) {
-                                  final bool isSelected = dashController.selectedSortBy.value == filter;
-                                  return GestureDetector(
-                                    onTap: () {
-                                      dashController.selectedSortBy.value = filter;
-                                      DateTime now = DateTime.now();
-                                      //DateTime tomorrow = DateTime.now().add(Duration(days: 1));
-                                      switch (filter) {
-                                        case "Today":
-                                          dashController.selectedRange.value = DateTimeRange(
-                                            start: DateTime(now.year, now.month, now.day),
-                                            end: DateTime(now.year, now.month, now.day),
-                                          );
-                                          break;
-
-                                        case "Yesterday":
-                                          DateTime yesterday = now.subtract(Duration(days: 1));
-                                          dashController.selectedRange.value = DateTimeRange(
-                                            start: DateTime(yesterday.year, yesterday.month, yesterday.day),
-                                            end: DateTime(now.year, now.month, now.day),
-                                          );
-                                          break;
-                                        case "Last 7 Days":
-                                          dashController.selectedRange.value = DateTimeRange(
-                                            start: now.subtract(Duration(days: 6)),
-                                            end: now,
-                                          );
-                                          break;
-                                        case "Last 30 Days":
-                                          dashController.selectedRange.value = DateTimeRange(
-                                            start: now.subtract(Duration(days: 30)),
-                                            end: now,
-                                          );
-                                          break;
-                                      }
-                                      dashController.getDashboardReport();
-                                      final range = dashController.selectedRange.value;
-                                      var today = DateTime.now();
-                                      if(dashController.selectedSortBy.value!="Today"&&dashController.selectedSortBy.value!="Yesterday"){
-                                        dashController.getCustomerReport(range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}", range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
-                                      }
-                                      else{
-                                        var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2,'0')}-${DateTime.now().day.toString().padLeft(2,'0')}";
-                                        var last7days = DateTime.now().subtract(Duration(days: 7));
-                                        dashController.getCustomerReport("${last7days.year}-${last7days.month.toString().padLeft(2,'0')}-${last7days.day.toString().padLeft(2,'0')}",today);
-                                      }
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        color: isSelected ? Colors.blueAccent : Colors.white,
-                                        borderRadius: BorderRadius.circular(4),
-                                        border: Border.all(
-                                          color: isSelected ? Colors.blueAccent : Colors.grey.shade400,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        filter,
-                                        style: TextStyle(
-                                          color: isSelected ? Colors.white : Colors.black87,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Lato",
-                                        ),
-                                      ),
+                              return Column(
+                                children: [
+                                Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // Left Divider
+                                  SizedBox(
+                                    width: 100, // adjust width as needed
+                                    child: Divider(
+                                      thickness: 1.2,
+                                      color: Colors.grey.shade400,
                                     ),
-                                  );
-                                }).toList(),
-                              );
-                            }),
-                            20.width,
-                            InkWell(
-                              onTap: (){
-                                dashController.showDatePickerDialog(context);
-                              },
-                              child: Container(
-                                width: 200,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(color: Colors.grey.shade400),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Obx(() {
-                                      final range = dashController.selectedRange.value;
-                                      if (range == null) {
-                                        return const Text(
-                                          "Filter by Date Range",
-                                          style: TextStyle(color: Colors.black54,fontFamily: "Lato",),
-                                        );
-                                      }
-                                      return Text(
-                                        "${range.start.day}-${range.start.month}-${range.start.year}  -  ${range.end.day}-${range.end.month}-${range.end.year}",
-                                        style: const TextStyle(
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.w500,
+                                  ),
+
+                                  const SizedBox(width: 10),
+
+                                  // Center Text with Obx
+                                  Obx(() {
+                                    final range = dashController.selectedRange.value;
+                                    final selected = dashController.selectedSortBy.value;
+
+                                    if (range == null) {
+                                      return const Text(
+                                        "Filter by Date Range",
+                                        style: TextStyle(
+                                          color: Colors.black54,
                                           fontFamily: "Lato",
                                         ),
                                       );
-                                    }),
-                                    const SizedBox(width: 5),
-                                    const Icon(Icons.calendar_today,
-                                        color: Colors.grey, size: 17),
-                                    const SizedBox(width: 10),
-                                  ],
+                                    }
+
+                                    String formatDate(DateTime date) =>
+                                        "${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}";
+
+                                    String displayText;
+                                    if (selected == "Today") {
+                                      displayText = "📅 ${formatDate(range.start)}";
+                                    } else if (selected == "Yesterday") {
+                                      displayText = "📅 ${formatDate(range.start)}";
+                                    } else {
+                                      displayText =
+                                      "📅 ${formatDate(range.start)}  —  ${formatDate(range.end)}";
+                                    }
+
+                                    return Text(
+                                      displayText,
+                                      style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: "Lato",
+                                        fontSize: 15,
+                                      ),
+                                    );
+                                  }),
+
+                                  const SizedBox(width: 10),
+
+                                  // Right Divider
+                                  SizedBox(
+                                    width: 100, // adjust width as needed
+                                    child: Divider(
+                                      thickness: 1.2,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                                  7.height,
+                                  Row(
+                                    spacing: 20,
+                                    children: dashController.filters.map((filter) {
+                                      final bool isSelected = dashController.selectedSortBy.value == filter;
+                                      return MouseRegion(
+                                        cursor: SystemMouseCursors.click, // 👈 Hand cursor on hover
+                                        child: GestureDetector(
+                                          behavior: HitTestBehavior.opaque, // Ensures tap area is fully active
+                                          onTap: () {
+                                            dashController.selectedSortBy.value = filter;
+                                            DateTime now = DateTime.now();
+                                            //DateTime tomorrow = DateTime.now().add(Duration(days: 1));
+                                            switch (filter) {
+                                              case "Today":
+                                                dashController.selectedRange.value = DateTimeRange(
+                                                  start: DateTime(now.year, now.month, now.day),
+                                                  end: DateTime(now.year, now.month, now.day),
+                                                );
+                                                break;
+
+                                              case "Yesterday":
+                                                DateTime yesterday = now.subtract(Duration(days: 1));
+                                                dashController.selectedRange.value = DateTimeRange(
+                                                  start: DateTime(yesterday.year, yesterday.month, yesterday.day),
+                                                  end: DateTime(now.year, now.month, now.day),
+                                                );
+                                                break;
+                                              case "Last 7 Days":
+                                                dashController.selectedRange.value = DateTimeRange(
+                                                  start: now.subtract(Duration(days: 6)),
+                                                  end: now,
+                                                );
+                                                break;
+                                              case "Last 30 Days":
+                                                dashController.selectedRange.value = DateTimeRange(
+                                                  start: now.subtract(Duration(days: 30)),
+                                                  end: now,
+                                                );
+                                                break;
+                                            }
+                                            dashController.getDashboardReport();
+                                            final range = dashController.selectedRange.value;
+                                            var today = DateTime.now();
+                                            if(dashController.selectedSortBy.value!="Today"&&dashController.selectedSortBy.value!="Yesterday"){
+                                              dashController.getCustomerReport(range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}", range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
+                                            }
+                                            else{
+                                              var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2,'0')}-${DateTime.now().day.toString().padLeft(2,'0')}";
+                                              var last7days = DateTime.now().subtract(Duration(days: 7));
+                                              dashController.getCustomerReport("${last7days.year}-${last7days.month.toString().padLeft(2,'0')}-${last7days.day.toString().padLeft(2,'0')}",today);
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                            decoration: BoxDecoration(
+                                              color: isSelected ? Colors.blueAccent : Colors.white,
+                                              borderRadius: BorderRadius.circular(4),
+                                              border: Border.all(
+                                                color: isSelected ? Colors.blueAccent : Colors.grey.shade400,
+                                              ),
+                                            ),
+                                            child: IgnorePointer(
+                                              child: Text(
+                                                filter,
+                                                style: TextStyle(
+                                                  color: isSelected ? Colors.white : Colors.black87,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: "Lato",
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ],
+                              );
+                            }),
+                            20.width,
+
+                            Padding(
+                              padding: const EdgeInsets.only(top:25.0),
+                              child: InkWell(
+                                onTap: (){
+                                  dashController.showDatePickerDialog(context);
+                                },
+                                child: Container(
+                                  width: 200,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(color: Colors.grey.shade400),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Obx(() {
+                                        final range = dashController.selectedRange.value;
+                                        if (range == null) {
+                                          return const Text(
+                                            "Filter by Date Range",
+                                            style: TextStyle(color: Colors.black54,fontFamily: "Lato",),
+                                          );
+                                        }
+                                        return Text(
+                                          "${range.start.day}-${range.start.month}-${range.start.year}  -  ${range.end.day}-${range.end.month}-${range.end.year}",
+                                          style: const TextStyle(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "Lato",
+                                          ),
+                                        );
+                                      }),
+                                      const SizedBox(width: 5),
+                                      const Icon(Icons.calendar_today,
+                                          color: Colors.grey, size: 17),
+                                      const SizedBox(width: 10),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -269,6 +350,87 @@ class _NewDashboardState extends State<NewDashboard> {
                                     controller: _leftController,
                                     child: Column(
                                       children: [
+                                        Wrap(
+                                          spacing: 45,
+                                          runSpacing: 35,
+                                          children: [
+                                            InkWell(
+                                              onTap: (){
+                                                controllers.changeTab(1);
+                                                Navigator.push(
+                                                  context,
+                                                  PageRouteBuilder(
+                                                    pageBuilder: (context, animation1, animation2) =>
+                                                    const Records(isReload: "true",),
+                                                    transitionDuration: Duration.zero,
+                                                    reverseTransitionDuration: Duration.zero,
+                                                  ),
+                                                );
+                                                controllers.oldIndex.value = controllers.selectedIndex.value;
+                                                controllers.selectedIndex.value = 6;
+                                              },
+                                              child: countShown(width: 130, head: " Mails",
+                                                  count: dashController.totalMails.value.toString(),icon: Icons.email),
+                                            ),
+                                            InkWell(
+                                                onTap: (){
+                                                  controllers.changeTab(0);
+                                                  Navigator.push(
+                                                    context,
+                                                    PageRouteBuilder(
+                                                      pageBuilder: (context, animation1, animation2) =>
+                                                      const Records(isReload: "true",),
+                                                      transitionDuration: Duration.zero,
+                                                      reverseTransitionDuration: Duration.zero,
+                                                    ),
+                                                  );
+                                                  controllers.oldIndex.value = controllers.selectedIndex.value;
+                                                  controllers.selectedIndex.value = 6;
+                                                },
+                                                child: countShown(width: 130, head: " Calls", count: dashController.totalCalls.value.toString(),icon: Icons.call)),
+                                            InkWell(
+                                              onTap: (){
+                                                controllers.changeTab(2);
+                                                Navigator.push(
+                                                  context,
+                                                  PageRouteBuilder(
+                                                    pageBuilder: (context, animation1, animation2) =>
+                                                    const Records(isReload: "true",),
+                                                    transitionDuration: Duration.zero,
+                                                    reverseTransitionDuration: Duration.zero,
+                                                  ),
+                                                );
+                                                controllers.oldIndex.value = controllers.selectedIndex.value;
+                                                controllers.selectedIndex.value = 6;
+                                              },
+                                              child: countShown(width: 135, head: "Appointments",
+                                                  count: dashController.totalMeetings.value.toString(),
+                                                  icon: Icons.calendar_month_outlined),
+                                            ),
+                                            InkWell(
+                                              onTap: (){
+                                                Navigator.push(
+                                                  context,
+                                                  PageRouteBuilder(
+                                                    pageBuilder: (context, animation1, animation2) =>
+                                                    const EmployeeScreen(),
+                                                    transitionDuration: Duration.zero,
+                                                    reverseTransitionDuration: Duration.zero,
+                                                  ),
+                                                );
+                                                controllers.oldIndex.value = controllers.selectedIndex.value;
+                                                controllers.selectedIndex.value = 9;
+                                              },
+                                              child: countShown(
+                                                width: 130,
+                                                head: "New Employees",
+                                                count: dashController.totalEmployees.value.toString(),
+                                                icon: Icons.people_outline,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        10.height,
                                         Container(
                                           height: 220,
                                           decoration: BoxDecoration(
@@ -338,87 +500,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                             ],
                                           ),
                                         ),
-                                        10.height,
-                                        Wrap(
-                                          spacing: 20,
-                                          runSpacing: 10,
-                                          children: [
-                                            InkWell(
-                                              onTap: (){
-                                                controllers.changeTab(1);
-                                                Navigator.push(
-                                                  context,
-                                                  PageRouteBuilder(
-                                                    pageBuilder: (context, animation1, animation2) =>
-                                                    const Records(isReload: "true",),
-                                                    transitionDuration: Duration.zero,
-                                                    reverseTransitionDuration: Duration.zero,
-                                                  ),
-                                                );
-                                                controllers.oldIndex.value = controllers.selectedIndex.value;
-                                                controllers.selectedIndex.value = 6;
-                                              },
-                                              child: countShown(width: 130, head: "Total Mails",
-                                                  count: dashController.totalMails.value.toString(),icon: Icons.email),
-                                            ),
-                                            InkWell(
-                                                  onTap: (){
-                                                    controllers.changeTab(0);
-                                                    Navigator.push(
-                                                      context,
-                                                      PageRouteBuilder(
-                                                        pageBuilder: (context, animation1, animation2) =>
-                                                        const Records(isReload: "true",),
-                                                        transitionDuration: Duration.zero,
-                                                        reverseTransitionDuration: Duration.zero,
-                                                      ),
-                                                    );
-                                                    controllers.oldIndex.value = controllers.selectedIndex.value;
-                                                    controllers.selectedIndex.value = 6;
-                                                  },
-                                                child: countShown(width: 130, head: "Total Calls", count: dashController.totalCalls.value.toString(),icon: Icons.call)),
-                                            InkWell(
-                                              onTap: (){
-                                                controllers.changeTab(2);
-                                                Navigator.push(
-                                                  context,
-                                                  PageRouteBuilder(
-                                                    pageBuilder: (context, animation1, animation2) =>
-                                                    const Records(isReload: "true",),
-                                                    transitionDuration: Duration.zero,
-                                                    reverseTransitionDuration: Duration.zero,
-                                                  ),
-                                                );
-                                                controllers.oldIndex.value = controllers.selectedIndex.value;
-                                                controllers.selectedIndex.value = 6;
-                                              },
-                                              child: countShown(width: 135, head: "Total Appointments",
-                                                  count: dashController.totalMeetings.value.toString(),
-                                                  icon: Icons.calendar_month_outlined),
-                                            ),
-                                            InkWell(
-                                              onTap: (){
-                                                Navigator.push(
-                                                  context,
-                                                  PageRouteBuilder(
-                                                    pageBuilder: (context, animation1, animation2) =>
-                                                    const EmployeeScreen(),
-                                                    transitionDuration: Duration.zero,
-                                                    reverseTransitionDuration: Duration.zero,
-                                                  ),
-                                                );
-                                                controllers.oldIndex.value = controllers.selectedIndex.value;
-                                                controllers.selectedIndex.value = 9;
-                                              },
-                                              child: countShown(
-                                                width: 130,
-                                                head: "Total Employees",
-                                                count: dashController.totalEmployees.value.toString(),
-                                                icon: Icons.people_outline,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+
                                         // Row(
                                         //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         //   children: [
@@ -731,30 +813,36 @@ class _NewDashboardState extends State<NewDashboard> {
             size: 15,
           ),
           5.height,
-          head=="Total Appointments"?Row(
+          head=="Appointments"?Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Container(
-                padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade100,
-                    border: Border.all(
-                      color: Colors.green
-                    ),
-                    borderRadius: BorderRadius.circular(5)
-                  ),
-                  child: Obx(()=>CustomText(text: dashController.completedMeetings.value,colors: Colors.green,size: 14,isBold: true,))
-              ),
-              Container(
+              Tooltip(
+                message: "Upcoming",
+                child: Container(
                   padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                  decoration: BoxDecoration(
-                      color: Colors.red.shade100,
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade100,
                       border: Border.all(
-                          color: Colors.red
+                        color: Colors.green
                       ),
                       borderRadius: BorderRadius.circular(5)
-                  ),
-                  child: Obx(()=>CustomText(text: dashController.pendingMeetings.value,colors: Colors.red,size: 14,isBold: true,))
+                    ),
+                    child: Obx(()=>CustomText(text: dashController.completedMeetings.value,colors: Colors.green,size: 14,isBold: true,))
+                ),
+              ),
+              Tooltip(
+                message: "Overdue",
+                child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                    decoration: BoxDecoration(
+                        color: Colors.red.shade100,
+                        border: Border.all(
+                            color: Colors.red
+                        ),
+                        borderRadius: BorderRadius.circular(5)
+                    ),
+                    child: Obx(()=>IgnorePointer(child: CustomText(text: dashController.pendingMeetings.value,colors: Colors.red,size: 14,isBold: true,)))
+                ),
               ),
             ],
           ):0.height

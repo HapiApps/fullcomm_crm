@@ -16,6 +16,8 @@ import '../../components/custom_text.dart';
 import '../../components/custom_textfield.dart';
 import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
+import '../../controller/reminder_controller.dart';
+
 
 class MeetingComments extends StatefulWidget {
   const MeetingComments({super.key});
@@ -553,7 +555,8 @@ class _MeetingCommentsState extends State<MeetingComments> {
                 ),
                 5.height,
                 Row(
-                  //mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+               //   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     CustomSearchTextField(
                       controller: controllers.search,
@@ -562,6 +565,98 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         controllers.searchText.value = value.toString().trim();
                       },
                     ),
+                    remController.selectedMeetingIds.isNotEmpty?
+                    InkWell(
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      onTap: (){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: CustomText(
+                                text: "Are you sure delete this Appointment?",
+                                size: 16,
+                                isBold: true,
+                                colors: colorsConst.textColor,
+                              ),
+                              actions: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(color: colorsConst.primary),
+                                          color: Colors.white),
+                                      width: 80,
+                                      height: 25,
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.zero,
+                                            ),
+                                            backgroundColor: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: CustomText(
+                                            text: "Cancel",
+                                            colors: colorsConst.primary,
+                                            size: 14,
+                                          )),
+                                    ),
+                                    10.width,
+                                    CustomLoadingButton(
+                                      callback: ()async{
+                                        remController.deleteMeetingAPI(context);
+                                      },
+                                      height: 35,
+                                      isLoading: true,
+                                      backgroundColor: colorsConst.primary,
+                                      radius: 2,
+                                      width: 80,
+                                      controller: controllers.productCtr,
+                                      isImage: false,
+                                      text: "Delete",
+                                      textColor: Colors.white,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        height: 40,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color: colorsConst.secondary,
+                          borderRadius: BorderRadius.circular(4),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child:  Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset("assets/images/action_delete.png"),
+                            10.width,
+                            CustomText(
+                              text: "Delete",
+                              colors: colorsConst.textColor,
+                              size: 14,
+                              isBold: true,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ):1.width,
                     10.width,
                   ],
                 ),
@@ -570,12 +665,15 @@ class _MeetingCommentsState extends State<MeetingComments> {
                 // Table Header
                 Table(
                   columnWidths: const {
-                    0: FlexColumnWidth(3),//date
-                    1: FlexColumnWidth(3.5),//Customer Name
-                    2: FlexColumnWidth(2),//Mobile No.
-                    3: FlexColumnWidth(3),//Call Type
-                    4: FlexColumnWidth(3.5),//Message
-                    5: FlexColumnWidth(4.5),//Actions
+                    0: FlexColumnWidth(1),
+                    1: FlexColumnWidth(2),
+                    2: FlexColumnWidth(3),//date
+                    3: FlexColumnWidth(3.5),//Customer Name
+                    4: FlexColumnWidth(2),//Mobile No.
+                    5: FlexColumnWidth(3),//Call Type
+                    6: FlexColumnWidth(3.5),//Message
+                    7: FlexColumnWidth(2.5),
+                    8: FlexColumnWidth(2),
                   },
                   border: TableBorder(
                     horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -594,6 +692,20 @@ class _MeetingCommentsState extends State<MeetingComments> {
                             padding: const EdgeInsets.all(10.0),
                             child: Row(
                               children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "S.NO",//0
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Actions",//1
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
                                 CustomText(//1
                                   textAlign: TextAlign.left,
                                   text: "Customer Name",
@@ -773,12 +885,15 @@ class _MeetingCommentsState extends State<MeetingComments> {
                             final data = filteredList[index];
                             return Table(
                               columnWidths:const {
-                                0: FlexColumnWidth(3),//date
-                                1: FlexColumnWidth(3.5),//Customer Name
-                                2: FlexColumnWidth(2),//Mobile No.
-                                3: FlexColumnWidth(3),//Call Type
-                                4: FlexColumnWidth(3.5),//Message
-                                5: FlexColumnWidth(2.5),//Status
+                                0: FlexColumnWidth(1),
+                                1: FlexColumnWidth(2),
+                                2: FlexColumnWidth(3),//date
+                                3: FlexColumnWidth(3.5),//Customer Name
+                                4: FlexColumnWidth(2),//Mobile No.
+                                5: FlexColumnWidth(3),//Call Type
+                                6: FlexColumnWidth(3.5),//Message
+                                7: FlexColumnWidth(2.5),
+                                8: FlexColumnWidth(2),//Status
                                 //6: FlexColumnWidth(4.5),//Actions
                               },
                               border: TableBorder(
@@ -792,6 +907,109 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                     ),
                                     children:[
+                                      SizedBox(
+                                        width: 50,
+                                        child: Row(
+                                          children: [
+                                            Checkbox(
+                                              value: remController.isCheckedMeeting(data.id.toString()),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  remController.toggleMeetingSelection(data.id.toString());
+                                                });
+                                              },
+                                            ),
+                                            //CustomText(text: "${index + 1}"),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            IconButton(
+                                                onPressed: (){
+                                                  // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
+                                                  // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
+                                                  // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
+                                                  // remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
+                                                  // remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
+                                                  utils.showUpdateRecordDialog("",context);
+                                                },
+                                                icon:  SvgPicture.asset(
+                                                  "assets/images/a_edit.svg",
+                                                  width: 16,
+                                                  height: 16,
+                                                )),
+                                            IconButton(
+                                                onPressed: (){
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        content: CustomText(
+                                                          text: "Are you sure delete this Appointment?",
+                                                          size: 16,
+                                                          isBold: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),                                                                  actions: [
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                          children: [
+                                                            Container(
+                                                              decoration: BoxDecoration(
+                                                                  border: Border.all(color: colorsConst.primary),
+                                                                  color: Colors.white),
+                                                              width: 80,
+                                                              height: 25,
+                                                              child: ElevatedButton(
+                                                                  style: ElevatedButton.styleFrom(
+                                                                    shape: const RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.zero,
+                                                                    ),
+                                                                    backgroundColor: Colors.white,
+                                                                  ),
+                                                                  onPressed: () {
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  child: CustomText(
+                                                                    text: "Cancel",
+                                                                    colors: colorsConst.primary,
+                                                                    size: 14,
+                                                                  )),
+                                                            ),
+                                                            10.width,
+                                                            CustomLoadingButton(
+                                                              callback: ()async{
+                                                                remController.selectedMeetingIds.add(data.id.toString());
+                                                                remController.deleteMeetingAPI(context);
+                                                              },
+                                                              height: 35,
+                                                              isLoading: true,
+                                                              backgroundColor: colorsConst.primary,
+                                                              radius: 2,
+                                                              width: 80,
+                                                              controller: controllers.productCtr,
+                                                              isImage: false,
+                                                              text: "Delete",
+                                                              textColor: Colors.white,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                icon: SvgPicture.asset(
+                                                  "assets/images/a_delete.svg",
+                                                  width: 16,
+                                                  height: 16,
+                                                ))
+                                          ],
+                                        ),
+                                      ),
                                       Tooltip(
                                         message: data.cusName.toString()=="null"?"":data.cusName.toString(),
                                         child: Padding(

@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
@@ -37,6 +38,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   var searchText = ''.obs;
   var reminderList = <ReminderModel>[].obs;
   var selectedReminderIds = <String>[].obs;
+  var selectedMeetingIds = <String>[].obs;
+  var selectedRecordMailIds = <String>[].obs;
+  var selectedRecordCallIds = <String>[].obs;
 
   var sortBy = ''.obs;
   var ascending = true.obs;
@@ -103,6 +107,39 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       selectedReminderIds.remove(id);
     } else {
       selectedReminderIds.add(id);
+    }
+  }
+
+  bool isCheckedMeeting(String id) {
+    return selectedMeetingIds.contains(id);
+  }
+  void toggleMeetingSelection(String id) {
+    if (selectedMeetingIds.contains(id)) {
+      selectedMeetingIds.remove(id);
+    } else {
+      selectedMeetingIds.add(id);
+    }
+  }
+
+  bool isCheckedRecordCall(String id) {
+    return selectedRecordCallIds.contains(id);
+  }
+  void toggleRecordSelectionCall(String id) {
+    if (selectedRecordCallIds.contains(id)) {
+      selectedRecordCallIds.remove(id);
+    } else {
+      selectedRecordCallIds.add(id);
+    }
+  }
+
+  bool isCheckedRecordMAil(String id) {
+    return selectedRecordMailIds.contains(id);
+  }
+  void toggleRecordSelectionMail(String id) {
+    if (selectedRecordMailIds.contains(id)) {
+      selectedRecordMailIds.remove(id);
+    } else {
+      selectedRecordMailIds.add(id);
     }
   }
   var isLoadingReminders = false.obs;
@@ -317,5 +354,137 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       controllers.productCtr.reset();
     }
   }
+
+  Future<void> deleteMeetingAPI(BuildContext context) async {
+    try {
+      Map<String, dynamic> data = {
+        "user_id": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id"),
+        "meetingList": selectedMeetingIds,
+        "action": "delete_meeting",
+      };
+      print("Request: ${jsonEncode(data)}");
+      final response = await http.post(
+        Uri.parse(scriptApi), // your endpoint for delete_meeting.php
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(data),
+      );
+
+      Map<String, dynamic> result = json.decode(response.body);
+      print("Response: ${response.body}");
+
+      if (response.statusCode == 200 && result["message"] == "OK") {
+
+        Navigator.pop(context);
+        utils.snackBar(
+          context: context,
+          msg: "Meeting deleted successfully.",
+          color: Colors.green,
+        );
+        controllers.productCtr.reset();
+        selectedMeetingIds.clear();
+      } else {
+        apiService.errorDialog(Get.context!, result["message"] ?? "Failed to delete meeting.");
+        controllers.productCtr.reset();
+      }
+    } catch (e) {
+      apiService.errorDialog(Get.context!, e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+
+
+  Future<void> deleteRecordCallAPI(BuildContext context) async {
+    try {
+      Map<String, dynamic> data = {
+        "action": "delete_record",
+        "user_id": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id"),
+        "recordList": selectedRecordCallIds,
+      };
+
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(data),
+      );
+
+      print("Response body: ${response.body}");
+
+      Map<String, dynamic> result = json.decode(response.body);
+
+      if (response.statusCode == 200 && result["message"] == "OK") {
+        Navigator.pop(context);
+        utils.snackBar(
+          context: context,
+          msg: "Call Record deleted successfully.",
+          color: Colors.green,
+        );
+        controllers.productCtr.reset();
+        selectedRecordCallIds.clear();
+      } else {
+        apiService.errorDialog(
+          Get.context!,
+          result["message"] ?? "Failed to delete call record.",
+        );
+        controllers.productCtr.reset();
+      }
+    } catch (e) {
+      apiService.errorDialog(Get.context!, e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+
+
+  Future<void> deleteRecordMailAPI(BuildContext context) async {
+    try {
+      Map<String, dynamic> data = {
+        "action": "delete_record",
+        "user_id": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id"),
+        "recordList": selectedRecordMailIds,
+      };
+      print("Response bodyjsonEncode(data): ${jsonEncode(data)}");
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(data),
+      );
+
+      print("Response body: ${response.body}");
+
+      Map<String, dynamic> result = json.decode(response.body);
+
+      if (response.statusCode == 200 && result["message"] == "OK") {
+        Navigator.pop(context);
+        utils.snackBar(
+          context: context,
+          msg: "Mail Record deleted successfully.",
+          color: Colors.green,
+        );
+        controllers.productCtr.reset();
+        selectedRecordMailIds.clear();
+      } else {
+        apiService.errorDialog(
+          Get.context!,
+          result["message"] ?? "Failed to delete mail record.",
+        );
+        controllers.productCtr.reset();
+      }
+    } catch (e) {
+      apiService.errorDialog(Get.context!, e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+
 
 }

@@ -59,17 +59,19 @@ class CustomText extends StatelessWidget {
         selectionColor: Color(0xff8EA6E7),
         selectionHandleColor: Colors.blue,
       )),
-      child: Text(
-        text == "null" ? "" : text,
-        textAlign: textAlign,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          decoration: decoration,
-          color: colors,
-          fontSize: size,
-          fontWeight: isBold ? FontWeight.bold : FontWeight.w200,
-          fontFamily: "Lato",
-          fontStyle: isStyle ? FontStyle.italic : FontStyle.normal,
+      child: IgnorePointer(
+        child: Text(
+          text == "null" ? "" : text,
+          textAlign: textAlign,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            decoration: decoration,
+            color: colors,
+            fontSize: size,
+            fontWeight: isBold ? FontWeight.bold : FontWeight.w200,
+            fontFamily: "Lato",
+            fontStyle: isStyle ? FontStyle.italic : FontStyle.normal,
+          ),
         ),
       ),
     );
