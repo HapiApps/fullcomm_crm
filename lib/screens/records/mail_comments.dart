@@ -268,26 +268,6 @@ class _MailCommentsState extends State<MailComments> {
                                 //   ),
                                 // ),
                                 Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: CustomText(
-                                    textAlign: TextAlign.left,
-                                    text: "S.NO",//0
-                                    size: 15,
-                                    isBold: true,
-                                    colors: Colors.white,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: CustomText(
-                                    textAlign: TextAlign.left,
-                                    text: "Actions",//1
-                                    size: 15,
-                                    isBold: true,
-                                    colors: Colors.white,
-                                  ),
-                                ),
-                                Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: CustomText(//2
                                     textAlign: TextAlign.left,
@@ -459,110 +439,6 @@ class _MailCommentsState extends State<MailComments> {
                                             //     ),
                                             //   ),
                                             // ),
-
-                                            SizedBox(
-                                              width: 50,
-                                              child: Row(
-                                                children: [
-                                                  Checkbox(
-                                                    value: remController.isCheckedRecordMAil(data.id.toString()),
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        remController.toggleRecordSelectionMail(data.id.toString());
-                                                      });
-                                                    },
-                                                  ),
-                                                  //CustomText(text: "${index + 1}"),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(10.0),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  IconButton(
-                                                      onPressed: (){
-                                                        // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
-                                                        // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
-                                                        // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
-                                                        // remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
-                                                        // remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
-                                                        utils.showUpdateRecordDialog("",context);
-                                                      },
-                                                      icon:  SvgPicture.asset(
-                                                        "assets/images/a_edit.svg",
-                                                        width: 16,
-                                                        height: 16,
-                                                      )),
-                                                  IconButton(
-                                                      onPressed: (){
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (BuildContext context) {
-                                                            return AlertDialog(
-                                                              content: CustomText(
-                                                                text: "Are you sure delete this Mail?",
-                                                                size: 16,
-                                                                isBold: true,
-                                                                colors: colorsConst.textColor,
-                                                              ),                                                                  actions: [
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                                children: [
-                                                                  Container(
-                                                                    decoration: BoxDecoration(
-                                                                        border: Border.all(color: colorsConst.primary),
-                                                                        color: Colors.white),
-                                                                    width: 80,
-                                                                    height: 25,
-                                                                    child: ElevatedButton(
-                                                                        style: ElevatedButton.styleFrom(
-                                                                          shape: const RoundedRectangleBorder(
-                                                                            borderRadius: BorderRadius.zero,
-                                                                          ),
-                                                                          backgroundColor: Colors.white,
-                                                                        ),
-                                                                        onPressed: () {
-                                                                          Navigator.pop(context);
-                                                                        },
-                                                                        child: CustomText(
-                                                                          text: "Cancel",
-                                                                          colors: colorsConst.primary,
-                                                                          size: 14,
-                                                                        )),
-                                                                  ),
-                                                                  10.width,
-                                                                  CustomLoadingButton(
-                                                                    callback: ()async{
-                                                                      remController.selectedRecordMailIds.add(data.id.toString());
-                                                                      remController.deleteRecordMailAPI(context);
-                                                                    },
-                                                                    height: 35,
-                                                                    isLoading: true,
-                                                                    backgroundColor: colorsConst.primary,
-                                                                    radius: 2,
-                                                                    width: 80,
-                                                                    controller: controllers.productCtr,
-                                                                    isImage: false,
-                                                                    text: "Delete",
-                                                                    textColor: Colors.white,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                            );
-                                                          },
-                                                        );
-                                                      },
-                                                      icon: SvgPicture.asset(
-                                                        "assets/images/a_delete.svg",
-                                                        width: 16,
-                                                        height: 16,
-                                                      ))
-                                                ],
-                                              ),
-                                            ),
 
                                             Padding(
                                               padding: const EdgeInsets.all(10.0),

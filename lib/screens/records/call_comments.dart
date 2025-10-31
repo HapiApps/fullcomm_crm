@@ -528,7 +528,7 @@ class _CallCommentsState extends State<CallComments> {
                     ),
                     5.height,
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomSearchTextField(
                           controller: controllers.search,
@@ -629,195 +629,21 @@ class _CallCommentsState extends State<CallComments> {
                             ),
                           ),
                         ):1.width,
-                        10.width,
-                        // Obx(() => Radio(
-                        //       activeColor: colorsConst.third,
-                        //       value: "Completed",
-                        //       fillColor: WidgetStateProperty.resolveWith<Color?>(
-                        //           (states) {
-                        //         return colorsConst.third;
-                        //       }),
-                        //       groupValue: controllers.shortBy.value,
-                        //       onChanged: (value) {
-                        //         controllers.shortBy.value = value.toString().trim();
-                        //       }),
-                        // ),
-                        // CustomText(
-                        //   text: "Completed",
-                        //   colors: colorsConst.textColor,
-                        // ),
-                        // Obx(() => Radio(
-                        //       activeColor: colorsConst.third,
-                        //       value: "Missed",
-                        //       fillColor: WidgetStateProperty.resolveWith<Color?>(
-                        //           (states) {
-                        //         return colorsConst.third;
-                        //       }),
-                        //       groupValue: controllers.shortBy.value,
-                        //       onChanged: (value) {
-                        //         controllers.shortBy.value = value.toString().trim();
-                        //       }),
-                        // ),
-                        // CustomText(
-                        //   text: "Missed",
-                        //   colors: colorsConst.textColor,
-                        // ),
-                        // Obx(
-                        //   () => Radio(
-                        //       activeColor: colorsConst.third,
-                        //       value: "Pending",
-                        //       fillColor: WidgetStateProperty.resolveWith<Color?>(
-                        //           (states) {
-                        //         return colorsConst.third;
-                        //       }),
-                        //       groupValue: controllers.shortBy.value,
-                        //       onChanged: (value) {
-                        //         controllers.shortBy.value =
-                        //             value.toString().trim();
-                        //       }),
-                        // ),
-                        // CustomText(
-                        //   text: "Pending",
-                        //   colors: colorsConst.textColor,
-                        // ),
-                        20.width,
-                        // Container(
-                        //   decoration: BoxDecoration(
-                        //       color: colorsConst.secondary,
-                        //       borderRadius: BorderRadius.circular(10)),
-                        //   child: Row(
-                        //     children: [
-                        //       IconButton(
-                        //           onPressed: () {
-                        //             // controllers.isAllContacts.value=true;
-                        //             controllers.isCommentsLoading.value = false;
-                        //             var data = DateTime.parse(
-                        //                     "${controllers.stDate.value.split("-").last}-${controllers.stDate.value.split("-")[1]}-${controllers.stDate.value.split("-").first}")
-                        //                 .subtract(const Duration(days: 1));
-                        //             controllers.stDate.value =
-                        //                 "${data.day.toString().padLeft(2, "0")}"
-                        //                 "-${data.month.toString().padLeft(2, "0")}"
-                        //                 "-${data.year.toString()}";
-                        //             controllers.isCommentsLoading.value = true;
-                        //             if (controllers.shortBy.value == "all") {
-                        //               controllers.shortBy.value = "";
-                        //             }
-                        //           },
-                        //           hoverColor: Colors.transparent,
-                        //           icon: Icon(Icons.arrow_back_ios,
-                        //               size: 17, color: colorsConst.third)),
-                        //       // ),
-                        //       Icon(
-                        //         Icons.calendar_today_outlined,
-                        //         size: 13,
-                        //         color: colorsConst.textColor,
-                        //       ),
-                        //       InkWell(
-                        //         onTap: () {
-                        //           if (context.mounted) {
-                        //             DateFormat inputFormat =
-                        //                 DateFormat("dd-MM-yyyy");
-                        //             DateTime parsedDate = inputFormat
-                        //                 .parse(controllers.stDate.value);
-                        //             controllers.dateTime = parsedDate;
-                        //             showDatePicker(
-                        //               context: context,
-                        //               initialDate: controllers.dateTime,
-                        //               firstDate: DateTime(2021),
-                        //               lastDate: DateTime.now(),
-                        //             ).then((value) {
-                        //               //controllers.isAllContacts.value=true;
-                        //               controllers.dateTime = value!;
-                        //               controllers.isCommentsLoading.value = false;
-                        //               controllers.stDate.value =
-                        //                   "${controllers.dateTime.day.toString().padLeft(2, "0")}"
-                        //                   "-${controllers.dateTime.month.toString().padLeft(2, "0")}"
-                        //                   "-${controllers.dateTime.year.toString()}";
-                        //               controllers.isCommentsLoading.value = true;
-                        //               if (controllers.shortBy.value == "all") {
-                        //                 controllers.shortBy.value = "";
-                        //               }
-                        //             });
-                        //           }
-                        //         },
-                        //         child: Container(
-                        //           height: 30,
-                        //           padding: const EdgeInsets.fromLTRB(6, 2, 4, 2),
-                        //           alignment: Alignment.center,
-                        //           decoration: BoxDecoration(
-                        //               color: colorsConst.secondary,
-                        //               borderRadius: BorderRadius.circular(8),
-                        //               border: Border.all(
-                        //                   color: colorsConst.secondary)),
-                        //           child: Obx(
-                        //             () => CustomText(
-                        //               text: " ${controllers.stDate.value}  ",
-                        //               colors: colorsConst.textColor,
-                        //               size: 12,
-                        //               isBold: true,
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       // Container(
-                        //       //   width:30,
-                        //       //   height: 30,
-                        //       //   alignment: Alignment.center,
-                        //       //   decoration: BoxDecoration(
-                        //       //       color: dateCheck()?colorsConst.secondary:colorsConst.primary,
-                        //       //       borderRadius: BorderRadius.circular(8),
-                        //       //       border: Border.all(
-                        //       //           color: colorsConst.secondary
-                        //       //       )
-                        //       //   ),
-                        //       //   child:
-                        //       Obx(
-                        //         () => IconButton(
-                        //             onPressed: () {
-                        //               if (dateCheck()) {
-                        //                 // controllers.isAllContacts.value=true;
-                        //                 controllers.isCommentsLoading.value =
-                        //                     false;
-                        //                 var data = DateTime.parse(
-                        //                         "${controllers.stDate.value.split("-").last}-${controllers.stDate.value.split("-")[1]}-${controllers.stDate.value.split("-").first}")
-                        //                     .add(const Duration(days: 1));
-                        //                 controllers.stDate.value =
-                        //                     "${data.day.toString().padLeft(2, "0")}"
-                        //                     "-${data.month.toString().padLeft(2, "0")}"
-                        //                     "-${data.year.toString()}";
-                        //                 controllers.isCommentsLoading.value =
-                        //                     true;
-                        //                 if (controllers.shortBy.value == "all") {
-                        //                   controllers.shortBy.value = "";
-                        //                 }
-                        //               }
-                        //             },
-                        //             hoverColor: Colors.transparent,
-                        //             icon: Icon(
-                        //               Icons.arrow_forward_ios,
-                        //               size: 16,
-                        //               color: dateCheck()
-                        //                   ? colorsConst.third
-                        //                   : Colors.grey,
-                        //             )),
-                        //       ),
-                        //       //)
-                        //     ],
-                        //   ),
-                        // ),
                       ],
                     ),
                     15.height,
                         // Table Header
                     Table(
                       columnWidths: const {
-                        0: FlexColumnWidth(3),//date
-                        1: FlexColumnWidth(3.5),//Customer Name
+                        0: FlexColumnWidth(1),//date
+                        1: FlexColumnWidth(1.5),//Customer Name
                         2: FlexColumnWidth(2),//Mobile No.
-                        3: FlexColumnWidth(3),//Call Type
-                        4: FlexColumnWidth(3.5),//Message
+                        3: FlexColumnWidth(2),//Call Type
+                        4: FlexColumnWidth(2),//Message
                         5: FlexColumnWidth(2.5),//Status
-                        6: FlexColumnWidth(2.5),//Lead Status
+                        6: FlexColumnWidth(3),//Lead Status
+                        7: FlexColumnWidth(3.5),//Status
+                        8: FlexColumnWidth(3),
                         //6: FlexColumnWidth(4.5),//Actions
                       },
                       border: TableBorder(
@@ -834,22 +660,28 @@ class _CallCommentsState extends State<CallComments> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
+                                child: CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "S.NO",//0
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Actions",//1
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
                                 child: Row(
                                   children: [
-                                    CustomText(
-                                      textAlign: TextAlign.left,
-                                      text: "S.NO",//0
-                                      size: 15,
-                                      isBold: true,
-                                      colors: Colors.white,
-                                    ),
-                                    CustomText(
-                                      textAlign: TextAlign.left,
-                                      text: "Actions",//1
-                                      size: 15,
-                                      isBold: true,
-                                      colors: Colors.white,
-                                    ),
                                     CustomText(
                                       textAlign: TextAlign.left,
                                       text: "Customer Name",
@@ -1137,13 +969,15 @@ class _CallCommentsState extends State<CallComments> {
                                       : "Customers";
                                   return Table(
                                     columnWidths:const {
-                                      0: FlexColumnWidth(3),//date
-                                      1: FlexColumnWidth(3.5),//Customer Name
+                                      0: FlexColumnWidth(1),//date
+                                      1: FlexColumnWidth(1.5),//Customer Name
                                       2: FlexColumnWidth(2),//Mobile No.
-                                      3: FlexColumnWidth(3),//Call Type
-                                      4: FlexColumnWidth(3.5),//Message
+                                      3: FlexColumnWidth(2),//Call Type
+                                      4: FlexColumnWidth(2),//Message
                                       5: FlexColumnWidth(2.5),//Status
-                                      6: FlexColumnWidth(2.5),//Lead Status
+                                      6: FlexColumnWidth(3),//Lead Status
+                                      7: FlexColumnWidth(3.5),//Status
+                                      8: FlexColumnWidth(3),
                                       //6: FlexColumnWidth(4.5),//Actions
                                     },
                                     border: TableBorder(
@@ -1178,20 +1012,20 @@ class _CallCommentsState extends State<CallComments> {
                                               child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
-                                                  IconButton(
-                                                      onPressed: (){
-                                                        // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
-                                                        // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
-                                                        // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
-                                                        // remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
-                                                        // remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
-                                                        utils.showUpdateRecordDialog("",context);
-                                                      },
-                                                      icon:  SvgPicture.asset(
-                                                        "assets/images/a_edit.svg",
-                                                        width: 16,
-                                                        height: 16,
-                                                      )),
+                                                  // IconButton(
+                                                  //     onPressed: (){
+                                                  //       // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
+                                                  //       // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
+                                                  //       // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
+                                                  //       // remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
+                                                  //       // remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
+                                                  //       utils.showUpdateRecordDialog("",context);
+                                                  //     },
+                                                  //     icon:  SvgPicture.asset(
+                                                  //       "assets/images/a_edit.svg",
+                                                  //       width: 16,
+                                                  //       height: 16,
+                                                  //     )),
                                                   IconButton(
                                                       onPressed: (){
                                                         showDialog(

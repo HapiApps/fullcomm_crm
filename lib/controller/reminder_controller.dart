@@ -377,7 +377,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       print("Response: ${response.body}");
 
       if (response.statusCode == 200 && result["message"] == "OK") {
-
+        apiService.getAllMeetingActivity("");
         Navigator.pop(context);
         utils.snackBar(
           context: context,
@@ -405,7 +405,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         "cos_id": controllers.storage.read("cos_id"),
         "recordList": selectedRecordCallIds,
       };
-
+      print("delete record $data");
       final response = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -414,13 +414,12 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         },
         body: jsonEncode(data),
       );
-
       print("Response body: ${response.body}");
-
       Map<String, dynamic> result = json.decode(response.body);
-
       if (response.statusCode == 200 && result["message"] == "OK") {
         Navigator.pop(context);
+        apiService.getAllCallActivity("");
+        apiService.getAllMailActivity();
         utils.snackBar(
           context: context,
           msg: "Call Record deleted successfully.",
@@ -428,6 +427,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         );
         controllers.productCtr.reset();
         selectedRecordCallIds.clear();
+
       } else {
         apiService.errorDialog(
           Get.context!,

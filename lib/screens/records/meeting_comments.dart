@@ -555,8 +555,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                 ),
                 5.height,
                 Row(
-
-               //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CustomSearchTextField(
                       controller: controllers.search,
@@ -657,23 +656,20 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         ),
                       ),
                     ):1.width,
-                    10.width,
                   ],
                 ),
                 15.height,
-
                 // Table Header
                 Table(
                   columnWidths: const {
                     0: FlexColumnWidth(1),
                     1: FlexColumnWidth(2),
                     2: FlexColumnWidth(3),//date
-                    3: FlexColumnWidth(3.5),//Customer Name
-                    4: FlexColumnWidth(2),//Mobile No.
+                    3: FlexColumnWidth(2.5),//Customer Name
+                    4: FlexColumnWidth(3),//Mobile No.
                     5: FlexColumnWidth(3),//Call Type
-                    6: FlexColumnWidth(3.5),//Message
-                    7: FlexColumnWidth(2.5),
-                    8: FlexColumnWidth(2),
+                    6: FlexColumnWidth(3),//Message
+                    7: FlexColumnWidth(1.5),//Status
                   },
                   border: TableBorder(
                     horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -687,25 +683,30 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 topLeft: Radius.circular(5),
                                 topRight: Radius.circular(5))),
                         children: [
-
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: CustomText(
+                              textAlign: TextAlign.left,
+                              text: "S.NO",//0
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: CustomText(
+                              textAlign: TextAlign.left,
+                              text: "Actions",//1
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Row(
                               children: [
-                                CustomText(
-                                  textAlign: TextAlign.left,
-                                  text: "S.NO",//0
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
-                                ),
-                                CustomText(
-                                  textAlign: TextAlign.left,
-                                  text: "Actions",//1
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
-                                ),
                                 CustomText(//1
                                   textAlign: TextAlign.left,
                                   text: "Customer Name",
@@ -834,7 +835,6 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         final matchesSearch = searchTexts.isEmpty ||
                             (activity.comName.toString().toLowerCase().contains(searchTexts) ||
                             (activity.cusName.toString().toLowerCase().contains(searchTexts)));
-
                         return matchesCallType && matchesSearch;
                       }).toList();
                       if (controllers.sortFieldMeetingActivity.value == 'customerName') {
@@ -847,7 +847,6 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               : -comparison;
                         });
                       }
-
                       return filteredList.isEmpty?
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -888,12 +887,11 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 0: FlexColumnWidth(1),
                                 1: FlexColumnWidth(2),
                                 2: FlexColumnWidth(3),//date
-                                3: FlexColumnWidth(3.5),//Customer Name
-                                4: FlexColumnWidth(2),//Mobile No.
+                                3: FlexColumnWidth(2.5),//Customer Name
+                                4: FlexColumnWidth(3),//Mobile No.
                                 5: FlexColumnWidth(3),//Call Type
-                                6: FlexColumnWidth(3.5),//Message
-                                7: FlexColumnWidth(2.5),
-                                8: FlexColumnWidth(2),//Status
+                                6: FlexColumnWidth(3),//Message
+                                7: FlexColumnWidth(1.5),//Status
                                 //6: FlexColumnWidth(4.5),//Actions
                               },
                               border: TableBorder(
@@ -928,20 +926,20 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
-                                            IconButton(
-                                                onPressed: (){
-                                                  // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
-                                                  // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
-                                                  // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
-                                                  // remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
-                                                  // remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
-                                                  utils.showUpdateRecordDialog("",context);
-                                                },
-                                                icon:  SvgPicture.asset(
-                                                  "assets/images/a_edit.svg",
-                                                  width: 16,
-                                                  height: 16,
-                                                )),
+                                            // IconButton(
+                                            //     onPressed: (){
+                                            //       // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
+                                            //       // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
+                                            //       // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
+                                            //       // remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
+                                            //       // remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
+                                            //       utils.showUpdateRecordDialog("",context);
+                                            //     },
+                                            //     icon:  SvgPicture.asset(
+                                            //       "assets/images/a_edit.svg",
+                                            //       width: 16,
+                                            //       height: 16,
+                                            //     )),
                                             IconButton(
                                                 onPressed: (){
                                                   showDialog(
@@ -953,7 +951,8 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                           size: 16,
                                                           isBold: true,
                                                           colors: colorsConst.textColor,
-                                                        ),                                                                  actions: [
+                                                        ),
+                                                        actions: [
                                                         Row(
                                                           mainAxisAlignment: MainAxisAlignment.end,
                                                           children: [
