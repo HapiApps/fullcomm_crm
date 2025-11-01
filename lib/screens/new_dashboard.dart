@@ -33,7 +33,6 @@ class _NewDashboardState extends State<NewDashboard> {
   @override
   void initState() {
     super.initState();
-
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
@@ -47,19 +46,15 @@ class _NewDashboardState extends State<NewDashboard> {
 
       final prefs = await SharedPreferences.getInstance();
       controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
-
-      /// ✅ Default Filter = Today
       DateTime now = DateTime.now();
       dashController.selectedSortBy.value = "Today";
       dashController.selectedRange.value = DateTimeRange(
         start: DateTime(now.year, now.month, now.day),
         end: DateTime(now.year, now.month, now.day),
       );
-
-      /// ✅ Load initial data for Today
       String today = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-
-      dashController.getCustomerReport(today, today);
+      var last7days = DateTime.now().subtract(Duration(days: 7));
+      dashController.getCustomerReport("${last7days.year}-${last7days.month.toString().padLeft(2,'0')}-${last7days.day.toString().padLeft(2,'0')}",today);
       dashController.getDashboardReport();
       dashController.getRatingReport();
     });
@@ -207,16 +202,16 @@ class _NewDashboardState extends State<NewDashboard> {
 
                                     String displayText;
                                     if (selected == "Today") {
-                                      displayText = "${formatDate(range.start)}";
+                                      displayText = formatDate(range.start);
                                     } else if (selected == "Yesterday") {
-                                      displayText = "${formatDate(range.start)}";
+                                      displayText = formatDate(range.start);
                                     } else {
                                       displayText =
                                       "${formatDate(range.start)}  —  ${formatDate(range.end)}";
                                     }
 
                                     return Text(
-                                      "Dashboard Overview => ${displayText}",
+                                      "Dashboard Overview => $displayText",
                                       style: const TextStyle(
                                         color: Colors.black87,
                                         fontWeight: FontWeight.w600,
@@ -244,13 +239,12 @@ class _NewDashboardState extends State<NewDashboard> {
                                     children: dashController.filters.map((filter) {
                                       final bool isSelected = dashController.selectedSortBy.value == filter;
                                       return MouseRegion(
-                                        cursor: SystemMouseCursors.click, // 👈 Hand cursor on hover
+                                        cursor: SystemMouseCursors.click,
                                         child: GestureDetector(
-                                          behavior: HitTestBehavior.opaque, // Ensures tap area is fully active
+                                          behavior: HitTestBehavior.opaque,
                                           onTap: () {
                                             dashController.selectedSortBy.value = filter;
                                             DateTime now = DateTime.now();
-                                            //DateTime tomorrow = DateTime.now().add(Duration(days: 1));
                                             switch (filter) {
                                               case "Today":
                                                 dashController.selectedRange.value = DateTimeRange(
@@ -258,7 +252,6 @@ class _NewDashboardState extends State<NewDashboard> {
                                                   end: DateTime(now.year, now.month, now.day),
                                                 );
                                                 break;
-
                                               case "Yesterday":
                                                 DateTime yesterday = now.subtract(Duration(days: 1));
                                                 dashController.selectedRange.value = DateTimeRange(

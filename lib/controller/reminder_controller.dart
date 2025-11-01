@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../common/constant/api.dart';
+import '../models/customer_activity.dart';
 import '../models/reminder_obj.dart';
 import '../provider/reminder_provider.dart';
 import 'controller.dart';
@@ -41,6 +42,55 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   var selectedMeetingIds = <String>[].obs;
   var selectedRecordMailIds = <String>[].obs;
   var selectedRecordCallIds = <String>[].obs;
+  RxList<CustomerActivity> callFilteredList = <CustomerActivity>[].obs;
+
+  void filterAndSortCalls({
+    required List<CustomerActivity> allCalls,
+    required String searchText,
+    required String callType,
+    required String sortField,
+    required String sortOrder,
+  }) {
+    final filtered = allCalls.where((activity) {
+      final matchesCallType =
+          callType.isEmpty || callType == "All" || activity.callType == callType;
+      final matchesSearch = searchText.isEmpty ||
+          activity.customerName.toLowerCase().contains(searchText) ||
+          activity.toData.toLowerCase().contains(searchText);
+
+      return matchesCallType && matchesSearch;
+    }).toList();
+    if (sortField == 'customerName') {
+      filtered.sort((a, b) {
+        final nameA = a.customerName.toLowerCase();
+        final nameB = b.customerName.toLowerCase();
+        final comparison = nameA.compareTo(nameB);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    } else if (sortField == 'mobile') {
+      filtered.sort((a, b) {
+        final nameA = a.toData.toLowerCase();
+        final nameB = b.toData.toLowerCase();
+        final comparison = nameA.compareTo(nameB);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    } else if (sortField == 'date') {
+      DateTime parseDate(String dateStr) {
+        try {
+          return DateFormat("dd.MM.yyyy hh:mm a").parse(dateStr);
+        } catch (e) {
+          return DateTime(1900);
+        }
+      }
+      filtered.sort((a, b) {
+        final dateA = parseDate(a.sentDate);
+        final dateB = parseDate(b.sentDate);
+        final comparison = dateA.compareTo(dateB);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    callFilteredList.assignAll(filtered);
+  }
 
   var sortBy = ''.obs;
   var ascending = true.obs;
@@ -112,6 +162,13 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
   bool isCheckedMeeting(String id) {
     return selectedMeetingIds.contains(id);
+  }
+  void selectAllCalls() {
+    selectedRecordCallIds.assignAll(callFilteredList.map((e) => e.id.toString()).toList());
+  }
+
+  void unselectAllCalls() {
+    selectedRecordCallIds.clear();
   }
   void toggleMeetingSelection(String id) {
     if (selectedMeetingIds.contains(id)) {

@@ -462,8 +462,7 @@ class _CallCommentsState extends State<CallComments> {
                                                   if(controllers.callTime.value.isEmpty) {
                                                     controllers.productCtr.reset();
                                                     setState(() {
-                                                      timeError =
-                                                      "Please select time";
+                                                      timeError = "Please select time";
                                                     });
                                                     return;
                                                   }
@@ -535,6 +534,13 @@ class _CallCommentsState extends State<CallComments> {
                           hintText: "Search Customer Name, Mobile",
                           onChanged: (value) {
                               controllers.searchText.value = value.toString().trim();
+                              remController.filterAndSortCalls(
+                                allCalls: controllers.callActivity,
+                                searchText: controllers.searchText.value.toLowerCase(),
+                                callType: controllers.selectCallType.value,
+                                sortField: controllers.sortFieldCallActivity.value,
+                                sortOrder: controllers.sortOrderCallActivity.value,
+                              );
                           },
                         ),
                         remController.selectedRecordCallIds.isNotEmpty?
@@ -660,13 +666,24 @@ class _CallCommentsState extends State<CallComments> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
-                                child: CustomText(
-                                  textAlign: TextAlign.left,
-                                  text: "S.NO",//0
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
-                                ),
+                                child:  Obx(() => Checkbox(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(2.0),
+                                  ),
+                                  side: WidgetStateBorderSide.resolveWith(
+                                        (states) => const BorderSide(width: 1.0, color: Colors.white),
+                                  ),
+                                  value: remController.selectedRecordCallIds.length == remController.callFilteredList.length && remController.callFilteredList.isNotEmpty,
+                                  onChanged: (value) {
+                                    if (value == true) {
+                                      remController.selectAllCalls();
+                                    } else {
+                                      remController.unselectAllCalls();
+                                    }
+                                  },
+                                  activeColor: Colors.white,
+                                  checkColor: colorsConst.primary,
+                                )),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -698,6 +715,13 @@ class _CallCommentsState extends State<CallComments> {
                                           controllers.sortOrderCallActivity.value='asc';
                                         }
                                         controllers.sortFieldCallActivity.value='customerName';
+                                        remController.filterAndSortCalls(
+                                          allCalls: controllers.callActivity,
+                                          searchText: controllers.searchText.value.toLowerCase(),
+                                          callType: controllers.selectCallType.value,
+                                          sortField: controllers.sortFieldCallActivity.value,
+                                          sortOrder: controllers.sortOrderCallActivity.value,
+                                        );
                                       },
                                       child: Obx(() => Image.asset(
                                         controllers.sortFieldCallActivity.value.isEmpty
@@ -733,6 +757,13 @@ class _CallCommentsState extends State<CallComments> {
                                           controllers.sortOrderCallActivity.value='asc';
                                         }
                                         controllers.sortFieldCallActivity.value='mobile';
+                                        remController.filterAndSortCalls(
+                                          allCalls: controllers.callActivity,
+                                          searchText: controllers.searchText.value.toLowerCase(),
+                                          callType: controllers.selectCallType.value,
+                                          sortField: controllers.sortFieldCallActivity.value,
+                                          sortOrder: controllers.sortOrderCallActivity.value,
+                                        );
                                       },
                                       child: Obx(() => Image.asset(
                                         controllers.sortFieldCallActivity.value.isEmpty
@@ -811,6 +842,13 @@ class _CallCommentsState extends State<CallComments> {
                                               controllers.sortOrderCallActivity.value='asc';
                                             }
                                             controllers.sortFieldCallActivity.value='date';
+                                            remController.filterAndSortCalls(
+                                              allCalls: controllers.callActivity,
+                                              searchText: controllers.searchText.value.toLowerCase(),
+                                              callType: controllers.selectCallType.value,
+                                              sortField: controllers.sortFieldCallActivity.value,
+                                              sortOrder: controllers.sortOrderCallActivity.value,
+                                            );
                                           },
                                           child: Obx(() => Image.asset(
                                             controllers.sortFieldCallActivity.value.isEmpty
@@ -870,60 +908,9 @@ class _CallCommentsState extends State<CallComments> {
                             ]),
                       ],
                     ),
-
-                        Expanded(
+                    Expanded(
                           child: Obx((){
-                            final searchText = controllers.searchText.value.toLowerCase();
-                            final filteredList = controllers.callActivity.where((activity) {
-                              final matchesCallType =
-                                  controllers.selectCallType.value.isEmpty ||
-                                      controllers.selectCallType.value == "All" ||
-                                      activity.callType == controllers.selectCallType.value;
-
-                              final matchesSearch = searchText.isEmpty ||
-                                  (activity.customerName.toString().toLowerCase().contains(searchText)) ||
-                                  (activity.toData.toString().toLowerCase().contains(searchText));
-
-                              return matchesCallType && matchesSearch;
-                            }).toList();
-                            if (controllers.sortFieldCallActivity.value == 'customerName') {
-                              filteredList.sort((a, b) {
-                                final nameA = (a.customerName).toLowerCase();
-                                final nameB = (b.customerName).toLowerCase();
-                                final comparison = nameA.compareTo(nameB);
-                                return controllers.sortOrderCallActivity.value == 'asc'
-                                    ? comparison
-                                    : -comparison;
-                              });
-                            }
-                            if (controllers.sortFieldCallActivity.value == 'mobile') {
-                              filteredList.sort((a, b) {
-                                final nameA = (a.toData).toLowerCase();
-                                final nameB = (b.toData).toLowerCase();
-                                final comparison = nameA.compareTo(nameB);
-                                return controllers.sortOrderCallActivity.value == 'asc'
-                                    ? comparison
-                                    : -comparison;
-                              });
-                            }
-                            if (controllers.sortFieldCallActivity.value == 'date') {
-                              filteredList.sort((a, b) {
-                                DateTime parseDate(String dateStr) {
-                                  try {
-                                    return DateFormat("dd.MM.yyyy hh:mm a").parse(dateStr);
-                                  } catch (e) {
-                                    return DateTime(1900);
-                                  }
-                                }
-                                final dateA = parseDate(a.sentDate);
-                                final dateB = parseDate(b.sentDate);
-                                final comparison = dateA.compareTo(dateB);
-                                return controllers.sortOrderCallActivity.value == 'asc'
-                                    ? comparison
-                                    : -comparison;
-                              });
-                            }
-                            return filteredList.isEmpty?
+                            return remController.callFilteredList.isEmpty?
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -957,9 +944,9 @@ class _CallCommentsState extends State<CallComments> {
                                       controller: _controller,
                                       shrinkWrap: true,
                                       physics: const ScrollPhysics(),
-                                      itemCount: filteredList.length,
+                                      itemCount: remController.callFilteredList.length,
                                       itemBuilder: (context, index) {
-                                  final data = filteredList[index];
+                                  final data = remController.callFilteredList[index];
                                   final leadStatus = data.leadStatus == "1"
                                       ? "Suspects"
                                       : data.leadStatus == "2"
@@ -991,20 +978,15 @@ class _CallCommentsState extends State<CallComments> {
                                             color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                           ),
                                           children:[
-                                            SizedBox(
-                                              width: 50,
-                                              child: Row(
-                                                children: [
-                                                  Checkbox(
-                                                    value: remController.isCheckedRecordCall(data.id.toString()),
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        remController.toggleRecordSelectionCall(data.id.toString());
-                                                      });
-                                                    },
-                                                  ),
-                                                  //CustomText(text: "${index + 1}"),
-                                                ],
+                                            Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Checkbox(
+                                                value: remController.isCheckedRecordCall(data.id.toString()),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    remController.toggleRecordSelectionCall(data.id.toString());
+                                                  });
+                                                },
                                               ),
                                             ),
                                             Padding(
@@ -1012,20 +994,365 @@ class _CallCommentsState extends State<CallComments> {
                                               child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
-                                                  // IconButton(
-                                                  //     onPressed: (){
-                                                  //       // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
-                                                  //       // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
-                                                  //       // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
-                                                  //       // remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
-                                                  //       // remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
-                                                  //       utils.showUpdateRecordDialog("",context);
-                                                  //     },
-                                                  //     icon:  SvgPicture.asset(
-                                                  //       "assets/images/a_edit.svg",
-                                                  //       width: 16,
-                                                  //       height: 16,
-                                                  //     )),
+                                                  IconButton(
+                                                      onPressed: (){
+                                                        String sentDate = data.sentDate;
+                                                        if (sentDate.isNotEmpty) {
+                                                          List<String> parts = sentDate.split(' ');
+                                                          String datePart = parts[0];
+                                                          String timePart = parts.sublist(1).join(' ');
+                                                          controllers.upDate.value = datePart;
+                                                          controllers.upCallTime.value = timePart;
+                                                        }
+                                                        controllers.selectNCustomer(data.sentId, data.customerName, "", data.toData);
+                                                        controllers.upCallType = data.callType;
+                                                        controllers.upcallStatus = data.callStatus;
+                                                        controllers.upCallCommentCont.text = data.message;
+                                                        showDialog(
+                                                            context: context,
+                                                            barrierDismissible: false,
+                                                            builder: (context) {
+                                                              var customerError;
+                                                              var dateError;
+                                                              var timeError;
+                                                              return StatefulBuilder(
+                                                                  builder: (BuildContext context, StateSetter setState){
+                                                                    return  AlertDialog(
+                                                                      title: Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          CustomText(
+                                                                            text: "Update Call log",
+                                                                            size: 16,
+                                                                            isBold: true,
+                                                                            colors: colorsConst.textColor,
+                                                                          ),
+                                                                          IconButton(
+                                                                              onPressed: (){
+                                                                                Navigator.of(context).pop();
+                                                                              },
+                                                                              icon: Icon(Icons.clear,
+                                                                                color: Colors.black,
+                                                                              ))
+                                                                        ],
+                                                                      ),
+                                                                      content: SizedBox(
+                                                                        width: 500,
+                                                                        height: 450,
+                                                                        child: SingleChildScrollView(
+                                                                          child: Column(
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                                            children: [
+                                                                              // Divider(),
+                                                                              Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  Row(
+                                                                                    children: [
+                                                                                      CustomText(
+                                                                                        text:"Customer Name",
+                                                                                        colors: colorsConst.textColor,
+                                                                                        size: 13,
+                                                                                      ),
+                                                                                      const CustomText(
+                                                                                        text: "*",
+                                                                                        colors: Colors.red,
+                                                                                        size: 25,
+                                                                                      )
+                                                                                    ],
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    width: 480,
+                                                                                    height: 50,
+                                                                                    child: KeyboardDropdownField<AllCustomersObj>(
+                                                                                      items: controllers.customers,
+                                                                                      borderRadius: 5,
+                                                                                      borderColor: Colors.grey.shade300,
+                                                                                      hintText: "Customers",
+                                                                                      labelText: "",
+                                                                                      labelBuilder: (customer) =>'${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                                                                      itemBuilder: (customer) {
+                                                                                        return Container(
+                                                                                          width: 300,
+                                                                                          alignment: Alignment.topLeft,
+                                                                                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                                                          child: CustomText(
+                                                                                            text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                                                                            colors: Colors.black,
+                                                                                            size: 14,
+                                                                                            textAlign: TextAlign.start,
+                                                                                          ),
+                                                                                        );
+                                                                                      },
+                                                                                      textEditingController: controllers.cusController,
+                                                                                      onSelected: (value) {
+                                                                                        controllers.selectCustomer(value);
+                                                                                      },
+                                                                                      onClear: () {
+                                                                                        controllers.clearSelectedCustomer();
+                                                                                      },
+                                                                                    ),
+                                                                                  ),
+                                                                                  if (customerError != null)
+                                                                                    Padding(
+                                                                                      padding: const EdgeInsets.only(top: 4.0),
+                                                                                      child: Text(
+                                                                                        customerError!,
+                                                                                        style: const TextStyle(
+                                                                                            color: Colors.red,
+                                                                                            fontSize: 13),
+                                                                                      ),
+                                                                                    ),
+                                                                                ],
+                                                                              ),
+                                                                              10.height,
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Obx(() => CustomDateBox(
+                                                                                    text: "Date",
+                                                                                    isOptional: true,
+                                                                                    errorText: dateError,
+                                                                                    value: controllers.upDate.value,
+                                                                                    width: 235,
+                                                                                    onTap: () {
+                                                                                      utils.datePicker(
+                                                                                          context: context,
+                                                                                          textEditingController: controllers.dateOfConCtr,
+                                                                                          pathVal: controllers.upDate);
+                                                                                    },
+                                                                                  ),
+                                                                                  ),
+                                                                                  15.width,
+                                                                                  Obx(() => CustomDateBox(
+                                                                                    text: "Time",
+                                                                                    isOptional: true,
+                                                                                    errorText: timeError,
+                                                                                    value: controllers.upCallTime.value,
+                                                                                    width: 235,
+                                                                                    onTap: () {
+                                                                                      utils.timePicker(
+                                                                                          context: context,
+                                                                                          textEditingController:
+                                                                                          controllers.timeOfConCtr,
+                                                                                          pathVal: controllers.upCallTime);
+                                                                                    },
+                                                                                  ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              10.height,
+                                                                              Row(
+                                                                                children: [
+                                                                                  5.width,
+                                                                                  Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children: [
+                                                                                      Row(
+                                                                                        children: [
+                                                                                          CustomText(
+                                                                                            text:"Call Type",
+                                                                                            colors: colorsConst.textColor,
+                                                                                            size: 13,
+                                                                                          ),
+                                                                                          const CustomText(
+                                                                                            text: "*",
+                                                                                            colors: Colors.red,
+                                                                                            size: 25,
+                                                                                          )
+                                                                                        ],
+                                                                                      ),
+                                                                                      Row(
+                                                                                        children: controllers.callTypeList.map<Widget>((type) {
+                                                                                          return Row(
+                                                                                            mainAxisSize: MainAxisSize.min,
+                                                                                            children: [
+                                                                                              Radio<String>(
+                                                                                                value: type,
+                                                                                                groupValue: controllers.upCallType,
+                                                                                                activeColor: colorsConst.primary,
+                                                                                                onChanged: (value) {
+                                                                                                  setState(() {
+                                                                                                    controllers.upCallType = value!;
+                                                                                                  });
+                                                                                                },
+                                                                                              ),
+                                                                                              CustomText(text:type,size: 14,),
+                                                                                              20.width, // space between options
+                                                                                            ],
+                                                                                          );
+                                                                                        }).toList(),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              10.height,
+                                                                              Row(
+                                                                                children: [
+                                                                                  5.width,
+                                                                                  Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children: [
+                                                                                      Row(
+                                                                                        children: [
+                                                                                          CustomText(
+                                                                                            text:"Status",
+                                                                                            colors: colorsConst.textColor,
+                                                                                            size: 13,
+                                                                                          ),
+                                                                                          const CustomText(
+                                                                                            text: "*",
+                                                                                            colors: Colors.red,
+                                                                                            size: 25,
+                                                                                          )
+                                                                                        ],
+                                                                                      ),
+                                                                                      Row(
+                                                                                        children: controllers.callStatusList.map<Widget>((type) {
+                                                                                          return Row(
+                                                                                            mainAxisSize: MainAxisSize.min,
+                                                                                            children: [
+                                                                                              Radio<String>(
+                                                                                                value: type,
+                                                                                                groupValue: controllers.upcallStatus,
+                                                                                                activeColor: colorsConst.primary,
+                                                                                                onChanged: (value) {
+                                                                                                  setState(() {
+                                                                                                    controllers.upcallStatus = value!;
+                                                                                                  });
+                                                                                                },
+                                                                                              ),
+                                                                                              CustomText(text:type,size: 14,),
+                                                                                              20.width // space between options
+                                                                                            ],
+                                                                                          );
+                                                                                        }).toList(),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              10.height,
+                                                                              Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  CustomText(
+                                                                                    text:"Notes",
+                                                                                    colors: colorsConst.textColor,
+                                                                                    size: 13,
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    width: 480,
+                                                                                    height: 80,
+                                                                                    child: TextField(
+                                                                                      controller: controllers.upCallCommentCont,
+                                                                                      maxLines: null,
+                                                                                      expands: true,
+                                                                                      textAlign: TextAlign.start,
+                                                                                      decoration: InputDecoration(
+                                                                                        hintText: "Notes",
+                                                                                        border: OutlineInputBorder(
+                                                                                          borderRadius: BorderRadius.circular(5),
+                                                                                          borderSide: BorderSide(
+                                                                                            color: Color(0xffE1E5FA),
+                                                                                          ),
+                                                                                        ),
+                                                                                        focusedBorder: OutlineInputBorder(
+                                                                                          borderRadius: BorderRadius.circular(5),
+                                                                                          borderSide: BorderSide(
+                                                                                            color: Color(0xffE1E5FA),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      actions: [
+                                                                        Row(
+                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                          children: [
+                                                                            Container(
+                                                                              decoration: BoxDecoration(
+                                                                                  border: Border.all(color: colorsConst.primary),
+                                                                                  color: Colors.white),
+                                                                              width: 80,
+                                                                              height: 25,
+                                                                              child: ElevatedButton(
+                                                                                  style: ElevatedButton.styleFrom(
+                                                                                    shape: const RoundedRectangleBorder(
+                                                                                      borderRadius: BorderRadius.zero,
+                                                                                    ),
+                                                                                    backgroundColor: Colors.white,
+                                                                                  ),
+                                                                                  onPressed: () {
+                                                                                    Navigator.pop(context);
+                                                                                  },
+                                                                                  child: CustomText(
+                                                                                    text: "Cancel",
+                                                                                    colors: colorsConst.primary,
+                                                                                    size: 14,
+                                                                                  )),
+                                                                            ),
+                                                                            10.width,
+                                                                            CustomLoadingButton(
+                                                                              callback: (){
+                                                                                if(controllers.selectedCustomerId.value.isEmpty) {
+                                                                                  controllers.productCtr.reset();
+                                                                                  setState(() {
+                                                                                    customerError =
+                                                                                    "Please select customer";
+                                                                                  });
+                                                                                  return;
+                                                                                }
+                                                                                if(controllers.upDate.value.isEmpty) {
+                                                                                  controllers.productCtr.reset();
+                                                                                  setState(() {
+                                                                                    dateError =
+                                                                                    "Please select date";
+                                                                                  });
+                                                                                  return;
+                                                                                }
+                                                                                if(controllers.upCallTime.value.isEmpty) {
+                                                                                  controllers.productCtr.reset();
+                                                                                  setState(() {
+                                                                                    timeError =
+                                                                                    "Please select time";
+                                                                                  });
+                                                                                  return;
+                                                                                }
+                                                                                apiService.updateCallCommentAPI(context, "7",data.id);
+                                                                              },
+                                                                              height: 35,
+                                                                              isLoading: true,
+                                                                              backgroundColor: colorsConst.primary,
+                                                                              radius: 2,
+                                                                              width: 80,
+                                                                              controller: controllers.productCtr,
+                                                                              isImage: false,
+                                                                              text: "Save",
+                                                                              textColor: Colors.white,
+                                                                            ),
+                                                                            5.width
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  }
+                                                              );
+                                                            });
+                                                      },
+                                                      icon: SvgPicture.asset(
+                                                        "assets/images/a_edit.svg",
+                                                        width: 16,
+                                                        height: 16,
+                                                      )),
                                                   IconButton(
                                                       onPressed: (){
                                                         showDialog(
@@ -1194,7 +1521,6 @@ class _CallCommentsState extends State<CallComments> {
                                 );
                           })
                         ),
-
                     20.height,
                   ],
                 ),
@@ -1202,30 +1528,5 @@ class _CallCommentsState extends State<CallComments> {
         ),
       ),
     );
-  }
-
-  bool _isContactMatchingSearch(CommentsObj contact, String searchText) {
-    List<String> keywords = searchText.toLowerCase().split(' ');
-    String firstName = contact.firstname.toString().toLowerCase();
-    String coName = contact.companyName.toString().toLowerCase();
-    String customerName = contact.name.toString().toLowerCase();
-    String mobile = contact.phoneNo.toString().toLowerCase();
-    String comment = contact.comments.toString().toLowerCase();
-
-    return keywords.every((keyword) =>
-        firstName.contains(keyword) ||
-        coName.contains(keyword) ||
-        customerName.contains(keyword) ||
-        mobile.contains(keyword) ||
-        comment.contains(keyword));
-  }
-
-  void countCheck(List<CommentsObj> contact) {
-    if (contact.isNotEmpty) {
-      var type1Count = contact.where((item) => item.type == "1").length;
-      var type2Count = contact.where((item) => item.type == "2").length;
-      controllers.allDirectVisit.value = type1Count.toString();
-      controllers.allTelephoneCalls.value = type2Count.toString();
-    }
   }
 }

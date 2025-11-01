@@ -664,12 +664,13 @@ class _MeetingCommentsState extends State<MeetingComments> {
                   columnWidths: const {
                     0: FlexColumnWidth(1),
                     1: FlexColumnWidth(2),
-                    2: FlexColumnWidth(3),//date
-                    3: FlexColumnWidth(2.5),//Customer Name
-                    4: FlexColumnWidth(3),//Mobile No.
-                    5: FlexColumnWidth(3),//Call Type
-                    6: FlexColumnWidth(3),//Message
-                    7: FlexColumnWidth(1.5),//Status
+                    2: FlexColumnWidth(3),
+                    3: FlexColumnWidth(2),
+                    4: FlexColumnWidth(2.5),
+                    5: FlexColumnWidth(3),
+                    6: FlexColumnWidth(3),
+                    7: FlexColumnWidth(3),
+                    8: FlexColumnWidth(1.5),
                   },
                   border: TableBorder(
                     horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -685,13 +686,24 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: CustomText(
-                              textAlign: TextAlign.left,
-                              text: "S.NO",//0
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
-                            ),
+                            child:  Obx(() => Checkbox(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(2.0),
+                              ),
+                              side: WidgetStateBorderSide.resolveWith(
+                                    (states) => const BorderSide(width: 1.0, color: Colors.white),
+                              ),
+                              value: remController.selectedRecordCallIds.length == remController.callFilteredList.length && remController.callFilteredList.isNotEmpty,
+                              onChanged: (value) {
+                                if (value == true) {
+                                  remController.selectAllCalls();
+                                } else {
+                                  remController.unselectAllCalls();
+                                }
+                              },
+                              activeColor: Colors.white,
+                              checkColor: colorsConst.primary,
+                            )),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
@@ -752,7 +764,17 @@ class _MeetingCommentsState extends State<MeetingComments> {
                             padding: const EdgeInsets.all(10.0),
                             child: CustomText(
                               textAlign: TextAlign.left,
-                              text: "Meeting Title",
+                              text: "Title",
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: CustomText(
+                              textAlign: TextAlign.left,
+                              text: "Venue",
                               size: 15,
                               isBold: true,
                               colors: Colors.white,
@@ -886,13 +908,13 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               columnWidths:const {
                                 0: FlexColumnWidth(1),
                                 1: FlexColumnWidth(2),
-                                2: FlexColumnWidth(3),//date
-                                3: FlexColumnWidth(2.5),//Customer Name
-                                4: FlexColumnWidth(3),//Mobile No.
-                                5: FlexColumnWidth(3),//Call Type
-                                6: FlexColumnWidth(3),//Message
-                                7: FlexColumnWidth(1.5),//Status
-                                //6: FlexColumnWidth(4.5),//Actions
+                                2: FlexColumnWidth(3),
+                                3: FlexColumnWidth(2),
+                                4: FlexColumnWidth(2.5),
+                                5: FlexColumnWidth(3),
+                                6: FlexColumnWidth(3),
+                                7: FlexColumnWidth(3),
+                                8: FlexColumnWidth(1.5),
                               },
                               border: TableBorder(
                                 horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -905,20 +927,15 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                     ),
                                     children:[
-                                      SizedBox(
-                                        width: 50,
-                                        child: Row(
-                                          children: [
-                                            Checkbox(
-                                              value: remController.isCheckedMeeting(data.id.toString()),
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  remController.toggleMeetingSelection(data.id.toString());
-                                                });
-                                              },
-                                            ),
-                                            //CustomText(text: "${index + 1}"),
-                                          ],
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Checkbox(
+                                          value: remController.isCheckedMeeting(data.id.toString()),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              remController.toggleMeetingSelection(data.id.toString());
+                                            });
+                                          },
                                         ),
                                       ),
                                       Padding(
@@ -926,20 +943,20 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
-                                            // IconButton(
-                                            //     onPressed: (){
-                                            //       // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
-                                            //       // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
-                                            //       // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
-                                            //       // remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
-                                            //       // remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
-                                            //       utils.showUpdateRecordDialog("",context);
-                                            //     },
-                                            //     icon:  SvgPicture.asset(
-                                            //       "assets/images/a_edit.svg",
-                                            //       width: 16,
-                                            //       height: 16,
-                                            //     )),
+                                            IconButton(
+                                                onPressed: (){
+                                                  // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
+                                                  // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
+                                                  // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
+                                                  // remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
+                                                  // remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
+                                                  //utils.showUpdateRecordDialog("",context);
+                                                },
+                                                icon:  SvgPicture.asset(
+                                                  "assets/images/a_edit.svg",
+                                                  width: 16,
+                                                  height: 16,
+                                                )),
                                             IconButton(
                                                 onPressed: (){
                                                   showDialog(
@@ -1043,6 +1060,18 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                         ),
                                       ),
                                       Tooltip(
+                                        message: data.venue.toString()=="null"?"":data.venue.toString(),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: data.venue.toString(),
+                                            size: 14,
+                                            colors:colorsConst.textColor,
+                                          ),
+                                        ),
+                                      ),
+                                      Tooltip(
                                         message: data.notes.toString()=="null"?"":data.notes.toString(),
                                         child: Padding(
                                           padding: const EdgeInsets.all(10.0),
@@ -1054,15 +1083,6 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           ),
                                         ),
                                       ),
-                                      // Padding(
-                                      //   padding: const EdgeInsets.all(10.0),
-                                      //   child: CustomText(
-                                      //     textAlign: TextAlign.left,
-                                      //     text: data.status.toString(),
-                                      //     size: 14,
-                                      //     colors:colorsConst.textColor,
-                                      //   ),
-                                      // ),
                                       Padding(
                                         padding: const EdgeInsets.all(10.0),
                                         child: CustomText(
@@ -1072,23 +1092,6 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           colors: colorsConst.textColor,
                                         ),
                                       ),
-                                      // Padding(
-                                      //   padding: const EdgeInsets.all(3.0),
-                                      //   child: Row(
-                                      //     mainAxisAlignment: MainAxisAlignment.center,
-                                      //     children: [
-                                      //       IconButton(
-                                      //           onPressed: (){},
-                                      //           icon: Icon(Icons.edit,color: Colors.green,)),
-                                      //       IconButton(
-                                      //           onPressed: (){},
-                                      //           icon: SvgPicture.asset("assets/images/add_note.svg")),
-                                      //       IconButton(
-                                      //           onPressed: (){},
-                                      //           icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
-                                      //     ],
-                                      //   ),
-                                      // ),
                                     ]
                                 ),
                               ],
@@ -1098,7 +1101,6 @@ class _MeetingCommentsState extends State<MeetingComments> {
                       );
                     })
                 ),
-
                 20.height,
               ],
             ),
@@ -1106,30 +1108,5 @@ class _MeetingCommentsState extends State<MeetingComments> {
         ),
       ),
     );
-  }
-
-  bool _isContactMatchingSearch(CommentsObj contact, String searchText) {
-    List<String> keywords = searchText.toLowerCase().split(' ');
-    String firstName = contact.firstname.toString().toLowerCase();
-    String coName = contact.companyName.toString().toLowerCase();
-    String customerName = contact.name.toString().toLowerCase();
-    String mobile = contact.phoneNo.toString().toLowerCase();
-    String comment = contact.comments.toString().toLowerCase();
-
-    return keywords.every((keyword) =>
-    firstName.contains(keyword) ||
-        coName.contains(keyword) ||
-        customerName.contains(keyword) ||
-        mobile.contains(keyword) ||
-        comment.contains(keyword));
-  }
-
-  void countCheck(List<CommentsObj> contact) {
-    if (contact.isNotEmpty) {
-      var type1Count = contact.where((item) => item.type == "1").length;
-      var type2Count = contact.where((item) => item.type == "2").length;
-      controllers.allDirectVisit.value = type1Count.toString();
-      controllers.allTelephoneCalls.value = type2Count.toString();
-    }
   }
 }

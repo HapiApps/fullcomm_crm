@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:excel/excel.dart' as excel;
 import 'package:fullcomm_crm/common/widgets/log_in.dart';
 import 'package:fullcomm_crm/screens/employee/employee_screen.dart';
@@ -12,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/screens/new_dashboard.dart';
-import 'package:fullcomm_crm/screens/records/records.dart';
 import 'package:fullcomm_crm/screens/settings/general_settings.dart';
 import 'package:fullcomm_crm/screens/settings/reminder_settings.dart';
 import 'package:fullcomm_crm/screens/settings/user_plan.dart';
@@ -25,13 +23,10 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/screens/customer/view_customer.dart';
-import '../../components/custom_alert_dialog.dart';
 import '../../components/custom_loading_button.dart';
-import '../../components/custom_sidebar_text.dart';
 import '../../components/custom_text.dart';
 import '../../components/dialog_button.dart';
 import '../../components/keyboard_search.dart';
-import '../../components/sidebar.dart';
 import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
 import '../../controller/reminder_controller.dart';
@@ -40,6 +35,7 @@ import '../../models/all_customers_obj.dart';
 import '../../models/new_lead_obj.dart';
 import '../../provider/reminder_provider.dart';
 import '../../screens/leads/disqualified_lead.dart';
+import '../../screens/records/records.dart';
 import '../../screens/reminder_page.dart';
 import '../../services/api_services.dart';
 import '../constant/assets_constant.dart';
@@ -1236,7 +1232,6 @@ class Utils {
 
   Widget sideBarFunction(BuildContext context) {
     RxBool isSettingsHovered = false.obs;
-    RxString hoveredSubMenu = ''.obs; // For Sub Item Hover Effect
     return Obx(() => controllers.isLeftOpen.value
         ? Container(
       width: 150,
@@ -1274,34 +1269,9 @@ class Utils {
               ],
             ),
            Image.asset("assets/images/logo.png"),
-            // Obx(() => CustomSideBarText(
-            //       text: constValue.dashboard,
-            //       boxColor: controllers.selectedIndex.value == 0
-            //         ? const Color(0xffF3F8FD)
-            //         : Colors.white,
-            //       textColor: controllers.selectedIndex.value == 0
-            //           ? colorsConst.primary
-            //           : Colors.black,
-            //       onClicked: () {
-            //         controllers.oldIndex.value = controllers.selectedIndex.value;
-            //         controllers.selectedIndex.value = 0;
-            //         controllers.isSettingsExpanded.value=false;
-            //         Navigator.push(
-            //           context,
-            //           PageRouteBuilder(
-            //             pageBuilder: (context, animation1, animation2) =>
-            //             const NewDashboard(),
-            //             transitionDuration: Duration.zero,
-            //             reverseTransitionDuration: Duration.zero,
-            //           ),
-            //         );
-            //       }),
-            // ),
-
             Obx(() {
               bool isSelected = controllers.selectedIndex.value == 0;
               RxBool isHovered = false.obs;
-
               return MouseRegion(
                 cursor: SystemMouseCursors.click,
                 onEnter: (_) => isHovered.value = true,
@@ -1312,9 +1282,9 @@ class Utils {
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? const Color(0xffF3F8FD) // Active background
+                        ? const Color(0xffF3F8FD)
                         : isHovered.value
-                        ? const Color(0xffF8FAFF) // Hover background
+                        ? const Color(0xffF8FAFF)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: isHovered.value
@@ -1346,7 +1316,6 @@ class Utils {
                     },
                     child: Stack(
                       children: [
-                        // ✅ Left Active Indicator Bar
                         AnimatedPositioned(
                           duration: const Duration(milliseconds: 250),
                           left: 0,
@@ -1355,8 +1324,6 @@ class Utils {
                           width: isSelected ? 5 : 0,
                           child: Container(color: colorsConst.primary),
                         ),
-
-                        // ✅ Icon + Text Animation
                         AnimatedPadding(
                           duration: const Duration(milliseconds: 250),
                           padding: EdgeInsets.only(
@@ -1396,11 +1363,9 @@ class Utils {
                 )),
               );
             }),
-
             Obx(() {
               bool isSelected = controllers.selectedIndex.value == 1;
-              RxBool isHovered = false.obs; // Hover state
-
+              RxBool isHovered = false.obs;
               return MouseRegion(
                 cursor: SystemMouseCursors.click,
                 onEnter: (_) => isHovered.value = true,
@@ -1432,7 +1397,6 @@ class Utils {
                       controllers.selectedMonth.value = null;
                       controllers.selectedProspectSortBy.value = "Today";
                       controllers.isLead.value = true;
-
                       Navigator.push(
                         context,
                         PageRouteBuilder(
@@ -1448,7 +1412,6 @@ class Utils {
                     },
                     child: Stack(
                       children: [
-                        // ✅ Left Selection Highlight Bar
                         AnimatedPositioned(
                           duration: const Duration(milliseconds: 250),
                           left: 0,
@@ -1457,8 +1420,6 @@ class Utils {
                           width: isSelected ? 5 : 0,
                           child: Container(color: colorsConst.primary),
                         ),
-
-                        // ✅ Animated Sliding Text + Icon
                         AnimatedPadding(
                           duration: const Duration(milliseconds: 250),
                           padding: EdgeInsets.only(
@@ -1498,7 +1459,6 @@ class Utils {
                 )),
               );
             }),      //suspects
-
             Obx(() {
               bool isSelected = controllers.selectedIndex.value == 2;
               RxBool isHovered = false.obs; // ✅ Hover reactive value
@@ -1598,9 +1558,6 @@ class Utils {
                 )),
               );
             }),        // Prospects
-
-
-
             Obx(() {
               bool isSelected = controllers.selectedIndex.value == 3;
               RxBool isHovered = false.obs;
@@ -1615,9 +1572,9 @@ class Utils {
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? const Color(0xffF3F8FD) // Selected background
+                        ? const Color(0xffF3F8FD)
                         : isHovered.value
-                        ? const Color(0xffF8FAFF) // Hover effect
+                        ? const Color(0xffF8FAFF)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: isHovered.value
@@ -1635,7 +1592,6 @@ class Utils {
                     onTap: () {
                       controllers.selectedPMonth.value = null;
                       controllers.selectedQualifiedSortBy.value = "Today";
-
                       Navigator.push(
                         context,
                         PageRouteBuilder(
@@ -1652,7 +1608,6 @@ class Utils {
                     },
                     child: Stack(
                       children: [
-                        // ✅ Left Active Indicator Bar
                         AnimatedPositioned(
                           duration: const Duration(milliseconds: 250),
                           left: 0,
@@ -1661,8 +1616,6 @@ class Utils {
                           width: isSelected ? 5 : 0,
                           child: Container(color: colorsConst.primary),
                         ),
-
-                        // ✅ Icon + Text with sliding effect
                         AnimatedPadding(
                           duration: const Duration(milliseconds: 250),
                           padding: EdgeInsets.only(
@@ -1672,7 +1625,7 @@ class Utils {
                           child: Row(
                             children: [
                               Icon(
-                                Icons.verified_outlined, // Qualified icon
+                                Icons.verified_outlined,
                                 color: isSelected
                                     ? colorsConst.primary
                                     : isHovered.value
@@ -1703,9 +1656,8 @@ class Utils {
             }),
 
             Obx(() {
-              bool isSelected = controllers.selectedIndex.value == 5; // ✅ Selected check
-              RxBool isHovered = false.obs; // ✅ Track hover state
-
+              bool isSelected = controllers.selectedIndex.value == 5;
+              RxBool isHovered = false.obs;
               return MouseRegion(
                 cursor: SystemMouseCursors.click,
                 onEnter: (_) => isHovered.value = true,
@@ -1716,9 +1668,9 @@ class Utils {
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? const Color(0xffF3F8FD) // ✅ Active background
+                        ? const Color(0xffF3F8FD)
                         : isHovered.value
-                        ? const Color(0xffF8FAFF) // ✅ Hover background
+                        ? const Color(0xffF8FAFF)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: isHovered.value
@@ -1736,7 +1688,6 @@ class Utils {
                     onTap: () {
                       controllers.selectedMonth.value = null;
                       controllers.selectedProspectSortBy.value = "Today";
-
                       Navigator.push(
                         context,
                         PageRouteBuilder(
@@ -1753,7 +1704,6 @@ class Utils {
                     },
                     child: Stack(
                       children: [
-                        // ✅ Left Active Indicator
                         AnimatedPositioned(
                           duration: const Duration(milliseconds: 250),
                           left: 0,
@@ -1762,8 +1712,6 @@ class Utils {
                           width: isSelected ? 5 : 0,
                           child: Container(color: colorsConst.primary),
                         ),
-
-                        // ✅ Icon + Text + Padding Animation
                         AnimatedPadding(
                           duration: const Duration(milliseconds: 250),
                           padding: EdgeInsets.only(
@@ -1803,39 +1751,103 @@ class Utils {
                 )),
               );
             }),
-
-
-
-            // Obx(() => CustomSideBarText(
-            //           boxColor: controllers.selectedIndex.value == 5
-            //               ? const Color(0xffF3F8FD)
-            //               : Colors.white,
-            //       textColor: controllers.selectedIndex.value == 5
-            //           ? colorsConst.primary
-            //           : Colors.black,
-            //       text: "Disqualified",
-            //       onClicked: () {
-            //         controllers.selectedMonth.value=null;
-            //         controllers.selectedProspectSortBy.value="Today";
-            //         Navigator.push(context,
-            //           PageRouteBuilder(
-            //             pageBuilder: (context, animation1, animation2) =>
-            //             const DisqualifiedLead(),
-            //             transitionDuration: Duration.zero,
-            //             reverseTransitionDuration: Duration.zero,
-            //           ),
-            //         );
-            //         //controllers.isDisqualified.value = true;
-            //         controllers.oldIndex.value = controllers.selectedIndex.value;
-            //         controllers.selectedIndex.value = 5;
-            //         controllers.isSettingsExpanded.value=false;
-            //       }),
-            // ),
-
             Obx(() {
-              bool isSelected = controllers.selectedIndex.value == 11; // ✅ Active Check
+              bool isSelected = controllers.selectedIndex.value == 6; // ✅ Active Check
               RxBool isHovered = false.obs;
 
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onEnter: (_) => isHovered.value = true,
+                onExit: (_) => isHovered.value = false,
+                child: Obx(() => AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? const Color(0xffF3F8FD)
+                        : isHovered.value
+                        ? const Color(0xffF8FAFF)
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: isHovered.value
+                        ? [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(2, 2),
+                      ),
+                    ]
+                        : [],
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                          const Records(isReload: "true"),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
+                      controllers.oldIndex.value = controllers.selectedIndex.value;
+                      controllers.selectedIndex.value = 6;
+                      controllers.isSettingsExpanded.value = false;
+                    },
+                    child: Stack(
+                      children: [
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 250),
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: isSelected ? 5 : 0,
+                          child: Container(color: colorsConst.primary),
+                        ),
+                        AnimatedPadding(
+                          duration: const Duration(milliseconds: 250),
+                          padding: EdgeInsets.only(
+                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
+                            right: 12,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.receipt_long,
+                                color: isSelected
+                                    ? colorsConst.primary
+                                    : isHovered.value
+                                    ? colorsConst.primary
+                                    : Colors.black,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Records",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight:
+                                  isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: isSelected
+                                      ? colorsConst.primary
+                                      : isHovered.value
+                                      ? colorsConst.primary
+                                      : Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+              );
+            }),
+            Obx(() {
+              bool isSelected = controllers.selectedIndex.value == 11;
+              RxBool isHovered = false.obs;
               return MouseRegion(
                 cursor: SystemMouseCursors.click,
                 onEnter: (_) => isHovered.value = true,
@@ -1880,7 +1892,6 @@ class Utils {
                     },
                     child: Stack(
                       children: [
-                        // ✅ Left Active Indicator
                         AnimatedPositioned(
                           duration: const Duration(milliseconds: 250),
                           left: 0,
@@ -1889,8 +1900,6 @@ class Utils {
                           width: isSelected ? 5 : 0,
                           child: Container(color: colorsConst.primary),
                         ),
-
-                        // ✅ Icon + Text Animation
                         AnimatedPadding(
                           duration: const Duration(milliseconds: 250),
                           padding: EdgeInsets.only(
@@ -1900,7 +1909,7 @@ class Utils {
                           child: Row(
                             children: [
                               Icon(
-                                Icons.alarm, // ✅ Reminder Icon
+                                Icons.alarm,
                                 color: isSelected
                                     ? colorsConst.primary
                                     : isHovered.value
@@ -1931,30 +1940,6 @@ class Utils {
               );
             }),
 
-
-            // Obx(() => CustomSideBarText(
-            //     boxColor: controllers.selectedIndex.value == 9
-            //         ? const Color(0xffF3F8FD)
-            //         : Colors.white,
-            //     textColor: controllers.selectedIndex.value == 9
-            //         ? colorsConst.primary
-            //         : Colors.black,
-            //     text: "Employees",
-            //     onClicked: () {
-            //       Navigator.push(
-            //         context,
-            //         PageRouteBuilder(
-            //           pageBuilder: (context, animation1, animation2) =>
-            //           const EmployeeScreen(),
-            //           transitionDuration: Duration.zero,
-            //           reverseTransitionDuration: Duration.zero,
-            //         ),
-            //       );
-            //       controllers.oldIndex.value = controllers.selectedIndex.value;
-            //       controllers.selectedIndex.value = 9;
-            //     }),
-            // ),
-
             controllers.storage.read("role") != "See All Customer Records"
                 ? 0.height
                 :Obx(() {
@@ -1966,8 +1951,6 @@ class Utils {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   5.height,
-
-                  // 🔹 Settings Main Tab
                   MouseRegion(
                     cursor: SystemMouseCursors.click,
                     onEnter: (_) => isSettingsHovered.value = true,
@@ -2041,8 +2024,6 @@ class Utils {
                       ),
                     ),
                   ),
-
-                  // 🔹 Submenu Items (Only visible when expanded)
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
                     child: isExpanded
@@ -2333,8 +2314,6 @@ class Utils {
       );
     });
   }
-
-
 
   Widget paginationButton(IconData icon, bool isEnabled, VoidCallback onPressed) {
     return Container(
@@ -2821,8 +2800,6 @@ class Utils {
       pathVal?.value = formattedTime;
     }
   }
-
-
   Future<void> datePicker(
       {BuildContext? context,
       TextEditingController? textEditingController,
@@ -2840,20 +2817,8 @@ class Utils {
           "${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}";
       pathVal?.value =
           "${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}";
-
-      // controllers.empDOB.value=;
-      // controllers.empDOJ.value=;
-      // if(utils.isAdult()==false){
-      //   controllers.empDOB.value="";
-      // }
-
-      // date.value= ("${(controllers.dateTime.year.toString())}-"
-      //     "${(controllers.dateTime.month.toString().padLeft(2,"0"))}-"
-      //     "${(controllers.dateTime.day.toString().padLeft(2,"0"))}");
     });
   }
-
-
   Future<void> chooseFile({RxList? mediaDataV, RxString? fileName, RxString? pathName}) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -2868,76 +2833,6 @@ class Utils {
       print('No file selected');
     }
   }
-
-  Widget headerCell({
-    required double width,
-    required String text,
-    required bool isSortable,
-    required String fieldName,
-    void Function()? onSortAsc,
-    void Function()? onSortDesc,
-    required RxString sortField,
-    required RxString sortOrder,
-  }) {
-    return Container(
-      width: width,
-      height: 50,
-      alignment: Alignment.center,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CustomText(
-            text: text,
-            size: 15,
-            isBold: true,
-            colors: Colors.white,
-          ),
-          if (isSortable) ...[
-            Obx(() => GestureDetector(
-              onTap: onSortAsc,
-              child: Icon(
-                Icons.arrow_upward,
-                size: 16,
-                color: (sortField.value == fieldName &&
-                    sortOrder.value == 'asc')
-                    ? colorsConst.third // highlight color
-                    : Colors.grey, // default color
-              ),
-            )),
-            Obx(() => GestureDetector(
-              onTap: onSortDesc,
-              child: Icon(
-                Icons.arrow_downward,
-                size: 16,
-                color: (sortField.value == fieldName &&
-                    sortOrder.value == 'desc')
-                    ? colorsConst.third
-                    : Colors.grey,
-              ),
-            )),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget dataCell({required double width, required String text}) {
-    return Tooltip(
-      message: text=="null"?"":text,
-      child: Container(
-        width: width,
-        height: 50,
-        padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-        alignment: Alignment.center,
-        child: CustomText(
-          text: text,
-          size: 14,
-          colors: colorsConst.textColor,
-        ),
-      ),
-    );
-  }
-
   TableRow emailRow(BuildContext context,
       {RxBool? isCheck, String? templateName, String? subject, String? msg}) {
     return TableRow(
@@ -3000,6 +2895,7 @@ class Utils {
           ),
         ]);
   }
+
   void pickAndReadExcelFile(BuildContext context) {
     final html.FileUploadInputElement input = html.FileUploadInputElement()
       ..accept = '.xlsx, .xls';
@@ -3506,195 +3402,6 @@ class Utils {
   Map<DateTime, TimeOfDay> _selectedStartDatesTimes = {};
   Map<DateTime, TimeOfDay> _selectedEndDatesTimes = {};
   TimeOfDay _selectedTime = TimeOfDay.now();
-
-  // Future<void> _selectDateTime({
-  //   required BuildContext context,
-  //   required bool isStart,
-  // })
-  // async {
-  //   Map<DateTime, TimeOfDay> selectedDatesTimes =
-  //   isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
-  //   TextEditingController controller =
-  //   isStart ? remController.startController : remController.endController;
-  //
-  //   DateTime selectedDate =
-  //   selectedDatesTimes.keys.isNotEmpty ? selectedDatesTimes.keys.first : DateTime.now();
-  //   TimeOfDay dialogSelectedTime =
-  //   selectedDatesTimes.values.isNotEmpty ? selectedDatesTimes.values.first : TimeOfDay.now();
-  //
-  //   final TimeOfDay? pickedTime = await showDialog<TimeOfDay>(
-  //     context: context,
-  //     builder: (context) {
-  //       return StatefulBuilder(builder: (context, setDialogState) {
-  //         return AlertDialog(
-  //           backgroundColor: Colors.white,
-  //           insetPadding: const EdgeInsets.all(20),
-  //           contentPadding: const EdgeInsets.all(10),
-  //           title: Text(
-  //             isStart ? "Select Start Date & Time" : "Select End Date & Time",
-  //             style: const TextStyle(
-  //               fontWeight: FontWeight.bold,
-  //               color: Colors.black,
-  //               fontSize: 17,
-  //             ),
-  //           ),
-  //           content: SizedBox(
-  //             height: 420,
-  //             width: 600,
-  //             child: Row(
-  //               children: [
-  //                 // ---------- Date Picker ----------
-  //                 Expanded(
-  //                   flex: 2,
-  //                   child: SfDateRangePicker(
-  //                     view: DateRangePickerView.month,
-  //                     selectionMode: DateRangePickerSelectionMode.single,
-  //                     todayHighlightColor: colorsConst.primary,
-  //                     selectionColor: colorsConst.primary,
-  //                     onSelectionChanged: (args) {
-  //                       if (args.value is DateTime) {
-  //                         setDialogState(() {
-  //                           selectedDate = args.value;
-  //                         });
-  //                       }
-  //                     },
-  //                   ),
-  //                 ),
-  //
-  //                 Container(
-  //                   width: 1,
-  //                   height: double.infinity,
-  //                   color: Colors.grey.shade300,
-  //                   margin: const EdgeInsets.symmetric(horizontal: 8),
-  //                 ),
-  //
-  //                 // ---------- Time Picker + Quick Buttons ----------
-  //                 Expanded(
-  //                   flex: 1,
-  //                   child: Column(
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     children: [
-  //                       TimePickerDialog(
-  //                         initialTime: dialogSelectedTime,
-  //                         cancelText: "",
-  //                         confirmText: "",
-  //                         orientation: Orientation.portrait,
-  //                         onEntryModeChanged: (mode) {},
-  //                       ),
-  //                       const SizedBox(height: 12),
-  //                       Row(
-  //                         mainAxisAlignment: MainAxisAlignment.center,
-  //                         children: [
-  //                           _quickButton("+15m", () {
-  //                             final t = dialogSelectedTime.replacing(
-  //                               minute: (dialogSelectedTime.minute + 15) % 60,
-  //                               hour: (dialogSelectedTime.hour +
-  //                                   (dialogSelectedTime.minute + 15) ~/ 60) %
-  //                                   24,
-  //                             );
-  //                             setDialogState(() => dialogSelectedTime = t);
-  //                           }),
-  //                           const SizedBox(width: 8),
-  //                           _quickButton("+30m", () {
-  //                             final t = dialogSelectedTime.replacing(
-  //                               minute: (dialogSelectedTime.minute + 30) % 60,
-  //                               hour: (dialogSelectedTime.hour +
-  //                                   (dialogSelectedTime.minute + 30) ~/ 60) %
-  //                                   24,
-  //                             );
-  //                             setDialogState(() => dialogSelectedTime = t);
-  //                           }),
-  //                         ],
-  //                       ),
-  //                       const SizedBox(height: 8),
-  //                       Row(
-  //                         mainAxisAlignment: MainAxisAlignment.center,
-  //                         children: [
-  //                           _quickButton("+1h", () {
-  //                             setDialogState(() {
-  //                               dialogSelectedTime = TimeOfDay(
-  //                                 hour: (dialogSelectedTime.hour + 1) % 24,
-  //                                 minute: dialogSelectedTime.minute,
-  //                               );
-  //                             });
-  //                           }),
-  //                           const SizedBox(width: 8),
-  //                           _quickButton("End of Day", () {
-  //                             setDialogState(() {
-  //                               dialogSelectedTime =
-  //                               const TimeOfDay(hour: 23, minute: 59);
-  //                             });
-  //                           }),
-  //                         ],
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () => Navigator.pop(context),
-  //               child: const Text("Cancel"),
-  //             ),
-  //             ElevatedButton(
-  //               style: ElevatedButton.styleFrom(
-  //                 backgroundColor: colorsConst.primary,
-  //               ),
-  //               onPressed: () => Navigator.pop(context, dialogSelectedTime),
-  //               child: const Text(
-  //                 "Set Time",
-  //                 style: TextStyle(color: Colors.white),
-  //               ),
-  //             ),
-  //           ],
-  //         );
-  //       });
-  //     },
-  //   );
-  //   if (pickedTime != null) {
-  //     selectedDatesTimes.clear();
-  //     selectedDatesTimes[selectedDate] = pickedTime;
-  //     controller.text =
-  //     "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} ${pickedTime.format(context)}";
-  //     print("Selected ${isStart ? 'start' : 'end'}: $selectedDatesTimes");
-  //   }
-  // }
-
-  // Future<void> _selectDateTime({
-  //   required BuildContext context,
-  //   required bool isStart,
-  // }) async {
-  //   Map<DateTime, TimeOfDay> selectedDatesTimes =
-  //   isStart ? _selectedStartDatesTimes : _selectedEndDatesTimes;
-  //   TextEditingController controller =
-  //   isStart ? remController.startController : remController.endController;
-  //
-  //   await picker.DatePicker.showDateTimePicker(
-  //     context,
-  //     showTitleActions: true,
-  //     theme: const picker.DatePickerTheme(
-  //       backgroundColor: Color(0xFFE7EEF8),
-  //       itemStyle: TextStyle(color: Colors.black, fontSize: 18),
-  //       doneStyle: TextStyle(color: Color(0xff0078D7), fontWeight: FontWeight.bold),
-  //       cancelStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-  //     ),
-  //     currentTime: DateTime.now(),
-  //     locale: picker.LocaleType.en,
-  //     onConfirm: (date) {
-  //       TimeOfDay selectedTime = TimeOfDay(hour: date.hour, minute: date.minute);
-  //
-  //       selectedDatesTimes.clear();
-  //       selectedDatesTimes[date] = selectedTime;
-  //
-  //       controller.text =
-  //       "${date.day}-${date.month}-${date.year} ${selectedTime.format(context)}";
-  //
-  //       print("Selected ${isStart ? 'start' : 'end'} date & time: $selectedDatesTimes");
-  //     },
-  //   );
-  // }
 
   Future<void> _selectDateTime({
     required BuildContext context,
@@ -5217,421 +4924,4 @@ class Utils {
       },
     );
   }
-
-  void showUpdateRecordDialog(String id,BuildContext context) {
-    String? titleError;
-    String? startError;
-    String? endError;
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              insetPadding: const EdgeInsets.symmetric(horizontal: 80, vertical: 50),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              contentPadding: EdgeInsets.zero,
-              content: Container(
-                width: 630,
-                color: Colors.white,
-                padding: const EdgeInsets.all(20),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Update Appointment",
-                            style: GoogleFonts.lato(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: const Text(
-                              "×",
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Divider(thickness: 1, color: Colors.grey.shade300),
-                      const SizedBox(height: 8),
-
-                      /// Reminder title
-                      Text("Appointment Title",
-                          style: GoogleFonts.lato(
-                              fontSize: 17, color: Color(0xff737373))),
-                      const SizedBox(height: 5),
-                      TextFormField(
-                        textCapitalization: TextCapitalization.sentences,
-                        controller: remController.updateTitleController,
-                        onChanged: (value) {
-                          if (value.toString().isNotEmpty) {
-                            String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
-                            if (newValue != value) {
-                              remController.updateTitleController.value = remController.updateTitleController.value.copyWith(
-                                text: newValue,
-                                selection: TextSelection.collapsed(offset: newValue.length),
-                              );
-                            }
-                          }
-                          if (value.trim().isNotEmpty) {
-                            setState(() {
-                              titleError = null;
-                            });
-                          }
-                        },
-                        style: GoogleFonts.lato(
-                          color: Colors.black,
-                          fontSize: 17,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: "Appointment title",
-                          errorText: titleError,
-                          hintStyle: TextStyle(
-                            color: Color(0xFFCCCCCC),
-                            fontSize: 17,
-                            fontFamily: GoogleFonts.lato().fontFamily,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-
-
-                      Consumer<ReminderProvider>(
-                        builder: (context, provider, _) {
-                          return Row(
-                            children: [
-                              Expanded(
-                                child: RadioListTile(
-                                  title: Text(
-                                    "Follow-up Reminder",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.black,
-                                      fontSize: 17,
-                                    ),
-                                  ),
-                                  value: "followup",
-                                  groupValue: provider.selectedNotification,
-                                  activeColor: const Color(0xFF0078D7),
-                                  onChanged: (v) =>
-                                      provider.setNotification(v as String),
-                                ),
-                              ),
-                              Expanded(
-                                child: RadioListTile(
-                                  title: Text(
-                                    "Appointment Reminder",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.black,
-                                      fontSize: 17,
-                                    ),
-                                  ),
-                                  value: "meeting",
-                                  groupValue: provider.selectedNotification,
-                                  activeColor: const Color(0xFF0078D7),
-                                  onChanged: (v) =>
-                                      provider.setNotification(v as String),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-
-                      8.height,
-                      Consumer<ReminderProvider>(
-                        builder: (context, provider, _) {
-                          if (provider.selectedNotification == "task") {
-                            return const SizedBox.shrink();
-                          }
-                          return Column(
-                            children: [
-                              /// Location
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Text("Location",
-                                            style: GoogleFonts.lato(
-                                                fontSize: 17,
-                                                color: const Color(0xff737373))),
-                                        const SizedBox(height: 5),
-                                        DropdownButtonFormField<String>(
-                                          value: remController.updateLocation,
-                                          dropdownColor: Colors.white,
-                                          style: GoogleFonts.lato(
-                                            color: Colors.black,
-                                            fontSize: 14,
-                                          ),
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(4),
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey.shade300),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(4),
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey.shade300),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(4),
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey.shade300),
-                                            ),
-                                            contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 12,
-                                                vertical: 10),
-                                          ),
-                                          items: ["Online", "Office"]
-                                              .map(
-                                                (e) => DropdownMenuItem(
-                                              value: e,
-                                              child: Text(
-                                                e,
-                                                style: GoogleFonts.lato(
-                                                  color: Colors.black,
-                                                  fontSize: 17,
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                              .toList(),
-                                          onChanged: (v) => setState(
-                                                  () => remController.updateLocation = v),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 18),
-                              /// Start & End Date/Time
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Text("Start Date & Time",
-                                            style: GoogleFonts.lato(
-                                                fontSize: 17,
-                                                color:
-                                                const Color(0xff737373))),
-                                        const SizedBox(height: 5),
-                                        TextFormField(
-                                          controller:
-                                          remController.updateStartController,
-                                          readOnly: true,
-                                          onTap: () => _selectDateTime(
-                                              context: context, isStart: true),
-                                          style: GoogleFonts.lato(
-                                            color: Colors.black,
-                                            fontSize: 17,
-                                          ),
-                                          decoration: InputDecoration(
-                                            suffixIcon: const Icon(
-                                              Icons.calendar_today_outlined,
-                                              size: 20,
-                                              color: Colors.grey,
-                                            ),
-                                            errorText: startError,
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(4),
-                                              borderSide: BorderSide(
-                                                color: Colors.grey.shade300,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Text("End Date & Time",
-                                            style: GoogleFonts.lato(
-                                                fontSize: 17,
-                                                color:
-                                                const Color(0xff737373))),
-                                        const SizedBox(height: 5),
-                                        TextFormField(
-                                          controller: remController.updateEndController,
-                                          readOnly: true,
-                                          onTap: () => _selectDateTime(
-                                              context: context, isStart: false),
-                                          style: GoogleFonts.lato(
-                                            color: Colors.black,
-                                            fontSize: 17,
-                                          ),
-                                          decoration: InputDecoration(
-                                            suffixIcon: const Icon(
-                                              Icons.calendar_today_outlined,
-                                              size: 20,
-                                              color: Colors.grey,
-                                            ),
-                                            errorText: endError,
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(4),
-                                              borderSide: BorderSide(
-                                                color: Colors.grey.shade300,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              10.height,
-
-                              /// Details field
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Details",
-                                      style: GoogleFonts.lato(
-                                          fontSize: 17,
-                                          color: Color(0xff737373))),
-                                  const SizedBox(height: 5),
-                                  TextFormField(
-                                    textCapitalization:
-                                    TextCapitalization.sentences,
-                                    controller: remController.updateDetailsController,
-                                    maxLines: 2,
-                                    style: GoogleFonts.lato(
-                                      color: Colors.black,
-                                      fontSize: 17,
-                                    ),
-                                    decoration: InputDecoration(
-                                      hintText: "Appointment Points",
-                                      hintStyle: GoogleFonts.lato(
-                                        color: const Color(0xFFCCCCCC),
-                                        fontSize: 17,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                        borderSide: BorderSide(
-                                          color: Colors.grey.shade300,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-
-                      13.height,
-
-                      /// Action buttons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          SizedBox(
-                            width: 80,
-                            height: 30,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(7),
-                                  side: const BorderSide(color: Color(0xff0078D7)),
-                                ),
-                                padding: EdgeInsets.zero,
-                                elevation: 0,
-                              ),
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text(
-                                "Cancel",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 12),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          CustomLoadingButton(
-                            callback: ()async{
-                              setState(() {
-                                titleError = remController.updateTitleController.text.trim().isEmpty
-                                    ? "Please enter reminder title"
-                                    : null;
-                                startError = remController.updateStartController.text.trim().isEmpty
-                                    ? "Please select start date & time"
-                                    : null;
-                                endError = remController.updateEndController.text.trim().isEmpty
-                                    ? "Please select end date & time"
-                                    : null;
-                              });
-                              if (titleError == null && startError == null && endError == null) {
-                                final provider = Provider.of<ReminderProvider>(context, listen: false);
-                                remController.updateReminderAPI(context, provider.selectedNotification,id);
-                              }else{
-                                controllers.productCtr.reset();
-                              }
-                            },
-                            height: 40,
-                            isLoading: true,
-                            backgroundColor: colorsConst.primary,
-                            radius: 7,
-                            width: 150,
-                            controller: controllers.productCtr,
-                            isImage: false,
-                            text: "Update Reminder",
-                            textColor: Colors.white,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
 }

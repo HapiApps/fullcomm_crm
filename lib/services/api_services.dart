@@ -585,6 +585,56 @@ class ApiService {
     }
   }
 
+  Future updateCallCommentAPI(BuildContext context,String type,String id) async {
+    try {
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode({
+                "action": "update_call_comments",
+                "customer_id": controllers.selectedCustomerId.value,
+                "mobile_number": controllers.selectedCustomerMobile.value,
+                "customer_name": controllers.selectedCustomerName.value,
+                "type": type,
+                "cos_id": controllers.storage.read("cos_id"),
+                "call_type":controllers.upCallType,
+                "call_status":controllers.upcallStatus,
+                "date":"${controllers.upDate.value} ${controllers.upCallTime.value}",
+                "updated_by": controllers.storage.read("id"),
+                "comments": controllers.upCallCommentCont.text.trim(),
+                "id":id
+              }),
+          encoding: Encoding.getByName("utf-8"));
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"] == "Record updated successfully") {
+        controllers.clearSelectedCustomer();
+        controllers.empDOB.value = "";
+        controllers.callTime.value = "";
+        controllers.callType = "Incoming";
+        controllers.callStatus = "Completed";
+        controllers.callCommentCont.text = "";
+        getAllCallActivity("");
+        Navigator.pop(context);
+        controllers.productCtr.reset();
+      } else {
+        errorDialog(Get.context!, request.body);
+        controllers.productCtr.reset();
+      }
+    } on SocketException {
+      controllers.productCtr.reset();
+      errorDialog(Get.context!, 'No internet connection');
+    } on HttpException catch (e) {
+      controllers.productCtr.reset();
+      errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
+    } catch (e) {
+      errorDialog(Get.context!, e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+
   Future insertMeetingDetailsAPI(BuildContext context) async {
     try {
       Map data = {
@@ -1511,6 +1561,13 @@ class ApiService {
         controllers.allOutgoingCalls.value = outgoing.length.toString();
         controllers.allMissedCalls.value = missed.length.toString();
         controllers.allCalls.value = response.length.toString();
+        remController.filterAndSortCalls(
+          allCalls: controllers.callActivity,
+          searchText: controllers.searchText.value.toLowerCase(),
+          callType: controllers.selectCallType.value,
+          sortField: controllers.sortFieldCallActivity.value,
+          sortOrder: controllers.sortOrderCallActivity.value,
+        );
       } else {
         controllers.allIncomingCalls.value = "0";
         controllers.allOutgoingCalls.value = "0";

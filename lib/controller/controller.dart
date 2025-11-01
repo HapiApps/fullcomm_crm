@@ -33,8 +33,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   final sortOrderMeetingActivity = 'asc'.obs;
   final sortFieldEmployee = ''.obs;
   final sortOrderEmployee = 'asc'.obs;
-  var hoverIndex = (-1).obs;
-
   @override
   void onInit() {
     tabController = TabController(length: 3, vsync: this);
@@ -1185,6 +1183,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   TextEditingController cusController   = TextEditingController();
   TextEditingController empController   = TextEditingController();
   TextEditingController callCommentCont = TextEditingController();
+  TextEditingController upCallCommentCont = TextEditingController();
   var roleList = [].obs;
   var stDate = "${DateTime.now().day.toString().padLeft(2, "0")}"
           "-${DateTime.now().month.toString().padLeft(2, "0")}"
@@ -1315,6 +1314,8 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       industry,
       callType="Incoming",
       callStatus="Completed",
+      upCallType="Incoming",
+      upcallStatus="Completed",
       visitType,
       qStatus,
       coIndustry,
@@ -1370,11 +1371,13 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       empEmail = "".obs,
       empPhone = "".obs,
       empDOB = "".obs,
+      upDate = "".obs,
       exDate = "".obs,
       prospectDate = "".obs,
       fDate = "".obs,
       toDate = "".obs,
       callTime = "".obs,
+      upCallTime = "".obs,
       fTime = "".obs,
       toTime = "".obs,
       leadDOR = "".obs,
