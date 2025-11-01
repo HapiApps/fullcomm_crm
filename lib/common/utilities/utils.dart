@@ -31,6 +31,7 @@ import '../../components/custom_sidebar_text.dart';
 import '../../components/custom_text.dart';
 import '../../components/dialog_button.dart';
 import '../../components/keyboard_search.dart';
+import '../../components/sidebar.dart';
 import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
 import '../../controller/reminder_controller.dart';
@@ -1234,6 +1235,8 @@ class Utils {
   }
 
   Widget sideBarFunction(BuildContext context) {
+    RxBool isSettingsHovered = false.obs;
+    RxString hoveredSubMenu = ''.obs; // For Sub Item Hover Effect
     return Obx(() => controllers.isLeftOpen.value
         ? Container(
       width: 150,
@@ -1271,181 +1274,664 @@ class Utils {
               ],
             ),
            Image.asset("assets/images/logo.png"),
-            Obx(() => CustomSideBarText(
-                  text: constValue.dashboard,
-                  boxColor: controllers.selectedIndex.value == 0
-                    ? const Color(0xffF3F8FD)
-                    : Colors.white,
-                  textColor: controllers.selectedIndex.value == 0
-                      ? colorsConst.primary
-                      : Colors.black,
-                  onClicked: () {
-                    controllers.oldIndex.value = controllers.selectedIndex.value;
-                    controllers.selectedIndex.value = 0;
-                    controllers.isSettingsExpanded.value=false;
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const NewDashboard(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
+            // Obx(() => CustomSideBarText(
+            //       text: constValue.dashboard,
+            //       boxColor: controllers.selectedIndex.value == 0
+            //         ? const Color(0xffF3F8FD)
+            //         : Colors.white,
+            //       textColor: controllers.selectedIndex.value == 0
+            //           ? colorsConst.primary
+            //           : Colors.black,
+            //       onClicked: () {
+            //         controllers.oldIndex.value = controllers.selectedIndex.value;
+            //         controllers.selectedIndex.value = 0;
+            //         controllers.isSettingsExpanded.value=false;
+            //         Navigator.push(
+            //           context,
+            //           PageRouteBuilder(
+            //             pageBuilder: (context, animation1, animation2) =>
+            //             const NewDashboard(),
+            //             transitionDuration: Duration.zero,
+            //             reverseTransitionDuration: Duration.zero,
+            //           ),
+            //         );
+            //       }),
+            // ),
+
+            Obx(() {
+              bool isSelected = controllers.selectedIndex.value == 0;
+              RxBool isHovered = false.obs;
+
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onEnter: (_) => isHovered.value = true,
+                onExit: (_) => isHovered.value = false,
+                child: Obx(() => AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? const Color(0xffF3F8FD) // Active background
+                        : isHovered.value
+                        ? const Color(0xffF8FAFF) // Hover background
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: isHovered.value
+                        ? [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(2, 2),
                       ),
-                    );
-                  }),
-            ),
-            Obx(() => CustomSideBarText(
-                boxColor: controllers.selectedIndex.value == 1
-                    ? const Color(0xffF3F8FD)
-                    : Colors.white,
-                  textColor: controllers.selectedIndex.value == 1
-                      ? colorsConst.primary
-                      : Colors.black,
-                  text: "Suspects",
-                  onClicked: () {
-                    controllers.selectedMonth.value=null;
-                    controllers.selectedProspectSortBy.value="Today";
-                    controllers.isLead.value = true;
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Suspects(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                    controllers.oldIndex.value = controllers.selectedIndex.value;
-                    controllers.selectedIndex.value = 1;
-                    controllers.isSettingsExpanded.value=false;
-                  }),
-            ),
-            Obx(() => CustomSideBarText(
-                boxColor: controllers.selectedIndex.value == 2
-                    ? const Color(0xffF3F8FD)
-                    : Colors.white,
-                  textColor: controllers.selectedIndex.value == 2
-                      ? colorsConst.primary
-                      : Colors.black,
-                  text: "Prospects",
-                  onClicked: () {
-                    controllers.selectedPMonth.value=null;
-                    controllers.selectedQualifiedSortBy.value="Today";
-                    //controllers.isLead.value=true;
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Prospects(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                    controllers.oldIndex.value = controllers.selectedIndex.value;
-                    controllers.selectedIndex.value = 2;
-                    controllers.isSettingsExpanded.value=false;
-                  }),
-            ),
-            Obx(() => CustomSideBarText(
-                      boxColor: controllers.selectedIndex.value == 3
-                          ? const Color(0xffF3F8FD)
-                          : Colors.white,
-                  textColor: controllers.selectedIndex.value == 3
-                      ? colorsConst.primary
-                      : Colors.black,
-                  text: "Qualified",
-                  onClicked: () {
-                    controllers.selectedPMonth.value=null;
-                    controllers.selectedQualifiedSortBy.value="Today";
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Qualified(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                    controllers.isEmployee.value = true;
-                    controllers.oldIndex.value = controllers.selectedIndex.value;
-                    controllers.selectedIndex.value = 3;
-                    controllers.isSettingsExpanded.value=false;
-                  }),
-            ),
-            Obx(() => CustomSideBarText(
-                boxColor: controllers.selectedIndex.value == 4
-                    ? const Color(0xffF3F8FD)
-                    : Colors.white,
-                  textColor: controllers.selectedIndex.value == 4
-                      ? colorsConst.primary
-                      : Colors.black,
-                  text: constValue.customer,
-                  onClicked: () {
-                    controllers.selectedQPMonth.value=null;
-                    controllers.selectedCustomerSortBy.value="Today";
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const ViewCustomer(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                    controllers.isCustomer.value = true;
-                    controllers.oldIndex.value = controllers.selectedIndex.value;
-                    controllers.selectedIndex.value = 4;
-                    controllers.isSettingsExpanded.value=false;
-                  }),
-            ),
-            Obx(() => CustomSideBarText(
-                      boxColor: controllers.selectedIndex.value == 5
-                          ? const Color(0xffF3F8FD)
-                          : Colors.white,
-                  textColor: controllers.selectedIndex.value == 5
-                      ? colorsConst.primary
-                      : Colors.black,
-                  text: "Disqualified",
-                  onClicked: () {
-                    controllers.selectedMonth.value=null;
-                    controllers.selectedProspectSortBy.value="Today";
-                    Navigator.push(context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const DisqualifiedLead(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                    //controllers.isDisqualified.value = true;
-                    controllers.oldIndex.value = controllers.selectedIndex.value;
-                    controllers.selectedIndex.value = 5;
-                    controllers.isSettingsExpanded.value=false;
-                  }),
-            ),
-            Obx(() => CustomSideBarText(
-                boxColor: controllers.selectedIndex.value == 6
-                    ? const Color(0xffF3F8FD)
-                    : Colors.white,
-                textColor: controllers.selectedIndex.value == 6
-                    ? colorsConst.primary
-                    : Colors.black,
-                text: "Records",
-                onClicked: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) =>
-                      const Records(isReload: "true",),
-                      transitionDuration: Duration.zero,
-                      reverseTransitionDuration: Duration.zero,
+                    ]
+                        : [],
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      controllers.oldIndex.value = controllers.selectedIndex.value;
+                      controllers.selectedIndex.value = 0;
+                      controllers.isSettingsExpanded.value = false;
+
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                          const NewDashboard(),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
+                    },
+                    child: Stack(
+                      children: [
+                        // ✅ Left Active Indicator Bar
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 250),
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: isSelected ? 5 : 0,
+                          child: Container(color: colorsConst.primary),
+                        ),
+
+                        // ✅ Icon + Text Animation
+                        AnimatedPadding(
+                          duration: const Duration(milliseconds: 250),
+                          padding: EdgeInsets.only(
+                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
+                            right: 12,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.dashboard_outlined,
+                                color: isSelected
+                                    ? colorsConst.primary
+                                    : isHovered.value
+                                    ? colorsConst.primary
+                                    : Colors.black,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                constValue.dashboard,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight:
+                                  isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: isSelected
+                                      ? colorsConst.primary
+                                      : isHovered.value
+                                      ? colorsConst.primary
+                                      : Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                  controllers.oldIndex.value = controllers.selectedIndex.value;
-                  controllers.selectedIndex.value = 6;
-                  controllers.isSettingsExpanded.value=false;
-                }),
-            ),
+                  ),
+                )),
+              );
+            }),
+
+            Obx(() {
+              bool isSelected = controllers.selectedIndex.value == 1;
+              RxBool isHovered = false.obs; // Hover state
+
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onEnter: (_) => isHovered.value = true,
+                onExit: (_) => isHovered.value = false,
+                child: Obx(() => AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? const Color(0xffF3F8FD) // Selected BG
+                        : isHovered.value
+                        ? const Color(0xffF8FAFF) // Hover BG
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: isHovered.value
+                        ? [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(2, 2),
+                      ),
+                    ]
+                        : [],
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      controllers.selectedMonth.value = null;
+                      controllers.selectedProspectSortBy.value = "Today";
+                      controllers.isLead.value = true;
+
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                          const Suspects(),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
+                      controllers.oldIndex.value = controllers.selectedIndex.value;
+                      controllers.selectedIndex.value = 1;
+                      controllers.isSettingsExpanded.value = false;
+                    },
+                    child: Stack(
+                      children: [
+                        // ✅ Left Selection Highlight Bar
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 250),
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: isSelected ? 5 : 0,
+                          child: Container(color: colorsConst.primary),
+                        ),
+
+                        // ✅ Animated Sliding Text + Icon
+                        AnimatedPadding(
+                          duration: const Duration(milliseconds: 250),
+                          padding: EdgeInsets.only(
+                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
+                            right: 12,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.remove_red_eye_outlined,
+                                color: isSelected
+                                    ? colorsConst.primary
+                                    : isHovered.value
+                                    ? colorsConst.primary
+                                    : Colors.black,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Suspects",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight:
+                                  isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: isSelected
+                                      ? colorsConst.primary
+                                      : isHovered.value
+                                      ? colorsConst.primary
+                                      : Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+              );
+            }),      //suspects
+
+            Obx(() {
+              bool isSelected = controllers.selectedIndex.value == 2;
+              RxBool isHovered = false.obs; // ✅ Hover reactive value
+
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onEnter: (_) => isHovered.value = true,
+                onExit: (_) => isHovered.value = false,
+                child: Obx(() => AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? const Color(0xffF3F8FD)
+                        : isHovered.value
+                        ? const Color(0xffF8FAFF) // ✅ Hover light color
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: isHovered.value
+                        ? [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(2, 2),
+                      ),
+                    ]
+                        : [],
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      controllers.selectedPMonth.value = null;
+                      controllers.selectedQualifiedSortBy.value = "Today";
+
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) => const Prospects(),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
+
+                      controllers.oldIndex.value = controllers.selectedIndex.value;
+                      controllers.selectedIndex.value = 2;
+                      controllers.isSettingsExpanded.value = false;
+                    },
+                    child: Stack(
+                      children: [
+                        // ✅ Left Active Bar
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 250),
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: isSelected ? 5 : 0,
+                          child: Container(color: colorsConst.primary),
+                        ),
+                        // ✅ Text with Slide + Hover
+                        AnimatedPadding(
+                          duration: const Duration(milliseconds: 250),
+                          padding: EdgeInsets.only(
+                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
+                            right: 12,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.flag_outlined,
+                                color: isSelected
+                                    ? colorsConst.primary
+                                    : isHovered.value
+                                    ? colorsConst.primary
+                                    : Colors.black,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Prospects",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight:
+                                  isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: isSelected
+                                      ? colorsConst.primary
+                                      : isHovered.value
+                                      ? colorsConst.primary
+                                      : Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+              );
+            }),        // Prospects
+
+
+
+            Obx(() {
+              bool isSelected = controllers.selectedIndex.value == 3;
+              RxBool isHovered = false.obs;
+
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onEnter: (_) => isHovered.value = true,
+                onExit: (_) => isHovered.value = false,
+                child: Obx(() => AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? const Color(0xffF3F8FD) // Selected background
+                        : isHovered.value
+                        ? const Color(0xffF8FAFF) // Hover effect
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: isHovered.value
+                        ? [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(2, 2),
+                      ),
+                    ]
+                        : [],
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      controllers.selectedPMonth.value = null;
+                      controllers.selectedQualifiedSortBy.value = "Today";
+
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) => const Qualified(),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
+
+                      controllers.isEmployee.value = true;
+                      controllers.oldIndex.value = controllers.selectedIndex.value;
+                      controllers.selectedIndex.value = 3;
+                      controllers.isSettingsExpanded.value = false;
+                    },
+                    child: Stack(
+                      children: [
+                        // ✅ Left Active Indicator Bar
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 250),
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: isSelected ? 5 : 0,
+                          child: Container(color: colorsConst.primary),
+                        ),
+
+                        // ✅ Icon + Text with sliding effect
+                        AnimatedPadding(
+                          duration: const Duration(milliseconds: 250),
+                          padding: EdgeInsets.only(
+                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
+                            right: 12,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.verified_outlined, // Qualified icon
+                                color: isSelected
+                                    ? colorsConst.primary
+                                    : isHovered.value
+                                    ? colorsConst.primary
+                                    : Colors.black,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Qualified",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: isSelected
+                                      ? colorsConst.primary
+                                      : isHovered.value
+                                      ? colorsConst.primary
+                                      : Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+              );
+            }),
+
+            Obx(() {
+              bool isSelected = controllers.selectedIndex.value == 5; // ✅ Selected check
+              RxBool isHovered = false.obs; // ✅ Track hover state
+
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onEnter: (_) => isHovered.value = true,
+                onExit: (_) => isHovered.value = false,
+                child: Obx(() => AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? const Color(0xffF3F8FD) // ✅ Active background
+                        : isHovered.value
+                        ? const Color(0xffF8FAFF) // ✅ Hover background
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: isHovered.value
+                        ? [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(2, 2),
+                      ),
+                    ]
+                        : [],
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      controllers.selectedMonth.value = null;
+                      controllers.selectedProspectSortBy.value = "Today";
+
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                          const DisqualifiedLead(),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
+
+                      controllers.oldIndex.value = controllers.selectedIndex.value;
+                      controllers.selectedIndex.value = 5;
+                      controllers.isSettingsExpanded.value = false;
+                    },
+                    child: Stack(
+                      children: [
+                        // ✅ Left Active Indicator
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 250),
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: isSelected ? 5 : 0,
+                          child: Container(color: colorsConst.primary),
+                        ),
+
+                        // ✅ Icon + Text + Padding Animation
+                        AnimatedPadding(
+                          duration: const Duration(milliseconds: 250),
+                          padding: EdgeInsets.only(
+                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
+                            right: 12,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.cancel_outlined,
+                                color: isSelected
+                                    ? colorsConst.primary
+                                    : isHovered.value
+                                    ? colorsConst.primary
+                                    : Colors.black,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Disqualified",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight:
+                                  isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: isSelected
+                                      ? colorsConst.primary
+                                      : isHovered.value
+                                      ? colorsConst.primary
+                                      : Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+              );
+            }),
+
+
+
+            // Obx(() => CustomSideBarText(
+            //           boxColor: controllers.selectedIndex.value == 5
+            //               ? const Color(0xffF3F8FD)
+            //               : Colors.white,
+            //       textColor: controllers.selectedIndex.value == 5
+            //           ? colorsConst.primary
+            //           : Colors.black,
+            //       text: "Disqualified",
+            //       onClicked: () {
+            //         controllers.selectedMonth.value=null;
+            //         controllers.selectedProspectSortBy.value="Today";
+            //         Navigator.push(context,
+            //           PageRouteBuilder(
+            //             pageBuilder: (context, animation1, animation2) =>
+            //             const DisqualifiedLead(),
+            //             transitionDuration: Duration.zero,
+            //             reverseTransitionDuration: Duration.zero,
+            //           ),
+            //         );
+            //         //controllers.isDisqualified.value = true;
+            //         controllers.oldIndex.value = controllers.selectedIndex.value;
+            //         controllers.selectedIndex.value = 5;
+            //         controllers.isSettingsExpanded.value=false;
+            //       }),
+            // ),
+
+            Obx(() {
+              bool isSelected = controllers.selectedIndex.value == 11; // ✅ Active Check
+              RxBool isHovered = false.obs;
+
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onEnter: (_) => isHovered.value = true,
+                onExit: (_) => isHovered.value = false,
+                child: Obx(() => AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? const Color(0xffF3F8FD)
+                        : isHovered.value
+                        ? const Color(0xffF8FAFF)
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: isHovered.value
+                        ? [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(2, 2),
+                      ),
+                    ]
+                        : [],
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                          const ReminderPage(),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
+
+                      controllers.oldIndex.value = controllers.selectedIndex.value;
+                      controllers.selectedIndex.value = 11;
+                      controllers.isSettingsExpanded.value = false;
+                    },
+                    child: Stack(
+                      children: [
+                        // ✅ Left Active Indicator
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 250),
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: isSelected ? 5 : 0,
+                          child: Container(color: colorsConst.primary),
+                        ),
+
+                        // ✅ Icon + Text Animation
+                        AnimatedPadding(
+                          duration: const Duration(milliseconds: 250),
+                          padding: EdgeInsets.only(
+                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
+                            right: 12,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.alarm, // ✅ Reminder Icon
+                                color: isSelected
+                                    ? colorsConst.primary
+                                    : isHovered.value
+                                    ? colorsConst.primary
+                                    : Colors.black,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Reminder",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight:
+                                  isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: isSelected
+                                      ? colorsConst.primary
+                                      : isHovered.value
+                                      ? colorsConst.primary
+                                      : Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+              );
+            }),
+
+
             // Obx(() => CustomSideBarText(
             //     boxColor: controllers.selectedIndex.value == 9
             //         ? const Color(0xffF3F8FD)
@@ -1468,100 +1954,150 @@ class Utils {
             //       controllers.selectedIndex.value = 9;
             //     }),
             // ),
-            Obx(() => CustomSideBarText(
-                boxColor: controllers.selectedIndex.value == 11
-                    ? const Color(0xffF3F8FD)
-                    : Colors.white,
-                textColor: controllers.selectedIndex.value == 11
-                    ? colorsConst.primary
-                    : Colors.black,
-                text: "Reminder",
-                onClicked: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) =>
-                      const ReminderPage(),
-                      transitionDuration: Duration.zero,
-                      reverseTransitionDuration: Duration.zero,
-                    ),
-                  );
-                  controllers.oldIndex.value = controllers.selectedIndex.value;
-                  controllers.selectedIndex.value = 11;
-                  controllers.isSettingsExpanded.value=false;
-                }),
-            ),
+
             controllers.storage.read("role") != "See All Customer Records"
                 ? 0.height
-                : Obx(() => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                15.height,
-                InkWell(
-                  onTap: () {
-                    controllers.oldIndex.value = controllers.selectedIndex.value;
-                    controllers.selectedIndex.value = 7;
-                    controllers.isSettingsExpanded.toggle();
-                  },
-                  child: Row(
-                    children: [
-                      12.width,
-                      Expanded(
-                        child: Text(
-                          "Settings",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: controllers.selectedIndex.value == 7
-                                ? colorsConst.primary
-                                : Colors.black,
-                            fontSize: 15,
-                            fontFamily: "Lato",
-                            fontWeight: FontWeight.bold,
-                          ),
+                :Obx(() {
+              bool isExpanded = controllers.isSettingsExpanded.value;
+              bool isSelected = controllers.selectedIndex.value == 7 ||
+                  (controllers.selectedIndex.value >= 701 && controllers.selectedIndex.value <= 705);
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  5.height,
+
+                  // 🔹 Settings Main Tab
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    onEnter: (_) => isSettingsHovered.value = true,
+                    onExit: (_) => isSettingsHovered.value = false,
+                    child: GestureDetector(
+                      onTap: () {
+                        controllers.oldIndex.value = controllers.selectedIndex.value;
+                        controllers.selectedIndex.value = 7;
+                        controllers.isSettingsExpanded.toggle();
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        curve: Curves.easeInOut,
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? const Color(0xffF3F8FD)
+                              : isSettingsHovered.value
+                              ? const Color(0xffF8FAFF)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: isSelected
+                              ? Border(
+                            left: BorderSide(
+                              color: colorsConst.primary,
+                              width: 4,
+                            ),
+                          )
+                              : null,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.settings,
+                              size: 20,
+                              color: isSelected
+                                  ? colorsConst.primary
+                                  : isSettingsHovered.value
+                                  ? colorsConst.primary.withOpacity(0.7)
+                                  : Colors.black,
+                            ),
+                            12.width,
+                            Expanded(
+                              child: IgnorePointer(
+                                child: Text(
+                                  "Settings",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: isSelected
+                                        ? colorsConst.primary
+                                        : isSettingsHovered.value
+                                        ? colorsConst.primary
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            AnimatedRotation(
+                              duration: const Duration(milliseconds: 250),
+                              turns: isExpanded ? 0.5 : 0,
+                              child: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 22,
+                                color: isSelected
+                                    ? colorsConst.primary
+                                    : Colors.black,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Icon(
-                        controllers.isSettingsExpanded.value
-                            ? Icons.keyboard_arrow_up   // 👆 arrow up when open
-                            : Icons.keyboard_arrow_down, // 👇 arrow down when closed
-                        color: controllers.selectedIndex.value == 7
-                            ? colorsConst.primary
-                            : Colors.black,
-                        size: 22,
-                      ),
-                      12.width,
-                    ],
-                  ),
-                ),
-                if (controllers.isSettingsExpanded.value) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12, top: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 5,
-                      children: [
-                        subItem(context, "General Setting", 701, const GeneralSettings()),
-                        subItem(context, "Role Management", 702, const RoleManagement()),
-                        subItem(context, "User Plan & Access", 703, const UserPlan()),
-                        subItem(context, "User Management", 704, const EmployeeScreen()),
-                        subItem(context, "Reminder Setting", 705, const ReminderSettings()),
-                      ],
                     ),
                   ),
-                ],
-                controllers.isSettingsExpanded.value ? 1.height : 15.height,
-              ],
-            )),
 
-            Obx(() => CustomSideBarText(
-                      boxColor: controllers.selectedIndex.value == 10
-                          ? const Color(0xffF3F8FD)
-                          : Colors.white,
-                  textColor: controllers.selectedIndex.value == 10
-                      ? colorsConst.primary
-                      : Colors.black,
-                  text: "LogOut",
-                  onClicked: () async {
+                  // 🔹 Submenu Items (Only visible when expanded)
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: isExpanded
+                        ? Padding(
+                      padding: const EdgeInsets.only(left: 32, top: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          subItem(context, "General Setting", 701, const GeneralSettings()),
+                          subItem(context, "Role Management", 702, const RoleManagement()),
+                          subItem(context, "User Plan & Access", 703, const UserPlan()),
+                          subItem(context, "User Management", 704, const EmployeeScreen()),
+                          subItem(context, "Reminder Setting", 705, const ReminderSettings()),
+                        ],
+                      ),
+                    )
+                        : const SizedBox(),
+                  ),
+                ],
+              );
+            }),
+
+
+            Obx(() {
+            bool isSelected = controllers.selectedIndex.value == 10;
+            RxBool isHovered = false.obs;
+
+            return MouseRegion(
+              cursor: SystemMouseCursors.click,
+              onEnter: (_) => isHovered.value = true,
+              onExit: (_) => isHovered.value = false,
+              child: Obx(() => AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? const Color(0xffF3F8FD)
+                      : isHovered.value
+                      ? const Color(0xffF8FAFF)
+                      : Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: isHovered.value
+                      ? [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(2, 2),
+                    ),
+                  ]
+                      : [],
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: () {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -1575,7 +2111,7 @@ class Utils {
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                               Text(
+                              Text(
                                 "Do you want to log out?",
                                 style: TextStyle(
                                   fontSize: 17,
@@ -1593,8 +2129,8 @@ class Utils {
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
-                                      side: BorderSide(
-                                          color: colorsConst.primary),
+                                      side:
+                                      BorderSide(color: colorsConst.primary),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5),
                                       ),
@@ -1611,12 +2147,15 @@ class Utils {
                                   const SizedBox(width: 10),
                                   ElevatedButton(
                                     onPressed: () async {
-                                      final prefs = await SharedPreferences.getInstance();
-                                      prefs.setBool("loginScreen${controllers.versionNum}", false);
+                                      final prefs =
+                                      await SharedPreferences.getInstance();
+                                      prefs.setBool(
+                                          "loginScreen${controllers.versionNum}",
+                                          false);
                                       prefs.setBool("isAdmin", false);
-                                      Get.to(const LoginPage(), duration: Duration.zero);
-                                      //controllers.isEmployee.value=true;
-                                      controllers.selectedIndex.value = 7;
+                                      Get.to(const LoginPage(),
+                                          duration: Duration.zero);
+                                      controllers.selectedIndex.value = 10;
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: colorsConst.primary,
@@ -1640,9 +2179,61 @@ class Utils {
                         );
                       },
                     );
-                  }),
-            ),
-            //100.height
+                  },
+                  child: Stack(
+                    children: [
+                      // ✅ Left Active Indicator
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 250),
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: isSelected ? 5 : 0,
+                        child: Container(color: colorsConst.primary),
+                      ),
+
+                      // ✅ Icon + Text Section
+                      AnimatedPadding(
+                        duration: const Duration(milliseconds: 250),
+                        padding: EdgeInsets.only(
+                          left: isSelected ? 20 : (isHovered.value ? 18 : 12),
+                          right: 12,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.logout,
+                              color: isSelected
+                                  ? colorsConst.primary
+                                  : isHovered.value
+                                  ? colorsConst.primary
+                                  : Colors.black,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "LogOut",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight:
+                                isSelected ? FontWeight.bold : FontWeight.normal,
+                                color: isSelected
+                                    ? colorsConst.primary
+                                    : isHovered.value
+                                    ? colorsConst.primary
+                                    : Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )),
+            );
+          }),
+
+          //100.height
           ],
         ),
       ),
@@ -1669,34 +2260,81 @@ class Utils {
           ));
   }
 
-  Widget subItem(BuildContext context, String text, int index, Widget page) {
-    return Obx(() => InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => page,
-            transitionDuration: Duration.zero,
-            reverseTransitionDuration: Duration.zero,
+  Widget subItem(BuildContext context, String title, int index, Widget page) {
+    RxBool isHovered = false.obs;
+
+    return Obx(() {
+      bool isSelected = controllers.selectedIndex.value == index;
+
+      return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => isHovered.value = true,
+        onExit: (_) => isHovered.value = false,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? const Color(0xffF3F8FD)
+                : isHovered.value
+                ? const Color(0xffF8FAFF)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(8),
           ),
-        );
-        controllers.selectedSettingsIndex.value = index;
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Text(
-          text,
-          style: TextStyle(
-              color: controllers.selectedSettingsIndex.value == index
-                  ? colorsConst.primary
-                  : Colors.black,
-              fontSize: 15,
-              fontFamily: "Lato",
-              fontWeight: FontWeight.bold),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: () {
+              controllers.oldIndex.value = controllers.selectedIndex.value;
+              controllers.selectedIndex.value = index;
+              controllers.isSettingsExpanded.value = true;
+
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) => page,
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            },
+            child: Stack(
+              children: [
+                // ✅ Left Active Bar
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 250),
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: isSelected ? 4 : 0,
+                  child: Container(color: colorsConst.primary),
+                ),
+
+                // ✅ Text
+                Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      color: isSelected
+                          ? colorsConst.primary
+                          : isHovered.value
+                          ? colorsConst.primary
+                          : Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
-    ));
+      );
+    });
   }
+
+
 
   Widget paginationButton(IconData icon, bool isEnabled, VoidCallback onPressed) {
     return Container(

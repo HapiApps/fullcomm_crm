@@ -33,6 +33,8 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   final sortOrderMeetingActivity = 'asc'.obs;
   final sortFieldEmployee = ''.obs;
   final sortOrderEmployee = 'asc'.obs;
+  var hoverIndex = (-1).obs;
+
   @override
   void onInit() {
     tabController = TabController(length: 3, vsync: this);

@@ -64,7 +64,22 @@ class _NewDashboardState extends State<NewDashboard> {
       dashController.getRatingReport();
     });
   }
-
+  String _getTooltipText(String label) {
+    switch (label) {
+      case 'Suspects':
+        return "Initial leads with low interest";
+      case 'Prospects':
+        return "Interested potential customers";
+      case 'Qualified':
+        return "Verified serious buyers";
+      case 'Disqualified':
+        return "Rejected / not usable leads";
+      case 'Customers':
+        return "Successfully converted customers";
+      default:
+        return "No data available";
+    }
+  }
   void showWebNotification() {
     // Ask permission
     html.Notification.requestPermission().then((permission) {
@@ -192,16 +207,16 @@ class _NewDashboardState extends State<NewDashboard> {
 
                                     String displayText;
                                     if (selected == "Today") {
-                                      displayText = "📅 ${formatDate(range.start)}";
+                                      displayText = "${formatDate(range.start)}";
                                     } else if (selected == "Yesterday") {
-                                      displayText = "📅 ${formatDate(range.start)}";
+                                      displayText = "${formatDate(range.start)}";
                                     } else {
                                       displayText =
-                                      "📅 ${formatDate(range.start)}  —  ${formatDate(range.end)}";
+                                      "${formatDate(range.start)}  —  ${formatDate(range.end)}";
                                     }
 
                                     return Text(
-                                      displayText,
+                                      "Dashboard Overview => ${displayText}",
                                       style: const TextStyle(
                                         color: Colors.black87,
                                         fontWeight: FontWeight.w600,
@@ -700,27 +715,113 @@ class _NewDashboardState extends State<NewDashboard> {
                                           ),
                                         ),
                                         20.height,
-                                        Container(
-                                          height: 350,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(10),
+                                        // Container(
+                                        //   height: 350,
+                                        //   alignment: Alignment.center,
+                                        //   decoration: BoxDecoration(
+                                        //     color: Colors.white,
+                                        //     borderRadius: BorderRadius.circular(10),
+                                        //   ),
+                                        //   child: SizedBox(
+                                        //     height: 200,
+                                        //     child: Obx(() {
+                                        //       final double totalSuspects = double.parse(dashController.totalSuspects.value).roundToDouble();
+                                        //       final double totalProspects = double.parse(dashController.totalProspects.value).roundToDouble();
+                                        //       final double totalQualified = double.parse(dashController.totalQualified.value).roundToDouble();
+                                        //       final double totalUnQualified = double.parse(dashController.totalUnQualified.value).roundToDouble();
+                                        //       final double totalCustomers = double.parse(dashController.totalCustomers.value).roundToDouble();
+                                        //
+                                        //       final totalSum = totalSuspects + totalProspects + totalQualified + totalUnQualified + totalCustomers;
+                                        //       final bool isEmpty = totalSum == 0;
+                                        //
+                                        //       final Map<String, double> dataMap = isEmpty
+                                        //           ? {'No customers': 1}
+                                        //           : {
+                                        //         'Suspects': totalSuspects,
+                                        //         'Prospects': totalProspects,
+                                        //         'Qualified': totalQualified,
+                                        //         'Disqualified': totalUnQualified,
+                                        //         'Customers': totalCustomers,
+                                        //       };
+                                        //       final List<Color> colorList = isEmpty
+                                        //           ? [Color(0xffE0E0E0)] // Grey color for "No customers"
+                                        //           : [
+                                        //         Color(0xffE3B552), // Suspects
+                                        //         Color(0xff0070F8), // Prospects
+                                        //         Color(0xffFF43D6), // Qualified
+                                        //         Color(0xffF53B37), // Unqualified
+                                        //         Color(0xff45B72F), // Customers
+                                        //       ];
+                                        //       return PieChart(
+                                        //         dataMap: dataMap,
+                                        //         animationDuration: const Duration(seconds: 2),
+                                        //         chartLegendSpacing: 32,
+                                        //         chartRadius: MediaQuery.of(context).size.width / 2.2,
+                                        //         colorList: colorList,
+                                        //         chartType: ChartType.disc,
+                                        //         centerText: totalSum == 0 ? "0" : "",
+                                        //         centerTextStyle: TextStyle(
+                                        //           color: colorsConst.textColor,
+                                        //           fontFamily: "Lato",
+                                        //         ),
+                                        //         legendOptions: LegendOptions(
+                                        //           showLegends: true,
+                                        //           legendTextStyle: TextStyle(color: colorsConst.textColor, fontFamily: "Lato"),
+                                        //         ),
+                                        //         chartValuesOptions: ChartValuesOptions(
+                                        //           showChartValuesInPercentage: false,
+                                        //           showChartValues: true,
+                                        //           showChartValueBackground: false,
+                                        //           chartValueStyle:  TextStyle(
+                                        //             color: totalSum == 0 ?Color(0xffE0E0E0):Colors.white,
+                                        //             fontFamily: "Lato",
+                                        //           ),
+                                        //           decimalPlaces: 0,
+                                        //         ),
+                                        //       );
+                                        //     }),
+                                        //   ),
+                                        //
+                                        // )
+                                    Container(
+                                      height: 350,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start, // ✅ Full Column left-align
+                                        children: [
+                                          // ✅ Title aligned to start
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 10, bottom: 5, left: 20),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,   // ✅ Title starts from left
+                                              child: Text(
+                                                "Lead Distribution Overview",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: "Lato",
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                          child: SizedBox(
-                                            height: 200,
+                                          30.height,
+                                          Expanded(
                                             child: Obx(() {
-                                              final double totalSuspects = double.parse(dashController.totalSuspects.value).roundToDouble();
-                                              final double totalProspects = double.parse(dashController.totalProspects.value).roundToDouble();
-                                              final double totalQualified = double.parse(dashController.totalQualified.value).roundToDouble();
-                                              final double totalUnQualified = double.parse(dashController.totalUnQualified.value).roundToDouble();
-                                              final double totalCustomers = double.parse(dashController.totalCustomers.value).roundToDouble();
+                                              final double totalSuspects = double.parse(dashController.totalSuspects.value);
+                                              final double totalProspects = double.parse(dashController.totalProspects.value);
+                                              final double totalQualified = double.parse(dashController.totalQualified.value);
+                                              final double totalUnQualified = double.parse(dashController.totalUnQualified.value);
+                                              final double totalCustomers = double.parse(dashController.totalCustomers.value);
 
                                               final totalSum = totalSuspects + totalProspects + totalQualified + totalUnQualified + totalCustomers;
                                               final bool isEmpty = totalSum == 0;
 
                                               final Map<String, double> dataMap = isEmpty
-                                                  ? {'No customers': 1}
+                                                  ? {'No Customers': 1}
                                                   : {
                                                 'Suspects': totalSuspects,
                                                 'Prospects': totalProspects,
@@ -728,47 +829,60 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 'Disqualified': totalUnQualified,
                                                 'Customers': totalCustomers,
                                               };
+
                                               final List<Color> colorList = isEmpty
-                                                  ? [Color(0xffE0E0E0)] // Grey color for "No customers"
+                                                  ? [Color(0xffE0E0E0)]
                                                   : [
                                                 Color(0xffE3B552), // Suspects
                                                 Color(0xff0070F8), // Prospects
                                                 Color(0xffFF43D6), // Qualified
-                                                Color(0xffF53B37), // Unqualified
+                                                Color(0xffF53B37), // Disqualified
                                                 Color(0xff45B72F), // Customers
                                               ];
-                                              return PieChart(
-                                                dataMap: dataMap,
-                                                animationDuration: const Duration(seconds: 2),
-                                                chartLegendSpacing: 32,
-                                                chartRadius: MediaQuery.of(context).size.width / 2.2,
-                                                colorList: colorList,
-                                                chartType: ChartType.disc,
-                                                centerText: totalSum == 0 ? "0" : "",
-                                                centerTextStyle: TextStyle(
-                                                  color: colorsConst.textColor,
-                                                  fontFamily: "Lato",
-                                                ),
-                                                legendOptions: LegendOptions(
-                                                  showLegends: true,
-                                                  legendTextStyle: TextStyle(color: colorsConst.textColor, fontFamily: "Lato"),
-                                                ),
-                                                chartValuesOptions: ChartValuesOptions(
-                                                  showChartValuesInPercentage: false,
-                                                  showChartValues: true,
-                                                  showChartValueBackground: false,
-                                                  chartValueStyle:  TextStyle(
-                                                    color: totalSum == 0 ?Color(0xffE0E0E0):Colors.white,
-                                                    fontFamily: "Lato",
+
+                                              return Column(
+                                                children: [
+                                                  // ✅ Pie Chart Section
+                                                  SizedBox(
+                                                    height: 200,
+                                                    child: PieChart(
+                                                      dataMap: dataMap,
+                                                      animationDuration: const Duration(seconds: 2),
+                                                      chartLegendSpacing: 32,
+                                                      chartRadius: MediaQuery.of(context).size.width / 2.2,
+                                                      colorList: colorList,
+                                                      chartType: ChartType.disc,
+                                                      centerText: totalSum == 0 ? "0" : "",
+                                                      centerTextStyle: const TextStyle(fontFamily: "Lato"),
+                                                      legendOptions: LegendOptions(
+                                                        showLegends: true,
+                                                        legendTextStyle: const TextStyle(fontFamily: "Lato"),
+                                                      ),
+                                                      chartValuesOptions: ChartValuesOptions(
+                                                        showChartValuesInPercentage: false,
+                                                        showChartValues: true,
+                                                        showChartValueBackground: false,
+                                                        chartValueStyle: TextStyle(
+                                                          color: totalSum == 0 ? Color(0xffE0E0E0) : Colors.white,
+                                                          fontFamily: "Lato",
+                                                        ),
+                                                        decimalPlaces: 0,
+                                                      ),
+                                                    ),
                                                   ),
-                                                  decimalPlaces: 0,
-                                                ),
+                                                ],
                                               );
                                             }),
                                           ),
+                                        ],
+                                      ),
+                                    ),
 
-                                        )
-                                      ],
+
+
+
+
+                                ],
                                     ),
                                   ),
                                 )
