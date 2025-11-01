@@ -30,27 +30,41 @@ class _NewDashboardState extends State<NewDashboard> {
   final ScrollController _leftController = ScrollController();
   final ScrollController _rightController = ScrollController();
   @override
+  @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
       employeeData.staffRoleDetailsData(context: context);
     });
+
     Future.delayed(Duration.zero, () async {
-       apiService.currentVersion();
+      apiService.currentVersion();
       controllers.selectedIndex.value = 0;
+
       final prefs = await SharedPreferences.getInstance();
       controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
-      var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2,'0')}-${DateTime.now().day.toString().padLeft(2,'0')}";
-      var last7days = DateTime.now().subtract(Duration(days: 7));
-       dashController.getCustomerReport("${last7days.year}-${last7days.month.toString().padLeft(2,'0')}-${last7days.day.toString().padLeft(2,'0')}",today);
+
+      /// ✅ Default Filter = Today
+      DateTime now = DateTime.now();
+      dashController.selectedSortBy.value = "Today";
+      dashController.selectedRange.value = DateTimeRange(
+        start: DateTime(now.year, now.month, now.day),
+        end: DateTime(now.year, now.month, now.day),
+      );
+
+      /// ✅ Load initial data for Today
+      String today = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+
+      dashController.getCustomerReport(today, today);
+      dashController.getDashboardReport();
+      dashController.getRatingReport();
     });
-    dashController.getRatingReport();
-    dashController.getDashboardReport();
   }
+
   void showWebNotification() {
     // Ask permission
     html.Notification.requestPermission().then((permission) {
@@ -477,20 +491,20 @@ class _NewDashboardState extends State<NewDashboard> {
                                                       },
                                                       child: RatingIndicator(
                                                         color: Colors.red,
-                                                        label: 'Total Hot',
+                                                        label: ' Hot',
                                                         value: hot,
                                                         percentage: totalCount == 0 ? 0.0 : hot / totalCount,
                                                       ),
                                                     ),
                                                     RatingIndicator(
                                                       color: Colors.orange,
-                                                      label: 'Total Warm',
+                                                      label: ' Warm',
                                                       value: warm,
                                                       percentage: totalCount == 0 ? 0.0 : warm / totalCount,
                                                     ),
                                                     RatingIndicator(
                                                       color: Colors.blue,
-                                                      label: 'Total Cold',
+                                                      label: ' Cold',
                                                       value: cold,
                                                       percentage: totalCount == 0 ? 0.0 : cold / totalCount,
                                                     ),

@@ -1876,7 +1876,7 @@ class Utils {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: const EdgeInsets.only(right: 50.0),
+                padding: const EdgeInsets.only(right: 150.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -1901,18 +1901,18 @@ class Utils {
                       )),
                     ),
                     40.width,
-                    IgnorePointer(
-                      child: CustomText(
-                        text: "Lead Stages",
-                        colors: Colors.black,
-                        size: 16,
-                        isBold: true,
-                      ),
-                    ),
+
                   ],
                 ),
               ),
-
+              IgnorePointer(
+                child: CustomText(
+                  text: "Lead Stages",
+                  colors: Colors.black,
+                  size: 16,
+                  isBold: true,
+                ),
+              ),
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
