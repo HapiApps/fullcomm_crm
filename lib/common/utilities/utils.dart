@@ -1461,8 +1461,7 @@ class Utils {
             }),      //suspects
             Obx(() {
               bool isSelected = controllers.selectedIndex.value == 2;
-              RxBool isHovered = false.obs; // ✅ Hover reactive value
-
+              RxBool isHovered = false.obs;
               return MouseRegion(
                 cursor: SystemMouseCursors.click,
                 onEnter: (_) => isHovered.value = true,
@@ -1654,7 +1653,102 @@ class Utils {
                 )),
               );
             }),
+            Obx(() {
+              bool isSelected = controllers.selectedIndex.value == 4;
+              RxBool isHovered = false.obs;
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onEnter: (_) => isHovered.value = true,
+                onExit: (_) => isHovered.value = false,
+                child: Obx(() => AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? const Color(0xffF3F8FD)
+                        : isHovered.value
+                        ? const Color(0xffF8FAFF)
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: isHovered.value
+                        ? [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(2, 2),
+                      ),
+                    ]
+                        : [],
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      controllers.selectedMonth.value = null;
+                      controllers.selectedProspectSortBy.value = "Today";
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                          const ViewCustomer(),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
 
+                      controllers.oldIndex.value = controllers.selectedIndex.value;
+                      controllers.selectedIndex.value = 4;
+                      controllers.isSettingsExpanded.value = false;
+                    },
+                    child: Stack(
+                      children: [
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 250),
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: isSelected ? 5 : 0,
+                          child: Container(color: colorsConst.primary),
+                        ),
+                        AnimatedPadding(
+                          duration: const Duration(milliseconds: 250),
+                          padding: EdgeInsets.only(
+                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
+                            right: 12,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.dashboard_customize,
+                                color: isSelected
+                                    ? colorsConst.primary
+                                    : isHovered.value
+                                    ? colorsConst.primary
+                                    : Colors.black,
+                              ),
+                              const SizedBox(width: 10),
+
+                              Text(
+                                "Customers",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: isSelected
+                                      ? colorsConst.primary
+                                      : isHovered.value
+                                      ? colorsConst.primary
+                                      : Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+              );
+            }),
             Obx(() {
               bool isSelected = controllers.selectedIndex.value == 5;
               RxBool isHovered = false.obs;

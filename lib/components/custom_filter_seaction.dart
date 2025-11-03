@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -142,6 +143,46 @@ class FilterSection extends StatelessWidget {
             ),
             Row(
               children: [
+                InkWell(
+                  onTap: (){
+                    controllers.showDatePickerDialog(context);
+                    selectedSortBy.value = "";
+                  },
+                  child: Container(
+                    width: 200,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: colorsConst.secondary,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Obx(() {
+                          final range = controllers.selectedRange.value;
+                          if (range == null) {
+                            return const Text(
+                              "Filter by Date Range",
+                              style: TextStyle(color: Colors.black,fontFamily: "Lato",),
+                            );
+                          }
+                          return Text(
+                            "${range.start.day}-${range.start.month}-${range.start.year}  -  ${range.end.day}-${range.end.month}-${range.end.year}",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: "Lato",
+                            ),
+                          );
+                        }),
+                        const SizedBox(width: 5),
+                        const Icon(Icons.calendar_today,
+                            color: Colors.black, size: 17),
+                        const SizedBox(width: 10),
+                      ],
+                    ),
+                  ),
+                ),
+                10.width,
                 // Select Month
                 SizedBox(
                   height: 35,
@@ -171,6 +212,7 @@ class FilterSection extends StatelessWidget {
                     borderRadius: BorderRadius.circular(2),
                   ),
                   onSelected: (value) {
+                    controllers.selectedRange.value = null;
                     selectedMonth.value = null;
                     selectedSortBy.value = value;
                     _focusNode.requestFocus();

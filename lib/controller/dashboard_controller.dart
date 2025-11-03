@@ -171,6 +171,7 @@ class DashboardController extends GetxController {
       },
     );
   }
+
   Future getCustomerReport(String stDate,String endDate) async {
     try {
       Map data = {

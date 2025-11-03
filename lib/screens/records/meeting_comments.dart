@@ -535,16 +535,34 @@ class _MeetingCommentsState extends State<MeetingComments> {
                     Obx(()=> utils.selectHeatingType("Scheduled",
                         controllers.selectMeetingType.value=="Scheduled", (){
                           controllers.selectMeetingType.value="Scheduled";
+                          remController.filterAndSortMeetings(
+                            searchText: controllers.searchText.value.toLowerCase(),
+                            callType: controllers.selectMeetingType.value,
+                            sortField: controllers.sortFieldMeetingActivity.value,
+                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                          );
                     }, false,controllers.allScheduleMeet),),
                     10.width,
                     Obx(()=>utils.selectHeatingType("Completed",
                         controllers.selectMeetingType.value=="Completed", (){
                           controllers.selectMeetingType.value="Completed";
+                          remController.filterAndSortMeetings(
+                            searchText: controllers.searchText.value.toLowerCase(),
+                            callType: controllers.selectMeetingType.value,
+                            sortField: controllers.sortFieldMeetingActivity.value,
+                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                          );
                     }, false,controllers.allCompletedMeet),),
                     10.width,
                     Obx(()=> utils.selectHeatingType("Cancelled",
                         controllers.selectMeetingType.value=="Cancelled", (){
                           controllers.selectMeetingType.value="Cancelled";
+                          remController.filterAndSortMeetings(
+                            searchText: controllers.searchText.value.toLowerCase(),
+                            callType: controllers.selectMeetingType.value,
+                            sortField: controllers.sortFieldMeetingActivity.value,
+                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                          );
                     }, true,controllers.allCancelled),)
                   ],
                 ),
@@ -562,6 +580,12 @@ class _MeetingCommentsState extends State<MeetingComments> {
                       hintText: "Search Name, Customer Name, Company Name",
                       onChanged: (value) {
                         controllers.searchText.value = value.toString().trim();
+                        remController.filterAndSortMeetings(
+                          searchText: controllers.searchText.value.toLowerCase(),
+                          callType: controllers.selectMeetingType.value,
+                          sortField: controllers.sortFieldMeetingActivity.value,
+                          sortOrder: controllers.sortOrderMeetingActivity.value,
+                        );
                       },
                     ),
                     remController.selectedMeetingIds.isNotEmpty?
@@ -735,6 +759,53 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       controllers.sortOrderMeetingActivity.value='asc';
                                     }
                                     controllers.sortFieldMeetingActivity.value='customerName';
+                                      remController.filterAndSortMeetings(
+                                        searchText: controllers.searchText.value.toLowerCase(),
+                                        callType: controllers.selectMeetingType.value,
+                                        sortField: controllers.sortFieldMeetingActivity.value,
+                                        sortOrder: controllers.sortOrderMeetingActivity.value,
+                                      );
+                                    },
+                                  child: Obx(() => Image.asset(
+                                    controllers.sortFieldMeetingActivity.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : controllers.sortOrderMeetingActivity.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Row(
+                              children: [
+                                CustomText(//2
+                                  textAlign: TextAlign.left,
+                                  text: "Company name",
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(controllers.sortFieldMeetingActivity.value=='companyName' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                      controllers.sortOrderMeetingActivity.value='desc';
+                                    }else{
+                                      controllers.sortOrderMeetingActivity.value='asc';
+                                    }
+                                    controllers.sortFieldMeetingActivity.value='companyName';
+                                    remController.filterAndSortMeetings(
+                                      searchText: controllers.searchText.value.toLowerCase(),
+                                      callType: controllers.selectMeetingType.value,
+                                      sortField: controllers.sortFieldMeetingActivity.value,
+                                      sortOrder: controllers.sortOrderMeetingActivity.value,
+                                    );
                                   },
                                   child: Obx(() => Image.asset(
                                     controllers.sortFieldMeetingActivity.value.isEmpty
@@ -752,42 +823,125 @@ class _MeetingCommentsState extends State<MeetingComments> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: CustomText(//2
-                              textAlign: TextAlign.left,
-                              text: "Company name",
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
+                            child: Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Title",
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(controllers.sortFieldMeetingActivity.value=='title' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                      controllers.sortOrderMeetingActivity.value='desc';
+                                    }else{
+                                      controllers.sortOrderMeetingActivity.value='asc';
+                                    }
+                                    controllers.sortFieldMeetingActivity.value='title';
+                                    remController.filterAndSortMeetings(
+                                      searchText: controllers.searchText.value.toLowerCase(),
+                                      callType: controllers.selectMeetingType.value,
+                                      sortField: controllers.sortFieldMeetingActivity.value,
+                                      sortOrder: controllers.sortOrderMeetingActivity.value,
+                                    );
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    controllers.sortFieldMeetingActivity.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : controllers.sortOrderMeetingActivity.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: CustomText(
-                              textAlign: TextAlign.left,
-                              text: "Title",
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
+                            child: Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Venue",
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(controllers.sortFieldMeetingActivity.value=='venue' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                      controllers.sortOrderMeetingActivity.value='desc';
+                                    }else{
+                                      controllers.sortOrderMeetingActivity.value='asc';
+                                    }
+                                    controllers.sortFieldMeetingActivity.value='venue';
+                                    remController.filterAndSortMeetings(
+                                      searchText: controllers.searchText.value.toLowerCase(),
+                                      callType: controllers.selectMeetingType.value,
+                                      sortField: controllers.sortFieldMeetingActivity.value,
+                                      sortOrder: controllers.sortOrderMeetingActivity.value,
+                                    );
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    controllers.sortFieldMeetingActivity.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : controllers.sortOrderMeetingActivity.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: CustomText(
-                              textAlign: TextAlign.left,
-                              text: "Venue",
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: CustomText(
-                              textAlign: TextAlign.left,
-                              text: "Notes",
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
+                            child: Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Notes",
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(controllers.sortFieldMeetingActivity.value=='notes' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                      controllers.sortOrderMeetingActivity.value='desc';
+                                    }else{
+                                      controllers.sortOrderMeetingActivity.value='asc';
+                                    }
+                                    controllers.sortFieldMeetingActivity.value='notes';
+                                    remController.filterAndSortMeetings(
+                                      searchText: controllers.searchText.value.toLowerCase(),
+                                      callType: controllers.selectMeetingType.value,
+                                      sortField: controllers.sortFieldMeetingActivity.value,
+                                      sortOrder: controllers.sortOrderMeetingActivity.value,
+                                    );
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    controllers.sortFieldMeetingActivity.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : controllers.sortOrderMeetingActivity.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Row(
@@ -795,81 +949,54 @@ class _MeetingCommentsState extends State<MeetingComments> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
-                                child: CustomText(
-                                  textAlign: TextAlign.center,
-                                  text: "Date",
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
+                                child: Row(
+                                  children: [
+                                    CustomText(
+                                      textAlign: TextAlign.center,
+                                      text: "Date",
+                                      size: 15,
+                                      isBold: true,
+                                      colors: Colors.white,
+                                    ),
+                                    const SizedBox(width: 3),
+                                    GestureDetector(
+                                      onTap: (){
+                                        if(controllers.sortFieldMeetingActivity.value=='date' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                          controllers.sortOrderMeetingActivity.value='desc';
+                                        }else{
+                                          controllers.sortOrderMeetingActivity.value='asc';
+                                        }
+                                        controllers.sortFieldMeetingActivity.value='date';
+                                        remController.filterAndSortMeetings(
+                                          searchText: controllers.searchText.value.toLowerCase(),
+                                          callType: controllers.selectMeetingType.value,
+                                          sortField: controllers.sortFieldMeetingActivity.value,
+                                          sortOrder: controllers.sortOrderMeetingActivity.value,
+                                        );
+                                      },
+                                      child: Obx(() => Image.asset(
+                                        controllers.sortFieldMeetingActivity.value.isEmpty
+                                            ? "assets/images/arrow.png"
+                                            : controllers.sortOrderMeetingActivity.value == 'asc'
+                                            ? "assets/images/arrow_up.png"
+                                            : "assets/images/arrow_down.png",
+                                        width: 15,
+                                        height: 15,
+                                      ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              // Obx(() => GestureDetector(
-                              //   onTap: (){
-                              //     controllers.sortField.value = 'date';
-                              //     controllers.sortOrder.value = 'asc';
-                              //   },
-                              //   child: Icon(
-                              //     Icons.arrow_upward,
-                              //     size: 16,
-                              //     color: (controllers.sortField.value == 'date' &&
-                              //         controllers.sortOrder.value == 'asc')
-                              //         ? Colors.white
-                              //         : Colors.grey,
-                              //   ),
-                              // )),
-                              // Obx(() => GestureDetector(
-                              //   onTap: (){
-                              //     controllers.sortField.value = 'date';
-                              //     controllers.sortOrder.value = 'desc';
-                              //   },
-                              //   child: Icon(
-                              //     Icons.arrow_downward,
-                              //     size: 16,
-                              //     color: (controllers.sortField.value == 'date' &&
-                              //         controllers.sortOrder.value == 'desc')
-                              //         ? Colors.white
-                              //         : Colors.grey,
-                              //   ),
-                              // )
-                              // ),
                             ],
                           ),
-                          // Padding(
-                          //   padding: const EdgeInsets.all(10.0),
-                          //   child: CustomText(//9
-                          //     textAlign: TextAlign.center,
-                          //     text: "Actions",
-                          //     size: 15,
-                          //     isBold: true,
-                          //     colors: Colors.white,
-                          //   ),
-                          // ),
                         ]),
                   ],
                 ),
                 // Table Body
                 Expanded(
                     child: Obx((){
-                      final searchTexts =  controllers.searchText.value.toLowerCase();
-                      final filteredList = controllers.meetingActivity.where((activity) {
-                        final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
-                            activity.status == controllers.selectMeetingType.value;
-                        final matchesSearch = searchTexts.isEmpty ||
-                            (activity.comName.toString().toLowerCase().contains(searchTexts) ||
-                            (activity.cusName.toString().toLowerCase().contains(searchTexts)));
-                        return matchesCallType && matchesSearch;
-                      }).toList();
-                      if (controllers.sortFieldMeetingActivity.value == 'customerName') {
-                        filteredList.sort((a, b) {
-                          final nameA = (a.cusName ?? '').toLowerCase();
-                          final nameB = (b.cusName ?? '').toLowerCase();
-                          final comparison = nameA.compareTo(nameB);
-                          return controllers.sortOrderMeetingActivity.value == 'asc'
-                              ? comparison
-                              : -comparison;
-                        });
-                      }
-                      return filteredList.isEmpty?
+                      return remController.meetingFilteredList.isEmpty?
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -901,9 +1028,9 @@ class _MeetingCommentsState extends State<MeetingComments> {
                           controller: _controller,
                           shrinkWrap: true,
                           physics: const ScrollPhysics(),
-                          itemCount: filteredList.length,
+                          itemCount: remController.meetingFilteredList.length,
                           itemBuilder: (context, index) {
-                            final data = filteredList[index];
+                            final data = remController.meetingFilteredList[index];
                             return Table(
                               columnWidths:const {
                                 0: FlexColumnWidth(1),

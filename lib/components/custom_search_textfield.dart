@@ -26,7 +26,7 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
   void initState() {
     super.initState();
     widget.controller.addListener(() {
-      setState(() {}); // rebuild when text changes
+      setState(() {});
     });
   }
   @override

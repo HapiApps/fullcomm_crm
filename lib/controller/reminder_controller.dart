@@ -1,6 +1,5 @@
 
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
@@ -11,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../common/constant/api.dart';
 import '../models/customer_activity.dart';
+import '../models/meeting_obj.dart';
 import '../models/reminder_obj.dart';
 import '../provider/reminder_provider.dart';
 import 'controller.dart';
@@ -42,7 +42,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   var selectedMeetingIds = <String>[].obs;
   var selectedRecordMailIds = <String>[].obs;
   var selectedRecordCallIds = <String>[].obs;
-  RxList<CustomerActivity> callFilteredList = <CustomerActivity>[].obs;
+  RxList<CustomerActivity> callFilteredList  = <CustomerActivity>[].obs;
+  RxList<MeetingObj> meetingFilteredList     = <MeetingObj>[].obs;
 
   void filterAndSortCalls({
     required List<CustomerActivity> allCalls,
@@ -74,6 +75,34 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         final comparison = nameA.compareTo(nameB);
         return sortOrder == 'asc' ? comparison : -comparison;
       });
+    } else if (sortField == 'type') {
+      filtered.sort((a, b) {
+        final nameA = a.callType.toLowerCase();
+        final nameB = b.callType.toLowerCase();
+        final comparison = nameA.compareTo(nameB);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    } else if (sortField == 'status') {
+      filtered.sort((a, b) {
+        final nameA = a.callStatus.toLowerCase();
+        final nameB = b.callStatus.toLowerCase();
+        final comparison = nameA.compareTo(nameB);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    } else if (sortField == 'message') {
+      filtered.sort((a, b) {
+        final nameA = a.message.toLowerCase();
+        final nameB = b.message.toLowerCase();
+        final comparison = nameA.compareTo(nameB);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    } else if (sortField == 'leadStatus') {
+      filtered.sort((a, b) {
+        final nameA = a.leadStatus.toLowerCase();
+        final nameB = b.leadStatus.toLowerCase();
+        final comparison = nameA.compareTo(nameB);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
     } else if (sortField == 'date') {
       DateTime parseDate(String dateStr) {
         try {
@@ -90,6 +119,61 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       });
     }
     callFilteredList.assignAll(filtered);
+  }
+
+  void filterAndSortMeetings({
+    required String searchText,
+    required String callType,
+    required String sortField,
+    required String sortOrder,
+  }) {
+    final filtered = controllers.meetingActivity.where((activity) {
+      final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
+          activity.status == controllers.selectMeetingType.value;
+      final matchesSearch = searchText.isEmpty ||
+          (activity.comName.toString().toLowerCase().contains(searchText) ||
+              activity.cusName.toString().toLowerCase().contains(searchText));
+      return matchesCallType && matchesSearch;
+    }).toList();
+    String field = controllers.sortFieldMeetingActivity.value;
+    String order = controllers.sortOrderMeetingActivity.value;
+
+    int compareString(String a, String b) {
+      final comparison = a.toLowerCase().compareTo(b.toLowerCase());
+      return order == 'asc' ? comparison : -comparison;
+    }
+    if (field == 'customerName') {
+      filtered.sort((a, b) => compareString(a.cusName ?? '', b.cusName ?? ''));
+    } else if (field == 'companyName') {
+      filtered.sort((a, b) => compareString(a.comName ?? '', b.comName ?? ''));
+    } else if (field == 'title') {
+      filtered.sort((a, b) => compareString(a.title ?? '', b.title ?? ''));
+    } else if (field == 'venue') {
+      filtered.sort((a, b) => compareString(a.venue ?? '', b.venue ?? ''));
+    } else if (field == 'notes') {
+      filtered.sort((a, b) => compareString(a.notes ?? '', b.notes ?? ''));
+    } else if (sortField == 'date') {
+      DateTime parseDate(String dateStr) {
+        try {
+          final parts = dateStr.split('||');
+          final mainPart = parts.first.trim();
+          if (mainPart.contains(RegExp(r'[APMapm]'))) {
+            return DateFormat("dd.MM.yyyy hh:mm a").parse(mainPart);
+          } else {
+            return DateFormat("dd.MM.yyyy").parse(mainPart);
+          }
+        } catch (e) {
+          return DateTime(1900);
+        }
+      }
+      filtered.sort((a, b) {
+        final dateA = parseDate(a.dates ?? '');
+        final dateB = parseDate(b.dates ?? '');
+        final comparison = dateA.compareTo(dateB);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    meetingFilteredList.assignAll(filtered);
   }
 
   var sortBy = ''.obs;

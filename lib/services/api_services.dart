@@ -1724,6 +1724,12 @@ class ApiService {
         controllers.allScheduleMeet.value = scheduled.length.toString();
         controllers.allCompletedMeet.value = completed.length.toString();
         controllers.allCancelled.value = cancelled.length.toString();
+        remController.filterAndSortMeetings(
+          searchText: controllers.searchText.value.toLowerCase(),
+          callType: controllers.selectMeetingType.value,
+          sortField: controllers.sortFieldMeetingActivity.value,
+          sortOrder: controllers.sortOrderMeetingActivity.value,
+        );
       } else {
         throw Exception('Failed to load album');
       }

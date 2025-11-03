@@ -24,31 +24,10 @@ class CustomTableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
     return Obx(() {
       final headings = tableController.tableHeadings;
       final headerChildren = <Widget>[
-        if (showCheckbox)
-          Container(
-            height: 40,
-            alignment: Alignment.center,
-            child: Checkbox(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(2.0),
-              ),
-              side: WidgetStateBorderSide.resolveWith(
-                    (states) => const BorderSide(width: 1.0, color: Colors.white),
-              ),
-              checkColor: colorsConst.primary,
-              activeColor: Colors.white,
-              value: isAllSelected,
-              onChanged: onSelectAll,
-            ),
-          ),
-        _headerCell("Actions", screenWidth, textAlign: TextAlign.center),
-
-        ...headings.map((h) {
+        ...headings.skip(1).map((h) {
           final lower = h.toLowerCase();
           if (lower == "added date" ||
               lower == "prospect enrollment date" ||
@@ -138,16 +117,9 @@ class CustomTableHeader extends StatelessWidget {
 
       final totalColumns = headings.length + 1 + (showCheckbox ? 1 : 0);
       final Map<int, TableColumnWidth> columnWidths = {};
-
-      columnWidths[0] =
-      showCheckbox ? const FlexColumnWidth(1) : const FlexColumnWidth(3);
-      columnWidths[1] = const FlexColumnWidth(3);
-      columnWidths[2] = const FlexColumnWidth(2.5);
-
-      for (int i = 3; i < totalColumns; i++) {
+      for (int i = 0; i < totalColumns; i++) {
         columnWidths[i] = const FlexColumnWidth(2);
       }
-
       return Table(
         columnWidths: columnWidths,
         border: TableBorder(
@@ -159,7 +131,7 @@ class CustomTableHeader extends StatelessWidget {
             decoration: BoxDecoration(
               color: colorsConst.primary,
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(5),
+                //topLeft: Radius.circular(5),
                 topRight: Radius.circular(5),
               ),
             ),
@@ -168,28 +140,5 @@ class CustomTableHeader extends StatelessWidget {
         ],
       );
     });
-  }
-
-  Widget _headerCell(String text, double width,
-      {TextAlign textAlign = TextAlign.left}) {
-    return Container(
-      height: width <= 922 ? 65 : 45,
-      width: 150,
-      alignment:
-      textAlign == TextAlign.center ? Alignment.center : Alignment.centerLeft,
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      child: Text(
-        text,
-        textAlign: textAlign,
-        style: TextStyle(
-          fontSize: text == "Details Of Services Required" ? 13 : 15,
-          color: Colors.white,
-          fontFamily: "Lato",
-        ),
-        maxLines: null,
-        softWrap: true,
-        overflow: TextOverflow.visible,
-      ),
-    );
   }
 }

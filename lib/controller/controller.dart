@@ -9,6 +9,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:group_button/group_button.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../models/comments_obj.dart';
 import '../models/customer_activity.dart';
 import '../models/employee_obj.dart';
@@ -169,6 +170,125 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       return inputDate;
     }
   }
+  void setDateRange(PickerDateRange range) {
+    if (range.startDate != null && range.endDate != null) {
+      selectedRange.value = DateTimeRange(
+        start: range.startDate!,
+        end: range.endDate!,
+      );
+    }
+  }
+  void showDatePickerDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        dynamic tempRange;
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: const Color(0xffFFFCF9),
+              title: const Text(
+                'Select Date',
+                style: TextStyle(
+                  color: Color(0xFF004AAD),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: SizedBox(
+                height: 300,
+                width: 350,
+                child: SfDateRangePicker(
+                  backgroundColor: const Color(0xffFFFCF9),
+                  minDate: DateTime(2023),
+                  maxDate: DateTime.now(),
+                  selectionMode: DateRangePickerSelectionMode.range,
+                  selectionShape: DateRangePickerSelectionShape.circle,
+                  selectionRadius: 18,
+                  selectionColor: const Color(0xFF004AAD),
+                  startRangeSelectionColor: const Color(0xFF004AAD),
+                  endRangeSelectionColor: const Color(0xFF004AAD),
+                  rangeSelectionColor: const Color(0x22004AAD),
+                  monthCellStyle: const DateRangePickerMonthCellStyle(
+                    textStyle: TextStyle(
+                      fontSize: 14,
+                      height: 1.0,
+                      color: Colors.black87,
+                    ),
+                    todayTextStyle: TextStyle(
+                      fontSize: 14,
+                      height: 1.0,
+                      color: Colors.black87,
+                    ),
+                  ),
+
+                  monthViewSettings: const DateRangePickerMonthViewSettings(
+                    dayFormat: 'EEE',
+                    viewHeaderHeight: 28,
+                  ),
+                  selectionTextStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    height: 1.0, // fixes vertical centering of number inside circle
+                  ),
+                  onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+                    setState(() {
+                      tempRange = args.value;
+                    });
+                  },
+                ),
+              ),
+              actions: [
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 8.0),
+                  child: Center(
+                    child: Text(
+                      'Click and drag to select multiple dates',
+                      style: TextStyle(
+                        color: Color(0xFF004AAD),
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        if (tempRange != null) {
+                          setDateRange(tempRange);
+                        }
+                        print("range $tempRange");
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(
+                          color: Color(0xFF004AAD),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
   var currentPage = 1.obs;
   final itemsPerPage = 20; // Adjust based on your needs
@@ -180,6 +300,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
 
   var disqualifiedSortField = ''.obs;
   var disqualifiedSortOrder = 'asc'.obs;
+  var selectedRange = Rxn<DateTimeRange>();
   List<NewLeadObj> get paginatedDisqualified {
     final query = searchQuery.value.toLowerCase();
     final ratingFilter = selectedTemperature.value;
@@ -248,6 +369,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
 
       return matchesQuery && matchesRating && matchesSort;
     }).toList();
+
     if (sortBy == 'Custom Month') {
       DateTime parseDate(String? dateStr, String? fallback) {
         if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
@@ -356,7 +478,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   List<NewLeadObj> get paginatedLeads {
     final query = searchQuery.value.toLowerCase();
     final ratingFilter = selectedTemperature.value;
-    final sortBy = selectedProspectSortBy.value; // 'Today', 'Last 7 Days', etc.
+    final sortBy = selectedProspectSortBy.value;
     final now = DateTime.now();
 
     final filteredLeads = allNewLeadFuture.where((lead) {
@@ -365,63 +487,69 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
           (lead.mobileNumber?.toLowerCase().contains(query) ?? false) ||
           (lead.companyName?.toLowerCase().contains(query) ?? false);
 
-      final matchesRating = ratingFilter.isEmpty || ((lead.rating ?? '').toLowerCase() == ratingFilter.toLowerCase());
+      final matchesRating = ratingFilter.isEmpty ||
+          ((lead.rating ?? '').toLowerCase() == ratingFilter.toLowerCase());
 
       bool matchesSort = true;
 
-      if (lead.prospectEnrollmentDate != null) {
-        DateTime? updatedDate;
+      DateTime? updatedDate;
+      if (lead.prospectEnrollmentDate != null ||
+          (lead.updatedTs != null && lead.updatedTs!.isNotEmpty)) {
         try {
-          if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
+          if (lead.updatedTs != null &&
+              lead.updatedTs != "null" &&
+              lead.updatedTs!.isNotEmpty) {
             updatedDate = DateTime.tryParse(lead.updatedTs!);
-          } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
-            updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
+          } else if (lead.prospectEnrollmentDate != null &&
+              lead.prospectEnrollmentDate!.isNotEmpty) {
+            updatedDate =
+                DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
           }
         } catch (_) {
           updatedDate = null;
           matchesSort = false;
         }
-
-        if (updatedDate != null) {
-          final diff = now.difference(updatedDate).inDays;
-
-          switch (sortBy) {
-            case 'Today':
-              matchesSort = isSameDate(updatedDate, now);
-              break;
-            case 'Yesterday':
-              matchesSort = diff <= 1;
-              break;
-            case 'Last 7 Days':
-              matchesSort = diff <= 7;
-              break;
-
-            case 'Last 30 Days':
-              matchesSort = diff <= 30;
-              break;
-
-            case 'Custom Month':
-              if (selectedMonth.value != null) {
-                matchesSort = updatedDate.year == selectedMonth.value!.year &&
-                    updatedDate.month == selectedMonth.value!.month;
-              } else {
-                matchesSort = true;
-              }
-              break;
-            case 'All':
-            default:
+      }
+      if (updatedDate != null) {
+        final diff = now.difference(updatedDate).inDays;
+        switch (sortBy) {
+          case 'Today':
+            matchesSort = isSameDate(updatedDate, now);
+            break;
+          case 'Yesterday':
+            matchesSort = diff == 1;
+            break;
+          case 'Last 7 Days':
+            matchesSort = diff <= 7;
+            break;
+          case 'Last 30 Days':
+            matchesSort = diff <= 30;
+            break;
+          case 'Custom Month':
+            if (selectedMonth.value != null) {
+              matchesSort = updatedDate.year == selectedMonth.value!.year &&
+                  updatedDate.month == selectedMonth.value!.month;
+            } else {
               matchesSort = true;
-          }
-        } else {
-          matchesSort = false;
+            }
+            break;
+          case 'All':
+          default:
+            matchesSort = true;
+        }
+        if (selectedRange.value != null) {
+          final range = selectedRange.value!;
+          final start = DateTime(range.start.year, range.start.month, range.start.day);
+          final end = DateTime(range.end.year, range.end.month, range.end.day, 23, 59, 59);
+          matchesSort = matchesSort &&
+              (updatedDate.isAfter(start) || updatedDate.isAtSameMomentAs(start)) &&
+              (updatedDate.isBefore(end) || updatedDate.isAtSameMomentAs(end));
         }
       } else {
         matchesSort = false;
       }
-
       return matchesQuery && matchesRating && matchesSort;
     }).toList();
-
     if (sortBy == 'Custom Month') {
       DateTime parseDate(String? dateStr, String? fallback) {
         if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
@@ -450,25 +578,18 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
               var name = lead.firstname ?? '';
               if (name.contains('||')) name = name.split('||')[0].trim();
               return name.toLowerCase();
-
             case 'company_name':
               return (lead.companyName ?? '').toLowerCase();
-
             case 'mobile_number':
               return (lead.mobileNumber ?? '').toLowerCase();
-
             case 'detailsOfServiceRequired':
               return (lead.detailsOfServiceRequired ?? '').toLowerCase();
-
             case 'source':
               return (lead.source ?? '').toLowerCase();
-
             case 'city':
               return (lead.city ?? '').toLowerCase();
-
             case 'status_update':
               return (lead.statusUpdate ?? '').toLowerCase();
-
             case 'updatedTs':
             case 'prospect_enrollment_date':
               DateTime parseDate(String? dateStr, String? fallback) {
@@ -488,9 +609,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
               }
               return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
             default:
-              //final value = field;
               final value = lead.asMap()[field];
-              print("Dafault value $value $field");
               return value.toString().toLowerCase();
           }
         }
@@ -531,8 +650,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     }
     return ranges;
   }
-
-  // to get leads of specific range
   List<NewLeadObj> getLeadsByRange(int index) {
     final startIndex = index * mailPerPage;
     final endIndex = (startIndex + mailPerPage) > allNewLeadFuture.length
@@ -546,7 +663,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     final query = searchQualified.value.trim().toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;
     final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
-
     final now = DateTime.now();
 
     final filteredLeads = allQualifiedLeadFuture.where((lead) {
@@ -558,8 +674,9 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
           (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
 
       bool matchesSort = true;
+      DateTime? updatedDate;
+
       if (lead.prospectEnrollmentDate != null) {
-        DateTime? updatedDate;
         try {
           if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
             updatedDate = DateTime.tryParse(lead.updatedTs!);
@@ -584,11 +701,9 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
             case 'Last 7 Days':
               matchesSort = diff <= 7;
               break;
-
             case 'Last 30 Days':
               matchesSort = diff <= 30;
               break;
-
             case 'Custom Month':
               if (selectedPMonth.value != null) {
                 matchesSort = updatedDate.year == selectedPMonth.value!.year &&
@@ -597,7 +712,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
                 matchesSort = true;
               }
               break;
-
             case 'All':
             default:
               matchesSort = true;
@@ -608,7 +722,17 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       } else {
         matchesSort = false;
       }
-      return matchesQuery && matchesRating && matchesSort;
+
+      // 🔹 Date Range Filter (selectedRange)
+      bool matchesDateRange = true;
+      if (selectedRange.value != null && updatedDate != null) {
+        final start = selectedRange.value!.start;
+        final end = selectedRange.value!.end;
+        matchesDateRange = updatedDate.isAfter(start.subtract(const Duration(days: 1))) &&
+            updatedDate.isBefore(end.add(const Duration(days: 1)));
+      }
+
+      return matchesQuery && matchesRating && matchesSort && matchesDateRange;
     }).toList();
 
     if (sortBy == 'Custom Month') {
@@ -631,6 +755,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
         return dateB.compareTo(dateA); // reverse order
       });
     }
+
     if (sortField.isNotEmpty) {
       filteredLeads.sort((a, b) {
         dynamic getFieldValue(NewLeadObj lead, String field) {
@@ -677,9 +802,8 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
               }
               return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
             default:
-            //final value = field;
               final value = lead.asMap()[field];
-              print("Dafault value $value $field");
+              print("Default value $value $field");
               return value.toString().toLowerCase();
           }
         }
@@ -698,6 +822,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
         }
       });
     }
+
     int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
 
     if (start >= filteredLeads.length) return [];
@@ -874,8 +999,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   List<NewLeadObj> get paginatedProspectsLeads {
     final query = searchProspects.value.toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;
-    final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
-
+    final sortBy = selectedQualifiedSortBy.value;
     final now = DateTime.now();
 
     final filteredLeads = allLeadFuture.where((lead) {
@@ -888,8 +1012,9 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
           (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
 
       bool matchesSort = true;
+      DateTime? updatedDate;
+
       if (lead.prospectEnrollmentDate != null) {
-        DateTime? updatedDate;
         try {
           if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
             updatedDate = DateTime.tryParse(lead.updatedTs!);
@@ -900,6 +1025,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
           updatedDate = null;
           matchesSort = false;
         }
+
         if (updatedDate != null) {
           final diff = now.difference(updatedDate).inDays;
 
@@ -913,11 +1039,9 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
             case 'Last 7 Days':
               matchesSort = diff <= 7;
               break;
-
             case 'Last 30 Days':
               matchesSort = diff <= 30;
               break;
-
             case 'Custom Month':
               if (selectedPMonth.value != null) {
                 matchesSort = updatedDate.year == selectedPMonth.value!.year &&
@@ -926,7 +1050,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
                 matchesSort = true;
               }
               break;
-
             case 'All':
             default:
               matchesSort = true;
@@ -938,8 +1061,18 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
         matchesSort = false;
       }
 
-      return matchesQuery && matchesRating && matchesSort;
+      // 🔹 Date Range Filter (selectedRange)
+      bool matchesDateRange = true;
+      if (selectedRange.value != null && updatedDate != null) {
+        final start = selectedRange.value!.start;
+        final end = selectedRange.value!.end;
+        matchesDateRange = updatedDate.isAfter(start.subtract(const Duration(days: 1))) &&
+            updatedDate.isBefore(end.add(const Duration(days: 1)));
+      }
+
+      return matchesQuery && matchesRating && matchesSort && matchesDateRange;
     }).toList();
+
     if (sortBy == 'Custom Month') {
       DateTime parseDate(String? dateStr, String? fallback) {
         if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
@@ -957,7 +1090,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       filteredLeads.sort((a, b) {
         final dateA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
         final dateB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
-        return dateB.compareTo(dateA); // reverse order
+        return dateB.compareTo(dateA);
       });
     }
 
@@ -969,25 +1102,18 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
               var name = lead.firstname ?? '';
               if (name.contains('||')) name = name.split('||')[0].trim();
               return name.toLowerCase();
-
             case 'company_name':
               return (lead.companyName ?? '').toLowerCase();
-
             case 'mobile_number':
               return (lead.mobileNumber ?? '').toLowerCase();
-
             case 'detailsOfServiceRequired':
               return (lead.detailsOfServiceRequired ?? '').toLowerCase();
-
             case 'source':
               return (lead.source ?? '').toLowerCase();
-
             case 'city':
               return (lead.city ?? '').toLowerCase();
-
             case 'status_update':
               return (lead.statusUpdate ?? '').toLowerCase();
-
             case 'updatedTs':
             case 'prospect_enrollment_date':
               DateTime parseDate(String? dateStr, String? fallback) {
@@ -1007,9 +1133,8 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
               }
               return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
             default:
-            //final value = field;
               final value = lead.asMap()[field];
-              print("Dafault value $value $field");
+              print("Default value $value $field");
               return value.toString().toLowerCase();
           }
         }
@@ -1028,8 +1153,8 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
         }
       });
     }
-    int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
 
+    int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
     if (start >= filteredLeads.length) return [];
 
     int end = start + itemsProspectPerPage;
@@ -1037,6 +1162,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
 
     return filteredLeads.sublist(start, end);
   }
+
 
   int get totalPages => (allNewLeadFuture.length / itemsPerPage).ceil();
   int get totalProspectPages => (allLeadFuture.length / itemsPerPage).ceil();

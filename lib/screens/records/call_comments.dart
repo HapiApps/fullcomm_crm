@@ -781,42 +781,170 @@ class _CallCommentsState extends State<CallComments> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
-                                child: CustomText(
-                                  textAlign: TextAlign.left,
-                                  text: "Call Type",
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
+                                child: Row(
+                                  children: [
+                                    CustomText(
+                                      textAlign: TextAlign.left,
+                                      text: "Call Type",
+                                      size: 15,
+                                      isBold: true,
+                                      colors: Colors.white,
+                                    ),
+                                    3.width,
+                                    GestureDetector(
+                                      onTap: (){
+                                        if(controllers.sortFieldCallActivity.value=='type' && controllers.sortOrderCallActivity.value=='asc'){
+                                          controllers.sortOrderCallActivity.value='desc';
+                                        }else{
+                                          controllers.sortOrderCallActivity.value='asc';
+                                        }
+                                        controllers.sortFieldCallActivity.value='type';
+                                        remController.filterAndSortCalls(
+                                          allCalls: controllers.callActivity,
+                                          searchText: controllers.searchText.value.toLowerCase(),
+                                          callType: controllers.selectCallType.value,
+                                          sortField: controllers.sortFieldCallActivity.value,
+                                          sortOrder: controllers.sortOrderCallActivity.value,
+                                        );
+                                      },
+                                      child: Obx(() => Image.asset(
+                                        controllers.sortFieldCallActivity.value.isEmpty
+                                            ? "assets/images/arrow.png"
+                                            : controllers.sortOrderCallActivity.value == 'asc'
+                                            ? "assets/images/arrow_up.png"
+                                            : "assets/images/arrow_down.png",
+                                        width: 15,
+                                        height: 15,
+                                      ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
-                                child: CustomText(
-                                  textAlign: TextAlign.left,
-                                  text: "Message",
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
+                                child: Row(
+                                  children: [
+                                    CustomText(
+                                      textAlign: TextAlign.left,
+                                      text: "Message",
+                                      size: 15,
+                                      isBold: true,
+                                      colors: Colors.white,
+                                    ),
+                                    3.width,
+                                    GestureDetector(
+                                      onTap: (){
+                                        if(controllers.sortFieldCallActivity.value=='message' && controllers.sortOrderCallActivity.value=='asc'){
+                                          controllers.sortOrderCallActivity.value='desc';
+                                        }else{
+                                          controllers.sortOrderCallActivity.value='asc';
+                                        }
+                                        controllers.sortFieldCallActivity.value='message';
+                                        remController.filterAndSortCalls(
+                                          allCalls: controllers.callActivity,
+                                          searchText: controllers.searchText.value.toLowerCase(),
+                                          callType: controllers.selectCallType.value,
+                                          sortField: controllers.sortFieldCallActivity.value,
+                                          sortOrder: controllers.sortOrderCallActivity.value,
+                                        );
+                                      },
+                                      child: Obx(() => Image.asset(
+                                        controllers.sortFieldCallActivity.value.isEmpty
+                                            ? "assets/images/arrow.png"
+                                            : controllers.sortOrderCallActivity.value == 'asc'
+                                            ? "assets/images/arrow_up.png"
+                                            : "assets/images/arrow_down.png",
+                                        width: 15,
+                                        height: 15,
+                                      ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
-                                child: CustomText(//4
-                                  textAlign: TextAlign.left,
-                                  text: "Status",
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
+                                child: Row(
+                                  children: [
+                                    CustomText(//4
+                                      textAlign: TextAlign.left,
+                                      text: "Status",
+                                      size: 15,
+                                      isBold: true,
+                                      colors: Colors.white,
+                                    ),
+                                    3.width,
+                                    GestureDetector(
+                                      onTap: (){
+                                        if(controllers.sortFieldCallActivity.value=='status' && controllers.sortOrderCallActivity.value=='asc'){
+                                          controllers.sortOrderCallActivity.value='desc';
+                                        }else{
+                                          controllers.sortOrderCallActivity.value='asc';
+                                        }
+                                        controllers.sortFieldCallActivity.value='status';
+                                        remController.filterAndSortCalls(
+                                          allCalls: controllers.callActivity,
+                                          searchText: controllers.searchText.value.toLowerCase(),
+                                          callType: controllers.selectCallType.value,
+                                          sortField: controllers.sortFieldCallActivity.value,
+                                          sortOrder: controllers.sortOrderCallActivity.value,
+                                        );
+                                      },
+                                      child: Obx(() => Image.asset(
+                                        controllers.sortFieldCallActivity.value.isEmpty
+                                            ? "assets/images/arrow.png"
+                                            : controllers.sortOrderCallActivity.value == 'asc'
+                                            ? "assets/images/arrow_up.png"
+                                            : "assets/images/arrow_down.png",
+                                        width: 15,
+                                        height: 15,
+                                      ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
-                                child: CustomText(//4
-                                  textAlign: TextAlign.left,
-                                  text: "Lead Status",
-                                  size: 15,
-                                  isBold: true,
-                                  colors: Colors.white,
+                                child: Row(
+                                  children: [
+                                    CustomText(//4
+                                      textAlign: TextAlign.left,
+                                      text: "Lead Status",
+                                      size: 15,
+                                      isBold: true,
+                                      colors: Colors.white,
+                                    ),
+                                    3.width,
+                                    GestureDetector(
+                                      onTap: (){
+                                        if(controllers.sortFieldCallActivity.value=='leadStatus' && controllers.sortOrderCallActivity.value=='asc'){
+                                          controllers.sortOrderCallActivity.value='desc';
+                                        }else{
+                                          controllers.sortOrderCallActivity.value='asc';
+                                        }
+                                        controllers.sortFieldCallActivity.value='leadStatus';
+                                        remController.filterAndSortCalls(
+                                          allCalls: controllers.callActivity,
+                                          searchText: controllers.searchText.value.toLowerCase(),
+                                          callType: controllers.selectCallType.value,
+                                          sortField: controllers.sortFieldCallActivity.value,
+                                          sortOrder: controllers.sortOrderCallActivity.value,
+                                        );
+                                      },
+                                      child: Obx(() => Image.asset(
+                                        controllers.sortFieldCallActivity.value.isEmpty
+                                            ? "assets/images/arrow.png"
+                                            : controllers.sortOrderCallActivity.value == 'asc'
+                                            ? "assets/images/arrow_up.png"
+                                            : "assets/images/arrow_down.png",
+                                        width: 15,
+                                        height: 15,
+                                      ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Row(
@@ -864,47 +992,8 @@ class _CallCommentsState extends State<CallComments> {
                                       ],
                                     ),
                                   ),
-                                  // Obx(() => GestureDetector(
-                                  //   onTap: (){
-                                  //     controllers.sortField.value = 'date';
-                                  //     controllers.sortOrder.value = 'asc';
-                                  //   },
-                                  //   child: Icon(
-                                  //     Icons.arrow_upward,
-                                  //     size: 16,
-                                  //     color: (controllers.sortField.value == 'date' &&
-                                  //         controllers.sortOrder.value == 'asc')
-                                  //         ? Colors.white
-                                  //         : Colors.grey,
-                                  //   ),
-                                  // )),
-                                  // Obx(() => GestureDetector(
-                                  //   onTap: (){
-                                  //     controllers.sortField.value = 'date';
-                                  //     controllers.sortOrder.value = 'desc';
-                                  //   },
-                                  //   child: Icon(
-                                  //     Icons.arrow_downward,
-                                  //     size: 16,
-                                  //     color: (controllers.sortField.value == 'date' &&
-                                  //         controllers.sortOrder.value == 'desc')
-                                  //         ? Colors.white
-                                  //         : Colors.grey,
-                                  //   ),
-                                  // )
-                                  // ),
                                 ],
                               ),
-                              // Padding(
-                              //   padding: const EdgeInsets.all(10.0),
-                              //   child: CustomText(//9
-                              //     textAlign: TextAlign.center,
-                              //     text: "Actions",
-                              //     size: 15,
-                              //     isBold: true,
-                              //     colors: Colors.white,
-                              //   ),
-                              // ),
                             ]),
                       ],
                     ),
@@ -965,7 +1054,6 @@ class _CallCommentsState extends State<CallComments> {
                                       6: FlexColumnWidth(3),//Lead Status
                                       7: FlexColumnWidth(3.5),//Status
                                       8: FlexColumnWidth(3),
-                                      //6: FlexColumnWidth(4.5),//Actions
                                     },
                                     border: TableBorder(
                                       horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -1493,24 +1581,6 @@ class _CallCommentsState extends State<CallComments> {
                                                 colors: colorsConst.textColor,
                                               ),
                                             ),
-                                        // Padding(
-                                        //   padding: const EdgeInsets.all(3.0),
-                                        //   child: Row(
-                                        //             mainAxisAlignment: MainAxisAlignment.center,
-                                        //             children: [
-                                        //               IconButton(
-                                        //                   onPressed: (){},
-                                        //                   icon: Icon(Icons.edit,color: Colors.green,)),
-                                        //               IconButton(
-                                        //                   onPressed: (){},
-                                        //                   icon: SvgPicture.asset("assets/images/add_note.svg")),
-                                        //               IconButton(
-                                        //                   onPressed: (){},
-                                        //                   icon: Icon(Icons.delete_outline_sharp,color: Colors.red,))
-                                        //             ],
-                                        //           ),
-                                        // ),
-
                                           ]
                                       ),
 
