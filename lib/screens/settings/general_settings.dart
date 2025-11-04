@@ -226,14 +226,6 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                 10.height,
                 Table(
                   columnWidths: const {
-                    // 0: FlexColumnWidth(1),//Check Box
-                    // 1: FlexColumnWidth(3),//Actions
-                    // 2: FlexColumnWidth(2),//Employee
-                    // 3: FlexColumnWidth(3),//Shift Name
-                    // 4: FlexColumnWidth(2),//From
-                    // 5: FlexColumnWidth(2),//To
-                    // 6: FlexColumnWidth(2),//days
-                    // 7: FlexColumnWidth(2),//Updated On
                     0: FlexColumnWidth(2),//Employee
                     1: FlexColumnWidth(3),//Shift Name
                     2: FlexColumnWidth(2),//From
@@ -347,42 +339,146 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: CustomText(
-                              textAlign: TextAlign.left,
-                              text: "From",//3
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
+                            child: Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "From",//3
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(settingsController.sortOfficeHourField.value=='from' && settingsController.sortOfficeHourOrder.value=='asc'){
+                                      settingsController.sortOfficeHourOrder.value='desc';
+                                    }else{
+                                      settingsController.sortOfficeHourOrder.value='asc';
+                                    }
+                                    settingsController.sortOfficeHourField.value='from';
+                                    settingsController.sortOfficeHour();
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    settingsController.sortOfficeHourField.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : settingsController.sortOfficeHourOrder.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: CustomText(
-                              textAlign: TextAlign.left,
-                              text: "To",//4
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
+                            child: Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "To",//4
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(settingsController.sortOfficeHourField.value=='to' && settingsController.sortOfficeHourOrder.value=='asc'){
+                                      settingsController.sortOfficeHourOrder.value='desc';
+                                    }else{
+                                      settingsController.sortOfficeHourOrder.value='asc';
+                                    }
+                                    settingsController.sortOfficeHourField.value='to';
+                                    settingsController.sortOfficeHour();
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    settingsController.sortOfficeHourField.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : settingsController.sortOfficeHourOrder.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: CustomText(
-                              textAlign: TextAlign.left,
-                              text: "Days",//4
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
+                            child: Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Days",//4
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(settingsController.sortOfficeHourField.value=='days' && settingsController.sortOfficeHourOrder.value=='asc'){
+                                      settingsController.sortOfficeHourOrder.value='desc';
+                                    }else{
+                                      settingsController.sortOfficeHourOrder.value='asc';
+                                    }
+                                    settingsController.sortOfficeHourField.value='days';
+                                    settingsController.sortOfficeHour();
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    settingsController.sortOfficeHourField.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : settingsController.sortOfficeHourOrder.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: CustomText(
-                              textAlign: TextAlign.left,
-                              text: "Updated On",//4
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
+                            child: Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Updated On",//4
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(settingsController.sortOfficeHourField.value=='date' && settingsController.sortOfficeHourOrder.value=='asc'){
+                                      settingsController.sortOfficeHourOrder.value='desc';
+                                    }else{
+                                      settingsController.sortOfficeHourOrder.value='asc';
+                                    }
+                                    settingsController.sortOfficeHourField.value='date';
+                                    settingsController.sortOfficeHour();
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    settingsController.sortOfficeHourField.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : settingsController.sortOfficeHourOrder.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ]),
@@ -409,14 +505,6 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         final officeHour = filteredList[index];
                         return Table(
                           columnWidths:const {
-                            // 0: FlexColumnWidth(1),//Check Box
-                            // 1: FlexColumnWidth(3),//Actions
-                            // 2: FlexColumnWidth(2),//Employee
-                            // 3: FlexColumnWidth(3),//Shift Name
-                            // 4: FlexColumnWidth(2),//From
-                            // 5: FlexColumnWidth(2),//To
-                            // 6: FlexColumnWidth(2),//days
-                            // 7: FlexColumnWidth(2),//Updated On
                             0: FlexColumnWidth(2),//Employee
                             1: FlexColumnWidth(3),//Shift Name
                             2: FlexColumnWidth(2),//From

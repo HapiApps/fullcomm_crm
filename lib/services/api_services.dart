@@ -1567,6 +1567,9 @@ class ApiService {
           callType: controllers.selectCallType.value,
           sortField: controllers.sortFieldCallActivity.value,
           sortOrder: controllers.sortOrderCallActivity.value,
+          selectedMonth: remController.selectedCallMonth.value,
+          selectedRange: remController.selectedCallRange.value,
+          selectedDateFilter: remController.selectedCallSortBy.value,
         );
       } else {
         controllers.allIncomingCalls.value = "0";
@@ -1612,6 +1615,7 @@ class ApiService {
         final activities = response.map((e) => CustomerActivity.fromJson(e)).toList();
         controllers.mailActivity.assignAll(activities);
         controllers.allSentMails.value = controllers.mailActivity.length.toString();
+        remController.sortMails();
       } else {
         throw Exception('Failed to load mail activity');
       }

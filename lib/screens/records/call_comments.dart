@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fullcomm_crm/components/date_filter_bar.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
@@ -213,24 +214,6 @@ class _CallCommentsState extends State<CallComments> {
                                                   ],
                                                 ),
                                                 10.height,
-
-                                                // Row(
-                                                //   children: [
-                                                //     8.width,
-                                                //     CustomDropDown(
-                                                //       saveValue: controllers.callType,
-                                                //       valueList: controllers.callTypeList,
-                                                //       text: "Call Type",
-                                                //       width: 480,
-                                                //       //inputFormatters: constInputFormatters.textInput,
-                                                //       onChanged: (value) async {
-                                                //         setState(() {
-                                                //           controllers.callType = value;
-                                                //         });
-                                                //       },
-                                                //     ),
-                                                //   ],
-                                                // ),
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
@@ -303,7 +286,7 @@ class _CallCommentsState extends State<CallComments> {
                                                                   },
                                                                 ),
                                                                 CustomText(text:type,size: 14,),
-                                                                20.width, // space between options
+                                                                20.width,
                                                               ],
                                                             );
                                                           }).toList(),
@@ -349,7 +332,7 @@ class _CallCommentsState extends State<CallComments> {
                                                                   },
                                                                 ),
                                                                 CustomText(text:type,size: 14,),
-                                                                20.width // space between options
+                                                                20.width
                                                               ],
                                                             );
                                                           }).toList(),
@@ -359,22 +342,6 @@ class _CallCommentsState extends State<CallComments> {
                                                   ],
                                                 ),
                                                 10.height,
-                                                // Row(
-                                                //   children: [
-                                                //     8.width,
-                                                //     CustomDropDown(
-                                                //       saveValue: controllers.callStatus,
-                                                //       valueList: controllers.callStatusList,
-                                                //       text: "Status",
-                                                //       width: 480,
-                                                //       onChanged: (value) async {
-                                                //         setState(() {
-                                                //           controllers.callStatus = value;
-                                                //         });
-                                                //       },
-                                                //     ),
-                                                //   ],
-                                                // ),
                                                 Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
@@ -498,50 +465,31 @@ class _CallCommentsState extends State<CallComments> {
                     ),
                     10.height,
                     Row(
-                      children: [
-                        Obx(()=>utils.selectHeatingType("All",
-                            controllers.selectCallType.value=="All", (){
-                              controllers.selectCallType.value="All";
-                            }, false,controllers.allCalls),),
-                        10.width,
-                        Obx(()=> utils.selectHeatingType("Incoming",
-                            controllers.selectCallType.value=="Incoming", (){
-                          controllers.selectCallType.value="Incoming";
-                        }, false,controllers.allIncomingCalls),),
-                        10.width,
-                        Obx(()=>utils.selectHeatingType("Outgoing",
-                            controllers.selectCallType.value=="Outgoing", (){
-                              controllers.selectCallType.value="Outgoing";
-                        }, false,controllers.allOutgoingCalls),),
-                        10.width,
-                        Obx(()=> utils.selectHeatingType("Missed",
-                            controllers.selectCallType.value=="Missed", (){
-                              controllers.selectCallType.value="Missed";
-                        }, true,controllers.allMissedCalls),)
-                      ],
-                    ),
-                    5.height,
-                    Divider(
-                      thickness: 1.5,
-                      color: colorsConst.secondary,
-                    ),
-                    5.height,
-                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomSearchTextField(
-                          controller: controllers.search,
-                          hintText: "Search Customer Name, Mobile",
-                          onChanged: (value) {
-                              controllers.searchText.value = value.toString().trim();
-                              remController.filterAndSortCalls(
-                                allCalls: controllers.callActivity,
-                                searchText: controllers.searchText.value.toLowerCase(),
-                                callType: controllers.selectCallType.value,
-                                sortField: controllers.sortFieldCallActivity.value,
-                                sortOrder: controllers.sortOrderCallActivity.value,
-                              );
-                          },
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Obx(()=>utils.selectHeatingType("All",
+                                controllers.selectCallType.value=="All", (){
+                                  controllers.selectCallType.value="All";
+                                }, false,controllers.allCalls),),
+                            10.width,
+                            Obx(()=> utils.selectHeatingType("Incoming",
+                                controllers.selectCallType.value=="Incoming", (){
+                                  controllers.selectCallType.value="Incoming";
+                                }, false,controllers.allIncomingCalls),),
+                            10.width,
+                            Obx(()=>utils.selectHeatingType("Outgoing",
+                                controllers.selectCallType.value=="Outgoing", (){
+                                  controllers.selectCallType.value="Outgoing";
+                                }, false,controllers.allOutgoingCalls),),
+                            10.width,
+                            Obx(()=> utils.selectHeatingType("Missed",
+                                controllers.selectCallType.value=="Missed", (){
+                                  controllers.selectCallType.value="Missed";
+                                }, true,controllers.allMissedCalls),),
+                          ],
                         ),
                         remController.selectedRecordCallIds.isNotEmpty?
                         InkWell(
@@ -637,8 +585,87 @@ class _CallCommentsState extends State<CallComments> {
                         ):1.width,
                       ],
                     ),
+                    5.height,
+                    Divider(
+                      thickness: 1.5,
+                      color: colorsConst.secondary,
+                    ),
+                    5.height,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomSearchTextField(
+                          controller: controllers.search,
+                          hintText: "Search Customer Name, Mobile",
+                          onChanged: (value) {
+                              controllers.searchText.value = value.toString().trim();
+                              remController.filterAndSortCalls(
+                                allCalls: controllers.callActivity,
+                                searchText: controllers.searchText.value.toLowerCase(),
+                                callType: controllers.selectCallType.value,
+                                sortField: controllers.sortFieldCallActivity.value,
+                                sortOrder: controllers.sortOrderCallActivity.value,
+                                selectedMonth: remController.selectedCallMonth.value,
+                                selectedRange: remController.selectedCallRange.value,
+                                selectedDateFilter: remController.selectedCallSortBy.value,
+                              );
+                          },
+                        ),
+                        DateFilterBar(
+                          selectedSortBy: remController.selectedCallSortBy,
+                          selectedRange: remController.selectedCallRange,
+                          selectedMonth: remController.selectedCallMonth,
+                          focusNode: _focusNode,
+                              onDaysSelected: () {
+                            remController.filterAndSortCalls(
+                              allCalls: controllers.callActivity,
+                              searchText: controllers.searchText.value.toLowerCase(),
+                              callType: controllers.selectCallType.value,
+                              sortField: controllers.sortFieldCallActivity.value,
+                              sortOrder: controllers.sortOrderCallActivity.value,
+                              selectedMonth: remController.selectedCallMonth.value,
+                              selectedRange: remController.selectedCallRange.value,
+                              selectedDateFilter: remController.selectedCallSortBy.value,
+                            );
+                          },
+                          onSelectMonth: () {
+                            remController.selectMonth(
+                              context,
+                              remController.selectedCallSortBy,
+                              remController.selectedCallMonth,
+                                  () {
+                                    remController.filterAndSortCalls(
+                                      allCalls: controllers.callActivity,
+                                      searchText: controllers.searchText.value.toLowerCase(),
+                                      callType: controllers.selectCallType.value,
+                                      sortField: controllers.sortFieldCallActivity.value,
+                                      sortOrder: controllers.sortOrderCallActivity.value,
+                                      selectedMonth: remController.selectedCallMonth.value,
+                                      selectedRange: remController.selectedCallRange.value,
+                                      selectedDateFilter: remController.selectedCallSortBy.value,
+                                    );
+                              },
+                            );
+                          },
+                          onSelectDateRange: (ctx) {
+                            remController.showDatePickerDialog(ctx, (pickedRange) {
+                              remController.selectedCallRange.value = pickedRange;
+                              remController.filterAndSortCalls(
+                                allCalls: controllers.callActivity,
+                                searchText: controllers.searchText.value.toLowerCase(),
+                                callType: controllers.selectCallType.value,
+                                sortField: controllers.sortFieldCallActivity.value,
+                                sortOrder: controllers.sortOrderCallActivity.value,
+                                selectedMonth: remController.selectedCallMonth.value,
+                                selectedRange: remController.selectedCallRange.value,
+                                selectedDateFilter: remController.selectedCallSortBy.value,
+                              );
+                            });
+                          },
+                        )
+                      ],
+                    ),
                     15.height,
-                        // Table Header
                     Table(
                       columnWidths: const {
                         0: FlexColumnWidth(1),//date
@@ -721,6 +748,9 @@ class _CallCommentsState extends State<CallComments> {
                                           callType: controllers.selectCallType.value,
                                           sortField: controllers.sortFieldCallActivity.value,
                                           sortOrder: controllers.sortOrderCallActivity.value,
+                                          selectedMonth: remController.selectedCallMonth.value,
+                                          selectedRange: remController.selectedCallRange.value,
+                                          selectedDateFilter: remController.selectedCallSortBy.value,
                                         );
                                       },
                                       child: Obx(() => Image.asset(
@@ -763,6 +793,9 @@ class _CallCommentsState extends State<CallComments> {
                                           callType: controllers.selectCallType.value,
                                           sortField: controllers.sortFieldCallActivity.value,
                                           sortOrder: controllers.sortOrderCallActivity.value,
+                                          selectedMonth: remController.selectedCallMonth.value,
+                                          selectedRange: remController.selectedCallRange.value,
+                                          selectedDateFilter: remController.selectedCallSortBy.value,
                                         );
                                       },
                                       child: Obx(() => Image.asset(
@@ -805,6 +838,9 @@ class _CallCommentsState extends State<CallComments> {
                                           callType: controllers.selectCallType.value,
                                           sortField: controllers.sortFieldCallActivity.value,
                                           sortOrder: controllers.sortOrderCallActivity.value,
+                                          selectedMonth: remController.selectedCallMonth.value,
+                                          selectedRange: remController.selectedCallRange.value,
+                                          selectedDateFilter: remController.selectedCallSortBy.value,
                                         );
                                       },
                                       child: Obx(() => Image.asset(
@@ -847,6 +883,9 @@ class _CallCommentsState extends State<CallComments> {
                                           callType: controllers.selectCallType.value,
                                           sortField: controllers.sortFieldCallActivity.value,
                                           sortOrder: controllers.sortOrderCallActivity.value,
+                                          selectedMonth: remController.selectedCallMonth.value,
+                                          selectedRange: remController.selectedCallRange.value,
+                                          selectedDateFilter: remController.selectedCallSortBy.value,
                                         );
                                       },
                                       child: Obx(() => Image.asset(
@@ -889,6 +928,9 @@ class _CallCommentsState extends State<CallComments> {
                                           callType: controllers.selectCallType.value,
                                           sortField: controllers.sortFieldCallActivity.value,
                                           sortOrder: controllers.sortOrderCallActivity.value,
+                                          selectedMonth: remController.selectedCallMonth.value,
+                                          selectedRange: remController.selectedCallRange.value,
+                                          selectedDateFilter: remController.selectedCallSortBy.value,
                                         );
                                       },
                                       child: Obx(() => Image.asset(
@@ -931,6 +973,9 @@ class _CallCommentsState extends State<CallComments> {
                                           callType: controllers.selectCallType.value,
                                           sortField: controllers.sortFieldCallActivity.value,
                                           sortOrder: controllers.sortOrderCallActivity.value,
+                                          selectedMonth: remController.selectedCallMonth.value,
+                                          selectedRange: remController.selectedCallRange.value,
+                                          selectedDateFilter: remController.selectedCallSortBy.value,
                                         );
                                       },
                                       child: Obx(() => Image.asset(
@@ -976,6 +1021,9 @@ class _CallCommentsState extends State<CallComments> {
                                               callType: controllers.selectCallType.value,
                                               sortField: controllers.sortFieldCallActivity.value,
                                               sortOrder: controllers.sortOrderCallActivity.value,
+                                              selectedMonth: remController.selectedCallMonth.value,
+                                              selectedRange: remController.selectedCallRange.value,
+                                              selectedDateFilter: remController.selectedCallSortBy.value,
                                             );
                                           },
                                           child: Obx(() => Image.asset(

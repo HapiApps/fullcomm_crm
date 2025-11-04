@@ -9,7 +9,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
+import '../../components/custom_search_textfield.dart';
 import '../../components/custom_text.dart';
+import '../../components/date_filter_bar.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
 
@@ -233,6 +235,44 @@ class _MailCommentsState extends State<MailComments> {
                       ),
                       15.height,
                       Divider(color: Colors.grey, height: 1,),
+                      10.height,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomSearchTextField(
+                            controller: controllers.search,
+                            hintText: "Search Email, Subject",
+                            onChanged: (value) {
+                              remController.searchText.value = value.toString().trim();
+                            },
+                          ),
+                          DateFilterBar(
+                            selectedSortBy: remController.selectedMailSortBy,
+                            selectedRange: remController.selectedMailRange,
+                            selectedMonth: remController.selectedMailMonth,
+                            focusNode: _focusNode,
+                            onDaysSelected: () {
+                              remController.sortMails();
+                            },
+                            onSelectMonth: () {
+                              remController.selectMonth(
+                                context,
+                                remController.selectedMailSortBy,
+                                remController.selectedMailMonth,
+                                    () {
+                                  remController.sortMails();
+                                },
+                              );
+                            },
+                            onSelectDateRange: (ctx) {
+                              remController.showDatePickerDialog(ctx, (pickedRange) {
+                                remController.selectedMailRange.value = pickedRange;
+                                remController.sortMails();
+                              });
+                            },
+                          )
+                        ],
+                      ),
                       15.height,
                       Table(
                         columnWidths: const {
@@ -256,32 +296,110 @@ class _MailCommentsState extends State<MailComments> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(10.0),
-                                  child: CustomText(//2
-                                    textAlign: TextAlign.left,
-                                    text: "Sent Mail",
-                                    size: 15,
-                                    isBold: true,
-                                    colors: Colors.white,
+                                  child: Row(
+                                    children: [
+                                      CustomText(
+                                        textAlign: TextAlign.left,
+                                        text: "Sent Mail",
+                                        size: 15,
+                                        isBold: true,
+                                        colors: Colors.white,
+                                      ),
+                                      const SizedBox(width: 3),
+                                      GestureDetector(
+                                        onTap: (){
+                                          if(remController.sortFieldCallActivity.value=='mail' && remController.sortOrderCallActivity.value=='asc'){
+                                            remController.sortOrderCallActivity.value='desc';
+                                          }else{
+                                            remController.sortOrderCallActivity.value='asc';
+                                          }
+                                          remController.sortFieldCallActivity.value='mail';
+                                          remController.sortMails();
+                                        },
+                                        child: Obx(() => Image.asset(
+                                          controllers.sortFieldCallActivity.value.isEmpty
+                                              ? "assets/images/arrow.png"
+                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                              ? "assets/images/arrow_up.png"
+                                              : "assets/images/arrow_down.png",
+                                          width: 15,
+                                          height: 15,
+                                        ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(10.0),
-                                  child: CustomText(
-                                    textAlign: TextAlign.left,
-                                    text: "Subject",
-                                    size: 15,
-                                    isBold: true,
-                                    colors: Colors.white,
+                                  child: Row(
+                                    children: [
+                                      CustomText(
+                                        textAlign: TextAlign.left,
+                                        text: "Subject",
+                                        size: 15,
+                                        isBold: true,
+                                        colors: Colors.white,
+                                      ),
+                                      const SizedBox(width: 3),
+                                      GestureDetector(
+                                        onTap: (){
+                                          if(remController.sortFieldCallActivity.value=='subject' && remController.sortOrderCallActivity.value=='asc'){
+                                            remController.sortOrderCallActivity.value='desc';
+                                          }else{
+                                            remController.sortOrderCallActivity.value='asc';
+                                          }
+                                          remController.sortFieldCallActivity.value='subject';
+                                          remController.sortMails();
+                                        },
+                                        child: Obx(() => Image.asset(
+                                          controllers.sortFieldCallActivity.value.isEmpty
+                                              ? "assets/images/arrow.png"
+                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                              ? "assets/images/arrow_up.png"
+                                              : "assets/images/arrow_down.png",
+                                          width: 15,
+                                          height: 15,
+                                        ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(10.0),
-                                  child: CustomText(
-                                    textAlign: TextAlign.left,
-                                    text: "Message",
-                                    size: 15,
-                                    isBold: true,
-                                    colors: Colors.white,
+                                  child: Row(
+                                    children: [
+                                      CustomText(
+                                        textAlign: TextAlign.left,
+                                        text: "Message",
+                                        size: 15,
+                                        isBold: true,
+                                        colors: Colors.white,
+                                      ),
+                                      const SizedBox(width: 3),
+                                      GestureDetector(
+                                        onTap: (){
+                                          if(remController.sortFieldCallActivity.value=='msg' && remController.sortOrderCallActivity.value=='asc'){
+                                            remController.sortOrderCallActivity.value='desc';
+                                          }else{
+                                            remController.sortOrderCallActivity.value='asc';
+                                          }
+                                          remController.sortFieldCallActivity.value='msg';
+                                          remController.sortMails();
+                                        },
+                                        child: Obx(() => Image.asset(
+                                          controllers.sortFieldCallActivity.value.isEmpty
+                                              ? "assets/images/arrow.png"
+                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                              ? "assets/images/arrow_up.png"
+                                              : "assets/images/arrow_down.png",
+                                          width: 15,
+                                          height: 15,
+                                        ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 Padding(
@@ -299,12 +417,38 @@ class _MailCommentsState extends State<MailComments> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.all(10.0),
-                                      child: CustomText(
-                                        textAlign: TextAlign.center,
-                                        text: "Date",
-                                        size: 15,
-                                        isBold: true,
-                                        colors: Colors.white,
+                                      child: Row(
+                                        children: [
+                                          CustomText(
+                                            textAlign: TextAlign.center,
+                                            text: "Date",
+                                            size: 15,
+                                            isBold: true,
+                                            colors: Colors.white,
+                                          ),
+                                          const SizedBox(width: 3),
+                                          GestureDetector(
+                                            onTap: (){
+                                              if(remController.sortFieldCallActivity.value=='date' && remController.sortOrderCallActivity.value=='asc'){
+                                                remController.sortOrderCallActivity.value='desc';
+                                              }else{
+                                                remController.sortOrderCallActivity.value='asc';
+                                              }
+                                              remController.sortFieldCallActivity.value='date';
+                                              remController.sortMails();
+                                            },
+                                            child: Obx(() => Image.asset(
+                                              controllers.sortFieldCallActivity.value.isEmpty
+                                                  ? "assets/images/arrow.png"
+                                                  : controllers.sortOrderCallActivity.value == 'asc'
+                                                  ? "assets/images/arrow_up.png"
+                                                  : "assets/images/arrow_down.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -314,8 +458,15 @@ class _MailCommentsState extends State<MailComments> {
                       ),
                       Expanded(
                           child: Obx((){
+                            final searchText = remController.searchText.value.toLowerCase();
+                            final filteredList = remController.mailFilteredList.where((activity) {
+                              final matchesSearch = searchText.isEmpty ||
+                                  (activity.toData.toString().toLowerCase().contains(searchText)) ||
+                                  (activity.subject.toString().toLowerCase().contains(searchText));
+                              return matchesSearch;
+                            }).toList();
                             return controllers.isMailLoading.value?
-                            Center(child:CircularProgressIndicator()):controllers.mailActivity.isEmpty?
+                            Center(child:CircularProgressIndicator()):filteredList.isEmpty?
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -349,9 +500,9 @@ class _MailCommentsState extends State<MailComments> {
                                 controller: _controller,
                                 shrinkWrap: true,
                                 physics: const ScrollPhysics(),
-                                itemCount: controllers.mailActivity.length,
+                                itemCount: filteredList.length,
                                 itemBuilder: (context, index) {
-                                  final data = controllers.mailActivity[index];
+                                  final data = filteredList[index];
                                   return Table(
                                     columnWidths:const {
                                       0: FlexColumnWidth(3),//date

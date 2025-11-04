@@ -694,7 +694,8 @@ class _RoleManagementState extends State<RoleManagement> {
                                 const SizedBox(width: 3),
                                 GestureDetector(
                                   onTap: (){
-                                    settingsController.sortRoleByName();
+                                    settingsController.sortRoleField.value = 'name';
+                                    settingsController.sortRole();
                                   },
                                   child: Obx(() => Image.asset(
                                     settingsController.sortRoleField.value.isEmpty
@@ -712,22 +713,64 @@ class _RoleManagementState extends State<RoleManagement> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: CustomText(
-                              textAlign: TextAlign.left,
-                              text: "Description",//2
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
+                            child: Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Description",//2
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    settingsController.sortRoleField.value = 'description';
+                                    settingsController.sortRole();
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    settingsController.sortRoleField.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : settingsController.sortRoleOrder.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: CustomText(
-                              textAlign: TextAlign.left,
-                              text: "Permissions",//3
-                              size: 15,
-                              isBold: true,
-                              colors: Colors.white,
+                            child: Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Permissions",//3
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    settingsController.sortRoleField.value = 'permissions';
+                                    settingsController.sortRole();
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    settingsController.sortRoleField.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : settingsController.sortRoleOrder.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ]),

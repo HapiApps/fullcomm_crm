@@ -14,6 +14,7 @@ import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_text.dart';
 import '../../components/custom_textfield.dart';
+import '../../components/date_filter_bar.dart';
 import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
@@ -531,62 +532,43 @@ class _MeetingCommentsState extends State<MeetingComments> {
                 ),
                 10.height,
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Obx(()=> utils.selectHeatingType("Scheduled",
-                        controllers.selectMeetingType.value=="Scheduled", (){
-                          controllers.selectMeetingType.value="Scheduled";
-                          remController.filterAndSortMeetings(
-                            searchText: controllers.searchText.value.toLowerCase(),
-                            callType: controllers.selectMeetingType.value,
-                            sortField: controllers.sortFieldMeetingActivity.value,
-                            sortOrder: controllers.sortOrderMeetingActivity.value,
-                          );
-                    }, false,controllers.allScheduleMeet),),
-                    10.width,
-                    Obx(()=>utils.selectHeatingType("Completed",
-                        controllers.selectMeetingType.value=="Completed", (){
-                          controllers.selectMeetingType.value="Completed";
-                          remController.filterAndSortMeetings(
-                            searchText: controllers.searchText.value.toLowerCase(),
-                            callType: controllers.selectMeetingType.value,
-                            sortField: controllers.sortFieldMeetingActivity.value,
-                            sortOrder: controllers.sortOrderMeetingActivity.value,
-                          );
-                    }, false,controllers.allCompletedMeet),),
-                    10.width,
-                    Obx(()=> utils.selectHeatingType("Cancelled",
-                        controllers.selectMeetingType.value=="Cancelled", (){
-                          controllers.selectMeetingType.value="Cancelled";
-                          remController.filterAndSortMeetings(
-                            searchText: controllers.searchText.value.toLowerCase(),
-                            callType: controllers.selectMeetingType.value,
-                            sortField: controllers.sortFieldMeetingActivity.value,
-                            sortOrder: controllers.sortOrderMeetingActivity.value,
-                          );
-                    }, true,controllers.allCancelled),)
-                  ],
-                ),
-                5.height,
-                Divider(
-                  thickness: 1.5,
-                  color: colorsConst.secondary,
-                ),
-                5.height,
-                Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomSearchTextField(
-                      controller: controllers.search,
-                      hintText: "Search Name, Customer Name, Company Name",
-                      onChanged: (value) {
-                        controllers.searchText.value = value.toString().trim();
-                        remController.filterAndSortMeetings(
-                          searchText: controllers.searchText.value.toLowerCase(),
-                          callType: controllers.selectMeetingType.value,
-                          sortField: controllers.sortFieldMeetingActivity.value,
-                          sortOrder: controllers.sortOrderMeetingActivity.value,
-                        );
-                      },
+                    Row(
+                      children: [
+                        Obx(()=> utils.selectHeatingType("Scheduled",
+                            controllers.selectMeetingType.value=="Scheduled", (){
+                              controllers.selectMeetingType.value="Scheduled";
+                              remController.filterAndSortMeetings(
+                                searchText: controllers.searchText.value.toLowerCase(),
+                                callType: controllers.selectMeetingType.value,
+                                sortField: controllers.sortFieldMeetingActivity.value,
+                                sortOrder: controllers.sortOrderMeetingActivity.value,
+                              );
+                        }, false,controllers.allScheduleMeet),),
+                        10.width,
+                        Obx(()=>utils.selectHeatingType("Completed",
+                            controllers.selectMeetingType.value=="Completed", (){
+                              controllers.selectMeetingType.value="Completed";
+                              remController.filterAndSortMeetings(
+                                searchText: controllers.searchText.value.toLowerCase(),
+                                callType: controllers.selectMeetingType.value,
+                                sortField: controllers.sortFieldMeetingActivity.value,
+                                sortOrder: controllers.sortOrderMeetingActivity.value,
+                              );
+                            }, false,controllers.allCompletedMeet),),
+                        10.width,
+                        Obx(()=> utils.selectHeatingType("Cancelled",
+                            controllers.selectMeetingType.value=="Cancelled", (){
+                              controllers.selectMeetingType.value="Cancelled";
+                              remController.filterAndSortMeetings(
+                                searchText: controllers.searchText.value.toLowerCase(),
+                                callType: controllers.selectMeetingType.value,
+                                sortField: controllers.sortFieldMeetingActivity.value,
+                                sortOrder: controllers.sortOrderMeetingActivity.value,
+                              );
+                            }, true,controllers.allCancelled),),
+                      ],
                     ),
                     remController.selectedMeetingIds.isNotEmpty?
                     InkWell(
@@ -680,6 +662,70 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         ),
                       ),
                     ):1.width,
+                  ],
+                ),
+                5.height,
+                Divider(
+                  thickness: 1.5,
+                  color: colorsConst.secondary,
+                ),
+                5.height,
+                Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomSearchTextField(
+                      controller: controllers.search,
+                      hintText: "Search Name, Customer Name, Company Name",
+                      onChanged: (value) {
+                        controllers.searchText.value = value.toString().trim();
+                        remController.filterAndSortMeetings(
+                          searchText: controllers.searchText.value.toLowerCase(),
+                          callType: controllers.selectMeetingType.value,
+                          sortField: controllers.sortFieldMeetingActivity.value,
+                          sortOrder: controllers.sortOrderMeetingActivity.value,
+                        );
+                      },
+                    ),
+                    DateFilterBar(
+                      selectedSortBy: remController.selectedMeetSortBy,
+                      selectedRange: remController.selectedMeetRange,
+                      selectedMonth: remController.selectedMeetMonth,
+                      focusNode: _focusNode,
+                      onDaysSelected: () {
+                        remController.filterAndSortMeetings(
+                          searchText: controllers.searchText.value.toLowerCase(),
+                          callType: controllers.selectMeetingType.value,
+                          sortField: controllers.sortFieldMeetingActivity.value,
+                          sortOrder: controllers.sortOrderMeetingActivity.value,
+                        );
+                      },
+                      onSelectMonth: () {
+                        remController.selectMonth(
+                          context,
+                          remController.selectedMeetSortBy,
+                          remController.selectedMeetMonth,
+                              () {
+                                remController.filterAndSortMeetings(
+                                  searchText: controllers.searchText.value.toLowerCase(),
+                                  callType: controllers.selectMeetingType.value,
+                                  sortField: controllers.sortFieldMeetingActivity.value,
+                                  sortOrder: controllers.sortOrderMeetingActivity.value,
+                                );
+                          },
+                        );
+                      },
+                      onSelectDateRange: (ctx) {
+                        remController.showDatePickerDialog(ctx, (pickedRange) {
+                          remController.selectedMeetRange.value = pickedRange;
+                          remController.filterAndSortMeetings(
+                            searchText: controllers.searchText.value.toLowerCase(),
+                            callType: controllers.selectMeetingType.value,
+                            sortField: controllers.sortFieldMeetingActivity.value,
+                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                          );
+                        });
+                      },
+                    )
                   ],
                 ),
                 15.height,

@@ -6,7 +6,9 @@ import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../common/constant/api.dart';
 import '../models/customer_activity.dart';
@@ -37,13 +39,171 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   var setType = ''.obs;
   var sortOrderCallActivity = 'asc'.obs;
   var searchText = ''.obs;
+  final Rxn<DateTime> selectedCallMonth = Rxn<DateTime>();
+  final Rxn<DateTime> selectedMailMonth = Rxn<DateTime>();
+  final Rxn<DateTime> selectedMeetMonth = Rxn<DateTime>();
+  final Rxn<DateTime> selectedReminderMonth = Rxn<DateTime>();
+  RxString selectedCallSortBy = "".obs;
+  RxString selectedMailSortBy = "".obs;
+  RxString selectedMeetSortBy = "".obs;
+  RxString selectedReminderSortBy = "".obs;
+  var selectedCallRange = Rxn<DateTimeRange>();
+  var selectedMailRange = Rxn<DateTimeRange>();
+  var selectedMeetRange = Rxn<DateTimeRange>();
+  var selectedReminderRange = Rxn<DateTimeRange>();
   var reminderList = <ReminderModel>[].obs;
   var selectedReminderIds = <String>[].obs;
   var selectedMeetingIds = <String>[].obs;
   var selectedRecordMailIds = <String>[].obs;
   var selectedRecordCallIds = <String>[].obs;
   RxList<CustomerActivity> callFilteredList  = <CustomerActivity>[].obs;
+  RxList<CustomerActivity> mailFilteredList  = <CustomerActivity>[].obs;
   RxList<MeetingObj> meetingFilteredList     = <MeetingObj>[].obs;
+  void selectMonth(BuildContext context, RxString sortByKey, Rxn<DateTime> selectedMonthTarget,VoidCallback onMonthSelected,) {
+    showMonthPicker(
+      context: context,
+      monthStylePredicate: (month) {
+        final now = DateTime.now();
+        if (month.month == now.month && month.year == now.year) {
+          return ButtonStyle(
+            foregroundColor: WidgetStateProperty.all(Colors.white),
+            backgroundColor: WidgetStateProperty.all(Colors.blue.withOpacity(0.2)),
+          );
+        } else {
+          return ButtonStyle(
+            foregroundColor: WidgetStateProperty.all(Colors.black),
+            backgroundColor: WidgetStateProperty.all(Colors.transparent),
+          );
+        }
+      },
+      initialDate: selectedMonthTarget.value,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    ).then((selected) {
+      if (selected != null) {
+        sortByKey.value = 'Custom Month';
+        selectedMonthTarget.value = selected;
+        onMonthSelected();
+      }
+    });
+  }
+
+  void showDatePickerDialog(BuildContext context,void Function(DateTimeRange)? onDateSelected) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        dynamic tempRange;
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: const Color(0xffFFFCF9),
+              title: const Text(
+                'Select Date',
+                style: TextStyle(
+                  color: Color(0xFF004AAD),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: SizedBox(
+                height: 300,
+                width: 350,
+                child: SfDateRangePicker(
+                  backgroundColor: const Color(0xffFFFCF9),
+                  minDate: DateTime(2023),
+                  maxDate: DateTime.now(),
+                  selectionMode: DateRangePickerSelectionMode.range,
+                  selectionShape: DateRangePickerSelectionShape.circle,
+                  selectionRadius: 18,
+                  selectionColor: const Color(0xFF004AAD),
+                  startRangeSelectionColor: const Color(0xFF004AAD),
+                  endRangeSelectionColor: const Color(0xFF004AAD),
+                  rangeSelectionColor: const Color(0x22004AAD),
+                  monthCellStyle: const DateRangePickerMonthCellStyle(
+                    textStyle: TextStyle(
+                      fontSize: 14,
+                      height: 1.0,
+                      color: Colors.black87,
+                    ),
+                    todayTextStyle: TextStyle(
+                      fontSize: 14,
+                      height: 1.0,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  monthViewSettings: const DateRangePickerMonthViewSettings(
+                    dayFormat: 'EEE',
+                    viewHeaderHeight: 28,
+                  ),
+                  selectionTextStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    height: 1.0,
+                  ),
+                  onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+                    setState(() {
+                      tempRange = args.value;
+                    });
+                  },
+                ),
+              ),
+              actions: [
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 8.0),
+                  child: Center(
+                    child: Text(
+                      'Click and drag to select multiple dates',
+                      style: TextStyle(
+                        color: Color(0xFF004AAD),
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        if (tempRange != null) {
+                          if (onDateSelected != null) {
+                            onDateSelected(
+                              DateTimeRange(
+                                start: tempRange.startDate!,
+                                end: tempRange.endDate!,
+                              ),
+                            );
+                          }
+                        }
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(
+                          color: Color(0xFF004AAD),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
   void filterAndSortCalls({
     required List<CustomerActivity> allCalls,
@@ -51,15 +211,50 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required String callType,
     required String sortField,
     required String sortOrder,
+    required String selectedDateFilter, // Today, Yesterday, etc.
+    required DateTime? selectedMonth,
+    required DateTimeRange? selectedRange,
   }) {
+    DateTime parseDate(String dateStr) {
+      try {
+        return DateFormat("dd.MM.yyyy hh:mm a").parse(dateStr);
+      } catch (e) {
+        return DateTime(1900);
+      }
+    }
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
     final filtered = allCalls.where((activity) {
       final matchesCallType =
           callType.isEmpty || callType == "All" || activity.callType == callType;
       final matchesSearch = searchText.isEmpty ||
-          activity.customerName.toLowerCase().contains(searchText) ||
-          activity.toData.toLowerCase().contains(searchText);
+          activity.customerName.toLowerCase().contains(searchText.toLowerCase()) ||
+          activity.toData.toLowerCase().contains(searchText.toLowerCase());
 
-      return matchesCallType && matchesSearch;
+      final activityDate = parseDate(activity.sentDate);
+      bool matchesDate = true;
+      if (selectedDateFilter == "Today") {
+        matchesDate = activityDate.isAfter(today) && activityDate.isBefore(today.add(const Duration(days: 1)));
+      } else if (selectedDateFilter == "Yesterday") {
+        final yesterday = today.subtract(const Duration(days: 1));
+        matchesDate = activityDate.isAfter(yesterday) && activityDate.isBefore(today);
+      } else if (selectedDateFilter == "Last 7 Days") {
+        final sevenDaysAgo = today.subtract(const Duration(days: 7));
+        matchesDate = activityDate.isAfter(sevenDaysAgo);
+      } else if (selectedDateFilter == "Last 30 Days") {
+        final thirtyDaysAgo = today.subtract(const Duration(days: 30));
+        matchesDate = activityDate.isAfter(thirtyDaysAgo);
+      }
+      if (selectedRange != null) {
+        matchesDate = activityDate.isAfter(selectedRange.start.subtract(const Duration(seconds: 1))) &&
+            activityDate.isBefore(selectedRange.end.add(const Duration(seconds: 1)));
+      }
+      if (selectedMonth != null) {
+        matchesDate = (activityDate.month == selectedMonth.month &&
+            activityDate.year == selectedMonth.year);
+      }
+
+      return matchesCallType && matchesSearch && matchesDate;
     }).toList();
     if (sortField == 'customerName') {
       filtered.sort((a, b) {
@@ -104,13 +299,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     } else if (sortField == 'date') {
-      DateTime parseDate(String dateStr) {
-        try {
-          return DateFormat("dd.MM.yyyy hh:mm a").parse(dateStr);
-        } catch (e) {
-          return DateTime(1900);
-        }
-      }
       filtered.sort((a, b) {
         final dateA = parseDate(a.sentDate);
         final dateB = parseDate(b.sentDate);
@@ -127,14 +315,53 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required String sortField,
     required String sortOrder,
   }) {
-    final filtered = controllers.meetingActivity.where((activity) {
+    var filtered = [...controllers.meetingActivity];
+
+    final now = DateTime.now();
+    if (selectedMeetSortBy.value.isNotEmpty) {
+      filtered = filtered.where((activity) {
+        final date = _parseMeetingDate(activity.dates ?? '');
+        switch (selectedMeetSortBy.value) {
+          case 'Today':
+            return _isSameDay(date, now);
+          case 'Yesterday':
+            final yesterday = now.subtract(const Duration(days: 1));
+            return _isSameDay(date, yesterday);
+          case 'Last 7 Days':
+            final last7 = now.subtract(const Duration(days: 7));
+            return date.isAfter(last7);
+          case 'Last 30 Days':
+            final last30 = now.subtract(const Duration(days: 30));
+            return date.isAfter(last30);
+          case 'Custom Month':
+            if (selectedMeetMonth.value != null) {
+              final selected = selectedMeetMonth.value!;
+              return date.year == selected.year && date.month == selected.month;
+            }
+            return true;
+          case 'Custom Range':
+            if (selectedMeetRange.value != null) {
+              final range = selectedMeetRange.value!;
+              return date.isAfter(range.start.subtract(const Duration(days: 1))) &&
+                  date.isBefore(range.end.add(const Duration(days: 1)));
+            }
+            return true;
+          default:
+            return true;
+        }
+      }).toList();
+    }
+    filtered = filtered.where((activity) {
       final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
           activity.status == controllers.selectMeetingType.value;
+
       final matchesSearch = searchText.isEmpty ||
-          (activity.comName.toString().toLowerCase().contains(searchText) ||
-              activity.cusName.toString().toLowerCase().contains(searchText));
+          (activity.comName.toLowerCase().contains(searchText)) ||
+          (activity.cusName.toLowerCase().contains(searchText));
+
       return matchesCallType && matchesSearch;
     }).toList();
+
     String field = controllers.sortFieldMeetingActivity.value;
     String order = controllers.sortOrderMeetingActivity.value;
 
@@ -142,6 +369,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       final comparison = a.toLowerCase().compareTo(b.toLowerCase());
       return order == 'asc' ? comparison : -comparison;
     }
+
     if (field == 'customerName') {
       filtered.sort((a, b) => compareString(a.cusName ?? '', b.cusName ?? ''));
     } else if (field == 'companyName') {
@@ -152,28 +380,28 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       filtered.sort((a, b) => compareString(a.venue ?? '', b.venue ?? ''));
     } else if (field == 'notes') {
       filtered.sort((a, b) => compareString(a.notes ?? '', b.notes ?? ''));
-    } else if (sortField == 'date') {
-      DateTime parseDate(String dateStr) {
-        try {
-          final parts = dateStr.split('||');
-          final mainPart = parts.first.trim();
-          if (mainPart.contains(RegExp(r'[APMapm]'))) {
-            return DateFormat("dd.MM.yyyy hh:mm a").parse(mainPart);
-          } else {
-            return DateFormat("dd.MM.yyyy").parse(mainPart);
-          }
-        } catch (e) {
-          return DateTime(1900);
-        }
-      }
+    } else if (field == 'date') {
       filtered.sort((a, b) {
-        final dateA = parseDate(a.dates ?? '');
-        final dateB = parseDate(b.dates ?? '');
+        final dateA = _parseMeetingDate(a.dates ?? '');
+        final dateB = _parseMeetingDate(b.dates ?? '');
         final comparison = dateA.compareTo(dateB);
-        return sortOrder == 'asc' ? comparison : -comparison;
+        return order == 'asc' ? comparison : -comparison;
       });
     }
     meetingFilteredList.assignAll(filtered);
+  }
+  DateTime _parseMeetingDate(String dateStr) {
+    try {
+      final parts = dateStr.split('||');
+      final mainPart = parts.first.trim();
+      if (mainPart.contains(RegExp(r'[APMapm]'))) {
+        return DateFormat("dd.MM.yyyy hh:mm a").parse(mainPart);
+      } else {
+        return DateFormat("dd.MM.yyyy").parse(mainPart);
+      }
+    } catch (e) {
+      return DateTime(1900);
+    }
   }
 
   var sortBy = ''.obs;
@@ -195,6 +423,22 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         case 'employeeName':
           aValue = a.employeeName.toLowerCase();
           bValue = b.employeeName.toLowerCase();
+          break;
+        case 'details':
+          aValue = a.details.toLowerCase();
+          bValue = b.details.toLowerCase();
+          break;
+        case 'location':
+          aValue = a.location.toLowerCase();
+          bValue = b.location.toLowerCase();
+          break;
+        case 'type':
+          aValue = a.type.toLowerCase();
+          bValue = b.type.toLowerCase();
+          break;
+        case 'title':
+          aValue = a.title.toLowerCase();
+          bValue = b.title.toLowerCase();
           break;
         case 'startDate':
           try {
@@ -232,6 +476,123 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     });
     reminderList.assignAll(sorted);
   }
+
+  void sortMails() {
+    var filteredList = [...controllers.mailActivity];
+    final dateFormatter = DateFormat("dd-MM-yyyy h:mm a");
+    final now = DateTime.now();
+    if (selectedMailSortBy.value.isNotEmpty) {
+      switch (selectedMailSortBy.value) {
+        case 'Today':
+          filteredList = filteredList.where((mail) {
+            final date = _parseMailDate(mail.sentDate, dateFormatter);
+            return _isSameDay(date, now);
+          }).toList();
+          break;
+
+        case 'Yesterday':
+          final yesterday = now.subtract(const Duration(days: 1));
+          filteredList = filteredList.where((mail) {
+            final date = _parseMailDate(mail.sentDate, dateFormatter);
+            return _isSameDay(date, yesterday);
+          }).toList();
+          break;
+
+        case 'Last 7 Days':
+          final last7 = now.subtract(const Duration(days: 7));
+          filteredList = filteredList.where((mail) {
+            final date = _parseMailDate(mail.sentDate, dateFormatter);
+            return date.isAfter(last7);
+          }).toList();
+          break;
+
+        case 'Last 30 Days':
+          final last30 = now.subtract(const Duration(days: 30));
+          filteredList = filteredList.where((mail) {
+            final date = _parseMailDate(mail.sentDate, dateFormatter);
+            return date.isAfter(last30);
+          }).toList();
+          break;
+
+        case 'Custom Month':
+          if (selectedMailMonth.value != null) {
+            final selected = selectedMailMonth.value!;
+            filteredList = filteredList.where((mail) {
+              final date = _parseMailDate(mail.sentDate, dateFormatter);
+              return date.year == selected.year && date.month == selected.month;
+            }).toList();
+          }
+          break;
+        case 'Custom Range':
+          if (selectedMailRange.value != null) {
+            final range = selectedMailRange.value!;
+            filteredList = filteredList.where((mail) {
+              final date = _parseMailDate(mail.sentDate, dateFormatter);
+              return date.isAfter(range.start.subtract(const Duration(days: 1))) &&
+                  date.isBefore(range.end.add(const Duration(days: 1)));
+            }).toList();
+          }
+          break;
+      }
+    }
+    filteredList.sort((a, b) {
+      dynamic aValue;
+      dynamic bValue;
+      switch (sortFieldCallActivity.value) {
+        case 'customerName':
+          aValue = (a.customerName ?? '').toLowerCase();
+          bValue = (b.customerName ?? '').toLowerCase();
+          break;
+        case 'mail':
+          aValue = (a.toData ?? '').toLowerCase();
+          bValue = (b.toData ?? '').toLowerCase();
+          break;
+        case 'subject':
+          aValue = (a.subject ?? '').toLowerCase();
+          bValue = (b.subject ?? '').toLowerCase();
+          break;
+        case 'msg':
+          aValue = (a.message ?? '').toLowerCase();
+          bValue = (b.message ?? '').toLowerCase();
+          break;
+        case 'date':
+          aValue = _parseMailDate(a.sentDate, dateFormatter);
+          bValue = _parseMailDate(b.sentDate, dateFormatter);
+          break;
+        default:
+          aValue = '';
+          bValue = '';
+      }
+      int result;
+      if (aValue is String && bValue is String) {
+        result = aValue.compareTo(bValue);
+      } else if (aValue is DateTime && bValue is DateTime) {
+        result = aValue.compareTo(bValue);
+      } else {
+        result = 0;
+      }
+
+      return sortOrderCallActivity.value == 'asc' ? result : -result;
+    });
+    mailFilteredList.assignAll(filteredList);
+  }
+
+  DateTime _parseMailDate(String? dateStr, DateFormat formatter) {
+    if (dateStr == null || dateStr.trim().isEmpty) return DateTime(1900);
+    try {
+      final clean = dateStr.trim().replaceAll(RegExp(r'\s+'), ' ').toUpperCase();
+      return formatter.parseStrict(clean);
+    } catch (e) {
+      print("Date parse failed for: $dateStr -> $e");
+      return DateTime(1900);
+    }
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+
 
   bool isCheckedReminder(String id) {
     return selectedReminderIds.contains(id);

@@ -323,7 +323,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                  5.width,
                                   GestureDetector(
                                     onTap: (){
-                                      employeeProvider.sortStaffByName();
+                                      employeeProvider.setFieldAndToggle('name');
                                     },
                                     child: Image.asset(
                                       employeeProvider.sortField.isEmpty
@@ -340,79 +340,182 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: CustomText(//2
-                                textAlign: TextAlign.left,
-                                text: "Role",
-                                size: 15,
-                                isBold: true,
-                                colors: Colors.white,
+                              child: Row(
+                                children: [
+                                  CustomText(//2
+                                    textAlign: TextAlign.left,
+                                    text: "Role",
+                                    size: 15,
+                                    isBold: true,
+                                    colors: Colors.white,
+                                  ),
+                                  5.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      employeeProvider.setFieldAndToggle('role');
+                                    },
+                                    child: Image.asset(
+                                      employeeProvider.sortField.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : employeeProvider.sortOrder == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: CustomText(
-                                textAlign: TextAlign.left,
-                                text: "Mobile No",
-                                size: 15,
-                                isBold: true,
-                                colors: Colors.white,
+                              child: Row(
+                                children: [
+                                  CustomText(
+                                    textAlign: TextAlign.left,
+                                    text: "Mobile No",
+                                    size: 15,
+                                    isBold: true,
+                                    colors: Colors.white,
+                                  ),
+                                  5.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      employeeProvider.setFieldAndToggle('mobile');
+                                    },
+                                    child: Image.asset(
+                                      employeeProvider.sortField.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : employeeProvider.sortOrder == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: CustomText(
-                                textAlign: TextAlign.left,
-                                text: "Email",
-                                size: 15,
-                                isBold: true,
-                                colors: Colors.white,
+                              child: Row(
+                                children: [
+                                  CustomText(
+                                    textAlign: TextAlign.left,
+                                    text: "Email",
+                                    size: 15,
+                                    isBold: true,
+                                    colors: Colors.white,
+                                  ),
+                                  5.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      employeeProvider.setFieldAndToggle('email');
+                                    },
+                                    child: Image.asset(
+                                      employeeProvider.sortField.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : employeeProvider.sortOrder == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: CustomText(
-                                textAlign: TextAlign.left,
-                                text: "Address",
-                                size: 15,
-                                isBold: true,
-                                colors: Colors.white,
+                              child: Row(
+                                children: [
+                                  CustomText(
+                                    textAlign: TextAlign.left,
+                                    text: "Address",
+                                    size: 15,
+                                    isBold: true,
+                                    colors: Colors.white,
+                                  ),
+                                  5.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      employeeProvider.setFieldAndToggle('address');
+                                    },
+                                    child: Image.asset(
+                                      employeeProvider.sortField.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : employeeProvider.sortOrder == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: CustomText(
-                                textAlign: TextAlign.left,
-                                text: "Salery",
-                                size: 15,
-                                isBold: true,
-                                colors: Colors.white,
+                              child: Row(
+                                children: [
+                                  CustomText(
+                                    textAlign: TextAlign.left,
+                                    text: "Salary",
+                                    size: 15,
+                                    isBold: true,
+                                    colors: Colors.white,
+                                  ),
+                                  5.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      employeeProvider.setFieldAndToggle('salary');
+                                    },
+                                    child: Image.asset(
+                                      employeeProvider.sortField.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : employeeProvider.sortOrder == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: CustomText(
-                                textAlign: TextAlign.left,
-                                text: "Bonus",
-                                size: 15,
-                                isBold: true,
-                                colors: Colors.white,
+                              child: Row(
+                                children: [
+                                  CustomText(
+                                    textAlign: TextAlign.left,
+                                    text: "Bonus",
+                                    size: 15,
+                                    isBold: true,
+                                    colors: Colors.white,
+                                  ),
+                                  5.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      employeeProvider.setFieldAndToggle('bonus');
+                                    },
+                                    child: Image.asset(
+                                      employeeProvider.sortField.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : employeeProvider.sortOrder == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            // Padding(
-                            //   padding: const EdgeInsets.all(10.0),
-                            //   child: CustomText(//9
-                            //     textAlign: TextAlign.center,
-                            //     text: "Actions",
-                            //     size: 15,
-                            //     isBold: true,
-                            //     colors: Colors.white,
-                            //   ),
-                            // ),
                           ]),
                     ],
                   ),
                   Expanded(
-                    //width: isWebView ? screenWidth * 0.80 : screenWidth,
                     child: SingleChildScrollView(
                       child: LayoutBuilder(builder: (context, constraints){
                         return employeeProvider.filteredStaff.isNotEmpty ? ListView.builder(

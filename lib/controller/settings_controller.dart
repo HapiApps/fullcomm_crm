@@ -50,50 +50,108 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
     final minute = time.minute.toString().padLeft(2, '0');
     return "$hour:$minute $period";
   }
-
-  void sortRoleByName() {
-    sortRoleField.value = 'name';
+  void sortRole() {
     sortRoleOrder.value = sortRoleOrder.value == 'asc' ? 'desc' : 'asc';
-
+    int compareStrings(String? a, String? b) {
+      final sa = (a ?? '').toLowerCase();
+      final sb = (b ?? '').toLowerCase();
+      return sa.compareTo(sb);
+    }
+    int comparePermissions(dynamic pa, dynamic pb) {
+      String normalize(dynamic p) {
+        if (p == null) return '';
+        if (p is List) return p.join(',').toLowerCase();
+        return p.toString().toLowerCase();
+      }
+      return normalize(pa).compareTo(normalize(pb));
+    }
+    final orderFactor = sortRoleOrder.value == 'asc' ? 1 : -1;
     roleList.sort((a, b) {
-      final nameA = a.roleName.toLowerCase();
-      final nameB = b.roleName.toLowerCase();
-      final comparison = nameA.compareTo(nameB);
-      return sortRoleOrder.value == 'asc' ? comparison : -comparison;
+      int cmp = 0;
+      switch (sortRoleField.value) {
+        case 'description':
+          cmp = compareStrings(a.description, b.description);
+          if (cmp == 0) cmp = compareStrings(a.roleName, b.roleName);
+          break;
+        case 'permissions':
+          cmp = comparePermissions(a.permission, b.permission);
+          if (cmp == 0) cmp = compareStrings(a.roleName, b.roleName);
+          break;
+        case 'name':
+        default:
+          cmp = compareStrings(a.roleName, b.roleName);
+      }
+      return orderFactor * cmp;
     });
-
     roleList.refresh();
   }
   var sortOfficeHourField = 'name'.obs;
   var sortOfficeHourOrder = 'asc'.obs;
   void sortOfficeHour() {
+    int compareStrings(String? a, String? b) {
+      final sa = (a ?? '').toLowerCase();
+      final sb = (b ?? '').toLowerCase();
+      return sa.compareTo(sb);
+    }
+    int compareDates(String? a, String? b) {
+      final da = (a == null || a.isEmpty) ? null : DateTime.tryParse(a);
+      final db = (b == null || b.isEmpty) ? null : DateTime.tryParse(b);
+
+      if (da == null && db == null) return 0;
+      if (da == null) return -1;
+      if (db == null) return 1;
+      return da.compareTo(db);
+    }
+    final orderFactor = sortOfficeHourOrder.value == 'asc' ? 1 : -1;
     officeHoursList.sort((a, b) {
       int comparison = 0;
-      if (sortOfficeHourField.value == 'name') {
-        final nameA = a.employeeName.toLowerCase();
-        final nameB = b.employeeName.toLowerCase();
-        comparison = nameA.compareTo(nameB);
-        if (comparison == 0) {
-          final shiftA = a.shiftName.toLowerCase();
-          final shiftB = b.shiftName.toLowerCase();
-          comparison = shiftA.compareTo(shiftB);
-        }
-      } else if (sortOfficeHourField.value == 'shift') {
-        final shiftA = a.shiftName.toLowerCase();
-        final shiftB = b.shiftName.toLowerCase();
-        comparison = shiftA.compareTo(shiftB);
-        if (comparison == 0) {
-          final nameA = a.employeeName.toLowerCase();
-          final nameB = b.employeeName.toLowerCase();
-          comparison = nameA.compareTo(nameB);
-        }
+      switch (sortOfficeHourField.value) {
+        case 'name':
+          comparison = compareStrings(a.employeeName, b.employeeName);
+          if (comparison == 0) {
+            comparison = compareStrings(a.shiftName, b.shiftName);
+          }
+          break;
+        case 'shift':
+          comparison = compareStrings(a.shiftName, b.shiftName);
+          if (comparison == 0) {
+            comparison = compareStrings(a.employeeName, b.employeeName);
+          }
+          break;
+        case 'from':
+          comparison = compareStrings(a.fromTime, b.fromTime);
+          if (comparison == 0) {
+            comparison = compareStrings(a.employeeName, b.employeeName);
+          }
+          break;
+        case 'to':
+          comparison = compareStrings(a.toTime, b.toTime);
+          if (comparison == 0) {
+            comparison = compareStrings(a.employeeName, b.employeeName);
+          }
+          break;
+        case 'days':
+          comparison = compareStrings(a.days, b.days);
+          if (comparison == 0) {
+            comparison = compareStrings(a.employeeName, b.employeeName);
+          }
+          break;
+        case 'date':
+          comparison = compareDates(a.updatedTs, b.updatedTs);
+          if (comparison == 0) {
+            comparison = compareStrings(a.employeeName, b.employeeName);
+          }
+          break;
+        default:
+          comparison = compareStrings(a.employeeName, b.employeeName);
+          if (comparison == 0) comparison = compareStrings(a.shiftName, b.shiftName);
       }
 
-      return sortOfficeHourOrder.value == 'asc' ? comparison : -comparison;
+      return orderFactor * comparison;
     });
-
     officeHoursList.refresh();
   }
+
 
   List<String> permissionList = [
     "See All Customer Records",

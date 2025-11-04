@@ -46,23 +46,87 @@ class EmployeeProvider with ChangeNotifier {
   String _sortOrder = 'asc';
   String get sortField => _sortField;
   String get sortOrder => _sortOrder;
-  void sortStaffByName() {
-    _sortField = 'name';
-    if (_sortOrder == 'asc') {
-      _sortOrder = 'desc';
+  void setFieldAndToggle(String field) {
+    if (_sortField == field) {
+      _sortOrder = _sortOrder == 'asc' ? 'desc' : 'asc';
     } else {
+      _sortField = field;
       _sortOrder = 'asc';
     }
+    sortStaff();
+  }
+
+  void sortStaff() {
+    int compareStrings(String? a, String? b) {
+      final sa = (a ?? '').toLowerCase();
+      final sb = (b ?? '').toLowerCase();
+      return sa.compareTo(sb);
+    }
+
+    int compareNumbers(num? a, num? b) {
+      final na = a ?? 0;
+      final nb = b ?? 0;
+      if (na == nb) return 0;
+      return na < nb ? -1 : 1;
+    }
+    final orderFactor = _sortOrder == 'asc' ? 1 : -1;
     filteredStaff.sort((a, b) {
-      final nameA = a.sName?.toLowerCase() ?? '';
-      final nameB = b.sName?.toLowerCase() ?? '';
-
-      final comparison = nameA.compareTo(nameB);
-      return _sortOrder == 'asc'
-          ? comparison
-          : -comparison;
+      int cmp = 0;
+      switch (_sortField) {
+        case 'role':
+          cmp = compareStrings(a.role, b.role);
+          if (cmp == 0) cmp = compareStrings(a.sName, b.sName); // tie-breaker: name
+          break;
+        case 'mobile':
+          cmp = compareStrings(a.sMobile, b.sMobile);
+          if (cmp == 0) cmp = compareStrings(a.sName, b.sName);
+          break;
+        case 'email':
+          cmp = compareStrings(a.email, b.email);
+          if (cmp == 0) cmp = compareStrings(a.sName, b.sName);
+          break;
+        case 'address':
+          cmp = compareStrings(a.sAddress, b.sAddress);
+          if (cmp == 0) cmp = compareStrings(a.sName, b.sName);
+          break;
+        case 'salary':
+          num? sa;
+          num? sb;
+          if (a.salary is num) {
+            sa = a.salary as num?;
+          } else if (a.salary is String) {
+            sa = num.tryParse((a.salary as String).replaceAll(',', ''));
+          }
+          if (b.salary is num) {
+            sb = b.salary as num?;
+          } else if (b.salary is String) {
+            sb = num.tryParse((b.salary as String).replaceAll(',', ''));
+          }
+          cmp = compareNumbers(sa, sb);
+          if (cmp == 0) cmp = compareStrings(a.sName, b.sName);
+          break;
+        case 'bonus':
+          num? ba;
+          num? bb;
+          if (a.bonus is num) {
+            ba = a.bonus as num?;
+          } else if (a.bonus is String) {
+            ba = num.tryParse((a.bonus as String).replaceAll(',', ''));
+          }
+          if (b.bonus is num) {
+            bb = b.bonus as num?;
+          } else if (b.bonus is String) {
+            bb = num.tryParse((b.bonus as String).replaceAll(',', ''));
+          }
+          cmp = compareNumbers(ba, bb);
+          if (cmp == 0) cmp = compareStrings(a.sName, b.sName);
+          break;
+        case 'name':
+        default:
+          cmp = compareStrings(a.sName, b.sName);
+      }
+      return orderFactor * cmp;
     });
-
     notifyListeners();
   }
   List<Staff> _staffRoleData = [];
