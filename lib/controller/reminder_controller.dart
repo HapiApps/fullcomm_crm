@@ -59,6 +59,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   RxList<CustomerActivity> callFilteredList  = <CustomerActivity>[].obs;
   RxList<CustomerActivity> mailFilteredList  = <CustomerActivity>[].obs;
   RxList<MeetingObj> meetingFilteredList     = <MeetingObj>[].obs;
+  RxList<ReminderModel> reminderFilteredList     = <ReminderModel>[].obs;
   void selectMonth(BuildContext context, RxString sortByKey, Rxn<DateTime> selectedMonthTarget,VoidCallback onMonthSelected,) {
     showMonthPicker(
       context: context,
@@ -407,14 +408,68 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   var sortBy = ''.obs;
   var ascending = true.obs;
   void sortReminders() {
-    if (sortFieldCallActivity.value.isEmpty) return;
-
-    final sorted = [...reminderList];
+    var filteredList = [...reminderList];
     final dateFormatter = DateFormat("dd-MM-yyyy h:mm a");
+    final now = DateTime.now();
+    if (selectedReminderSortBy.value.isNotEmpty) {
+      switch (selectedReminderSortBy.value) {
+        case 'Today':
+          filteredList = filteredList.where((r) {
+            final date = _parseReminderDate(r.startDt, dateFormatter);
+            return _isSameDay(date, now);
+          }).toList();
+          break;
 
-    sorted.sort((a, b) {
+        case 'Yesterday':
+          final yesterday = now.subtract(const Duration(days: 1));
+          filteredList = filteredList.where((r) {
+            final date = _parseReminderDate(r.startDt, dateFormatter);
+            return _isSameDay(date, yesterday);
+          }).toList();
+          break;
+
+        case 'Last 7 Days':
+          final last7 = now.subtract(const Duration(days: 7));
+          filteredList = filteredList.where((r) {
+            final date = _parseReminderDate(r.startDt, dateFormatter);
+            return date.isAfter(last7);
+          }).toList();
+          break;
+
+        case 'Last 30 Days':
+          final last30 = now.subtract(const Duration(days: 30));
+          filteredList = filteredList.where((r) {
+            final date = _parseReminderDate(r.startDt, dateFormatter);
+            return date.isAfter(last30);
+          }).toList();
+          break;
+
+        case 'Custom Month':
+          if (selectedReminderMonth.value != null) {
+            final selected = selectedReminderMonth.value!;
+            filteredList = filteredList.where((r) {
+              final date = _parseReminderDate(r.startDt, dateFormatter);
+              return date.year == selected.year && date.month == selected.month;
+            }).toList();
+          }
+          break;
+
+        case 'Custom Range':
+          if (selectedReminderRange.value != null) {
+            final range = selectedReminderRange.value!;
+            filteredList = filteredList.where((r) {
+              final date = _parseReminderDate(r.startDt, dateFormatter);
+              return date.isAfter(range.start.subtract(const Duration(days: 1))) &&
+                  date.isBefore(range.end.add(const Duration(days: 1)));
+            }).toList();
+          }
+          break;
+      }
+    }
+    filteredList.sort((a, b) {
       dynamic aValue;
       dynamic bValue;
+
       switch (sortFieldCallActivity.value) {
         case 'customerName':
           aValue = a.customerName.toLowerCase();
@@ -441,22 +496,12 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           bValue = b.title.toLowerCase();
           break;
         case 'startDate':
-          try {
-            aValue = dateFormatter.parse(a.startDt);
-            bValue = dateFormatter.parse(b.endDt);
-          } catch (e) {
-            aValue = DateTime(1900);
-            bValue = DateTime(1900);
-          }
+          aValue = _parseReminderDate(a.startDt, dateFormatter);
+          bValue = _parseReminderDate(b.startDt, dateFormatter);
           break;
         case 'endDate':
-          try {
-            aValue = dateFormatter.parse(a.endDt);
-            bValue = dateFormatter.parse(b.endDt);
-          } catch (e) {
-            aValue = DateTime(1900);
-            bValue = DateTime(1900);
-          }
+          aValue = _parseReminderDate(a.endDt, dateFormatter);
+          bValue = _parseReminderDate(b.endDt, dateFormatter);
           break;
         default:
           aValue = '';
@@ -474,7 +519,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
       return sortOrderCallActivity.value == 'asc' ? result : -result;
     });
-    reminderList.assignAll(sorted);
+    reminderFilteredList.assignAll(filteredList);
+  }
+  DateTime _parseReminderDate(String dateStr, DateFormat formatter) {
+    try {
+      return formatter.parse(dateStr);
+    } catch (e) {
+      return DateTime(1900);
+    }
   }
 
   void sortMails() {
@@ -675,6 +727,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
           followUpReminderCount.value = followUpCount;
           meetingReminderCount.value = meetingCount;
+          remController.sortReminders();
         } else {
           reminderList.value = [];
           followUpReminderCount.value = 0;

@@ -253,16 +253,7 @@ class _ReminderPageState extends State<ReminderPage> {
                      selectedMonth: remController.selectedReminderMonth,
                      focusNode: FocusNode(),
                      onDaysSelected: () {
-                       remController.filterAndSortCalls(
-                         allCalls: controllers.callActivity,
-                         searchText: controllers.searchText.value.toLowerCase(),
-                         callType: controllers.selectCallType.value,
-                         sortField: controllers.sortFieldCallActivity.value,
-                         sortOrder: controllers.sortOrderCallActivity.value,
-                         selectedMonth: remController.selectedCallMonth.value,
-                         selectedRange: remController.selectedCallRange.value,
-                         selectedDateFilter: remController.selectedCallSortBy.value,
-                       );
+                       remController.sortReminders();
                      },
                      onSelectMonth: () {
                        remController.selectMonth(
@@ -270,32 +261,14 @@ class _ReminderPageState extends State<ReminderPage> {
                          remController.selectedReminderSortBy,
                          remController.selectedReminderMonth,
                              () {
-                           remController.filterAndSortCalls(
-                             allCalls: controllers.callActivity,
-                             searchText: controllers.searchText.value.toLowerCase(),
-                             callType: controllers.selectCallType.value,
-                             sortField: controllers.sortFieldCallActivity.value,
-                             sortOrder: controllers.sortOrderCallActivity.value,
-                             selectedMonth: remController.selectedCallMonth.value,
-                             selectedRange: remController.selectedCallRange.value,
-                             selectedDateFilter: remController.selectedCallSortBy.value,
-                           );
+                               remController.sortReminders();
                          },
                        );
                      },
                      onSelectDateRange: (ctx) {
                        remController.showDatePickerDialog(ctx, (pickedRange) {
                          remController.selectedCallRange.value = pickedRange;
-                         remController.filterAndSortCalls(
-                           allCalls: controllers.callActivity,
-                           searchText: controllers.searchText.value.toLowerCase(),
-                           callType: controllers.selectCallType.value,
-                           sortField: controllers.sortFieldCallActivity.value,
-                           sortOrder: controllers.sortOrderCallActivity.value,
-                           selectedMonth: remController.selectedCallMonth.value,
-                           selectedRange: remController.selectedCallRange.value,
-                           selectedDateFilter: remController.selectedCallSortBy.value,
-                         );
+                         remController.sortReminders();
                        });
                      },
                    )
@@ -675,7 +648,7 @@ class _ReminderPageState extends State<ReminderPage> {
                Expanded(
                  child: Obx(() {
                    final searchText = remController.searchText.value.toLowerCase();
-                   final filteredList = remController.reminderList.where((activity) {
+                   final filteredList = remController.reminderFilteredList.where((activity) {
                      final matchesSearch = searchText.isEmpty ||
                          (activity.customerName.toString().toLowerCase().contains(searchText)) ||
                          (activity.employeeName.toString().toLowerCase().contains(searchText)) ||
