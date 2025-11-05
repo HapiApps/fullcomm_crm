@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../main.dart';
 
-final Utils utils = Utils._();
+final MobileUtils mobileUtils = MobileUtils._();
 
-class Utils {
-  Utils._();
+class MobileUtils {
+  MobileUtils._();
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar({required BuildContext context,
     required String msg,

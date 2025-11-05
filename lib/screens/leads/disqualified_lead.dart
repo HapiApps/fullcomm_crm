@@ -10,9 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../../common/constant/api.dart';
+import '../../common/constant/default_constant.dart';
+import '../../common/utilities/mail_utils.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
 import '../../components/custom_lead_tile.dart';
+import '../../components/custom_sidebar.dart';
 import '../../components/custom_table_header.dart';
 import '../../components/custom_text.dart';
 import '../../components/left_table_header.dart';
@@ -75,7 +78,13 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
           body: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              utils.sideBarFunction(context),
+              SideBar(
+                controllers: controllers,
+                colorsConst: colorsConst,
+                logo: logo,
+                constValue: constValue,
+                versionNum: versionNum,
+              ),
               Obx(() => InkWell(
                 focusColor: Colors.transparent,
                 hoverColor: Colors.transparent,
@@ -168,7 +177,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                               });
                         },
                         onMail: () {
-                          utils.bulkEmailDialog(_focusNode, list: apiService.prospectsList);
+                          mailUtils.bulkEmailDialog(_focusNode, list: apiService.prospectsList);
                         },
                         onPromote: () {
                           showDialog(
@@ -310,6 +319,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                       ),
                       10.height,
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
                             width: 400,
@@ -351,7 +361,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                     controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
                                   },
                                 ),
-                                Obx(() => controllers.paginatedLeads.isNotEmpty?
+                                Obx(() => controllers.paginatedDisqualified.isNotEmpty?
                                 ListView.builder(
                                   controller: _verticalController,
                                   shrinkWrap: true,

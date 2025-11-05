@@ -74,60 +74,64 @@ class FilterSection extends StatelessWidget {
             ),
 
             // --- Action Buttons ---
-            itemList.isEmpty
-                ? 0.height
-                : title=="Disqualified"?ActionButton(
-              width: 100,
-              image: "assets/images/action_promote.png",
-              name: "Qualified",
-              toolTip:
-              "Click here to Qualified the customer details",
-              callback: onQualify!,
-              ):Row(
+            Row(
               children: [
-                ActionButton(
+                itemList.isEmpty
+                    ? 0.height
+                    : title=="Disqualified"||title=="Target Leads"?ActionButton(
                   width: 100,
-                  image: "assets/images/action_delete.png",
-                  name: "Delete",
+                  image: "assets/images/action_promote.png",
+                  name: "Qualified",
                   toolTip:
-                  "Click here to delete the customer details",
-                  callback: onDelete,
+                  "Click here to Qualified the customer details",
+                  callback: onQualify!,
+                  ):Row(
+                  children: [
+                    ActionButton(
+                      width: 100,
+                      image: "assets/images/action_delete.png",
+                      name: "Delete",
+                      toolTip:
+                      "Click here to delete the customer details",
+                      callback: onDelete,
+                    ),
+                    10.width,
+                    title=="Customers"?0.height:ActionButton(
+                      width: 100,
+                      image: "assets/images/action_promote.png",
+                      name: "Promote",
+                      toolTip:
+                      "Click here to promote the customer details",
+                      callback: onPromote,
+                    ),
+                    10.width,
+                    title=="Suspects"?ActionButton(
+                        width: 100,
+                        image: "assets/images/action_disqualified.png",
+                        name: "Disqualify",
+                        toolTip: "Click here to disqualify the customer details",
+                        callback: onDisqualify!,
+                        ):ActionButton(
+                      width: 100,
+                      image: "assets/images/action_disqualified.png",
+                      name: "Demote",
+                      toolTip: "Click here to disqualify the customer details",
+                      callback: onDemote!,
+                    ),
+                    10.width,
+                  ],
                 ),
-                10.width,
                 ActionButton(
                   width: 100,
                   image: "assets/images/action_mail.png",
                   name: "Mail",
-                  toolTip:
-                  "Click here to mail send the customer details",
+                  toolTip: "Click here to mail send the customer details",
                   callback: onMail,
-                ),
-                10.width,
-                title=="Customers"?0.height:ActionButton(
-                  width: 100,
-                  image: "assets/images/action_promote.png",
-                  name: "Promote",
-                  toolTip:
-                  "Click here to promote the customer details",
-                  callback: onPromote,
-                ),
-                10.width,
-                title=="Suspects"?ActionButton(
-                    width: 100,
-                    image: "assets/images/action_disqualified.png",
-                    name: "Disqualify",
-                    toolTip: "Click here to disqualify the customer details",
-                    callback: onDisqualify!,
-                    ):ActionButton(
-                  width: 100,
-                  image: "assets/images/action_disqualified.png",
-                  name: "Demote",
-                  toolTip: "Click here to disqualify the customer details",
-                  callback: onDemote!,
                 ),
                 5.width,
               ],
             ),
+
           ],
         ),
         10.height,

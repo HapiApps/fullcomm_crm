@@ -11,9 +11,12 @@ import 'package:provider/provider.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import 'package:web/web.dart';
 
+import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/constant/default_constant.dart';
 import '../../common/constant/key_constant.dart';
 import '../../common/styles/decoration.dart';
+import '../../components/custom_sidebar.dart';
 import '../../provider/employee_provider.dart';
 
 class AddEmployeePage extends StatefulWidget {
@@ -47,7 +50,13 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       return Scaffold(
         body: Row(
           children: [
-            utils.sideBarFunction(context),
+            SideBar(
+              controllers: controllers,
+              colorsConst: colorsConst,
+              logo: logo,
+              constValue: constValue,
+              versionNum: versionNum,
+            ),
             Container(
               width: MediaQuery.of(context).size.width - 150,
               height: MediaQuery.of(context).size.height,

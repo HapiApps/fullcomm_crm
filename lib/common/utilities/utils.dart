@@ -10,7 +10,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fullcomm_crm/screens/new_dashboard.dart';
+import 'package:fullcomm_crm/screens/dashboard.dart';
+import 'package:fullcomm_crm/screens/leads/target_leads.dart';
 import 'package:fullcomm_crm/screens/settings/general_settings.dart';
 import 'package:fullcomm_crm/screens/settings/reminder_settings.dart';
 import 'package:fullcomm_crm/screens/settings/user_plan.dart';
@@ -38,6 +39,7 @@ import '../../screens/leads/disqualified_lead.dart';
 import '../../screens/records/records.dart';
 import '../../screens/reminder_page.dart';
 import '../../services/api_services.dart';
+import '../constant/api.dart';
 import '../constant/assets_constant.dart';
 import '../constant/colors_constant.dart';
 import '../constant/default_constant.dart';
@@ -48,469 +50,469 @@ final Utils utils = Utils._();
 
 class Utils {
   Utils._();
-  void bulkEmailDialog(FocusNode focusNode, {required List<Map<String, String>> list}) {
-    int total = list.length;
-    int withMail = list.where((e) => (e["mail_id"] != null && e["mail_id"]!.trim().isNotEmpty && e["mail_id"]!.trim() != "null")).length;
-    int withoutMail = total - withMail;
-    var selectedRange = "".obs;
-    void selectRange(String range, List<NewLeadObj> allLeads) {
-      selectedRange.value = range;
-      final parts = range.split("-");
-      final start = int.parse(parts[0].trim()) - 1; // index start
-      final end = int.parse(parts[1].trim());       // index end
-      final subList = allLeads.sublist(start, end);
-      total = subList.length;
-      withMail = subList.where((e) =>
-      e.email != null &&
-          e.email!.trim().isNotEmpty &&
-          e.email!.trim() != "null").length;
-      withoutMail = total - withMail;
-      apiService.prospectsList.addAll(
-        subList.where((data) =>
-        data.email != null &&
-            data.email!.trim().isNotEmpty &&
-            data.email!.trim() != "null") // mail check
-            .map((data) => {
-          "lead_id": data.userId.toString(),
-          "user_id": controllers.storage.read("id"),
-          "rating": data.rating ?? "Warm",
-          "cos_id": controllers.storage.read("cos_id"),
-          "mail_id": data.email!.split("||")[0]
-        }),
-      );
-    }
-    showDialog(
-        context: Get.context!,
-        barrierDismissible: false,
-        builder: (context) {
-          return StatefulBuilder(
-              builder: (context,setState){
-                return AlertDialog(
-                  actions: [
-                    Column(
-                      children: [
-                        Divider(
-                          color: Colors.grey.shade300,
-                          thickness: 1,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: SvgPicture.asset(assets.b,
-                                          color: colorsConst.primary,
-                                          width: 17, height: 17)),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: SvgPicture.asset(
-                                        assets.i,
-                                        width: 15,
-                                        height: 15,
-                                        color: colorsConst.primary,
-                                      )),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: SvgPicture.asset(
-                                        assets.u,
-                                        width: 19,
-                                        height: 19,
-                                        color: colorsConst.primary,
-                                      )),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: SvgPicture.asset(
-                                        assets.fileFilter,
-                                        width: 17,
-                                        height: 17,
-                                        color: colorsConst.primary,
-                                      )),
-                                  // IconButton(
-                                  //     onPressed: (){},
-                                  //     icon:SvgPicture.asset(assets.textFilter,width: 17,height: 17,)
-                                  // ),
-                                  IconButton(
-                                      onPressed: () {
-                                        utils.chooseFile(mediaDataV:imageController.empMediaData,
-                                            fileName:imageController.empFileName,
-                                            pathName:imageController.photo1);
-                                      },
-                                      icon: SvgPicture.asset(assets.file,color: colorsConst.primary,)),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: SvgPicture.asset(
-                                        assets.layer,
-                                        width: 17,
-                                        height: 17,
-                                        color: colorsConst.primary,
-                                      )),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: SvgPicture.asset(assets.a,color: colorsConst.primary,)),
-                                ],
-                              ),
-                            ),
-                            Obx(() => CustomLoadingButton(
-                              callback: () {
-                                if(apiService.prospectsList.isEmpty){
-                                  apiService.errorDialog(
-                                      context, "Please Select range to send email.");
-                                  controllers.emailCtr.reset();
-                                  return;
-                                }
-                                List<Map<String, String>> withMail = apiService.prospectsList.where((e) {
-                                  final mail = e["mail_id"];
-                                  return mail != null && mail.trim().isNotEmpty && mail.trim() != "null";
-                                }).toList();
-                                // if(withMail.length>100){
-                                //   Navigator.of(context).pop();
-                                //   apiService.errorDialog(
-                                //       context, "Select only 100 customers at a time for email.");
-                                //   return;
-                                // }
-                                apiService.bulkEmailAPI(context, withMail, imageController.photo1.value);
-                                focusNode.requestFocus();
-                              },
-                              controller: controllers.emailCtr,
-                              isImage: false,
-                              isLoading: true,
-                              backgroundColor: colorsConst.primary,
-                              radius: 5,
-                              width: controllers.emailCount.value == 0 ||
-                                  controllers.emailCount.value == 1
-                                  ? 90
-                                  : 200,
-                              height: 50,
-                              text: controllers.emailCount.value == 0
-                                  ? "Quotation"
-                                  : controllers.emailCount.value == 1
-                                  ? "Reply"
-                                  : "Reply & Quotation",
-                              textColor: Colors.white,
-                            ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ],
-                  content: SizedBox(
-                      width: 650,
-                      height: 400,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Align(
-                                alignment: Alignment.topRight,
-                                child: InkWell(
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Icon(
-                                      Icons.clear,
-                                      size: 18,
-                                      color: colorsConst.textColor,
-                                    ))),
-                            // Align(
-                            //   alignment: Alignment.topRight,
-                            //   child: TextButton(
-                            //       onPressed: () {
-                            //         controllers.isTemplate.value =
-                            //         !controllers.isTemplate.value;
-                            //       },
-                            //       child: CustomText(
-                            //         text: "Get Form Template",
-                            //         colors: colorsConst.third,
-                            //         size: 18,
-                            //         isBold: true,
-                            //       )),
-                            // ),
-                            // Row(
-                            //   children: [
-                            //     CustomText(
-                            //       textAlign: TextAlign.center,
-                            //       text: "To",
-                            //       colors: colorsConst.textColor,
-                            //       size: 15,
-                            //     ),
-                            //     50.width,
-                            //     SizedBox(
-                            //       width: 500,
-                            //       child: TextField(
-                            //         controller: controllers.emailToCtr,
-                            //         style: TextStyle(
-                            //             fontSize: 15, color: colorsConst.textColor),
-                            //         decoration: const InputDecoration(
-                            //           border: InputBorder.none,
-                            //         ),
-                            //       ),
-                            //     )
-                            //   ],
-                            // ),
-
-                            SizedBox(
-                                width: 650,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 40,
-                                        width: 650,
-                                        child: Obx(() {
-                                          final ranges = controllers.leadRanges;
-                                          if (ranges.isEmpty) {
-                                            return const Center(child: Text("No leads found"));
-                                          }
-                                          return ListView.builder(
-                                            itemCount: ranges.length,
-                                            scrollDirection: Axis.horizontal,
-                                            itemBuilder: (context, index) {
-                                              final range = ranges[index];
-                                              final isSelected = selectedRange.value == range;
-                                              return InkWell(
-                                                onTap: () {
-                                                  setState((){
-                                                    selectRange(range, controllers.allNewLeadFuture);
-                                                  }
-                                                  );
-                                                  final leads = controllers.getLeadsByRange(index);
-                                                  // here open another dialog to show leads
-                                                  // showDialog(
-                                                  //   context: context,
-                                                  //   builder: (context) {
-                                                  //     return AlertDialog(
-                                                  //       title: Text("Leads in $range"),
-                                                  //       content: SizedBox(
-                                                  //         height: 300,
-                                                  //         width: 400,
-                                                  //         child: ListView.builder(
-                                                  //           itemCount: leads.length,
-                                                  //           itemBuilder: (context, i) {
-                                                  //             final lead = leads[i];
-                                                  //             return ListTile(
-                                                  //               title: Text(lead.firstname ?? ""),
-                                                  //               subtitle: Text(lead.mobileNumber ?? ""),
-                                                  //             );
-                                                  //           },
-                                                  //         ),
-                                                  //       ),
-                                                  //     );
-                                                  //   },
-                                                  // );
-                                                },
-                                                child: Container(
-                                                  height: 44,
-                                                  margin: const EdgeInsets.all(5),
-                                                  padding: const EdgeInsets.all(5),
-                                                  decoration: BoxDecoration(
-                                                    color: isSelected ? Colors.blue : Colors.transparent,
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    border: Border.all(color: Colors.blue),
-                                                  ),
-                                                  child: Center(child: CustomText(text: range,colors: isSelected ?Colors.white:colorsConst.textColor,)),
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        }),
-                                      ),
-                                      10.height,
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          CustomText(
-                                            text: "Total Selected Customers: $total",
-                                            colors: colorsConst.textColor,
-                                            size: 16,
-                                            isBold: true,
-                                          ),
-                                          CustomText(
-                                            text: "Customers with Mail: $withMail",
-                                            colors: colorsConst.textColor,
-                                            size: 16,
-                                            isBold: true,
-                                          ),
-                                          CustomText(
-                                            text: "Customers without Mail: $withoutMail",
-                                            colors: colorsConst.textColor,
-                                            size: 16,
-                                            isBold: true,
-                                          ),
-                                        ],
-                                      ),
-                                      10.height,
-                                      Divider(
-                                        color: Colors.grey.shade300,
-                                        thickness: 1,
-                                      ),
-                                      Row(
-                                        children: [
-                                          15.height,
-                                          CustomText(
-                                            text: "Subject",
-                                            colors: colorsConst.textColor,
-                                            size: 14,
-                                          ),
-                                          10.width,
-                                          SizedBox(
-                                            width: 500,
-                                            height: 50,
-                                            child: TextField(
-                                              controller: controllers.emailSubjectCtr,
-                                              maxLines: null,
-                                              minLines: 1,
-                                              style: TextStyle(
-                                                color: colorsConst.textColor,
-                                              ),
-                                              decoration: const InputDecoration(
-                                                border: InputBorder.none,
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      Divider(
-                                        color: Colors.grey.shade300,
-                                        thickness: 1,
-                                      ),
-                                      SingleChildScrollView(
-                                        child: Column(
-                                          children: [
-                                            Obx(()=>imageController.photo1.value.isEmpty?0.height:
-                                            Image.memory(base64Decode(imageController.photo1.value),
-                                              fit: BoxFit.cover,width: 80,height: 80,),),
-                                            SizedBox(
-                                              width: 650,
-                                              height: 223,
-                                              child: TextField(
-                                                textInputAction: TextInputAction.newline,
-                                                controller: controllers.emailMessageCtr,
-                                                keyboardType: TextInputType.multiline,
-                                                maxLines: 21,
-                                                expands: false,
-                                                style: TextStyle(
-                                                  color: colorsConst.textColor,
-                                                ),
-                                                decoration: InputDecoration(
-                                                  hintText: "Message",
-                                                  hintStyle: TextStyle(
-                                                      color: colorsConst.textColor,
-                                                      fontSize: 14,
-                                                      fontFamily: "Lato"),
-                                                  border: InputBorder.none,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                      //     : UnconstrainedBox(
-                                      //   child: Container(
-                                      //     width: 500,
-                                      //     alignment: Alignment.center,
-                                      //     decoration: BoxDecoration(
-                                      //       color: colorsConst.secondary,
-                                      //       borderRadius:
-                                      //       BorderRadius.circular(10),
-                                      //     ),
-                                      //     child: SingleChildScrollView(
-                                      //       child: Column(
-                                      //         children: [
-                                      //           SizedBox(
-                                      //             width: 500,
-                                      //             height: 210,
-                                      //             child: Table(
-                                      //               defaultColumnWidth:
-                                      //               const FixedColumnWidth(
-                                      //                   120.0),
-                                      //               border: TableBorder.all(
-                                      //                   color: Colors
-                                      //                       .grey.shade300,
-                                      //                   style:
-                                      //                   BorderStyle.solid,
-                                      //                   borderRadius:
-                                      //                   BorderRadius
-                                      //                       .circular(10),
-                                      //                   width: 1),
-                                      //               children: [
-                                      //                 TableRow(
-                                      //                     children: [
-                                      //                       CustomText(
-                                      //                         textAlign: TextAlign.center,
-                                      //                         text: "\nTemplate Name\n",
-                                      //                         colors: colorsConst.textColor,
-                                      //                         size: 15,
-                                      //                         isBold: true,
-                                      //                       ),
-                                      //                       CustomText(
-                                      //                         textAlign:
-                                      //                         TextAlign.center,
-                                      //                         text: "\nSubject\n",
-                                      //                         colors: colorsConst
-                                      //                             .textColor,
-                                      //                         size: 15,
-                                      //                         isBold: true,
-                                      //                       ),
-                                      //                     ]),
-                                      //                 utils.emailRow(
-                                      //                     context,
-                                      //                     isCheck: controllers.isAdd,
-                                      //                     templateName:
-                                      //                     "Promotional",
-                                      //                     msg:
-                                      //                     "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
-                                      //                     subject:
-                                      //                     "Exclusive Promotion for You - \nLimited Time Offer!"),
-                                      //                 utils.emailRow(
-                                      //                     context,
-                                      //                     isCheck: controllers.isAdd,
-                                      //                     templateName: "Follow-Up",
-                                      //                     msg: "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
-                                      //                     subject: "Follow-up on Recent Service Interaction"),
-                                      //                 utils.emailRow(context,
-                                      //                     msg:
-                                      //                     "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
-                                      //                     isCheck:
-                                      //                     controllers.isAdd,
-                                      //                     templateName:
-                                      //                     "Service Update",
-                                      //                     subject:
-                                      //                     "Service Update - [Brief Description]"),
-                                      //               ],
-                                      //             ),
-                                      //           ),
-                                      //           // 10.height,
-                                      //           // CustomLoadingButton(
-                                      //           //   callback: (){},
-                                      //           //   isImage: false,
-                                      //           //   isLoading: false,
-                                      //           //   backgroundColor: colorsConst.primary,
-                                      //           //   radius: 20,
-                                      //           //   width: 70,
-                                      //           //   height: 30,
-                                      //           //   text: "Done",
-                                      //           //   textColor: Colors.white,
-                                      //           //
-                                      //           // ),
-                                      //         ],
-                                      //       ),
-                                      //     ),
-                                      //   ),
-                                      // ),
-
-                                    ],
-                                  ),
-                                )),
-                          ],
-                        ),
-                      )),
-                );
-              });
-        });
-  }
+  // void bulkEmailDialog(FocusNode focusNode, {required List<Map<String, String>> list}) {
+  //   int total = list.length;
+  //   int withMail = list.where((e) => (e["mail_id"] != null && e["mail_id"]!.trim().isNotEmpty && e["mail_id"]!.trim() != "null")).length;
+  //   int withoutMail = total - withMail;
+  //   var selectedRange = "".obs;
+  //   void selectRange(String range, List<NewLeadObj> allLeads) {
+  //     selectedRange.value = range;
+  //     final parts = range.split("-");
+  //     final start = int.parse(parts[0].trim()) - 1; // index start
+  //     final end = int.parse(parts[1].trim());       // index end
+  //     final subList = allLeads.sublist(start, end);
+  //     total = subList.length;
+  //     withMail = subList.where((e) =>
+  //     e.email != null &&
+  //         e.email!.trim().isNotEmpty &&
+  //         e.email!.trim() != "null").length;
+  //     withoutMail = total - withMail;
+  //     apiService.prospectsList.addAll(
+  //       subList.where((data) =>
+  //       data.email != null &&
+  //           data.email!.trim().isNotEmpty &&
+  //           data.email!.trim() != "null") // mail check
+  //           .map((data) => {
+  //         "lead_id": data.userId.toString(),
+  //         "user_id": controllers.storage.read("id"),
+  //         "rating": data.rating ?? "Warm",
+  //         "cos_id": controllers.storage.read("cos_id"),
+  //         "mail_id": data.email!.split("||")[0]
+  //       }),
+  //     );
+  //   }
+  //   showDialog(
+  //       context: Get.context!,
+  //       barrierDismissible: false,
+  //       builder: (context) {
+  //         return StatefulBuilder(
+  //             builder: (context,setState){
+  //               return AlertDialog(
+  //                 actions: [
+  //                   Column(
+  //                     children: [
+  //                       Divider(
+  //                         color: Colors.grey.shade300,
+  //                         thickness: 1,
+  //                       ),
+  //                       Row(
+  //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         children: [
+  //                           SizedBox(
+  //                             child: Row(
+  //                               children: [
+  //                                 IconButton(
+  //                                     onPressed: () {},
+  //                                     icon: SvgPicture.asset(assets.b,
+  //                                         color: colorsConst.primary,
+  //                                         width: 17, height: 17)),
+  //                                 IconButton(
+  //                                     onPressed: () {},
+  //                                     icon: SvgPicture.asset(
+  //                                       assets.i,
+  //                                       width: 15,
+  //                                       height: 15,
+  //                                       color: colorsConst.primary,
+  //                                     )),
+  //                                 IconButton(
+  //                                     onPressed: () {},
+  //                                     icon: SvgPicture.asset(
+  //                                       assets.u,
+  //                                       width: 19,
+  //                                       height: 19,
+  //                                       color: colorsConst.primary,
+  //                                     )),
+  //                                 IconButton(
+  //                                     onPressed: () {},
+  //                                     icon: SvgPicture.asset(
+  //                                       assets.fileFilter,
+  //                                       width: 17,
+  //                                       height: 17,
+  //                                       color: colorsConst.primary,
+  //                                     )),
+  //                                 // IconButton(
+  //                                 //     onPressed: (){},
+  //                                 //     icon:SvgPicture.asset(assets.textFilter,width: 17,height: 17,)
+  //                                 // ),
+  //                                 IconButton(
+  //                                     onPressed: () {
+  //                                       utils.chooseFile(mediaDataV:imageController.empMediaData,
+  //                                           fileName:imageController.empFileName,
+  //                                           pathName:imageController.photo1);
+  //                                     },
+  //                                     icon: SvgPicture.asset(assets.file,color: colorsConst.primary,)),
+  //                                 IconButton(
+  //                                     onPressed: () {},
+  //                                     icon: SvgPicture.asset(
+  //                                       assets.layer,
+  //                                       width: 17,
+  //                                       height: 17,
+  //                                       color: colorsConst.primary,
+  //                                     )),
+  //                                 IconButton(
+  //                                     onPressed: () {},
+  //                                     icon: SvgPicture.asset(assets.a,color: colorsConst.primary,)),
+  //                               ],
+  //                             ),
+  //                           ),
+  //                           Obx(() => CustomLoadingButton(
+  //                             callback: () {
+  //                               if(apiService.prospectsList.isEmpty){
+  //                                 apiService.errorDialog(
+  //                                     context, "Please Select range to send email.");
+  //                                 controllers.emailCtr.reset();
+  //                                 return;
+  //                               }
+  //                               List<Map<String, String>> withMail = apiService.prospectsList.where((e) {
+  //                                 final mail = e["mail_id"];
+  //                                 return mail != null && mail.trim().isNotEmpty && mail.trim() != "null";
+  //                               }).toList();
+  //                               // if(withMail.length>100){
+  //                               //   Navigator.of(context).pop();
+  //                               //   apiService.errorDialog(
+  //                               //       context, "Select only 100 customers at a time for email.");
+  //                               //   return;
+  //                               // }
+  //                               apiService.bulkEmailAPI(context, withMail, imageController.photo1.value);
+  //                               focusNode.requestFocus();
+  //                             },
+  //                             controller: controllers.emailCtr,
+  //                             isImage: false,
+  //                             isLoading: true,
+  //                             backgroundColor: colorsConst.primary,
+  //                             radius: 5,
+  //                             width: controllers.emailCount.value == 0 ||
+  //                                 controllers.emailCount.value == 1
+  //                                 ? 90
+  //                                 : 200,
+  //                             height: 50,
+  //                             text: controllers.emailCount.value == 0
+  //                                 ? "Quotation"
+  //                                 : controllers.emailCount.value == 1
+  //                                 ? "Reply"
+  //                                 : "Reply & Quotation",
+  //                             textColor: Colors.white,
+  //                           ),
+  //                           )
+  //                         ],
+  //                       )
+  //                     ],
+  //                   ),
+  //                 ],
+  //                 content: SizedBox(
+  //                     width: 650,
+  //                     height: 400,
+  //                     child: SingleChildScrollView(
+  //                       child: Column(
+  //                         children: [
+  //                           Align(
+  //                               alignment: Alignment.topRight,
+  //                               child: InkWell(
+  //                                   onTap: () {
+  //                                     Navigator.pop(context);
+  //                                   },
+  //                                   child: Icon(
+  //                                     Icons.clear,
+  //                                     size: 18,
+  //                                     color: colorsConst.textColor,
+  //                                   ))),
+  //                           // Align(
+  //                           //   alignment: Alignment.topRight,
+  //                           //   child: TextButton(
+  //                           //       onPressed: () {
+  //                           //         controllers.isTemplate.value =
+  //                           //         !controllers.isTemplate.value;
+  //                           //       },
+  //                           //       child: CustomText(
+  //                           //         text: "Get Form Template",
+  //                           //         colors: colorsConst.third,
+  //                           //         size: 18,
+  //                           //         isBold: true,
+  //                           //       )),
+  //                           // ),
+  //                           // Row(
+  //                           //   children: [
+  //                           //     CustomText(
+  //                           //       textAlign: TextAlign.center,
+  //                           //       text: "To",
+  //                           //       colors: colorsConst.textColor,
+  //                           //       size: 15,
+  //                           //     ),
+  //                           //     50.width,
+  //                           //     SizedBox(
+  //                           //       width: 500,
+  //                           //       child: TextField(
+  //                           //         controller: controllers.emailToCtr,
+  //                           //         style: TextStyle(
+  //                           //             fontSize: 15, color: colorsConst.textColor),
+  //                           //         decoration: const InputDecoration(
+  //                           //           border: InputBorder.none,
+  //                           //         ),
+  //                           //       ),
+  //                           //     )
+  //                           //   ],
+  //                           // ),
+  //
+  //                           SizedBox(
+  //                               width: 650,
+  //                               child: SingleChildScrollView(
+  //                                 child: Column(
+  //                                   children: [
+  //                                     SizedBox(
+  //                                       height: 40,
+  //                                       width: 650,
+  //                                       child: Obx(() {
+  //                                         final ranges = controllers.leadRanges;
+  //                                         if (ranges.isEmpty) {
+  //                                           return const Center(child: Text("No leads found"));
+  //                                         }
+  //                                         return ListView.builder(
+  //                                           itemCount: ranges.length,
+  //                                           scrollDirection: Axis.horizontal,
+  //                                           itemBuilder: (context, index) {
+  //                                             final range = ranges[index];
+  //                                             final isSelected = selectedRange.value == range;
+  //                                             return InkWell(
+  //                                               onTap: () {
+  //                                                 setState((){
+  //                                                   selectRange(range, controllers.allNewLeadFuture);
+  //                                                 }
+  //                                                 );
+  //                                                 final leads = controllers.getLeadsByRange(index);
+  //                                                 // here open another dialog to show leads
+  //                                                 // showDialog(
+  //                                                 //   context: context,
+  //                                                 //   builder: (context) {
+  //                                                 //     return AlertDialog(
+  //                                                 //       title: Text("Leads in $range"),
+  //                                                 //       content: SizedBox(
+  //                                                 //         height: 300,
+  //                                                 //         width: 400,
+  //                                                 //         child: ListView.builder(
+  //                                                 //           itemCount: leads.length,
+  //                                                 //           itemBuilder: (context, i) {
+  //                                                 //             final lead = leads[i];
+  //                                                 //             return ListTile(
+  //                                                 //               title: Text(lead.firstname ?? ""),
+  //                                                 //               subtitle: Text(lead.mobileNumber ?? ""),
+  //                                                 //             );
+  //                                                 //           },
+  //                                                 //         ),
+  //                                                 //       ),
+  //                                                 //     );
+  //                                                 //   },
+  //                                                 // );
+  //                                               },
+  //                                               child: Container(
+  //                                                 height: 44,
+  //                                                 margin: const EdgeInsets.all(5),
+  //                                                 padding: const EdgeInsets.all(5),
+  //                                                 decoration: BoxDecoration(
+  //                                                   color: isSelected ? Colors.blue : Colors.transparent,
+  //                                                   borderRadius: BorderRadius.circular(8),
+  //                                                   border: Border.all(color: Colors.blue),
+  //                                                 ),
+  //                                                 child: Center(child: CustomText(text: range,colors: isSelected ?Colors.white:colorsConst.textColor,)),
+  //                                               ),
+  //                                             );
+  //                                           },
+  //                                         );
+  //                                       }),
+  //                                     ),
+  //                                     10.height,
+  //                                     Row(
+  //                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                                       children: [
+  //                                         CustomText(
+  //                                           text: "Total Selected Customers: $total",
+  //                                           colors: colorsConst.textColor,
+  //                                           size: 16,
+  //                                           isBold: true,
+  //                                         ),
+  //                                         CustomText(
+  //                                           text: "Customers with Mail: $withMail",
+  //                                           colors: colorsConst.textColor,
+  //                                           size: 16,
+  //                                           isBold: true,
+  //                                         ),
+  //                                         CustomText(
+  //                                           text: "Customers without Mail: $withoutMail",
+  //                                           colors: colorsConst.textColor,
+  //                                           size: 16,
+  //                                           isBold: true,
+  //                                         ),
+  //                                       ],
+  //                                     ),
+  //                                     10.height,
+  //                                     Divider(
+  //                                       color: Colors.grey.shade300,
+  //                                       thickness: 1,
+  //                                     ),
+  //                                     Row(
+  //                                       children: [
+  //                                         15.height,
+  //                                         CustomText(
+  //                                           text: "Subject",
+  //                                           colors: colorsConst.textColor,
+  //                                           size: 14,
+  //                                         ),
+  //                                         10.width,
+  //                                         SizedBox(
+  //                                           width: 500,
+  //                                           height: 50,
+  //                                           child: TextField(
+  //                                             controller: controllers.emailSubjectCtr,
+  //                                             maxLines: null,
+  //                                             minLines: 1,
+  //                                             style: TextStyle(
+  //                                               color: colorsConst.textColor,
+  //                                             ),
+  //                                             decoration: const InputDecoration(
+  //                                               border: InputBorder.none,
+  //                                             ),
+  //                                           ),
+  //                                         )
+  //                                       ],
+  //                                     ),
+  //                                     Divider(
+  //                                       color: Colors.grey.shade300,
+  //                                       thickness: 1,
+  //                                     ),
+  //                                     SingleChildScrollView(
+  //                                       child: Column(
+  //                                         children: [
+  //                                           Obx(()=>imageController.photo1.value.isEmpty?0.height:
+  //                                           Image.memory(base64Decode(imageController.photo1.value),
+  //                                             fit: BoxFit.cover,width: 80,height: 80,),),
+  //                                           SizedBox(
+  //                                             width: 650,
+  //                                             height: 223,
+  //                                             child: TextField(
+  //                                               textInputAction: TextInputAction.newline,
+  //                                               controller: controllers.emailMessageCtr,
+  //                                               keyboardType: TextInputType.multiline,
+  //                                               maxLines: 21,
+  //                                               expands: false,
+  //                                               style: TextStyle(
+  //                                                 color: colorsConst.textColor,
+  //                                               ),
+  //                                               decoration: InputDecoration(
+  //                                                 hintText: "Message",
+  //                                                 hintStyle: TextStyle(
+  //                                                     color: colorsConst.textColor,
+  //                                                     fontSize: 14,
+  //                                                     fontFamily: "Lato"),
+  //                                                 border: InputBorder.none,
+  //                                               ),
+  //                                             ),
+  //                                           ),
+  //                                         ],
+  //                                       ),
+  //                                     )
+  //                                     //     : UnconstrainedBox(
+  //                                     //   child: Container(
+  //                                     //     width: 500,
+  //                                     //     alignment: Alignment.center,
+  //                                     //     decoration: BoxDecoration(
+  //                                     //       color: colorsConst.secondary,
+  //                                     //       borderRadius:
+  //                                     //       BorderRadius.circular(10),
+  //                                     //     ),
+  //                                     //     child: SingleChildScrollView(
+  //                                     //       child: Column(
+  //                                     //         children: [
+  //                                     //           SizedBox(
+  //                                     //             width: 500,
+  //                                     //             height: 210,
+  //                                     //             child: Table(
+  //                                     //               defaultColumnWidth:
+  //                                     //               const FixedColumnWidth(
+  //                                     //                   120.0),
+  //                                     //               border: TableBorder.all(
+  //                                     //                   color: Colors
+  //                                     //                       .grey.shade300,
+  //                                     //                   style:
+  //                                     //                   BorderStyle.solid,
+  //                                     //                   borderRadius:
+  //                                     //                   BorderRadius
+  //                                     //                       .circular(10),
+  //                                     //                   width: 1),
+  //                                     //               children: [
+  //                                     //                 TableRow(
+  //                                     //                     children: [
+  //                                     //                       CustomText(
+  //                                     //                         textAlign: TextAlign.center,
+  //                                     //                         text: "\nTemplate Name\n",
+  //                                     //                         colors: colorsConst.textColor,
+  //                                     //                         size: 15,
+  //                                     //                         isBold: true,
+  //                                     //                       ),
+  //                                     //                       CustomText(
+  //                                     //                         textAlign:
+  //                                     //                         TextAlign.center,
+  //                                     //                         text: "\nSubject\n",
+  //                                     //                         colors: colorsConst
+  //                                     //                             .textColor,
+  //                                     //                         size: 15,
+  //                                     //                         isBold: true,
+  //                                     //                       ),
+  //                                     //                     ]),
+  //                                     //                 utils.emailRow(
+  //                                     //                     context,
+  //                                     //                     isCheck: controllers.isAdd,
+  //                                     //                     templateName:
+  //                                     //                     "Promotional",
+  //                                     //                     msg:
+  //                                     //                     "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
+  //                                     //                     subject:
+  //                                     //                     "Exclusive Promotion for You - \nLimited Time Offer!"),
+  //                                     //                 utils.emailRow(
+  //                                     //                     context,
+  //                                     //                     isCheck: controllers.isAdd,
+  //                                     //                     templateName: "Follow-Up",
+  //                                     //                     msg: "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+  //                                     //                     subject: "Follow-up on Recent Service Interaction"),
+  //                                     //                 utils.emailRow(context,
+  //                                     //                     msg:
+  //                                     //                     "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+  //                                     //                     isCheck:
+  //                                     //                     controllers.isAdd,
+  //                                     //                     templateName:
+  //                                     //                     "Service Update",
+  //                                     //                     subject:
+  //                                     //                     "Service Update - [Brief Description]"),
+  //                                     //               ],
+  //                                     //             ),
+  //                                     //           ),
+  //                                     //           // 10.height,
+  //                                     //           // CustomLoadingButton(
+  //                                     //           //   callback: (){},
+  //                                     //           //   isImage: false,
+  //                                     //           //   isLoading: false,
+  //                                     //           //   backgroundColor: colorsConst.primary,
+  //                                     //           //   radius: 20,
+  //                                     //           //   width: 70,
+  //                                     //           //   height: 30,
+  //                                     //           //   text: "Done",
+  //                                     //           //   textColor: Colors.white,
+  //                                     //           //
+  //                                     //           // ),
+  //                                     //         ],
+  //                                     //       ),
+  //                                     //     ),
+  //                                     //   ),
+  //                                     // ),
+  //
+  //                                   ],
+  //                                 ),
+  //                               )),
+  //                         ],
+  //                       ),
+  //                     )),
+  //               );
+  //             });
+  //       });
+  // }
 
 
   void sendEmailDialog(
@@ -1228,1185 +1230,6 @@ class Utils {
       ),
     );
     return exit ?? false;
-  }
-
-  Widget sideBarFunction(BuildContext context) {
-    RxBool isSettingsHovered = false.obs;
-    return Obx(() => controllers.isLeftOpen.value
-        ? Container(
-      width: 150,
-      height: MediaQuery.of(context).size.height,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            blurRadius: 2,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            5.height,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Tooltip(
-                  message: "Click to close the side panel.",
-                  child: InkWell(
-                    focusColor: Colors.transparent,
-                    onTap: (){
-                      controllers.isLeftOpen.value=!controllers.isLeftOpen.value;
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: colorsConst.secondary,
-                      child: Icon(Icons.chevron_left,color: Colors.black,),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-           Image.asset("assets/images/logo.png"),
-            Obx(() {
-              bool isSelected = controllers.selectedIndex.value == 0;
-              RxBool isHovered = false.obs;
-              return MouseRegion(
-                cursor: SystemMouseCursors.click,
-                onEnter: (_) => isHovered.value = true,
-                onExit: (_) => isHovered.value = false,
-                child: Obx(() => AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? const Color(0xffF3F8FD)
-                        : isHovered.value
-                        ? const Color(0xffF8FAFF)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: isHovered.value
-                        ? [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(2, 2),
-                      ),
-                    ]
-                        : [],
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () {
-                      controllers.oldIndex.value = controllers.selectedIndex.value;
-                      controllers.selectedIndex.value = 0;
-                      controllers.isSettingsExpanded.value = false;
-
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) =>
-                          const NewDashboard(),
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ),
-                      );
-                    },
-                    child: Stack(
-                      children: [
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 250),
-                          left: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: isSelected ? 5 : 0,
-                          child: Container(color: colorsConst.primary),
-                        ),
-                        AnimatedPadding(
-                          duration: const Duration(milliseconds: 250),
-                          padding: EdgeInsets.only(
-                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
-                            right: 12,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.dashboard_outlined,
-                                color: isSelected
-                                    ? colorsConst.primary
-                                    : isHovered.value
-                                    ? colorsConst.primary
-                                    : Colors.black,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                constValue.dashboard,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight:
-                                  isSelected ? FontWeight.bold : FontWeight.normal,
-                                  color: isSelected
-                                      ? colorsConst.primary
-                                      : isHovered.value
-                                      ? colorsConst.primary
-                                      : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-              );
-            }),
-            Obx(() {
-              bool isSelected = controllers.selectedIndex.value == 1;
-              RxBool isHovered = false.obs;
-              return MouseRegion(
-                cursor: SystemMouseCursors.click,
-                onEnter: (_) => isHovered.value = true,
-                onExit: (_) => isHovered.value = false,
-                child: Obx(() => AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? const Color(0xffF3F8FD) // Selected BG
-                        : isHovered.value
-                        ? const Color(0xffF8FAFF) // Hover BG
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: isHovered.value
-                        ? [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(2, 2),
-                      ),
-                    ]
-                        : [],
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () {
-                      controllers.selectedMonth.value = null;
-                      controllers.selectedProspectSortBy.value = "Today";
-                      controllers.isLead.value = true;
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) =>
-                          const Suspects(),
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ),
-                      );
-                      controllers.oldIndex.value = controllers.selectedIndex.value;
-                      controllers.selectedIndex.value = 1;
-                      controllers.isSettingsExpanded.value = false;
-                    },
-                    child: Stack(
-                      children: [
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 250),
-                          left: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: isSelected ? 5 : 0,
-                          child: Container(color: colorsConst.primary),
-                        ),
-                        AnimatedPadding(
-                          duration: const Duration(milliseconds: 250),
-                          padding: EdgeInsets.only(
-                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
-                            right: 12,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.remove_red_eye_outlined,
-                                color: isSelected
-                                    ? colorsConst.primary
-                                    : isHovered.value
-                                    ? colorsConst.primary
-                                    : Colors.black,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "Suspects",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight:
-                                  isSelected ? FontWeight.bold : FontWeight.normal,
-                                  color: isSelected
-                                      ? colorsConst.primary
-                                      : isHovered.value
-                                      ? colorsConst.primary
-                                      : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-              );
-            }),      //suspects
-            Obx(() {
-              bool isSelected = controllers.selectedIndex.value == 2;
-              RxBool isHovered = false.obs;
-              return MouseRegion(
-                cursor: SystemMouseCursors.click,
-                onEnter: (_) => isHovered.value = true,
-                onExit: (_) => isHovered.value = false,
-                child: Obx(() => AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? const Color(0xffF3F8FD)
-                        : isHovered.value
-                        ? const Color(0xffF8FAFF) // ✅ Hover light color
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: isHovered.value
-                        ? [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(2, 2),
-                      ),
-                    ]
-                        : [],
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () {
-                      controllers.selectedPMonth.value = null;
-                      controllers.selectedQualifiedSortBy.value = "Today";
-
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) => const Prospects(),
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ),
-                      );
-
-                      controllers.oldIndex.value = controllers.selectedIndex.value;
-                      controllers.selectedIndex.value = 2;
-                      controllers.isSettingsExpanded.value = false;
-                    },
-                    child: Stack(
-                      children: [
-                        // ✅ Left Active Bar
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 250),
-                          left: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: isSelected ? 5 : 0,
-                          child: Container(color: colorsConst.primary),
-                        ),
-                        // ✅ Text with Slide + Hover
-                        AnimatedPadding(
-                          duration: const Duration(milliseconds: 250),
-                          padding: EdgeInsets.only(
-                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
-                            right: 12,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.flag_outlined,
-                                color: isSelected
-                                    ? colorsConst.primary
-                                    : isHovered.value
-                                    ? colorsConst.primary
-                                    : Colors.black,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "Prospects",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight:
-                                  isSelected ? FontWeight.bold : FontWeight.normal,
-                                  color: isSelected
-                                      ? colorsConst.primary
-                                      : isHovered.value
-                                      ? colorsConst.primary
-                                      : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-              );
-            }),        // Prospects
-            Obx(() {
-              bool isSelected = controllers.selectedIndex.value == 3;
-              RxBool isHovered = false.obs;
-
-              return MouseRegion(
-                cursor: SystemMouseCursors.click,
-                onEnter: (_) => isHovered.value = true,
-                onExit: (_) => isHovered.value = false,
-                child: Obx(() => AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? const Color(0xffF3F8FD)
-                        : isHovered.value
-                        ? const Color(0xffF8FAFF)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: isHovered.value
-                        ? [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(2, 2),
-                      ),
-                    ]
-                        : [],
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () {
-                      controllers.selectedPMonth.value = null;
-                      controllers.selectedQualifiedSortBy.value = "Today";
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) => const Qualified(),
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ),
-                      );
-
-                      controllers.isEmployee.value = true;
-                      controllers.oldIndex.value = controllers.selectedIndex.value;
-                      controllers.selectedIndex.value = 3;
-                      controllers.isSettingsExpanded.value = false;
-                    },
-                    child: Stack(
-                      children: [
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 250),
-                          left: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: isSelected ? 5 : 0,
-                          child: Container(color: colorsConst.primary),
-                        ),
-                        AnimatedPadding(
-                          duration: const Duration(milliseconds: 250),
-                          padding: EdgeInsets.only(
-                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
-                            right: 12,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.verified_outlined,
-                                color: isSelected
-                                    ? colorsConst.primary
-                                    : isHovered.value
-                                    ? colorsConst.primary
-                                    : Colors.black,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "Qualified",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                  color: isSelected
-                                      ? colorsConst.primary
-                                      : isHovered.value
-                                      ? colorsConst.primary
-                                      : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-              );
-            }),
-            Obx(() {
-              bool isSelected = controllers.selectedIndex.value == 4;
-              RxBool isHovered = false.obs;
-              return MouseRegion(
-                cursor: SystemMouseCursors.click,
-                onEnter: (_) => isHovered.value = true,
-                onExit: (_) => isHovered.value = false,
-                child: Obx(() => AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? const Color(0xffF3F8FD)
-                        : isHovered.value
-                        ? const Color(0xffF8FAFF)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: isHovered.value
-                        ? [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(2, 2),
-                      ),
-                    ]
-                        : [],
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () {
-                      controllers.selectedMonth.value = null;
-                      controllers.selectedProspectSortBy.value = "Today";
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) =>
-                          const ViewCustomer(),
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ),
-                      );
-
-                      controllers.oldIndex.value = controllers.selectedIndex.value;
-                      controllers.selectedIndex.value = 4;
-                      controllers.isSettingsExpanded.value = false;
-                    },
-                    child: Stack(
-                      children: [
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 250),
-                          left: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: isSelected ? 5 : 0,
-                          child: Container(color: colorsConst.primary),
-                        ),
-                        AnimatedPadding(
-                          duration: const Duration(milliseconds: 250),
-                          padding: EdgeInsets.only(
-                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
-                            right: 12,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.dashboard_customize,
-                                color: isSelected
-                                    ? colorsConst.primary
-                                    : isHovered.value
-                                    ? colorsConst.primary
-                                    : Colors.black,
-                              ),
-                              const SizedBox(width: 10),
-
-                              Text(
-                                "Customers",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                  color: isSelected
-                                      ? colorsConst.primary
-                                      : isHovered.value
-                                      ? colorsConst.primary
-                                      : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-              );
-            }),
-            Obx(() {
-              bool isSelected = controllers.selectedIndex.value == 5;
-              RxBool isHovered = false.obs;
-              return MouseRegion(
-                cursor: SystemMouseCursors.click,
-                onEnter: (_) => isHovered.value = true,
-                onExit: (_) => isHovered.value = false,
-                child: Obx(() => AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? const Color(0xffF3F8FD)
-                        : isHovered.value
-                        ? const Color(0xffF8FAFF)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: isHovered.value
-                        ? [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(2, 2),
-                      ),
-                    ]
-                        : [],
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () {
-                      controllers.selectedMonth.value = null;
-                      controllers.selectedProspectSortBy.value = "Today";
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) =>
-                          const DisqualifiedLead(),
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ),
-                      );
-
-                      controllers.oldIndex.value = controllers.selectedIndex.value;
-                      controllers.selectedIndex.value = 5;
-                      controllers.isSettingsExpanded.value = false;
-                    },
-                    child: Stack(
-                      children: [
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 250),
-                          left: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: isSelected ? 5 : 0,
-                          child: Container(color: colorsConst.primary),
-                        ),
-                        AnimatedPadding(
-                          duration: const Duration(milliseconds: 250),
-                          padding: EdgeInsets.only(
-                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
-                            right: 12,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.cancel_outlined,
-                                color: isSelected
-                                    ? colorsConst.primary
-                                    : isHovered.value
-                                    ? colorsConst.primary
-                                    : Colors.black,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "Disqualified",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight:
-                                  isSelected ? FontWeight.bold : FontWeight.normal,
-                                  color: isSelected
-                                      ? colorsConst.primary
-                                      : isHovered.value
-                                      ? colorsConst.primary
-                                      : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-              );
-            }),
-            Obx(() {
-              bool isSelected = controllers.selectedIndex.value == 6; // ✅ Active Check
-              RxBool isHovered = false.obs;
-
-              return MouseRegion(
-                cursor: SystemMouseCursors.click,
-                onEnter: (_) => isHovered.value = true,
-                onExit: (_) => isHovered.value = false,
-                child: Obx(() => AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? const Color(0xffF3F8FD)
-                        : isHovered.value
-                        ? const Color(0xffF8FAFF)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: isHovered.value
-                        ? [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(2, 2),
-                      ),
-                    ]
-                        : [],
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) =>
-                          const Records(isReload: "true"),
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ),
-                      );
-                      controllers.oldIndex.value = controllers.selectedIndex.value;
-                      controllers.selectedIndex.value = 6;
-                      controllers.isSettingsExpanded.value = false;
-                    },
-                    child: Stack(
-                      children: [
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 250),
-                          left: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: isSelected ? 5 : 0,
-                          child: Container(color: colorsConst.primary),
-                        ),
-                        AnimatedPadding(
-                          duration: const Duration(milliseconds: 250),
-                          padding: EdgeInsets.only(
-                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
-                            right: 12,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.receipt_long,
-                                color: isSelected
-                                    ? colorsConst.primary
-                                    : isHovered.value
-                                    ? colorsConst.primary
-                                    : Colors.black,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "Records",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight:
-                                  isSelected ? FontWeight.bold : FontWeight.normal,
-                                  color: isSelected
-                                      ? colorsConst.primary
-                                      : isHovered.value
-                                      ? colorsConst.primary
-                                      : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-              );
-            }),
-            Obx(() {
-              bool isSelected = controllers.selectedIndex.value == 11;
-              RxBool isHovered = false.obs;
-              return MouseRegion(
-                cursor: SystemMouseCursors.click,
-                onEnter: (_) => isHovered.value = true,
-                onExit: (_) => isHovered.value = false,
-                child: Obx(() => AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? const Color(0xffF3F8FD)
-                        : isHovered.value
-                        ? const Color(0xffF8FAFF)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: isHovered.value
-                        ? [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(2, 2),
-                      ),
-                    ]
-                        : [],
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) =>
-                          const ReminderPage(),
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ),
-                      );
-
-                      controllers.oldIndex.value = controllers.selectedIndex.value;
-                      controllers.selectedIndex.value = 11;
-                      controllers.isSettingsExpanded.value = false;
-                    },
-                    child: Stack(
-                      children: [
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 250),
-                          left: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: isSelected ? 5 : 0,
-                          child: Container(color: colorsConst.primary),
-                        ),
-                        AnimatedPadding(
-                          duration: const Duration(milliseconds: 250),
-                          padding: EdgeInsets.only(
-                            left: isSelected ? 20 : (isHovered.value ? 18 : 12),
-                            right: 12,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.alarm,
-                                color: isSelected
-                                    ? colorsConst.primary
-                                    : isHovered.value
-                                    ? colorsConst.primary
-                                    : Colors.black,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "Reminder",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight:
-                                  isSelected ? FontWeight.bold : FontWeight.normal,
-                                  color: isSelected
-                                      ? colorsConst.primary
-                                      : isHovered.value
-                                      ? colorsConst.primary
-                                      : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-              );
-            }),
-
-            controllers.storage.read("role") != "See All Customer Records"
-                ? 0.height
-                :Obx(() {
-              bool isExpanded = controllers.isSettingsExpanded.value;
-              bool isSelected = controllers.selectedIndex.value == 7 ||
-                  (controllers.selectedIndex.value >= 701 && controllers.selectedIndex.value <= 705);
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  5.height,
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    onEnter: (_) => isSettingsHovered.value = true,
-                    onExit: (_) => isSettingsHovered.value = false,
-                    child: GestureDetector(
-                      onTap: () {
-                        controllers.oldIndex.value = controllers.selectedIndex.value;
-                        controllers.selectedIndex.value = 7;
-                        controllers.isSettingsExpanded.toggle();
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 250),
-                        curve: Curves.easeInOut,
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? const Color(0xffF3F8FD)
-                              : isSettingsHovered.value
-                              ? const Color(0xffF8FAFF)
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: isSelected
-                              ? Border(
-                            left: BorderSide(
-                              color: colorsConst.primary,
-                              width: 4,
-                            ),
-                          )
-                              : null,
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.settings,
-                              size: 20,
-                              color: isSelected
-                                  ? colorsConst.primary
-                                  : isSettingsHovered.value
-                                  ? colorsConst.primary.withOpacity(0.7)
-                                  : Colors.black,
-                            ),
-                            12.width,
-                            Expanded(
-                              child: IgnorePointer(
-                                child: Text(
-                                  "Settings",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: isSelected
-                                        ? colorsConst.primary
-                                        : isSettingsHovered.value
-                                        ? colorsConst.primary
-                                        : Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            AnimatedRotation(
-                              duration: const Duration(milliseconds: 250),
-                              turns: isExpanded ? 0.5 : 0,
-                              child: Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 22,
-                                color: isSelected
-                                    ? colorsConst.primary
-                                    : Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: isExpanded
-                        ? Padding(
-                      padding: const EdgeInsets.only(left: 32, top: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          subItem(context, "General Setting", 701, const GeneralSettings()),
-                          subItem(context, "Role Management", 702, const RoleManagement()),
-                          subItem(context, "User Plan & Access", 703, const UserPlan()),
-                          subItem(context, "User Management", 704, const EmployeeScreen()),
-                          subItem(context, "Reminder Setting", 705, const ReminderSettings()),
-                        ],
-                      ),
-                    )
-                        : const SizedBox(),
-                  ),
-                ],
-              );
-            }),
-
-
-            Obx(() {
-            bool isSelected = controllers.selectedIndex.value == 10;
-            RxBool isHovered = false.obs;
-
-            return MouseRegion(
-              cursor: SystemMouseCursors.click,
-              onEnter: (_) => isHovered.value = true,
-              onExit: (_) => isHovered.value = false,
-              child: Obx(() => AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeInOut,
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? const Color(0xffF3F8FD)
-                      : isHovered.value
-                      ? const Color(0xffF8FAFF)
-                      : Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: isHovered.value
-                      ? [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      blurRadius: 8,
-                      offset: const Offset(2, 2),
-                    ),
-                  ]
-                      : [],
-                ),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(8),
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 24),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Do you want to log out?",
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold,
-                                  color: colorsConst.textColor,
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      side:
-                                      BorderSide(color: colorsConst.primary),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      "No",
-                                      style: TextStyle(
-                                        color: colorsConst.primary,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      final prefs =
-                                      await SharedPreferences.getInstance();
-                                      prefs.setBool(
-                                          "loginScreen${controllers.versionNum}",
-                                          false);
-                                      prefs.setBool("isAdmin", false);
-                                      Get.to(const LoginPage(),
-                                          duration: Duration.zero);
-                                      controllers.selectedIndex.value = 10;
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: colorsConst.primary,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      "Yes",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  child: Stack(
-                    children: [
-                      // ✅ Left Active Indicator
-                      AnimatedPositioned(
-                        duration: const Duration(milliseconds: 250),
-                        left: 0,
-                        top: 0,
-                        bottom: 0,
-                        width: isSelected ? 5 : 0,
-                        child: Container(color: colorsConst.primary),
-                      ),
-
-                      // ✅ Icon + Text Section
-                      AnimatedPadding(
-                        duration: const Duration(milliseconds: 250),
-                        padding: EdgeInsets.only(
-                          left: isSelected ? 20 : (isHovered.value ? 18 : 12),
-                          right: 12,
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.logout,
-                              color: isSelected
-                                  ? colorsConst.primary
-                                  : isHovered.value
-                                  ? colorsConst.primary
-                                  : Colors.black,
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              "LogOut",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight:
-                                isSelected ? FontWeight.bold : FontWeight.normal,
-                                color: isSelected
-                                    ? colorsConst.primary
-                                    : isHovered.value
-                                    ? colorsConst.primary
-                                    : Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )),
-            );
-          }),
-
-          //100.height
-          ],
-        ),
-      ),
-    )
-        : Container(
-            width: 60,
-            height: MediaQuery.of(context).size.height,
-            padding: const EdgeInsets.fromLTRB(6, 8, 0, 0),
-            alignment: Alignment.topCenter,
-            color: Colors.white,
-            child: Tooltip(
-              message: "Click to view the side panel",
-              child: InkWell(
-                focusColor: Colors.transparent,
-                onTap: () {
-                  controllers.isLeftOpen.value = !controllers.isLeftOpen.value;
-                },
-               child: CircleAvatar(
-                 backgroundColor: colorsConst.secondary,
-                 child: Icon(Icons.menu,color: Colors.black,),
-               ),
-              ),
-            ),
-          ));
-  }
-
-  Widget subItem(BuildContext context, String title, int index, Widget page) {
-    RxBool isHovered = false.obs;
-
-    return Obx(() {
-      bool isSelected = controllers.selectedIndex.value == index;
-
-      return MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) => isHovered.value = true,
-        onExit: (_) => isHovered.value = false,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          margin: const EdgeInsets.symmetric(vertical: 4),
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xffF3F8FD)
-                : isHovered.value
-                ? const Color(0xffF8FAFF)
-                : Colors.white,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(8),
-            onTap: () {
-              controllers.oldIndex.value = controllers.selectedIndex.value;
-              controllers.selectedIndex.value = index;
-              controllers.isSettingsExpanded.value = true;
-
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (context, animation1, animation2) => page,
-                  transitionDuration: Duration.zero,
-                  reverseTransitionDuration: Duration.zero,
-                ),
-              );
-            },
-            child: Stack(
-              children: [
-                // ✅ Left Active Bar
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 250),
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: isSelected ? 4 : 0,
-                  child: Container(color: colorsConst.primary),
-                ),
-
-                // ✅ Text
-                Padding(
-                  padding: const EdgeInsets.only(left: 12),
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      color: isSelected
-                          ? colorsConst.primary
-                          : isHovered.value
-                          ? colorsConst.primary
-                          : Colors.black,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    });
   }
 
   Widget paginationButton(IconData icon, bool isEnabled, VoidCallback onPressed) {
@@ -3312,7 +2135,7 @@ class Utils {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Obx(()=>Text(
-                      "A new version of CRM is available! \nCurrent:${controllers.versionNum} -> Latest:${controllers.serverVersion}",
+                      "A new version of CRM is available! \nCurrent:$versionNum -> Latest:${controllers.serverVersion}",
                       style: TextStyle(
                           fontSize:15,
                           fontWeight: FontWeight.w500,

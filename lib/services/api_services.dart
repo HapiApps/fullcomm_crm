@@ -14,7 +14,7 @@ import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
 import 'package:flutter/material.dart';
-import 'package:fullcomm_crm/screens/new_dashboard.dart';
+import 'package:fullcomm_crm/screens/dashboard.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -511,6 +511,7 @@ class ApiService {
         allLeadsDetails();
         allQualifiedDetails();
         allNewLeadsDetails();
+        allTargetLeadsDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         Navigator.pop(context);
         Get.to(const Suspects(), duration: Duration.zero);
@@ -1333,7 +1334,7 @@ class ApiService {
         controllers.storage.write("id", response["id"]);
         controllers.storage.write("cos_id", response["cos_id"]);
         final prefs = await SharedPreferences.getInstance();
-        prefs.setBool("loginScreen${controllers.versionNum}", true);
+        prefs.setBool("loginScreen${versionNum}", true);
         String input = "Admin";
         controllers.isAdmin.value = input == "Admin" ? true : false;
         prefs.setBool("isAdmin", controllers.isAdmin.value);
@@ -1349,6 +1350,7 @@ class ApiService {
         allGoodLeadsDetails();
         allCustomerDetails();
         allQualifiedDetails();
+        allTargetLeadsDetails();
         getUserHeading();
         getRoles();
         getSheet();
@@ -1384,7 +1386,7 @@ class ApiService {
         "mobile_number": controllers.loginNumber.text,
         "user_id": controllers.storage.read("id"),
         "cos_id": controllers.storage.read("cos_id"),
-        "app_version": controllers.versionNum,
+        "app_version": versionNum,
         "device_id": webBrowserInfo.productSub,
         "device_brand": allInfo.toString(),
         "device_model": webBrowserInfo.product,
@@ -2703,7 +2705,7 @@ class ApiService {
           controllers.updateAvailable.value = false;
           return;
         }
-        if (controllers.versionNum != controllers.serverVersion.value) {
+        if (versionNum != controllers.serverVersion.value) {
           controllers.versionActive.value = true;
           if (response[0]["active"] == "1") {
             utils.updateDialog();
@@ -2862,6 +2864,51 @@ class ApiService {
     } catch (e) {
       controllers.allCustomerLeadFuture.clear();
       throw Exception('Unexpected error lead: ${e.toString()}');
+    }
+  }
+
+  Future<void> allTargetLeadsDetails() async {
+    controllers.isLead.value = false;
+    final url = Uri.parse(scriptApi);
+    controllers.allTargetLength.value = 0;
+    try {
+      final response = await http.post(
+        url,
+        body: jsonEncode({
+          "search_type": "leads",
+          "cos_id": controllers.storage.read("cos_id"),
+          "role": controllers.storage.read("role"),
+          "id": controllers.storage.read("id"),
+          "lead_id": "0",
+          "action": "get_data"
+        }),
+      );
+      controllers.isLead.value=true;
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as List;
+        controllers.allTargetLength.value = data.length;
+        controllers.isTargetLeadList.clear();
+        controllers.targetLeadsFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        for (int i = 0; i < controllers.allTargetLength.value; i++) {
+          controllers.isTargetLeadList.add({
+            "isSelect": false,
+            "lead_id": data[i]["user_id"].toString(),
+            "rating": data[i]["rating"].toString(),
+            "mail_id": data[i]["email_id"].toString(),
+          });
+        }
+      } else {
+        throw Exception('Failed to load leads: Status code ${response.body}');
+      }
+    } on SocketException {
+      print('No internet connection');
+      throw Exception('No internet connection');
+    } on HttpException catch (e) {
+      print('Server error: ${e.toString()}');
+      throw Exception('Server error: ${e.toString()}');
+    } catch (e) {
+      print('Unexpected error: ${e.toString()}');
+      throw Exception('Unexpected error: ${e.toString()}');
     }
   }
 

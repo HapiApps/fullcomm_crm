@@ -93,14 +93,12 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  #image_path: "assets/images/jps_logo.png"
-  image_path: "assets/images/logo.png"
-  #image_path: "assets/images/app_logo.png"
+  #image_path: "assets/images/logo.png"
+  image_path: "assets/images/thirumal_logo.png"
   web:
     generate: true
-    #image_path: "assets/images/jps_logo.png"
-    image_path: "assets/images/logo.png"
-    #image_path: "assets/images/app_logo.png"
+    #image_path: "assets/images/logo.png"
+    image_path: "assets/images/thirumal_logo.png"
 flutter:
 
   # The following line ensures that the Material Icons font is

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/constant/default_constant.dart';
 import '../../common/utilities/utils.dart';
+import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
 import '../../provider/reminder_provider.dart';
-import '../employee/role_management.dart';
 
 class ReminderSettings extends StatefulWidget {
   const ReminderSettings({super.key});
@@ -21,7 +22,6 @@ class ReminderSettings extends StatefulWidget {
 
 class _ReminderSettingsState extends State<ReminderSettings> {
   String _defaultTime = "Immediately";
-  String? _selectedNotification;
   void _showFollowUpDialog() {
     showDialog(
       context: context,
@@ -470,7 +470,13 @@ class _ReminderSettingsState extends State<ReminderSettings> {
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          utils.sideBarFunction(context),
+          SideBar(
+            controllers: controllers,
+            colorsConst: colorsConst,
+            logo: logo,
+            constValue: constValue,
+            versionNum: versionNum,
+          ),
          Obx(()=> Container(
            width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
            height: MediaQuery.of(context).size.height,

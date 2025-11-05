@@ -5,9 +5,12 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/models/mail_receive_obj.dart';
+import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/constant/default_constant.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/custom_comment_container.dart';
+import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
 
@@ -36,7 +39,13 @@ class _CusMailCommentsState extends State<CusMailComments> {
         backgroundColor: colorsConst.backgroundColor,
         body:Row(
           children: [
-            utils.sideBarFunction(context),
+            SideBar(
+              controllers: controllers,
+              colorsConst: colorsConst,
+              logo: logo,
+              constValue: constValue,
+              versionNum: versionNum,
+            ),
             Obx(()=>Container(
               width: controllers.isLeftOpen.value == false &&
                   controllers.isRightOpen.value == false

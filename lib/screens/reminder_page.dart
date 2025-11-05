@@ -3,10 +3,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';
+import '../common/constant/default_constant.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_loading_button.dart';
 import '../components/custom_search_textfield.dart';
+import '../components/custom_sidebar.dart';
 import '../components/custom_text.dart';
 import '../components/date_filter_bar.dart';
 import '../controller/controller.dart';
@@ -35,7 +38,13 @@ class _ReminderPageState extends State<ReminderPage> {
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          utils.sideBarFunction(context),
+          SideBar(
+            controllers: controllers,
+            colorsConst: colorsConst,
+            logo: logo,
+            constValue: constValue,
+            versionNum: versionNum,
+          ),
          Obx(()=> Container(
            width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
            height: MediaQuery.of(context).size.height,

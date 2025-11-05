@@ -6,11 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullcomm_crm/components/left_lead_tile.dart';
 import 'package:get/get.dart';
+import '../../common/constant/api.dart';
+import '../../common/constant/default_constant.dart';
+import '../../common/utilities/mail_utils.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
 import '../../components/custom_lead_tile.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_no_data.dart';
+import '../../components/custom_sidebar.dart';
 import '../../components/custom_table_header.dart';
 import '../../components/custom_text.dart';
 import '../../components/left_table_header.dart';
@@ -76,7 +80,13 @@ class _ProspectsState extends State<Prospects> {
           body: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              utils.sideBarFunction(context),
+              SideBar(
+                controllers: controllers,
+                colorsConst: colorsConst,
+                logo: logo,
+                constValue: constValue,
+                versionNum: versionNum,
+              ),
               Obx(() => Container(
                 width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
                   height: MediaQuery.of(context).size.height,
@@ -162,7 +172,7 @@ class _ProspectsState extends State<Prospects> {
                               });
                         },
                         onMail: () {
-                          utils.bulkEmailDialog(_focusNode, list: apiService.qualifiedList);
+                          mailUtils.bulkEmailDialog(_focusNode, list: apiService.qualifiedList);
                         },
                         onPromote: () {
                           showDialog(

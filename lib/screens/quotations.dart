@@ -1,10 +1,11 @@
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import '../common/constant/api.dart';
+import '../common/constant/default_constant.dart';
 import '../common/utilities/utils.dart';
+import '../components/custom_sidebar.dart';
 import '../components/custom_text.dart';
 import '../controller/controller.dart';
 import '../services/api_services.dart';
@@ -46,7 +47,13 @@ class _QuotationsState extends State<Quotations> {
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            utils.sideBarFunction(context),
+            SideBar(
+              controllers: controllers,
+              colorsConst: colorsConst,
+              logo: logo,
+              constValue: constValue,
+              versionNum: versionNum,
+            ),
             Container(
                 width: MediaQuery.of(context).size.width - 490,
                 height: MediaQuery.of(context).size.height,

@@ -23,8 +23,6 @@ import '../models/user_heading_obj.dart';
 final controllers = Get.put(Controller());
 
 class Controller extends GetxController with GetSingleTickerProviderStateMixin {
-  var version = "Version 0.0.7";
-  var versionNum = "0.0.7";
   late TabController tabController;
   var tabCurrentIndex = 0.obs;
 
@@ -79,6 +77,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   Future<List<NewLeadObj>>? allGoodLeadFuture;
   Future<List<CompanyObj>>? allCompanyFuture;
   var disqualifiedFuture      = <NewLeadObj>[].obs;
+  var targetLeadsFuture       = <NewLeadObj>[].obs;
   var allNewLeadFuture        = <NewLeadObj>[].obs;
   var allLeadFuture           = <NewLeadObj>[].obs;
   var allQualifiedLeadFuture  = <NewLeadObj>[].obs;
@@ -438,7 +437,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
             default:
             //final value = field;
               final value = lead.asMap()[field];
-              print("Dafault value $value $field");
               return value.toString().toLowerCase();
           }
         }
@@ -967,7 +965,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
             default:
             //final value = field;
               final value = lead.asMap()[field];
-              print("Dafault value $value $field");
               return value.toString().toLowerCase();
           }
         }
@@ -1158,6 +1155,134 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     if (start >= filteredLeads.length) return [];
 
     int end = start + itemsProspectPerPage;
+    end = end > filteredLeads.length ? filteredLeads.length : end;
+
+    return filteredLeads.sublist(start, end);
+  }
+
+  var targetLeadSortField = ''.obs;
+  var targetLeadSortOrder = 'asc'.obs;
+  List<NewLeadObj> get paginatedTargetLead {
+    final query = searchQuery.value.toLowerCase();
+    final ratingFilter = selectedTemperature.value;
+    final sortBy = selectedProspectSortBy.value; // 'Today', 'Last 7 Days', etc.
+    final now = DateTime.now();
+    final filteredLeads = targetLeadsFuture.where((lead) {
+      final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
+          (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+          (lead.companyName ?? '').toLowerCase().contains(query);
+
+      final matchesRating = ratingFilter.isEmpty ||
+          (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
+
+      bool matchesSort = true;
+
+      if (lead.prospectEnrollmentDate != null) {
+        DateTime? updatedDate;
+        try {
+          updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
+        } catch (_) {
+          try {
+            updatedDate = DateTime.tryParse(lead.prospectEnrollmentDate!);
+          } catch (_) {
+            updatedDate = null;
+            matchesSort = false;
+          }
+        }
+
+        if (updatedDate != null) {
+          final diff = now.difference(updatedDate).inDays;
+
+          switch (sortBy) {
+            case 'Today':
+              matchesSort = isSameDate(updatedDate, now);
+              break;
+
+            case 'Last 7 Days':
+              matchesSort = diff <= 7;
+              break;
+
+            case 'Last 30 Days':
+              matchesSort = diff <= 30;
+              break;
+
+            case 'Custom Month':
+              if (selectedMonth.value != null) {
+                matchesSort = updatedDate.year == selectedMonth.value!.year &&
+                    updatedDate.month == selectedMonth.value!.month;
+              } else {
+                matchesSort = true;
+              }
+              break;
+
+            case 'All':
+            default:
+              matchesSort = true;
+          }
+        } else {
+          matchesSort = false;
+        }
+      } else {
+        matchesSort = false;
+      }
+
+      return matchesQuery && matchesRating && matchesSort;
+    }).toList();
+
+    if (targetLeadSortField.isNotEmpty) {
+      filteredLeads.sort((a, b) {
+        dynamic valA;
+        dynamic valB;
+
+        switch (targetLeadSortField.value) {
+          case 'name':
+            valA = a.firstname ?? '';
+            valB = b.firstname ?? '';
+            break;
+          case 'companyName':
+            valA = a.companyName ?? '';
+            valB = b.companyName ?? '';
+            break;
+          case 'mobile':
+            valA = a.mobileNumber ?? '';
+            valB = b.mobileNumber ?? '';
+            break;
+          case 'serviceRequired':
+            valA = a.detailsOfServiceRequired ?? '';
+            valB = b.detailsOfServiceRequired ?? '';
+            break;
+          case 'sourceOfProspect':
+            valA = a.source ?? '';
+            valB = b.source ?? '';
+            break;
+          case 'city':
+            valA = a.city ?? '';
+            valB = b.city ?? '';
+            break;
+          case 'statusUpdate':
+            valA = a.statusUpdate ?? '';
+            valB = b.statusUpdate ?? '';
+            break;
+          case 'date':
+            valA = formatDateTime(a.prospectEnrollmentDate.toString().isEmpty||a.prospectEnrollmentDate.toString()=="null"?a.updatedTs.toString():a.prospectEnrollmentDate.toString());
+            valB = formatDateTime(b.prospectEnrollmentDate.toString().isEmpty||b.prospectEnrollmentDate.toString()=="null"?b.updatedTs.toString():b.prospectEnrollmentDate.toString());
+            break;
+          default:
+            valA = '';
+            valB = '';
+        }
+        if (targetLeadSortOrder.value == 'asc') {
+          return valA.compareTo(valB);
+        } else {
+          return valB.compareTo(valA);
+        }
+      });
+    }
+    int start = (currentPage.value - 1) * itemsPerPage;
+
+    if (start >= filteredLeads.length) return [];
+
+    int end = start + itemsPerPage;
     end = end > filteredLeads.length ? filteredLeads.length : end;
 
     return filteredLeads.sublist(start, end);
@@ -1427,6 +1552,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       allGoodLeadsLength = 0.obs,
       allCompanyLength = 0.obs,
       allCustomerLength = 0.obs,
+      allTargetLength=0.obs,
       allProductLength = 0.obs,
       allEmployeeLength = 0.obs, selectCallType = "All".obs,selectMeetingType = "".obs;
 
@@ -1487,7 +1613,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
 
   var dateList = [].obs,
       isMainPersonList = [].obs,
-      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,
+      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,
       isLeadsList = [].obs,
       isGoodLeadList = [].obs,
       isCoMobileNumberList = [].obs,

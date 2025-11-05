@@ -1,16 +1,53 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-const String domain        = "https://aruu.celwiz.com";
-const bool isRelease       = false;
-// const String domain          = "https://aruu.in/";
-// const bool isRelease         = true;
+
+/// Aruu database
+/// Dev
+// const String domain      = "https://aruu.celwiz.com";
+// const bool isRelease     = false;
+// const String version     = "Version 0.0.7";
+// const String versionNum  = "0.0.7";
+///Prod
+// const String domain      = "https://aruu.in/";
+// const bool isRelease     = true;
+// const String version     = "Version 0.0.7";
+// const String versionNum  = "0.0.7";
+// const String version1        = "v1/CRM/web";
+// const String appName         = "ARUU’s EasyCRM";
+// const String logo            = "assets/images/logo.png";
+// const String scriptApi       = "$domain/CRM/script.php";
+// const String prospectsScript = "$domain/CRM/prospects_script.php";
+// const String qualifiedScript = "$domain/CRM/qualified_script.php";
+// const String getImage        = "$domain/CRM/get_files.php";
+
+
+/// Thirumal database
+/// Dev
+const String domain      = "https://thirumald.hapirides.in";
+const bool isRelease     = false;
+const String version     = "Version 0.0.22";
+const String versionNum  = "0.0.22";
+///Prod
+// const String domain      = "https://thirumal.hrides.in";
+// const bool isRelease     = true;
+// const String version     = "Version 0.0.22";
+// const String versionNum  = "0.0.22";
 const String version1        = "v1/CRM/web";
 const String appName         = "ARUU’s EasyCRM";
+const String logo            = "assets/images/logo.png";
 const String scriptApi       = "$domain/CRM/script.php";
 const String prospectsScript = "$domain/CRM/prospects_script.php";
 const String qualifiedScript = "$domain/CRM/qualified_script.php";
 const String getImage        = "$domain/CRM/get_files.php";
+
+
+
+
+
+
+
+
 //https://aruu.celwiz.com/CRM/get_files.php?path=WhatsApp%20Image%202025-09-16%20at%2011.57.00%20AM.jpeg
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
   // Override behavior methods and getters like dragDevices

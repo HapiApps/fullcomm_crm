@@ -84,7 +84,7 @@ class _CustomAppbarState extends State<CustomAppbar> {
           child: IconButton(
               onPressed: () async {
                 final prefs = await SharedPreferences.getInstance();
-                prefs.setBool("loginScreen${controllers.versionNum}", false);
+                prefs.setBool("loginScreen$versionNum", false);
                 prefs.setBool("isAdmin", false);
                 Get.to(const LoginPage(), duration: Duration.zero);
               },

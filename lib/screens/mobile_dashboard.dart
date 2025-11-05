@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';
 import '../components/custom_rating.dart';
 import '../components/custom_text.dart';
@@ -58,7 +59,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
             child: Row(
               children: [
                 CustomText(
-                  text: controllers.version,
+                  text: version,
                   colors: colorsConst.third,
                   size: 16,
                 ),

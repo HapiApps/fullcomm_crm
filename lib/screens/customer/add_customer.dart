@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/constant/default_constant.dart';
 import '../../common/constant/key_constant.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/custom_appbar.dart';
 import '../../components/custom_checkbox.dart';
 import '../../components/custom_dropdown.dart';
 import '../../components/custom_loading_button.dart';
+import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../components/custom_textfield.dart';
 import '../../controller/controller.dart';
@@ -34,7 +37,13 @@ class _AddCustomerState extends State<AddCustomer> {
           ),
           body: Stack(
             children: [
-              utils.sideBarFunction(context),
+              SideBar(
+                controllers: controllers,
+                colorsConst: colorsConst,
+                logo: logo,
+                constValue: constValue,
+                versionNum: versionNum,
+              ),
               Positioned(
                 left: 130,
                 top: 0,

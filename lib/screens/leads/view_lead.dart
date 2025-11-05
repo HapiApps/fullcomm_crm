@@ -7,9 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/models/new_lead_obj.dart';
 import 'package:fullcomm_crm/screens/leads/update_lead.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
+import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/constant/default_constant.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
+import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
@@ -200,7 +203,13 @@ class _ViewLeadState extends State<ViewLead> {
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            utils.sideBarFunction(context),
+            SideBar(
+              controllers: controllers,
+              colorsConst: colorsConst,
+              logo: logo,
+              constValue: constValue,
+              versionNum: versionNum,
+            ),
             Container(
               width: screenWidth-150,
               height: MediaQuery.of(context).size.height,

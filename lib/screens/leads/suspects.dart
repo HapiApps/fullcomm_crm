@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/common/utilities/mail_utils.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:fullcomm_crm/components/custom_no_data.dart';
@@ -10,9 +11,12 @@ import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import '../../common/constant/api.dart';
+import '../../common/constant/default_constant.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
 import '../../components/custom_lead_tile.dart';
+import '../../components/custom_sidebar.dart';
 import '../../components/custom_table_header.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
@@ -74,7 +78,13 @@ class _SuspectsState extends State<Suspects> {
           body: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              utils.sideBarFunction(context),
+              SideBar(
+                controllers: controllers,
+                colorsConst: colorsConst,
+                logo: logo,
+                constValue: constValue,
+                versionNum: versionNum,
+              ),
               Obx(() => InkWell(
                 mouseCursor: MouseCursor.defer,
                 focusColor: Colors.transparent,
@@ -168,7 +178,7 @@ class _SuspectsState extends State<Suspects> {
                               });
                         },
                         onMail: () {
-                          utils.bulkEmailDialog(_focusNode, list: apiService.prospectsList);
+                          mailUtils.bulkEmailDialog(_focusNode, list: apiService.prospectsList);
                         },
                         onPromote: () {
                           showDialog(

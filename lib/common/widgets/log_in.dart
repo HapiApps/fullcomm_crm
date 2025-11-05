@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (back == 0) {
-          utils.snackBar(
+          mobileUtils.snackBar(
               context: Get.context!,
               msg: "Press back button again to exit !",
               color: Colors.red);
@@ -141,34 +141,32 @@ class _LoginPageState extends State<LoginPage> {
                           hintText: 'Enter Your Password',
                           isOptional: true,
                         ),
-
                     ],
                   ),
-
                   70.height,
                   CustomLoadingButton(
                       callback: () {
                         if (controllers.loginNumber.text.isEmpty) {
-                          utils.snackBar(
+                          mobileUtils.snackBar(
                               context: Get.context!,
                               msg: "Please enter your mobile number",
                               color: Colors.red);
                           controllers.loginCtr.reset();
                         } else if (controllers.loginNumber.text.length != 10) {
-                          utils.snackBar(
+                          mobileUtils.snackBar(
                               context: Get.context!,
                               msg: "Please enter 10 digits mobile number",
                               color: Colors.red);
                           controllers.loginCtr.reset();
                         } else if (controllers.loginPassword.text.isEmpty) {
-                          utils.snackBar(
+                          mobileUtils.snackBar(
                               context: Get.context!,
                               msg: "Please enter your password",
                               color: Colors.red);
                           controllers.loginCtr.reset();
                         } else if (controllers.loginPassword.text.length < 8 ||
                             controllers.loginPassword.text.length > 16) {
-                          utils.snackBar(
+                          mobileUtils.snackBar(
                               context: Get.context!,
                               msg: "Password must be 8–16 characters",
                               color: Colors.red);
