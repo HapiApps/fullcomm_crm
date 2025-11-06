@@ -1,8 +1,5 @@
 import 'dart:convert';
 import 'package:excel/excel.dart' as excel;
-import 'package:fullcomm_crm/common/widgets/log_in.dart';
-import 'package:fullcomm_crm/screens/employee/employee_screen.dart';
-import 'package:fullcomm_crm/screens/employee/role_management.dart';
 import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
@@ -10,16 +7,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fullcomm_crm/screens/dashboard.dart';
-import 'package:fullcomm_crm/screens/leads/target_leads.dart';
-import 'package:fullcomm_crm/screens/settings/general_settings.dart';
-import 'package:fullcomm_crm/screens/settings/reminder_settings.dart';
-import 'package:fullcomm_crm/screens/settings/user_plan.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -33,16 +24,11 @@ import '../../controller/image_controller.dart';
 import '../../controller/reminder_controller.dart';
 import '../../main.dart';
 import '../../models/all_customers_obj.dart';
-import '../../models/new_lead_obj.dart';
 import '../../provider/reminder_provider.dart';
-import '../../screens/leads/disqualified_lead.dart';
-import '../../screens/records/records.dart';
-import '../../screens/reminder_page.dart';
 import '../../services/api_services.dart';
 import '../constant/api.dart';
 import '../constant/assets_constant.dart';
 import '../constant/colors_constant.dart';
-import '../constant/default_constant.dart';
 import 'package:http/http.dart' as http;
 import 'dart:html' as html;
 
@@ -1813,7 +1799,7 @@ class Utils {
         ]);
   }
 
-  void pickAndReadExcelFile(BuildContext context) {
+  void pickAndReadExcelFile(BuildContext context,String leadStatus) {
     final html.FileUploadInputElement input = html.FileUploadInputElement()
       ..accept = '.xlsx, .xls';
     input.click();
@@ -1830,7 +1816,7 @@ class Utils {
       reader.readAsArrayBuffer(file);
       reader.onLoadEnd.listen((event) {
         Uint8List bytes = reader.result as Uint8List;
-        parseExcelFile(bytes, context);
+        parseExcelFile(bytes, context, leadStatus);
       });
     });
   }
@@ -1839,7 +1825,7 @@ class Utils {
   List<Map<String, dynamic>> customerData = [];
   List<Map<String, dynamic>> mCustomerData = [];
 
-  void parseExcelFile(Uint8List bytes, BuildContext context) async {
+  void parseExcelFile(Uint8List bytes, BuildContext context, String leadStatus) async {
     customerData = [];
     controllers.customerCtr.start();
     var excelD = excel.Excel.decodeBytes(bytes);
@@ -1930,6 +1916,7 @@ class Utils {
 
         formattedData["user_id"] = controllers.storage.read("id");
         formattedData["cos_id"] = controllers.storage.read("cos_id");
+        formattedData["lead_status"] = leadStatus=="0"?"0":formattedData["lead_status"] ?? leadStatus;
         formattedData["additional_fields"] = additionalFields;
 
         customerData.add(formattedData);
@@ -1992,7 +1979,7 @@ class Utils {
     }
   }
 
-  Future<void> showImportDialog(BuildContext context) async {
+  Future<void> showImportDialog(BuildContext context,String leadStatus) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -2084,7 +2071,7 @@ class Utils {
                 10.width,
                 CustomLoadingButton(
                   callback: () {
-                    pickAndReadExcelFile(context);
+                    pickAndReadExcelFile(context,leadStatus);
                     controllers.customerCtr.reset();
                   },
                   isLoading: true,

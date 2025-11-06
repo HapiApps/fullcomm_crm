@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
@@ -9,11 +8,7 @@ import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
-import 'package:web/web.dart';
-
-import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
-import '../../common/constant/default_constant.dart';
 import '../../common/constant/key_constant.dart';
 import '../../common/styles/decoration.dart';
 import '../../components/custom_sidebar.dart';
@@ -50,13 +45,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       return Scaffold(
         body: Row(
           children: [
-            SideBar(
-              controllers: controllers,
-              colorsConst: colorsConst,
-              logo: logo,
-              constValue: constValue,
-              versionNum: versionNum,
-            ),
+            SideBar(),
             Container(
               width: MediaQuery.of(context).size.width - 150,
               height: MediaQuery.of(context).size.height,

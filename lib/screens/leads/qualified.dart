@@ -1,15 +1,11 @@
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/components/custom_no_data.dart';
 import 'package:fullcomm_crm/components/left_lead_tile.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import '../../common/constant/api.dart';
-import '../../common/constant/default_constant.dart';
 import '../../common/utilities/mail_utils.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
@@ -79,13 +75,7 @@ class _QualifiedState extends State<Qualified> {
           body: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SideBar(
-                controllers: controllers,
-                colorsConst: colorsConst,
-                logo: logo,
-                constValue: constValue,
-                versionNum: versionNum,
-              ),
+              SideBar(),
               Obx(()=>Container(
                 width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
                 height: MediaQuery.of(context).size.height,
@@ -98,6 +88,7 @@ class _QualifiedState extends State<Qualified> {
                     HeaderSection(
                       title: "Good Leads - ${controllers.leadCategoryList[2]["value"]}",
                       subtitle: "View all of your ${controllers.leadCategoryList[2]["value"]} Information",
+                      list: controllers.allQualifiedLeadFuture,
                     ),
                     20.height,
                     // Filter Section
@@ -354,7 +345,7 @@ class _QualifiedState extends State<Qualified> {
                                   controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
                                 },
                               ),
-                              Obx(() => controllers.paginatedQualifiedLeads.isNotEmpty?
+                              Obx(() => controllers.isLead.value == false?0.height:controllers.paginatedQualifiedLeads.isNotEmpty?
                               ListView.builder(
                                 controller: _verticalController,
                                 shrinkWrap: true,
@@ -536,9 +527,10 @@ class _QualifiedState extends State<Qualified> {
                                     child: Obx(
                                             () => controllers.isLead.value == false
                                             ? Container(
+                                                alignment: Alignment.centerLeft,
                                                 width: MediaQuery.of(context).size.width,
-                                                height: MediaQuery.of(context).size.height - 340,
-                                                alignment: Alignment.center,
+                                                height: MediaQuery.of(context).size.height,
+                                                padding: EdgeInsets.fromLTRB(160, 0, 0, 0),
                                                 child: const Center(child: CircularProgressIndicator()))
                                             : controllers.paginatedQualifiedLeads.isNotEmpty?
                                         ListView.builder(

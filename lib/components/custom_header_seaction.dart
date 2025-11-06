@@ -1,3 +1,5 @@
+import 'dart:html' as html;
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -8,18 +10,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
 import '../controller/controller.dart';
+import '../models/new_lead_obj.dart';
+import '../models/user_heading_obj.dart';
 import '../screens/leads/add_lead.dart';
 import 'custom_loading_button.dart';
 import 'custom_text.dart';
+import 'package:intl/intl.dart';
 
 class HeaderSection extends StatefulWidget {
   final String title;
   final String subtitle;
+  final RxList<NewLeadObj> list;
 
   const HeaderSection({
     super.key,
     required this.title,
-    required this.subtitle,
+    required this.subtitle, required this.list,
   });
 
   @override
@@ -27,6 +33,138 @@ class HeaderSection extends StatefulWidget {
 }
 
 class _HeaderSectionState extends State<HeaderSection> {
+  dynamic getFieldValue(NewLeadObj lead, String field) {
+    switch (field) {
+      case 'name':
+        var name = lead.firstname ?? '';
+        if (name.contains('||')) name = name.split('||')[0].trim();
+        return name;
+      case 'company_name':
+        return lead.companyName ?? '';
+      case 'mobile_number':
+        return lead.mobileNumber ?? '';
+      case 'detailsOfServiceRequired':
+        return lead.detailsOfServiceRequired ?? '';
+      case 'source':
+        return lead.source ?? '';
+      case 'city':
+        return lead.city ?? '';
+      case 'status_update':
+        return lead.statusUpdate ?? '';
+      case 'prospect_enrollment_date':
+      case 'date':
+        DateTime parseDate(String? dateStr, String? fallback) {
+          if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+            dateStr = fallback;
+          }
+          if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+            return DateTime(1900);
+          }
+          DateTime? parsed;
+          try {
+            parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+          } catch (_) {
+            parsed = DateTime.tryParse(dateStr);
+          }
+          return parsed ?? DateTime(1900);
+        }
+
+        final date = parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
+        return DateFormat('dd-MM-yyyy').format(date);
+      default:
+        final value = lead.asMap()[field];
+        return value?.toString() ?? '';
+    }
+  }
+
+  // void exportLeadsToExcel(List<NewLeadObj> leads) {
+  //   final excel = Excel.createExcel();
+  //   final sheetObject = excel['Leads'];
+  //   final headers = [
+  //     'name',
+  //     'mobile_number',
+  //     'email',
+  //     'company_name',
+  //     'city',
+  //     'rating',
+  //     'prospect_enrollment_date',
+  //     'updatedTs',
+  //     'detailsOfServiceRequired',
+  //     'status_update',
+  //     'source'
+  //   ];
+  //
+  //   // Header styling
+  //   final headerStyle = CellStyle(
+  //     bold: true,
+  //     fontColorHex: ExcelColor.white,
+  //     backgroundColorHex: ExcelColor.blue,
+  //   );
+  //   for (int i = 0; i < headers.length; i++) {
+  //     final cell = sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
+  //     cell.value = TextCellValue(headers[i]);
+  //     cell.cellStyle = headerStyle;
+  //   }
+  //
+  //   for (int r = 0; r < leads.length; r++) {
+  //     final lead = leads[r];
+  //     for (int c = 0; c < headers.length; c++) {
+  //       final value = getFieldValue(lead, headers[c]);
+  //       sheetObject
+  //           .cell(CellIndex.indexByColumnRow(columnIndex: c, rowIndex: r + 1))
+  //           .value = TextCellValue(value.toString());
+  //     }
+  //   }
+  //   final fileBytes = excel.encode();
+  //   final blob = html.Blob([Uint8List.fromList(fileBytes!)]);
+  //   final url = html.Url.createObjectUrlFromBlob(blob);
+  //   final anchor = html.AnchorElement(href: url)
+  //     ..setAttribute("download", "leads_${DateFormat('yyyyMMdd_HHmm').format(DateTime.now())}.xlsx")
+  //     ..click();
+  //   html.Url.revokeObjectUrl(url);
+  // }
+  Future<void> exportLeadsToExcel(
+      List<NewLeadObj> leads,
+      List<CustomerField> fields, // your controllers.fields
+      ) async {
+    final excel = Excel.createExcel();
+    final sheet = excel['Leads'];
+
+    String normalize(String s) =>
+        s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
+
+    final headers = fields.map((f) => f.userHeading).toList();
+    sheet.appendRow(headers.map((h) => TextCellValue(h)).toList());
+
+    final headerStyle = CellStyle(
+      bold: true,
+      backgroundColorHex: ExcelColor.blue,
+      fontColorHex: ExcelColor.white,
+    );
+    for (var col = 0; col < headers.length; col++) {
+      final cell = sheet.cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: 0));
+      cell.cellStyle = headerStyle;
+    }
+    for (final lead in leads) {
+      final map = lead.asMap();
+      final row = fields.map((f) {
+        final key = f.systemField;
+        final value = map[key];
+        return TextCellValue(
+          (value == null || value.toString() == 'null') ? '' : value.toString(),
+        );
+      }).toList();
+      sheet.appendRow(row);
+    }
+    final fileBytes = excel.encode();
+    final blob = html.Blob([fileBytes]);
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.AnchorElement(href: url)
+      ..setAttribute("download", "leads_${DateTime.now().millisecondsSinceEpoch}.xlsx")
+      ..click();
+    html.Url.revokeObjectUrl(url);
+  }
+
   @override
   Widget build(BuildContext context) {
     final controllers = Get.find<Controller>();
@@ -53,11 +191,27 @@ class _HeaderSectionState extends State<HeaderSection> {
         ),
         Row(
           children: [
+            // ---- Export button ----
+            CustomLoadingButton(
+              callback: () {
+                _focusNode.requestFocus();
+                exportLeadsToExcel(widget.list, controllers.fields);
+              },
+              isLoading: false,
+              height: 35,
+              backgroundColor: Colors.white,
+              radius: 2,
+              width: 100,
+              isImage: false,
+              text: "Export",
+              textColor: colorsConst.primary,
+            ),
+            15.width,
             // ---- Import button ----
             CustomLoadingButton(
               callback: () {
                 _focusNode.requestFocus();
-                utils.showImportDialog(context);
+                utils.showImportDialog(context,widget.title=="Target Leads"?"0":"1");
               },
               isLoading: false,
               height: 35,

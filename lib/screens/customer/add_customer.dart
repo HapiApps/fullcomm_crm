@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
-import '../../common/constant/default_constant.dart';
 import '../../common/constant/key_constant.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/custom_appbar.dart';
@@ -37,13 +35,7 @@ class _AddCustomerState extends State<AddCustomer> {
           ),
           body: Stack(
             children: [
-              SideBar(
-                controllers: controllers,
-                colorsConst: colorsConst,
-                logo: logo,
-                constValue: constValue,
-                versionNum: versionNum,
-              ),
+              SideBar(),
               Positioned(
                 left: 130,
                 top: 0,

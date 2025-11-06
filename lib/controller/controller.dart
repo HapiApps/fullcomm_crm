@@ -268,7 +268,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
                         if (tempRange != null) {
                           setDateRange(tempRange);
                         }
-                        print("range $tempRange");
                         Navigator.pop(context);
                       },
                       child: const Text(
@@ -588,7 +587,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
               return (lead.city ?? '').toLowerCase();
             case 'status_update':
               return (lead.statusUpdate ?? '').toLowerCase();
-            case 'updatedTs':
+            case 'date':
             case 'prospect_enrollment_date':
               DateTime parseDate(String? dateStr, String? fallback) {
                 if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
@@ -801,7 +800,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
               return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
             default:
               final value = lead.asMap()[field];
-              print("Default value $value $field");
               return value.toString().toLowerCase();
           }
         }
@@ -1131,7 +1129,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
               return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
             default:
               final value = lead.asMap()[field];
-              print("Default value $value $field");
               return value.toString().toLowerCase();
           }
         }
@@ -1165,8 +1162,9 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   List<NewLeadObj> get paginatedTargetLead {
     final query = searchQuery.value.toLowerCase();
     final ratingFilter = selectedTemperature.value;
-    final sortBy = selectedProspectSortBy.value; // 'Today', 'Last 7 Days', etc.
+    final sortBy = selectedProspectSortBy.value;
     final now = DateTime.now();
+
     final filteredLeads = targetLeadsFuture.where((lead) {
       final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
           (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
@@ -1176,18 +1174,19 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
           (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
 
       bool matchesSort = true;
+      DateTime? updatedDate;
 
-      if (lead.prospectEnrollmentDate != null) {
-        DateTime? updatedDate;
+      if (lead.prospectEnrollmentDate != null ||
+          (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty)) {
         try {
-          updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
-        } catch (_) {
-          try {
-            updatedDate = DateTime.tryParse(lead.prospectEnrollmentDate!);
-          } catch (_) {
-            updatedDate = null;
-            matchesSort = false;
+          if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
+            updatedDate = DateTime.tryParse(lead.updatedTs!);
+          } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
+            updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
           }
+        } catch (_) {
+          updatedDate = null;
+          matchesSort = false;
         }
 
         if (updatedDate != null) {
@@ -1197,15 +1196,15 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
             case 'Today':
               matchesSort = isSameDate(updatedDate, now);
               break;
-
+            case 'Yesterday':
+              matchesSort = diff <= 1;
+              break;
             case 'Last 7 Days':
               matchesSort = diff <= 7;
               break;
-
             case 'Last 30 Days':
               matchesSort = diff <= 30;
               break;
-
             case 'Custom Month':
               if (selectedMonth.value != null) {
                 matchesSort = updatedDate.year == selectedMonth.value!.year &&
@@ -1214,7 +1213,6 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
                 matchesSort = true;
               }
               break;
-
             case 'All':
             default:
               matchesSort = true;
@@ -1225,61 +1223,77 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       } else {
         matchesSort = false;
       }
+      bool matchesDateRange = true;
+      if (selectedRange.value != null && updatedDate != null) {
+        final start = selectedRange.value!.start;
+        final end = selectedRange.value!.end;
+        matchesDateRange = updatedDate.isAfter(start.subtract(const Duration(days: 1))) &&
+            updatedDate.isBefore(end.add(const Duration(days: 1)));
+      }
 
-      return matchesQuery && matchesRating && matchesSort;
+      return matchesQuery && matchesRating && matchesSort && matchesDateRange;
     }).toList();
 
     if (targetLeadSortField.isNotEmpty) {
       filteredLeads.sort((a, b) {
-        dynamic valA;
-        dynamic valB;
+        dynamic getFieldValue(NewLeadObj lead, String field) {
+          switch (field) {
+            case 'name':
+              var name = lead.firstname ?? '';
+              if (name.contains('||')) name = name.split('||')[0].trim();
+              return name.toLowerCase();
+            case 'companyName':
+              return (lead.companyName ?? '').toLowerCase();
+            case 'mobile':
+              return (lead.mobileNumber ?? '').toLowerCase();
+            case 'serviceRequired':
+              return (lead.detailsOfServiceRequired ?? '').toLowerCase();
+            case 'sourceOfProspect':
+              return (lead.source ?? '').toLowerCase();
+            case 'city':
+              return (lead.city ?? '').toLowerCase();
+            case 'statusUpdate':
+              return (lead.statusUpdate ?? '').toLowerCase();
+            case 'date':
+              DateTime parseDate(String? dateStr, String? fallback) {
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  dateStr = fallback;
+                }
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  return DateTime(1900);
+                }
+                DateTime? parsed;
+                try {
+                  parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+                } catch (_) {
+                  parsed = DateTime.tryParse(dateStr);
+                }
+                return parsed ?? DateTime(1900);
+              }
 
-        switch (targetLeadSortField.value) {
-          case 'name':
-            valA = a.firstname ?? '';
-            valB = b.firstname ?? '';
-            break;
-          case 'companyName':
-            valA = a.companyName ?? '';
-            valB = b.companyName ?? '';
-            break;
-          case 'mobile':
-            valA = a.mobileNumber ?? '';
-            valB = b.mobileNumber ?? '';
-            break;
-          case 'serviceRequired':
-            valA = a.detailsOfServiceRequired ?? '';
-            valB = b.detailsOfServiceRequired ?? '';
-            break;
-          case 'sourceOfProspect':
-            valA = a.source ?? '';
-            valB = b.source ?? '';
-            break;
-          case 'city':
-            valA = a.city ?? '';
-            valB = b.city ?? '';
-            break;
-          case 'statusUpdate':
-            valA = a.statusUpdate ?? '';
-            valB = b.statusUpdate ?? '';
-            break;
-          case 'date':
-            valA = formatDateTime(a.prospectEnrollmentDate.toString().isEmpty||a.prospectEnrollmentDate.toString()=="null"?a.updatedTs.toString():a.prospectEnrollmentDate.toString());
-            valB = formatDateTime(b.prospectEnrollmentDate.toString().isEmpty||b.prospectEnrollmentDate.toString()=="null"?b.updatedTs.toString():b.prospectEnrollmentDate.toString());
-            break;
-          default:
-            valA = '';
-            valB = '';
+              return parseDate(lead.updatedTs,lead.prospectEnrollmentDate);
+            default:
+              final value = lead.asMap()[field];
+              return value.toString().toLowerCase();
+          }
         }
-        if (targetLeadSortOrder.value == 'asc') {
-          return valA.compareTo(valB);
+
+        final valA = getFieldValue(a, sortField.value);
+        final valB = getFieldValue(b, sortField.value);
+
+        if (valA is DateTime && valB is DateTime) {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
         } else {
-          return valB.compareTo(valA);
+          return sortOrderN.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
         }
       });
     }
-    int start = (currentPage.value - 1) * itemsPerPage;
 
+    int start = (currentPage.value - 1) * itemsPerPage;
     if (start >= filteredLeads.length) return [];
 
     int end = start + itemsPerPage;

@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';
-import '../common/constant/default_constant.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_rating.dart';
 import '../components/custom_sidebar.dart';
@@ -135,13 +134,7 @@ class _NewDashboardState extends State<NewDashboard> {
             body: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SideBar(
-                  controllers: controllers,
-                  colorsConst: colorsConst,
-                  logo: logo,
-                  constValue: constValue,
-                  versionNum: versionNum,
-                ),
+                SideBar(),
                 Obx(() => Container(
                     width: controllers.isLeftOpen.value == false &&
                         controllers.isRightOpen.value == false

@@ -3,11 +3,8 @@ import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullcomm_crm/components/left_lead_tile.dart';
 import 'package:get/get.dart';
-import '../../common/constant/api.dart';
-import '../../common/constant/default_constant.dart';
 import '../../common/utilities/mail_utils.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
@@ -80,13 +77,7 @@ class _ProspectsState extends State<Prospects> {
           body: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SideBar(
-                controllers: controllers,
-                colorsConst: colorsConst,
-                logo: logo,
-                constValue: constValue,
-                versionNum: versionNum,
-              ),
+              SideBar(),
               Obx(() => Container(
                 width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
                   height: MediaQuery.of(context).size.height,
@@ -99,6 +90,7 @@ class _ProspectsState extends State<Prospects> {
                       HeaderSection(
                         title: "Leads - ${controllers.leadCategoryList[1]["value"]}",
                         subtitle: "View all of your ${controllers.leadCategoryList[1]["value"]} Information",
+                        list: controllers.allLeadFuture,
                       ),
                       20.height,
                       // Filter Section
@@ -538,9 +530,10 @@ class _ProspectsState extends State<Prospects> {
                                       child: Obx(
                                               () => controllers.isLead.value == false
                                               ? Container(
-                                                width: MediaQuery.of(context).size.width,
-                                                  height: MediaQuery.of(context).size.height - 340,
-                                                  alignment: Alignment.center,
+                                                  alignment: Alignment.centerLeft,
+                                                  width: MediaQuery.of(context).size.width,
+                                                  height: MediaQuery.of(context).size.height,
+                                                  padding: EdgeInsets.fromLTRB(160, 0, 0, 0),
                                                   child: const Center(child: CircularProgressIndicator()))
                                               : controllers.paginatedProspectsLeads.isNotEmpty?
                                           ListView.builder(

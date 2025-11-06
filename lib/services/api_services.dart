@@ -417,7 +417,6 @@ class ApiService {
   }
   Future disqualifiedCustomersAPI(BuildContext context,List<Map<String, String>> list) async {
     try{
-      print("data ${list.toString()}");
       Map data = {
         "action": "disqualified",
         "active": "2",
@@ -940,13 +939,13 @@ class ApiService {
       var response = await request.send();
       var responseData = await http.Response.fromStream(response);
       Map<String, dynamic> res = json.decode(responseData.body);
-      print("Server response: $res");
+      print("Server response: ${responseData.body}");
 
-      if (response.statusCode == 200 &&
-          res["message"] == "Customer save process completed.") {
+      if (response.statusCode == 200 && res["message"] == "Customer save process completed.") {
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
         apiService.allGoodLeadsDetails();
+        apiService.allTargetLeadsDetails();
         getUserHeading();
         prospectsList.clear();
         qualifiedList.clear();

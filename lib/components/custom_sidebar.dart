@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';
+import '../common/constant/default_constant.dart';
 import '../common/widgets/log_in.dart';
 import '../controller/controller.dart';
 import '../screens/customer/view_customer.dart';
@@ -20,19 +22,9 @@ import '../screens/settings/reminder_settings.dart';
 import '../screens/settings/user_plan.dart';
 
 class SideBar extends StatelessWidget {
-  final dynamic controllers;
-  final dynamic colorsConst;
-  final String logo;
-  final dynamic constValue;
-  final String versionNum;
 
   const SideBar({
     super.key,
-    required this.controllers,
-    required this.colorsConst,
-    required this.logo,
-    required this.constValue,
-    required this.versionNum,
   });
 
   @override
@@ -168,12 +160,11 @@ class SideBar extends StatelessWidget {
               },
               page: const DisqualifiedLead(),
             ),
-
             SidebarItem(
               context: context,
               controllers: controllers,
               colorsConst: colorsConst,
-              index: 7,
+              index: 12,
               icon: Icons.dashboard_customize,
               label: "Target Leads",
               selectedImage: "assets/images/s_target.png",
@@ -208,8 +199,105 @@ class SideBar extends StatelessWidget {
               unSelectedImage: "assets/images/u_reminder.png",
               page: const ReminderPage(),
             ),
-
-            // Settings expandable (role-based)
+          // controllers.storage.read("role") != "See All Customer Records"
+          //     ? 0.height
+          //     :Obx(() {
+          //   bool isExpanded = controllers.isSettingsExpanded.value;
+          //   bool isSelected = controllers.selectedIndex.value == 7 ||
+          //       (controllers.selectedIndex.value >= 701 && controllers.selectedIndex.value <= 705);
+          //   return Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //     5.height,
+          //     MouseRegion(
+          //       cursor: SystemMouseCursors.click,
+          //       onEnter: (_) => isSettingsHovered.value = true,
+          //       onExit: (_) => isSettingsHovered.value = false,
+          //       child: GestureDetector(
+          //         onTap: () {
+          //           controllers.oldIndex.value = controllers.selectedIndex.value;
+          //           controllers.selectedIndex.value = 7;
+          //           controllers.isSettingsExpanded.toggle();
+          //         },
+          //         child: AnimatedContainer(
+          //           duration: const Duration(milliseconds: 250),
+          //           curve: Curves.easeInOut,
+          //           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          //           decoration: BoxDecoration(
+          //             color: isSelected
+          //                 ? const Color(0xffF3F8FD)
+          //                 : isSettingsHovered.value
+          //                 ? const Color(0xffF8FAFF)
+          //                 : Colors.white,
+          //             borderRadius: BorderRadius.circular(8),
+          //             border: isSelected
+          //                 ? Border(
+          //               left: BorderSide(
+          //                 color: colorsConst.primary,
+          //                 width: 4,
+          //               ),
+          //             )
+          //                 : null,
+          //           ),
+          //           child: Row(
+          //             children: [
+          //               Icon(
+          //                 Icons.settings,
+          //                 size: 20,
+          //                 color: isSelected
+          //                     ? colorsConst.primary
+          //                     : isSettingsHovered.value
+          //                     ? colorsConst.primary.withOpacity(0.7)
+          //                     : Colors.black,
+          //               ),
+          //               12.width,
+          //               Expanded(
+          //                 child: IgnorePointer(
+          //                   child: Text(
+          //                     "Settings",
+          //                     style: TextStyle(
+          //                       fontSize: 15,
+          //                       color: isSelected
+          //                           ? colorsConst.primary
+          //                           : isSettingsHovered.value
+          //                           ? colorsConst.primary
+          //                           : Colors.black,
+          //                     ),
+          //                   ),
+          //                 ),
+          //               ),
+          //               AnimatedRotation(
+          //                 duration: const Duration(milliseconds: 250),
+          //                 turns: isExpanded ? 0.5 : 0,
+          //                 child: Icon(
+          //                   Icons.keyboard_arrow_down,
+          //                   size: 22,
+          //                   color: isSelected
+          //                       ? colorsConst.primary
+          //                       : Colors.black,
+          //                 ),
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //     AnimatedSwitcher(
+          //       duration: const Duration(milliseconds: 300),
+          //       child: isExpanded
+          //           ? Padding(
+          //         padding: const EdgeInsets.only(left: 32, top: 8),
+          //         child: Column(
+          //           crossAxisAlignment: CrossAxisAlignment.start,
+          //           children: [
+          //             subItem(context, "General Setting", 701, const GeneralSettings()),
+          //             subItem(context, "Role Management", 702, const RoleManagement()),
+          //             subItem(context, "User Plan & Access", 703, const UserPlan()),
+          //             subItem(context, "User Management", 704, const EmployeeScreen()),
+          //             subItem(context, "Reminder Setting", 705, const ReminderSettings()),
+          //           ],
+          //         ),
+          //       ) : const SizedBox(),
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()
                 : Obx(() {
@@ -461,51 +549,51 @@ class SidebarItem extends StatelessWidget {
     RxBool isHovered = false.obs;
     return Obx(() {
       bool isSelected = controllers.selectedIndex.value == index;
-      return MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) => isHovered.value = true,
-        onExit: (_) => isHovered.value = false,
-        child: Obx(() => AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeInOut,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xffF3F8FD)
-                : isHovered.value
-                ? const Color(0xffF8FAFF)
-                : Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: isHovered.value
-                ? [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                blurRadius: 8,
-                offset: const Offset(2, 2),
+      return  InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () {
+          if (onPreTap != null) onPreTap!();
+          if (onTap != null) {
+            onTap!();
+          } else if (page != null) {
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation1, animation2) => page!,
+                transitionDuration: Duration.zero,
+                reverseTransitionDuration: Duration.zero,
               ),
-            ]
-                : [],
-          ),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(8),
-            onTap: () {
-              if (onPreTap != null) onPreTap!();
-              if (onTap != null) {
-                onTap!();
-              } else if (page != null) {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation1, animation2) => page!,
-                    transitionDuration: Duration.zero,
-                    reverseTransitionDuration: Duration.zero,
-                  ),
-                );
-              }
-              controllers.oldIndex.value = controllers.selectedIndex.value;
-              controllers.selectedIndex.value = index;
-              controllers.isSettingsExpanded.value = false;
-            },
+            );
+          }
+          controllers.oldIndex.value = controllers.selectedIndex.value;
+          controllers.selectedIndex.value = index;
+          controllers.isSettingsExpanded.value = false;
+        },
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => isHovered.value = true,
+          onExit: (_) => isHovered.value = false,
+          child: Obx(() => AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? const Color(0xffF3F8FD)
+                  : isHovered.value
+                  ? const Color(0xffF8FAFF)
+                  : Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: isHovered.value
+                  ? [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  blurRadius: 8,
+                  offset: const Offset(2, 2),
+                ),
+              ]
+                  : [],
+            ),
             child: Stack(
               children: [
                 AnimatedPositioned(
@@ -553,8 +641,8 @@ class SidebarItem extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        )),
+          )),
+        ),
       );
     });
   }

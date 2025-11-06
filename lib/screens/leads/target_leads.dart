@@ -10,8 +10,6 @@ import 'package:fullcomm_crm/components/left_table_header.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../common/constant/api.dart';
-import '../../common/constant/default_constant.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
 import '../../components/custom_lead_tile.dart';
@@ -43,7 +41,7 @@ class _TargetLeadsState extends State<TargetLeads> {
     });
     Future.delayed(Duration.zero, () {
       apiService.currentVersion();
-      controllers.selectedIndex.value = 7;
+      controllers.selectedIndex.value = 12;
       controllers.groupController.selectIndex(0);
       setState(() {
         apiService.qualifiedList = [];
@@ -77,13 +75,7 @@ class _TargetLeadsState extends State<TargetLeads> {
           body: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SideBar(
-                controllers: controllers,
-                colorsConst: colorsConst,
-                logo: logo,
-                constValue: constValue,
-                versionNum: versionNum,
-              ),
+              SideBar(),
               Obx(() => InkWell(
                 mouseCursor: MouseCursor.defer,
                 focusColor: Colors.transparent,
@@ -104,6 +96,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                       HeaderSection(
                         title: "Target Leads",
                         subtitle: "View all of your Target Leads Information",
+                        list: controllers.targetLeadsFuture,
                       ),
                       20.height,
                       // Filter Section
@@ -391,29 +384,30 @@ class _TargetLeadsState extends State<TargetLeads> {
                                   showCheckbox: true,
                                   isAllSelected: controllers.isAllSelected.value,
                                   onSelectAll: (value) {
-                                    if (value == true) {
+                                    if (controllers.isAllSelected.value == true) {
+                                      controllers.isAllSelected.value = false;
+                                      for (int j = 0; j < controllers.isTargetLeadList.length; j++) {
+                                        controllers.isTargetLeadList[j]["isSelect"] = false;
+                                        setState(() {
+                                          var i = apiService.qualifiedList.indexWhere((element) =>
+                                          element["lead_id"] == controllers.isTargetLeadList[j]["lead_id"]);
+                                          apiService.qualifiedList.removeAt(i);
+                                        });
+                                      }
+                                    } else {
                                       controllers.isAllSelected.value = true;
                                       setState(() {
-                                        for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                          controllers.isNewLeadList[j]["isSelect"] = true;
-                                          apiService.prospectsList.add({
-                                            "lead_id": controllers.isNewLeadList[j]["lead_id"],
+                                        for (int j = 0; j < controllers.isTargetLeadList.length; j++) {
+                                          controllers.isTargetLeadList[j]["isSelect"] = true;
+                                          apiService.qualifiedList.add({
+                                            "lead_id": controllers.isTargetLeadList[j]["lead_id"],
                                             "user_id": controllers.storage.read("id"),
-                                            "rating": controllers.isNewLeadList[j]["rating"],
+                                            "rating": controllers.isTargetLeadList[j]["rating"],
                                             "cos_id": controllers.storage.read("cos_id"),
-                                            "mail_id":controllers.isNewLeadList[j]["mail"]
+                                            "mail_id":controllers.isTargetLeadList[j]["mail_id"]
                                           });
                                         }
                                       });
-                                    } else {
-                                      controllers.isAllSelected.value = false;
-                                      for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                        controllers.isNewLeadList[j]["isSelect"] = false;
-                                        setState((){
-                                          var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==controllers.isNewLeadList[j]["lead_id"]);
-                                          apiService.prospectsList.removeAt(i);
-                                        });
-                                      }
                                     }
                                   },
                                   onSortDate: () {
@@ -422,26 +416,26 @@ class _TargetLeadsState extends State<TargetLeads> {
                                     controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
                                   },
                                 ),
-                                Obx(() => controllers.paginatedLeads.isNotEmpty?
+                                Obx(() => controllers.isLead.value == false?0.height:controllers.paginatedTargetLead.isNotEmpty?
                                 ListView.builder(
                                   controller: _verticalController,
                                   shrinkWrap: true,
                                   physics: const ScrollPhysics(),
-                                  itemCount: controllers.paginatedLeads.length,
+                                  itemCount: controllers.paginatedTargetLead.length,
                                   itemBuilder: (context, index) {
-                                    final data = controllers.paginatedLeads[index];
+                                    final data = controllers.paginatedTargetLead[index];
                                     return Obx(()=>LeftLeadTile(
-                                      pageName: "Suspects",
-                                      saveValue: controllers.isNewLeadList[index]["isSelect"],
+                                      pageName: "Target Leads",
+                                      saveValue: controllers.isTargetLeadList[index]["isSelect"],
                                       onChanged: (value){
                                         setState(() {
-                                          if(controllers.isNewLeadList[index]["isSelect"]==true){
-                                            controllers.isNewLeadList[index]["isSelect"]=false;
-                                            var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                            apiService.prospectsList.removeAt(i);
+                                          if(controllers.isTargetLeadList[index]["isSelect"]==true){
+                                            controllers.isTargetLeadList[index]["isSelect"]=false;
+                                            var i=apiService.qualifiedList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                            apiService.qualifiedList.removeAt(i);
                                           }else{
-                                            controllers.isNewLeadList[index]["isSelect"]=true;
-                                            apiService.prospectsList.add({
+                                            controllers.isTargetLeadList[index]["isSelect"]=true;
+                                            apiService.qualifiedList.add({
                                               "lead_id":data.userId.toString(),
                                               "user_id":controllers.storage.read("id"),
                                               "rating":data.rating ?? "Warm",
@@ -606,21 +600,22 @@ class _TargetLeadsState extends State<TargetLeads> {
                                       width: 4000,
                                       child: Obx(() => controllers.isLead.value == false
                                           ? Container(
+                                          alignment: Alignment.centerLeft,
                                           width: MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(context).size.height - 340,
-                                          alignment: Alignment.center,
+                                          height: MediaQuery.of(context).size.height,
+                                          padding: EdgeInsets.fromLTRB(160, 0, 0, 0),
                                           child: const Center(child: CircularProgressIndicator()))
-                                          : controllers.paginatedLeads.isNotEmpty?
+                                          : controllers.paginatedTargetLead.isNotEmpty?
                                       ListView.builder(
                                         controller: _verticalController,
                                         shrinkWrap: true,
                                         physics: const ScrollPhysics(),
-                                        itemCount: controllers.paginatedLeads.length,
+                                        itemCount: controllers.paginatedTargetLead.length,
                                         itemBuilder: (context, index) {
-                                          final data = controllers.paginatedLeads[index];
+                                          final data = controllers.paginatedTargetLead[index];
                                           return Obx(()=>CustomLeadTile(
-                                            pageName: "Suspects",
-                                            saveValue: controllers.isNewLeadList[index]["isSelect"],
+                                            pageName: "Target Leads",
+                                            saveValue: controllers.isTargetLeadList[index]["isSelect"],
                                             onChanged: (value){
                                               setState(() {
                                                 if(controllers.isNewLeadList[index]["isSelect"]==true){

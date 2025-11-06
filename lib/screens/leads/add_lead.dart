@@ -12,7 +12,6 @@ import 'package:fullcomm_crm/components/custom_dropdown.dart';
 import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
-import '../../common/constant/api.dart';
 import '../../common/constant/key_constant.dart';
 import '../../components/custom_date_box.dart';
 import '../../components/custom_sidebar.dart';
@@ -131,13 +130,7 @@ class _AddLeadState extends State<AddLead> {
         // ),
         body: Row(
             children: [
-              SideBar(
-                controllers: controllers,
-                colorsConst: colorsConst,
-                logo: logo,
-                constValue: constValue,
-                versionNum: versionNum,
-              ),
+              SideBar(),
           20.width,
           Container(
               width: MediaQuery.of(context).size.width - 180,

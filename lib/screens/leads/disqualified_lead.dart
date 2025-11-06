@@ -1,16 +1,12 @@
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:fullcomm_crm/components/custom_no_data.dart';
 import 'package:fullcomm_crm/components/left_lead_tile.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import '../../common/constant/api.dart';
-import '../../common/constant/default_constant.dart';
 import '../../common/utilities/mail_utils.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
@@ -78,13 +74,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
           body: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SideBar(
-                controllers: controllers,
-                colorsConst: colorsConst,
-                logo: logo,
-                constValue: constValue,
-                versionNum: versionNum,
-              ),
+              SideBar(),
               Obx(() => InkWell(
                 focusColor: Colors.transparent,
                 hoverColor: Colors.transparent,
@@ -104,6 +94,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                       HeaderSection(
                         title: "Disqualified",
                         subtitle: "View all of your disqualified Information",
+                        list: controllers.disqualifiedFuture,
                       ),
                       20.height,
                       // Filter Section
@@ -361,7 +352,9 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                     controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
                                   },
                                 ),
-                                Obx(() => controllers.paginatedDisqualified.isNotEmpty?
+                                Obx(() => controllers.isLead.value == false
+                                    ? 0.height
+                                    :controllers.paginatedDisqualified.isNotEmpty?
                                 ListView.builder(
                                   controller: _verticalController,
                                   shrinkWrap: true,
@@ -543,12 +536,11 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                       alignment: Alignment.topLeft,
                                       height: MediaQuery.of(context).size.height - 340,
                                       width: 4000,
-                                      child: Obx(
-                                              () => controllers.isLead.value == false
+                                      child: Obx(() => controllers.isLead.value == false
                                               ? Container(
+                                                  alignment: Alignment.centerLeft,
                                                   width: MediaQuery.of(context).size.width,
-                                                  height: MediaQuery.of(context).size.height - 340,
-                                                  alignment: Alignment.center,
+                                                  height: MediaQuery.of(context).size.height,
                                                   child: const Center(child: CircularProgressIndicator()))
                                               : controllers.paginatedDisqualified.isNotEmpty?
                                           ListView.builder(

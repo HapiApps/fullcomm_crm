@@ -43,13 +43,7 @@ class _RecordsState extends State<Records> {
         body:  Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SideBar(
-              controllers: controllers,
-              colorsConst: colorsConst,
-              logo: logo,
-              constValue: constValue,
-              versionNum: versionNum,
-            ),
+            SideBar(),
             Obx(()=>Container(
               width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
               height: MediaQuery.of(context).size.height,

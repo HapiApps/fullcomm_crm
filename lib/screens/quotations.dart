@@ -2,8 +2,6 @@ import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../common/constant/api.dart';
-import '../common/constant/default_constant.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_sidebar.dart';
 import '../components/custom_text.dart';
@@ -47,13 +45,7 @@ class _QuotationsState extends State<Quotations> {
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SideBar(
-              controllers: controllers,
-              colorsConst: colorsConst,
-              logo: logo,
-              constValue: constValue,
-              versionNum: versionNum,
-            ),
+            SideBar(),
             Container(
                 width: MediaQuery.of(context).size.width - 490,
                 height: MediaQuery.of(context).size.height,

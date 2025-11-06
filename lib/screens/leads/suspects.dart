@@ -9,10 +9,7 @@ import 'package:fullcomm_crm/components/left_lead_tile.dart';
 import 'package:fullcomm_crm/components/left_table_header.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import '../../common/constant/api.dart';
-import '../../common/constant/default_constant.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
 import '../../components/custom_lead_tile.dart';
@@ -78,13 +75,7 @@ class _SuspectsState extends State<Suspects> {
           body: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SideBar(
-                controllers: controllers,
-                colorsConst: colorsConst,
-                logo: logo,
-                constValue: constValue,
-                versionNum: versionNum,
-              ),
+              SideBar(),
               Obx(() => InkWell(
                 mouseCursor: MouseCursor.defer,
                 focusColor: Colors.transparent,
@@ -105,6 +96,7 @@ class _SuspectsState extends State<Suspects> {
                       HeaderSection(
                         title: "New Leads - ${controllers.leadCategoryList[0]["value"]}",
                         subtitle: "View all of your ${controllers.leadCategoryList[0]["value"]} Information",
+                        list: controllers.allNewLeadFuture,
                       ),
                       20.height,
                       // Filter Section
@@ -361,7 +353,9 @@ class _SuspectsState extends State<Suspects> {
                                     controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
                                   },
                                 ),
-                                Obx(() => controllers.paginatedLeads.isNotEmpty?
+                                Obx(() => controllers.isLead.value == false
+                                    ? 0.height
+                                    : controllers.paginatedLeads.isNotEmpty?
                                       ListView.builder(
                                   controller: _verticalController,
                                   shrinkWrap: true,
@@ -545,9 +539,10 @@ class _SuspectsState extends State<Suspects> {
                                       width: 4000,
                                       child: Obx(() => controllers.isLead.value == false
                                           ? Container(
+                                          alignment: Alignment.centerLeft,
                                           width: MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(context).size.height - 340,
-                                          alignment: Alignment.center,
+                                          height: MediaQuery.of(context).size.height,
+                                          padding: EdgeInsets.fromLTRB(160, 0, 0, 0),
                                           child: const Center(child: CircularProgressIndicator()))
                                           : controllers.paginatedLeads.isNotEmpty?
                                       ListView.builder(

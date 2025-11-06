@@ -39,13 +39,7 @@ class _CusMailCommentsState extends State<CusMailComments> {
         backgroundColor: colorsConst.backgroundColor,
         body:Row(
           children: [
-            SideBar(
-              controllers: controllers,
-              colorsConst: colorsConst,
-              logo: logo,
-              constValue: constValue,
-              versionNum: versionNum,
-            ),
+            SideBar(),
             Obx(()=>Container(
               width: controllers.isLeftOpen.value == false &&
                   controllers.isRightOpen.value == false

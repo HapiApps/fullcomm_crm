@@ -12,10 +12,7 @@ import '../../components/custom_text.dart';
 import '../../components/custom_textfield.dart';
 import '../../components/password_text_field.dart';
 import '../../controller/controller.dart';
-import '../../services/api_services.dart';
-import '../constant/api.dart';
 import '../constant/colors_constant.dart';
-import '../constant/default_constant.dart';
 import '../constant/key_constant.dart';
 import '../utilities/utils.dart';
 
@@ -67,13 +64,7 @@ class _SignUpState extends State<SignUp> {
       child: Scaffold(
         body: Row(
           children: [
-            SideBar(
-              controllers: controllers,
-              colorsConst: colorsConst,
-              logo: logo,
-              constValue: constValue,
-              versionNum: versionNum,
-            ),
+            SideBar(),
             20.width,
             MediaQuery.of(context).size.width <= 987
                 ? 0.width

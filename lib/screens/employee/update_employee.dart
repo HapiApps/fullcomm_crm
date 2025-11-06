@@ -4,10 +4,7 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
-
-import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
-import '../../common/constant/default_constant.dart';
 import '../../common/constant/key_constant.dart';
 import '../../common/styles/decoration.dart';
 import '../../common/utilities/utils.dart';
@@ -15,7 +12,6 @@ import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../components/custom_textfield.dart';
 import '../../components/password_text_field.dart';
-import '../../controller/controller.dart';
 import '../../models/employee_details.dart';
 import '../../provider/employee_provider.dart';
 
@@ -75,13 +71,7 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
       return Scaffold(
         body: Row(
           children: [
-            SideBar(
-              controllers: controllers,
-              colorsConst: colorsConst,
-              logo: logo,
-              constValue: constValue,
-              versionNum: versionNum,
-            ),
+            SideBar(),
             Container(
               width: MediaQuery.of(context).size.width - 150,
               height: MediaQuery.of(context).size.height,
