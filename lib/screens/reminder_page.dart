@@ -738,7 +738,8 @@ class _ReminderPageState extends State<ReminderPage> {
                                                      size: 16,
                                                      isBold: true,
                                                      colors: colorsConst.textColor,
-                                                   ),                                                                  actions: [
+                                                   ),
+                                                   actions: [
                                                    Row(
                                                      mainAxisAlignment: MainAxisAlignment.end,
                                                      children: [

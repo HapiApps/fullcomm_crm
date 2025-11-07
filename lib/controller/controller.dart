@@ -177,7 +177,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       );
     }
   }
-  void showDatePickerDialog(BuildContext context) {
+  void showDatePickerDialog(BuildContext context,RxString selectedSortBy) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -266,6 +266,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
                     TextButton(
                       onPressed: () {
                         if (tempRange != null) {
+                          selectedSortBy.value = "";
                           setDateRange(tempRange);
                         }
                         Navigator.pop(context);

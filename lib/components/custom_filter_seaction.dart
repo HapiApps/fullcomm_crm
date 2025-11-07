@@ -274,8 +274,7 @@ class FilterSection extends StatelessWidget {
                 10.width,
                 InkWell(
                   onTap: (){
-                    controllers.showDatePickerDialog(context);
-                    selectedSortBy.value = "";
+                    controllers.showDatePickerDialog(context,selectedSortBy);
                   },
                   child: Container(
                     width: 200,
