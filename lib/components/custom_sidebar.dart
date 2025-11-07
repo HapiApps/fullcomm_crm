@@ -199,105 +199,6 @@ class SideBar extends StatelessWidget {
               unSelectedImage: "assets/images/u_reminder.png",
               page: const ReminderPage(),
             ),
-          // controllers.storage.read("role") != "See All Customer Records"
-          //     ? 0.height
-          //     :Obx(() {
-          //   bool isExpanded = controllers.isSettingsExpanded.value;
-          //   bool isSelected = controllers.selectedIndex.value == 7 ||
-          //       (controllers.selectedIndex.value >= 701 && controllers.selectedIndex.value <= 705);
-          //   return Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //     5.height,
-          //     MouseRegion(
-          //       cursor: SystemMouseCursors.click,
-          //       onEnter: (_) => isSettingsHovered.value = true,
-          //       onExit: (_) => isSettingsHovered.value = false,
-          //       child: GestureDetector(
-          //         onTap: () {
-          //           controllers.oldIndex.value = controllers.selectedIndex.value;
-          //           controllers.selectedIndex.value = 7;
-          //           controllers.isSettingsExpanded.toggle();
-          //         },
-          //         child: AnimatedContainer(
-          //           duration: const Duration(milliseconds: 250),
-          //           curve: Curves.easeInOut,
-          //           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-          //           decoration: BoxDecoration(
-          //             color: isSelected
-          //                 ? const Color(0xffF3F8FD)
-          //                 : isSettingsHovered.value
-          //                 ? const Color(0xffF8FAFF)
-          //                 : Colors.white,
-          //             borderRadius: BorderRadius.circular(8),
-          //             border: isSelected
-          //                 ? Border(
-          //               left: BorderSide(
-          //                 color: colorsConst.primary,
-          //                 width: 4,
-          //               ),
-          //             )
-          //                 : null,
-          //           ),
-          //           child: Row(
-          //             children: [
-          //               Icon(
-          //                 Icons.settings,
-          //                 size: 20,
-          //                 color: isSelected
-          //                     ? colorsConst.primary
-          //                     : isSettingsHovered.value
-          //                     ? colorsConst.primary.withOpacity(0.7)
-          //                     : Colors.black,
-          //               ),
-          //               12.width,
-          //               Expanded(
-          //                 child: IgnorePointer(
-          //                   child: Text(
-          //                     "Settings",
-          //                     style: TextStyle(
-          //                       fontSize: 15,
-          //                       color: isSelected
-          //                           ? colorsConst.primary
-          //                           : isSettingsHovered.value
-          //                           ? colorsConst.primary
-          //                           : Colors.black,
-          //                     ),
-          //                   ),
-          //                 ),
-          //               ),
-          //               AnimatedRotation(
-          //                 duration: const Duration(milliseconds: 250),
-          //                 turns: isExpanded ? 0.5 : 0,
-          //                 child: Icon(
-          //                   Icons.keyboard_arrow_down,
-          //                   size: 22,
-          //                   color: isSelected
-          //                       ? colorsConst.primary
-          //                       : Colors.black,
-          //                 ),
-          //               ),
-          //             ],
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //     AnimatedSwitcher(
-          //       duration: const Duration(milliseconds: 300),
-          //       child: isExpanded
-          //           ? Padding(
-          //         padding: const EdgeInsets.only(left: 32, top: 8),
-          //         child: Column(
-          //           crossAxisAlignment: CrossAxisAlignment.start,
-          //           children: [
-          //             subItem(context, "General Setting", 701, const GeneralSettings()),
-          //             subItem(context, "Role Management", 702, const RoleManagement()),
-          //             subItem(context, "User Plan & Access", 703, const UserPlan()),
-          //             subItem(context, "User Management", 704, const EmployeeScreen()),
-          //             subItem(context, "Reminder Setting", 705, const ReminderSettings()),
-          //           ],
-          //         ),
-          //       ) : const SizedBox(),
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()
                 : Obx(() {
@@ -391,7 +292,7 @@ class SideBar extends StatelessWidget {
                         children: [
                           subItem(context, "General Settings", 701, const GeneralSettings()),
                           subItem(context, "Role Management", 702, const RoleManagement()),
-                          subItem(context, "User Plan & Access", 703, const UserPlan()),
+                          //subItem(context, "User Plan & Access", 703, const UserPlan()),
                           subItem(context, "User Management", 704, const EmployeeScreen()),
                           subItem(context, "Reminder Settings", 705, const ReminderSettings()),
                         ],

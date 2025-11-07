@@ -14,7 +14,6 @@ import '../../components/custom_textfield.dart';
 import '../../controller/controller.dart';
 import '../constant/key_constant.dart';
 import '../utilities/mobile_snackbar.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -88,8 +87,9 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset("assets/images/ARUU.png"),
-                  50.height,
+                  //Image.asset("assets/images/ARUU.png"),
+                  Image.asset(logo,height: 100,),
+                  //50.height,
                   Text("Login",
                       style: GoogleFonts.poppins(
                         fontSize: 40,
