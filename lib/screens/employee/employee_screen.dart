@@ -253,51 +253,23 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   topLeft: Radius.circular(5),
                                   topRight: Radius.circular(5))),
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
+                            Padding(
                                   padding: const EdgeInsets.all(10.0),
-                                  child: CustomText(
-                                    textAlign: TextAlign.left,
-                                    text: "S.No",
-                                    size: 15,
-                                    isBold: true,
-                                    colors: Colors.white,
+                                  child:  Checkbox(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(2.0),
+                                    ),
+                                    side: WidgetStateBorderSide.resolveWith(
+                                          (states) => const BorderSide(width: 1.0, color: Colors.white),
+                                    ),
+                                    value: employeeProvider.selectedEmployeeIds.length == employeeProvider.filteredStaff.length && employeeProvider.filteredStaff.isNotEmpty,
+                                    onChanged: (value) {
+                                     employeeProvider.toggleSelectAllEmployees();
+                                    },
+                                    activeColor: Colors.white,
+                                    checkColor: colorsConst.primary,
                                   ),
                                 ),
-
-                                // Obx(() => GestureDetector(
-                                //   onTap: (){
-                                //     controllers.sortField.value = 'date';
-                                //     controllers.sortOrder.value = 'asc';
-                                //   },
-                                //   child: Icon(
-                                //     Icons.arrow_upward,
-                                //     size: 16,
-                                //     color: (controllers.sortField.value == 'date' &&
-                                //         controllers.sortOrder.value == 'asc')
-                                //         ? Colors.white
-                                //         : Colors.grey,
-                                //   ),
-                                // )),
-                                // Obx(() => GestureDetector(
-                                //   onTap: (){
-                                //     controllers.sortField.value = 'date';
-                                //     controllers.sortOrder.value = 'desc';
-                                //   },
-                                //   child: Icon(
-                                //     Icons.arrow_downward,
-                                //     size: 16,
-                                //     color: (controllers.sortField.value == 'date' &&
-                                //         controllers.sortOrder.value == 'desc')
-                                //         ? Colors.white
-                                //         : Colors.grey,
-                                //   ),
-                                // )
-                                // ),
-                              ],
-                            ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: CustomText(
@@ -551,18 +523,13 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                         color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                       ),
                                       children:[
-                                        SizedBox(
-                                          width:screenWidth*0.05,
-                                          child: Row(
-                                            children: [
-                                              Checkbox(
-                                                value: employeeProvider.isCheckedEmployee(staffId!),
-                                                onChanged: (value) {
-                                                  employeeProvider.toggleSelectionEmployee(staffId);
-                                                },
-                                              ),
-                                              CustomText(text: "${index + 1}"),
-                                            ],
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Checkbox(
+                                            value: employeeProvider.isCheckedEmployee(staffId!),
+                                            onChanged: (value) {
+                                              employeeProvider.toggleSelectionEmployee(staffId);
+                                            },
                                           ),
                                         ),
                                         Padding(

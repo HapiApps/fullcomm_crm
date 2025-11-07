@@ -320,8 +320,9 @@ class _SuspectsState extends State<Suspects> {
                               children: [
                                 LeftTableHeader(
                                   showCheckbox: true,
-                                  isAllSelected: controllers.isAllSelected.value,
+                                  isAllSelected: apiService.prospectsList.isEmpty?false:controllers.isAllSelected.value,
                                   onSelectAll: (value) {
+                                  if(controllers.paginatedLeads.isNotEmpty){
                                     if (value == true) {
                                       controllers.isAllSelected.value = true;
                                       setState(() {
@@ -346,6 +347,10 @@ class _SuspectsState extends State<Suspects> {
                                         });
                                       }
                                     }
+                                  }else{
+                                    print("No Data Found");
+                                    controllers.isAllSelected.value = false;
+                                  }
                                   },
                                   onSortDate: () {
                                     controllers.sortField.value = 'date';

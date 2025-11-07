@@ -212,6 +212,23 @@ class EmployeeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleSelectAllEmployees() {
+    final allSelected = filteredStaff.every((staff) => _selectedEmployeeIds.contains(staff.id));
+
+    if (allSelected) {
+      for (var staff in filteredStaff) {
+        _selectedEmployeeIds.remove(staff.id);
+      }
+    } else {
+      for (var staff in filteredStaff) {
+        if (!_selectedEmployeeIds.contains(staff.id)) {
+          _selectedEmployeeIds.add(staff.id.toString());
+        }
+      }
+    }
+    notifyListeners();
+  }
+
   ///Role Details Checkbox
   List<String> _selectedRoleIds = [];
   List<String> get selectedRoleIds => _selectedRoleIds;
@@ -281,6 +298,7 @@ class EmployeeProvider with ChangeNotifier {
     selectedEmployeeIndex= (selectedEmployeeIndex== index) ? null : index; // Toggle selection
     notifyListeners(); // Triggers UI rebuild
   }
+
 
   int? selectedDeliveryIndex;
 

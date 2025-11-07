@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
+import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
@@ -43,10 +44,10 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   final Rxn<DateTime> selectedMailMonth = Rxn<DateTime>();
   final Rxn<DateTime> selectedMeetMonth = Rxn<DateTime>();
   final Rxn<DateTime> selectedReminderMonth = Rxn<DateTime>();
-  RxString selectedCallSortBy = "".obs;
-  RxString selectedMailSortBy = "".obs;
-  RxString selectedMeetSortBy = "".obs;
-  RxString selectedReminderSortBy = "".obs;
+  RxString selectedCallSortBy = "Today".obs;
+  RxString selectedMailSortBy = "Today".obs;
+  RxString selectedMeetSortBy = "Today".obs;
+  RxString selectedReminderSortBy = "Today".obs;
   var selectedCallRange = Rxn<DateTimeRange>();
   var selectedMailRange = Rxn<DateTimeRange>();
   var selectedMeetRange = Rxn<DateTimeRange>();
@@ -654,6 +655,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       selectedReminderIds.remove(id);
     } else {
       selectedReminderIds.add(id);
+    }
+  }
+  void toggleSelectAllReminder() {
+    bool allSelected = reminderFilteredList.every((office) => selectedReminderIds.contains(office.id));
+    if (allSelected) {
+      selectedReminderIds.clear();
+    } else {
+      selectedReminderIds.assignAll(reminderFilteredList.map((office) => office.id));
     }
   }
 

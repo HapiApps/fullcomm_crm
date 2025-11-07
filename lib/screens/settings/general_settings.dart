@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/screens/settings/add_office_hours.dart';
@@ -127,7 +128,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         settingsController.searchOfficeText.value = value.toString().trim();
                       },
                     ),
-                    settingsController.selectedRoleIds.isNotEmpty?
+                    settingsController.selectedOfficeIds.isNotEmpty?
                     InkWell(
                       focusColor: Colors.transparent,
                       hoverColor: Colors.transparent,
@@ -137,7 +138,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               content: CustomText(
-                                text: "Are you sure delete this reminder?",
+                                text: "Are you sure delete this Office Hours?",
                                 size: 16,
                                 isBold: true,
                                 colors: colorsConst.textColor,
@@ -171,7 +172,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     10.width,
                                     CustomLoadingButton(
                                       callback: ()async{
-                                        remController.deleteReminderAPI(context);
+                                        settingsController.deleteOfficeHoursAPI(context);
                                       },
                                       height: 35,
                                       isLoading: true,
@@ -224,12 +225,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                 10.height,
                 Table(
                   columnWidths: const {
-                    0: FlexColumnWidth(2),//Employee
-                    1: FlexColumnWidth(3),//Shift Name
-                    2: FlexColumnWidth(2),//From
-                    3: FlexColumnWidth(2),//To
-                    4: FlexColumnWidth(2),//days
-                    5: FlexColumnWidth(2),//Updated On
+                    0: FlexColumnWidth(1),
+                    1: FlexColumnWidth(1.5),//Actions
+                    2: FlexColumnWidth(2),//Employee
+                    3: FlexColumnWidth(3),//Shift Name
+                    4: FlexColumnWidth(2),//From
+                    5: FlexColumnWidth(2),//To
+                    6: FlexColumnWidth(2),//days
+                    7: FlexColumnWidth(2),//Updated On
                   },
                   border: TableBorder(
                     horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -243,26 +246,33 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                 topLeft: Radius.circular(5),
                                 topRight: Radius.circular(5))),
                         children: [
-                          // Padding(
-                          //   padding: const EdgeInsets.all(10.0),
-                          //   child: CustomText(
-                          //     textAlign: TextAlign.left,
-                          //     text: "S.No",
-                          //     size: 15,
-                          //     isBold: true,
-                          //     colors: Colors.white,
-                          //   ),
-                          // ),
-                          // Padding(
-                          //   padding: const EdgeInsets.all(10.0),
-                          //   child: CustomText(
-                          //     textAlign: TextAlign.left,
-                          //     text: "Actions",//0
-                          //     size: 15,
-                          //     isBold: true,
-                          //     colors: Colors.white,
-                          //   ),
-                          // ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child:  Checkbox(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(2.0),
+                              ),
+                              side: WidgetStateBorderSide.resolveWith(
+                                    (states) => const BorderSide(width: 1.0, color: Colors.white),
+                              ),
+                              value: settingsController.selectedOfficeIds.length == settingsController.officeHoursList.length && settingsController.officeHoursList.isNotEmpty,
+                              onChanged: (value) {
+                                settingsController.toggleSelectAllOffices();
+                              },
+                              activeColor: Colors.white,
+                              checkColor: colorsConst.primary,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: CustomText(
+                              textAlign: TextAlign.left,
+                              text: "Actions",//0
+                              size: 15,
+                              isBold: true,
+                              colors: Colors.white,
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Row(
@@ -503,12 +513,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         final officeHour = filteredList[index];
                         return Table(
                           columnWidths:const {
-                            0: FlexColumnWidth(2),//Employee
-                            1: FlexColumnWidth(3),//Shift Name
-                            2: FlexColumnWidth(2),//From
-                            3: FlexColumnWidth(2),//To
-                            4: FlexColumnWidth(2),//days
-                            5: FlexColumnWidth(2),//Updated On
+                            0: FlexColumnWidth(1),
+                            1: FlexColumnWidth(1.5),//Actions
+                            2: FlexColumnWidth(2),//Employee
+                            3: FlexColumnWidth(3),//Shift Name
+                            4: FlexColumnWidth(2),//From
+                            5: FlexColumnWidth(2),//To
+                            6: FlexColumnWidth(2),//days
+                            7: FlexColumnWidth(2),//Updated On
                           },
                           border: TableBorder(
                             horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -521,103 +533,87 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                 ),
                                 children:[
-                                  // SizedBox(
-                                  //   width:100,
-                                  //   child: Row(
-                                  //     children: [
-                                  //       Checkbox(
-                                  //         value: true,
-                                  //         onChanged: (value) {
-                                  //           //employeeProvider.toggleSelectionEmployee(staffId);
-                                  //         },
-                                  //       ),
-                                  //       CustomText(text: "${index + 1}"),
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                  // Padding(
-                                  //   padding: const EdgeInsets.all(3.0),
-                                  //   child: Row(
-                                  //     mainAxisAlignment: MainAxisAlignment.start,
-                                  //     children: [
-                                  //       IconButton(
-                                  //           onPressed: (){
-                                  //
-                                  //             //_showUpdateReminderDialog(reminder.id.toString());
-                                  //           },
-                                  //           icon:  SvgPicture.asset(
-                                  //             "assets/images/a_edit.svg",
-                                  //             width: 16,
-                                  //             height: 16,
-                                  //           )),
-                                  //       IconButton(
-                                  //           onPressed: (){
-                                  //             showDialog(
-                                  //               context: context,
-                                  //               builder: (BuildContext context) {
-                                  //                 return AlertDialog(
-                                  //                   content: CustomText(
-                                  //                     text: "Are you sure delete this reminder?",
-                                  //                     size: 16,
-                                  //                     isBold: true,
-                                  //                     colors: colorsConst.textColor,
-                                  //                   ),                                                                  actions: [
-                                  //                   Row(
-                                  //                     mainAxisAlignment: MainAxisAlignment.end,
-                                  //                     children: [
-                                  //                       Container(
-                                  //                         decoration: BoxDecoration(
-                                  //                             border: Border.all(color: colorsConst.primary),
-                                  //                             color: Colors.white),
-                                  //                         width: 80,
-                                  //                         height: 25,
-                                  //                         child: ElevatedButton(
-                                  //                             style: ElevatedButton.styleFrom(
-                                  //                               shape: const RoundedRectangleBorder(
-                                  //                                 borderRadius: BorderRadius.zero,
-                                  //                               ),
-                                  //                               backgroundColor: Colors.white,
-                                  //                             ),
-                                  //                             onPressed: () {
-                                  //                               Navigator.pop(context);
-                                  //                             },
-                                  //                             child: CustomText(
-                                  //                               text: "Cancel",
-                                  //                               colors: colorsConst.primary,
-                                  //                               size: 14,
-                                  //                             )),
-                                  //                       ),
-                                  //                       10.width,
-                                  //                       CustomLoadingButton(
-                                  //                         callback: ()async{
-                                  //                           remController.selectedReminderIds.add(officeHour.id.toString());
-                                  //                           remController.deleteReminderAPI(context);
-                                  //                         },
-                                  //                         height: 35,
-                                  //                         isLoading: true,
-                                  //                         backgroundColor: colorsConst.primary,
-                                  //                         radius: 2,
-                                  //                         width: 80,
-                                  //                         controller: controllers.productCtr,
-                                  //                         isImage: false,
-                                  //                         text: "Delete",
-                                  //                         textColor: Colors.white,
-                                  //                       ),
-                                  //                     ],
-                                  //                   ),
-                                  //                 ],
-                                  //                 );
-                                  //               },
-                                  //             );
-                                  //           },
-                                  //           icon: SvgPicture.asset(
-                                  //             "assets/images/a_delete.svg",
-                                  //             width: 16,
-                                  //             height: 16,
-                                  //           ))
-                                  //     ],
-                                  //   ),
-                                  // ),
+                                  Checkbox(
+                                    value: settingsController.isCheckedOffice(officeHour.id),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        settingsController.toggleOfficeSelection(officeHour.id);
+                                      });
+                                    },
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        IconButton(
+                                            onPressed: (){
+                                              showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return AlertDialog(
+                                                    content: CustomText(
+                                                      text: "Are you sure delete this office hours?",
+                                                      size: 16,
+                                                      isBold: true,
+                                                      colors: colorsConst.textColor,
+                                                    ),                                                                  actions: [
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(color: colorsConst.primary),
+                                                              color: Colors.white),
+                                                          width: 80,
+                                                          height: 25,
+                                                          child: ElevatedButton(
+                                                              style: ElevatedButton.styleFrom(
+                                                                shape: const RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.zero,
+                                                                ),
+                                                                backgroundColor: Colors.white,
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: CustomText(
+                                                                text: "Cancel",
+                                                                colors: colorsConst.primary,
+                                                                size: 14,
+                                                              )),
+                                                        ),
+                                                        10.width,
+                                                        CustomLoadingButton(
+                                                          callback: ()async{
+                                                            settingsController.selectedOfficeIds.add(officeHour.id.toString());
+                                                            settingsController.deleteOfficeHoursAPI(context);
+                                                          },
+                                                          height: 35,
+                                                          isLoading: true,
+                                                          backgroundColor: colorsConst.primary,
+                                                          radius: 2,
+                                                          width: 80,
+                                                          controller: controllers.productCtr,
+                                                          isImage: false,
+                                                          text: "Delete",
+                                                          textColor: Colors.white,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            icon: SvgPicture.asset(
+                                              "assets/images/a_delete.svg",
+                                              width: 16,
+                                              height: 16,
+                                            ))
+                                      ],
+                                    ),
+                                  ),
                                   Tooltip(
                                     message: officeHour.employeeName,
                                     child: Padding(

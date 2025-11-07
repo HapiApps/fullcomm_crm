@@ -316,28 +316,47 @@ class _ProspectsState extends State<Prospects> {
                                   showCheckbox: true,
                                   isAllSelected: controllers.isAllSelected.value,
                                   onSelectAll: (value) {
-                                    if (value == true) {
-                                      controllers.isAllSelected.value = true;
-                                      setState((){
-                                        apiService.qualifiedList = [];
-                                        for (int j = 0; j < controllers.isLeadsList.length; j++) {
-                                          controllers.isLeadsList[j]["isSelect"] = true;
-                                          apiService.qualifiedList.add({
-                                            "lead_id":controllers.isLeadsList[j]["lead_id"],
-                                            "user_id":controllers.storage.read("id"),
-                                            "rating":controllers.isLeadsList[j]["rating"],
-                                            "cos_id":controllers.storage.read("cos_id"),
+                                    if(controllers.paginatedProspectsLeads.isNotEmpty) {
+                                      if (value == true) {
+                                        controllers.isAllSelected.value = true;
+                                        setState(() {
+                                          apiService.qualifiedList = [];
+                                          for (int j = 0; j <
+                                              controllers.isLeadsList
+                                                  .length; j++) {
+                                            controllers
+                                                .isLeadsList[j]["isSelect"] =
+                                            true;
+                                            apiService.qualifiedList.add({
+                                              "lead_id": controllers
+                                                  .isLeadsList[j]["lead_id"],
+                                              "user_id": controllers.storage
+                                                  .read("id"),
+                                              "rating": controllers
+                                                  .isLeadsList[j]["rating"],
+                                              "cos_id": controllers.storage
+                                                  .read("cos_id"),
+                                            });
+                                          }
+                                        });
+                                      } else {
+                                        controllers.isAllSelected.value = false;
+                                        for (int j = 0; j <
+                                            controllers.isLeadsList
+                                                .length; j++) {
+                                          controllers
+                                              .isLeadsList[j]["isSelect"] =
+                                          false;
+                                          setState(() {
+                                            var i = apiService.qualifiedList
+                                                .indexWhere((
+                                                element) => element["lead_id"] ==
+                                                controllers
+                                                    .isLeadsList[j]["lead_id"]);
+                                            apiService.qualifiedList.removeAt(
+                                                i);
                                           });
                                         }
-                                      });
-                                    } else {
-                                      controllers.isAllSelected.value = false;
-                                      for (int j = 0; j < controllers.isLeadsList.length; j++) {
-                                        controllers.isLeadsList[j]["isSelect"] = false;
-                                        setState((){
-                                          var i=apiService.qualifiedList.indexWhere((element) => element["lead_id"]==controllers.isLeadsList[j]["lead_id"]);
-                                          apiService.qualifiedList.removeAt(i);
-                                        });
                                       }
                                     }
                                   },

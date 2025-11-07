@@ -68,7 +68,6 @@ class _HeaderSectionState extends State<HeaderSection> {
           }
           return parsed ?? DateTime(1900);
         }
-
         final date = parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
         return DateFormat('dd-MM-yyyy').format(date);
       default:
@@ -76,65 +75,16 @@ class _HeaderSectionState extends State<HeaderSection> {
         return value?.toString() ?? '';
     }
   }
-
-  // void exportLeadsToExcel(List<NewLeadObj> leads) {
-  //   final excel = Excel.createExcel();
-  //   final sheetObject = excel['Leads'];
-  //   final headers = [
-  //     'name',
-  //     'mobile_number',
-  //     'email',
-  //     'company_name',
-  //     'city',
-  //     'rating',
-  //     'prospect_enrollment_date',
-  //     'updatedTs',
-  //     'detailsOfServiceRequired',
-  //     'status_update',
-  //     'source'
-  //   ];
-  //
-  //   // Header styling
-  //   final headerStyle = CellStyle(
-  //     bold: true,
-  //     fontColorHex: ExcelColor.white,
-  //     backgroundColorHex: ExcelColor.blue,
-  //   );
-  //   for (int i = 0; i < headers.length; i++) {
-  //     final cell = sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
-  //     cell.value = TextCellValue(headers[i]);
-  //     cell.cellStyle = headerStyle;
-  //   }
-  //
-  //   for (int r = 0; r < leads.length; r++) {
-  //     final lead = leads[r];
-  //     for (int c = 0; c < headers.length; c++) {
-  //       final value = getFieldValue(lead, headers[c]);
-  //       sheetObject
-  //           .cell(CellIndex.indexByColumnRow(columnIndex: c, rowIndex: r + 1))
-  //           .value = TextCellValue(value.toString());
-  //     }
-  //   }
-  //   final fileBytes = excel.encode();
-  //   final blob = html.Blob([Uint8List.fromList(fileBytes!)]);
-  //   final url = html.Url.createObjectUrlFromBlob(blob);
-  //   final anchor = html.AnchorElement(href: url)
-  //     ..setAttribute("download", "leads_${DateFormat('yyyyMMdd_HHmm').format(DateTime.now())}.xlsx")
-  //     ..click();
-  //   html.Url.revokeObjectUrl(url);
-  // }
   Future<void> exportLeadsToExcel(
       List<NewLeadObj> leads,
-      List<CustomerField> fields, // your controllers.fields
+      List<CustomerField> fields,
       ) async {
     final excel = Excel.createExcel();
-    final sheet = excel['Leads'];
-
+    final sheet = excel.sheets[excel.getDefaultSheet()!];
     String normalize(String s) =>
         s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
-
     final headers = fields.map((f) => f.userHeading).toList();
-    sheet.appendRow(headers.map((h) => TextCellValue(h)).toList());
+    sheet?.appendRow(headers.map((h) => TextCellValue(h)).toList());
 
     final headerStyle = CellStyle(
       bold: true,
@@ -142,11 +92,11 @@ class _HeaderSectionState extends State<HeaderSection> {
       fontColorHex: ExcelColor.white,
     );
     for (var col = 0; col < headers.length; col++) {
-      final cell = sheet.cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: 0));
-      cell.cellStyle = headerStyle;
+      final cell = sheet?.cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: 0));
+      cell?.cellStyle = headerStyle;
     }
     for (final lead in leads) {
-      final map = lead.asMap();
+      final map = lead.toJson(); // or lead.asMap() if that’s what you use
       final row = fields.map((f) {
         final key = f.systemField;
         final value = map[key];
@@ -154,7 +104,7 @@ class _HeaderSectionState extends State<HeaderSection> {
           (value == null || value.toString() == 'null') ? '' : value.toString(),
         );
       }).toList();
-      sheet.appendRow(row);
+      sheet?.appendRow(row);
     }
     final fileBytes = excel.encode();
     final blob = html.Blob([fileBytes]);
@@ -164,6 +114,58 @@ class _HeaderSectionState extends State<HeaderSection> {
       ..click();
     html.Url.revokeObjectUrl(url);
   }
+
+  // Future<void> exportLeadsToExcel(
+  //     List<NewLeadObj> leads,
+  //     List<CustomerField> fields, // your controllers.fields
+  //     ) async {
+  //   final excel = Excel.createExcel();
+  //   excel.delete('Sheet1');
+  //   final sheet = excel['Leads'];
+  //
+  //   String normalize(String s) =>
+  //       s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
+  //
+  //   final headers = fields.map((f) => f.userHeading).toList();
+  //   sheet.appendRow(headers.map((h) => TextCellValue(h)).toList());
+  //
+  //   final headerStyle = CellStyle(
+  //     bold: true,
+  //     backgroundColorHex: ExcelColor.blue,
+  //     fontColorHex: ExcelColor.white,
+  //   );
+  //   for (var col = 0; col < headers.length; col++) {
+  //     final cell = sheet.cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: 0));
+  //     cell.cellStyle = headerStyle;
+  //   }
+  //   for (final lead in leads) {
+  //     // print("--------------------------------------------------");
+  //     // print("Lead Object: ${lead.toJson()}");
+  //     //
+  //     // for (final f in fields) {
+  //     //   final key = f.systemField;
+  //     //   final heading = f.userHeading;
+  //     //   final value = lead.toJson()[key];
+  //     //   print("[$heading] key=$key => value=$value");
+  //     // }
+  //     final map = lead.toJson();
+  //     final row = fields.map((f) {
+  //       final key = f.systemField;
+  //       final value = map[key];
+  //       return TextCellValue(
+  //         (value == null || value.toString() == 'null') ? '' : value.toString(),
+  //       );
+  //     }).toList();
+  //     sheet.appendRow(row);
+  //   }
+  //   final fileBytes = excel.encode();
+  //   final blob = html.Blob([fileBytes]);
+  //   final url = html.Url.createObjectUrlFromBlob(blob);
+  //   final anchor = html.AnchorElement(href: url)
+  //     ..setAttribute("download", "leads_${DateTime.now().millisecondsSinceEpoch}.xlsx")
+  //     ..click();
+  //   html.Url.revokeObjectUrl(url);
+  // }
 
   @override
   Widget build(BuildContext context) {

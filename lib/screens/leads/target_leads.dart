@@ -384,30 +384,49 @@ class _TargetLeadsState extends State<TargetLeads> {
                                   showCheckbox: true,
                                   isAllSelected: controllers.isAllSelected.value,
                                   onSelectAll: (value) {
-                                    if (controllers.isAllSelected.value == true) {
-                                      controllers.isAllSelected.value = false;
-                                      for (int j = 0; j < controllers.isTargetLeadList.length; j++) {
-                                        controllers.isTargetLeadList[j]["isSelect"] = false;
-                                        setState(() {
-                                          var i = apiService.qualifiedList.indexWhere((element) =>
-                                          element["lead_id"] == controllers.isTargetLeadList[j]["lead_id"]);
-                                          apiService.qualifiedList.removeAt(i);
-                                        });
-                                      }
-                                    } else {
-                                      controllers.isAllSelected.value = true;
-                                      setState(() {
-                                        for (int j = 0; j < controllers.isTargetLeadList.length; j++) {
-                                          controllers.isTargetLeadList[j]["isSelect"] = true;
-                                          apiService.qualifiedList.add({
-                                            "lead_id": controllers.isTargetLeadList[j]["lead_id"],
-                                            "user_id": controllers.storage.read("id"),
-                                            "rating": controllers.isTargetLeadList[j]["rating"],
-                                            "cos_id": controllers.storage.read("cos_id"),
-                                            "mail_id":controllers.isTargetLeadList[j]["mail_id"]
+                                    if(controllers.paginatedTargetLead.isNotEmpty) {
+                                      if (controllers.isAllSelected.value ==
+                                          true) {
+                                        controllers.isAllSelected.value = false;
+                                        for (int j = 0; j <
+                                            controllers.isTargetLeadList
+                                                .length; j++) {
+                                          controllers
+                                              .isTargetLeadList[j]["isSelect"] =
+                                          false;
+                                          setState(() {
+                                            var i = apiService.qualifiedList
+                                                .indexWhere((element) =>
+                                            element["lead_id"] == controllers
+                                                .isTargetLeadList[j]["lead_id"]);
+                                            apiService.qualifiedList.removeAt(
+                                                i);
                                           });
                                         }
-                                      });
+                                      } else {
+                                        controllers.isAllSelected.value = true;
+                                        setState(() {
+                                          for (int j = 0; j <
+                                              controllers.isTargetLeadList
+                                                  .length; j++) {
+                                            controllers
+                                                .isTargetLeadList[j]["isSelect"] =
+                                            true;
+                                            apiService.qualifiedList.add({
+                                              "lead_id": controllers
+                                                  .isTargetLeadList[j]["lead_id"],
+                                              "user_id": controllers.storage
+                                                  .read("id"),
+                                              "rating": controllers
+                                                  .isTargetLeadList[j]["rating"],
+                                              "cos_id": controllers.storage
+                                                  .read("cos_id"),
+                                              "mail_id": controllers
+                                                  .isTargetLeadList[j]["mail_id"]
+                                            });
+                                          }
+                                        });
+                                      }
                                     }
                                   },
                                   onSortDate: () {

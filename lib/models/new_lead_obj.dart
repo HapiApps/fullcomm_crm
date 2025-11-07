@@ -239,4 +239,70 @@ class NewLeadObj {
       "x": x
     };
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": userId,
+      "mainName": firstname,
+      "mainMobile": mobileNumber,
+      "mainEmail": email,
+      "mainWhatsApp": whatsapp,
+      "company_name": companyName,
+      "status": status,
+      "rating": rating,
+      "emailUpdate": quotationRequired,
+      "name": firstname,
+      "title":"",
+      "mobile_number": mobileNumber,
+      "whatsappNumber": whatsapp,
+      "email": email,
+      "mainTitle": "",
+      "addressId": addressId,
+      "companyWebsite": whatsapp,
+      "companyNumber": companyNumber,
+      "companyEmail": companyEmail,
+      "industry": industry,
+      "productServices": "",
+      "source": source,
+      "owner": owner,
+      "budget": "",
+      "timelineDecision": "",
+      "serviceInterest": "",
+      "description": "",
+      "lead_status": leadStatus == "1"
+          ? "Suspects"
+          : leadStatus == "2"
+          ? "Prospects"
+          : leadStatus == "3"
+          ? "Qualified"
+          : "Customers",
+      "active": active,
+      "door_no": doorNo,
+      "landmark_1": landmark1,
+      "area": area,
+      "city": city,
+      "state": state,
+      "country": country,
+      "pinCode": pincode,
+      "linkedin": linkedin,
+      "x": x,
+      "quotation_status": quotationStatus,
+      "product_discussion": productDiscussion,
+      "discussion_point": discussionPoint,
+      "notes": notes,
+      "quotationRequired": quotationRequired,
+      "arpu_value": arpuValue,
+      "source_details": sourceDetails,
+      "prospect_enrollment_date": prospectEnrollmentDate,
+      "expected_convertion_date": expectedConvertionDate,
+      "status_update": statusUpdate,
+      "num_of_headcount": numOfHeadcount,
+      "expected_billing_value": expectedBillingValue,
+      "visit_type": visitType,
+      "points": notes,
+      "details_of_service_required": detailsOfServiceRequired,
+      "updatedTs": updatedTs,
+      "date": updatedTs,
+    };
+  }
 }

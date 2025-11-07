@@ -303,12 +303,19 @@ class _ReminderPageState extends State<ReminderPage> {
                        children: [
                          Padding(
                            padding: const EdgeInsets.all(10.0),
-                           child: CustomText(
-                             textAlign: TextAlign.left,
-                             text: "",//0
-                             size: 15,
-                             isBold: true,
-                             colors: Colors.white,
+                           child:  Checkbox(
+                             shape: RoundedRectangleBorder(
+                               borderRadius: BorderRadius.circular(2.0),
+                             ),
+                             side: WidgetStateBorderSide.resolveWith(
+                                   (states) => const BorderSide(width: 1.0, color: Colors.white),
+                             ),
+                             value: remController.selectedReminderIds.length == remController.reminderFilteredList.length && remController.reminderFilteredList.isNotEmpty,
+                             onChanged: (value) {
+                               remController.toggleSelectAllReminder();
+                             },
+                             activeColor: Colors.white,
+                             checkColor: colorsConst.primary,
                            ),
                          ),
                          Padding(
@@ -690,20 +697,15 @@ class _ReminderPageState extends State<ReminderPage> {
                                  color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                ),
                                children:[
-                                 SizedBox(
-                                   width: 50,
-                                   child: Row(
-                                     children: [
-                                       Checkbox(
-                                         value: remController.isCheckedReminder(reminder.id),
-                                         onChanged: (value) {
-                                           setState(() {
-                                             remController.toggleReminderSelection(reminder.id);
-                                           });
-                                         },
-                                       ),
-                                       //CustomText(text: "${index + 1}"),
-                                     ],
+                                 Padding(
+                                   padding: const EdgeInsets.all(10.0),
+                                   child: Checkbox(
+                                     value: remController.isCheckedReminder(reminder.id),
+                                     onChanged: (value) {
+                                       setState(() {
+                                         remController.toggleReminderSelection(reminder.id);
+                                       });
+                                     },
                                    ),
                                  ),
                                  Padding(

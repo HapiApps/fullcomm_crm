@@ -315,27 +315,45 @@ class _QualifiedState extends State<Qualified> {
                                 showCheckbox: true,
                                 isAllSelected: controllers.isAllSelected.value,
                                 onSelectAll: (value) {
-                                  if (value == true) {
-                                    controllers.isAllSelected.value = true;
-                                    setState((){
-                                      for(int j=0;j<controllers.isGoodLeadList.length;j++){
-                                        controllers.isGoodLeadList[j]["isSelect"]=true;
-                                        apiService.customerList.add({
-                                          "lead_id":controllers.isGoodLeadList[j]["lead_id"],
-                                          "user_id":controllers.storage.read("id"),
-                                          "rating":controllers.isGoodLeadList[j]["rating"],
-                                          "cos_id":controllers.storage.read("cos_id"),
+                                  if(controllers.paginatedQualifiedLeads.isNotEmpty) {
+                                    if (value == true) {
+                                      controllers.isAllSelected.value = true;
+                                      setState(() {
+                                        for (int j = 0; j <
+                                            controllers.isGoodLeadList
+                                                .length; j++) {
+                                          controllers
+                                              .isGoodLeadList[j]["isSelect"] =
+                                          true;
+                                          apiService.customerList.add({
+                                            "lead_id": controllers
+                                                .isGoodLeadList[j]["lead_id"],
+                                            "user_id": controllers.storage.read(
+                                                "id"),
+                                            "rating": controllers
+                                                .isGoodLeadList[j]["rating"],
+                                            "cos_id": controllers.storage.read(
+                                                "cos_id"),
+                                          });
+                                        }
+                                      });
+                                    } else {
+                                      controllers.isAllSelected.value = false;
+                                      for (int j = 0; j <
+                                          controllers.isGoodLeadList
+                                              .length; j++) {
+                                        controllers
+                                            .isGoodLeadList[j]["isSelect"] =
+                                        false;
+                                        setState(() {
+                                          var i = apiService.customerList
+                                              .indexWhere((
+                                              element) => element["lead_id"] ==
+                                              controllers
+                                                  .isGoodLeadList[j]["lead_id"]);
+                                          apiService.customerList.removeAt(i);
                                         });
                                       }
-                                    });
-                                  } else {
-                                    controllers.isAllSelected.value = false;
-                                    for(int j=0;j<controllers.isGoodLeadList.length;j++){
-                                      controllers.isGoodLeadList[j]["isSelect"]=false;
-                                      setState((){
-                                        var i=apiService.customerList.indexWhere((element) => element["lead_id"]==controllers.isGoodLeadList[j]["lead_id"]);
-                                        apiService.customerList.removeAt(i);
-                                      });
                                     }
                                   }
                                 },

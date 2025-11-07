@@ -168,6 +168,60 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       selectedRoleIds.add(id);
     }
   }
+  var selectedOfficeIds = <String>[].obs;
+  bool isCheckedOffice(String id) {
+    return selectedOfficeIds.contains(id);
+  }
+  void toggleOfficeSelection(String id) {
+    if (selectedOfficeIds.contains(id)) {
+      selectedOfficeIds.remove(id);
+    } else {
+      selectedOfficeIds.add(id);
+    }
+  }
+  void toggleSelectAllOffices() {
+    bool allSelected = officeHoursList.every((office) => selectedOfficeIds.contains(office.id));
+    if (allSelected) {
+      selectedOfficeIds.clear();
+    } else {
+      selectedOfficeIds.assignAll(officeHoursList.map((office) => office.id));
+    }
+  }
+
+  Future deleteOfficeHoursAPI(BuildContext context) async {
+    try{
+      Map data = {
+        "action": "delete_office_hours",
+        "user_id": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id"),
+        "officeList": selectedOfficeIds,
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"]=="OK"){
+        allOfficeHours();
+        Navigator.pop(context);
+        utils.snackBar(context: context, msg: "Office Hours deleted successfully.", color: Colors.green);
+        controllers.productCtr.reset();
+        selectedOfficeIds.clear();
+      } else {
+        apiService.errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      apiService.errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+
   Future updateRoleAPI(BuildContext context,String id) async {
     try{
       Map data = {

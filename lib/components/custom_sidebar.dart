@@ -389,11 +389,11 @@ class SideBar extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          subItem(context, "General Setting", 701, const GeneralSettings()),
+                          subItem(context, "General Settings", 701, const GeneralSettings()),
                           subItem(context, "Role Management", 702, const RoleManagement()),
                           subItem(context, "User Plan & Access", 703, const UserPlan()),
                           subItem(context, "User Management", 704, const EmployeeScreen()),
-                          subItem(context, "Reminder Setting", 705, const ReminderSettings()),
+                          subItem(context, "Reminder Settings", 705, const ReminderSettings()),
                         ],
                       ),
                     )
