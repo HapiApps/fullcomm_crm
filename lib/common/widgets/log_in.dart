@@ -36,8 +36,8 @@ class _LoginPageState extends State<LoginPage> {
       controllers.loginNumber.text = mobileNumber.toString();
       controllers.loginPassword.text = password.toString();
       if (kDebugMode) {
-        controllers.loginNumber.text = isRelease==false?"9999999991":"9677281724";
-        controllers.loginPassword.text = "12345678";
+        controllers.loginNumber.text = isRelease==false?"9999999991":"8220074826";
+        controllers.loginPassword.text = isRelease==false?"12345678":"Mahesh@123";
       }
     });
   }
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   //Image.asset("assets/images/ARUU.png"),
-                  Image.asset(logo,height: 100,),
+                  Image.asset(loginLogo,height: 100,),
                   //50.height,
                   Text("Login",
                       style: GoogleFonts.poppins(

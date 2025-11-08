@@ -815,6 +815,7 @@ class ApiService {
         allNewLeadsDetails();
         allGoodLeadsDetails();
         allCustomerDetails();
+        allTargetLeadsDetails();
         prospectsList.clear();
         qualifiedList.clear();
         customerList.clear();
@@ -2906,6 +2907,7 @@ class ApiService {
       print('Server error: ${e.toString()}');
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
+      controllers.isTargetLeadList.clear();
       print('Unexpected error: ${e.toString()}');
       throw Exception('Unexpected error: ${e.toString()}');
     }

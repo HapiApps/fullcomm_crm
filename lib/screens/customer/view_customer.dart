@@ -28,7 +28,8 @@ class _ViewCustomerState extends State<ViewCustomer> {
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   final ScrollController _controller = ScrollController();
   final ScrollController _horizontalController = ScrollController();
-  final ScrollController _verticalController = ScrollController();
+  final ScrollController _leftController = ScrollController();
+  final ScrollController _rightController = ScrollController();
   late FocusNode _focusNode;
   Future refresh() async {
     refreshKey.currentState?.show(atTop: false);
@@ -49,12 +50,26 @@ class _ViewCustomerState extends State<ViewCustomer> {
       controllers.selectedIndex.value = 4;
       controllers.groupController.selectIndex(0);
     });
+    _leftController.addListener(() {
+      if (_rightController.hasClients &&
+          (_rightController.offset != _leftController.offset)) {
+        _rightController.jumpTo(_leftController.offset);
+      }
+    });
+    _rightController.addListener(() {
+      if (_leftController.hasClients &&
+          (_leftController.offset != _rightController.offset)) {
+        _leftController.jumpTo(_rightController.offset);
+      }
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
+    _leftController.dispose();
+    _rightController.dispose();
     super.dispose();
   }
 
@@ -264,91 +279,94 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                 },
                               ),
                               Obx(() => controllers.paginatedCustomerLeads.isNotEmpty?
-                              ListView.builder(
-                                controller: _verticalController,
-                                shrinkWrap: true,
-                                physics: const ScrollPhysics(),
-                                itemCount: controllers.paginatedCustomerLeads.length,
-                                itemBuilder: (context, index) {
-                                  final data = controllers.paginatedCustomerLeads[index];
-                                  return Obx(()=>LeftLeadTile(
-                                    pageName: "Customers",
-                                    showCheckbox: false,
-                                    saveValue: controllers.isNewLeadList[index]["isSelect"],
-                                    onChanged: (value){
-                                      setState(() {
-                                        if(controllers.isNewLeadList[index]["isSelect"]==true){
-                                          controllers.isNewLeadList[index]["isSelect"]=false;
-                                          var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                          apiService.prospectsList.removeAt(i);
-                                        }else{
-                                          controllers.isNewLeadList[index]["isSelect"]=true;
-                                          apiService.prospectsList.add({
-                                            "lead_id":data.userId.toString(),
-                                            "user_id":controllers.storage.read("id"),
-                                            "rating":data.rating ?? "Warm",
-                                            "cos_id":controllers.storage.read("cos_id"),
-                                            "mail_id":data.email.toString().split("||")[0]
-                                          });
-                                        }
-                                      });
-                                    },
-                                    visitType: data.visitType.toString(),
-                                    detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
-                                    statusUpdate: data.statusUpdate.toString(),
-                                    index: index,
-                                    points: data.points.toString(),
-                                    quotationStatus: data.quotationStatus.toString(),
-                                    quotationRequired: data.quotationRequired.toString(),
-                                    productDiscussion: data.productDiscussion.toString(),
-                                    discussionPoint: data.discussionPoint.toString(),
-                                    notes: data.notes.toString(),
-                                    linkedin: data.linkedin,
-                                    x: data.x,
-                                    name: data.firstname.toString().split("||")[0],
-                                    mobileNumber: data.mobileNumber.toString().split("||")[0],
-                                    email: data.email.toString().split("||")[0],
-                                    companyName: data.companyName.toString(),
-                                    mainWhatsApp: data.whatsapp.toString().split("||")[0],
-                                    emailUpdate: data.quotationUpdate.toString(),
-                                    id: data.userId.toString(),
-                                    status: data.leadStatus ?? "UnQualified",
-                                    rating: data.rating ?? "Warm",
-                                    mainName: data.firstname.toString().split("||")[0],
-                                    mainMobile: data.mobileNumber.toString().split("||")[0],
-                                    mainEmail: data.email.toString().split("||")[0],
-                                    title: "",
-                                    whatsappNumber: data.whatsapp.toString().split("||")[0],
-                                    mainTitle: "",
-                                    addressId: data.addressId ?? "",
-                                    companyWebsite: data.companyWebsite ?? "",
-                                    companyNumber: data.companyNumber ?? "",
-                                    companyEmail: data.companyEmail ?? "",
-                                    industry: data.industry ?? "",
-                                    productServices: data.product ?? "",
-                                    source:data.source ?? "",
-                                    owner: data.owner ?? "",
-                                    timelineDecision: "",
-                                    serviceInterest: "",
-                                    description: "",
-                                    leadStatus: data.leadStatus ?? "",
-                                    active: data.active ?? "",
-                                    addressLine1: data.doorNo ?? "",
-                                    addressLine2: data.landmark1 ?? "",
-                                    area: data.area ?? "",
-                                    city: data.city ?? "",
-                                    state: data.state ?? "",
-                                    country: data.country ?? "",
-                                    pinCode: data.pincode ?? "",
-                                    prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
-                                    expectedConvertionDate: data.expectedConvertionDate ?? "",
-                                    numOfHeadcount: data.numOfHeadcount ?? "",
-                                    expectedBillingValue: data.expectedBillingValue ?? "",
-                                    arpuValue: data.arpuValue ?? "",
-                                    updatedTs: data.updatedTs ?? "",
-                                    sourceDetails: data.sourceDetails ?? "",
-                                  ));
-                                },
+                              ScrollConfiguration(
+                                behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                                child: ListView.builder(
+                                  controller: _leftController,
+                                  shrinkWrap: true,
+                                  physics: const ScrollPhysics(),
+                                  itemCount: controllers.paginatedCustomerLeads.length,
+                                  itemBuilder: (context, index) {
+                                    final data = controllers.paginatedCustomerLeads[index];
+                                    return Obx(()=>LeftLeadTile(
+                                      pageName: "Customers",
+                                      showCheckbox: false,
+                                      saveValue: controllers.isNewLeadList[index]["isSelect"],
+                                      onChanged: (value){
+                                        setState(() {
+                                          if(controllers.isNewLeadList[index]["isSelect"]==true){
+                                            controllers.isNewLeadList[index]["isSelect"]=false;
+                                            var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                            apiService.prospectsList.removeAt(i);
+                                          }else{
+                                            controllers.isNewLeadList[index]["isSelect"]=true;
+                                            apiService.prospectsList.add({
+                                              "lead_id":data.userId.toString(),
+                                              "user_id":controllers.storage.read("id"),
+                                              "rating":data.rating ?? "Warm",
+                                              "cos_id":controllers.storage.read("cos_id"),
+                                              "mail_id":data.email.toString().split("||")[0]
+                                            });
+                                          }
+                                        });
+                                      },
+                                      visitType: data.visitType.toString(),
+                                      detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
+                                      statusUpdate: data.statusUpdate.toString(),
+                                      index: index,
+                                      points: data.points.toString(),
+                                      quotationStatus: data.quotationStatus.toString(),
+                                      quotationRequired: data.quotationRequired.toString(),
+                                      productDiscussion: data.productDiscussion.toString(),
+                                      discussionPoint: data.discussionPoint.toString(),
+                                      notes: data.notes.toString(),
+                                      linkedin: data.linkedin,
+                                      x: data.x,
+                                      name: data.firstname.toString().split("||")[0],
+                                      mobileNumber: data.mobileNumber.toString().split("||")[0],
+                                      email: data.email.toString().split("||")[0],
+                                      companyName: data.companyName.toString(),
+                                      mainWhatsApp: data.whatsapp.toString().split("||")[0],
+                                      emailUpdate: data.quotationUpdate.toString(),
+                                      id: data.userId.toString(),
+                                      status: data.leadStatus ?? "UnQualified",
+                                      rating: data.rating ?? "Warm",
+                                      mainName: data.firstname.toString().split("||")[0],
+                                      mainMobile: data.mobileNumber.toString().split("||")[0],
+                                      mainEmail: data.email.toString().split("||")[0],
+                                      title: "",
+                                      whatsappNumber: data.whatsapp.toString().split("||")[0],
+                                      mainTitle: "",
+                                      addressId: data.addressId ?? "",
+                                      companyWebsite: data.companyWebsite ?? "",
+                                      companyNumber: data.companyNumber ?? "",
+                                      companyEmail: data.companyEmail ?? "",
+                                      industry: data.industry ?? "",
+                                      productServices: data.product ?? "",
+                                      source:data.source ?? "",
+                                      owner: data.owner ?? "",
+                                      timelineDecision: "",
+                                      serviceInterest: "",
+                                      description: "",
+                                      leadStatus: data.leadStatus ?? "",
+                                      active: data.active ?? "",
+                                      addressLine1: data.doorNo ?? "",
+                                      addressLine2: data.landmark1 ?? "",
+                                      area: data.area ?? "",
+                                      city: data.city ?? "",
+                                      state: data.state ?? "",
+                                      country: data.country ?? "",
+                                      pinCode: data.pincode ?? "",
+                                      prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
+                                      expectedConvertionDate: data.expectedConvertionDate ?? "",
+                                      numOfHeadcount: data.numOfHeadcount ?? "",
+                                      expectedBillingValue: data.expectedBillingValue ?? "",
+                                      arpuValue: data.arpuValue ?? "",
+                                      updatedTs: data.updatedTs ?? "",
+                                      sourceDetails: data.sourceDetails ?? "",
+                                    ));
+                                  },
+                                ),
                               ):0.height
                               )
                             ],
@@ -361,15 +379,15 @@ class _ViewCustomerState extends State<ViewCustomer> {
                             onKey: (node, event) {
                               if (event is RawKeyDownEvent) {
                                 if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                                  _verticalController.animateTo(
-                                    _verticalController.offset + 100,
+                                  _leftController.animateTo(
+                                    _leftController.offset + 100,
                                     duration: const Duration(milliseconds: 200),
                                     curve: Curves.easeInOut,
                                   );
                                   return KeyEventResult.handled;
                                 } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                                  _verticalController.animateTo(
-                                    _verticalController.offset - 100,
+                                  _rightController.animateTo(
+                                    _rightController.offset - 100,
                                     duration: const Duration(milliseconds: 200),
                                     curve: Curves.easeInOut,
                                   );
@@ -435,7 +453,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                         child: const Center(child: CircularProgressIndicator()))
                                         : controllers.paginatedCustomerLeads.isNotEmpty?
                                     ListView.builder(
-                                      controller: _verticalController,
+                                      controller: _rightController,
                                       shrinkWrap: true,
                                       physics: const ScrollPhysics(),
                                       itemCount: controllers.paginatedCustomerLeads.length,

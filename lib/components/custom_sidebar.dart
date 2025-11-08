@@ -30,7 +30,6 @@ class SideBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxBool isSettingsHovered = false.obs;
-
     return Obx(() => controllers.isLeftOpen.value
         ? Container(
       width: 150,
@@ -89,8 +88,8 @@ class SideBar extends StatelessWidget {
               selectedImage: "assets/images/s_suspects.png",
               unSelectedImage: "assets/images/u_suspects.png",
               onPreTap: () {
-                controllers.selectedMonth.value = null;
-                controllers.selectedProspectSortBy.value = "Today";
+                // controllers.selectedMonth.value = null;
+                // controllers.selectedProspectSortBy.value = "Today";
                 controllers.isLead.value = true;
               },
               page: const Suspects(),
@@ -106,8 +105,8 @@ class SideBar extends StatelessWidget {
               selectedImage: "assets/images/s_prospects.png",
               unSelectedImage: "assets/images/u_prospects.png",
               onPreTap: () {
-                controllers.selectedPMonth.value = null;
-                controllers.selectedQualifiedSortBy.value = "Today";
+                // controllers.selectedPMonth.value = null;
+                // controllers.selectedQualifiedSortBy.value = "Today";
               },
               page: const Prospects(),
             ),
@@ -122,8 +121,8 @@ class SideBar extends StatelessWidget {
               selectedImage: "assets/images/s_qualified.png",
               unSelectedImage: "assets/images/u_qualified.png",
               onPreTap: () {
-                controllers.selectedPMonth.value = null;
-                controllers.selectedQualifiedSortBy.value = "Today";
+                // controllers.selectedPMonth.value = null;
+                // controllers.selectedQualifiedSortBy.value = "Today";
                 controllers.isEmployee.value = true;
               },
               page: const Qualified(),
@@ -139,8 +138,8 @@ class SideBar extends StatelessWidget {
               selectedImage: "assets/images/s_customer.png",
               unSelectedImage: "assets/images/u_customers.png",
               onPreTap: () {
-                controllers.selectedMonth.value = null;
-                controllers.selectedProspectSortBy.value = "Today";
+                // controllers.selectedMonth.value = null;
+                // controllers.selectedProspectSortBy.value = "Today";
               },
               page: const ViewCustomer(),
             ),
@@ -155,8 +154,8 @@ class SideBar extends StatelessWidget {
               selectedImage: "assets/images/s_disqualified.png",
               unSelectedImage: "assets/images/u_disqualified.png",
               onPreTap: () {
-                controllers.selectedMonth.value = null;
-                controllers.selectedProspectSortBy.value = "Today";
+                // controllers.selectedMonth.value = null;
+                // controllers.selectedProspectSortBy.value = "Today";
               },
               page: const DisqualifiedLead(),
             ),
@@ -170,8 +169,8 @@ class SideBar extends StatelessWidget {
               selectedImage: "assets/images/s_target.png",
               unSelectedImage: "assets/images/u_target.png",
               onPreTap: () {
-                controllers.selectedMonth.value = null;
-                controllers.selectedProspectSortBy.value = "Today";
+                // controllers.selectedMonth.value = null;
+                // controllers.selectedProspectSortBy.value = "Today";
               },
               page: const TargetLeads(),
             ),

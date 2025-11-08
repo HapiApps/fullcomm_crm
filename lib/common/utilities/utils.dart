@@ -1154,7 +1154,7 @@ class Utils {
       behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 4),
       backgroundColor: color,
-      elevation: 30,
+      elevation: 5,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),

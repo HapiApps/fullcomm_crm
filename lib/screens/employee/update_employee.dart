@@ -329,7 +329,7 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                     employeeProvider.addEmployeeButtonController.reset();
                                     return;
                                   }
-                                   if(employeeProvider.WhatsappController.text.isNotEmpty&&employeeProvider.WhatsappController.text.length!=10){
+                                   if(employeeProvider.WhatsappController.text.trim().isNotEmpty&&employeeProvider.WhatsappController.text.length!=10){
                                     employeeProvider.addEmployeeButtonController.reset();
                                     utils.snackBar(
                                       context: context,
@@ -376,7 +376,7 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                     );
                                     return;
                                   }
-                                 if(employeeProvider.emailController.text.isEmpty){
+                                 if(employeeProvider.emailController.text.trim().isEmpty){
                                    employeeProvider.employeeUpdate(
                                      context: context,
                                      id: widget.employeeData?.id.toString(),
@@ -428,7 +428,6 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                      );
                                    }
                                  }
-
                                 },
                                 child: CustomText(
                                   text: "Update Employee",
