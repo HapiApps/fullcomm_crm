@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../common/constant/api.dart';
 import '../common/utilities/utils.dart';
+import '../models/template_obj.dart';
 import '../services/api_services.dart';
 import 'controller.dart';
 
@@ -342,7 +343,6 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
   var roleList = <RoleModel>[].obs;
   Future<void> allRoles() async {
     isLoadingRoles.value = true;
-
     final url = Uri.parse(scriptApi);
     try {
       final response = await http.post(
@@ -370,6 +370,41 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       print("Error fetching reminders: $e");
     } finally {
       isLoadingRoles.value = false;
+    }
+  }
+
+  var isLoadingTemplates = false.obs;
+  var templateCount = 0.obs;
+  var templateList = <TemplateModel>[].obs;
+  Future<void> allTemplates() async {
+    isLoadingTemplates.value = true;
+    final url = Uri.parse(scriptApi);
+    try {
+      final response = await http.post(
+        url,
+        body: jsonEncode({
+          "action": "get_data",
+          "cos_id": controllers.storage.read("cos_id"),
+          "search_type": "templates"
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final List<dynamic> rolesJson = data;
+        templateList.value = rolesJson.map((json) => TemplateModel.fromJson(json)).toList();
+        templateCount.value = templateList.length;
+      } else {
+        templateList.value = [];
+        templateCount.value = 0;
+        print("Failed to load template: ${response.body}");
+      }
+    } catch (e) {
+      templateList.value = [];
+      templateCount.value = 0;
+      print("Error fetching template: $e");
+    } finally {
+      isLoadingTemplates.value = false;
     }
   }
 

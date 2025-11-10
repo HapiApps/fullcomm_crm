@@ -90,8 +90,8 @@ class LeftTableHeader extends StatelessWidget {
       ];
       final Map<int, TableColumnWidth> columnWidths = {};
       columnWidths[0] = showCheckbox ? const FlexColumnWidth(1) : const FlexColumnWidth(3);
-      columnWidths[1] = const FlexColumnWidth(3);
-      columnWidths[2] = const FlexColumnWidth(2.5);
+      columnWidths[1] = const FlexColumnWidth(1.5);
+      columnWidths[2] = const FlexColumnWidth(2);
       return Table(
         columnWidths: columnWidths,
         border: TableBorder(

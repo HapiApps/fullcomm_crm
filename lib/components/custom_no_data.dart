@@ -10,7 +10,6 @@ class CustomNoData extends StatelessWidget {
       alignment: Alignment.centerLeft,
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      padding: EdgeInsets.fromLTRB(160, 0, 0, 0),
       child: SvgPicture.asset(
           "assets/images/noDataFound.svg"),
     );

@@ -763,8 +763,7 @@ class Utils {
                                                     width: 500,
                                                     height: 210,
                                                     child: Table(
-                                                      defaultColumnWidth:
-                                                          const FixedColumnWidth(
+                                                      defaultColumnWidth: const FixedColumnWidth(
                                                               120.0),
                                                       border: TableBorder.all(
                                                           color: Colors

@@ -77,6 +77,17 @@ class _TargetLeadsState extends State<TargetLeads> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    double tableWidth;
+    if (screenWidth >= 1600) {
+      tableWidth = 4000;
+    } else if (screenWidth >= 1200) {
+      tableWidth = 3000;
+    } else if (screenWidth >= 900) {
+      tableWidth = 2500;
+    } else {
+      tableWidth = 2000;
+    }
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, result) {
@@ -391,7 +402,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: 400,
+                            width: 240,
                             child: Column(
                               children: [
                                 LeftTableHeader(
@@ -449,95 +460,107 @@ class _TargetLeadsState extends State<TargetLeads> {
                                     controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
                                   },
                                 ),
-                                Obx(() => controllers.isLead.value == false?0.height:controllers.paginatedTargetLead.isNotEmpty?
-                                ScrollConfiguration(
-                                    behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                                    child: ListView.builder(
-                                      controller: _leftController,
-                                    shrinkWrap: true,
-                                    physics: const ScrollPhysics(),
-                                    itemCount: controllers.paginatedTargetLead.length,
-                                    itemBuilder: (context, index) {
-                                      final data = controllers.paginatedTargetLead[index];
-                                      return Obx(()=>LeftLeadTile(
-                                        pageName: "Target Leads",
-                                        saveValue: controllers.isTargetLeadList[index]["isSelect"],
-                                        onChanged: (value){
-                                          setState(() {
-                                            if(controllers.isTargetLeadList[index]["isSelect"]==true){
-                                              controllers.isTargetLeadList[index]["isSelect"]=false;
-                                              var i=apiService.qualifiedList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                              apiService.qualifiedList.removeAt(i);
-                                            }else{
-                                              controllers.isTargetLeadList[index]["isSelect"]=true;
-                                              apiService.qualifiedList.add({
-                                                "lead_id":data.userId.toString(),
-                                                "user_id":controllers.storage.read("id"),
-                                                "rating":data.rating ?? "Warm",
-                                                "cos_id":controllers.storage.read("cos_id"),
-                                                "mail_id":data.email.toString().split("||")[0]
+                                Scrollbar(
+                                  controller: _horizontalController,
+                                  thumbVisibility: true,
+                                  trackVisibility: true,
+                                  interactive: true,
+                                  thickness: 8,
+                                  radius: const Radius.circular(8),
+                                  scrollbarOrientation: ScrollbarOrientation.bottom,
+                                  child: SizedBox(
+                                    height: MediaQuery.of(context).size.height - 345,
+                                    child: Obx(() => controllers.isLead.value == false?0.height:controllers.paginatedTargetLead.isNotEmpty?
+                                    ScrollConfiguration(
+                                        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                                        child: ListView.builder(
+                                          controller: _leftController,
+                                        shrinkWrap: true,
+                                        physics: const ScrollPhysics(),
+                                        itemCount: controllers.paginatedTargetLead.length,
+                                        itemBuilder: (context, index) {
+                                          final data = controllers.paginatedTargetLead[index];
+                                          return Obx(()=>LeftLeadTile(
+                                            pageName: "Target Leads",
+                                            saveValue: controllers.isTargetLeadList[index]["isSelect"],
+                                            onChanged: (value){
+                                              setState(() {
+                                                if(controllers.isTargetLeadList[index]["isSelect"]==true){
+                                                  controllers.isTargetLeadList[index]["isSelect"]=false;
+                                                  var i=apiService.qualifiedList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                                  apiService.qualifiedList.removeAt(i);
+                                                }else{
+                                                  controllers.isTargetLeadList[index]["isSelect"]=true;
+                                                  apiService.qualifiedList.add({
+                                                    "lead_id":data.userId.toString(),
+                                                    "user_id":controllers.storage.read("id"),
+                                                    "rating":data.rating ?? "Warm",
+                                                    "cos_id":controllers.storage.read("cos_id"),
+                                                    "mail_id":data.email.toString().split("||")[0]
+                                                  });
+                                                }
                                               });
-                                            }
-                                          });
+                                            },
+                                            visitType: data.visitType.toString(),
+                                            detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
+                                            statusUpdate: data.statusUpdate.toString(),
+                                            index: index,
+                                            points: data.points.toString(),
+                                            quotationStatus: data.quotationStatus.toString(),
+                                            quotationRequired: data.quotationRequired.toString(),
+                                            productDiscussion: data.productDiscussion.toString(),
+                                            discussionPoint: data.discussionPoint.toString(),
+                                            notes: data.notes.toString(),
+                                            linkedin: data.linkedin,
+                                            x: data.x,
+                                            name: data.firstname.toString().split("||")[0],
+                                            mobileNumber: data.mobileNumber.toString().split("||")[0],
+                                            email: data.email.toString().split("||")[0],
+                                            companyName: data.companyName.toString(),
+                                            mainWhatsApp: data.whatsapp.toString().split("||")[0],
+                                            emailUpdate: data.quotationUpdate.toString(),
+                                            id: data.userId.toString(),
+                                            status: data.leadStatus ?? "UnQualified",
+                                            rating: data.rating ?? "Warm",
+                                            mainName: data.firstname.toString().split("||")[0],
+                                            mainMobile: data.mobileNumber.toString().split("||")[0],
+                                            mainEmail: data.email.toString().split("||")[0],
+                                            title: "",
+                                            whatsappNumber: data.whatsapp.toString().split("||")[0],
+                                            mainTitle: "",
+                                            addressId: data.addressId ?? "",
+                                            companyWebsite: data.companyWebsite ?? "",
+                                            companyNumber: data.companyNumber ?? "",
+                                            companyEmail: data.companyEmail ?? "",
+                                            industry: data.industry ?? "",
+                                            productServices: data.product ?? "",
+                                            source:data.source ?? "",
+                                            owner: data.owner ?? "",
+                                            timelineDecision: "",
+                                            serviceInterest: "",
+                                            description: "",
+                                            leadStatus: data.leadStatus ?? "",
+                                            active: data.active ?? "",
+                                            addressLine1: data.doorNo ?? "",
+                                            addressLine2: data.landmark1 ?? "",
+                                            area: data.area ?? "",
+                                            city: data.city ?? "",
+                                            state: data.state ?? "",
+                                            country: data.country ?? "",
+                                            pinCode: data.pincode ?? "",
+                                            prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
+                                            expectedConvertionDate: data.expectedConvertionDate ?? "",
+                                            numOfHeadcount: data.numOfHeadcount ?? "",
+                                            expectedBillingValue: data.expectedBillingValue ?? "",
+                                            arpuValue: data.arpuValue ?? "",
+                                            updatedTs: data.updatedTs ?? "",
+                                            sourceDetails: data.sourceDetails ?? "",
+                                          ));
                                         },
-                                        visitType: data.visitType.toString(),
-                                        detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
-                                        statusUpdate: data.statusUpdate.toString(),
-                                        index: index,
-                                        points: data.points.toString(),
-                                        quotationStatus: data.quotationStatus.toString(),
-                                        quotationRequired: data.quotationRequired.toString(),
-                                        productDiscussion: data.productDiscussion.toString(),
-                                        discussionPoint: data.discussionPoint.toString(),
-                                        notes: data.notes.toString(),
-                                        linkedin: data.linkedin,
-                                        x: data.x,
-                                        name: data.firstname.toString().split("||")[0],
-                                        mobileNumber: data.mobileNumber.toString().split("||")[0],
-                                        email: data.email.toString().split("||")[0],
-                                        companyName: data.companyName.toString(),
-                                        mainWhatsApp: data.whatsapp.toString().split("||")[0],
-                                        emailUpdate: data.quotationUpdate.toString(),
-                                        id: data.userId.toString(),
-                                        status: data.leadStatus ?? "UnQualified",
-                                        rating: data.rating ?? "Warm",
-                                        mainName: data.firstname.toString().split("||")[0],
-                                        mainMobile: data.mobileNumber.toString().split("||")[0],
-                                        mainEmail: data.email.toString().split("||")[0],
-                                        title: "",
-                                        whatsappNumber: data.whatsapp.toString().split("||")[0],
-                                        mainTitle: "",
-                                        addressId: data.addressId ?? "",
-                                        companyWebsite: data.companyWebsite ?? "",
-                                        companyNumber: data.companyNumber ?? "",
-                                        companyEmail: data.companyEmail ?? "",
-                                        industry: data.industry ?? "",
-                                        productServices: data.product ?? "",
-                                        source:data.source ?? "",
-                                        owner: data.owner ?? "",
-                                        timelineDecision: "",
-                                        serviceInterest: "",
-                                        description: "",
-                                        leadStatus: data.leadStatus ?? "",
-                                        active: data.active ?? "",
-                                        addressLine1: data.doorNo ?? "",
-                                        addressLine2: data.landmark1 ?? "",
-                                        area: data.area ?? "",
-                                        city: data.city ?? "",
-                                        state: data.state ?? "",
-                                        country: data.country ?? "",
-                                        pinCode: data.pincode ?? "",
-                                        prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
-                                        expectedConvertionDate: data.expectedConvertionDate ?? "",
-                                        numOfHeadcount: data.numOfHeadcount ?? "",
-                                        expectedBillingValue: data.expectedBillingValue ?? "",
-                                        arpuValue: data.arpuValue ?? "",
-                                        updatedTs: data.updatedTs ?? "",
-                                        sourceDetails: data.sourceDetails ?? "",
-                                      ));
-                                    },
+                                      ),
+                                    ):0.height
+                                    ),
                                   ),
-                                ):0.height
                                 )
                               ],
                             ),
@@ -588,7 +611,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                   children: [
                                     SizedBox(
                                       height: 45,
-                                      width: 4000,
+                                      width: tableWidth,
                                       child: CustomTableHeader(
                                         showCheckbox: true,
                                         isAllSelected: controllers.isAllSelected.value,
@@ -632,8 +655,8 @@ class _TargetLeadsState extends State<TargetLeads> {
                                     ),
                                     Container(
                                       alignment: Alignment.topLeft,
-                                      height: MediaQuery.of(context).size.height - 340,
-                                      width: 4000,
+                                      height: MediaQuery.of(context).size.height - 345,
+                                      width: tableWidth,
                                       child: Obx(() => controllers.isLead.value == false
                                           ? Container(
                                           alignment: Alignment.centerLeft,

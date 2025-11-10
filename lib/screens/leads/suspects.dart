@@ -77,6 +77,17 @@ class _SuspectsState extends State<Suspects> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    double tableWidth;
+    if (screenWidth >= 1600) {
+      tableWidth = 4000;
+    } else if (screenWidth >= 1200) {
+      tableWidth = 3000;
+    } else if (screenWidth >= 900) {
+      tableWidth = 2500;
+    } else {
+      tableWidth = 2000;
+    }
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, result) {
@@ -337,7 +348,7 @@ class _SuspectsState extends State<Suspects> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                width: 400,
+                                width: 240,
                                 child: Column(
                                   children: [
                                     LeftTableHeader(
@@ -381,7 +392,7 @@ class _SuspectsState extends State<Suspects> {
                                       },
                                     ),
                                     SizedBox(
-                                      height: MediaQuery.of(context).size.height - 340,
+                                      height: MediaQuery.of(context).size.height - 345,
                                       child: Obx(() => controllers.isLead.value == false
                                           ? 0.height
                                           : controllers.paginatedLeads.isNotEmpty?
@@ -389,12 +400,12 @@ class _SuspectsState extends State<Suspects> {
                                         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                                               child: ListView.builder(
                                                controller: _leftController,
-                                                                                  shrinkWrap: true,
-                                                                                  physics: const ScrollPhysics(),
-                                                                                  itemCount: controllers.paginatedLeads.length,
-                                                                                  itemBuilder: (context, index) {
-                                                                                    final data = controllers.paginatedLeads[index];
-                                                                                    return Obx(()=>LeftLeadTile(
+                                                shrinkWrap: true,
+                                                physics: const ScrollPhysics(),
+                                                itemCount: controllers.paginatedLeads.length,
+                                                itemBuilder: (context, index) {
+                                                  final data = controllers.paginatedLeads[index];
+                                                  return Obx(()=>LeftLeadTile(
                                               pageName: "Suspects",
                                               saveValue: controllers.isNewLeadList[index]["isSelect"],
                                               onChanged: (value){
@@ -524,7 +535,7 @@ class _SuspectsState extends State<Suspects> {
                                       children: [
                                         SizedBox(
                                           height: 45,
-                                          width: 4000,
+                                          width: tableWidth,
                                           child: CustomTableHeader(
                                             showCheckbox: true,
                                             isAllSelected: controllers.isAllSelected.value,
@@ -568,8 +579,8 @@ class _SuspectsState extends State<Suspects> {
                                         ),
                                         Container(
                                           alignment: Alignment.topLeft,
-                                          height: MediaQuery.of(context).size.height - 340,
-                                          width: 4000,
+                                          height: MediaQuery.of(context).size.height - 345,
+                                          width: tableWidth,
                                           child: Obx(() => controllers.isLead.value == false
                                               ? Container(
                                               alignment: Alignment.centerLeft,

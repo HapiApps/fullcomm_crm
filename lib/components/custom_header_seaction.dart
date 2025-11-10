@@ -194,7 +194,9 @@ class _HeaderSectionState extends State<HeaderSection> {
         Row(
           children: [
             // ---- Export button ----
-            CustomLoadingButton(
+            controllers.storage.read("role") != "See All Customer Records"
+                ? const SizedBox.shrink()
+                : CustomLoadingButton(
               callback: () {
                 _focusNode.requestFocus();
                 exportLeadsToExcel(widget.list, controllers.fields);
