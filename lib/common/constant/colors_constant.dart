@@ -10,6 +10,7 @@ class ColorsConst {
   final Color secondary = const Color(0xffE7EEF8);
   final Color textColor = const Color(0xff000000);
   final Color headColor = const Color(0xff97CBFF);
+  final Color fieldHead = const Color(0xff4B5563);
   final Color third = const Color(0xff0078D7);
   final Color axis = Colors.grey.shade200;
   final Color hintTextColor =const Color(0xffFFFFFF);

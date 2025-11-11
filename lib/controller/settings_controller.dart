@@ -1,12 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/models/office_hours_obj.dart';
 import 'package:fullcomm_crm/models/role_obj.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../common/constant/api.dart';
+import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
+import '../components/custom_loading_button.dart';
+import '../components/custom_text.dart';
+import '../components/custom_textfield.dart';
 import '../models/template_obj.dart';
 import '../services/api_services.dart';
 import 'controller.dart';
@@ -338,6 +343,83 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       controllers.productCtr.reset();
     }
   }
+
+  Future insertTemplateAPI(BuildContext context) async {
+    try{
+      Map data = {
+        "action": "add_template",
+        "template_name": addNameController.text.trim(),
+        "subject": addSubjectController.text.trim(),
+        "message": addMessageController.text.trim(),
+        "created_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id")
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"]=="Templates added successfully"){
+        addNameController.clear();
+        addSubjectController.clear();
+        addMessageController.clear();
+        allTemplates();
+        Navigator.pop(context);
+        utils.snackBar(context: context, msg: "Templates added successfully", color: Colors.green);
+        controllers.productCtr.reset();
+      } else {
+        apiService.errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      apiService.errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+
+  Future updateTemplateAPI(BuildContext context,String id) async {
+    try{
+      Map data = {
+        "action": "update_template",
+        "template_name": addNameController.text.trim(),
+        "subject": addSubjectController.text.trim(),
+        "message": addMessageController.text.trim(),
+        "updated_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id"),
+        "id": id
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"]=="Template updated successfully"){
+        addNameController.clear();
+        addSubjectController.clear();
+        addMessageController.clear();
+        allTemplates();
+        Navigator.pop(context);
+        utils.snackBar(context: context, msg: "Template updated successfully", color: Colors.green);
+        controllers.productCtr.reset();
+      } else {
+        apiService.errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      apiService.errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
   var isLoadingRoles = false.obs;
   var rolesCount = 0.obs;
   var roleList = <RoleModel>[].obs;
@@ -476,4 +558,184 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       controllers.productCtr.reset();
     }
   }
+
+  final addNameController    = TextEditingController();
+  final addSubjectController = TextEditingController();
+  final addMessageController = TextEditingController();
+
+  void showAddTemplateDialog(BuildContext context, {bool isEdit = false,String id = ""}) {
+    String? nameError;
+    String? subjectError;
+    String? messageError;
+    Get.dialog(
+        StatefulBuilder(
+          builder: (context, setState) {
+            return
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        title: Text(
+          "${isEdit?"Update":"Add"} New Template",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomTextField(
+                    hintText: "Template Name",
+                    text: "Template Name",
+                    controller: addNameController,
+                    width: 480,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
+                    isOptional: true,
+                    errorText: nameError,
+                    onChanged: (value) {
+                      if (value.toString().isNotEmpty) {
+                        setState(() {
+                          nameError = null;
+                        });
+                      }
+                    },
+                  ),
+                  CustomTextField(
+                    hintText: "Subject",
+                    text: "Subject",
+                    controller: addSubjectController,
+                    width: 480,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
+                    isOptional: true,
+                    errorText: subjectError,
+                    onChanged: (value) {
+                      if (value.toString().isNotEmpty) {
+                        setState(() {
+                          subjectError = null;
+                        });
+                      }
+                    },
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CustomText(
+                            text:"Message",
+                            colors: colorsConst.textColor,
+                            size: 13,
+                          ),
+                          const CustomText(
+                            text: "*",
+                            colors: Colors.red,
+                            size: 25,
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        width: 480,
+                        height: 100,
+                        child: TextField(
+                          controller: addMessageController,
+                          maxLines: null,
+                          expands: true,
+                          textAlign: TextAlign.start,
+                          onChanged: (value) {
+                            if (value.toString().isNotEmpty) {
+                              setState(() {
+                                messageError = null;
+                              });
+                            }
+                          },
+
+                          decoration: InputDecoration(
+                            hintText: "Message",
+                            errorText: messageError,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              borderSide: BorderSide(
+                                color: Color(0xffE1E5FA),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              borderSide: BorderSide(
+                                color: Color(0xffE1E5FA),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: colorsConst.primary),
+                    color: Colors.white),
+                width: 80,
+                height: 25,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                      backgroundColor: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: CustomText(
+                      text: "Cancel",
+                      colors: colorsConst.primary,
+                      size: 14,
+                    )),
+              ),
+              10.width,
+              CustomLoadingButton(
+                callback: (){
+                  if(addNameController.text.isEmpty){
+                    nameError = "Please enter template name";
+                    return;
+                  }
+                  if(addSubjectController.text.isEmpty){
+                    subjectError = "Please enter subject";
+                    return;
+                  }
+                  if(addMessageController.text.isEmpty){
+                    messageError = "Please enter message";
+                    return;
+                  }
+                  if(isEdit){
+                    updateTemplateAPI(context, id);
+                    return;
+                  }
+                  insertTemplateAPI(context);
+                },
+                height: 35,
+                isLoading: true,
+                backgroundColor: colorsConst.primary,
+                radius: 2,
+                width: 80,
+                controller: controllers.productCtr,
+                isImage: false,
+                text: "Save",
+                textColor: Colors.white,
+              ),
+              5.width
+            ],
+          ),
+        ],
+      );
+            })
+    );
+  }
+
+
 }

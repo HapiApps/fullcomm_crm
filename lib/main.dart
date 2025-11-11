@@ -63,6 +63,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    settingsController.allTemplates();
     if (widget.loginScreen) {
       apiService.allLeadsDetails();
       apiService.allQualifiedDetails();

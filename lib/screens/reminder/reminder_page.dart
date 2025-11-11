@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/screens/reminder/add_reminder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../common/constant/colors_constant.dart';
-import '../common/utilities/utils.dart';
-import '../components/custom_loading_button.dart';
-import '../components/custom_search_textfield.dart';
-import '../components/custom_sidebar.dart';
-import '../components/custom_text.dart';
-import '../components/date_filter_bar.dart';
-import '../controller/controller.dart';
-import '../controller/reminder_controller.dart';
-import '../services/api_services.dart';
+import '../../common/constant/colors_constant.dart';
+import '../../common/utilities/utils.dart';
+import '../../components/custom_loading_button.dart';
+import '../../components/custom_search_textfield.dart';
+import '../../components/custom_sidebar.dart';
+import '../../components/custom_text.dart';
+import '../../components/date_filter_bar.dart';
+import '../../controller/controller.dart';
+import '../../controller/reminder_controller.dart';
+import '../../services/api_services.dart';
 
 class ReminderPage extends StatefulWidget {
   const ReminderPage({super.key});
@@ -69,7 +70,15 @@ class _ReminderPageState extends State<ReminderPage> {
                      height: 40,
                      child: ElevatedButton(
                        onPressed: (){
-                         utils.showAddReminderDialog(context);
+                         Navigator.push(
+                           context,
+                           PageRouteBuilder(
+                             pageBuilder: (context, animation1, animation2) => AddReminder(),
+                             transitionDuration: Duration.zero,
+                             reverseTransitionDuration: Duration.zero,
+                           ),
+                         );
+                        // utils.showAddReminderDialog(context);
                        },
                        style: ElevatedButton.styleFrom(
                          backgroundColor: const Color(0xff0078D7),

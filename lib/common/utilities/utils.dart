@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:excel/excel.dart' as excel;
+import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
@@ -524,31 +525,42 @@ class Utils {
                       SizedBox(
                         child: Row(
                           children: [
-                            IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(assets.b,
-                                    width: 17, height: 17)),
-                            IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(
-                                  assets.i,
-                                  width: 15,
-                                  height: 15,
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  settingsController.showAddTemplateDialog(context);
+                                },
+                                child: CustomText(
+                                  text: "Add Template",
+                                  colors: colorsConst.third,
+                                  size: 18,
+                                  isBold: true,
                                 )),
-                            IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(
-                                  assets.u,
-                                  width: 19,
-                                  height: 19,
-                                )),
-                            IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(
-                                  assets.fileFilter,
-                                  width: 17,
-                                  height: 17,
-                                )),
+                            // IconButton(
+                            //     onPressed: () {},
+                            //     icon: SvgPicture.asset(assets.b,
+                            //         width: 17, height: 17)),
+                            // IconButton(
+                            //     onPressed: () {},
+                            //     icon: SvgPicture.asset(
+                            //       assets.i,
+                            //       width: 15,
+                            //       height: 15,
+                            //     )),
+                            // IconButton(
+                            //     onPressed: () {},
+                            //     icon: SvgPicture.asset(
+                            //       assets.u,
+                            //       width: 19,
+                            //       height: 19,
+                            //     )),
+                            // IconButton(
+                            //     onPressed: () {},
+                            //     icon: SvgPicture.asset(
+                            //       assets.fileFilter,
+                            //       width: 17,
+                            //       height: 17,
+                            //     )),
                             // IconButton(
                             //     onPressed: (){},
                             //     icon:SvgPicture.asset(assets.textFilter,width: 17,height: 17,)
@@ -561,17 +573,17 @@ class Utils {
                                       pathName: imageController.photo1);
                                 },
                                 icon: SvgPicture.asset(assets.file)),
-                            IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(
-                                  assets.layer,
-                                  width: 17,
-                                  height: 17,
-
-                                )),
-                            IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(assets.a)),
+                            // IconButton(
+                            //     onPressed: () {},
+                            //     icon: SvgPicture.asset(
+                            //       assets.layer,
+                            //       width: 17,
+                            //       height: 17,
+                            //
+                            //     )),
+                            // IconButton(
+                            //     onPressed: () {},
+                            //     icon: SvgPicture.asset(assets.a)),
                           ],
                         ),
                       ),
@@ -736,8 +748,7 @@ class Utils {
                                                   decoration: InputDecoration(
                                                     hintText: "Message",
                                                     hintStyle: TextStyle(
-                                                        color: colorsConst
-                                                            .textColor,
+                                                        color: colorsConst.textColor,
                                                         fontSize: 14,
                                                         fontFamily: "Lato"),
                                                     border: InputBorder.none,
@@ -747,84 +758,144 @@ class Utils {
                                             ],
                                           ),
                                         )
-                                      : UnconstrainedBox(
-                                          child: Container(
+                                    :Obx(() => UnconstrainedBox(
+                                  child: Container(
+                                    width: 500,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: colorsConst.secondary,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
                                             width: 500,
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              color: colorsConst.secondary,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: SingleChildScrollView(
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 500,
-                                                    height: 210,
-                                                    child: Table(
-                                                      defaultColumnWidth: const FixedColumnWidth(
-                                                              120.0),
-                                                      border: TableBorder.all(
-                                                          color: Colors
-                                                              .grey.shade300,
-                                                          style: BorderStyle.solid,
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          width: 1),
-                                                      children: [
-                                                        TableRow(
-                                                            children: [
-                                                          CustomText(
-                                                            textAlign: TextAlign.center,
-                                                            text: "\nTemplate Name\n",
-                                                            colors: colorsConst.textColor,
-                                                            size: 15,
-                                                            isBold: true,
-                                                          ),
-                                                          CustomText(
-                                                            textAlign: TextAlign.center,
-                                                            text: "\nSubject\n",
-                                                            colors: colorsConst.textColor,
-                                                            size: 15,
-                                                            isBold: true,
-                                                          ),
-                                                        ]),
-                                                        utils.emailRow(context,
-                                                            isCheck: controllers.isAdd,
-                                                            templateName: "Promotional",
-                                                            msg: "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
-                                                            subject: "Exclusive Promotion for You - \nLimited Time Offer!"),
-                                                        utils.emailRow(context,
-                                                            isCheck: controllers.isAdd,
-                                                            templateName: "Follow-Up",
-                                                            msg: "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
-                                                            subject: "Follow-up on Recent Service Interaction"),
-                                                        utils.emailRow(context,
-                                                            msg: "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
-                                                            isCheck: controllers.isAdd,
-                                                            templateName: "Service Update",
-                                                            subject: "Service Update - [Brief Description]"),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  // 10.height,
-                                                  // CustomLoadingButton(
-                                                  //   callback: (){},
-                                                  //   isImage: false,
-                                                  //   isLoading: false,
-                                                  //   backgroundColor: colorsConst.primary,
-                                                  //   radius: 20,
-                                                  //   width: 70,
-                                                  //   height: 30,
-                                                  //   text: "Done",
-                                                  //   textColor: Colors.white,
-                                                  //
-                                                  // ),
-                                                ],
+                                            height: 210,
+                                            child: Table(
+                                              defaultColumnWidth: const FixedColumnWidth(120.0),
+                                              border: TableBorder.all(
+                                                color: Colors.grey.shade300,
+                                                style: BorderStyle.solid,
+                                                borderRadius: BorderRadius.circular(10),
+                                                width: 1,
                                               ),
+                                              children: [
+                                                // Header Row
+                                                TableRow(
+                                                  children: [
+                                                    CustomText(
+                                                      textAlign: TextAlign.center,
+                                                      text: "\nTemplate Name\n",
+                                                      colors: colorsConst.textColor,
+                                                      size: 15,
+                                                      isBold: true,
+                                                    ),
+                                                    CustomText(
+                                                      textAlign: TextAlign.center,
+                                                      text: "\nSubject\n",
+                                                      colors: colorsConst.textColor,
+                                                      size: 15,
+                                                      isBold: true,
+                                                    ),
+                                                  ],
+                                                ),
+                                                // Dynamic Rows
+                                                for (var item in settingsController.templateList)
+                                                  utils.emailRow(
+                                                    context,
+                                                    isCheck: controllers.isAdd,
+                                                    templateName: item.templateName,
+                                                    msg: item.message,
+                                                    subject: item.subject,
+                                                    id: item.id
+                                                  ),
+                                              ],
                                             ),
                                           ),
-                                        ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ))
+                                  // : UnconstrainedBox(
+                                      //     child: Container(
+                                      //       width: 500,
+                                      //       alignment: Alignment.center,
+                                      //       decoration: BoxDecoration(
+                                      //         color: colorsConst.secondary,
+                                      //         borderRadius:
+                                      //             BorderRadius.circular(10),
+                                      //       ),
+                                      //       child: SingleChildScrollView(
+                                      //         child: Column(
+                                      //           children: [
+                                      //             SizedBox(
+                                      //               width: 500,
+                                      //               height: 210,
+                                      //               child: Table(
+                                      //                 defaultColumnWidth: const FixedColumnWidth(
+                                      //                         120.0),
+                                      //                 border: TableBorder.all(
+                                      //                     color: Colors
+                                      //                         .grey.shade300,
+                                      //                     style: BorderStyle.solid,
+                                      //                     borderRadius: BorderRadius.circular(10),
+                                      //                     width: 1),
+                                      //                 children: [
+                                      //                   TableRow(
+                                      //                       children: [
+                                      //                     CustomText(
+                                      //                       textAlign: TextAlign.center,
+                                      //                       text: "\nTemplate Name\n",
+                                      //                       colors: colorsConst.textColor,
+                                      //                       size: 15,
+                                      //                       isBold: true,
+                                      //                     ),
+                                      //                     CustomText(
+                                      //                       textAlign: TextAlign.center,
+                                      //                       text: "\nSubject\n",
+                                      //                       colors: colorsConst.textColor,
+                                      //                       size: 15,
+                                      //                       isBold: true,
+                                      //                     ),
+                                      //                   ]),
+                                      //                   utils.emailRow(context,
+                                      //                       isCheck: controllers.isAdd,
+                                      //                       templateName: "Promotional",
+                                      //                       msg: "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
+                                      //                       subject: "Exclusive Promotion for You - \nLimited Time Offer!"),
+                                      //                   utils.emailRow(context,
+                                      //                       isCheck: controllers.isAdd,
+                                      //                       templateName: "Follow-Up",
+                                      //                       msg: "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+                                      //                       subject: "Follow-up on Recent Service Interaction"),
+                                      //                   utils.emailRow(context,
+                                      //                       msg: "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
+                                      //                       isCheck: controllers.isAdd,
+                                      //                       templateName: "Service Update",
+                                      //                       subject: "Service Update - [Brief Description]"),
+                                      //                 ],
+                                      //               ),
+                                      //             ),
+                                      //             // 10.height,
+                                      //             // CustomLoadingButton(
+                                      //             //   callback: (){},
+                                      //             //   isImage: false,
+                                      //             //   isLoading: false,
+                                      //             //   backgroundColor: colorsConst.primary,
+                                      //             //   radius: 20,
+                                      //             //   width: 70,
+                                      //             //   height: 30,
+                                      //             //   text: "Done",
+                                      //             //   textColor: Colors.white,
+                                      //             //
+                                      //             // ),
+                                      //           ],
+                                      //         ),
+                                      //       ),
+                                      //     ),
+                                      //   ),
                                 )
                               ],
                             ),
@@ -1736,7 +1807,7 @@ class Utils {
     }
   }
   TableRow emailRow(BuildContext context,
-      {RxBool? isCheck, String? templateName, String? subject, String? msg}) {
+      {RxBool? isCheck, String? templateName, String? subject, String? msg, String? id}) {
     return TableRow(
         decoration: BoxDecoration(color: colorsConst.secondary),
         children: [
@@ -1748,7 +1819,6 @@ class Utils {
                 width: 15,
                 height: 15,
                 child: Checkbox(
-                  //materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
@@ -1761,14 +1831,22 @@ class Utils {
                   value: isCheck?.value,
                   onChanged: (value) {
                     controllers.isTemplate.value = false;
-                    //Navigator.pop(context);
-                    controllers.emailSubjectCtr.text =
-                        subject.toString().replaceAll('\n', ' ');
-                    //controllers.emailMessageCtr.text += "\n${msg.toString()}";
+                    controllers.emailSubjectCtr.text = subject.toString().replaceAll('\n', ' ');
                     controllers.emailMessageCtr.text = msg.toString();
-                    controllers.emailQuotationCtr.text =
-                        templateName.toString();
+                    controllers.emailQuotationCtr.text = templateName.toString();
                   },
+                ),
+              ),
+              InkWell(
+                onTap: (){
+                  Navigator.of(context).pop();
+                  settingsController.addNameController.text = templateName.toString();
+                  settingsController.addSubjectController.text = subject.toString();
+                  settingsController.addMessageController.text = msg.toString();
+                  settingsController.showAddTemplateDialog(context, isEdit: true,id: id.toString());
+                },
+                child: SvgPicture.asset(
+                  "assets/images/a_edit.svg",
                 ),
               ),
               20.width,
@@ -2306,7 +2384,7 @@ class Utils {
   Map<DateTime, TimeOfDay> _selectedEndDatesTimes = {};
   TimeOfDay _selectedTime = TimeOfDay.now();
 
-  Future<void> _selectDateTime({
+  Future<void> selectDateTime({
     required BuildContext context,
     required bool isStart,
   })
@@ -2973,8 +3051,7 @@ class Utils {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text("Location",
                                             style: GoogleFonts.lato(
@@ -3213,7 +3290,7 @@ class Utils {
                                           remController.startController,
                                           readOnly: true,
 
-                                          onTap: () => _selectDateTime(
+                                          onTap: () => selectDateTime(
                                               context: context, isStart: true),
                                           style: GoogleFonts.lato(
                                             color: Colors.black,
@@ -3260,7 +3337,7 @@ class Utils {
                                         TextFormField(
                                           controller: remController.endController,
                                           readOnly: true,
-                                          onTap: () => _selectDateTime(
+                                          onTap: () => selectDateTime(
                                               context: context, isStart: false),
                                           style: GoogleFonts.lato(
                                             color: Colors.black,
@@ -3648,7 +3725,7 @@ class Utils {
                                           controller:
                                           remController.updateStartController,
                                           readOnly: true,
-                                          onTap: () => _selectDateTime(
+                                          onTap: () => selectDateTime(
                                               context: context, isStart: true),
                                           style: GoogleFonts.lato(
                                             color: Colors.black,
@@ -3688,7 +3765,7 @@ class Utils {
                                         TextFormField(
                                           controller: remController.updateEndController,
                                           readOnly: true,
-                                          onTap: () => _selectDateTime(
+                                          onTap: () => selectDateTime(
                                               context: context, isStart: false),
                                           style: GoogleFonts.lato(
                                             color: Colors.black,

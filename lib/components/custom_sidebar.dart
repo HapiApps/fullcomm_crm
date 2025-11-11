@@ -16,7 +16,7 @@ import '../screens/leads/qualified.dart';
 import '../screens/leads/suspects.dart';
 import '../screens/leads/target_leads.dart';
 import '../screens/records/records.dart';
-import '../screens/reminder_page.dart';
+import '../screens/reminder/reminder_page.dart';
 import '../screens/settings/general_settings.dart';
 import '../screens/settings/reminder_settings.dart';
 import '../screens/settings/user_plan.dart';
@@ -205,7 +205,6 @@ class SideBar extends StatelessWidget {
               bool isSelected = controllers.selectedIndex.value == 7 ||
                   (controllers.selectedIndex.value >= 701 &&
                       controllers.selectedIndex.value <= 705);
-
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

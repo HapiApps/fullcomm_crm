@@ -413,9 +413,8 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                             },
                             child: SvgPicture.asset(
                               "assets/images/a_edit.svg",
-                              width: 16,
-                              height: 16,
-                            )),
+                            )
+                        ),
                       ),
                       Tooltip(
                         message: "Set a reminder for this Customer.",
@@ -425,7 +424,9 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                   widget.mainMobile.toString());
                               utils.showAddReminderDialog(context);
                             },
-                            child: Icon(Icons.notifications,color: Colors.pink,)),
+                            child: SvgPicture.asset(
+                              "assets/images/reminder.svg",
+                            )),
                       ),
                       PopupMenuButton<String>(
                         offset: const Offset(0, 40),
@@ -747,12 +748,13 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                         // },
                         itemBuilder: (context) => [
                           PopupMenuItem(
-                              value: "Delete",
-                              child: Text("Delete",
-                                  style: TextStyle(color: colorsConst.textColor))),
+                              value: "Promote",
+                              child: Text("Promote",
+                                  style:
+                                  TextStyle(color: colorsConst.textColor))),
                           PopupMenuItem(
-                              value: "Set a reminder",
-                              child: Text("Set a reminder",
+                              value: "Set a Reminder",
+                              child: Text("Set a Reminder",
                                   style: TextStyle(color: colorsConst.textColor))),
                           PopupMenuItem(
                               value: "View appointment",
@@ -770,17 +772,16 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                   style:
                                   TextStyle(color: colorsConst.textColor))),
                           PopupMenuItem(
-                              value: "Promote",
-                              child: Text("Promote",
-                                  style:
-                                  TextStyle(color: colorsConst.textColor))),
-                          PopupMenuItem(
                               value: "Disqualify",
                               child: Text("Disqualify",
                                   style:
                                   TextStyle(color: colorsConst.textColor))),
+                          PopupMenuItem(
+                              value: "Delete",
+                              child: Text("Delete",
+                                  style: TextStyle(color: colorsConst.textColor))),
                         ],
-                        child: Icon((Icons.more_horiz),color: Colors.grey.shade600,)
+                        child: Icon((Icons.more_horiz),color: colorsConst.primary,)
                       ),
                     ],
                   ),
