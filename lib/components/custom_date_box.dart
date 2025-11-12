@@ -27,7 +27,7 @@ class CustomDateBox extends StatelessWidget {
           children: [
             CustomText(
               text:text,
-              colors:colorsConst.textColor,
+              colors:colorsConst.fieldHead,
               size:13,
             ),
             isOptional == true

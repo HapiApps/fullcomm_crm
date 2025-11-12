@@ -96,7 +96,7 @@ class _HeaderSectionState extends State<HeaderSection> {
       cell?.cellStyle = headerStyle;
     }
     for (final lead in leads) {
-      final map = lead.toJson(); // or lead.asMap() if that’s what you use
+      final map = lead.toJson();
       final row = fields.map((f) {
         final key = f.systemField;
         final value = map[key];

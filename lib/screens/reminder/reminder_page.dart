@@ -5,6 +5,7 @@ import 'package:fullcomm_crm/screens/reminder/add_reminder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/utilities/reminder_utils.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
@@ -729,7 +730,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                              remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
                                              remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
                                              remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
-                                             utils.showUpdateReminderDialog(reminder.id.toString(),context);
+                                             reminderUtils.showUpdateReminderDialog(reminder.id.toString(),context);
                                            },
                                            icon:  SvgPicture.asset(
                                              "assets/images/a_edit.svg",

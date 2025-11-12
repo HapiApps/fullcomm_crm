@@ -84,53 +84,56 @@ class _KeyboardDropdownFieldState<T extends Object>
       displayStringForOption: widget.labelBuilder,
       onSelected: widget.onSelected,
       fieldViewBuilder: (context, ctrl, focus, onSubmit) {
-        return TextField(
-          controller: ctrl,
-          focusNode: focus,
-          onSubmitted: (_) => onSubmit(),
-          style: GoogleFonts.lato(fontSize: 15),
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-            filled: true,
-            fillColor: Colors.white,
-            labelText: widget.labelText,
-            hintText: widget.hintText,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.borderRadius),
-              borderSide: BorderSide(
-                width: 0,
-                color: widget.borderColor,
+        return SizedBox(
+          height: 40,
+          child: TextField(
+            controller: ctrl,
+            focusNode: focus,
+            onSubmitted: (_) => onSubmit(),
+            style: GoogleFonts.lato(fontSize: 15),
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              filled: true,
+              fillColor: Colors.white,
+              labelText: widget.labelText,
+              hintText: widget.hintText,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(widget.borderRadius),
+                borderSide: BorderSide(
+                  width: 0,
+                  color: widget.borderColor,
+                ),
               ),
-            ),
 
-            suffixIcon: IconButton(
-                onPressed: () {
-                  setState(() {
-                    ctrl.clear();
-                    controller.clear();
-                  });
-                  if (widget.onClear != null) {
-                    widget.onClear!();
-                  }
-                },
-                icon: Icon(
-                  controller.text.isEmpty?Icons.arrow_drop_down:Icons.clear,
-                  color: Colors.black,
-                  size: 25,
-                )
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.borderRadius),
-              borderSide: BorderSide(
-                width: 0,
-                color: widget.borderColor,
+              suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      ctrl.clear();
+                      controller.clear();
+                    });
+                    if (widget.onClear != null) {
+                      widget.onClear!();
+                    }
+                  },
+                  icon: Icon(
+                    controller.text.isEmpty?Icons.arrow_drop_down:Icons.clear,
+                    color: Colors.black,
+                    size: 25,
+                  )
               ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.borderRadius),
-              borderSide: BorderSide(
-                width: 0,
-                color:widget.borderColor,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(widget.borderRadius),
+                borderSide: BorderSide(
+                  width: 0,
+                  color: widget.borderColor,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(widget.borderRadius),
+                borderSide: BorderSide(
+                  width: 0,
+                  color:widget.borderColor,
+                ),
               ),
             ),
           ),
@@ -170,7 +173,7 @@ class _KeyboardDropdownFieldState<T extends Object>
                             color: isHighlighted
                                 ? Theme.of(context).highlightColor
                                 : null,
-                            height: 50,
+                            height: 45,
                             width: 450,
                             alignment: Alignment.topLeft,
                             padding: const EdgeInsets.symmetric(horizontal: 12),

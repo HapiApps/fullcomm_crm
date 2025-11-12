@@ -18,6 +18,22 @@ import '../models/reminder_obj.dart';
 import '../provider/reminder_provider.dart';
 import 'controller.dart';
 
+class AddReminderModel {
+  final TextEditingController titleController = TextEditingController();
+  RxMap<String, RxBool> remindVia = {
+    "Desktop": true.obs,
+    "Email": true.obs,
+    "SMS": true.obs,
+    "WhatsApp": false.obs,
+    "App": false.obs,
+  }.obs;
+
+  RxString selectedTime = "Other".obs;
+  RxString customTime = "1 Day".obs;
+
+  List<String> otherTimes = ["1 Day", "2 Days", "3 Days", "1 Week"];
+}
+
 final remController = Get.put(ReminderController());
 
 class ReminderController extends GetxController with GetSingleTickerProviderStateMixin {
@@ -28,7 +44,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   String? location;
   String? repeat;
   String defaultTime = "Immediately";
-
+  RxList<AddReminderModel> reminders = <AddReminderModel>[AddReminderModel()].obs;
+  final listKey = GlobalKey<AnimatedListState>();
+  void addReminder() {
+    reminders.add(AddReminderModel());
+  }
+  void removeReminder(int index) {
+    reminders.removeAt(index);
+  }
   TextEditingController updateTitleController   = TextEditingController();
   TextEditingController updateDetailsController = TextEditingController();
   TextEditingController updateStartController   = TextEditingController();
@@ -89,6 +112,20 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       }
     });
   }
+
+  var reminderTitleController = TextEditingController();
+  var remindVia = {
+    "Desktop": true.obs,
+    "Email": true.obs,
+    "SMS": true.obs,
+    "WhatsApp": false.obs,
+    "App": false.obs,
+  };
+
+  var selectedTime = "Other".obs;
+  var customTime = "1 Day".obs;
+
+  List<String> otherTimes = ["1 Day", "2 Days", "3 Days", "1 Week"];
 
   void showDatePickerDialog(BuildContext context,void Function(DateTimeRange)? onDateSelected) {
     showDialog(

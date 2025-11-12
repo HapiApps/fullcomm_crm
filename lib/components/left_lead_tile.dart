@@ -1,5 +1,6 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/common/utilities/reminder_utils.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/screens/leads/view_lead.dart';
@@ -422,7 +423,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                             onTap: (){
                               controllers.selectNCustomer(widget.id.toString(), widget.mainName.toString(), widget.mainEmail.toString(),
                                   widget.mainMobile.toString());
-                              utils.showAddReminderDialog(context);
+                              reminderUtils.showAddReminderDialog(context);
                             },
                             child: SvgPicture.asset(
                               "assets/images/reminder.svg",
@@ -517,7 +518,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                          }else if(value=="Set a reminder"){
                            controllers.selectNCustomer(widget.id.toString(), widget.mainName.toString(), widget.mainEmail.toString(),
                                widget.mainMobile.toString());
-                           utils.showAddReminderDialog(context);
+                           reminderUtils.showAddReminderDialog(context);
                          }else if(value=="View appointment"){
                            apiService.getAllMeetingActivity(widget.id.toString());
                            controllers.changeTab(2);
