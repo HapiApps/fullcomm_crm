@@ -21,9 +21,9 @@ import 'controller.dart';
 class AddReminderModel {
   final TextEditingController titleController = TextEditingController();
   RxMap<String, RxBool> remindVia = {
-    "Desktop": true.obs,
+    "Desktop": false.obs,
     "Email": true.obs,
-    "SMS": true.obs,
+    "SMS": false.obs,
     "WhatsApp": false.obs,
     "App": false.obs,
   }.obs;
@@ -43,6 +43,15 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   TextEditingController endController         = TextEditingController();
   String? location;
   String? repeat;
+  String? repeatOn;
+  String? repeatWise;
+  String? repeatEvery;
+
+  var stDate = "".obs;
+  var stTime = "".obs;
+  var enDate = "".obs;
+  var enTime = "".obs;
+
   String defaultTime = "Immediately";
   RxList<AddReminderModel> reminders = <AddReminderModel>[AddReminderModel()].obs;
   final listKey = GlobalKey<AnimatedListState>();
@@ -449,11 +458,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     var filteredList = [...reminderList];
     final dateFormatter = DateFormat("dd-MM-yyyy h:mm a");
     final now = DateTime.now();
+    print("rem list ${reminderList.length}");
+    print("days ${selectedReminderSortBy.value}");
+    
     if (selectedReminderSortBy.value.isNotEmpty) {
       switch (selectedReminderSortBy.value) {
         case 'Today':
           filteredList = filteredList.where((r) {
-            final date = _parseReminderDate(r.startDt, dateFormatter);
+            final date = _parseReminderDate(r.updatedTs, dateFormatter);
             return _isSameDay(date, now);
           }).toList();
           break;
@@ -461,7 +473,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         case 'Yesterday':
           final yesterday = now.subtract(const Duration(days: 1));
           filteredList = filteredList.where((r) {
-            final date = _parseReminderDate(r.startDt, dateFormatter);
+            final date = _parseReminderDate(r.updatedTs, dateFormatter);
             return _isSameDay(date, yesterday);
           }).toList();
           break;
@@ -469,7 +481,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         case 'Last 7 Days':
           final last7 = now.subtract(const Duration(days: 7));
           filteredList = filteredList.where((r) {
-            final date = _parseReminderDate(r.startDt, dateFormatter);
+            final date = _parseReminderDate(r.updatedTs, dateFormatter);
             return date.isAfter(last7);
           }).toList();
           break;
@@ -477,7 +489,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         case 'Last 30 Days':
           final last30 = now.subtract(const Duration(days: 30));
           filteredList = filteredList.where((r) {
-            final date = _parseReminderDate(r.startDt, dateFormatter);
+            final date = _parseReminderDate(r.updatedTs, dateFormatter);
             return date.isAfter(last30);
           }).toList();
           break;
@@ -557,15 +569,25 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
       return sortOrderCallActivity.value == 'asc' ? result : -result;
     });
+    print("lenght ${filteredList.length}");
     reminderFilteredList.assignAll(filteredList);
   }
-  DateTime _parseReminderDate(String dateStr, DateFormat formatter) {
+  DateTime _parseReminderDate(String dateStr, DateFormat fallbackFormatter) {
     try {
-      return formatter.parse(dateStr);
+      final cleaned = dateStr.trim().replaceAll(RegExp(r'[^0-9:\-\sT]'), '');
+      // Try direct parse first (handles yyyy-MM-dd HH:mm:ss and ISO)
+      final parsed = DateTime.tryParse(cleaned);
+      if (parsed != null) {
+        return parsed;
+      }
+      final parsed2 = fallbackFormatter.parse(cleaned);
+      return parsed2;
     } catch (e) {
       return DateTime(1900);
     }
   }
+
+
 
   void sortMails() {
     var filteredList = [...controllers.mailActivity];
@@ -805,13 +827,29 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         "repeat_type": repeat,
         "employee": controllers.selectedEmployeeId.value,
         "customer": controllers.selectedCustomerId.value,
-        "start_dt": startController.text.trim(),
-        "end_dt": endController.text.trim(),
+        "start_dt": "${stDate.value} ${stTime.value}",
+        "end_dt": "${enDate.value} ${enTime.value}",
         "details": detailsController.text.trim(),
         "set_time": defaultTime,
         "set_type": "Email",
+        "repeat_on": repeatOn,
+        "repeat_wise": repeatWise,
+        "repeat_every": repeatEvery,
         "created_by": controllers.storage.read("id"),
-        "cos_id": controllers.storage.read("cos_id")
+        "cos_id": controllers.storage.read("cos_id"),
+        "reminders": reminders.map((reminder) {
+          return {
+            "remind_via": reminder.remindVia.entries
+                .where((entry) => entry.value.value)
+                .map((entry) => entry.key)
+                .toList(),
+            "before_ts": reminder.selectedTime.value == "Other"
+                ? reminder.customTime.value
+                : reminder.selectedTime.value,
+            "title": reminderTitleController.text.trim(),
+          };
+        }).toList(),
+
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {

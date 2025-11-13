@@ -71,15 +71,15 @@ class _ReminderPageState extends State<ReminderPage> {
                      height: 40,
                      child: ElevatedButton(
                        onPressed: (){
-                         Navigator.push(
-                           context,
-                           PageRouteBuilder(
-                             pageBuilder: (context, animation1, animation2) => AddReminder(),
-                             transitionDuration: Duration.zero,
-                             reverseTransitionDuration: Duration.zero,
-                           ),
-                         );
-                        // utils.showAddReminderDialog(context);
+                         // Navigator.push(
+                         //   context,
+                         //   PageRouteBuilder(
+                         //     pageBuilder: (context, animation1, animation2) => AddReminder(),
+                         //     transitionDuration: Duration.zero,
+                         //     reverseTransitionDuration: Duration.zero,
+                         //   ),
+                         // );
+                         reminderUtils.showAddReminderDialog(context);
                        },
                        style: ElevatedButton.styleFrom(
                          backgroundColor: const Color(0xff0078D7),
