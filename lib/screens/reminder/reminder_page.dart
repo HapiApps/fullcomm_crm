@@ -344,7 +344,7 @@ class _ReminderPageState extends State<ReminderPage> {
                              children: [
                                CustomText(
                                  textAlign: TextAlign.left,
-                                 text: "Reminder Title",
+                                 text: "Event Name",
                                  size: 15,
                                  isBold: true,
                                  colors: Colors.white,

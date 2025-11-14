@@ -2,6 +2,7 @@ import 'dart:html' as html;
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/components/custom_textfield.dart';
 import 'package:fullcomm_crm/controller/table_controller.dart';
@@ -215,7 +216,14 @@ class _HeaderSectionState extends State<HeaderSection> {
             CustomLoadingButton(
               callback: () {
                 _focusNode.requestFocus();
-                utils.showImportDialog(context,widget.title=="Target Leads"?"0":"1");
+                if(appName=="ARUU’s EasyCRM") {
+                  print("ARUU’s EasyCRM");
+                  utils.showImportDialog(
+                      context, widget.title == "Target Leads" ? "0" : "1");
+                }else if(appName=="Thirumal CRM"){
+                  print("Thirumal CRM");
+                  utils.showImportDialogThirumal(context, widget.title == "Target Leads" ? "0" : "1");
+                }
               },
               isLoading: false,
               height: 35,

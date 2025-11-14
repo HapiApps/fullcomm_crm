@@ -914,6 +914,71 @@ class ApiService {
     }
   }
 
+  Future insertThirumalCustomersAPI(BuildContext context, List<Map<String, dynamic>> customerData) async {
+    try {
+      print("data ${customerData.toString()}");
+
+      // Convert values to strings if necessary
+      List<Map<String, dynamic>> formattedData = customerData.map((customer) {
+        return customer.map((key, value) {
+          return MapEntry(key, value.toString()); // Convert all values to String
+        });
+      }).toList();
+
+      Map data = {
+        "action": "create_customers",
+        "cusList": formattedData
+      };
+
+      print("Final Data to be sent: ${jsonEncode(data)}"); // Debug JSON
+
+      final request = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json" // Change Content-Type to JSON
+        },
+        body: jsonEncode(data),
+      );
+
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+
+      if (request.statusCode == 200 && response["message"] == "Customer saved successfully.") {
+        apiService.allLeadsDetails();
+        apiService.allNewLeadsDetails();
+        apiService.allGoodLeadsDetails();
+        apiService.allTargetLeadsDetails();
+        prospectsList.clear();
+        qualifiedList.clear();
+        customerList.clear();
+        int success = response["success"];
+        int failed = response["failed"];
+        Navigator.pop(context);
+        controllers.customerCtr.reset();
+        if (failed == 0) {
+          print("All customers saved successfully.");
+        } else {
+          print("⚠️ $success saved, $failed failed.");
+          for (var failure in response["failures"]) {
+            print("Failed Phone: ${failure["phone_no"]} — ${failure["error"]}");
+          }
+          errorDialog(Get.context!, "$success saved, $failed failed.\n Failed Phone: ${response["failures"]}");
+        }
+      } else {
+        print("insert customers error ${request.body}");
+        Navigator.pop(context);
+        errorDialog(Get.context!, "Failed to insert customer details.");
+        controllers.customerCtr.reset();
+      }
+    } catch (e) {
+      print("Result $e");
+      Navigator.pop(context);
+      errorDialog(Get.context!, "Failed to insert customer details.");
+      controllers.customerCtr.reset();
+    }
+  }
+
 
 
   Future<void> insertSingleCustomer(context) async {

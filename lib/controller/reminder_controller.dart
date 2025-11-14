@@ -2,7 +2,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
-import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
@@ -10,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-
 import '../common/constant/api.dart';
 import '../models/customer_activity.dart';
 import '../models/meeting_obj.dart';
@@ -25,13 +23,13 @@ class AddReminderModel {
     "Email": true.obs,
     "SMS": false.obs,
     "WhatsApp": false.obs,
-    "App": false.obs,
+    "App Notification": false.obs,
   }.obs;
 
   RxString selectedTime = "Other".obs;
   RxString customTime = "1 Day".obs;
 
-  List<String> otherTimes = ["1 Day", "2 Days", "3 Days", "1 Week"];
+  List<String> otherTimes = ["1 Day", "2 Days", "3 Days", "1 Week","1 Month"];
 }
 
 final remController = Get.put(ReminderController());
@@ -846,11 +844,12 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
             "before_ts": reminder.selectedTime.value == "Other"
                 ? reminder.customTime.value
                 : reminder.selectedTime.value,
-            "title": reminderTitleController.text.trim(),
+            "title": reminder.titleController.text.trim(),
           };
         }).toList(),
 
       };
+      print("Reminder data $data");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",

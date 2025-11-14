@@ -1210,64 +1210,69 @@ class ReminderUtils {
                                 }
                               },
                             ),
-                            CustomText(text: "Event Type",
-                              colors: colorsConst.fieldHead,
-                              size: 13,
-                            ),
-                            Consumer<ReminderProvider>(
-                              builder: (context, provider, _) {
-                                return Row(
-                                  children: [
-                                    Row(
+                            Row(
+                              children: [
+                                CustomText(text: "Event Type",
+                                  colors: colorsConst.fieldHead,
+                                  size: 13,
+                                ),
+                                20.width,
+                                Consumer<ReminderProvider>(
+                                  builder: (context, provider, _) {
+                                    return Row(
                                       children: [
-                                        Radio<String>(
-                                          value: "followup",
-                                          groupValue: provider.selectedNotification,
-                                          activeColor: const Color(0xFF0078D7),
-                                          onChanged: (v) => provider.setNotification(v!),
+                                        Row(
+                                          children: [
+                                            Radio<String>(
+                                              value: "followup",
+                                              groupValue: provider.selectedNotification,
+                                              activeColor: const Color(0xFF0078D7),
+                                              onChanged: (v) => provider.setNotification(v!),
+                                            ),
+                                            CustomText(
+                                              text: "Follow-up",
+                                              colors: Colors.black,
+                                              size: 15,
+                                            ),
+                                          ],
                                         ),
-                                        CustomText(
-                                          text: "Follow-up",
-                                          colors: Colors.black,
-                                          size: 15,
+                                        20.width,
+                                        Row(
+                                          children: [
+                                            Radio<String>(
+                                              value: "meeting",
+                                              groupValue: provider.selectedNotification,
+                                              activeColor: const Color(0xFF0078D7),
+                                              onChanged: (v) => provider.setNotification(v!),
+                                            ),
+                                            CustomText(
+                                              text: "Appointment",
+                                              colors: Colors.black,
+                                              size: 15,
+                                            ),
+                                          ],
+                                        ),
+                                        20.width,
+                                        Row(
+                                          children: [
+                                            Radio<String>(
+                                              value: "task",
+                                              groupValue: provider.selectedNotification,
+                                              activeColor: const Color(0xFF0078D7),
+                                              onChanged: (v) => provider.setNotification(v!),
+                                            ),
+                                            CustomText(
+                                              text: "Task",
+                                              colors: Colors.black,
+                                              size: 15,
+                                            ),
+                                          ],
                                         ),
                                       ],
-                                    ),
-                                    20.width,
-                                    Row(
-                                      children: [
-                                        Radio<String>(
-                                          value: "meeting",
-                                          groupValue: provider.selectedNotification,
-                                          activeColor: const Color(0xFF0078D7),
-                                          onChanged: (v) => provider.setNotification(v!),
-                                        ),
-                                        CustomText(
-                                          text: "Appointment",
-                                          colors: Colors.black,
-                                          size: 15,
-                                        ),
-                                      ],
-                                    ),
-                                    20.width,
-                                    Row(
-                                      children: [
-                                        Radio<String>(
-                                          value: "task",
-                                          groupValue: provider.selectedNotification,
-                                          activeColor: const Color(0xFF0078D7),
-                                          onChanged: (v) => provider.setNotification(v!),
-                                        ),
-                                        CustomText(
-                                          text: "Task",
-                                          colors: Colors.black,
-                                          size: 15,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                );
-                              },
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                             Row(
                               //mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1534,7 +1539,7 @@ class ReminderUtils {
                                 CustomDropDown(
                                   saveValue: remController.repeatOn,
                                   isOptional: false,
-                                  valueList:["Day", "Week","Month","Quarter", "Year","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                                  valueList:["Day(s)", "Week(s)","Month(s)","Quarter(s)", "Year(s)","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
                                   text: "",
                                   width: 100,
                                   onChanged: (value) async {

@@ -82,7 +82,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
     } else if (screenWidth >= 1200) {
       tableWidth = 3000;
     } else if (screenWidth >= 900) {
-      tableWidth = 2500;
+      tableWidth = 2400;
     } else {
       tableWidth = 2000;
     }
