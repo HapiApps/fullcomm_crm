@@ -637,8 +637,7 @@ class Utils {
                         alignment: Alignment.topRight,
                         child: TextButton(
                             onPressed: () {
-                              controllers.isTemplate.value =
-                                  !controllers.isTemplate.value;
+                              controllers.isTemplate.value = !controllers.isTemplate.value;
                             },
                             child: CustomText(
                               text: "Get Form Template",
@@ -1795,7 +1794,7 @@ class Utils {
   Future<void> chooseFile({RxList? mediaDataV, RxString? fileName, RxString? pathName}) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'png', 'jpeg', 'jpg'],
+      allowedExtensions: ['pdf', 'png', 'jpeg', 'jpg', 'ppt', 'pptx', 'doc', 'docx', 'xls', 'xlsx'],
     );
     if (result != null) {
       fileName?.value = result.files.single.name;

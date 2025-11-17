@@ -42,7 +42,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   String? location;
   String? repeat;
   String? repeatOn;
-  String? repeatWise;
+  String repeatWise = "Never";
   String? repeatEvery;
 
   var stDate = "".obs;
@@ -847,7 +847,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
             "title": reminder.titleController.text.trim(),
           };
         }).toList(),
-
       };
       print("Reminder data $data");
       final request = await http.post(Uri.parse(scriptApi),
@@ -869,6 +868,13 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
          startController.clear();
          endController.clear();
          detailsController.clear();
+          reminders.clear();
+          reminders.add(AddReminderModel());
+          stDate.value="";
+          stTime.value="";
+          enDate.value="";
+          enTime.value="";
+          repeatOn=null;
          final provider = Provider.of<ReminderProvider>(context, listen: false);
          provider.selectedNotification = "followup";
         allReminders(type);

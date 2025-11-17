@@ -818,8 +818,7 @@ class _AddLeadState extends State<AddLead> {
                                             isOptional: false,
                                             onChanged: (value) async {
                                               SharedPreferences sharedPref =
-                                              await SharedPreferences
-                                                  .getInstance();
+                                              await SharedPreferences.getInstance();
                                               sharedPref.setString(
                                                   "leadEmail$index",
                                                   value.toString().trim());

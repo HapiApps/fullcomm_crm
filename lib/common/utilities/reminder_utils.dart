@@ -1140,8 +1140,10 @@ class ReminderUtils {
 
   void showAddReminderDialog(BuildContext context) {
     String? titleError;
-    String? startError;
-    String? endError;
+    String? startDError;
+    String? startTError;
+    String? endDError;
+    String? endTError;
     String? employeeError;
     String? customerError;
     double screenWidth = MediaQuery.of(context).size.width;
@@ -1282,16 +1284,16 @@ class ReminderUtils {
                                   text: "Start Date",
                                   value: remController.stDate.value,
                                   isOptional: true,
-                                  errorText: startError,
+                                  errorText: startDError,
                                   width: 150,
                                   onTap: () {
                                     utils.datePicker(
                                         context: context,
                                         textEditingController: controllers.dateOfConCtr,
                                         pathVal: remController.stDate);
-                                    if (startError != null) {
+                                    if (startDError != null) {
                                       setState(() {
-                                        startError = null; // clear error on typing
+                                        startDError = null; // clear error on typing
                                       });
                                     }
                                   },
@@ -1303,16 +1305,16 @@ class ReminderUtils {
                                   isOptional: true,
                                   value: remController.stTime.value,
                                   width: 150,
-                                  errorText: endError,
+                                  errorText: startTError,
                                   onTap: () {
                                     utils.timePicker(
                                         context: context,
                                         textEditingController:
                                         controllers.timeOfConCtr,
                                         pathVal: remController.stTime);
-                                    if (endError != null) {
+                                    if (startTError != null) {
                                       setState(() {
-                                        endError = null; // clear error on typing
+                                        startTError = null; // clear error on typing
                                       });
                                     }
                                   },
@@ -1342,8 +1344,7 @@ class ReminderUtils {
                                   width: textFieldSize,
                                   child: TextFormField(
                                       textCapitalization: TextCapitalization.sentences,
-                                      controller:
-                                      remController.detailsController,
+                                      controller: remController.detailsController,
                                       maxLines: 5,
                                       style: GoogleFonts.lato(
                                         color: Colors.black,
@@ -1415,7 +1416,7 @@ class ReminderUtils {
                                         textEditingController: controllers.empController,
                                         onSelected: (value) {
                                           setState((){
-                                            //employeeError=null;
+                                            employeeError=null;
                                           });
                                           controllers.selectEmployee(value);
                                         },
@@ -1423,16 +1424,16 @@ class ReminderUtils {
                                           controllers.clearSelectedCustomer();
                                         },
                                       ),
-                                      // if (employeeError != null)
-                                      //   Padding(
-                                      //     padding: const EdgeInsets.only(top: 4.0),
-                                      //     child: Text(
-                                      //       employeeError!,
-                                      //       style: const TextStyle(
-                                      //           color: Colors.red,
-                                      //           fontSize: 13),
-                                      //     ),
-                                      //   ),
+                                      if (employeeError != null)
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 4.0),
+                                          child: Text(
+                                            employeeError!,
+                                            style: const TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 13),
+                                          ),
+                                        ),
                                     ],
                                   ),
                                 ),
@@ -1481,26 +1482,25 @@ class ReminderUtils {
                                         },
                                         textEditingController: controllers.cusController,
                                         onSelected: (value) {
-                                          // setState((){
-                                          //   customerError=null;
-                                          // });
+                                          setState((){
+                                            customerError=null;
+                                          });
                                           controllers.selectCustomer(value);
                                         },
                                         onClear: () {
                                           controllers.clearSelectedCustomer();
                                         },
                                       ),
-                                      // if (customerError != null)
-                                      //   Padding(
-                                      //     padding:
-                                      //     const EdgeInsets.only(top: 4.0),
-                                      //     child: Text(
-                                      //       customerError!,
-                                      //       style: const TextStyle(
-                                      //           color: Colors.red,
-                                      //           fontSize: 13),
-                                      //     ),
-                                      //   ),
+                                      if (customerError != null)
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 4.0),
+                                          child: Text(
+                                            customerError!,
+                                            style: const TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 13),
+                                          ),
+                                        ),
                                     ],
                                   ),
                                 ),
@@ -1523,7 +1523,7 @@ class ReminderUtils {
                                   },
                                 ),
                                 10.width,
-                                CustomDropDown(
+                                remController.repeatWise=="Never"?0.height:CustomDropDown(
                                   saveValue: remController.repeatEvery,
                                   isOptional: false,
                                   valueList:["1", "2","3", "4", "5", "6", "7", "8", "9", "10","11","12"],
@@ -1536,7 +1536,7 @@ class ReminderUtils {
                                   },
                                 ),
                                 10.width,
-                                CustomDropDown(
+                                remController.repeatWise=="Never"?0.height:CustomDropDown(
                                   saveValue: remController.repeatOn,
                                   isOptional: false,
                                   valueList:["Day(s)", "Week(s)","Month(s)","Quarter(s)", "Year(s)","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
@@ -1553,16 +1553,16 @@ class ReminderUtils {
                                   text: "End Date",
                                   value: remController.enDate.value,
                                   isOptional: true,
-                                  errorText: startError,
+                                  errorText: endDError,
                                   width: 150,
                                   onTap: () {
                                     utils.datePicker(
                                         context: context,
                                         textEditingController: controllers.dateOfConCtr,
                                         pathVal: remController.enDate);
-                                    if (startError != null) {
+                                    if (endDError != null) {
                                       setState(() {
-                                        startError = null; // clear error on typing
+                                        endDError = null; // clear error on typing
                                       });
                                     }
                                   },
@@ -1574,16 +1574,16 @@ class ReminderUtils {
                                   isOptional: true,
                                   value: remController.enTime.value,
                                   width: 150,
-                                  errorText: endError,
+                                  errorText: endTError,
                                   onTap: () {
                                     utils.timePicker(
                                         context: context,
                                         textEditingController:
                                         controllers.timeOfConCtr,
                                         pathVal: remController.enTime);
-                                    if (endError != null) {
+                                    if (endTError != null) {
                                       setState(() {
-                                        endError = null; // clear error on typing
+                                        endTError = null; // clear error on typing
                                       });
                                     }
                                   },
@@ -1646,6 +1646,55 @@ class ReminderUtils {
                           10.width,
                           CustomLoadingButton(
                             callback: () async {
+                              if (remController.titleController.text.trim().isEmpty) {
+                                setState(() {
+                                  titleError = "Please enter reminder title";
+                                });
+                                controllers.productCtr.reset();
+                                return;
+                              }
+                              if (remController.stDate.value.isEmpty) {
+                                setState(() {
+                                  startDError = "Please select start date";
+                                });
+                                controllers.productCtr.reset();
+                                return;
+                              }
+                              if (remController.stTime.value.isEmpty) {
+                                setState(() {
+                                  startTError = "Please select start time";
+                                });
+                                controllers.productCtr.reset();
+                                return;
+                              }
+                              if (remController.enDate.value.isEmpty) {
+                                setState(() {
+                                  endDError = "Please select end date";
+                                });
+                                controllers.productCtr.reset();
+                                return;
+                              }
+                              if (remController.enTime.value.isEmpty) {
+                                setState(() {
+                                  endTError = "Please select end time";
+                                });
+                                controllers.productCtr.reset();
+                                return;
+                              }
+                              if (controllers.selectedEmployeeId.value.isEmpty) {
+                                setState(() {
+                                  employeeError = "Please select employee";
+                                });
+                                controllers.productCtr.reset();
+                                return;
+                              }
+                              if (controllers.selectedCustomerId.value.isEmpty) {
+                                setState(() {
+                                  customerError = "Please select customer";
+                                });
+                                controllers.productCtr.reset();
+                                return;
+                              }
                               remController.insertReminderAPI(context, Provider.of<ReminderProvider>(context, listen: false).selectedNotification);
                             },
                             height: 40,
