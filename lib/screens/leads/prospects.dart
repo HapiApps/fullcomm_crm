@@ -116,6 +116,7 @@ class _ProspectsState extends State<Prospects> {
                       20.height,
                       // Filter Section
                       FilterSection(
+                        leadFuture: controllers.allLeadFuture,
                         title: "Prospects",
                         count: controllers.allLeadsLength.value,
                         itemList: apiService.qualifiedList,

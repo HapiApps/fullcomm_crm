@@ -126,6 +126,7 @@ class _SuspectsState extends State<Suspects> {
                       20.height,
                       // Filter Section
                       FilterSection(
+                        leadFuture: controllers.allNewLeadFuture,
                         title: "Suspects",
                         count: controllers.allNewLeadsLength.value,
                         itemList: apiService.prospectsList,

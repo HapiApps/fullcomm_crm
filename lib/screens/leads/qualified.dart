@@ -114,6 +114,7 @@ class _QualifiedState extends State<Qualified> {
                     20.height,
                     // Filter Section
                     FilterSection(
+                      leadFuture: controllers.allQualifiedLeadFuture,
                       title: "Qualified",
                       count: controllers.allGoodLeadsLength.value,
                       itemList: apiService.customerList,

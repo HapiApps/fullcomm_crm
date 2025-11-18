@@ -53,7 +53,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
           decoration: customDecoration.baseBackgroundDecoration(
               radius: 5,
               color: Colors.white,
-              borderColor: const Color(0xffE1E5FA)),
+              borderColor: Colors.grey.shade400),
           child: DropdownButtonHideUnderline(
             child: ButtonTheme(
               alignedDropdown: true,

@@ -115,6 +115,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                     // Filter Section
                     FilterSection(
                       title: "Customers",
+                      leadFuture: controllers.allCustomerLeadFuture,
                       count: controllers.allCustomerLength.value,
                       itemList: [],
                       onDelete: () {

@@ -6,7 +6,7 @@ import '../common/constant/colors_constant.dart';
 import '../common/constant/default_constant.dart';
 import '../common/widgets/log_in.dart';
 import '../controller/controller.dart';
-import '../screens/customer/view_customer.dart';
+import '../screens/leads/view_customer.dart';
 import '../screens/dashboard.dart';
 import '../screens/employee/employee_screen.dart';
 import '../screens/employee/role_management.dart';

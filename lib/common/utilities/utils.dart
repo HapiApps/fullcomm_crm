@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/screens/customer/view_customer.dart';
+import 'package:fullcomm_crm/screens/leads/view_customer.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_text.dart';
 import '../../components/dialog_button.dart';

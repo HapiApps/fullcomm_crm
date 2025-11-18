@@ -125,6 +125,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                       // Filter Section
                       FilterSection(
                         title: "Disqualified",
+                        leadFuture: controllers.disqualifiedFuture,
                         count: controllers.allDisqualifiedLength.value,
                         itemList: apiService.prospectsList,
                         onDelete: () {

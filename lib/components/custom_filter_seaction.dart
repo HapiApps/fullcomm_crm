@@ -3,16 +3,18 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import '../common/constant/colors_constant.dart';
+import '../models/new_lead_obj.dart';
 import 'action_button.dart';
 import 'custom_search_textfield.dart';
 import 'custom_text.dart';
+import 'keyboard_search.dart';
 
 class FilterSection extends StatelessWidget {
   final String title;
   final int count;
   final List<dynamic> itemList;
+  final RxList<NewLeadObj> leadFuture;
   final VoidCallback onDelete;
   final VoidCallback onMail;
   final VoidCallback onPromote;
@@ -43,6 +45,7 @@ class FilterSection extends StatelessWidget {
     required this.selectedSortBy,
     required this.isMenuOpen,
     this.onQualify,
+    required this.leadFuture
   });
 
   @override
@@ -71,6 +74,45 @@ class FilterSection extends StatelessWidget {
                     size: 13,
                   ),
                 ),
+                10.width,
+                SizedBox(
+                  width: 250,
+                  child: KeyboardDropdownField<NewLeadObj>(
+                    items: leadFuture,
+                    borderRadius: 5,
+                    borderColor: Colors.grey.shade300,
+                    hintText: "Mobile Number",
+                    labelText: "Search Mobile Number",
+                    labelBuilder: (customer) =>
+                    '${customer.firstname} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
+                    itemBuilder: (customer) {
+                      return Container(
+                        width: 300,
+                        alignment: Alignment.topLeft,
+                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        child: CustomText(
+                          text:
+                          '${customer.firstname} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
+                          colors: Colors.black,
+                          size: 14,
+                          textAlign: TextAlign.start,
+                        ),
+                      );
+                    },
+                    textEditingController: controllers.cusController,
+                    onSelected: (value) {
+                      selectedMonth.value = null;
+                      selectedSortBy.value = "";
+                      if(value.mobileNumber.toString().isNotEmpty){
+                        onSearchChanged!(value.mobileNumber.toString());
+                      }
+                      //controllers.selectCustomer(value);
+                    },
+                    onClear: () {
+                      controllers.clearSelectedCustomer();
+                    },
+                  ),
+                ),
               ],
             ),
 
@@ -84,8 +126,7 @@ class FilterSection extends StatelessWidget {
                             width: 100,
                             image: "assets/images/action_promote.png",
                             name: "Qualified",
-                            toolTip:
-                                "Click here to Qualified the customer details",
+                            toolTip: "Click here to Qualified the customer details",
                             callback: onQualify!,
                           )
                         : Row(
@@ -154,7 +195,7 @@ class FilterSection extends StatelessWidget {
             Expanded(
               flex: 3,
               child: CustomSearchTextField(
-                hintText: "Search Name, Company, Mobile No.",
+                hintText: "Search Name, Company",
                 controller: searchController,
                 onChanged: onSearchChanged,
               ),
@@ -188,6 +229,8 @@ class FilterSection extends StatelessWidget {
                                 controllers.selectedRange.value = null;
                                 selectedMonth.value = null;
                                 selectedSortBy.value = val!;
+                                onSearchChanged!("");
+                                controllers.clearSelectedCustomer();
                                 _focusNode.requestFocus();
                               },
                             ),

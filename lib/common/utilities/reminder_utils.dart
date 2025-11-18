@@ -1254,22 +1254,22 @@ class ReminderUtils {
                                             ),
                                           ],
                                         ),
-                                        20.width,
-                                        Row(
-                                          children: [
-                                            Radio<String>(
-                                              value: "task",
-                                              groupValue: provider.selectedNotification,
-                                              activeColor: const Color(0xFF0078D7),
-                                              onChanged: (v) => provider.setNotification(v!),
-                                            ),
-                                            CustomText(
-                                              text: "Task",
-                                              colors: Colors.black,
-                                              size: 15,
-                                            ),
-                                          ],
-                                        ),
+                                        // 20.width,
+                                        // Row(
+                                        //   children: [
+                                        //     Radio<String>(
+                                        //       value: "task",
+                                        //       groupValue: provider.selectedNotification,
+                                        //       activeColor: const Color(0xFF0078D7),
+                                        //       onChanged: (v) => provider.setNotification(v!),
+                                        //     ),
+                                        //     CustomText(
+                                        //       text: "Task",
+                                        //       colors: Colors.black,
+                                        //       size: 15,
+                                        //     ),
+                                        //   ],
+                                        // ),
                                       ],
                                     );
                                   },
@@ -1513,7 +1513,7 @@ class ReminderUtils {
                                 CustomDropDown(
                                   saveValue: remController.repeatWise,
                                   isOptional: false,
-                                  valueList:["Every", "Never","Daily", "Weekly", "Bi-Weekly", "Monthly", "Quarterly", "Half Yearly", "Yearly"],
+                                  valueList:["Never", "Every", "Daily", "Weekly", "Bi-Weekly", "Monthly", "Quarterly", "Half Yearly", "Yearly"],
                                   text: "Repeat",
                                   width: 120,
                                   onChanged: (value) async {

@@ -96,6 +96,10 @@ class _KeyboardDropdownFieldState<T extends Object>
               filled: true,
               fillColor: Colors.white,
               labelText: widget.labelText,
+              labelStyle: TextStyle(
+                fontSize: 13,
+                color: Colors.grey,
+              ),
               hintText: widget.hintText,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(widget.borderRadius),
@@ -104,7 +108,6 @@ class _KeyboardDropdownFieldState<T extends Object>
                   color: widget.borderColor,
                 ),
               ),
-
               suffixIcon: IconButton(
                   onPressed: () {
                     setState(() {

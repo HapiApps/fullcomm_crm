@@ -62,7 +62,7 @@ class CustomStyle {
           borderSide: BorderSide(
             color: text == "Search Name"
                 ? Colors.grey.shade200
-                : const Color(0xffE1E5FA),
+                :  Colors.grey.shade400,
           ),
           borderRadius: BorderRadius.circular(5)),
       focusedBorder: OutlineInputBorder(

@@ -647,7 +647,7 @@ class _AddLeadState extends State<AddLead> {
                                                           ),
                                                           enabledBorder: OutlineInputBorder(
                                                               borderSide: BorderSide(
-                                                                color: Colors.grey.shade200,
+                                                                color: Colors.grey.shade400
                                                               ),
                                                               borderRadius:
                                                               BorderRadius
@@ -1673,7 +1673,7 @@ class _AddLeadState extends State<AddLead> {
                                           decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.circular(5),
-                                              border: Border.all(color: Colors.grey.shade200)),
+                                              border: Border.all(color: Colors.grey.shade400)),
                                           child: Obx(() => CustomText(
                                               text: "    ${controllers.selectedCountry.value}",
                                               colors: colorsConst.textColor,

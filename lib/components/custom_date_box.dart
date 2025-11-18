@@ -49,7 +49,7 @@ class CustomDateBox extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(5),
-                border: Border.all(color:Color(0xffE1E5FA))),
+                border: Border.all(color:Colors.grey.shade400)),
             child: Row(
               children: [
                 15.width,

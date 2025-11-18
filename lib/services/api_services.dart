@@ -21,7 +21,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/models/product_obj.dart';
-import 'package:fullcomm_crm/screens/customer/view_customer.dart';
+import 'package:fullcomm_crm/screens/leads/view_customer.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_text.dart';
