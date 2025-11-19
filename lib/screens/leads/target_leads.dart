@@ -614,34 +614,6 @@ class _TargetLeadsState extends State<TargetLeads> {
                                       height: 45,
                                       width: tableWidth,
                                       child: CustomTableHeader(
-                                        showCheckbox: true,
-                                        isAllSelected: controllers.isAllSelected.value,
-                                        onSelectAll: (value) {
-                                          if (value == true) {
-                                            controllers.isAllSelected.value = true;
-                                            setState(() {
-                                              for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                                controllers.isNewLeadList[j]["isSelect"] = true;
-                                                apiService.prospectsList.add({
-                                                  "lead_id": controllers.isNewLeadList[j]["lead_id"],
-                                                  "user_id": controllers.storage.read("id"),
-                                                  "rating": controllers.isNewLeadList[j]["rating"],
-                                                  "cos_id": controllers.storage.read("cos_id"),
-                                                  "mail_id":controllers.isNewLeadList[j]["mail"]
-                                                });
-                                              }
-                                            });
-                                          } else {
-                                            controllers.isAllSelected.value = false;
-                                            for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                              controllers.isNewLeadList[j]["isSelect"] = false;
-                                              setState((){
-                                                var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==controllers.isNewLeadList[j]["lead_id"]);
-                                                apiService.prospectsList.removeAt(i);
-                                              });
-                                            }
-                                          }
-                                        },
                                         onSortDate: () {
                                           controllers.sortField.value = 'date';
                                           controllers.sortOrder.value =

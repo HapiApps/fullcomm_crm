@@ -25,7 +25,7 @@ class DateFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final options = ["Today", "Yesterday", "Last 7 Days", "Last 30 Days"];
+    final options = ["All","Today", "Yesterday", "Last 7 Days", "Last 30 Days"];
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,

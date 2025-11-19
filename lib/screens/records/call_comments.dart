@@ -1047,16 +1047,12 @@ class _CallCommentsState extends State<CallComments> {
                     ),
                     Expanded(
                           child: Obx((){
-                            return remController.callFilteredList.isEmpty?
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                100.height,
-                                Center(
+                            return remController.callFilteredList.isEmpty? Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.height/2,
+                                  alignment: Alignment.center,
                                     child: SvgPicture.asset(
-                                        "assets/images/noDataFound.svg")),
-                              ],
-                            )
+                                        "assets/images/noDataFound.svg"))
                                 :RawKeyboardListener(
                               focusNode: _focusNode,
                               autofocus: true,

@@ -255,10 +255,21 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
 
   @override
   Widget build(BuildContext context) {
-    final int totalColumns = tableController.tableHeadings.length + 1 + (widget.showCheckbox ? 1 : 0);
-    final Map<int, TableColumnWidth> columnWidths = {}; // Company / next
-    for (int i = 0; i < totalColumns; i++) {
-      columnWidths[i] = const FlexColumnWidth(2);
+    // final int totalColumns = tableController.tableHeadings.length + 1 + (widget.showCheckbox ? 1 : 0);
+    // final Map<int, TableColumnWidth> columnWidths = {}; // Company / next
+    // for (int i = 0; i < totalColumns; i++) {
+    //   columnWidths[i] = const FlexColumnWidth(2);
+    // }
+    final headings = tableController.tableHeadings;
+    final Map<int, TableColumnWidth> columnWidths = {};
+
+    int index = 0;
+    if (widget.showCheckbox) {
+      columnWidths[index++] = const FlexColumnWidth(1.5);
+    }
+    for (final h in headings) {
+      final w = tableController.colWidth[h] ?? 120;
+      columnWidths[index++] = FixedColumnWidth(w.toDouble());
     }
     return Obx(()=>tableController.isTableLoading.value?CircularProgressIndicator():InkWell(
       onTap: () {

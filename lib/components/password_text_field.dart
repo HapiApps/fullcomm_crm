@@ -129,7 +129,7 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
             ),
           ),
         ),
-        20.height,
+        //20.height,
       ],
     );
   }

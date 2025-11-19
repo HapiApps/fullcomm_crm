@@ -549,39 +549,10 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                         height: 45,
                                         width: tableWidth,
                                         child: CustomTableHeader(
-                                          showCheckbox: true,
                                           onSortName: () {
                                             controllers.sortField.value = 'name';
                                             controllers.sortOrderN.value =
                                             controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
-                                          },
-                                          isAllSelected: controllers.isAllSelected.value,
-                                          onSelectAll: (value) {
-                                            if (value == true) {
-                                              controllers.isAllSelected.value = true;
-                                              setState(() {
-                                                for (int j = 0; j < controllers.isDisqualifiedList.length; j++) {
-                                                  controllers.isDisqualifiedList[j]["isSelect"] = true;
-                                                  apiService.prospectsList.add({
-                                                    "lead_id": controllers.isDisqualifiedList[j]["lead_id"],
-                                                    "user_id": controllers.storage.read("id"),
-                                                    "rating": controllers.isDisqualifiedList[j]["rating"],
-                                                    "cos_id": controllers.storage.read("cos_id"),
-                                                    "mail": controllers.isDisqualifiedList[j]["mail_id"],
-                                                  });
-                                                }
-                                              });
-                                            } else {
-                                              controllers.isAllSelected.value = false;
-                                              for (int j = 0; j < controllers.isDisqualifiedList.length; j++) {
-                                                controllers.isDisqualifiedList[j]["isSelect"] = false;
-                                                setState(() {
-                                                  var i = apiService.prospectsList.indexWhere((element) =>
-                                                  element["lead_id"] == controllers.isDisqualifiedList[j]["lead_id"]);
-                                                  apiService.prospectsList.removeAt(i);
-                                                });
-                                              }
-                                            }
                                           },
                                           onSortDate: () {
                                             controllers.sortField.value = 'date';

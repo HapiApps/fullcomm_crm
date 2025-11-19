@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <base href="$FLUTTER_BASE_HREF">
+    <base href="$FLUTTER_BASE_HREF">
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Thirumal CRM">
+    <meta charset="UTF-8">
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="description" content="ARUU’s EasyCRM CRM">
 
-  <link rel="icon" type="image/png" href="favicon.png"/>
-  <title>Thirumal CRM</title>
-  <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <title>ARUU’s EasyCRM CRM</title>
+    <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
-<div id="splash-screen">Installing Thirumal CRM....</div>
+
+<div id="splash-screen">
+    <img id="splash-gif" src="Loading.gif" alt="Installing..." />
+</div>
 
 <div id="screenshot-popup" style="
     display:none;
@@ -30,55 +34,96 @@
     font-family: sans-serif;
     text-align: center;
 ">
-  Screenshots are disabled!
+    Screenshots are disabled!
 </div>
 
 <style>
-  #splash-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    font-family: sans-serif;
-    z-index: 9999;
-  }
+    /* full page splash background + prevent scrolling */
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: #fcfbf2; /* requested background color */
+      overflow: hidden;    /* prevent page scroll while splash shown */
+    }
+
+    #splash-screen {
+      position: fixed;
+      inset: 0;
+      background: #fcfbf2; /* ensure whole viewport uses the color */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    /* Make GIF cover the viewport while preserving aspect ratio.
+       object-fit: contain will letterbox if aspect ratios differ. */
+    #splash-gif {
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none; /* allow clicks to pass if ever needed */
+    }
+
+    /* Optional: small screens tweak to avoid tiny gaps on some browsers */
+    @supports (object-fit: contain) {
+      /* nothing extra required */
+    }
 </style>
 
 <script src="flutter_bootstrap.js" async></script>
 
 <script>
-  window.addEventListener('flutter-first-frame', function () {
-    const splash = document.getElementById('splash-screen');
-    if (splash) splash.remove();
-  });
+    window.addEventListener('flutter-first-frame', function () {
+      const splash = document.getElementById('splash-screen');
+      if (splash) {
+        // restore scrolling before removing
+        document.body.style.overflow = '';
+        splash.remove();
+      }
+    });
+
+    // Safety: if flutter-first-frame never fires (rare), remove splash after timeout
+    // (you can remove these lines if you don't want an automatic fallback)
+    setTimeout(() => {
+      const splash = document.getElementById('splash-screen');
+      if (splash) {
+        document.body.style.overflow = '';
+        splash.remove();
+      }
+    }, 15000); // 15s fallback
 </script>
 
 <script>
-  document.addEventListener("keyup", function (e) {
-    if (e.key === "PrintScreen") {
-      navigator.clipboard.writeText(""); // Clear clipboard
-      const popup = document.getElementById('screenshot-popup');
-      popup.style.display = 'block';
-      setTimeout(() => { popup.style.display = 'none'; }, 3000);
-    }
-  });
+    document.addEventListener("keyup", function (e) {
+      if (e.key === "PrintScreen") {
+        navigator.clipboard.writeText("");
+        const popup = document.getElementById('screenshot-popup');
+        if (popup) {
+          popup.style.display = 'block';
+          setTimeout(() => { popup.style.display = 'none'; }, 3000);
+        }
+      }
+    });
 </script>
 
 <script>
-  document.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
-      e.preventDefault();
-      const popup = document.getElementById('screenshot-popup');
-      popup.style.display = 'block';
-      setTimeout(() => { popup.style.display = 'none'; }, 3000);
-    }
-  });
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        const popup = document.getElementById('screenshot-popup');
+        if (popup) {
+          popup.style.display = 'block';
+          setTimeout(() => { popup.style.display = 'none'; }, 3000);
+        }
+      }
+    });
 </script>
 
 </body>

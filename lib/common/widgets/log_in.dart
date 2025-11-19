@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/components/password_text_field.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
@@ -143,6 +144,14 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                     ],
                   ),
+                      Container(
+                        alignment: Alignment.bottomRight,
+                        width: MediaQuery.of(context).size.width / 3.5,
+                        child: CustomText(text: "Forgot Password?",
+                          colors: colorsConst.primary,
+                          size: 14,
+                        ),
+                      ),
                   70.height,
                   CustomLoadingButton(
                       callback: () {
@@ -184,23 +193,6 @@ class _LoginPageState extends State<LoginPage> {
                       radius: 5,
                       height: 60,
                       width: 170),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children:[
-                  //     10.width,
-                  //     CustomText(text: constValue.account,colors: Colors.grey,size: 15),
-                  //     TextButton(
-                  //         onPressed:(){
-                  //           //Get.to(const SignUp(),transition: Transition.downToUp,duration: const Duration(seconds: 1));
-                  //         },
-                  //         child: CustomText(
-                  //           text: constValue.signUp,
-                  //           colors: colorsConst.primary,
-                  //           size: 16,
-                  //           isBold: true,)
-                  //     )
-                  //   ],
-                  // ),
                 ],
               ),
             ),
@@ -209,4 +201,87 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+  void showForgotPasswordDialog(BuildContext context) {
+    TextEditingController passwordController = TextEditingController();
+    TextEditingController confirmPasswordController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          title: CustomText(
+            text: "Reset Password",
+            isBold: true,
+            size: 17,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomTextField(
+                onChanged: (value) async {
+                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                  sharedPref.setString("loginNumber", value.toString().trim());
+                },
+                width: MediaQuery.of(context).size.width / 3.5,
+                height: 40,
+                textInputAction: TextInputAction.next,
+                inputFormatters: constInputFormatters.mobileNumberInput,
+                keyboardType: TextInputType.number,
+                controller: passwordController,
+                text: 'New Password',
+                hintText: 'Enter Your New Password',
+                isOptional: true,
+              ),
+              SizedBox(height: 12),
+              TextField(
+                controller: confirmPasswordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: "Confirm Password",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                String pass = passwordController.text.trim();
+                String confirm = confirmPasswordController.text.trim();
+
+                if (pass.isEmpty || confirm.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Please fill both fields")),
+                  );
+                  return;
+                }
+
+                if (pass != confirm) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Passwords do not match")),
+                  );
+                  return;
+                }
+
+                // TODO: Call your API to reset password here
+                // resetPassword(pass);
+
+                Navigator.pop(context);
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Password reset successfully")),
+                );
+              },
+              child: Text("Reset"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

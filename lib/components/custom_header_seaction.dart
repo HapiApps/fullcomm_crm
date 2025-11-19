@@ -217,11 +217,9 @@ class _HeaderSectionState extends State<HeaderSection> {
               callback: () {
                 _focusNode.requestFocus();
                 if(appName=="ARUU’s EasyCRM") {
-                  print("ARUU’s EasyCRM");
                   utils.showImportDialog(
                       context, widget.title == "Target Leads" ? "0" : "1");
                 }else if(appName=="Thirumal CRM"){
-                  print("Thirumal CRM");
                   utils.showImportDialogThirumal(context, widget.title == "Target Leads" ? "0" : "1");
                 }
               },

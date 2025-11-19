@@ -85,10 +85,10 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   RxString selectedTemperature = "".obs;
   RxString selectedProspectTemperature = "".obs;
   RxString selectedQualifiedTemperature = "".obs;
-  RxString selectedSortBy = "Today".obs;
-  RxString selectedProspectSortBy = "Today".obs;
-  RxString selectedQualifiedSortBy = "Today".obs;
-  RxString selectedCustomerSortBy = "Today".obs;
+  RxString selectedSortBy = "All".obs;
+  RxString selectedProspectSortBy = "All".obs;
+  RxString selectedQualifiedSortBy = "All".obs;
+  RxString selectedCustomerSortBy = "All".obs;
   RxBool isMenuOpen = false.obs;
   var allLeads = <NewLeadObj>[].obs;
   final Rxn<DateTime> selectedMonth = Rxn<DateTime>();

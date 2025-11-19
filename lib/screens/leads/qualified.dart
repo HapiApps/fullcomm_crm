@@ -533,37 +533,10 @@ class _QualifiedState extends State<Qualified> {
                                       height: 45,
                                       width: tableWidth,
                                       child: CustomTableHeader(
-                                        showCheckbox: true,
                                         onSortName: () {
                                           controllers.sortField.value = 'name';
                                           controllers.sortOrderN.value =
                                           controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
-                                        },
-                                        isAllSelected: controllers.isAllSelected.value,
-                                        onSelectAll: (value) {
-                                          if (value == true) {
-                                            controllers.isAllSelected.value = true;
-                                            setState((){
-                                              for(int j=0;j<controllers.isGoodLeadList.length;j++){
-                                                controllers.isGoodLeadList[j]["isSelect"]=true;
-                                                apiService.customerList.add({
-                                                  "lead_id":controllers.isGoodLeadList[j]["lead_id"],
-                                                  "user_id":controllers.storage.read("id"),
-                                                  "rating":controllers.isGoodLeadList[j]["rating"],
-                                                  "cos_id":controllers.storage.read("cos_id"),
-                                                });
-                                              }
-                                            });
-                                          } else {
-                                            controllers.isAllSelected.value = false;
-                                            for(int j=0;j<controllers.isGoodLeadList.length;j++){
-                                              controllers.isGoodLeadList[j]["isSelect"]=false;
-                                              setState((){
-                                                var i=apiService.customerList.indexWhere((element) => element["lead_id"]==controllers.isGoodLeadList[j]["lead_id"]);
-                                                apiService.customerList.removeAt(i);
-                                              });
-                                            }
-                                          }
                                         },
                                         onSortDate: () {
                                           controllers.sortField.value = 'date';

@@ -213,7 +213,8 @@ class FilterSection extends StatelessWidget {
                       "Today",
                       "Yesterday",
                       "Last 7 Days",
-                      "Last 30 Days"
+                      "Last 30 Days",
+                      "All"
                     ];
                     return Wrap(
                       spacing: 8,

@@ -1043,13 +1043,12 @@ class _MeetingCommentsState extends State<MeetingComments> {
                 Expanded(
                     child: Obx((){
                       return remController.meetingFilteredList.isEmpty?
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          100.height,
-                          Center(child: SvgPicture.asset("assets/images/noDataFound.svg")),
-                        ],
-                      )
+                      Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height/2,
+                          alignment: Alignment.center,
+                          child: SvgPicture.asset(
+                              "assets/images/noDataFound.svg"))
                           :RawKeyboardListener(
                         focusNode: _focusNode,
                         autofocus: true,

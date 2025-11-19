@@ -2837,13 +2837,17 @@ class ApiService {
       //print("Customer ${response.body}");
       controllers.isLead.value = true;
       if (response.statusCode == 200) {
-        controllers.selectedCustomerSortBy.value="Today";
         final data = jsonDecode(response.body) as List;
         controllers.allCustomerLength.value = data.length;
-        // controllers.isGoodLeadList.value=[];
-        // for(int i=0;i<controllers.allGoodLeadsLength.value;i++){
-        //   controllers.isGoodLeadList.add(false);
-        // }
+        controllers.isCustomerList.value=[];
+        for(int i=0;i<controllers.allCustomerLength.value;i++){
+          controllers.isCustomerList.add({
+            "isSelect": false,
+            "lead_id": data[i]["user_id"].toString(),
+            "rating": data[i]["rating"].toString(),
+            "mail_id": data[i]["email_id"].toString(),
+          });
+        }
         controllers.allCustomerLeadFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         return data.map((json) => NewLeadObj.fromJson(json)).toList();
       } else {

@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../common/constant/api.dart';
 import '../common/utilities/utils.dart';
 import '../services/api_services.dart';
@@ -12,6 +11,8 @@ import '../services/api_services.dart';
 
 final tableController = Get.put(TableController());
 class TableController extends GetxController {
+
+  RxMap<String, double> colWidth = <String, double>{}.obs;
   var defaultHeadings = [
     "Name",
     "Company Name",
@@ -37,6 +38,7 @@ class TableController extends GetxController {
   ];
   var isLoading = false.obs;
   var headingFields = <String>[].obs;
+
   void setHeadingFields(List<dynamic> data) async {
     try {
       headingFields.value = data
@@ -61,6 +63,9 @@ class TableController extends GetxController {
       } else {
         tableHeadings.value = List<String>.from(headingFields);
       }
+      for (var h in tableHeadings) {
+        colWidth[h] = 150;
+      }
       print("Saved Headings: $headingFields");
       print("tableHeadings Headings: $tableHeadings");
       await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
@@ -78,6 +83,9 @@ class TableController extends GetxController {
   void onInit() {
     super.onInit();
     tableHeadings.value = headingFields.toSet().toList();
+    for (var h in tableHeadings) {
+      colWidth[h] = 150; // default width
+    }
   }
 
   // Swap positions in drag-drop
@@ -122,6 +130,9 @@ class TableController extends GetxController {
     //   "Arpu Value"
     // ];
     tableHeadings.value = headingFields.toSet().toList();
+    for (var h in tableController.tableHeadings) {
+      colWidth[h] = 150; // default width
+    }
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
   }

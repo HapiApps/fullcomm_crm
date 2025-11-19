@@ -74,10 +74,10 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   final Rxn<DateTime> selectedMailMonth = Rxn<DateTime>();
   final Rxn<DateTime> selectedMeetMonth = Rxn<DateTime>();
   final Rxn<DateTime> selectedReminderMonth = Rxn<DateTime>();
-  RxString selectedCallSortBy = "Today".obs;
-  RxString selectedMailSortBy = "Today".obs;
-  RxString selectedMeetSortBy = "Today".obs;
-  RxString selectedReminderSortBy = "Today".obs;
+  RxString selectedCallSortBy = "All".obs;
+  RxString selectedMailSortBy = "All".obs;
+  RxString selectedMeetSortBy = "All".obs;
+  RxString selectedReminderSortBy = "All".obs;
   var selectedCallRange = Rxn<DateTimeRange>();
   var selectedMailRange = Rxn<DateTimeRange>();
   var selectedMeetRange = Rxn<DateTimeRange>();
@@ -456,11 +456,11 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     var filteredList = [...reminderList];
     final dateFormatter = DateFormat("dd-MM-yyyy h:mm a");
     final now = DateTime.now();
-    print("rem list ${reminderList.length}");
-    print("days ${selectedReminderSortBy.value}");
-    
     if (selectedReminderSortBy.value.isNotEmpty) {
       switch (selectedReminderSortBy.value) {
+        case 'All':
+          filteredList = [...reminderList];
+          break;
         case 'Today':
           filteredList = filteredList.where((r) {
             final date = _parseReminderDate(r.updatedTs, dateFormatter);
@@ -567,7 +567,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
       return sortOrderCallActivity.value == 'asc' ? result : -result;
     });
-    print("lenght ${filteredList.length}");
     reminderFilteredList.assignAll(filteredList);
   }
   DateTime _parseReminderDate(String dateStr, DateFormat fallbackFormatter) {

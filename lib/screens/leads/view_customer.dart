@@ -117,7 +117,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                       title: "Customers",
                       leadFuture: controllers.allCustomerLeadFuture,
                       count: controllers.allCustomerLength.value,
-                      itemList: [],
+                      itemList: apiService.prospectsList,
                       onDelete: () {
                         _focusNode.requestFocus();
                         showDialog(
@@ -250,6 +250,68 @@ class _ViewCustomerState extends State<ViewCustomer> {
                               );
                             });
                       },
+                      onDemote: () {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (context) {
+                              return AlertDialog(
+                                content: CustomText(
+                                  text: "Are you sure demote this customers?",
+                                  size: 16,
+                                  isBold: true,
+                                  colors: colorsConst.textColor,
+                                ),
+                                actions: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(color: colorsConst.primary),
+                                            color: Colors.white),
+                                        width: 80,
+                                        height: 25,
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.zero,
+                                              ),
+                                              backgroundColor: Colors.white,
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: CustomText(
+                                              text: "Cancel",
+                                              colors: colorsConst.primary,
+                                              size: 14,
+                                            )),
+                                      ),
+                                      10.width,
+                                      CustomLoadingButton(
+                                        callback: () async {
+                                          _focusNode.requestFocus();
+                                          await apiService.insertQualifiedAPI(context,apiService.prospectsList);
+                                        },
+                                        height: 35,
+                                        isLoading: true,
+                                        backgroundColor:
+                                        colorsConst.primary,
+                                        radius: 2,
+                                        width: 100,
+                                        controller: controllers.productCtr,
+                                        isImage: false,
+                                        text: "Demote",
+                                        textColor:Colors.white,
+                                      ),
+                                      5.width
+                                    ],
+                                  ),
+                                ],
+                              );
+                            });
+                      },
                       searchController: controllers.search,
                       onSearchChanged: (value) {
                         controllers.searchCustomers.value = value.toString();
@@ -279,7 +341,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                             child: Column(
                               children: [
                                 LeftTableHeader(
-                                  showCheckbox: false,
+                                  showCheckbox: true,
                                   isAllSelected: controllers.isAllSelected.value,
                                   onSelectAll: (value) {
                                     if (value == true) {
@@ -308,24 +370,30 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                         final data = controllers.paginatedCustomerLeads[index];
                                         return Obx(()=>LeftLeadTile(
                                           pageName: "Customers",
-                                          showCheckbox: false,
-                                          saveValue: controllers.isNewLeadList[index]["isSelect"],
+                                          showCheckbox: true,
+                                          saveValue: controllers.isCustomerList[index]["isSelect"],
                                           onChanged: (value){
                                             setState(() {
-                                              if(controllers.isNewLeadList[index]["isSelect"]==true){
-                                                controllers.isNewLeadList[index]["isSelect"]=false;
-                                                var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                                apiService.prospectsList.removeAt(i);
-                                              }else{
-                                                controllers.isNewLeadList[index]["isSelect"]=true;
-                                                apiService.prospectsList.add({
-                                                  "lead_id":data.userId.toString(),
-                                                  "user_id":controllers.storage.read("id"),
-                                                  "rating":data.rating ?? "Warm",
-                                                  "cos_id":controllers.storage.read("cos_id"),
-                                                  "mail_id":data.email.toString().split("||")[0]
-                                                });
-                                              }
+                                         try{
+                                           if(controllers.isCustomerList[index]["isSelect"]==true){
+                                             controllers.isCustomerList[index]["isSelect"]=false;
+                                             var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                             apiService.prospectsList.removeAt(i);
+                                           }else{
+                                             controllers.isCustomerList[index]["isSelect"]=true;
+                                             apiService.prospectsList.add({
+                                               "lead_id":data.userId==null?"":data.userId.toString(),
+                                               "user_id":controllers.storage.read("id"),
+                                               "rating":data.rating ?? "Warm",
+                                               "cos_id":controllers.storage.read("cos_id"),
+                                               "mail_id":data.email.toString()==""
+                                                   ?""
+                                                   :data.email.toString()
+                                             });
+                                           }
+                                         }catch(e){
+                                           print("Error in customer list selection: $e");
+                                         }
                                             });
                                           },
                                           visitType: data.visitType.toString(),
@@ -438,19 +506,10 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                       height: 45,
                                       width: tableWidth,
                                       child: CustomTableHeader(
-                                        showCheckbox: false,
                                         onSortName: () {
                                           controllers.sortField.value = 'name';
                                           controllers.sortOrderN.value =
                                           controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
-                                        },
-                                        isAllSelected: controllers.isAllSelected.value,
-                                        onSelectAll: (value) {
-                                          if (value == true) {
-                                            controllers.isAllSelected.value = true;
-                                          } else {
-                                            controllers.isAllSelected.value = false;
-                                          }
                                         },
                                         onSortDate: () {
                                           controllers.sortField.value = 'date';
@@ -481,15 +540,15 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                           return Obx(()=>CustomLeadTile(
                                             pageName: "Customers",
                                             showCheckbox: false,
-                                            saveValue: controllers.isNewLeadList[index]["isSelect"],
+                                            saveValue: controllers.isCustomerList[index]["isSelect"],
                                             onChanged: (value){
                                               setState(() {
-                                                if(controllers.isNewLeadList[index]["isSelect"]==true){
-                                                  controllers.isNewLeadList[index]["isSelect"]=false;
+                                                if(controllers.isCustomerList[index]["isSelect"]==true){
+                                                  controllers.isCustomerList[index]["isSelect"]=false;
                                                   var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
                                                   apiService.prospectsList.removeAt(i);
                                                 }else{
-                                                  controllers.isNewLeadList[index]["isSelect"]=true;
+                                                  controllers.isCustomerList[index]["isSelect"]=true;
                                                   apiService.prospectsList.add({
                                                     "lead_id":data.userId.toString(),
                                                     "user_id":controllers.storage.read("id"),
