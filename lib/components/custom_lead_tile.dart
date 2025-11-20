@@ -260,158 +260,136 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
     // for (int i = 0; i < totalColumns; i++) {
     //   columnWidths[i] = const FlexColumnWidth(2);
     // }
-    final headings = tableController.tableHeadings;
-    final Map<int, TableColumnWidth> columnWidths = {};
-
-    int index = 0;
-    if (widget.showCheckbox) {
-      columnWidths[index++] = const FlexColumnWidth(1.5);
-    }
-    for (final h in headings) {
-      final w = tableController.colWidth[h] ?? 120;
-      columnWidths[index++] = FixedColumnWidth(w.toDouble());
-    }
-    return Obx(()=>tableController.isTableLoading.value?CircularProgressIndicator():InkWell(
-      onTap: () {
-        Get.to(
-            ViewLead(
-              id: widget.id,
-              linkedin: "",
-              x: "",
-              mainName: widget.mainName,
-              mainMobile: widget.mainMobile,
-              mainEmail: widget.mainEmail,
-              mainWhatsApp: widget.mainWhatsApp,
-              companyName: widget.companyName,
-              status: widget.status,
-              rating: widget.rating,
-              emailUpdate: widget.emailUpdate,
-              name: widget.name,
-              title: "",
-              mobileNumber: widget.mobileNumber,
-              whatsappNumber: widget.whatsappNumber,
-              email: widget.email,
-              mainTitle: "",
-              addressId: widget.addressId,
-              companyWebsite: "",
-              companyNumber: "",
-              companyEmail: "",
-              industry: "",
-              productServices: "",
-              source: "",
-              owner: "",
-              budget: "",
-              timelineDecision: "",
-              serviceInterest: "",
-              description: "",
-              leadStatus: widget.leadStatus,
-              active: widget.active,
-              addressLine1: widget.addressLine1,
-              addressLine2: widget.addressLine2,
-              area: widget.area,
-              city: widget.city,
-              state: widget.state,
-              country: widget.country,
-              pinCode: widget.pinCode,
-              quotationStatus: widget.quotationStatus,
-              productDiscussion: widget.productDiscussion,
-              discussionPoint: widget.discussionPoint,
-              notes: widget.notes.toString(),
-              prospectEnrollmentDate: widget.prospectEnrollmentDate ?? "",
-              expectedConvertionDate: widget.expectedConvertionDate ?? "",
-              numOfHeadcount: widget.numOfHeadcount ?? "",
-              expectedBillingValue: widget.expectedBillingValue ?? "",
-              arpuValue: widget.arpuValue ?? "",
-              updateTs: widget.updatedTs,
-              sourceDetails: widget.sourceDetails.toString(),
-            ),
-            duration: Duration.zero);
-      },
-      child: Table(
-        columnWidths: columnWidths,
-        border: TableBorder(
-          horizontalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
-          verticalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
-          bottom: BorderSide(width: 0.5, color: Colors.grey.shade400),
-        ),
-        children: [
-          TableRow(
-              decoration: BoxDecoration(
-                color: int.parse(widget.index.toString()) % 2 == 0
-                    ? Colors.white
-                    : colorsConst.backgroundColor,
+    return Obx((){
+      final headings = tableController.tableHeadings;
+      final displayHeadings = headings.skip(1).toList();
+      final Map<int, TableColumnWidth> columnWidths = {};
+      int idx = 0;
+      for (final h in displayHeadings) {
+        final w = tableController.colWidth[h] ?? 150.0;
+        columnWidths[idx++] = FixedColumnWidth(w.toDouble());
+      }
+      if (tableController.isTableLoading.value) {
+        return SizedBox(
+          height: 60,
+          child: Center(child: CircularProgressIndicator()),
+        );
+      }
+      return tableController.isTableLoading.value?CircularProgressIndicator():
+      InkWell(
+        onTap: () {
+          Get.to(
+              ViewLead(
+                id: widget.id,
+                companyName: widget.companyName,
+                status: widget.status,
+                rating: widget.rating,
+                name: widget.name,
+                mobileNumber: widget.mobileNumber,
+                email: widget.email,
+                addressId: widget.addressId,
+                source: "",
+                owner: "",
+                addressLine1: widget.addressLine1,
+                addressLine2: widget.addressLine2,
+                area: widget.area,
+                city: widget.city,
+                state: widget.state,
+                country: widget.country,
+                pinCode: widget.pinCode,
+                notes: widget.notes.toString(),
+                updateTs: widget.updatedTs,
+                sourceDetails: widget.sourceDetails.toString(),
               ),
-              children: [
-                ...tableController.tableHeadings.skip(1).map((heading) {
-                  if (heading.toLowerCase() == "added date" ||
-                      heading.toLowerCase() == "prospect enrollment date") {
-                    return Container(
-                      height: 45,
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: CustomText(
-                        textAlign: TextAlign.left,
-                        text: formatDate(widget.updatedTs.toString()),
-                        size: 14,
-                        colors: colorsConst.textColor,
-                      ),
-                    );
-                  } else if (heading.toLowerCase() == "status update") {
-                    return Tooltip(
-                      message: widget.statusUpdate.toString() == "null"
-                          ? ""
-                          : widget.statusUpdate.toString(),
-                      child: Container(
-                        height: 45,
-                        alignment: Alignment.centerLeft,
-                        padding:
-                        const EdgeInsets.only(left: 6, right: 5, bottom: 5),
-                        child: TextField(
-                          controller: statusController,
-                          cursorColor: colorsConst.textColor,
-                          style: TextStyle(
-                            color: colorsConst.textColor,
-                            fontSize: 14,
-                            fontFamily: "Lato",
-                          ),
-                          decoration: const InputDecoration(border: InputBorder.none),
-                          onSubmitted: (value) async {
-                            apiService.updateLeadStatusUpdateAPI(
-                              context,
-                              widget.id.toString(),
-                              widget.mainMobile.toString(),
-                              value,
-                            );
-                          },
-                        ),
-                      ),
-                    );
-                  } else {
-                    String normalize(String s) =>
-                        s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
-                    final key = controllers.fields
-                        .firstWhereOrNull((f) => normalize(f.userHeading) == normalize(heading))
-                        ?.systemField;
-                    final value = key != null ? toJson()[key] ?? "" : "";
-                    return Tooltip(
-                      message: value.toString() == "null" ? "" : value.toString(),
-                      child: Container(
+              duration: Duration.zero);
+        },
+        child: Table(
+          columnWidths: columnWidths,
+          border: TableBorder(
+            horizontalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
+            verticalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
+            bottom: BorderSide(width: 0.5, color: Colors.grey.shade400),
+          ),
+          children: [
+            TableRow(
+                decoration: BoxDecoration(
+                  color: int.parse(widget.index.toString()) % 2 == 0
+                      ? Colors.white
+                      : colorsConst.backgroundColor,
+                ),
+                children: [
+                  ...displayHeadings.skip(1).map((heading) {
+                    if (heading.toLowerCase() == "added date" ||
+                        heading.toLowerCase() == "prospect enrollment date") {
+                      return Container(
                         height: 45,
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: CustomText(
                           textAlign: TextAlign.left,
-                          text: value.toString() == "null" ? "" : value.toString(),
+                          text: formatDate(widget.updatedTs.toString()),
                           size: 14,
                           colors: colorsConst.textColor,
                         ),
-                      ),
-                    );
-                  }
-                }),
-              ]),
-        ],
-      ),
-    ));
+                      );
+                    } else if (heading.toLowerCase() == "status update") {
+                      return Tooltip(
+                        message: widget.statusUpdate.toString() == "null"
+                            ? ""
+                            : widget.statusUpdate.toString(),
+                        child: Container(
+                          height: 45,
+                          alignment: Alignment.centerLeft,
+                          padding:
+                          const EdgeInsets.only(left: 6, right: 5, bottom: 5),
+                          child: TextField(
+                            controller: statusController,
+                            cursorColor: colorsConst.textColor,
+                            style: TextStyle(
+                              color: colorsConst.textColor,
+                              fontSize: 14,
+                              fontFamily: "Lato",
+                            ),
+                            decoration: const InputDecoration(border: InputBorder.none),
+                            onSubmitted: (value) async {
+                              apiService.updateLeadStatusUpdateAPI(
+                                context,
+                                widget.id.toString(),
+                                widget.mainMobile.toString(),
+                                value,
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    } else {
+                      String normalize(String s) =>
+                          s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
+                      final key = controllers.fields
+                          .firstWhereOrNull((f) => normalize(f.userHeading) == normalize(heading))
+                          ?.systemField;
+                      final value = key != null ? toJson()[key] ?? "" : "";
+                      return Tooltip(
+                        message: value.toString() == "null" ? "" : value.toString(),
+                        child: Container(
+                          height: 45,
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: CustomText(
+                            textAlign: TextAlign.left,
+                            text: value.toString() == "null" ? "" : value.toString(),
+                            size: 14,
+                            colors: colorsConst.textColor,
+                          ),
+                        ),
+                      );
+                    }
+                  }),
+                ]),
+          ],
+        ),
+      );
+    }
+    );
   }
 }

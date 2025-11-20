@@ -1,10 +1,10 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:fullcomm_crm/models/new_lead_obj.dart';
 import 'package:fullcomm_crm/screens/leads/update_lead.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import '../../common/constant/colors_constant.dart';
@@ -12,39 +12,20 @@ import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
-import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
+import '../../models/customer_full_obj.dart';
 
 class ViewLead extends StatefulWidget {
   final String? id;
-  final String? mainName;
-  final String? mainMobile;
-  final String? mainEmail;
-  final String? mainWhatsApp;
+  final String? name;
+  final String? mobileNumber;
+  final String? email;
   final String? companyName;
   final String? status;
   final String? rating;
-  final String? emailUpdate;
-  final String? name;
-  final String? title;
-  final String? mobileNumber;
-  final String? whatsappNumber;
-  final String? email;
-  final String? mainTitle;
-  final String? addressId;
-  final String? companyWebsite;
-  final String? companyNumber;
-  final String? companyEmail;
-  final String? industry;
-  final String? productServices;
   final String? source;
   final String? owner;
-  final String? budget;
-  final String? timelineDecision;
-  final String? serviceInterest;
-  final String? description;
-  final String? leadStatus;
-  final String? active;
+  final String? addressId;
   final String? addressLine1;
   final String? addressLine2;
   final String? area;
@@ -52,71 +33,32 @@ class ViewLead extends StatefulWidget {
   final String? state;
   final String? country;
   final String? pinCode;
-  final String? linkedin;
-  final String? x;
-  final String? quotationStatus;
-  final String? productDiscussion;
-  final String? discussionPoint;
+  final String updateTs;
   String notes;
-  final String? quotationRequired;
-  final String? arpuValue;
   String sourceDetails;
-  final String? prospectEnrollmentDate;
-  final String? expectedConvertionDate;
-  final String? statusUpdate;
-  final String? numOfHeadcount;
-  final String? expectedBillingValue;
-  String updateTs;
-  ViewLead({super.key,
+
+  ViewLead({
+    super.key,
     this.id,
-    this.mainName,
-    this.mainMobile,
-    this.mainEmail,
+    this.name,
+    this.mobileNumber,
+    this.email,
     this.companyName,
     this.status,
     this.rating,
-    this.mainWhatsApp,
-    this.emailUpdate,
-    this.name,
-    this.title,
-    this.mobileNumber,
-    this.whatsappNumber,
-    this.email,
-    this.mainTitle,
-    this.addressId,
-    this.companyWebsite,
-    this.companyNumber,
-    this.companyEmail,
-    this.industry,
-    this.productServices,
     this.source,
     this.owner,
-    this.budget,
-    this.timelineDecision,
-    this.serviceInterest,
-    this.description,
-    this.leadStatus,
-    this.active,
+    this.addressId,
     this.addressLine1,
     this.addressLine2,
     this.area,
     this.city,
     this.state,
     this.country,
-    this.pinCode,this.x,this.linkedin,
-    this.quotationStatus,
-    this.productDiscussion,
-    this.discussionPoint,
+    this.pinCode,
+    required this.updateTs,
     required this.notes,
-    this.quotationRequired,
-    this.arpuValue,
-    this.expectedBillingValue,
-    this.expectedConvertionDate,
-    this.numOfHeadcount,
-    this.prospectEnrollmentDate,
     required this.sourceDetails,
-    this.statusUpdate,
-    required this.updateTs
   });
 
   @override
@@ -124,46 +66,6 @@ class ViewLead extends StatefulWidget {
 }
 
 class _ViewLeadState extends State<ViewLead> {
-
-  String formatDateTime(String inputDateTime) {
-    final inputFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
-    final outputFormat = DateFormat('yyyy-MM-dd hh:mm a');
-
-    final dateTime = inputFormat.parse(inputDateTime);
-    return outputFormat.format(dateTime);
-  }
-
-  String formatDate(String inputDate) {
-    final formats = [
-      DateFormat('d/M/yyyy'),
-      DateFormat('d/M/yy'),
-      DateFormat('dd-MM-yyyy'),
-      DateFormat('yyyy-MM-dd'),
-      DateFormat('MM/dd/yyyy'),
-      DateFormat('yyyy/MM/dd'),
-    ];
-
-    // Step 1: First, try DateTime.parse for ISO strings
-    try {
-      final dateTime = DateTime.parse(inputDate);
-      return DateFormat('yyyy-MM-dd').format(dateTime);
-    } catch (e) {
-      // Not ISO format, try manual formats
-    }
-
-    // Step 2: Try custom formats
-    for (var format in formats) {
-      try {
-        final dateTime = format.parseStrict(inputDate);
-        return DateFormat('yyyy-MM-dd').format(dateTime);
-      } catch (e) {
-        // Parsing failed, try next
-      }
-    }
-
-    // Step 3: If nothing works, return empty
-    return "";
-  }
   late FocusNode _focusNode;
   late ScrollController _controller;
   String _formatHeading(String heading) {
@@ -175,27 +77,43 @@ class _ViewLeadState extends State<ViewLead> {
         : "")
         .join(" ");
   }
+
+  String formatDateTime(String? input) {
+    if (input == null || input.isEmpty) return "";
+    try {
+      final inputFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+      final dt = inputFormat.parse(input);
+      return DateFormat('yyyy-MM-dd hh:mm a').format(dt);
+    } catch (e) {
+      return input;
+    }
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controller = ScrollController();
     _focusNode = FocusNode();
     _focusNode.requestFocus();
-    Future.delayed(Duration.zero,(){
-      controllers.leadFuture = apiService.leadsDetails(widget.id.toString());
+    // call API to fetch CustomerFullDetails - ensure apiService has this method
+    Future.delayed(Duration.zero, () {
+      controllers.leadFuture =
+          apiService.leadsDetailsForCustomer(widget.id.toString());
     });
   }
+
   @override
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
+
+  Widget _emptyBox(double height) => SizedBox(height: height);
+
   @override
-  Widget build(BuildContext context){
-    var count=200*widget.name.toString().split("||").length;
-    double screenWidth=MediaQuery.of(context).size.width;
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return SelectionArea(
       child: Scaffold(
         body: Row(
@@ -203,960 +121,1110 @@ class _ViewLeadState extends State<ViewLead> {
           children: [
             SideBar(),
             Container(
-              width: screenWidth-150,
+              width: screenWidth - 150,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
               padding: EdgeInsets.all(20),
-              child:Obx(()=>controllers.isLeadLoading.value?const CircularProgressIndicator():
-              FutureBuilder<List<NewLeadObj>>(
-                future: controllers.leadFuture,
-                builder: (context,snapshot){
-                  if(snapshot.hasData){
-                    return GestureDetector(
-                      onTap: () {
-                        _focusNode.requestFocus();
-                      },
-                      child: RawKeyboardListener(
-                        focusNode: _focusNode,
-                        autofocus: true,
-                        onKey: (event) {
-                          if (event is RawKeyDownEvent) {
-                            if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                              _controller.animateTo(
-                                _controller.offset + 100,
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeInOut,
-                              );
-                            } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                              _controller.animateTo(
-                                _controller.offset - 100,
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeInOut,
-                              );
-                            }
-                          }
+              child: Obx(
+                    () => controllers.isLeadLoading.value
+                    ? const CircularProgressIndicator()
+                    : FutureBuilder<CustomerFullDetails>(
+                  future: controllers.leadFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final data = snapshot.data!;
+                      final cust = data.customer;
+                      final addr = data.address;
+                      final persons = data.customerPersons;
+                      final primaryPerson = persons.isNotEmpty ? persons[0] : null;
+                      final additional = data.additionalInfo;
+                      final calls = data.callRecords;
+                      final mails = data.mailRecords;
+                      final meetings = data.meetings;
+                      final reminders = data.reminders;
+
+                      // fallback values from widget props if API missing fields
+                      final displayName =
+                          primaryPerson?.name ?? cust?.companyName ?? widget.name ?? "";
+                      final displayMobile =
+                          primaryPerson?.phone ?? widget.mobileNumber ?? "";
+                      final displayEmail =
+                          primaryPerson?.email ?? widget.email ?? "";
+
+                      return GestureDetector(
+                        onTap: () {
+                          _focusNode.requestFocus();
                         },
-                        child: ListView.builder(
-                            itemCount: snapshot.data?.length,
-                            controller: _controller,
-                            itemBuilder: (context,index){
-                              final leadData = snapshot.data![index];
-                              print("pincode ${leadData.pincode}");
-                              List<String> additionalInfoList = [];
-                              if (leadData.additionalInfo != null && leadData.additionalInfo.toString().isNotEmpty) {
-                                additionalInfoList = leadData.additionalInfo.toString().split("||");
+                        child: RawKeyboardListener(
+                          focusNode: _focusNode,
+                          autofocus: true,
+                          onKey: (event) {
+                            if (event is RawKeyDownEvent) {
+                              if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                                _controller.animateTo(
+                                  _controller.offset + 100,
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeInOut,
+                                );
+                              } else if (event.logicalKey ==
+                                  LogicalKeyboardKey.arrowUp) {
+                                _controller.animateTo(
+                                  _controller.offset - 100,
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeInOut,
+                                );
                               }
-                              // return Column(
-                              //   crossAxisAlignment: CrossAxisAlignment.start,
-                              //   children: controllers.fields.map((fm) {
-                              //     final key = fm.systemField;
-                              //     final heading = fm.userHeading;
-                              //     final value = leadData.asMap()[key]  ?? '';
-                              //     return Padding(
-                              //       padding: const EdgeInsets.symmetric(vertical: 4.0),
-                              //       child: Row(
-                              //         crossAxisAlignment: CrossAxisAlignment.start,
-                              //         children: [
-                              //           Expanded(
-                              //             flex: 3,
-                              //             child: Text(
-                              //               heading ?? '',
-                              //               style: const TextStyle(
-                              //                 fontWeight: FontWeight.bold,
-                              //               ),
-                              //             ),
-                              //           ),
-                              //           8.width,
-                              //           Expanded(
-                              //             flex: 7,
-                              //             child: Text(
-                              //               value.toString(),
-                              //             ),
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     );
-                              //   }).toList(),
-                              // );
-                              return Column(
-                                children:[
-                                  20.height,
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children:[
-                                      SizedBox(
-                                          width: screenWidth/2.5,
+                            }
+                          },
+                          child: ListView(
+                            controller: _controller,
+                            padding: EdgeInsets.zero,
+                            children: [
+                              20.height,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: screenWidth / 2.5,
+                                    child: Row(
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          icon: Icon(
+                                            Icons.arrow_back,
+                                            color: colorsConst.third,
+                                          ),
+                                        ),
+                                        CustomText(
+                                          text: "View Lead",
+                                          colors: colorsConst.textColor,
+                                          size: 20,
+                                          isBold: true,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 300,
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 120,
+                                          height: 35,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              shadowColor: Colors.transparent,
+                                              backgroundColor: colorsConst.primary,
+                                            ),
+                                            onPressed: () {
+                                              // prepare values for UpdateLead
+                                              Get.to(
+                                                UpdateLead(
+                                                  id: widget.id,
+                                                  mainName: displayName,
+                                                  mainMobile: displayMobile,
+                                                  mainEmail: displayEmail,
+                                                  companyName: cust?.companyName ?? widget.companyName,
+                                                  status: cust?.status?.toString(),
+                                                  rating: cust?.rating,
+                                                  detailsOfRequired: cust?.detailsOfServiceRequired,
+                                                  visitType: cust?.visitType ?? "",
+                                                  owner: cust?.owner,
+                                                  addressId: addr?.id?.toString(),
+                                                  addressLine1: addr?.doorNo ?? widget.addressLine1 ?? "",
+                                                  area: addr?.area ?? widget.area ?? "",
+                                                  city: addr?.city ?? widget.city ?? "",
+                                                  state: addr?.state ?? widget.state ?? "",
+                                                  country: addr?.country ?? widget.country ?? "",
+                                                  pinCode: addr?.pincode ?? widget.pinCode ?? "",
+                                                  statusUpdate: cust?.statusUpdate,
+                                                  prospectEnrollmentDate: cust?.prospectEnrollmentDate,
+                                                  expectedConvertionDate: cust?.expectedConvertionDate,
+                                                  numOfHeadcount: cust?.numOfHeadcount,
+                                                  expectedBillingValue: cust?.expectedBillingValue,
+                                                  arpuValue: cust?.arpuValue,
+                                                  productDiscussion: cust?.product,
+                                                  discussionPoint: cust?.discussionPoint,
+                                                  notes: widget.notes,
+                                                  sourceDetails: widget.sourceDetails,
+                                                  updateTs: cust?.updatedTs ?? widget.updateTs,
+                                                ),
+                                                duration: Duration.zero,
+                                              );
+                                            },
+                                            child: MouseRegion(
+                                              cursor: SystemMouseCursors.click,
+                                              child: Text(
+                                                "Edit",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        10.width,
+                                        CustomLoadingButton(
+                                          callback: () {
+                                            controllers.emailSubjectCtr.clear();
+                                            controllers.emailMessageCtr.clear();
+                                            imageController.photo1.value = "";
+                                            controllers.emailToCtr.text =
+                                            displayEmail.isEmpty ? "" : displayEmail;
+                                            utils.sendEmailDialog(
+                                              id: widget.id.toString(),
+                                              name: displayName,
+                                              mobile: displayMobile,
+                                              coName: cust?.companyName ?? widget.companyName ?? "",
+                                            );
+                                          },
+                                          height: 35,
+                                          isLoading: false,
+                                          backgroundColor: colorsConst.third,
+                                          radius: 2,
+                                          width: 120,
+                                          isImage: false,
+                                          text: "Send Email",
+                                          textColor: Colors.white,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              10.height,
+                              Divider(
+                                color: colorsConst.textColor,
+                                thickness: 1,
+                              ),
+                              20.height,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  CustomText(
+                                    text: "Added : ${formatDateTime(cust?.updatedTs ?? widget.updateTs)}",
+                                    colors: colorsConst.textColor,
+                                    size: 12,
+                                  ),
+                                ],
+                              ),
+                              // Top summary card
+                              Container(
+                                height: 190,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  children: [
+                                    15.height,
+                                    Row(
+                                      children: [
+                                        20.width,
+                                        SizedBox(
+                                          width: screenWidth / 2.7,
                                           child: Row(
                                             children: [
-                                              IconButton(
-                                                  onPressed: (){
-                                                    Get.back();
-                                                  },
-                                                  icon: Icon(Icons.arrow_back,color: colorsConst.third,)),
-                                              CustomText(
-                                                text: "View Lead",
-                                                colors: colorsConst.textColor,
-                                                size: 20,
-                                                isBold: true,
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "New Lead",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                    text: _formatHeading(
+                                                        controllers.getUserHeading(
+                                                            "name") ??
+                                                            "Name"),
+                                                    color: colorsConst.primary,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                    text: _formatHeading(
+                                                        controllers.getUserHeading(
+                                                            "mobile_name") ??
+                                                            "Mobile No"),
+                                                    color: colorsConst.primary,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                    text: _formatHeading(
+                                                        controllers.getUserHeading(
+                                                            "email") ??
+                                                            "Email id"),
+                                                    color: colorsConst.primary,
+                                                  ),
+                                                ],
+                                              ),
+                                              30.width,
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: displayName,
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: displayMobile,
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: displayEmail,
+                                                      color: colorsConst.textColor),
+                                                ],
                                               ),
                                             ],
-                                          )
-                                      ),
-                                      SizedBox(
-                                        width: 300,
-                                        child: Row(
-                                          children: [
-                                            SizedBox(
-                                              width : 120,
-                                              height: 35,
-                                              child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    shadowColor: Colors.transparent,
-                                                    backgroundColor: colorsConst.primary,),
-                                                  onPressed: (){
-                                                    controllers.leadNameCrt.add(TextEditingController());
-                                                    controllers.leadMobileCrt.add(TextEditingController());
-                                                    controllers.leadTitleCrt.add(TextEditingController());
-                                                    controllers.leadEmailCrt.add(TextEditingController());
-                                                    controllers.leadWhatsCrt.add(TextEditingController());
-                                                    //Get.to(const Suspects(),duration: Duration.zero);
-                                                    Get.to(UpdateLead(
-                                                      visitType: leadData.visitType.toString(),
-                                                      id:widget.id,
-                                                      detailsOfRequired: leadData.detailsOfServiceRequired,
-                                                      linkedin: "",
-                                                      x: "",
-                                                      mainName:leadData.firstname.toString()=="null"?"":leadData.firstname.toString().split("||")[0],
-                                                      mainMobile:leadData.mobileNumber.toString()=="null"?"":leadData.mobileNumber.toString().split("||")[0],
-                                                      mainEmail:leadData.email.toString()=="null"?"":leadData.email.toString().split("||")[0],
-                                                      mainWhatsApp:leadData.mobileNumber.toString()=="null"?"":leadData.mobileNumber.toString().split("||")[0],
-                                                      companyName:leadData.companyName,
-                                                      status:leadData.status,
-                                                      rating:leadData.rating,
-                                                      emailUpdate:leadData.quotationRequired,
-                                                      name:leadData.firstname,
-                                                      title:"",
-                                                      mobileNumber:leadData.mobileNumber,
-                                                      whatsappNumber:leadData.mobileNumber,
-                                                      email:leadData.email,
-                                                      mainTitle:"",
-                                                      addressId:leadData.addressId,
-                                                      companyWebsite:"",
-                                                      companyNumber:"",
-                                                      companyEmail:"",
-                                                      industry:"",
-                                                      productServices:"",
-                                                      source:leadData.source,
-                                                      owner:leadData.owner,
-                                                      budget:"",
-                                                      timelineDecision:"",
-                                                      serviceInterest:"",
-                                                      description:"",
-                                                      leadStatus:leadData.leadStatus,
-                                                      active:leadData.active,
-                                                      addressLine1:leadData.doorNo,
-                                                      addressLine2:leadData.landmark1,
-                                                      area:leadData.area,
-                                                      city:leadData.city,
-                                                      state:leadData.state,
-                                                      country:leadData.country,
-                                                      pinCode:leadData.pincode,
-                                                      quotationStatus:leadData.quotationStatus,
-                                                      productDiscussion:leadData.productDiscussion,
-                                                      discussionPoint:leadData.discussionPoint,
-                                                      notes:leadData.notes.toString(),
-                                                      statusUpdate: leadData.statusUpdate,
-                                                      prospectEnrollmentDate: leadData.prospectEnrollmentDate ?? "",
-                                                      expectedConvertionDate: leadData.expectedConvertionDate ?? "",
-                                                      numOfHeadcount: leadData.numOfHeadcount ?? "",
-                                                      expectedBillingValue: leadData.expectedBillingValue ?? "",
-                                                      arpuValue: leadData.arpuValue ?? "",
-                                                      updateTs: leadData.updatedTs.toString(),
-                                                      sourceDetails: leadData.sourceDetails.toString(),));
-                                                    print("address id ${leadData.addressId}");
-                                                  },
-                                                  child: MouseRegion(
-                                                    cursor: SystemMouseCursors.click,
-                                                    child: Text(
-                                                      "Edit",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  )),
-                                            ),
-                                            10.width,
-                                            CustomLoadingButton(
-                                              callback:(){
-                                                // controllers.mailReceivesList.value=[];
-                                                // apiService.mailReceiveDetails(widget.id.toString());
-                                                controllers.emailSubjectCtr.clear();
-                                                controllers.emailMessageCtr.clear();
-                                                imageController.photo1.value="";
-                                                controllers.emailToCtr.text=widget.email.toString()=="null"?"":widget.email.toString();
-                                                utils.sendEmailDialog(id: widget.id.toString(), name: widget.name.toString(),
-                                                    mobile: widget.mobileNumber.toString(), coName: widget.companyName.toString());
-                                              },
-                                              height: 35,
-                                              isLoading: false,
-                                              backgroundColor: colorsConst.third,
-                                              radius: 2,
-                                              width: 120,
-                                              isImage: false,
-                                              text: "Send Email",
-                                              textColor: Colors.white,
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  10.height,
-                                  // Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.end,
-                                  //   children:[
-                                  //     TextButton(
-                                  //         onPressed: (){
-                                  //           Get.to(UpdateLead(
-                                  //               id:widget.id,
-                                  //               linkedin: widget.linkedin,
-                                  //               x: widget.x,
-                                  //               mainName:widget.mainName,
-                                  //               mainMobile:widget.mainMobile,
-                                  //               mainEmail:widget.mainEmail,
-                                  //               mainWhatsApp: widget.mainWhatsApp,
-                                  //               companyName:widget.companyName,
-                                  //               status:widget.status,
-                                  //               rating:widget.rating,
-                                  //               emailUpdate:widget.emailUpdate,
-                                  //               name:widget.name,
-                                  //               title:widget.title,
-                                  //               mobileNumber:widget.mobileNumber,
-                                  //               whatsappNumber:widget.whatsappNumber,
-                                  //               email:widget.email,
-                                  //               mainTitle:widget.mainTitle,
-                                  //               addressId:widget.addressId,
-                                  //               companyWebsite:widget.companyWebsite,
-                                  //               companyNumber:widget.companyNumber,
-                                  //               companyEmail:widget.companyEmail,
-                                  //               industry:widget.industry,
-                                  //               productServices:widget.productServices,
-                                  //               source:widget.source,
-                                  //               owner:widget.owner,
-                                  //               budget:widget.budget,
-                                  //               timelineDecision:widget.timelineDecision,
-                                  //               serviceInterest:widget.serviceInterest,
-                                  //               description:widget.description,
-                                  //               leadStatus:widget.leadStatus,
-                                  //               active:widget.active,
-                                  //               addressLine1:widget.addressLine1,
-                                  //               addressLine2:widget.addressLine2,
-                                  //               area:widget.area,
-                                  //               city:widget.city,
-                                  //               state:widget.state,
-                                  //               country:widget.country,
-                                  //               pinCode:widget.pinCode
-                                  //           ),
-                                  //               duration: Duration.zero);
-                                  //         },
-                                  //         child: CustomText(
-                                  //           text: "Edit",
-                                  //           colors: colorsConst.textColor,
-                                  //           size: 12,
-                                  //         )
-                                  //     )
-                                  //   ],
-                                  // ),
-                                  Divider(
-                                    color: colorsConst.textColor,
-                                    thickness: 1,
-                                  ),
-                                  20.height,
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                        20.width,
+                                        SizedBox(
+                                          width: screenWidth / 4,
+                                          child: Row(
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                    text: _formatHeading(
+                                                        controllers.getUserHeading(
+                                                            "owner") ??
+                                                            "Account Manager"),
+                                                    color: colorsConst.primary,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Whatsapp No",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Quotation Required",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Visit Type",
+                                                      color: colorsConst.primary),
+                                                ],
+                                              ),
+                                              40.width,
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.owner ?? widget.owner ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: displayMobile,
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: (cust?.product ?? "").isNotEmpty
+                                                          ? (cust!.product == "1" ? "Yes" : "No")
+                                                          : "No",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.visitType ?? "",
+                                                      color: colorsConst.textColor),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        20.width
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              20.height,
+                              // Address card
+                              Container(
+                                height: 180,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  children: [
+                                    15.height,
+                                    Row(
+                                      children: [
+                                        20.width,
+                                        SizedBox(
+                                          width: screenWidth / 2.7,
+                                          child: Row(
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "Address Information",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Door No",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Area",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "State",
+                                                      color: colorsConst.primary),
+                                                ],
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: addr?.doorNo ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: addr?.area ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: addr?.state ?? "",
+                                                      color: colorsConst.textColor),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        20.width,
+                                        SizedBox(
+                                          width: screenWidth / 4,
+                                          child: Row(
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Pincode",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "City",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Country",
+                                                      color: colorsConst.primary),
+                                                ],
+                                              ),
+                                              40.width,
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: addr?.pincode ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: addr?.city ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: addr?.country ?? "",
+                                                      color: colorsConst.textColor),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        20.width
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              20.height,
+                              // Company info
+                              Container(
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  children: [
+                                    15.height,
+                                    Row(
+                                      children: [
+                                        20.width,
+                                        SizedBox(
+                                          width: screenWidth / 2.7,
+                                          child: Row(
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "Company Information",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: _formatHeading(controllers
+                                                          .getUserHeading(
+                                                          "company_name") ??
+                                                          "Company Name"),
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Company Phone No.",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Industry",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Linkedin",
+                                                      color: colorsConst.primary),
+                                                ],
+                                              ),
+                                              10.width,
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.companyName ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: (cust?.companyNumber ?? ""),
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.industry ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.linkedin ?? "",
+                                                      color: colorsConst.textColor),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        20.width,
+                                        SizedBox(
+                                          width: screenWidth / 4,
+                                          child: Row(
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Website",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Company Email",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Product/Services",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(text: "X", color: colorsConst.primary),
+                                                ],
+                                              ),
+                                              30.width,
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.companyWebsite ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.companyEmail ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.product ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.x ?? "",
+                                                      color: colorsConst.textColor),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        20.width
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              20.height,
+                              // Customer fields & additional info
+                              Container(
+                                height: 380,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  children: [
+                                    15.height,
+                                    Row(
+                                      children: [
+                                        20.width,
+                                        SizedBox(
+                                          width: screenWidth / 2.7,
+                                          child: Row(
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "Customer Fields",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: _formatHeading(controllers
+                                                          .getUserHeading(
+                                                          "product_discussion") ??
+                                                          "Product Discussed"),
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: _formatHeading(controllers
+                                                          .getUserHeading("status") ??
+                                                          "Status"),
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: _formatHeading(controllers
+                                                          .getUserHeading(
+                                                          "expected_billing_value") ??
+                                                          "Expected Monthly Billing Value"),
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: _formatHeading(controllers
+                                                          .getUserHeading(
+                                                          "num_of_headcount") ??
+                                                          "Total Number Of Head Count"),
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: _formatHeading(controllers
+                                                          .getUserHeading(
+                                                          "details_of_service_required") ??
+                                                          "Details of Service Required"),
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: _formatHeading(controllers
+                                                          .getUserHeading("rating") ??
+                                                          "Prospect Grading"),
+                                                      color: colorsConst.primary),
+                                                ],
+                                              ),
+                                              40.width,
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.product ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                    text: (() {
+                                                      final ls = cust?.leadStatus;
+                                                      if (ls == null) return "";
+                                                      if (ls == 1) return "Suspects";
+                                                      if (ls == 2) return "Prospects";
+                                                      if (ls == 3) return "Qualified";
+                                                      return "Customers";
+                                                    })(),
+                                                    color: colorsConst.textColor,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.expectedBillingValue ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.numOfHeadcount ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.detailsOfServiceRequired ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.rating ?? "",
+                                                      color: colorsConst.textColor),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        20.width,
+                                        SizedBox(
+                                          width: screenWidth / 4,
+                                          child: Row(
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Additional Notes",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: "Response Priority",
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: _formatHeading(controllers
+                                                          .getUserHeading("arpu_value") ??
+                                                          "ARPU Value"),
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text:
+                                                      _formatHeading(controllers.getUserHeading(
+                                                          "expected_convertion_date") ??
+                                                          "Expected Conversion Date"),
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: _formatHeading(controllers
+                                                          .getUserHeading(
+                                                          "prospect_enrollment_date") ??
+                                                          "Prospect Enrollment Date"),
+                                                      color: colorsConst.primary),
+                                                  10.height,
+                                                  utils.leadText(
+                                                      text: _formatHeading(controllers
+                                                          .getUserHeading("source") ??
+                                                          "SOURCE OF PROSPECT"),
+                                                      color: colorsConst.primary),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: _formatHeading(controllers
+                                                          .getUserHeading("status_update") ??
+                                                          "Status Update"),
+                                                      color: colorsConst.primary),
+                                                  25.height,
+                                                ],
+                                              ),
+                                              20.width,
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "",
+                                                    colors: colorsConst.textColor,
+                                                    isBold: true,
+                                                    size: 16,
+                                                  ),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: widget.notes ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text:"Normal",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.arpuValue ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.expectedConvertionDate ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.prospectEnrollmentDate ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  utils.leadText(
+                                                      text: cust?.source ?? "",
+                                                      color: colorsConst.textColor),
+                                                  20.height,
+                                                  Tooltip(
+                                                    message: cust?.statusUpdate ?? "",
+                                                    child: utils.leadText(
+                                                        text: cust?.statusUpdate ?? "",
+                                                        color: colorsConst.textColor),
+                                                  ),
+                                                  25.height,
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        20.width
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              20.height,
+                              // Additional info list (from structured additionalInfo)
+                              if (additional.isNotEmpty)
+                                SizedBox(
+                                  width: screenWidth / 2.7,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       CustomText(
-                                        text: "Added : ${formatDateTime(leadData.updatedTs.toString())}",
+                                        text: "Additional Information",
                                         colors: colorsConst.textColor,
-                                        size: 12,
-                                      )
+                                        isBold: true,
+                                        size: 16,
+                                      ),
+                                      20.height,
+                                      ...additional.map((info) => Padding(
+                                        padding: const EdgeInsets.only(bottom: 15),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            utils.leadText(
+                                                text: info.fieldName ?? "",
+                                                color: colorsConst.primary),
+                                            10.width,
+                                            utils.leadText(
+                                                text: info.fieldValue ?? "",
+                                                color: colorsConst.textColor),
+                                          ],
+                                        ),
+                                      )),
                                     ],
                                   ),
-                                  Container(
-                                    height:190,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(
-                                          color: Colors.black
-                                        ),
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: Column(
-                                      children:[
-                                        15.height,
-                                        Row(
-                                          children:[
-                                            20.width,
-                                            SizedBox(
-                                              width: screenWidth/2.7,
-                                              child: Row(
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "New Lead",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("name") ??"Name"),
-                                                          color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("mobile_name") ??"Mobile No"),
-                                                          color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("email") ??"Email id"),
-                                                          color: colorsConst.primary),
-                                                      // 20.height,
-                                                      // utils.leadText(text: _formatHeading(
-                                                      //     controllers.getUserHeading("discussion_point") ??"Discussion Point"),
-                                                      //     color: colorsConst.primary),
-                                                    ],
-                                                  ),
-                                                  30.width,
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.firstname.toString()=="null"?"":leadData.firstname.toString().split("||")[0],color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.mobileNumber.toString()=="null"?"":leadData.mobileNumber.toString().split("||")[0],color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.email.toString()=="null"?"":leadData.email.toString().split("||")[0],color: colorsConst.textColor),
-                                                      // 20.height,
-                                                      // utils.leadText(text: leadData.discussionPoints.toString()=="null"?"":leadData.discussionPoints.toString(),color: colorsConst.textColor),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            20.width,
-                                            SizedBox(
-                                              width:screenWidth/4,
-                                              child:Row(
-                                                children:[
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("owner") ??"Account Manager"),color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "Whatsapp No",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "Quotation Required",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "Visit Type",color: colorsConst.primary),
-                                                    ],
-                                                  ),
-                                                  40.width,
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.owner.toString()=="null"?"":leadData.owner.toString(),color:colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.mobileNumber.toString()=="null"?"":leadData.mobileNumber.toString().split("||")[0],color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.quotationRequired=="1"?"Yes":"No",color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.visitType,color: colorsConst.textColor),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            20.width
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  20.height,
-                                  // SizedBox(
-                                  //   height: count.toDouble(),
-                                  //   child: ListView.builder(
-                                  //     physics: const NeverScrollableScrollPhysics(),
-                                  //     itemCount: widget.name.toString().split("||").length,
-                                  //       itemBuilder: (context,index){
-                                  //       return Column(
-                                  //         children:[
-                                  //           Container(
-                                  //             height:180,
-                                  //             decoration: BoxDecoration(
-                                  //                 color: colorsConst.secondary,
-                                  //                 borderRadius: BorderRadius.circular(10)
-                                  //             ),
-                                  //             child: Column(
-                                  //               children:[
-                                  //                 15.height,
-                                  //                 Row(
-                                  //                   children:[
-                                  //                     20.width,
-                                  //                     SizedBox(
-                                  //                       width: screenWidth/2.7,
-                                  //                       child: Row(
-                                  //                         children: [
-                                  //                           Column(
-                                  //                             crossAxisAlignment: CrossAxisAlignment.start,
-                                  //                             children:[
-                                  //                               CustomText(
-                                  //                                 text: "New Lead",
-                                  //                                 colors: colorsConst.textColor,
-                                  //                                 isBold: true,
-                                  //                                 size: 16,
-                                  //                               ),
-                                  //                               20.height,
-                                  //                               utils.leadText(text: "Name",color: colorsConst.primary),
-                                  //                               20.height,
-                                  //                               utils.leadText(text: "Mobile No",color: colorsConst.primary),
-                                  //                               20.height,
-                                  //                               utils.leadText(text: "Email id",color: colorsConst.primary),
-                                  //                             ],
-                                  //                           ),
-                                  //                           30.width,
-                                  //                           Column(
-                                  //                             crossAxisAlignment: CrossAxisAlignment.start,
-                                  //                             children:[
-                                  //                               CustomText(
-                                  //                                 text: "",
-                                  //                                 colors: colorsConst.textColor,
-                                  //                                 isBold: true,
-                                  //                                 size: 16,
-                                  //                               ),
-                                  //                               20.height,
-                                  //                               utils.leadText(text: widget.name.toString().split("||")[index],color: colorsConst.textColor),
-                                  //                               20.height,
-                                  //                               utils.leadText(text: widget.mobileNumber.toString().split("||")[index],color: colorsConst.textColor),
-                                  //                               20.height,
-                                  //                               utils.leadText(text: widget.email.toString().split("||")[index],color: colorsConst.textColor),
-                                  //                             ],
-                                  //                           ),
-                                  //                         ],
-                                  //                       ),
-                                  //                     ),
-                                  //                     20.width,
-                                  //                     SizedBox(
-                                  //                       width:screenWidth/4,
-                                  //                       child:Row(
-                                  //                         children:[
-                                  //                           Column(
-                                  //                             crossAxisAlignment: CrossAxisAlignment.start,
-                                  //                             children:[
-                                  //                               CustomText(
-                                  //                                 text: "",
-                                  //                                 colors: colorsConst.textColor,
-                                  //                                 isBold: true,
-                                  //                                 size: 16,
-                                  //                               ),
-                                  //                               20.height,
-                                  //                               utils.leadText(text: "Title",color: colorsConst.primary),
-                                  //                               20.height,
-                                  //                               utils.leadText(text: "Whatsapp No",color: colorsConst.primary),
-                                  //                               20.height,
-                                  //                               utils.leadText(text: "",color: colorsConst.primary),
-                                  //                             ],
-                                  //                           ),
-                                  //                           40.width,
-                                  //                           Column(
-                                  //                             crossAxisAlignment: CrossAxisAlignment.start,
-                                  //                             children:[
-                                  //                               CustomText(
-                                  //                                 text: "",
-                                  //                                 colors: colorsConst.textColor,
-                                  //                                 isBold: true,
-                                  //                                 size: 16,
-                                  //                               ),
-                                  //                               20.height,
-                                  //                               utils.leadText(text: widget.title.toString().split("||")[index],color:colorsConst.textColor),
-                                  //                               20.height,
-                                  //                               utils.leadText(text: widget.whatsappNumber.toString().split("||")[index],color: colorsConst.textColor),
-                                  //                               20.height,
-                                  //                               utils.leadText(text: "",color: colorsConst.textColor),
-                                  //                             ],
-                                  //                           ),
-                                  //                         ],
-                                  //                       ),
-                                  //                     ),
-                                  //                     20.width
-                                  //                   ],
-                                  //                 )
-                                  //               ],
-                                  //             ),
-                                  //           ),
-                                  //           20.height,
-                                  //         ],
-                                  //       );
-                                  //       }),
-                                  // ),
-                                  Container(
-                                    height: 180,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(
-                                            color: Colors.black
-                                        ),
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        15.height,
-                                        Row(
-                                          children:[
-                                            20.width,
-                                            SizedBox(
-                                              width:screenWidth/2.7,
-                                              child: Row(
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "Address Information",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: "Door No",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "Area",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "State",color: colorsConst.primary),
-                                                    ],
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      CustomText(
-                                                        text: "",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.doorNo.toString()=="null"?"":leadData.doorNo,color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.area.toString()=="null"?"":leadData.area,color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.state.toString()=="null"?"":leadData.state,color: colorsConst.textColor),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            20.width,
-                                            SizedBox(
-                                              width:screenWidth/4,
-                                              child: Row(
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: "Pincode",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "City",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "Country",color: colorsConst.primary),
-                                                    ],
-                                                  ),
-                                                  40.width,
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.pincode.toString()=="null"?"":leadData.pincode,color:colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.city.toString()=="null"?"":
-                                                      leadData.city,color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.country.toString()=="null"?"":leadData.country,color: colorsConst.textColor),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            20.width
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  20.height,
-                                  Container(
-                                    height: 200,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(
-                                            color: Colors.black
-                                        ),
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: Column(
-                                      children:[
-                                        15.height,
-                                        Row(
-                                          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children:[
-                                            20.width,
-                                            SizedBox(
-                                              width: screenWidth/2.7,
-                                              child: Row(
-                                                children:[
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "Company Information",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("company_name") ??"Company Name"),color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "Company Phone No.",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "Industry",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "Linkedin",color: colorsConst.primary),
-                                                    ],
-                                                  ),
-                                                  10.width,
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.companyName.toString()=="null"?"":leadData.companyName.toString(),color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.companyNumber.toString()=="null"?"":leadData.companyNumber,color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.industry.toString()=="null"?"":leadData.industry,color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.linkedin.toString()=="null"?"":leadData.linkedin,color: colorsConst.textColor),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            20.width,
-                                            SizedBox(
-                                              width: screenWidth/4,
-                                              child: Row(
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: "Website",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "Company Email",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "Product/Services",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "X",color: colorsConst.primary),
-                                                    ],
-                                                  ),
-                                                  30.width,
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.companyWebsite.toString()=="null"?"":leadData.companyWebsite,color:colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.companyEmail.toString()=="null"?"":leadData.companyEmail,color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.product.toString()=="null"?"":leadData.product,color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.x.toString()=="null"?"":leadData.x,color: colorsConst.textColor),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            20.width
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  20.height,
-                                  Container(
-                                    height: 380,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(
-                                            color: Colors.black
-                                        ),
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        15.height,
-                                        Row(
-                                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children:[
-                                            20.width,
-                                            SizedBox(
-                                              width: screenWidth/2.7,
-                                              child: Row(
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "Customer Fields",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("product_discussion") ??"Product Discussed"),color: colorsConst.primary),
-                                                      20.height,
-                                                      // utils.leadText(text: "Details Of Services Required",color: colorsConst.primary),
-                                                      // 20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("status") ??"Status"),color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("expected_billing_value") ??"Expected Monthly Billing Value"),color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("num_of_headcount") ??"Total Number Of Head Count"),color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("details_of_service_required") ??"Details of Service Required"),color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("rating") ??"Prospect Grading"),color: colorsConst.primary),
-                                                      // 20.height,
-                                                      // utils.leadText(text: _formatHeading(controllers.getUserHeading("source_details") ??"PROSPECT SOURCE DETAILS"),color: colorsConst.primary),
-                                                    ],
-                                                  ),
-                                                  40.width,
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text:leadData.productDiscussion.toString()=="null"?"":leadData.productDiscussion,color: colorsConst.textColor),
-                                                      20.height,
-                                                      // utils.leadText(text: widget.notes.toString()=="null"?"":widget.notes,color: colorsConst.textColor),
-                                                      // 20.height,
-                                                      utils.leadText(
-                                                          text: leadData.leadStatus.toString()=="null"?"":leadData.leadStatus=="1"?"Suspects":leadData.leadStatus=="2"?"Prospects":leadData.leadStatus=="3"?"Qualified":"Customers",
-                                                          color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.expectedBillingValue.toString()=="null"?"":leadData.expectedBillingValue,color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.numOfHeadcount.toString()=="null"?"":leadData.numOfHeadcount,color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.detailsOfServiceRequired.toString()=="null"?"":leadData.detailsOfServiceRequired,color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.rating.toString()=="null"?"":leadData.rating,color: colorsConst.textColor),
-                                                      // 20.height,
-                                                      // utils.leadText(text: leadData.sourceDetails.toString()=="null"?"":leadData.sourceDetails,color: colorsConst.textColor),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            20.width,
-                                            SizedBox(
-                                              width: screenWidth/4,
-                                              child: Row(
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: "Additional Notes",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: "Response Priority",color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("arpu_value") ??"ARPU Value"),color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("expected_convertion_date") ??"Expected Conversion Date"),color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("prospect_enrollment_date") ??"Prospect Enrollment Date"),color: colorsConst.primary),
-                                                      10.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("source") ??"SOURCE OF PROSPECT"),color: colorsConst.primary),
-                                                      20.height,
-                                                      utils.leadText(text: _formatHeading(controllers.getUserHeading("status_update") ??"Status Update"),color: colorsConst.primary),
-                                                      25.height,
-                                                    ],
-                                                  ),
-                                                  20.width,
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children:[
-                                                      CustomText(
-                                                        text: "",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 16,
-                                                      ),
-                                                      20.height,
-                                                      utils.leadText(text: leadData.notes.toString() =="null"?"":leadData.notes,color:colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text:leadData.quotationStatus=="1"?"Normal":leadData.quotationStatus=="2"?"Critical":"Urgent",color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text:leadData.arpuValue.toString()=="null"?"":leadData.arpuValue,color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text:leadData.expectedConvertionDate.toString()=="null"?"":leadData.expectedConvertionDate.toString(),color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text:leadData.prospectEnrollmentDate.toString()=="null"?"":leadData.prospectEnrollmentDate.toString(),color: colorsConst.textColor),
-                                                      20.height,
-                                                      utils.leadText(text:leadData.source.toString()=="null"?"":leadData.source.toString(),color: colorsConst.textColor),
-                                                      20.height,
-                                                      Tooltip(
-                                                        message: leadData.statusUpdate.toString(),
-                                                        child: utils.leadText(text:leadData.statusUpdate.toString()=="null"?"":
-                                                        leadData.statusUpdate.toString(),color: colorsConst.textColor),
-                                                      ),
-                                                      25.height,
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            20.width
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  20.height,
-                                  additionalInfoList.contains("NULL:")?0.height:SizedBox(
-                                    width: screenWidth / 2.7,
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            CustomText(
-                                              text: "Additional Information",
-                                              colors: colorsConst.textColor,
-                                              isBold: true,
-                                              size: 16,
-                                            ),
-                                            20.height,
-                                            ...additionalInfoList.map((info) {
-                                              String key = "";
-                                              String value = "";
-                                              if (info.contains(":")) {
-                                                var parts = info.split(":");
-                                                key = parts[0].trim();
-                                                value = parts.sublist(1).join(":").trim(); // in case value has :
-                                              }
-                                              return Padding(
-                                                padding: const EdgeInsets.only(bottom: 15),
-                                                child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    utils.leadText(text: key, color: colorsConst.primary),
-                                                    10.width,
-                                                    utils.leadText(text: value, color: colorsConst.textColor),
-                                                  ],
-                                                ),
-                                              );
-                                            }),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  20.height
-                                ],
-                              );
-                            }),
-                      ),
-                    );
-                  }else if(snapshot.hasError){
-                    return  Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children:[
-                        120.height,
-                        Center(
-                            child: SvgPicture.asset("assets/images/noDataFound.svg")
+                                ),
+                              20.height,
+                              if (calls.isNotEmpty) ...[
+                                _buildCallRecords(calls),
+                                20.height,
+                              ],
+                              if (meetings.isNotEmpty) ...[
+                                _buildMeetingRecords(meetings),
+                                20.height,
+                              ],
+                              if (reminders.isNotEmpty) ...[
+                                _buildReminderRecords(reminders),
+                                20.height,
+                              ],
+                              40.height,
+                            ],
+                          ),
                         ),
-                      ],
-                    );
-                  }
-                  return const Center(child:CircularProgressIndicator());
-                },
-              )),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          120.height,
+                          Center(child: SvgPicture.asset("assets/images/noDataFound.svg")),
+                          10.height,
+                          Text(snapshot.error.toString()),
+                        ],
+                      );
+                    }
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
+
+  Widget _buildCallRecords(List<CallRecord> calls) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.black12),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(text: "Call Records (${calls.length})", colors: colorsConst.textColor, isBold: true, size: 14),
+          10.height,
+          ...calls.map((c) => InkWell(
+            onTap: () => _showRecordDialog(
+              title: "Call Detail",
+              fields: {
+                "Type": c.callType ?? "",
+                "Status": c.callStatus ?? "",
+                "To": c.toData ?? "",
+                "From": c.fromData ?? "",
+                "Message": c.message ?? "",
+                "Sent Date": c.sentDate ?? "",
+                "Created By": c.createdBy?.toString() ?? "",
+                "Created Ts": c.createdTs ?? "",
+              },
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                children: [
+                  Expanded(child: Text("${c.callType ?? ''} • ${c.callStatus ?? ''}", style: TextStyle(fontSize: 13))),
+                  Text(c.sentDate ?? "", style: TextStyle(fontSize: 12)),
+                  10.width,
+                  Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+                ],
+              ),
+            ),
+          )).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMeetingRecords(List<Meeting> meetings) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.black12),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(text: "Meetings (${meetings.length})", colors: colorsConst.textColor, isBold: true, size: 14),
+          10.height,
+          ...meetings.map((m) => InkWell(
+            onTap: () => _showRecordDialog(
+              title: "Meeting Detail",
+              fields: {
+                "Title": m.title ?? "",
+                "Venue": m.venue ?? "",
+                "Dates": m.dates ?? "",
+                "Time": m.time ?? "",
+                "Notes": m.notes ?? "",
+                "Status": m.status ?? "",
+                "Created": m.createdTs ?? "",
+                "Updated": m.updatedTs ?? "",
+              },
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                children: [
+                  Expanded(child: Text("${m.title ?? ''} • ${m.status ?? ''}", style: TextStyle(fontSize: 13))),
+                  Text(m.dates ?? "", style: TextStyle(fontSize: 12)),
+                  10.width,
+                  Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+                ],
+              ),
+            ),
+          )).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReminderRecords(List<Reminder> reminders) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.black12),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(text: "Reminders (${reminders.length})", colors: colorsConst.textColor, isBold: true, size: 14),
+          10.height,
+          ...reminders.map((r) => InkWell(
+            onTap: () => _showRecordDialog(
+              title: "Reminder Detail",
+              fields: {
+                "Title": r.title ?? "",
+                "Type": r.type ?? "",
+                "Location": r.location ?? "",
+                "Start": r.startDt ?? "",
+                "End": r.endDt ?? "",
+                "Details": r.details ?? "",
+                "Set Type": r.setType ?? "",
+                "Set Time": r.setTime ?? "",
+                "Created": r.createdTs ?? "",
+              },
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                children: [
+                  Expanded(child: Text("${r.title ?? ''} • ${r.setType ?? ''}", style: TextStyle(fontSize: 13))),
+                  Text(r.startDt ?? "", style: TextStyle(fontSize: 12)),
+                  10.width,
+                  Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+                ],
+              ),
+            ),
+          )).toList(),
+        ],
+      ),
+    );
+  }
+
+  /// Generic dialog to show key-value fields
+  void _showRecordDialog({ required String title, required Map<String, String> fields }) {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Text(title),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: fields.entries.map((e) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 120,
+                          child: Text(e.key, style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                        Expanded(child: Text(e.value.isNotEmpty ? e.value : "-")),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+            actions: [
+              TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text("Close")),
+            ],
+          );
+        }
+    );
+  }
+
 }

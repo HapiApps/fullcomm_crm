@@ -30,6 +30,7 @@ import '../controller/image_controller.dart';
 import '../controller/reminder_controller.dart';
 import '../controller/settings_controller.dart';
 import '../models/customer_activity.dart';
+import '../models/customer_full_obj.dart';
 import '../models/employee_obj.dart';
 import '../models/mail_receive_obj.dart';
 import '../models/meeting_obj.dart';
@@ -302,7 +303,7 @@ class ApiService {
             msg: "Your Lead is updated successfully !",
             color: colorsConst.primary,
             context: Get.context!);
-        controllers.leadFuture = apiService.leadsDetails(leadId);
+        controllers.leadFuture = apiService.leadsDetailsForCustomer(leadId);
         Get.back();
         //Get.to(const CompanyCamera(),transition: Transition.downToUp,duration: const Duration(seconds: 2));
         apiService.allNewLeadsDetails();
@@ -708,7 +709,6 @@ class ApiService {
       );
       controllers.isLead.value=true;
       if (response.statusCode == 200) {
-        controllers.selectedProspectSortBy.value="Today";
         final data = jsonDecode(response.body) as List;
         controllers.allDisqualifiedLength.value = data.length;
         controllers.isDisqualifiedList.clear();
@@ -1789,7 +1789,7 @@ class ApiService {
       if (request.statusCode == 200 && response["message"]=="Customer updated successfully."){
         utils.snackBar(msg: "Your Lead is updated successfully !",
             color: colorsConst.primary,context:Get.context!);
-        controllers.leadFuture = apiService.leadsDetails(leadId);
+        //controllers.leadFuture = apiService.leadsDetails(leadId);
         Get.back();
         //Get.to(const CompanyCamera(),transition: Transition.downToUp,duration: const Duration(seconds: 2));
         apiService.allNewLeadsDetails();
@@ -2317,14 +2317,6 @@ class ApiService {
     final url = Uri.parse(scriptApi);
     controllers.allLeadsLength.value = 0;
     try {
-      print("leads data ${{
-        "search_type": "leads",
-        "cos_id": controllers.storage.read("cos_id"),
-        "role": controllers.storage.read("role"),
-        "id": controllers.storage.read("id"),
-        "lead_id": "2",
-        "action": "get_data"
-      }}");
       final response = await http.post(
         url,
         body: jsonEncode({
@@ -2338,7 +2330,6 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        controllers.selectedQualifiedSortBy.value="Today";
         final data = jsonDecode(response.body) as List; // Cast to List
         controllers.allLeadsLength.value = data.length;
         controllers.isLeadsList.value = [];
@@ -2374,6 +2365,46 @@ class ApiService {
     }
   }
 
+  // Future<List<NewLeadObj>> leadsDetails(String leadId) async {
+  //   controllers.isLeadLoading.value = true;
+  //   final url = Uri.parse(scriptApi);
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       body: jsonEncode({
+  //         "search_type": "lead_details",
+  //         "cos_id": controllers.storage.read("cos_id"),
+  //         "lead_id": leadId,
+  //         "action": "get_data"
+  //       }),
+  //     );
+  //     controllers.isLead.value = true;
+  //     controllers.isLeadLoading.value = false;
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body) as List;
+  //       print("pincode ${data[0]['pincode']}");
+  //       //controllers.allLeads.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+  //       return data.map((json) => NewLeadObj.fromJson(json)).toList();
+  //     } else {
+  //       throw Exception(
+  //           'Failed to load leads: Status code ${response.body}'); // Provide more specific error message
+  //     }
+  //   } on SocketException {
+  //     controllers.isLeadLoading.value = false;
+  //     print('No internet connection');
+  //     throw Exception('No internet connection'); // Handle network errors
+  //   } on HttpException catch (e) {
+  //     controllers.isLeadLoading.value = false;
+  //     print('Server error: ${e.toString()}');
+  //     throw Exception('Server error: ${e.toString()}'); // Handle HTTP errors
+  //   } catch (e) {
+  //     controllers.isLeadLoading.value = false;
+  //     print('Unexpected error lead: ${e.toString()}');
+  //     throw Exception(
+  //         'Unexpected error lead: ${e.toString()}'); // Catch other exceptions
+  //   }
+  // }
+
   Future<List<NewLeadObj>> leadsDetails(String leadId) async {
     controllers.isLeadLoading.value = true;
     final url = Uri.parse(scriptApi);
@@ -2391,7 +2422,6 @@ class ApiService {
       controllers.isLeadLoading.value = false;
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
-        print("pincode ${data[0]['pincode']}");
         //controllers.allLeads.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         return data.map((json) => NewLeadObj.fromJson(json)).toList();
       } else {
@@ -2414,6 +2444,48 @@ class ApiService {
     }
   }
 
+  Future<CustomerFullDetails> leadsDetailsForCustomer(String customerId) async {
+    controllers.isLeadLoading.value = true;
+    final url = Uri.parse(scriptApi);
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "cos_id": controllers.storage.read("cos_id"),
+          "customer_id": customerId,
+          "action": "lead_details"
+        }),
+      );
+
+      controllers.isLeadLoading.value = false;
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+
+        if (decoded is Map && decoded['responseCode']?.toString() == '200') {
+          final data = decoded['data'];
+          if (data is Map<String, dynamic>) {
+            return CustomerFullDetails.fromJson(data);
+          } else {
+            throw Exception('Unexpected data payload format');
+          }
+        } else {
+          throw Exception('API error: ${decoded['responseMsg'] ?? response.body}');
+        }
+      } else {
+        throw Exception('HTTP ${response.statusCode}: ${response.body}');
+      }
+    } on SocketException {
+      controllers.isLeadLoading.value = false;
+      throw Exception('No internet connection');
+    } catch (e) {
+      controllers.isLeadLoading.value = false;
+      rethrow;
+    }
+  }
+
   Future<void> allNewLeadsDetails() async {
     controllers.isLead.value = false;
     final url = Uri.parse(scriptApi);
@@ -2432,7 +2504,6 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        controllers.selectedProspectSortBy.value="Today";
         final data = jsonDecode(response.body) as List;
 
         controllers.allNewLeadsLength.value = data.length;
@@ -2530,7 +2601,6 @@ class ApiService {
       //print("lead ${response.body}");
       controllers.isLead.value = true;
       if (response.statusCode == 200) {
-        controllers.selectedQualifiedSortBy.value="Today";
         final data = jsonDecode(response.body) as List; // Cast to List
         controllers.allGoodLeadsLength.value = data.length;
         controllers.isGoodLeadList.value = [];

@@ -12,6 +12,7 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../models/comments_obj.dart';
 import '../models/customer_activity.dart';
+import '../models/customer_full_obj.dart';
 import '../models/employee_obj.dart';
 import '../models/mail_receive_obj.dart';
 import '../models/meeting_obj.dart';
@@ -71,7 +72,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   Future<List<NewLeadObj>>? allCustomerFuture;
   Future<List<EmployeeObj>>? allEmployeeFuture;
   Future<List<ProductObj>>? allProductFuture;
-  Future<List<NewLeadObj>>? leadFuture;
+  Future<CustomerFullDetails>? leadFuture;
   Future<List<CommentsObj>>? customCommentsFuture;
   Future<List<MailReceiveObj>>? customMailFuture;
   Future<List<NewLeadObj>>? allGoodLeadFuture;

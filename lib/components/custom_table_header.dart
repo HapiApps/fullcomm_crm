@@ -103,14 +103,10 @@ class _CustomTableHeaderState extends State<CustomTableHeader> {
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onHorizontalDragUpdate: (details) {
-                    tableController.isTableLoading.value = true;
-                    tableController.colWidth[h] =
-                        (tableController.colWidth[h]! + details.delta.dx).clamp(80, 400);
+                    final current = tableController.colWidth[h] ?? 150.0;
+                    final newWidth = (current + details.delta.dx).clamp(80.0, 400.0);
+                    tableController.colWidth[h] = newWidth;
                     tableController.colWidth.refresh();
-                    tableController.isTableLoading.value = false;
-                    setState(() {
-
-                    });
                   },
                   child: MouseRegion(
                     cursor: SystemMouseCursors.resizeColumn,
@@ -128,7 +124,6 @@ class _CustomTableHeaderState extends State<CustomTableHeader> {
       for (var h in headings.skip(1)) {
         columnWidths[i++] = FixedColumnWidth(tableController.colWidth[h]!);
       }
-
       return Table(
         columnWidths: columnWidths,
         border: TableBorder(
