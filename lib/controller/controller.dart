@@ -1616,7 +1616,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     "assets/image/itinerary2.jpeg",
     "assets/image/itinerary1.jpeg"
   ];
-
+var otp = "".obs;
   Future<List>? imageListFuture;
   late List<String> userdata = [];
   List contactsID = [];

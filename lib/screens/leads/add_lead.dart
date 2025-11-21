@@ -475,7 +475,6 @@ class _AddLeadState extends State<AddLead> {
                                               text: "Remove personnel",
                                               colors: colorsConst.third,
                                               size: 13,
-                                              isCopy: false,
                                             ),
                                           ],
                                         ),
@@ -718,30 +717,23 @@ class _AddLeadState extends State<AddLead> {
                                             //   }
                                             // }
                                           ),
-                                          // CustomTextField(
-                                          //   hintText:"Mobile No.",
-                                          //   text:"Mobile No.",
-                                          //   controller: controllers.leadMobileCrt,
-                                          //   width:textFieldSize,
-                                          //   keyboardType: TextInputType.number,
-                                          //   textInputAction: TextInputAction.next,
-                                          //   inputFormatters: constInputFormatters.mobileNumberInput,
-                                          //   onChanged:(value) async {
-                                          //     SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                          //     sharedPref.setString("leadMobileNumber", value.toString().trim());
-                                          //   },
-                                          //   // validator:(value){
-                                          //   //   if(value.toString().isEmpty){
-                                          //   //     return "This field is required";
-                                          //   //   }else if(value.toString().trim().length!=10){
-                                          //   //     return "Check Your Phone Number";
-                                          //   //   }else{
-                                          //   //     return null;
-                                          //   //   }
-                                          //   // }
-                                          //
-                                          // ),
-                                          15.height,
+                                          CustomDropDown(
+                                            saveValue: controllers.visitType,
+                                            valueList: controllers.callNameList,
+                                            text: "Call Visit Type",
+                                            width: textFieldSize,
+                                            isOptional : true,
+                                            //inputFormatters: constInputFormatters.textInput,
+                                            onChanged: (value) async {
+                                              setState(() {
+                                                controllers.visitType = value;
+                                              });
+                                              SharedPreferences sharedPref =
+                                              await SharedPreferences.getInstance();
+                                              sharedPref.setString("callVisitType",
+                                                  value.toString().trim());
+                                            },
+                                          ),
                                         ],
                                       ),
                                       // SizedBox(
@@ -847,6 +839,7 @@ class _AddLeadState extends State<AddLead> {
                                               },
                                             ),
                                           ),
+                                          40.height,
                                         ],
                                       ),
                                     ],
@@ -1315,23 +1308,7 @@ class _AddLeadState extends State<AddLead> {
                               //   //   }
                               //   // }
                               // ),
-                              CustomDropDown(
-                                saveValue: controllers.visitType,
-                                valueList: controllers.callNameList,
-                                text: "Call Visit Type",
-                                width: textFieldSize,
-                              isOptional : true,
-                                //inputFormatters: constInputFormatters.textInput,
-                                onChanged: (value) async {
-                                  setState(() {
-                                    controllers.visitType = value;
-                                  });
-                                  SharedPreferences sharedPref =
-                                  await SharedPreferences.getInstance();
-                                  sharedPref.setString("callVisitType",
-                                      value.toString().trim());
-                                },
-                              ),
+
                               CustomTextField(
                                 hintText: "Total Number Of Head Count",
                                 text: "Total Number Of Head Count",

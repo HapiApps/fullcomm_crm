@@ -658,7 +658,7 @@ class _SuspectsState extends State<Suspects> {
                             ],
                           ),
                         ),
-                      Obx(() {
+                      controllers.paginatedLeads.isNotEmpty?Obx(() {
                         final totalPages = controllers.totalPages == 0 ? 1 : controllers.totalPages;
                         final currentPage = controllers.currentPage.value;
                         return Row(
@@ -675,7 +675,7 @@ class _SuspectsState extends State<Suspects> {
                             }),
                           ],
                         );
-                      }),
+                      }):0.height,
                     ],
                   ),
                 ),

@@ -15,6 +15,7 @@ import '../../components/custom_textfield.dart';
 import '../../controller/controller.dart';
 import '../constant/key_constant.dart';
 import '../utilities/mobile_snackbar.dart';
+import 'otp_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -144,12 +145,43 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                     ],
                   ),
-                      Container(
-                        alignment: Alignment.bottomRight,
-                        width: MediaQuery.of(context).size.width / 3.5,
-                        child: CustomText(text: "Forgot Password?",
-                          colors: colorsConst.primary,
-                          size: 14,
+                      InkWell(
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        onTap: ()async{
+                          if(controllers.loginNumber.text.isEmpty) {
+                            mobileUtils.snackBar(
+                                context: Get.context!,
+                                msg: "Please enter your mobile number",
+                                color: Colors.red);
+                          }else{
+                            bool isCheck = await apiService.checkMobileAPI(mobile: controllers.loginNumber.text.trim());
+                            if(!isCheck){
+                              mobileUtils.snackBar(
+                                  context: Get.context!,
+                                  msg: "Mobile number not registered",
+                                  color: Colors.red);
+                              return;
+                            }
+                            if(isRelease) {
+                              apiService.sendOtpAPI(mobile: controllers
+                                  .loginNumber.text.trim());
+                              showOtpDialog(context, mobile: controllers
+                                  .loginNumber.text.trim());
+                            }else{
+                              showForgotPasswordDialog(context, controllers.loginNumber.text.trim());
+                            }
+                          }
+                        },
+                        child: Container(
+                          alignment: Alignment.bottomRight,
+                          width: MediaQuery.of(context).size.width / 3.5,
+                          child: CustomText(text: "Forgot Password?",
+                            colors: colorsConst.primary,
+                            size: 14,
+                          ),
                         ),
                       ),
                   70.height,
@@ -201,84 +233,14 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-  void showForgotPasswordDialog(BuildContext context) {
-    TextEditingController passwordController = TextEditingController();
-    TextEditingController confirmPasswordController = TextEditingController();
+  void showOtpDialog(BuildContext context, {required String mobile}) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          title: CustomText(
-            text: "Reset Password",
-            isBold: true,
-            size: 17,
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CustomTextField(
-                onChanged: (value) async {
-                  SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                  sharedPref.setString("loginNumber", value.toString().trim());
-                },
-                width: MediaQuery.of(context).size.width / 3.5,
-                height: 40,
-                textInputAction: TextInputAction.next,
-                inputFormatters: constInputFormatters.mobileNumberInput,
-                keyboardType: TextInputType.number,
-                controller: passwordController,
-                text: 'New Password',
-                hintText: 'Enter Your New Password',
-                isOptional: true,
-              ),
-              SizedBox(height: 12),
-              TextField(
-                controller: confirmPasswordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: "Confirm Password",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                String pass = passwordController.text.trim();
-                String confirm = confirmPasswordController.text.trim();
-
-                if (pass.isEmpty || confirm.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Please fill both fields")),
-                  );
-                  return;
-                }
-
-                if (pass != confirm) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Passwords do not match")),
-                  );
-                  return;
-                }
-
-                // TODO: Call your API to reset password here
-                // resetPassword(pass);
-
-                Navigator.pop(context);
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Password reset successfully")),
-                );
-              },
-              child: Text("Reset"),
-            ),
-          ],
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: OtpDialogContent(mobile: mobile),
         );
       },
     );

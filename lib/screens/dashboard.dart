@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/common/utilities/notification_utils.dart';
 import 'package:fullcomm_crm/components/line_chart.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'package:fullcomm_crm/screens/records/records.dart';
+import 'package:fullcomm_crm/screens/reminder/reminder_page.dart';
 import 'package:get/get.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:provider/provider.dart';
@@ -452,6 +454,27 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 icon: Icons.people_outline,
                                               ),
                                             ),
+                                            InkWell(
+                                              onTap: (){
+                                                Navigator.push(
+                                                  context,
+                                                  PageRouteBuilder(
+                                                    pageBuilder: (context, animation1, animation2) =>
+                                                    const ReminderPage(),
+                                                    transitionDuration: Duration.zero,
+                                                    reverseTransitionDuration: Duration.zero,
+                                                  ),
+                                                );
+                                                controllers.oldIndex.value = controllers.selectedIndex.value;
+                                                controllers.selectedIndex.value = 11;
+                                              },
+                                              child: countShown(
+                                                width: 130,
+                                                head: "Reminders",
+                                                count: dashController.totalReminders.value.toString(),
+                                                icon: Icons.notifications_active,
+                                              ),
+                                            ),
                                           ],
                                         ),
                                         10.height,
@@ -489,15 +512,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                   children: [
                                                     InkWell(
                                                       onTap: ()async{
-                                                        final permission = await html.Notification.requestPermission();
-                                                        if (permission == "granted") {
-                                                          html.Notification(
-                                                            "Hello from Flutter Web",
-                                                            body: "Local notification test!",
-                                                          );
-                                                        } else {
-                                                          print("Permission not granted");
-                                                        }
+                                                        notificationUtils.showBrowserNotification();
                                                       },
                                                       child: RatingIndicator(
                                                         color: Colors.red,

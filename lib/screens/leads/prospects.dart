@@ -659,7 +659,7 @@ class _ProspectsState extends State<Prospects> {
                         ),
                       ),
 
-                      Obx(() {
+                      controllers.paginatedProspectsLeads.isNotEmpty? Obx(() {
                         final totalPages = controllers.totalProspectPages == 0 ? 1 : controllers.totalProspectPages;
                         final currentPage = controllers.currentProspectPage.value;
                         return Row(
@@ -676,7 +676,7 @@ class _ProspectsState extends State<Prospects> {
                             }),
                           ],
                         );
-                      }),
+                      }):0.height,
                       20.height,
                     ],
                   ),

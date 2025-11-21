@@ -77,7 +77,6 @@ class _CustomDropDownState extends State<CustomDropDown> {
                   return DropdownMenuItem(
                     value: list,
                     child: CustomText(
-                        isCopy: false,
                         text: list,
                         colors:colorsConst.textColor,
                         size: 15,

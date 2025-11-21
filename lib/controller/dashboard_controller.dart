@@ -15,6 +15,7 @@ final dashController = Get.put(DashboardController());
 
 class DashboardController extends GetxController {
   var totalMails       = "0".obs;
+  var totalReminders   = "0".obs;
   var totalEmployees   = "0".obs;
   var totalMeetings    = "0".obs;
   var pendingMeetings  = "0".obs;
@@ -273,6 +274,7 @@ class DashboardController extends GetxController {
       if (request.statusCode == 200) {
         var response = jsonDecode(request.body) as List;
         dashController.totalMails.value       = response[0]["total_mails"] ?? "0";
+        dashController.totalReminders.value   = response[0]["total_reminders"] ?? "0";
         dashController.totalMeetings.value    = response[0]["total_meetings"] ?? "0";
         dashController.pendingMeetings.value  = response[0]["pending_meetings"] ?? "0";
         dashController.completedMeetings.value = response[0]["completed_meetings"] ?? "0";

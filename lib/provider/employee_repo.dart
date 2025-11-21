@@ -98,25 +98,9 @@ class EmployeeRepository {
             },
           )
       );
-      // log("Add Employee Repository if ${response.body}");
-      // log("Add Employee Repository if ${emp_name}");
-      // log("Add Employee Repository if ${emp_mobile}");
-      // log("Add Employee Repository if ${emp_whatsapp}");
-      // log("Add Employee Repository if ${emp_email}");
-      // log("Add Employee Repository if ${emp_address}");
-      // log("Add Employee Repository if ${emp_password}");
-      // log("Add Employee Repository if ${emp_role}");
-      // log("Add Employee Repository if ${emp_salary}");
-      // log("Add Employee Repository if ${emp_bonus}");
-      // log("Add Employee Repository if ${emp_join_date}");
-
       if(response.statusCode == 200){
-        log("Add Employee Repository if ${response.body}");
-
         final Map<String,dynamic> data =  jsonDecode(response.body);
-
         return CommonResponse.fromJson(data);
-
       }else{
         log("Employee Insert Error");
         throw Exception();

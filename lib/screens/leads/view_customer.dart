@@ -342,14 +342,36 @@ class _ViewCustomerState extends State<ViewCustomer> {
                               children: [
                                 LeftTableHeader(
                                   showCheckbox: true,
-                                  isAllSelected: controllers.isAllSelected.value,
+                                isAllSelected: apiService.prospectsList.isEmpty?false:controllers.isAllSelected.value,
                                   onSelectAll: (value) {
+                                    controllers.isAllSelected.value = value!;
                                     if (value == true) {
-                                      controllers.isAllSelected.value = true;
+                                      for (var item in controllers.isCustomerList) {
+                                        item["isSelect"] = true;
+                                      }
+                                      apiService.prospectsList.clear();
+                                      for (var item in controllers.isCustomerList) {
+                                        apiService.prospectsList.add({
+                                          "lead_id": item["lead_id"].toString(),
+                                          "user_id": controllers.storage.read("id"),
+                                          "rating": item["rating"] ?? "Warm",
+                                          "cos_id": controllers.storage.read("cos_id"),
+                                          "mail_id": item["email_id"].toString()==""
+                                            ?""
+                                            :item["email_id"].toString(),
+                                        });
+                                      }
                                     } else {
-                                      controllers.isAllSelected.value = false;
+                                      for (var item in controllers.isCustomerList) {
+                                        item["isSelect"] = false;
+                                      }
+
+                                      apiService.prospectsList.clear();
                                     }
+
+                                    setState(() {});
                                   },
+
                                   onSortDate: () {
                                     controllers.sortField.value = 'date';
                                     controllers.sortOrder.value =

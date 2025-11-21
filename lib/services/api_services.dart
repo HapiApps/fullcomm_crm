@@ -1162,6 +1162,7 @@ class ApiService {
         print("success");
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
+        allCustomerDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         Navigator.pop(context);
         qualifiedList.clear();
@@ -2884,6 +2885,143 @@ class ApiService {
     } catch (e) {
       print("day_report $e");
       throw Exception('Failed to load album');
+    }
+  }
+
+  Future<void> sendOtpAPI({required String mobile})  async {
+    try {
+      Map data = {"mobile": "91$mobile",
+        "action": "send_sms"
+      };
+      log(data.toString());
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+
+      Map<String, dynamic> response = json.decode(request.body.trim());
+      if (request.statusCode == 200) {
+        log("res $response");
+        controllers.otp.value = response["otp"].toString();
+        controllers.loginCtr.reset();
+      } else {
+        utils.snackBar(
+            msg: response.toString(), color: Colors.red, context: Get.context!);
+        controllers.loginCtr.reset();
+      }
+    } catch (e) {
+      utils.snackBar(
+          msg: e.toString(), color: Colors.red, context: Get.context!);
+      controllers.loginCtr.reset();
+    }
+  }
+
+  Future<void> resetPasswordAPI({required String mobile,required String pass})  async {
+    try {
+      Map data = {
+        "mobile_number": mobile,
+        "password": pass,
+        "updated_by" : controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "forgot_password"
+      };
+      log(data.toString());
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+
+      Map<String, dynamic> response = json.decode(request.body.trim());
+      if (request.statusCode == 200) {
+        log("res $response");
+        controllers.storage.write("f_name", response["data"]["s_name"]);
+        controllers.storage.write("role", response["data"]["permission"]);
+        controllers.storage.write("role_name", "Admin");
+        controllers.storage.write("id", response["data"]["id"]);
+        controllers.storage.write("cos_id", response["data"]["cos_id"]);
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setBool("loginScreen${versionNum}", true);
+        String input = "Admin";
+        controllers.isAdmin.value = input == "Admin" ? true : false;
+        prefs.setBool("isAdmin", controllers.isAdmin.value);
+        prefs.remove("loginNumber");
+        prefs.remove("loginPassword");
+        getAllCallActivity("");
+        getAllMailActivity();
+        getAllMeetingActivity("");
+        getAllNoteActivity();
+        loginHistoryApi();
+        allLeadsDetails();
+        allNewLeadsDetails();
+        allGoodLeadsDetails();
+        allCustomerDetails();
+        allQualifiedDetails();
+        allTargetLeadsDetails();
+        getUserHeading();
+        getRoles();
+        getSheet();
+        getAllCustomers();
+        getOpenedMailActivity(true);
+        getReplyMailActivity(true);
+        remController.allReminders("2");
+        settingsController.allRoles();
+        settingsController.allOfficeHours();
+        utils.snackBar(
+          context: Get.context!,
+          msg: "Password Updated Successfully",
+          color: Colors.green,
+        );
+        Get.to(const NewDashboard(), duration: Duration.zero);
+        controllers.loginCtr.reset();
+      } else {
+        utils.snackBar(
+            msg: response.toString(), color: Colors.red, context: Get.context!);
+        controllers.loginCtr.reset();
+      }
+    } catch (e) {
+      utils.snackBar(
+          msg: e.toString(), color: Colors.red, context: Get.context!);
+      controllers.loginCtr.reset();
+    }
+  }
+
+  Future<bool> checkMobileAPI({required String mobile})  async {
+    try {
+      Map data = {
+        "mobile_number": mobile,
+        "action": "check_mobile"
+      };
+      log(data.toString());
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+
+      Map<String, dynamic> response = json.decode(request.body.trim());
+      if (request.statusCode == 200 && response.containsKey("s_name")) {
+        log("res $response");
+        controllers.loginCtr.reset();
+        return true;
+      } else {
+        utils.snackBar(
+            msg: response.toString(), color: Colors.red, context: Get.context!);
+        controllers.loginCtr.reset();
+        return false;
+      }
+    } catch (e) {
+      utils.snackBar(
+          msg: e.toString(), color: Colors.red, context: Get.context!);
+      controllers.loginCtr.reset();
+      return false;
     }
   }
 

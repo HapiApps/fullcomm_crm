@@ -488,24 +488,24 @@ class EmployeeProvider with ChangeNotifier {
       if (response.responseCode == 200) {
         Navigator.pop(context);
         utils.snackBar(msg: "Employee Inserted Successfully", color: Colors.green,context:context);
-        addRoleButtonController.reset();
+        addEmployeeButtonController.reset();
         staffRoleDetailsData(context: context);
-       } else if(response.responseCode == 409){
-        addRoleButtonController.reset();
+       } else if(response.responseCode.toString().trim() == "409"){
+        addEmployeeButtonController.reset();
         utils.snackBar(msg: "Mobile Number Already Exist",
             color: Colors.red,context:context);
       } else {
-        addRoleButtonController.reset();
+        addEmployeeButtonController.reset();
         utils.snackBar(msg: "Employee Inserted Failed",
             color: Colors.red,context:context);
       }
     } catch (e) {
-      addRoleButtonController.reset();
+      addEmployeeButtonController.reset();
       throw Exception(e);
     } finally {
       _isLoading = false;
       notifyListeners();
-      addRoleButtonController.reset();
+      addEmployeeButtonController.reset();
     }
   }
 

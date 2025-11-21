@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 
 /// Aruu database
 /// Dev
-// const String domain      = "https://aruu.celwiz.com";
-// const bool isRelease     = false;
-// const String version     = "Version 0.0.7";
-// const String versionNum  = "0.0.7";
+const String domain      = "https://aruu.celwiz.com";
+const bool isRelease     = false;
+const String version     = "Version 0.0.7";
+const String versionNum  = "0.0.7";
 /// Prod
-const String domain      = "https://aruu.in/";
-const bool isRelease     = true;
-const String version     = "Version 0.0.8";
-const String versionNum  = "0.0.8";
+// const String domain      = "https://aruu.in/";
+// const bool isRelease     = true;
+// const String version     = "Version 0.0.8";
+// const String versionNum  = "0.0.8";
 const String version1        = "v1/CRM/web";
 const String appName         = "ARUU’s EasyCRM";
 const String logo            = "assets/images/logo.png";
