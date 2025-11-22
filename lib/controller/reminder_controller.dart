@@ -78,6 +78,19 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   RxString selectedMailSortBy = "All".obs;
   RxString selectedMeetSortBy = "All".obs;
   RxString selectedReminderSortBy = "All".obs;
+
+  void loadSavedFilters() {
+    final storage = controllers.storage.read("selectedSortBy");
+    controllers.selectedSortBy.value = storage ?? "All";
+    controllers.selectedProspectSortBy.value = storage ?? "All";
+    controllers.selectedQualifiedSortBy.value = storage ?? "All";
+    controllers.selectedCustomerSortBy.value = storage ?? "All";
+    selectedCallSortBy.value = storage ?? "All";
+    selectedMailSortBy.value = storage ?? "All";
+    selectedMeetSortBy.value = storage ?? "All";
+    selectedReminderSortBy.value = storage ?? "All";
+  }
+
   var selectedCallRange = Rxn<DateTimeRange>();
   var selectedMailRange = Rxn<DateTimeRange>();
   var selectedMeetRange = Rxn<DateTimeRange>();

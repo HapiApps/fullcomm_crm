@@ -1172,7 +1172,8 @@ class ReminderUtils {
                             colors: colorsConst.textColor,
                             size: 20,
                             isBold: true,
-                          ),IconButton(
+                          ),
+                          IconButton(
                               onPressed: (){
                                 Navigator.pop(context);
                               },
@@ -1221,6 +1222,11 @@ class ReminderUtils {
                                 20.width,
                                 Consumer<ReminderProvider>(
                                   builder: (context, provider, _) {
+                                    // Determine which fields are required based on selectedNotification
+                                    final sel = provider.selectedNotification ?? "";
+                                    final employeeRequired = sel == "followup" || (sel != "followup" && sel != "meeting"); // followup => employee required; default both required handled later
+                                    final customerRequired = sel == "meeting" || (sel != "followup" && sel != "meeting"); // meeting => customer required
+
                                     return Row(
                                       children: [
                                         Row(
@@ -1229,7 +1235,14 @@ class ReminderUtils {
                                               value: "followup",
                                               groupValue: provider.selectedNotification,
                                               activeColor: const Color(0xFF0078D7),
-                                              onChanged: (v) => provider.setNotification(v!),
+                                              onChanged: (v) {
+                                                provider.setNotification(v!);
+                                                // clear errors when changing type
+                                                setState(() {
+                                                  employeeError = null;
+                                                  customerError = null;
+                                                });
+                                              },
                                             ),
                                             CustomText(
                                               text: "Follow-up",
@@ -1245,7 +1258,13 @@ class ReminderUtils {
                                               value: "meeting",
                                               groupValue: provider.selectedNotification,
                                               activeColor: const Color(0xFF0078D7),
-                                              onChanged: (v) => provider.setNotification(v!),
+                                              onChanged: (v) {
+                                                provider.setNotification(v!);
+                                                setState(() {
+                                                  employeeError = null;
+                                                  customerError = null;
+                                                });
+                                              },
                                             ),
                                             CustomText(
                                               text: "Appointment",
@@ -1254,22 +1273,7 @@ class ReminderUtils {
                                             ),
                                           ],
                                         ),
-                                        // 20.width,
-                                        // Row(
-                                        //   children: [
-                                        //     Radio<String>(
-                                        //       value: "task",
-                                        //       groupValue: provider.selectedNotification,
-                                        //       activeColor: const Color(0xFF0078D7),
-                                        //       onChanged: (v) => provider.setNotification(v!),
-                                        //     ),
-                                        //     CustomText(
-                                        //       text: "Task",
-                                        //       colors: Colors.black,
-                                        //       size: 15,
-                                        //     ),
-                                        //   ],
-                                        // ),
+                                        // you can add more types similarly
                                       ],
                                     );
                                   },
@@ -1277,7 +1281,6 @@ class ReminderUtils {
                               ],
                             ),
                             Row(
-                              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Obx(() => CustomDateBox(
@@ -1335,25 +1338,25 @@ class ReminderUtils {
                                 ),
                               ],
                             ),
-                                CustomText(
-                                  text: "Details",
-                                  colors: colorsConst.fieldHead,
-                                  size: 13,),
-                                5.height,
-                                SizedBox(
-                                  width: textFieldSize,
-                                  child: TextFormField(
-                                      textCapitalization: TextCapitalization.sentences,
-                                      controller: remController.detailsController,
-                                      maxLines: 5,
-                                      style: GoogleFonts.lato(
-                                        color: Colors.black,
-                                        fontSize: 17,
-                                      ),
-                                      decoration: customStyle.inputDecoration(
-                                          text: "Enter Details")
+                            CustomText(
+                              text: "Details",
+                              colors: colorsConst.fieldHead,
+                              size: 13,),
+                            5.height,
+                            SizedBox(
+                              width: textFieldSize,
+                              child: TextFormField(
+                                  textCapitalization: TextCapitalization.sentences,
+                                  controller: remController.detailsController,
+                                  maxLines: 5,
+                                  style: GoogleFonts.lato(
+                                    color: Colors.black,
+                                    fontSize: 17,
                                   ),
-                                ),
+                                  decoration: customStyle.inputDecoration(
+                                      text: "Enter Details")
+                              ),
+                            ),
                             20.height,
                             CustomDropDown(
                               saveValue: remController.location,
@@ -1368,141 +1371,156 @@ class ReminderUtils {
                               },
                             ),
                             Row(
-                              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(
-                                  width: 270,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
+                                // Employees column - show red * dynamically based on selected type
+                                Consumer<ReminderProvider>(
+                                  builder: (context, provider, _) {
+                                    final sel = provider.selectedNotification ?? "";
+                                    final employeeRequired = sel == "followup" || (sel != "followup" && sel != "meeting");
+                                    return SizedBox(
+                                      width: 270,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          CustomText(
-                                            text: "Employees",
-                                            size: 13,
-                                            colors: colorsConst.fieldHead,
+                                          Row(
+                                            children: [
+                                              CustomText(
+                                                text: "Employees",
+                                                size: 13,
+                                                colors: colorsConst.fieldHead,
+                                              ),
+                                              if (employeeRequired)
+                                                const CustomText(
+                                                  text: "*",
+                                                  colors: Colors.red,
+                                                  size: 25,
+                                                )
+                                            ],
                                           ),
-                                          const CustomText(
-                                            text: "*",
-                                            colors: Colors.red,
-                                            size: 25,
-                                          )
+                                          KeyboardDropdownField<AllEmployeesObj>(
+                                            items: controllers.employees,
+                                            borderRadius: 5,
+                                            borderColor: Colors.grey.shade300,
+                                            hintText: "Employees",
+                                            labelText: "",
+                                            labelBuilder: (customer) =>
+                                            '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                            itemBuilder: (customer) {
+                                              return Container(
+                                                width: 300,
+                                                alignment: Alignment.topLeft,
+                                                padding: const EdgeInsets.fromLTRB(
+                                                    10, 5, 10, 5),
+                                                child: CustomText(
+                                                  text:
+                                                  '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                                  colors: Colors.black,
+                                                  size: 14,
+                                                  textAlign: TextAlign.start,
+                                                ),
+                                              );
+                                            },
+                                            textEditingController: controllers.empController,
+                                            onSelected: (value) {
+                                              setState((){
+                                                employeeError=null;
+                                              });
+                                              controllers.selectEmployee(value);
+                                            },
+                                            onClear: () {
+                                              controllers.clearSelectedCustomer();
+                                            },
+                                          ),
+                                          if (employeeError != null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 4.0),
+                                              child: Text(
+                                                employeeError!,
+                                                style: const TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 13),
+                                              ),
+                                            ),
                                         ],
                                       ),
-                                      KeyboardDropdownField<AllEmployeesObj>(
-                                        items: controllers.employees,
-                                        borderRadius: 5,
-                                        borderColor: Colors.grey.shade300,
-                                        hintText: "Employees",
-                                        labelText: "",
-                                        labelBuilder: (customer) =>
-                                        '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
-                                        itemBuilder: (customer) {
-                                          return Container(
-                                            width: 300,
-                                            alignment: Alignment.topLeft,
-                                            padding: const EdgeInsets.fromLTRB(
-                                                10, 5, 10, 5),
-                                            child: CustomText(
-                                              text:
-                                              '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
-                                              colors: Colors.black,
-                                              size: 14,
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          );
-                                        },
-                                        textEditingController: controllers.empController,
-                                        onSelected: (value) {
-                                          setState((){
-                                            employeeError=null;
-                                          });
-                                          controllers.selectEmployee(value);
-                                        },
-                                        onClear: () {
-                                          controllers.clearSelectedCustomer();
-                                        },
-                                      ),
-                                      if (employeeError != null)
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 4.0),
-                                          child: Text(
-                                            employeeError!,
-                                            style: const TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 13),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
                                 20.width,
-                                SizedBox(
-                                  width: 270,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
+                                // Customer column - star shown dynamically
+                                Consumer<ReminderProvider>(
+                                  builder: (context, provider, _) {
+                                    final sel = provider.selectedNotification ?? "";
+                                    final customerRequired = sel == "meeting" || (sel != "followup" && sel != "meeting");
+                                    return SizedBox(
+                                      width: 270,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          CustomText(
-                                            text: "Assigned Customer",
-                                            size: 13,
-                                            colors: colorsConst.fieldHead,
+                                          Row(
+                                            children: [
+                                              CustomText(
+                                                text: "Assigned Customer",
+                                                size: 13,
+                                                colors: colorsConst.fieldHead,
+                                              ),
+                                              if (customerRequired)
+                                                const CustomText(
+                                                  text: "*",
+                                                  colors: Colors.red,
+                                                  size: 25,
+                                                )
+                                            ],
                                           ),
-                                          const CustomText(
-                                            text: "*",
-                                            colors: Colors.red,
-                                            size: 25,
-                                          )
+                                          KeyboardDropdownField<AllCustomersObj>(
+                                            items: controllers.customers,
+                                            borderRadius: 5,
+                                            borderColor: Colors.grey.shade300,
+                                            hintText: "Customers",
+                                            labelText: "",
+                                            labelBuilder: (customer) =>
+                                            '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                            itemBuilder: (customer) {
+                                              return Container(
+                                                width: 300,
+                                                alignment: Alignment.topLeft,
+                                                padding: const EdgeInsets.fromLTRB(
+                                                    10, 5, 10, 5),
+                                                child: CustomText(
+                                                  text:
+                                                  '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                                  colors: Colors.black,
+                                                  size: 14,
+                                                  textAlign: TextAlign.start,
+                                                ),
+                                              );
+                                            },
+                                            textEditingController: controllers.cusController,
+                                            onSelected: (value) {
+                                              setState((){
+                                                customerError=null;
+                                              });
+                                              controllers.selectCustomer(value);
+                                            },
+                                            onClear: () {
+                                              controllers.clearSelectedCustomer();
+                                            },
+                                          ),
+                                          if (customerError != null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 4.0),
+                                              child: Text(
+                                                customerError!,
+                                                style: const TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 13),
+                                              ),
+                                            ),
                                         ],
                                       ),
-                                      KeyboardDropdownField<AllCustomersObj>(
-                                        items: controllers.customers,
-                                        borderRadius: 5,
-                                        borderColor: Colors.grey.shade300,
-                                        hintText: "Customers",
-                                        labelText: "",
-                                        labelBuilder: (customer) =>
-                                        '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
-                                        itemBuilder: (customer) {
-                                          return Container(
-                                            width: 300,
-                                            alignment: Alignment.topLeft,
-                                            padding: const EdgeInsets.fromLTRB(
-                                                10, 5, 10, 5),
-                                            child: CustomText(
-                                              text:
-                                              '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
-                                              colors: Colors.black,
-                                              size: 14,
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          );
-                                        },
-                                        textEditingController: controllers.cusController,
-                                        onSelected: (value) {
-                                          setState((){
-                                            customerError=null;
-                                          });
-                                          controllers.selectCustomer(value);
-                                        },
-                                        onClear: () {
-                                          controllers.clearSelectedCustomer();
-                                        },
-                                      ),
-                                      if (customerError != null)
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 4.0),
-                                          child: Text(
-                                            customerError!,
-                                            style: const TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 13),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
                               ],
                             ),
@@ -1681,14 +1699,19 @@ class ReminderUtils {
                                 controllers.productCtr.reset();
                                 return;
                               }
-                              if (controllers.selectedEmployeeId.value.isEmpty) {
+                              final selType = Provider.of<ReminderProvider>(context, listen: false).selectedNotification ?? "";
+                              final needEmployee = selType == "followup" || (selType != "followup" && selType != "meeting");
+                              final needCustomer = selType == "meeting" || (selType != "followup" && selType != "meeting");
+
+                              if (needEmployee && controllers.selectedEmployeeId.value.isEmpty) {
                                 setState(() {
                                   employeeError = "Please select employee";
                                 });
                                 controllers.productCtr.reset();
                                 return;
                               }
-                              if (controllers.selectedCustomerId.value.isEmpty) {
+
+                              if (needCustomer && controllers.selectedCustomerId.value.isEmpty) {
                                 setState(() {
                                   customerError = "Please select customer";
                                 });
@@ -1719,6 +1742,7 @@ class ReminderUtils {
       },
     );
   }
+
 
   void showUpdateReminderDialog(String id,BuildContext context) {
     String? titleError;

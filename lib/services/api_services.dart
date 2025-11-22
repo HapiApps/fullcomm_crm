@@ -23,6 +23,7 @@ import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/models/product_obj.dart';
 import 'package:fullcomm_crm/screens/leads/view_customer.dart';
 import '../common/constant/colors_constant.dart';
+import '../common/utilities/reminder_utils.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_text.dart';
 import '../controller/controller.dart';
@@ -374,6 +375,41 @@ class ApiService {
     }
   }
 
+  Future updateCategoryAPI(BuildContext context, String id, String category) async {
+    try {
+      Map data = {
+        "action": "update_category",
+        "category": category,
+        "cos_id": controllers.storage.read("cos_id"),
+        "id": id,
+      };
+
+      final request = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          "Accept": "application/text",
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: jsonEncode(data),
+        encoding: Encoding.getByName("utf-8"),
+      );
+
+      print("response ${request.body}");
+
+      Map<String, dynamic> response = json.decode(request.body);
+
+      if (request.statusCode == 200 &&
+          response["responseMsg"] == "Category updated successfully") {
+        getLeadCategories();
+      } else {
+        apiService.errorDialog(context, request.body);
+      }
+    } catch (e) {
+      apiService.errorDialog(context, e.toString());
+    }
+  }
+
+
 
   List<Map<String, String>> prospectsList = [];
 
@@ -559,7 +595,7 @@ class ApiService {
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
-        controllers.clearSelectedCustomer();
+        //controllers.clearSelectedCustomer();
         controllers.empDOB.value = "";
         controllers.callTime.value = "";
         controllers.callType = "Incoming";
@@ -568,6 +604,29 @@ class ApiService {
         getAllCallActivity("");
         Navigator.pop(context);
         controllers.productCtr.reset();
+        if (remController.stDate.value.isNotEmpty) {
+          try {
+            String raw = remController.stDate.value;
+            DateTime d;
+            if (RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(raw)) {
+              d = DateFormat("yyyy-MM-dd").parse(raw);
+            }
+            else if (RegExp(r'^\d{2}\.\d{2}\.\d{4}$').hasMatch(raw)) {
+              d = DateFormat("dd.MM.yyyy").parse(raw);
+            }
+            else {
+              d = DateTime.parse(raw);
+            }
+            d = d.add(Duration(days: 3));
+            remController.stDate.value = DateFormat("dd.MM.yyyy").format(d);
+
+          } catch (e) {
+            print("DATE PARSE ERROR: $e   value='${remController.stDate.value}'");
+          }
+        }
+
+        remController.stTime.value = "11:00 AM";
+        reminderUtils.showAddReminderDialog(context);
       } else {
         errorDialog(Get.context!, request.body);
         controllers.productCtr.reset();
@@ -1077,6 +1136,7 @@ class ApiService {
       print("request ${request.body}");
       //Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && request.body.toString().contains("Customer saved successfully.")) {
+        apiService.getAllCustomers();
         final prefs = await SharedPreferences.getInstance();
         controllers.leadActions.clear();
         controllers.leadDisPointsCrt.clear();
@@ -1122,7 +1182,6 @@ class ApiService {
         prefs.remove("leadLinkedin");
         prefs.remove("leadTime");
         prefs.remove("leadDescription");
-        print("success");
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
         apiService.allGoodLeadsDetails();
@@ -1130,8 +1189,31 @@ class ApiService {
         qualifiedList.clear();
         customerList.clear();
         Navigator.pop(context);
-        //Get.to(const Prospects(),duration: Duration.zero);
         controllers.productCtr.reset();
+        if (remController.stDate.value.isNotEmpty) {
+          try {
+            String raw = remController.stDate.value;
+            DateTime d;
+            if (RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(raw)) {
+              d = DateFormat("yyyy-MM-dd").parse(raw);
+            }
+            else if (RegExp(r'^\d{2}\.\d{2}\.\d{4}$').hasMatch(raw)) {
+              d = DateFormat("dd.MM.yyyy").parse(raw);
+            }
+            else {
+              d = DateTime.parse(raw);
+            }
+            d = d.add(Duration(days: 3));
+            remController.stDate.value = DateFormat("dd.MM.yyyy").format(d);
+
+          } catch (e) {
+            print("DATE PARSE ERROR: $e   value='${remController.stDate.value}'");
+          }
+        }
+        remController.stTime.value = "11:00 AM";
+        controllers.selectNCustomer("1", controllers.leadNameCrt[0].text.trim(), controllers.leadEmailCrt[0].text.trim(),
+            controllers.leadMobileCrt[0].text.trim());
+        reminderUtils.showAddReminderDialog(context);
       }else if(request.body.toString().contains("Phone number already exists")){
         errorDialog(Get.context!, "Phone number already exists");
         controllers.productCtr.reset();
@@ -1467,6 +1549,43 @@ class ApiService {
         throw Exception('Failed to load album');
       }
     } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future getLeadCategories() async {
+    try {
+      Map data = {
+        "search_type": "lead_categories",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        final converted = response.map((item) {
+          return {
+            "lead_status": item["lead_status"].toString(),
+            "value": item["value"].toString(),
+            "id": item["id"].toString(),
+          };
+        }).toList();
+        controllers.leadCategoryList.assignAll(converted);
+        controllers.editMode.value =
+            List.generate(controllers.leadCategoryList.length, (index) => false);
+
+        print("Lead category ${controllers.leadCategoryList}");
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      print("Lead category error $e");
       throw Exception('Failed to load album');
     }
   }
@@ -2952,6 +3071,7 @@ class ApiService {
         prefs.setBool("isAdmin", controllers.isAdmin.value);
         prefs.remove("loginNumber");
         prefs.remove("loginPassword");
+        getLeadCategories();
         getAllCallActivity("");
         getAllMailActivity();
         getAllMeetingActivity("");

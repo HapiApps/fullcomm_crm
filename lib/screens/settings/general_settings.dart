@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/screens/settings/add_office_hours.dart';
 import 'package:get/get.dart';
@@ -61,34 +62,83 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                        icon: Icon(Icons.add,color: Colors.white,),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: colorsConst.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        onPressed: (){
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) =>
-                              const AddOfficeHours(),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero,
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          child: ElevatedButton.icon(
+                            icon: Icon(Icons.add,color: Colors.white,),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorsConst.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
                             ),
-                          );
-                        },
-                        label: CustomText(
-                          text: "Add Office Hours",
-                          colors: Colors.white,
-                          isBold :true,
-                          size: 14,
-                        ),),
-                    )
+                            onPressed: (){
+                              utils.showFilterDialog(context);
+                            },
+                            label: CustomText(
+                              text: "Set Date Range",
+                              colors: Colors.white,
+                              isBold :true,
+                              isCopy: false,
+                              size: 14,
+                            ),),
+                        ),
+                        10.width,
+                        SizedBox(
+                          height: 40,
+                          child: ElevatedButton.icon(
+                            icon: Icon(Icons.add,color: Colors.white,),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorsConst.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            onPressed: (){
+                              utils.showLeadCategoryDialog(context);
+                            },
+                            label: CustomText(
+                              text: "Set Labels",
+                              colors: Colors.white,
+                              isBold :true,
+                              isCopy: false,
+                              size: 14,
+                            ),),
+                        ),
+                        10.width,
+                        SizedBox(
+                          height: 40,
+                          child: ElevatedButton.icon(
+                            icon: Icon(Icons.add,color: Colors.white,),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorsConst.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            onPressed: (){
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder: (context, animation1, animation2) =>
+                                  const AddOfficeHours(),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
+                                ),
+                              );
+                            },
+                            label: CustomText(
+                              text: "Add Office Hours",
+                              colors: Colors.white,
+                              isBold :true,
+                              isCopy: false,
+                              size: 14,
+                            ),),
+                        )
+                      ],
+                    ),
                   ],
                 ),
                 10.height,

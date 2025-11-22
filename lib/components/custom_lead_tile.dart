@@ -280,6 +280,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
         onTap: () {
           Get.to(
               ViewLead(
+                pageName: widget.pageName,
                 id: widget.id,
                 companyName: widget.companyName,
                 status: widget.status,
@@ -318,7 +319,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                       : colorsConst.backgroundColor,
                 ),
                 children: [
-                  ...displayHeadings.skip(1).map((heading) {
+                  ...displayHeadings.map((heading) {
                     if (heading.toLowerCase() == "added date" ||
                         heading.toLowerCase() == "prospect enrollment date") {
                       return Container(

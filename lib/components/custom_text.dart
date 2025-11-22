@@ -5,6 +5,7 @@ class CustomText extends StatelessWidget {
   final Color? colors;
   final double size;
   final bool isBold;
+  final bool isCopy;
   final bool isSplash;
   final bool isStyle;
   final TextDecoration? decoration;
@@ -17,6 +18,7 @@ class CustomText extends StatelessWidget {
       this.size = 13,
       this.isStyle = false,
       this.isBold = false,
+        this.isCopy = true,
       this.isSplash = false,
       this.textAlign = TextAlign.center,
       this.decoration = TextDecoration.none});
@@ -24,7 +26,7 @@ class CustomText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final displayText = (text == "null") ? "" : text;
-    return SelectableText(
+    return isCopy?SelectableText(
       displayText,
       textAlign: textAlign,
       showCursor: false,
@@ -37,6 +39,19 @@ class CustomText extends StatelessWidget {
         fontStyle: isStyle ? FontStyle.italic : FontStyle.normal,
       ),
       toolbarOptions: const ToolbarOptions(copy: true, selectAll: true),
+    ):IgnorePointer(
+      child: Text(
+        displayText,
+        textAlign: textAlign,
+        style: TextStyle(
+          decoration: decoration,
+          color: colors,
+          fontSize: size,
+          fontWeight: isBold ? FontWeight.bold : FontWeight.w200,
+          fontFamily: "Lato",
+          fontStyle: isStyle ? FontStyle.italic : FontStyle.normal,
+        ),
+      ),
     );
   }
 }

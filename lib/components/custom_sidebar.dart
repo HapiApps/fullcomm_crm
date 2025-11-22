@@ -19,7 +19,6 @@ import '../screens/records/records.dart';
 import '../screens/reminder/reminder_page.dart';
 import '../screens/settings/general_settings.dart';
 import '../screens/settings/reminder_settings.dart';
-import '../screens/settings/user_plan.dart';
 
 class SideBar extends StatelessWidget {
 
@@ -84,7 +83,7 @@ class SideBar extends StatelessWidget {
               colorsConst: colorsConst,
               index: 1,
               icon: Icons.remove_red_eye_outlined,
-              label: "Suspects",
+              label: controllers.leadCategoryList[0]["value"],
               selectedImage: "assets/images/s_suspects.png",
               unSelectedImage: "assets/images/u_suspects.png",
               onPreTap: () {
@@ -101,7 +100,7 @@ class SideBar extends StatelessWidget {
               colorsConst: colorsConst,
               index: 2,
               icon: Icons.flag_outlined,
-              label: "Prospects",
+              label: controllers.leadCategoryList[1]["value"],
               selectedImage: "assets/images/s_prospects.png",
               unSelectedImage: "assets/images/u_prospects.png",
               onPreTap: () {
@@ -117,7 +116,7 @@ class SideBar extends StatelessWidget {
               colorsConst: colorsConst,
               index: 3,
               icon: Icons.verified_outlined,
-              label: "Qualified",
+              label: controllers.leadCategoryList[2]["value"],
               selectedImage: "assets/images/s_qualified.png",
               unSelectedImage: "assets/images/u_qualified.png",
               onPreTap: () {
@@ -134,7 +133,7 @@ class SideBar extends StatelessWidget {
               colorsConst: colorsConst,
               index: 4,
               icon: Icons.dashboard_customize,
-              label: "Customers",
+              label: controllers.leadCategoryList[3]["value"],
               selectedImage: "assets/images/s_customer.png",
               unSelectedImage: "assets/images/u_customers.png",
               onPreTap: () {
@@ -150,7 +149,7 @@ class SideBar extends StatelessWidget {
               colorsConst: colorsConst,
               index: 5,
               icon: Icons.cancel_outlined,
-              label: "Disqualified",
+              label: controllers.leadCategoryList[5]["value"],
               selectedImage: "assets/images/s_disqualified.png",
               unSelectedImage: "assets/images/u_disqualified.png",
               onPreTap: () {
@@ -165,7 +164,7 @@ class SideBar extends StatelessWidget {
               colorsConst: colorsConst,
               index: 12,
               icon: Icons.dashboard_customize,
-              label: "Target Leads",
+              label: controllers.leadCategoryList[4]["value"],
               selectedImage: "assets/images/s_target.png",
               unSelectedImage: "assets/images/u_target.png",
               onPreTap: () {

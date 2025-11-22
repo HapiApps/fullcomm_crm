@@ -1699,7 +1699,7 @@ class Utils {
                             children: [
                               IgnorePointer(
                                 child: CustomText(
-                                    text: "Customers",
+                                    text: controllers.leadCategoryList[4]["value"],
                                     colors: controllers.selectedIndex.value == 4
                                         ? Colors.black
                                         : colorsConst.textColor,
@@ -2566,6 +2566,155 @@ class Utils {
         }
     );
   }
+  void showLeadCategoryDialog(BuildContext context) {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Container(
+          width: 300,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomText(
+                text: "Change Labels",
+                colors: colorsConst.textColor,
+                isBold: true,
+                size: 18,
+              ),
+              10.height,
+              SizedBox(
+                width: 300,
+                child: Obx(() => ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: controllers.leadCategoryList.length,
+                  itemBuilder: (context, index) {
+                    final item = controllers.leadCategoryList[index];
+                    return ListTile(
+                      title: TextField(                         // Editable TextField
+                        controller: TextEditingController(
+                          text: item["value"].toString(),
+                        ),
+                        onChanged: (val) {
+                          controllers.leadCategoryList[index]["value"] = val;
+                          controllers.editMode[index]=true;
+                        },
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      trailing: SvgPicture.asset(
+                        "assets/images/a_edit.svg",
+                        width: 16,
+                        height: 16,
+                      ),
+                    );
+                  },
+                )),
+              ),
+
+              20.height,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                    child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      bool anyEdit = controllers.editMode.contains(true);
+                      if (!anyEdit) {
+                        utils.snackBar(
+                          context: context,
+                          msg: "No changes to update",
+                          color: Colors.red,
+                        );
+                        return;
+                      }
+                      for (int i = 0; i < controllers.leadCategoryList.length; i++) {
+                        final item = controllers.leadCategoryList[i];
+                        if (controllers.editMode[i] == true) {
+                          await apiService.updateCategoryAPI(
+                            context, item["id"],item["value"],
+                          );
+                        }
+                      }
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Save"),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void showFilterDialog(BuildContext context) {
+    List<String> items = [
+      "Today",
+      "Yesterday",
+      "Last 7 Days",
+      "Last 30 Days",
+      "All"
+    ];
+
+    RxString selectedValue = items.last.obs;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Select Date Range"),
+          content: Obx(() => SizedBox(
+            width: 300,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ...items.map((value) {
+                  return RadioListTile<String>(
+                    title: Text(value),
+                    value: value,
+                    groupValue: selectedValue.value,
+                    onChanged: (newValue) {
+                      selectedValue.value = newValue!;
+                    },
+                  );
+                }).toList(),
+              ],
+            ),
+          )),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                controllers.storage.write("selectedSortBy", selectedValue.value);
+                remController.loadSavedFilters();
+                Navigator.pop(context, selectedValue.value);
+              },
+              child: const Text("Apply"),
+            ),
+          ],
+        );
+      },
+    ).then((selected) {
+      if (selected != null) {
+        print("Selected filter: $selected");
+        // Use the selected filter here
+      }
+    });
+  }
+
 
   void expiredDateDialog(String date){
     showDialog(

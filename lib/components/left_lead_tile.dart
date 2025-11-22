@@ -268,6 +268,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
       onTap: () {
         Get.to(
             ViewLead(
+              pageName: widget.pageName,
               id: widget.id,
               companyName: widget.companyName,
               status: widget.status,
@@ -422,8 +423,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                    ),
                                    actions: [
                                      Row(
-                                       mainAxisAlignment:
-                                       MainAxisAlignment.end,
+                                       mainAxisAlignment: MainAxisAlignment.end,
                                        children: [
                                          Container(
                                            decoration: BoxDecoration(

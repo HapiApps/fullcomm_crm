@@ -107,7 +107,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     inputFormatters: constInputFormatters.textInput,
                                     isOptional: true,
                                   ),
-                                  10.height,
                                   // SizedBox(
                                   //   width: textFieldSize,
                                   //   height: 50,
@@ -190,7 +189,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     textInputAction: TextInputAction.next,
                                     isOptional: true,
                                   ),
-                                  10.height,
                                   CustomTextField(
                                     width: textFieldSize,
                                     text: "Whatsapp No",
@@ -200,9 +198,9 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     textInputAction: TextInputAction.next,
                                     inputFormatters: constInputFormatters.mobileNumberInput,
                                   ),
-                                  10.height,
                                   CustomPasswordTextField(
                                     width: textFieldSize,
+                                    height: 45,
                                     text: "Password",
                                     hintText: "Enter Password",
                                     controller: employeeProvider.password,
@@ -212,24 +210,32 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     iconData : employeeProvider.isVisible ?
                                     Icons.visibility_off : Icons.visibility,
                                   ),
-                                  //10.height,
-                              //     SizedBox(
-                              //   width: isWebView ? textFieldSize : screenWidth * 0.90,
-                              //   child: CustomTextField(
-                              //     text: 'Expected Joining Date',
-                              //     hintText: 'Expected Joining Date',
-                              //     isOptional: false,
-                              //     controller:
-                              //     employeeProvider.date,
-                              //     textInputAction: TextInputAction.next,
-                              //     textCapitalization: TextCapitalization.sentences,
-                              //     onChanged: (value){
-                              //       employeeProvider.selectDate(context);
-                              //     },
-                              //
-                              //   ),
-                              // ),
-
+                                  20.height,
+                                  CustomTextField(
+                                    width: textFieldSize,
+                                    text: "Door No",
+                                    hintText: "Enter Door No",
+                                    isOptional: false,
+                                    controller: employeeProvider.door,
+                                    textInputAction: TextInputAction.next,
+                                  ),
+                                  CustomTextField(
+                                    width: textFieldSize,
+                                    text: "Area",
+                                    hintText: "Enter Area",
+                                    isOptional: false,
+                                    controller: employeeProvider.area,
+                                    textInputAction: TextInputAction.next,
+                                  ),
+                                  CustomTextField(
+                                    hintText: "State",
+                                    text: "State",
+                                    controller: controllers.stateController,
+                                    width: textFieldSize,
+                                    keyboardType: TextInputType.text,
+                                    textInputAction: TextInputAction.next,
+                                    isOptional: false,
+                                  ),
                                   20.height,
                                 ],
                               ),
@@ -256,14 +262,13 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                           )
                                         ],
                                       ),
-                                      5.height,
                                       Container(
                                         width: textFieldSize,
-                                        height: 50,
+                                        height: 40,
                                         decoration: customDecoration.baseBackgroundDecoration(
                                             radius: 8,
                                             color: Colors.white,
-                                            borderColor: Color(0xffD9D9D9)),
+                                            borderColor: Colors.grey.shade400),
                                         child: DropdownButtonHideUnderline(
                                           child: ButtonTheme(
                                             alignedDropdown: true,
@@ -304,7 +309,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                       ),
                                     ],
                                   ),
-                                  10.height,
+                                  25.height,
                                   CustomTextField(
                                     width: textFieldSize,
                                     text: "Email",
@@ -315,15 +320,15 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     textInputAction: TextInputAction.next,
                                   ),
                                   10.height,
-                                  CustomTextField(
-                                    width: textFieldSize,
-                                    text: "Address",
-                                    hintText: "Enter Address",
-                                    controller: employeeProvider.door,
-                                    textInputAction: TextInputAction.next,
-                                    isOptional: false,
-                                    inputFormatters: constInputFormatters.addressInput,
-                                  ),
+                                  // CustomTextField(
+                                  //   width: textFieldSize,
+                                  //   text: "Address",
+                                  //   hintText: "Enter Address",
+                                  //   controller: employeeProvider.door,
+                                  //   textInputAction: TextInputAction.next,
+                                  //   isOptional: false,
+                                  //   inputFormatters: constInputFormatters.addressInput,
+                                  // ),
                                   CustomTextField(
                                     text: "Salary",
                                     width: textFieldSize,
@@ -333,7 +338,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     textInputAction: TextInputAction.next,
                                     inputFormatters: constInputFormatters.numberInput,
                                   ),
-                                  10.height,
                                   CustomTextField(
                                     width: textFieldSize,
                                     text: "Bonus",
@@ -343,6 +347,52 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     textInputAction: TextInputAction.next,
                                     inputFormatters: constInputFormatters.numberInput,
                                   ),
+                                  CustomTextField(
+                                    width: textFieldSize,
+                                    text: "Street",
+                                    hintText: "Enter Street",
+                                    isOptional: false,
+                                    controller: employeeProvider.street,
+                                    textInputAction: TextInputAction.next,
+                                  ),
+                                  CustomTextField(
+                                    width: textFieldSize,
+                                    text: "City",
+                                    hintText: "Enter City",
+                                    isOptional: false,
+                                    controller: employeeProvider.city,
+                                    textInputAction: TextInputAction.next,
+                                    inputFormatters: constInputFormatters.textInput,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CustomText(
+                                            text:"Country",
+                                            size: 13,
+                                            colors: Color(0xff4B5563),
+                                          ),
+                                          Container(
+                                              alignment: Alignment.centerLeft,
+                                              width: textFieldSize,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  border: Border.all(color: Colors.grey.shade400)),
+                                              child: Obx(() => CustomText(
+                                                text: "    ${controllers.selectedCountry.value}",
+                                                colors: colorsConst.textColor,
+                                                size: 15,
+                                              ),
+                                              )),
+                                        ],
+                                      ),
+                                    ],
+                                  )
                                 ],
                               ),
                             ),
@@ -363,6 +413,16 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                 color: colorsConst.primary,
                                 controller: employeeProvider.addEmployeeButtonController,
                                 onPressed: () {
+                                  final addressParts = [
+                                    employeeProvider.door.text,
+                                    employeeProvider.street.text,
+                                    employeeProvider.area.text,
+                                    employeeProvider.city.text,
+                                    controllers.stateController.text,
+                                    controllers.selectedCountry.value,
+                                  ];
+                                  final filtered = addressParts.where((e) => e.trim().isNotEmpty).toList();
+                                  final finalAddress = filtered.join(',');
                                  if(employeeProvider.nameController.text.isEmpty){
                                     employeeProvider.addEmployeeButtonController.reset();
                                     utils.snackBar(
@@ -428,7 +488,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                          context: context,
                                          empName: employeeProvider.nameController.text.toString(),
                                          empMobile: employeeProvider.mobileController.text.toString(),
-                                         empAddress: employeeProvider.door.text.toString(),
+                                         empAddress: finalAddress,
                                          empBonus: employeeProvider.bonus.text.toString(),
                                          empEmail: employeeProvider.emailController.text.toString(),
                                          empPassword: employeeProvider.password.text.toString(),
@@ -444,7 +504,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                              context: context,
                                              empName: employeeProvider.nameController.text.toString(),
                                              empMobile: employeeProvider.mobileController.text.toString(),
-                                             empAddress: employeeProvider.door.text.toString(),
+                                             empAddress:finalAddress,
                                              empBonus: employeeProvider.bonus.text.toString(),
                                              empEmail: employeeProvider.emailController.text.toString(),
                                              empPassword: employeeProvider.password.text.toString(),
@@ -460,7 +520,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                                context: context,
                                                empName: employeeProvider.nameController.text.toString(),
                                                empMobile: employeeProvider.mobileController.text.toString(),
-                                               empAddress: employeeProvider.door.text.toString(),
+                                               empAddress: finalAddress,
                                                empBonus: employeeProvider.bonus.text.toString(),
                                                empEmail: employeeProvider.emailController.text.toString(),
                                                empPassword: employeeProvider.password.text.toString(),

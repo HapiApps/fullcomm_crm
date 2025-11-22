@@ -1604,11 +1604,16 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       pinCode,
       roleId;
 
-  String upRegistration = "No",
-      upInvitation = "No",
-      upEventState = "Tamil Nadu",
-      leadCategory = "Suspects";
-  RxList leadCategoryList = [{"category":"Lead Status","id":"1","value":"Suspects"},{"category":"Lead Status","id":"1","value":"Prospects"},{"category":"Lead Status","id":"1","value":"Qualified"},{"category":"Lead Status","id":"1","value":"Suspects"},{"category":"Lead Status","id":"1","value":"Prospects"},{"category":"Lead Status","id":"1","value":"Qualified"}].obs;
+  String leadCategory = "Suspects";
+  RxList<bool> editMode = <bool>[].obs;
+  RxList leadCategoryList = [
+    {"lead_status": "1", "value": "Suspects","id" : "1"},
+    {"lead_status": "2", "value": "Prospects","id" : "2"},
+    {"lead_status": "3", "value": "Qualified","id" : "3"},
+    {"lead_status": "4", "value": "Customers","id" : "4"},
+    {"lead_status": "0", "value": "Target Leads","id" : "5"},
+    {"lead_status": "5", "value": "DisQualified","id" : "6"}].obs;
+
   RxList leadCategoryGrList = [].obs;
   List eventImages = [
     "assets/image/event_logo1.jpeg",

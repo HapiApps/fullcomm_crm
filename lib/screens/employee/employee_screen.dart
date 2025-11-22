@@ -89,6 +89,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   text: "Add Employee",
                                   colors: Colors.white,
                                   isBold :true,
+                                  isCopy: false,
                                   size: 14,
                                 ),),
                             )

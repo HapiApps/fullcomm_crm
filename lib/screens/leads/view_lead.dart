@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/screens/leads/update_lead.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/utilities/reminder_utils.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_sidebar.dart';
@@ -17,6 +18,7 @@ import '../../models/customer_full_obj.dart';
 
 class ViewLead extends StatefulWidget {
   final String? id;
+  final String pageName;
   final String? name;
   final String? mobileNumber;
   final String? email;
@@ -40,6 +42,7 @@ class ViewLead extends StatefulWidget {
   ViewLead({
     super.key,
     this.id,
+    required this.pageName,
     this.name,
     this.mobileNumber,
     this.email,
@@ -207,90 +210,308 @@ class _ViewLeadState extends State<ViewLead> {
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 300,
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 120,
-                                          height: 35,
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              shadowColor: Colors.transparent,
-                                              backgroundColor: colorsConst.primary,
-                                            ),
-                                            onPressed: () {
-                                              // prepare values for UpdateLead
-                                              Get.to(
-                                                UpdateLead(
-                                                  id: widget.id,
-                                                  mainName: displayName,
-                                                  mainMobile: displayMobile,
-                                                  mainEmail: displayEmail,
-                                                  companyName: cust?.companyName ?? widget.companyName,
-                                                  status: cust?.status?.toString(),
-                                                  rating: cust?.rating,
-                                                  detailsOfRequired: cust?.detailsOfServiceRequired,
-                                                  visitType: cust?.visitType ?? "",
-                                                  owner: cust?.owner,
-                                                  addressId: addr?.id?.toString(),
-                                                  addressLine1: addr?.doorNo ?? widget.addressLine1 ?? "",
-                                                  area: addr?.area ?? widget.area ?? "",
-                                                  city: addr?.city ?? widget.city ?? "",
-                                                  state: addr?.state ?? widget.state ?? "",
-                                                  country: addr?.country ?? widget.country ?? "",
-                                                  pinCode: addr?.pincode ?? widget.pinCode ?? "",
-                                                  statusUpdate: cust?.statusUpdate,
-                                                  prospectEnrollmentDate: cust?.prospectEnrollmentDate,
-                                                  expectedConvertionDate: cust?.expectedConvertionDate,
-                                                  numOfHeadcount: cust?.numOfHeadcount,
-                                                  expectedBillingValue: cust?.expectedBillingValue,
-                                                  arpuValue: cust?.arpuValue,
-                                                  productDiscussion: cust?.product,
-                                                  discussionPoint: cust?.discussionPoint,
-                                                  notes: widget.notes,
-                                                  sourceDetails: widget.sourceDetails,
-                                                  updateTs: cust?.updatedTs ?? widget.updateTs,
+                                    width: 120,
+                                    height: 35,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        shadowColor: Colors.transparent,
+                                        backgroundColor: colorsConst.primary,
+                                      ),
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                content: CustomText(
+                                                  text:
+                                                  "Are you moving to the next level?",
+                                                  size: 16,
+                                                  isBold: true,
+                                                  colors: colorsConst.textColor,
                                                 ),
-                                                duration: Duration.zero,
+                                                actions: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                    children: [
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                color: colorsConst
+                                                                    .primary),
+                                                            color: Colors.white),
+                                                        width: 80,
+                                                        height: 25,
+                                                        child: ElevatedButton(
+                                                            style: ElevatedButton.styleFrom(
+                                                              shape: const RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                BorderRadius.zero,
+                                                              ),
+                                                              backgroundColor: Colors.white,
+                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: CustomText(
+                                                              text: "Cancel",
+                                                              colors: colorsConst.primary,
+                                                              size: 14,
+                                                              isCopy: false,
+                                                            )),
+                                                      ),
+                                                      10.width,
+                                                      CustomLoadingButton(
+                                                        callback: () async {
+                                                          final deleteData = {
+                                                            "lead_id": widget.id.toString(),
+                                                            "user_id": controllers.storage.read("id").toString(),
+                                                            "rating": (widget.rating ?? "Warm").toString(),
+                                                            "cos_id": controllers.storage.read("cos_id").toString(),
+                                                            "mail_id": widget.email.toString(),
+                                                          };
+                                                          if (widget.pageName == "Prospects") {
+                                                            await apiService.insertQualifiedAPI(context, [deleteData]);
+                                                          } else if (widget.pageName == "Qualified") {
+                                                            await apiService.insertPromoteCustomerAPI(context, [deleteData]);
+                                                          } else if (widget.pageName == "Disqualified") {
+                                                            await apiService.qualifiedCustomersAPI(
+                                                                context, [deleteData]);
+                                                          } else {
+                                                            await apiService.insertProspectsAPI(
+                                                                context, [deleteData]);
+                                                          }
+                                                        },
+                                                        height: 35,
+                                                        isLoading: true,
+                                                        backgroundColor:
+                                                        colorsConst.primary,
+                                                        radius: 2,
+                                                        width: 80,
+                                                        controller:
+                                                        controllers.productCtr,
+                                                        isImage: false,
+                                                        text: "Promote",
+                                                        textColor: Colors.white,
+                                                      ),
+                                                      5.width
+                                                    ],
+                                                  ),
+                                                ],
                                               );
-                                            },
-                                            child: MouseRegion(
-                                              cursor: SystemMouseCursors.click,
-                                              child: Text(
-                                                "Edit",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
+                                            });
+                                      },
+                                      child: MouseRegion(
+                                        cursor: SystemMouseCursors.click,
+                                        child: Text(
+                                          "Promote",
+                                          style: TextStyle(
+                                            color: Colors.white,
                                           ),
                                         ),
-                                        10.width,
-                                        CustomLoadingButton(
-                                          callback: () {
-                                            controllers.emailSubjectCtr.clear();
-                                            controllers.emailMessageCtr.clear();
-                                            imageController.photo1.value = "";
-                                            controllers.emailToCtr.text =
-                                            displayEmail.isEmpty ? "" : displayEmail;
-                                            utils.sendEmailDialog(
-                                              id: widget.id.toString(),
-                                              name: displayName,
-                                              mobile: displayMobile,
-                                              coName: cust?.companyName ?? widget.companyName ?? "",
-                                            );
-                                          },
-                                          height: 35,
-                                          isLoading: false,
-                                          backgroundColor: colorsConst.third,
-                                          radius: 2,
-                                          width: 120,
-                                          isImage: false,
-                                          text: "Send Email",
-                                          textColor: Colors.white,
-                                        ),
-                                      ],
+                                      ),
                                     ),
+                                  ),
+                                  10.width,
+                                  SizedBox(
+                                    width: 120,
+                                    height: 35,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        shadowColor: Colors.transparent,
+                                        backgroundColor: colorsConst.primary,
+                                      ),
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                content: CustomText(
+                                                  text:
+                                                  "Are you sure to disqualify this lead?",
+                                                  size: 16,
+                                                  isBold: true,
+                                                  colors: colorsConst.textColor,
+                                                ),
+                                                actions: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                    children: [
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                color: colorsConst
+                                                                    .primary),
+                                                            color: Colors.white),
+                                                        width: 80,
+                                                        height: 25,
+                                                        child: ElevatedButton(
+                                                            style: ElevatedButton.styleFrom(
+                                                              shape: const RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                BorderRadius.zero,
+                                                              ),
+                                                              backgroundColor: Colors.white,
+                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: CustomText(
+                                                              text: "Cancel",
+                                                              colors: colorsConst.primary,
+                                                              size: 14,
+                                                              isCopy: false,
+                                                            )),
+                                                      ),
+                                                      10.width,
+                                                      CustomLoadingButton(
+                                                        callback: () async {
+                                                          final deleteData = {
+                                                            "lead_id": widget.id.toString(),
+                                                            "user_id": controllers.storage.read("id").toString(),
+                                                            "rating": (widget.rating ?? "Warm").toString(),
+                                                            "cos_id": controllers.storage.read("cos_id").toString(),
+                                                            "mail_id": widget.email.toString(),
+                                                          };
+                                                          apiService.disqualifiedCustomersAPI(context, [deleteData]);
+                                                        },
+                                                        height: 35,
+                                                        isLoading: true,
+                                                        backgroundColor:
+                                                        colorsConst.primary,
+                                                        radius: 2,
+                                                        width: 80,
+                                                        controller:
+                                                        controllers.productCtr,
+                                                        isImage: false,
+                                                        text: "Disqualify",
+                                                        textColor: Colors.white,
+                                                      ),
+                                                      5.width
+                                                    ],
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      },
+                                      child: MouseRegion(
+                                        cursor: SystemMouseCursors.click,
+                                        child: Text(
+                                          "Disqualify",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  10.width,
+                                  SizedBox(
+                                    width: 160,
+                                    height: 35,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        shadowColor: Colors.transparent,
+                                        backgroundColor: colorsConst.primary,
+                                      ),
+                                      onPressed: () {
+                                        controllers.selectNCustomer(widget.id.toString(), widget.name.toString(), widget.email.toString(),
+                                            widget.mobileNumber.toString());
+                                        reminderUtils.showAddReminderDialog(context);
+                                      },
+                                      child: MouseRegion(
+                                        cursor: SystemMouseCursors.click,
+                                        child: Text(
+                                          "Set a reminder",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  10.width,
+                                  SizedBox(
+                                    width: 120,
+                                    height: 35,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        shadowColor: Colors.transparent,
+                                        backgroundColor: colorsConst.primary,
+                                      ),
+                                      onPressed: () {
+                                        // prepare values for UpdateLead
+                                        Get.to(
+                                          UpdateLead(
+                                            id: widget.id,
+                                            mainName: displayName,
+                                            mainMobile: displayMobile,
+                                            mainEmail: displayEmail,
+                                            companyName: cust?.companyName ?? widget.companyName,
+                                            status: cust?.status?.toString(),
+                                            rating: cust?.rating,
+                                            detailsOfRequired: cust?.detailsOfServiceRequired,
+                                            visitType: cust?.visitType ?? "",
+                                            owner: cust?.owner,
+                                            addressId: addr?.id?.toString(),
+                                            addressLine1: addr?.doorNo ?? widget.addressLine1 ?? "",
+                                            area: addr?.area ?? widget.area ?? "",
+                                            city: addr?.city ?? widget.city ?? "",
+                                            state: addr?.state ?? widget.state ?? "",
+                                            country: addr?.country ?? widget.country ?? "",
+                                            pinCode: addr?.pincode ?? widget.pinCode ?? "",
+                                            statusUpdate: cust?.statusUpdate,
+                                            prospectEnrollmentDate: cust?.prospectEnrollmentDate,
+                                            expectedConvertionDate: cust?.expectedConvertionDate,
+                                            numOfHeadcount: cust?.numOfHeadcount,
+                                            expectedBillingValue: cust?.expectedBillingValue,
+                                            arpuValue: cust?.arpuValue,
+                                            productDiscussion: cust?.product,
+                                            discussionPoint: cust?.discussionPoint,
+                                            notes: widget.notes,
+                                            sourceDetails: widget.sourceDetails,
+                                            updateTs: cust?.updatedTs ?? widget.updateTs,
+                                          ),
+                                          duration: Duration.zero,
+                                        );
+                                      },
+                                      child: MouseRegion(
+                                        cursor: SystemMouseCursors.click,
+                                        child: Text(
+                                          "Edit",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  10.width,
+                                  CustomLoadingButton(
+                                    callback: () {
+                                      controllers.emailSubjectCtr.clear();
+                                      controllers.emailMessageCtr.clear();
+                                      imageController.photo1.value = "";
+                                      controllers.emailToCtr.text =
+                                      displayEmail.isEmpty ? "" : displayEmail;
+                                      utils.sendEmailDialog(
+                                        id: widget.id.toString(),
+                                        name: displayName,
+                                        mobile: displayMobile,
+                                        coName: cust?.companyName ?? widget.companyName ?? "",
+                                      );
+                                    },
+                                    height: 35,
+                                    isLoading: false,
+                                    backgroundColor: colorsConst.third,
+                                    radius: 2,
+                                    width: 120,
+                                    isImage: false,
+                                    text: "Send Email",
+                                    textColor: Colors.white,
                                   ),
                                 ],
                               ),
