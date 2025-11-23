@@ -78,6 +78,11 @@
 </style>
 
 <script src="flutter_bootstrap.js" async></script>
+<script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    }
+</script>
 
 <script>
     window.addEventListener('flutter-first-frame', function () {

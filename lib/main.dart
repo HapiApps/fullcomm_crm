@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/provider/employee_provider.dart';
 import 'package:fullcomm_crm/provider/reminder_provider.dart';
@@ -27,6 +28,18 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.web,
   );
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("📩 Foreground message: ${message.data}");
+
+    // App already open -> show dialog/snackbar
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print("📩 Notification tapped: ${message.data}");
+
+    // When user clicks the notification and app opens
+  });
+
   runApp(
       MultiProvider(
       providers: [

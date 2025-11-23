@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
@@ -32,6 +33,15 @@ class DashboardController extends GetxController {
   var dayReport = <CustomerDayData>[].obs;
   RxBool isLoading = false.obs;
 
+  Future<void> getToken() async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      print("token $token");
+      apiService.updateTokenAPI(token.toString());
+    }catch(e){
+      print("Token error $e");
+    }
+  }
   final List<String> filters = [
     "Today",
     "Yesterday",
@@ -271,6 +281,7 @@ class DashboardController extends GetxController {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
+      print("Dashboard Report ${request.body}");
       if (request.statusCode == 200) {
         var response = jsonDecode(request.body) as List;
         dashController.totalMails.value       = response[0]["total_mails"] ?? "0";

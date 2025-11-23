@@ -38,6 +38,7 @@ class _NewDashboardState extends State<NewDashboard> {
   void initState() {
     super.initState();
     _focusNode = FocusNode();
+    dashController.getToken();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);

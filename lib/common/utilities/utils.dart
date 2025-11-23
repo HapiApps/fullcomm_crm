@@ -1699,7 +1699,7 @@ class Utils {
                             children: [
                               IgnorePointer(
                                 child: CustomText(
-                                    text: controllers.leadCategoryList[4]["value"],
+                                    text: controllers.leadCategoryList[3]["value"],
                                     colors: controllers.selectedIndex.value == 4
                                         ? Colors.black
                                         : colorsConst.textColor,

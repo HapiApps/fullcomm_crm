@@ -409,6 +409,40 @@ class ApiService {
     }
   }
 
+  Future updateTokenAPI(String token) async {
+    try {
+      Map data = {
+        "action": "update_token",
+        "token": token,
+        "id": controllers.storage.read("id"),
+      };
+
+      final request = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          "Accept": "application/text",
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: jsonEncode(data),
+        encoding: Encoding.getByName("utf-8"),
+      );
+
+      print("response ${request.body}");
+
+      Map<String, dynamic> response = json.decode(request.body);
+
+      if (request.statusCode == 200) {
+        print("Token updated success");
+       // getLeadCategories();
+      } else {
+        print("Token error ${request.body}");
+      }
+    } catch (e) {
+      print("Token Error $e");
+
+    }
+  }
+
 
 
   List<Map<String, String>> prospectsList = [];
