@@ -251,6 +251,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                   controllers.visitType = null;
                 });
                 _focusNode.requestFocus();
+                controllers.empDOB.value = "${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}";
                 Get.to(const AddLead(), duration: Duration.zero);
               },
               isLoading: false,

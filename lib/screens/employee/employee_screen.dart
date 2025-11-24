@@ -128,7 +128,9 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                             CustomSearchTextField(
                                 hintText: "Search Employee...",
                                 controller: employeeProvider.vendorSearchController,
-                                onChanged:  (value){}
+                                onChanged:  (value){
+                                  employeeProvider.filterStaff(value.toString());
+                                }
                             ),
                             employeeProvider.hasSelectedEmployee?
                             InkWell(
@@ -490,7 +492,8 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: LayoutBuilder(builder: (context, constraints){
-                        return employeeProvider.filteredStaff.isNotEmpty ? ListView.builder(
+                        return employeeProvider.filteredStaff.isNotEmpty ?
+                        ListView.builder(
                           itemCount: employeeProvider.filteredStaff.length,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -809,15 +812,13 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                               ),
                             );
                           },
-                        ) : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            100.height,
-                            Center(
-                                child: SvgPicture.asset(
-                                    "assets/images/noDataFound.svg")),
-                          ],
-                        );
+                        ) :
+                        Container(
+                            alignment: Alignment.center,
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            child: SvgPicture.asset(
+                                "assets/images/noDataFound.svg"));
                       }
                       ),
                     ),

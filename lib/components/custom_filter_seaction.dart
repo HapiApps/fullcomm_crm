@@ -81,7 +81,7 @@ class FilterSection extends StatelessWidget {
                     items: leadFuture,
                     borderRadius: 5,
                     borderColor: Colors.grey.shade300,
-                    hintText: "Mobile Number",
+                    hintText: "",
                     labelText: "Search Mobile Number",
                     labelBuilder: (customer) =>
                     '${customer.firstname} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
@@ -95,6 +95,7 @@ class FilterSection extends StatelessWidget {
                           '${customer.firstname} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
                           colors: Colors.black,
                           size: 14,
+                          isCopy: false,
                           textAlign: TextAlign.start,
                         ),
                       );

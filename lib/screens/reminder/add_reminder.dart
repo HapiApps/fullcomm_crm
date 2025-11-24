@@ -341,6 +341,7 @@ class _AddReminderState extends State<AddReminder> {
                                         '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
                                         colors: Colors.black,
                                         size: 14,
+                                        isCopy: false,
                                         textAlign: TextAlign.start,
                                       ),
                                     );
@@ -407,6 +408,7 @@ class _AddReminderState extends State<AddReminder> {
                                         '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
                                         colors: Colors.black,
                                         size: 14,
+                                        isCopy: false,
                                         textAlign: TextAlign.start,
                                       ),
                                     );

@@ -403,7 +403,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: 240,
+                            width: 300,
                             child: Column(
                               children: [
                                 LeftTableHeader(

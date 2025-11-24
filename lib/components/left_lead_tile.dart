@@ -257,13 +257,21 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
   @override
   Widget build(BuildContext context) {
     final int totalColumns = tableController.tableHeadings.length + 1 + (widget.showCheckbox ? 1 : 0);
-    final Map<int, TableColumnWidth> columnWidths = {};
-    columnWidths[0] =  widget.showCheckbox?FlexColumnWidth(1):FlexColumnWidth(3); // Actions / checkbox
-    columnWidths[1] = const FlexColumnWidth(1.5); // Name
-    columnWidths[2] = const FlexColumnWidth(2); // Company / next
-    for (int i = 3; i < totalColumns; i++) {
-      columnWidths[i] = const FlexColumnWidth(2);
+     final Map<int, TableColumnWidth> columnWidths = {};
+    int colIndex = 2;
+    for (int hIndex = 0; hIndex < tableController.tableHeadings.length; hIndex++) {
+      final heading = tableController.tableHeadings[hIndex];
+      final width = tableController.colWidth[heading] ?? 150;
+      columnWidths[colIndex] = FixedColumnWidth(width);
+      colIndex++;
     }
+
+    // columnWidths[0] =  widget.showCheckbox?FlexColumnWidth(1):FlexColumnWidth(3); // Actions / checkbox
+    // columnWidths[1] = const FlexColumnWidth(1.5); // Name
+    // columnWidths[2] = const FlexColumnWidth(2); // Company / next
+    // for (int i = 3; i < totalColumns; i++) {
+    //   columnWidths[i] = const FlexColumnWidth(2);
+    // }
     return Obx(()=>tableController.isTableLoading.value?CircularProgressIndicator():InkWell(
       onTap: () {
         Get.to(

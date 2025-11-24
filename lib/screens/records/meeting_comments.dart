@@ -358,6 +358,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                                 text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.companyName}',
                                                                 colors: Colors.black,
                                                                 size: 14,
+                                                                isCopy: false,
                                                                 textAlign: TextAlign.start,
                                                               ),
                                                             ),

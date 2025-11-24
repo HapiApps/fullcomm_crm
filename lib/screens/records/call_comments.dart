@@ -188,6 +188,7 @@ class _CallCommentsState extends State<CallComments> {
                                                               text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
                                                               colors: Colors.black,
                                                               size: 14,
+                                                              isCopy: false,
                                                               textAlign: TextAlign.start,
                                                             ),
                                                           );
@@ -1213,6 +1214,7 @@ class _CallCommentsState extends State<CallComments> {
                                                                                             text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
                                                                                             colors: Colors.black,
                                                                                             size: 14,
+                                                                                            isCopy: false,
                                                                                             textAlign: TextAlign.start,
                                                                                           ),
                                                                                         );

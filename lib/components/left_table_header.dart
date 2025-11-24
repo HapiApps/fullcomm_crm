@@ -22,8 +22,10 @@ class LeftTableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
     return Obx(() {
       final headings = tableController.tableHeadings;
+
       final headerChildren = <Widget>[
         if (showCheckbox)
           Container(
@@ -33,71 +35,34 @@ class LeftTableHeader extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(2.0),
               ),
-              side: WidgetStateBorderSide.resolveWith(
-                    (states) => const BorderSide(width: 1.0, color: Colors.white),
-              ),
+              side: const BorderSide(width: 1.0, color: Colors.white),
               checkColor: colorsConst.primary,
               activeColor: Colors.white,
               value: isAllSelected,
               onChanged: onSelectAll,
             ),
           ),
+
+        // ACTION COLUMN
         _headerCell("Actions", screenWidth, textAlign: TextAlign.center),
-        if (headings.isNotEmpty)
-          Container(
-            height: 45,
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    headings.first,
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontFamily: "Lato",
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: 3),
-                GestureDetector(
-                  onTap: (){
-                    final selected = controllers.fields.firstWhere(
-                          (f) => f.userHeading == headings.first,
-                      orElse: () => CustomerField(userHeading: headings.first, systemField: headings.first.toLowerCase(), id: '', isRequired: ''),
-                    );
-                    controllers.sortField.value = selected.systemField;
-                    controllers.sortOrderN.value =
-                    controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
-                  },
-                  child: Obx(() => Image.asset(
-                    controllers.sortField.value.isEmpty
-                        ? "assets/images/arrow.png"
-                        : controllers.sortOrderN.value == 'asc'
-                        ? "assets/images/arrow_up.png"
-                        : "assets/images/arrow_down.png",
-                    width: 15,
-                    height: 15,
-                  )),
-                ),
-              ],
-            ),
-          )
+
+        // 🔥 RESIZABLE COLUMN (AFTER ACTIONS)
+        if (headings.isNotEmpty) _buildResizableHeader(headings.first),
       ];
-      final Map<int, TableColumnWidth> columnWidths = {};
-      columnWidths[0] = showCheckbox ? const FlexColumnWidth(1) : const FlexColumnWidth(3);
-      columnWidths[1] = const FlexColumnWidth(1.5);
-      columnWidths[2] = const FlexColumnWidth(2);
+
+      // Column widths
+      final Map<int, TableColumnWidth> columnWidths = {
+        0: showCheckbox ? const FlexColumnWidth(1) : const FlexColumnWidth(3),
+        1: const FlexColumnWidth(1.5),
+        2: FixedColumnWidth(tableController.colWidth[headings.first] ?? 150),
+      };
+
       return Table(
         columnWidths: columnWidths,
         border: TableBorder(
           horizontalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
           verticalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
-          right: BorderSide(width: 0.5, color: Colors.grey.shade400)
+          right: BorderSide(width: 0.5, color: Colors.grey.shade400),
         ),
         children: [
           TableRow(
@@ -105,7 +70,6 @@ class LeftTableHeader extends StatelessWidget {
               color: colorsConst.primary,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(5),
-                //topRight: Radius.circular(5),
               ),
             ),
             children: headerChildren,
@@ -115,11 +79,93 @@ class LeftTableHeader extends StatelessWidget {
     });
   }
 
+  // -------------------------------------------------------------------------
+  // 🔥 NEW: RESIZABLE HEADER (LIKE YOUR RIGHT SIDE TABLE)
+  // -------------------------------------------------------------------------
+  Widget _buildResizableHeader(String heading) {
+    return Stack(
+      children: [
+        Container(
+          height: 45,
+          width: tableController.colWidth[heading] ?? 150,
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  heading,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: Colors.white,
+                    fontFamily: "Lato",
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+
+              // SORT BUTTON
+              GestureDetector(
+                onTap: () {
+                  final selected = controllers.fields.firstWhere(
+                        (f) => f.userHeading == heading,
+                    orElse: () => CustomerField(
+                        userHeading: heading,
+                        systemField: heading.toLowerCase(),
+                        id: '',
+                        isRequired: ''),
+                  );
+
+                  controllers.sortField.value = selected.systemField;
+                  controllers.sortOrderN.value =
+                  controllers.sortOrderN.value == 'asc'
+                      ? 'desc'
+                      : 'asc';
+                },
+                child: Obx(() => Image.asset(
+                  controllers.sortField.value.isEmpty
+                      ? "assets/images/arrow.png"
+                      : controllers.sortOrderN.value == 'asc'
+                      ? "assets/images/arrow_up.png"
+                      : "assets/images/arrow_down.png",
+                  width: 15,
+                  height: 15,
+                )),
+              ),
+            ],
+          ),
+        ),
+
+        // DRAG RESIZER HANDLE
+        Positioned(
+          right: 0,
+          top: 0,
+          bottom: 0,
+          width: 10,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onHorizontalDragUpdate: (details) {
+              final current = tableController.colWidth[heading] ?? 150.0;
+              final newWidth =
+              (current + details.delta.dx).clamp(80.0, 400.0);
+              tableController.colWidth[heading] = newWidth;
+              tableController.colWidth.refresh();
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.resizeColumn,
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _headerCell(String text, double width,
       {TextAlign textAlign = TextAlign.left}) {
     return Container(
       height: width <= 922 ? 65 : 45,
-      width: 150,
       alignment:
       textAlign == TextAlign.center ? Alignment.center : Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -131,10 +177,8 @@ class LeftTableHeader extends StatelessWidget {
           color: Colors.white,
           fontFamily: "Lato",
         ),
-        maxLines: null,
-        softWrap: true,
-        overflow: TextOverflow.visible,
       ),
     );
   }
 }
+

@@ -299,7 +299,7 @@ class ApiService {
 
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 &&
-          response["message"] == "Customer updated successfully.") {
+          response["message"] == "Customer updated successfully") {
         utils.snackBar(
             msg: "Your Lead is updated successfully !",
             color: colorsConst.primary,

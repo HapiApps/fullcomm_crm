@@ -890,7 +890,7 @@ class _AddLeadState extends State<AddLead> {
                                   text: "Company Name",
                                   controller: controllers.leadCoNameCrt,
                                   width: textFieldSize,
-                                  keyboardType: TextInputType.text,
+                                  //keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.next,
                                   isOptional: false,
                                   inputFormatters: constInputFormatters.textInput,
@@ -913,7 +913,7 @@ class _AddLeadState extends State<AddLead> {
                                   text: "Company Phone No.",
                                   controller: controllers.leadCoMobileCrt,
                                   width: textFieldSize,
-                                  keyboardType: TextInputType.text,
+                                  keyboardType: TextInputType.number,
                                   textInputAction: TextInputAction.next,
                                   isOptional: false,
                                   inputFormatters: constInputFormatters.mobileNumberInput,
@@ -1016,7 +1016,7 @@ class _AddLeadState extends State<AddLead> {
                                 text: "Product/Services (Optional)",
                                 controller: controllers.leadProduct,
                                 width: textFieldSize,
-                                keyboardType: TextInputType.text,
+                                //keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,
                                 isOptional: false,
                                 onChanged: (value) async {
@@ -1121,7 +1121,7 @@ class _AddLeadState extends State<AddLead> {
                                   text: "Actions to be taken",
                                   controller: controllers.leadActions,
                                   width: textFieldSize,
-                                  keyboardType: TextInputType.text,
+                                 // keyboardType: TextInputType.text,
                                   isOptional: false,
                                   textInputAction: TextInputAction.next,
                                   inputFormatters:
@@ -1148,7 +1148,7 @@ class _AddLeadState extends State<AddLead> {
                                   controller: controllers.leadDisPointsCrt,
                                   width: textFieldSize,
                                   isOptional: false,
-                                  keyboardType: TextInputType.text,
+                                  //keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.next,
                                   onChanged: (value) async {
                                     if (value.toString().isNotEmpty) {
@@ -1173,7 +1173,7 @@ class _AddLeadState extends State<AddLead> {
                                   controller: controllers.prodDescriptionController,
                                   width: textFieldSize,
                                   isOptional: false,
-                                  keyboardType: TextInputType.text,
+                                  //keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.next,
                                   onChanged: (value) async {
                                     if (value.toString().isNotEmpty) {
@@ -1199,7 +1199,7 @@ class _AddLeadState extends State<AddLead> {
                                   controllers.exMonthBillingValCrt,
                                   width: textFieldSize,
                                   isOptional: false,
-                                  keyboardType: TextInputType.text,
+                                  //keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.next,
                                   onChanged: (value) async {
                                     if (value.toString().isNotEmpty) {
@@ -1223,7 +1223,7 @@ class _AddLeadState extends State<AddLead> {
                                   controller: controllers.arpuCrt,
                                   width: textFieldSize,
                                   isOptional: false,
-                                  keyboardType: TextInputType.text,
+                                 // keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.next,
                                   onChanged: (value) async {
                                     if (value.toString().isNotEmpty) {
@@ -1261,7 +1261,7 @@ class _AddLeadState extends State<AddLead> {
                                   controller: controllers.prospectGradingCrt,
                                   width: textFieldSize,
                                   isOptional: false,
-                                  keyboardType: TextInputType.text,
+                                  //keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.next,
                                   onChanged: (value) async {
                                     if (value.toString().isNotEmpty) {
@@ -1367,7 +1367,7 @@ class _AddLeadState extends State<AddLead> {
                                 controller: controllers.sourceCrt,
                                 width: textFieldSize,
                                 isOptional: false,
-                                keyboardType: TextInputType.text,
+                                //keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,
                                 onChanged: (value) async {
                                   if (value.toString().isNotEmpty) {
@@ -1423,7 +1423,7 @@ class _AddLeadState extends State<AddLead> {
                                 controller: controllers.statusCrt,
                                 width: textFieldSize,
                                 isOptional: false,
-                                keyboardType: TextInputType.text,
+                                //keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,
                                 onChanged: (value) async {
                                   if (value.toString().isNotEmpty) {
@@ -1477,7 +1477,7 @@ class _AddLeadState extends State<AddLead> {
                                 controller:
                                 controllers.doorNumberController,
                                 width: textFieldSize,
-                                keyboardType: TextInputType.text,
+                               // keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,
                                 isOptional: false,
                                 onChanged: (value) async {

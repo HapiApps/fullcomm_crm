@@ -2004,7 +2004,7 @@ class Utils {
         "cusList": customerData,
       };
 
-     // print("Payload: ${jsonEncode(finalPayload)}");
+      //print("Payload: ${jsonEncode(finalPayload)}");
 
       await apiService.insertCustomersAPI(context, customerData, fieldMappings, bytes, "CRMSheet");
     }
@@ -2426,6 +2426,7 @@ class Utils {
                         colors: Colors.white,
                         isBold: true,
                         size: 15,
+                        isCopy: false,
                       ),
                     ),
                   ),
@@ -2454,6 +2455,7 @@ class Utils {
                       text: "Cancel",
                       colors: Colors.white,
                       isBold: true,
+                      isCopy :false,
                       size: 15,
                     ),
                   ),

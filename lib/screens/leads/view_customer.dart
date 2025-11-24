@@ -337,7 +337,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: 240,
+                            width: 300,
                             child: Column(
                               children: [
                                 LeftTableHeader(
@@ -365,7 +365,6 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                       for (var item in controllers.isCustomerList) {
                                         item["isSelect"] = false;
                                       }
-
                                       apiService.prospectsList.clear();
                                     }
 

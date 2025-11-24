@@ -1410,13 +1410,13 @@ class ReminderUtils {
                                               return Container(
                                                 width: 300,
                                                 alignment: Alignment.topLeft,
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    10, 5, 10, 5),
+                                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                 child: CustomText(
                                                   text:
                                                   '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
                                                   colors: Colors.black,
                                                   size: 14,
+                                                  isCopy:false,
                                                   textAlign: TextAlign.start,
                                                 ),
                                               );
@@ -1429,7 +1429,7 @@ class ReminderUtils {
                                               controllers.selectEmployee(value);
                                             },
                                             onClear: () {
-                                              controllers.clearSelectedCustomer();
+                                              controllers.clearSelectedEmployee();
                                             },
                                           ),
                                           if (employeeError != null)
@@ -1492,6 +1492,7 @@ class ReminderUtils {
                                                   '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
                                                   colors: Colors.black,
                                                   size: 14,
+                                                  isCopy:false,
                                                   textAlign: TextAlign.start,
                                                 ),
                                               );

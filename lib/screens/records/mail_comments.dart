@@ -467,15 +467,12 @@ class _MailCommentsState extends State<MailComments> {
                             }).toList();
                             return controllers.isMailLoading.value?
                             Center(child:CircularProgressIndicator()):filteredList.isEmpty?
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                100.height,
-                                Center(
-                                    child: SvgPicture.asset(
-                                        "assets/images/noDataFound.svg")),
-                              ],
-                            )
+                            Container(
+                                alignment: Alignment.center,
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: SvgPicture.asset(
+                                    "assets/images/noDataFound.svg"))
                                 :RawKeyboardListener(
                               focusNode: _focusNode,
                               autofocus: true,
