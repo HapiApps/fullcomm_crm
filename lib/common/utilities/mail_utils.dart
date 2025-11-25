@@ -19,7 +19,7 @@ final MailUtils mailUtils = MailUtils._();
 
 class MailUtils {
   MailUtils._();
-  void bulkEmailDialog(FocusNode focusNode, {required List<Map<String, String>> list}) {
+  void bulkEmailDialog(FocusNode focusNode, {required List<Map<String, String>> list, bool isTarget = false}) {
     int total = list.length;
     int withMail = list.where((e) => (e["mail_id"] != null && e["mail_id"]!.trim().isNotEmpty && e["mail_id"]!.trim() != "null")).length;
     int withoutMail = total - withMail;
@@ -224,7 +224,7 @@ class MailUtils {
                                         height: 40,
                                         width: 650,
                                         child: Obx(() {
-                                          final ranges = controllers.leadRanges;
+                                          final ranges = isTarget?controllers.leadTargetRanges:controllers.leadRanges;
                                           if (ranges.isEmpty) {
                                             return const Center(child: Text("No leads found"));
                                           }
@@ -237,7 +237,7 @@ class MailUtils {
                                               return InkWell(
                                                 onTap: () {
                                                   setState((){
-                                                    selectRange(range, controllers.allNewLeadFuture);
+                                                    selectRange(range, isTarget?controllers.targetLeadsFuture:controllers.allNewLeadFuture);
                                                   }
                                                   );
                                                   final leads = controllers.getLeadsByRange(index);

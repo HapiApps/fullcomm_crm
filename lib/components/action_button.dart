@@ -43,6 +43,7 @@ class ActionButton extends StatelessWidget {
                   colors: colorsConst.textColor,
                   size: 14,
                 isBold: true,
+                isCopy: false,
               ),
             ],
           ),

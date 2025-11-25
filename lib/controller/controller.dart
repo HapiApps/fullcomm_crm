@@ -649,6 +649,18 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     }
     return ranges;
   }
+  List<String> get leadTargetRanges {
+    final totalCount = targetLeadsFuture.length; // total leads count
+    if (totalCount == 0) return [];
+    List<String> ranges = [];
+    for (int i = 0; i < totalCount; i += mailPerPage) {
+      final start = i + 1;
+      final end = (i + mailPerPage) > totalCount ? totalCount : (i + mailPerPage);
+      ranges.add("$start - $end");
+    }
+    return ranges;
+  }
+
   List<NewLeadObj> getLeadsByRange(int index) {
     final startIndex = index * mailPerPage;
     final endIndex = (startIndex + mailPerPage) > allNewLeadFuture.length

@@ -196,7 +196,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                               });
                         },
                         onMail: () {
-                          mailUtils.bulkEmailDialog(_focusNode, list: apiService.prospectsList);
+                          mailUtils.bulkEmailDialog(_focusNode, list: apiService.prospectsList,isTarget: true);
                         },
                         onPromote: () {
                           showDialog(
