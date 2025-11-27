@@ -25,7 +25,6 @@ class LeftTableHeader extends StatelessWidget {
 
     return Obx(() {
       final headings = tableController.tableHeadings;
-
       final headerChildren = <Widget>[
         if (showCheckbox)
           Container(
@@ -43,10 +42,7 @@ class LeftTableHeader extends StatelessWidget {
             ),
           ),
 
-        // ACTION COLUMN
         _headerCell("Actions", screenWidth, textAlign: TextAlign.center),
-
-        // 🔥 RESIZABLE COLUMN (AFTER ACTIONS)
         if (headings.isNotEmpty) _buildResizableHeader(headings.first),
       ];
 

@@ -198,7 +198,13 @@ class FilterSection extends StatelessWidget {
               child: CustomSearchTextField(
                 hintText: "Search Name, Company",
                 controller: searchController,
-                onChanged: onSearchChanged,
+                onChanged: (value) {
+                  if (onSearchChanged != null) onSearchChanged!(value);
+                  if (value.toString().isEmpty) {
+                    controllers.clearSelectedCustomer();
+                  }
+                },
+                //onChanged: onSearchChanged,
               ),
             ),
             const SizedBox(width: 10),

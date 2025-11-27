@@ -256,15 +256,21 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
 
   @override
   Widget build(BuildContext context) {
+    final headings = tableController.tableHeadings;
     final int totalColumns = tableController.tableHeadings.length + 1 + (widget.showCheckbox ? 1 : 0);
-     final Map<int, TableColumnWidth> columnWidths = {};
-    int colIndex = 2;
-    for (int hIndex = 0; hIndex < tableController.tableHeadings.length; hIndex++) {
-      final heading = tableController.tableHeadings[hIndex];
-      final width = tableController.colWidth[heading] ?? 150;
-      columnWidths[colIndex] = FixedColumnWidth(width);
-      colIndex++;
-    }
+    final Map<int, TableColumnWidth> columnWidths = {
+      0: FlexColumnWidth(1),
+      1: const FlexColumnWidth(1.5),
+      2: FixedColumnWidth(tableController.colWidth[headings.first] ?? 150),
+    };
+    //  final Map<int, TableColumnWidth> columnWidths = {};
+    // int colIndex = 2;
+    // for (int hIndex = 0; hIndex < tableController.tableHeadings.length; hIndex++) {
+    //   final heading = tableController.tableHeadings[hIndex];
+    //   final width = tableController.colWidth[heading] ?? 150;
+    //   columnWidths[colIndex] = FixedColumnWidth(width);
+    //   colIndex++;
+    // }
 
     // columnWidths[0] =  widget.showCheckbox?FlexColumnWidth(1):FlexColumnWidth(3); // Actions / checkbox
     // columnWidths[1] = const FlexColumnWidth(1.5); // Name
