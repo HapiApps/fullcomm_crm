@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 // const String version     = "Version 0.0.7";
 // const String versionNum  = "0.0.7";
 // /// Prod
-// // const String domain      = "https://aruu.in/";
+// // const String domain      = "https://aruu.in/";//Logo change panna nu
 // // const bool isRelease     = true;
 // // const String version     = "Version 0.0.8";
 // // const String versionNum  = "0.0.8";
@@ -30,10 +30,10 @@ import 'package:flutter/material.dart';
 // const String version     = "Version 0.0.22";
 // const String versionNum  = "0.0.22";
 ///Prod
-const String domain      = "https://thirumal.hrides.in";
+const String domain      = "https://thirumal.hrides.in";//Logo change panna nu
 const bool isRelease     = true;
-const String version     = "Version 0.0.26";
-const String versionNum  = "0.0.26";
+const String version     = "Version 0.0.27";
+const String versionNum  = "0.0.27";
 const String version1        = "CRM";
 const String appName         = "Thirumal CRM";
 const String logo            = "assets/images/thirumal.png";
