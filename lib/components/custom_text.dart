@@ -18,7 +18,7 @@ class CustomText extends StatelessWidget {
       this.size = 13,
       this.isStyle = false,
       this.isBold = false,
-        this.isCopy = true,
+        required this.isCopy,
       this.isSplash = false,
       this.textAlign = TextAlign.center,
       this.decoration = TextDecoration.none});

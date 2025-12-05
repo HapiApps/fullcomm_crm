@@ -62,6 +62,7 @@ class _AddReminderState extends State<AddReminder> {
                             text: "Reminder",
                             colors: colorsConst.textColor,
                             size: 20,
+                            isCopy: true,
                             isBold: true,
                           ),
                           10.height,
@@ -69,6 +70,7 @@ class _AddReminderState extends State<AddReminder> {
                             text: "Add reminder details and save",
                             colors: colorsConst.textColor,
                             size: 14,
+                            isCopy: true,
                           ),
                         ],
                       ),
@@ -133,6 +135,7 @@ class _AddReminderState extends State<AddReminder> {
                               CustomText(text: "Event Type",
                                 colors: colorsConst.fieldHead,
                                 size: 13,
+                                isCopy: true,
                               ),
                               5.height,
                               Container(
@@ -161,6 +164,7 @@ class _AddReminderState extends State<AddReminder> {
                                               text: "Follow-up",
                                               colors: Colors.black,
                                               size: 15,
+                                              isCopy: false,
                                             ),
                                           ],
                                         ),
@@ -177,6 +181,7 @@ class _AddReminderState extends State<AddReminder> {
                                               text: "Appointment",
                                               colors: Colors.black,
                                               size: 15,
+                                              isCopy: false,
                                             ),
                                           ],
                                         ),
@@ -191,6 +196,7 @@ class _AddReminderState extends State<AddReminder> {
                                             ),
                                             CustomText(
                                               text: "Task",
+                                              isCopy: false,
                                               colors: Colors.black,
                                               size: 15,
                                             ),
@@ -269,6 +275,7 @@ class _AddReminderState extends State<AddReminder> {
                           CustomText(
                             text: "Details",
                             colors: colorsConst.fieldHead,
+                            isCopy: false,
                             size: 13,),
                           5.height,
                           TextFormField(
@@ -314,11 +321,13 @@ class _AddReminderState extends State<AddReminder> {
                                       text: "Employees",
                                       size: 13,
                                       colors: colorsConst.fieldHead,
+                                      isCopy: false,
                                     ),
                                     const CustomText(
                                       text: "*",
                                       colors: Colors.red,
                                       size: 25,
+                                      isCopy: false,
                                     )
                                   ],
                                 ),
@@ -334,8 +343,7 @@ class _AddReminderState extends State<AddReminder> {
                                     return Container(
                                       width: 300,
                                       alignment: Alignment.topLeft,
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 5, 10, 5),
+                                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                       child: CustomText(
                                         text:
                                         '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
@@ -380,10 +388,12 @@ class _AddReminderState extends State<AddReminder> {
                                     CustomText(
                                       text: "Assigned Customer",
                                       size: 13,
+                                      isCopy: false,
                                       colors: colorsConst.fieldHead,
                                     ),
                                     const CustomText(
                                       text: "*",
+                                      isCopy: false,
                                       colors: Colors.red,
                                       size: 25,
                                     )
@@ -396,16 +406,14 @@ class _AddReminderState extends State<AddReminder> {
                                   hintText: "Customers",
                                   labelText: "",
                                   labelBuilder: (customer) =>
-                                  '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                  '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
                                   itemBuilder: (customer) {
                                     return Container(
                                       width: 300,
                                       alignment: Alignment.topLeft,
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 5, 10, 5),
+                                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                       child: CustomText(
-                                        text:
-                                        '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                        text: '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
                                         colors: Colors.black,
                                         size: 14,
                                         isCopy: false,
@@ -501,6 +509,7 @@ class _AddReminderState extends State<AddReminder> {
                                   CustomText(
                                     text: "Add More Reminder",
                                     colors: colorsConst.textColor,
+                                    isCopy: false,
                                   ),
                                 ],
                               ),

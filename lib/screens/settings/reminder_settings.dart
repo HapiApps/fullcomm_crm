@@ -485,10 +485,12 @@ class _ReminderSettingsState extends State<ReminderSettings> {
                          text: "Settings",
                          colors: colorsConst.textColor,
                          size: 20,
+                         isCopy: true,
                          isBold: true,
                        ),
                        10.height,
                        CustomText(
+                         isCopy: true,
                          text: "Manage all your application settings in one place",
                          colors: colorsConst.textColor,
                          size: 14,

@@ -181,6 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: CustomText(text: "Forgot Password?",
                             colors: colorsConst.primary,
                             size: 14,
+                            isCopy: false,
                           ),
                         ),
                       ),

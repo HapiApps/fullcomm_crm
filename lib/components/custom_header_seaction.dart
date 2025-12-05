@@ -183,12 +183,14 @@ class _HeaderSectionState extends State<HeaderSection> {
               colors: colorsConst.textColor,
               size: 25,
               isBold: true,
+              isCopy: true,
             ),
             10.height,
             CustomText(
               text: widget.subtitle,
               colors: colorsConst.textColor,
               size: 14,
+              isCopy: true,
             ),
           ],
         ),
@@ -293,6 +295,7 @@ class _HeaderSectionState extends State<HeaderSection> {
               text:'Add column name',
               colors: colorsConst.primary,
               isBold: true,
+              isCopy: true,
             ),
             content: SizedBox(
               width: 300,

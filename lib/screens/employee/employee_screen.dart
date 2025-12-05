@@ -62,12 +62,14 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   colors: colorsConst.textColor,
                                   size: 20,
                                   isBold: true,
+                                  isCopy: true,
                                 ),
                                 10.height,
                                 CustomText(
                                   text: "View all employees",
                                   colors: colorsConst.textColor,
                                   size: 14,
+                                  isCopy: true,
                                 ),
                               ],
                             ),
@@ -103,6 +105,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                               colors: colorsConst.primary,
                               isBold: true,
                               size: 15,
+                              isCopy: false,
                             ),
                             10.width,
                             CircleAvatar(
@@ -112,6 +115,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                 text: employeeProvider.filteredStaff.length.toString(),
                                 colors: Colors.white,
                                 size: 13,
+                                isCopy: false,
                               ),
                             ),
                           ],
@@ -146,6 +150,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                         size: 16,
                                         isBold: true,
                                         colors: colorsConst.textColor,
+                                        isCopy: true,
                                       ),
                                       actions: [
                                         Row(
@@ -171,6 +176,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                     text: "Cancel",
                                                     colors: colorsConst.primary,
                                                     size: 14,
+                                                    isCopy: false,
                                                   )),
                                             ),
                                             10.width,
@@ -222,6 +228,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                       colors: colorsConst.textColor,
                                       size: 14,
                                       isBold: true,
+                                      isCopy: false,
                                     ),
                                   ],
                                 ),
@@ -280,6 +287,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                 text: "Action",
                                 size: 15,
                                 isBold: true,
+                                isCopy: false,
                                 colors: Colors.white,
                               ),
                             ),
@@ -292,6 +300,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     text: "Employee Name",
                                     size: 15,
                                     isBold: true,
+                                    isCopy: false,
                                     colors: Colors.white,
                                   ),
                                  5.width,
@@ -321,6 +330,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     text: "Role",
                                     size: 15,
                                     isBold: true,
+                                    isCopy: false,
                                     colors: Colors.white,
                                   ),
                                   5.width,
@@ -350,6 +360,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     text: "Mobile No",
                                     size: 15,
                                     isBold: true,
+                                    isCopy: false,
                                     colors: Colors.white,
                                   ),
                                   5.width,
@@ -379,6 +390,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     text: "Email",
                                     size: 15,
                                     isBold: true,
+                                    isCopy: false,
                                     colors: Colors.white,
                                   ),
                                   5.width,
@@ -408,6 +420,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     text: "Address",
                                     size: 15,
                                     isBold: true,
+                                    isCopy: false,
                                     colors: Colors.white,
                                   ),
                                   5.width,
@@ -437,6 +450,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     text: "Salary",
                                     size: 15,
                                     isBold: true,
+                                    isCopy: false,
                                     colors: Colors.white,
                                   ),
                                   5.width,
@@ -465,6 +479,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     textAlign: TextAlign.left,
                                     text: "Bonus",
                                     size: 15,
+                                    isCopy: false,
                                     isBold: true,
                                     colors: Colors.white,
                                   ),
@@ -562,6 +577,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                             text: "Are you sure delete this employees?",
                                                             size: 16,
                                                             isBold: true,
+                                                            isCopy: true,
                                                             colors: colorsConst.textColor,
                                                           ),                                                                  actions: [
                                                           Row(
@@ -585,6 +601,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                                     },
                                                                     child: CustomText(
                                                                       text: "Cancel",
+                                                                      isCopy: false,
                                                                       colors: colorsConst.primary,
                                                                       size: 14,
                                                                     )),
@@ -631,6 +648,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                               textAlign: TextAlign.left,
                                               text: "${staffData.sName}",
                                               size: 14,
+                                              isCopy: false,
                                               colors:colorsConst.textColor,
                                             ),
                                           ),
@@ -639,6 +657,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                           padding: const EdgeInsets.all(10.0),
                                           child: CustomText(
                                             textAlign: TextAlign.left,
+                                            isCopy: false,
                                             text:employeeProvider.getRoleName(staffData.role.toString()=="null"?"1":staffData.role.toString()),
                                             size: 14,
                                             colors: colorsConst.textColor,
@@ -649,6 +668,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: CustomText(
+                                              isCopy: false,
                                               textAlign: TextAlign.left,
                                               text: staffData.sMobile.toString(),
                                               size: 14,
@@ -662,6 +682,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                             padding: const EdgeInsets.all(10.0),
                                             child: CustomText(
                                               textAlign: TextAlign.left,
+                                              isCopy: false,
                                               text: staffData.email.toString(),
                                               size: 14,
                                               colors:colorsConst.textColor,
@@ -673,6 +694,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: CustomText(
+                                              isCopy: false,
                                               textAlign: TextAlign.left,
                                               text: staffData.sAddress.toString(),
                                               size: 14,
@@ -685,6 +707,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: CustomText(
+                                              isCopy: false,
                                               textAlign: TextAlign.left,
                                               text: staffData.salary.toString(),
                                               size: 14,
@@ -697,6 +720,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: CustomText(
+                                              isCopy: false,
                                               textAlign: TextAlign.left,
                                               text: staffData.bonus.toString(),
                                               size: 14,

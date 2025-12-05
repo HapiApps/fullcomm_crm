@@ -141,6 +141,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                     text: "Are you sure delete this customers?",
                                     size: 16,
                                     isBold: true,
+                                    isCopy: false,
                                     colors: colorsConst.textColor,
                                   ),
                                   actions: [
@@ -165,6 +166,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                               },
                                               child: CustomText(
                                                 text: "Cancel",
+                                                isCopy: false,
                                                 colors: colorsConst.primary,
                                                 size: 14,
                                               )),
@@ -207,6 +209,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                   content: CustomText(
                                     text: "Are you moving to the next level?",
                                     size: 16,
+                                    isCopy: false,
                                     isBold: true,
                                     colors: colorsConst.textColor,
                                   ),
@@ -232,6 +235,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                               },
                                               child: CustomText(
                                                 text: "Cancel",
+                                                isCopy: false,
                                                 colors: colorsConst.primary,
                                                 size: 14,
                                               )),
@@ -269,6 +273,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                               builder: (context) {
                                 return AlertDialog(
                                   content: CustomText(
+                                    isCopy: false,
                                     text: "Are you sure disqualify this customers?",
                                     size: 16,
                                     isBold: true,
@@ -296,6 +301,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                               },
                                               child: CustomText(
                                                 text: "Cancel",
+                                                isCopy: false,
                                                 colors: colorsConst.primary,
                                                 size: 14,
                                               )),
@@ -333,6 +339,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                   content: CustomText(
                                     text: "Are you sure qualify this customers?",
                                     size: 16,
+                                    isCopy: false,
                                     isBold: true,
                                     colors: colorsConst.textColor,
                                   ),
@@ -358,6 +365,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                               },
                                               child: CustomText(
                                                 text: "Cancel",
+                                                isCopy: false,
                                                 colors: colorsConst.primary,
                                                 size: 14,
                                               )),

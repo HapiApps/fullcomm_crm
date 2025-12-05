@@ -331,6 +331,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                           text: formatDate(widget.updatedTs.toString()),
                           size: 14,
                           colors: colorsConst.textColor,
+                          isCopy: false,
                         ),
                       );
                     } else if (heading.toLowerCase() == "status update") {
@@ -381,6 +382,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                             text: value.toString() == "null" ? "" : value.toString(),
                             size: 14,
                             colors: colorsConst.textColor,
+                            isCopy: false,
                           ),
                         ),
                       );

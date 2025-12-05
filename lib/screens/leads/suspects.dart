@@ -140,6 +140,7 @@ class _SuspectsState extends State<Suspects> {
                                   content: CustomText(
                                     text: "Are you sure delete this customers?",
                                     size: 16,
+                                    isCopy: false,
                                     isBold: true,
                                     colors: colorsConst.textColor,
                                   ),
@@ -165,6 +166,7 @@ class _SuspectsState extends State<Suspects> {
                                               },
                                               child: CustomText(
                                                 text: "Cancel",
+                                                isCopy: false,
                                                 colors: colorsConst.primary,
                                                 size: 14,
                                               )),
@@ -207,6 +209,7 @@ class _SuspectsState extends State<Suspects> {
                                   content: CustomText(
                                     text: "Are you moving to the next level?",
                                     size: 16,
+                                    isCopy: false,
                                     isBold: true,
                                     colors: colorsConst.textColor,
                                   ),
@@ -232,6 +235,7 @@ class _SuspectsState extends State<Suspects> {
                                               },
                                               child: CustomText(
                                                 text: "Cancel",
+                                                isCopy: false,
                                                 colors: colorsConst.primary,
                                                 size: 14,
                                               )),
@@ -272,6 +276,7 @@ class _SuspectsState extends State<Suspects> {
                                     text: "Are you sure disqualify this customers?",
                                     size: 16,
                                     isBold: true,
+                                    isCopy: false,
                                     colors: colorsConst.textColor,
                                   ),
                                   actions: [
@@ -298,6 +303,7 @@ class _SuspectsState extends State<Suspects> {
                                                 text: "Cancel",
                                                 colors: colorsConst.primary,
                                                 size: 14,
+                                                isCopy: false,
                                               )),
                                         ),
                                         10.width,

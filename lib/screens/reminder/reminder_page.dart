@@ -58,12 +58,14 @@ class _ReminderPageState extends State<ReminderPage> {
                          colors: colorsConst.textColor,
                          size: 20,
                          isBold: true,
+                         isCopy: true,
                        ),
                        10.height,
                        CustomText(
                          text: "View all of your call activity Report",
                          colors: colorsConst.textColor,
                          size: 14,
+                         isCopy: true,
                        ),
                      ],
                    ),
@@ -118,6 +120,7 @@ class _ReminderPageState extends State<ReminderPage> {
                          colors: colorsConst.primary,
                          isBold: true,
                          size: 15,
+                         isCopy: true,
                        ),
                        10.width,
                        CircleAvatar(
@@ -126,6 +129,7 @@ class _ReminderPageState extends State<ReminderPage> {
                          child: CustomText(
                            text: remController.followUpReminderCount.value.toString(),
                            colors: Colors.white,
+                           isCopy: true,
                            size: 13,
                          ),
                        ),
@@ -135,6 +139,7 @@ class _ReminderPageState extends State<ReminderPage> {
                          colors: colorsConst.primary,
                          isBold: true,
                          size: 15,
+                         isCopy: true,
                        ),
                        10.width,
                        CircleAvatar(
@@ -143,6 +148,7 @@ class _ReminderPageState extends State<ReminderPage> {
                          child: CustomText(
                            text: remController.meetingReminderCount.value.toString(),
                            colors: Colors.white,
+                           isCopy: true,
                            size: 13,
                          ),
                        ),
@@ -159,6 +165,7 @@ class _ReminderPageState extends State<ReminderPage> {
                            return AlertDialog(
                              content: CustomText(
                                text: "Are you sure delete this reminder?",
+                               isCopy: true,
                                size: 16,
                                isBold: true,
                                colors: colorsConst.textColor,
@@ -187,6 +194,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                            text: "Cancel",
                                            colors: colorsConst.primary,
                                            size: 14,
+                                           isCopy: false,
                                          )),
                                    ),
                                    10.width,
@@ -235,6 +243,7 @@ class _ReminderPageState extends State<ReminderPage> {
                              colors: colorsConst.textColor,
                              size: 14,
                              isBold: true,
+                             isCopy: false,
                            ),
                          ],
                        ),
@@ -335,6 +344,7 @@ class _ReminderPageState extends State<ReminderPage> {
                              text: "Actions",//1
                              size: 15,
                              isBold: true,
+                             isCopy: true,
                              colors: Colors.white,
                            ),
                          ),
@@ -345,6 +355,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                CustomText(
                                  textAlign: TextAlign.left,
                                  text: "Event Name",
+                                 isCopy: true,
                                  size: 15,
                                  isBold: true,
                                  colors: Colors.white,
@@ -382,6 +393,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                  textAlign: TextAlign.left,
                                  text: "Type",//3
                                  size: 15,
+                                 isCopy: true,
                                  isBold: true,
                                  colors: Colors.white,
                                ),
@@ -419,6 +431,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                  text: "Location",
                                  size: 15,
                                  isBold: true,
+                                 isCopy: true,
                                  colors: Colors.white,
                                ),
                                const SizedBox(width: 3),
@@ -454,6 +467,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                  textAlign: TextAlign.left,
                                  text: "Employee Name",
                                  size: 15,
+                                 isCopy: true,
                                  isBold: true,
                                  colors: Colors.white,
                                ),
@@ -491,6 +505,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                  text: "Customer Name",
                                  size: 15,
                                  isBold: true,
+                                 isCopy: true,
                                  colors: Colors.white,
                                ),
                                const SizedBox(width: 3),
@@ -526,6 +541,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                  textAlign: TextAlign.left,
                                  text: "Start Date",
                                  size: 15,
+                                 isCopy: true,
                                  isBold: true,
                                  colors: Colors.white,
                                ),
@@ -566,6 +582,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                      text: "End Date",//6
                                      size: 15,
                                      isBold: true,
+                                     isCopy: true,
                                      colors: Colors.white,
                                    ),
                                    const SizedBox(width: 3),
@@ -633,6 +650,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                  text: "Details",
                                  size: 15,
                                  isBold: true,
+                                 isCopy: true,
                                  colors: Colors.white,
                                ),
                                const SizedBox(width: 3),
@@ -744,6 +762,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                                builder: (BuildContext context) {
                                                  return AlertDialog(
                                                    content: CustomText(
+                                                     isCopy: true,
                                                      text: "Are you sure delete this reminder?",
                                                      size: 16,
                                                      isBold: true,
@@ -771,6 +790,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                                              },
                                                              child: CustomText(
                                                                text: "Cancel",
+                                                               isCopy: false,
                                                                colors: colorsConst.primary,
                                                                size: 14,
                                                              )),
@@ -811,6 +831,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                    child: Padding(
                                      padding: const EdgeInsets.all(10.0),
                                      child: CustomText(
+                                       isCopy: true,
                                        textAlign: TextAlign.left,
                                        text: reminder.title.toString()=="null"?"":reminder.title.toString(),
                                        size: 14,
@@ -821,6 +842,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                  Padding(
                                      padding: const EdgeInsets.all(10.0),
                                      child: CustomText(
+                                       isCopy: true,
                                        textAlign: TextAlign.left,
                                        text: reminder.type.toString()=="1"?"Follow-up":"Appointment",
                                        size: 14,
@@ -830,6 +852,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                  Padding(
                                    padding: const EdgeInsets.all(10.0),
                                    child: CustomText(
+                                     isCopy: true,
                                      textAlign: TextAlign.left,
                                      text:reminder.location.toString()=="null"?"":reminder.location.toString(),
                                      size: 14,
@@ -853,6 +876,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                    child: Padding(
                                      padding: const EdgeInsets.all(10.0),
                                      child: CustomText(
+                                       isCopy: true,
                                        textAlign: TextAlign.left,
                                        text: reminder.employeeName.toString(),
                                        size: 14,
@@ -865,6 +889,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                    child: Padding(
                                      padding: const EdgeInsets.all(10.0),
                                      child: CustomText(
+                                       isCopy: true,
                                        textAlign: TextAlign.left,
                                        text: reminder.customerName.toString(),
                                        size: 14,
@@ -877,6 +902,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                    child: Padding(
                                      padding: const EdgeInsets.all(10.0),
                                      child: CustomText(
+                                       isCopy: true,
                                        textAlign: TextAlign.left,
                                        text: controllers.formatDate(reminder.startDt.toString()),
                                        size: 14,
@@ -889,6 +915,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                    child: Padding(
                                      padding: const EdgeInsets.all(10.0),
                                      child: CustomText(
+                                       isCopy: true,
                                        textAlign: TextAlign.left,
                                        text: controllers.formatDate(reminder.endDt.toString()),
                                        size: 14,
@@ -901,6 +928,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                    child: Padding(
                                      padding: const EdgeInsets.all(10.0),
                                      child: CustomText(
+                                       isCopy: true,
                                        textAlign: TextAlign.left,
                                        text: reminder.details.toString(),
                                        size: 14,

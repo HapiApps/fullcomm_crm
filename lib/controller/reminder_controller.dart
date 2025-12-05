@@ -26,7 +26,7 @@ class AddReminderModel {
     "App Notification": false.obs,
   }.obs;
 
-  RxString selectedTime = "Other".obs;
+  RxString selectedTime = "1 Min".obs;
   RxString customTime = "1 Day".obs;
 
   List<String> otherTimes = ["1 Day", "2 Days", "3 Days", "1 Week","1 Month"];

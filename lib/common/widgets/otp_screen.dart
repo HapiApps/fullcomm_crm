@@ -55,11 +55,13 @@ class _OtpDialogContentState extends State<OtpDialogContent> {
               colors: colorsConst.primary,
               size: 22,
               isBold: true,
+               isCopy: false,
             ),
             20.height,
             CustomText(
               text: "Enter the OTP sent to ........${widget.mobile.substring(8)}",
               colors: Colors.black,
+              isCopy: false,
             ),
             20.height,
             OTPTextFieldV2(
@@ -96,7 +98,7 @@ class _OtpDialogContentState extends State<OtpDialogContent> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const CustomText(text: "Didn't receive OTP?", colors: Colors.grey, size: 15),
+                const CustomText(text: "Didn't receive OTP?", colors: Colors.grey, size: 15,isCopy: false,),
                 TextButton(
                     onPressed: () {
                       apiService.sendOtpAPI(mobile: widget.mobile);
@@ -106,6 +108,7 @@ class _OtpDialogContentState extends State<OtpDialogContent> {
                       colors: colorsConst.primary,
                       size: 13,
                       isBold: true,
+                      isCopy: false,
                     ))
               ],
             )
@@ -132,6 +135,7 @@ void showForgotPasswordDialog(BuildContext context,String mobile) {
               text: "Reset Password",
               isBold: true,
               size: 17,
+              isCopy: false,
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -165,6 +169,7 @@ void showForgotPasswordDialog(BuildContext context,String mobile) {
                     text: errorMessage!,
                     colors: Colors.red,
                     size: 14,
+                    isCopy: false,
                   ),
           ]
               ],

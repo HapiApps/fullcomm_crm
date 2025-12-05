@@ -274,7 +274,7 @@ class MailUtils {
                                                     borderRadius: BorderRadius.circular(8),
                                                     border: Border.all(color: Colors.blue),
                                                   ),
-                                                  child: Center(child: CustomText(text: range,colors: colorsConst.textColor,)),
+                                                  child: Center(child: CustomText(text: range,colors: colorsConst.textColor,isCopy: false,)),
                                                 ),
                                               );
                                             },
@@ -290,18 +290,21 @@ class MailUtils {
                                             colors: colorsConst.textColor,
                                             size: 16,
                                             isBold: true,
+                                            isCopy: true,
                                           ),
                                           CustomText(
                                             text: "Customers with Mail: $withMail",
                                             colors: colorsConst.textColor,
                                             size: 16,
                                             isBold: true,
+                                            isCopy: true,
                                           ),
                                           CustomText(
                                             text: "Customers without Mail: $withoutMail",
                                             colors: colorsConst.textColor,
                                             size: 16,
                                             isBold: true,
+                                            isCopy: true,
                                           ),
                                         ],
                                       ),
@@ -317,6 +320,7 @@ class MailUtils {
                                             text: "Subject",
                                             colors: colorsConst.textColor,
                                             size: 14,
+                                            isCopy: false,
                                           ),
                                           10.width,
                                           SizedBox(

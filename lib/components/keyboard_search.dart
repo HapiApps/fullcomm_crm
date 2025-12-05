@@ -71,15 +71,21 @@ class _KeyboardDropdownFieldState<T extends Object>
       focusNode: focusNode,
       optionsBuilder: (TextEditingValue value) {
         final input = value.text.trim().toLowerCase();
-        if (input.isEmpty) return widget.items;
-
-        return widget.items.where((item) {
+        List<T> results = widget.items.toList();
+        results.sort((a, b) => widget.labelBuilder(a).toLowerCase().compareTo(
+          widget.labelBuilder(b).toLowerCase(),
+        ));
+        if (input.isEmpty) return results;
+        results = results.where((item) {
           final label = widget.labelBuilder(item).toLowerCase();
+
           if (widget.filterFn != null) {
             return widget.filterFn!(input, item);
           }
           return label.contains(input);
-        });
+        }).toList();
+
+        return results;
       },
       displayStringForOption: widget.labelBuilder,
       onSelected: widget.onSelected,

@@ -202,6 +202,7 @@ class _ViewLeadState extends State<ViewLead> {
                                         ),
                                         CustomText(
                                           text: "View Lead",
+                                          isCopy: true,
                                           colors: colorsConst.textColor,
                                           size: 20,
                                           isBold: true,
@@ -226,6 +227,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                 content: CustomText(
                                                   text:
                                                   "Are you moving to the next level?",
+                                                  isCopy: true,
                                                   size: 16,
                                                   isBold: true,
                                                   colors: colorsConst.textColor,
@@ -238,8 +240,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                       Container(
                                                         decoration: BoxDecoration(
                                                             border: Border.all(
-                                                                color: colorsConst
-                                                                    .primary),
+                                                                color: colorsConst.primary),
                                                             color: Colors.white),
                                                         width: 80,
                                                         height: 25,
@@ -332,6 +333,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                   text:
                                                   "Are you sure to disqualify this lead?",
                                                   size: 16,
+                                                  isCopy: true,
                                                   isBold: true,
                                                   colors: colorsConst.textColor,
                                                 ),
@@ -528,6 +530,7 @@ class _ViewLeadState extends State<ViewLead> {
                                     text: "Added : ${formatDateTime(cust?.updatedTs ?? widget.updateTs)}",
                                     colors: colorsConst.textColor,
                                     size: 12,
+                                    isCopy: true,
                                   ),
                                 ],
                               ),
@@ -558,6 +561,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -594,6 +598,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     text: "",
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
+                                                    isCopy: true,
                                                     size: 16,
                                                   ),
                                                   20.height,
@@ -624,6 +629,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                 children: [
                                                   CustomText(
                                                     text: "",
+                                                    isCopy: true,
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
@@ -660,6 +666,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -718,6 +725,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -742,6 +750,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -774,6 +783,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -799,6 +809,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -851,6 +862,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -883,6 +895,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -918,6 +931,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     text: "",
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
+                                                    isCopy: true,
                                                     size: 16,
                                                   ),
                                                   20.height,
@@ -946,6 +960,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -1002,6 +1017,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -1055,6 +1071,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -1107,6 +1124,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -1161,6 +1179,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     colors: colorsConst.textColor,
                                                     isBold: true,
                                                     size: 16,
+                                                    isCopy: true,
                                                   ),
                                                   20.height,
                                                   utils.leadText(
@@ -1218,6 +1237,7 @@ class _ViewLeadState extends State<ViewLead> {
                                         colors: colorsConst.textColor,
                                         isBold: true,
                                         size: 16,
+                                        isCopy: true,
                                       ),
                                       20.height,
                                       ...additional.map((info) => Padding(
@@ -1291,7 +1311,7 @@ class _ViewLeadState extends State<ViewLead> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomText(text: "Call Records (${calls.length})", colors: colorsConst.textColor, isBold: true, size: 14),
+          CustomText(text: "Call Records (${calls.length})", colors: colorsConst.textColor, isBold: true,isCopy: true, size: 14),
           10.height,
           ...calls.map((c) => InkWell(
             onTap: () => _showRecordDialog(
@@ -1335,7 +1355,7 @@ class _ViewLeadState extends State<ViewLead> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomText(text: "Meetings (${meetings.length})", colors: colorsConst.textColor, isBold: true, size: 14),
+          CustomText(text: "Meetings (${meetings.length})", colors: colorsConst.textColor,isCopy: true, isBold: true, size: 14),
           10.height,
           ...meetings.map((m) => InkWell(
             onTap: () => _showRecordDialog(
@@ -1379,7 +1399,7 @@ class _ViewLeadState extends State<ViewLead> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomText(text: "Reminders (${reminders.length})", colors: colorsConst.textColor, isBold: true, size: 14),
+          CustomText(text: "Reminders (${reminders.length})", colors: colorsConst.textColor, isBold: true,isCopy: true, size: 14),
           10.height,
           ...reminders.map((r) => InkWell(
             onTap: () => _showRecordDialog(

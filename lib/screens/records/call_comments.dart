@@ -86,12 +86,14 @@ class _CallCommentsState extends State<CallComments> {
                               colors: colorsConst.textColor,
                               size: 20,
                               isBold: true,
+                              isCopy: true,
                             ),
                             10.height,
                             CustomText(
                               text: "View all Call Activity Report ",
                               colors: colorsConst.textColor,
                               size: 14,
+                              isCopy: true,
                             ),
                           ],
                         ),
@@ -133,6 +135,7 @@ class _CallCommentsState extends State<CallComments> {
                                               size: 16,
                                               isBold: true,
                                               colors: colorsConst.textColor,
+                                              isCopy: true,
                                             ),
                                             IconButton(
                                                 onPressed: (){
@@ -161,11 +164,13 @@ class _CallCommentsState extends State<CallComments> {
                                                           text:"Customer Name",
                                                           colors: colorsConst.textColor,
                                                           size: 13,
+                                                          isCopy: false,
                                                         ),
                                                         const CustomText(
                                                           text: "*",
                                                           colors: Colors.red,
                                                           size: 25,
+                                                          isCopy: false,
                                                         )
                                                       ],
                                                     ),
@@ -178,14 +183,14 @@ class _CallCommentsState extends State<CallComments> {
                                                         borderColor: Colors.grey.shade300,
                                                         hintText: "Customers",
                                                         labelText: "",
-                                                        labelBuilder: (customer) =>'${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                                        labelBuilder: (customer) =>'${customer.name}${customer.companyName.isEmpty ? "" : " ,${customer.companyName}"} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
                                                         itemBuilder: (customer) {
                                                           return Container(
                                                             width: 300,
                                                             alignment: Alignment.topLeft,
                                                             padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                             child: CustomText(
-                                                              text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                                              text: '${customer.name}${customer.companyName.isEmpty ? "" : " ,${customer.companyName}"} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
                                                               colors: Colors.black,
                                                               size: 14,
                                                               isCopy: false,
@@ -263,11 +268,13 @@ class _CallCommentsState extends State<CallComments> {
                                                               text:"Call Type",
                                                               colors: colorsConst.textColor,
                                                               size: 13,
+                                                              isCopy: false,
                                                             ),
                                                             const CustomText(
                                                               text: "*",
                                                               colors: Colors.red,
                                                               size: 25,
+                                                              isCopy: false,
                                                             )
                                                           ],
                                                         ),
@@ -286,7 +293,7 @@ class _CallCommentsState extends State<CallComments> {
                                                                     });
                                                                   },
                                                                 ),
-                                                                CustomText(text:type,size: 14,),
+                                                                CustomText(text:type,size: 14,isCopy: false,),
                                                                 20.width,
                                                               ],
                                                             );
@@ -309,11 +316,13 @@ class _CallCommentsState extends State<CallComments> {
                                                               text:"Status",
                                                               colors: colorsConst.textColor,
                                                               size: 13,
+                                                              isCopy: false,
                                                             ),
                                                             const CustomText(
                                                               text: "*",
                                                               colors: Colors.red,
                                                               size: 25,
+                                                              isCopy: false,
                                                             )
                                                           ],
                                                         ),
@@ -332,7 +341,7 @@ class _CallCommentsState extends State<CallComments> {
                                                                     });
                                                                   },
                                                                 ),
-                                                                CustomText(text:type,size: 14,),
+                                                                CustomText(text:type,size: 14,isCopy: false,),
                                                                 20.width
                                                               ],
                                                             );
@@ -350,6 +359,7 @@ class _CallCommentsState extends State<CallComments> {
                                                       text:"Notes",
                                                       colors: colorsConst.textColor,
                                                       size: 13,
+                                                      isCopy: false,
                                                     ),
                                                     SizedBox(
                                                       width: 480,
@@ -404,6 +414,7 @@ class _CallCommentsState extends State<CallComments> {
                                                     },
                                                     child: CustomText(
                                                       text: "Cancel",
+                                                      isCopy: false,
                                                       colors: colorsConst.primary,
                                                       size: 14,
                                                     )),
@@ -434,6 +445,8 @@ class _CallCommentsState extends State<CallComments> {
                                                     });
                                                     return;
                                                   }
+                                                  remController.titleController.text = controllers.callCommentCont.text;
+
                                                   apiService.insertCallCommentAPI(context, "7");
                                                 },
                                                 height: 35,
@@ -459,6 +472,7 @@ class _CallCommentsState extends State<CallComments> {
                               text: "Add Call log",
                               colors: Colors.white,
                               isBold :true,
+                              isCopy: false,
                               size: 14,
                             ),),
                         )
@@ -505,6 +519,7 @@ class _CallCommentsState extends State<CallComments> {
                                     text: "Are you sure delete this Call records?",
                                     size: 16,
                                     isBold: true,
+                                    isCopy: true,
                                     colors: colorsConst.textColor,
                                   ),
                                   actions: [
@@ -529,6 +544,7 @@ class _CallCommentsState extends State<CallComments> {
                                               },
                                               child: CustomText(
                                                 text: "Cancel",
+                                                isCopy: false,
                                                 colors: colorsConst.primary,
                                                 size: 14,
                                               )),
@@ -576,6 +592,7 @@ class _CallCommentsState extends State<CallComments> {
                                 10.width,
                                 CustomText(
                                   text: "Delete",
+                                  isCopy: false,
                                   colors: colorsConst.textColor,
                                   size: 14,
                                   isBold: true,
@@ -720,6 +737,7 @@ class _CallCommentsState extends State<CallComments> {
                                   text: "Actions",//1
                                   size: 15,
                                   isBold: true,
+                                  isCopy: false,
                                   colors: Colors.white,
                                 ),
                               ),
@@ -732,6 +750,7 @@ class _CallCommentsState extends State<CallComments> {
                                       text: "Customer Name",
                                       size: 15,
                                       isBold: true,
+                                      isCopy: true,
                                       colors: Colors.white,
                                     ),
                                     3.width,
@@ -777,6 +796,7 @@ class _CallCommentsState extends State<CallComments> {
                                       text: "Mobile No",
                                       size: 15,
                                       isBold: true,
+                                      isCopy: true,
                                       colors: Colors.white,
                                     ),
                                     3.width,
@@ -822,6 +842,7 @@ class _CallCommentsState extends State<CallComments> {
                                       text: "Call Type",
                                       size: 15,
                                       isBold: true,
+                                      isCopy: true,
                                       colors: Colors.white,
                                     ),
                                     3.width,
@@ -867,6 +888,7 @@ class _CallCommentsState extends State<CallComments> {
                                       text: "Message",
                                       size: 15,
                                       isBold: true,
+                                      isCopy: true,
                                       colors: Colors.white,
                                     ),
                                     3.width,
@@ -912,6 +934,7 @@ class _CallCommentsState extends State<CallComments> {
                                       text: "Status",
                                       size: 15,
                                       isBold: true,
+                                      isCopy: true,
                                       colors: Colors.white,
                                     ),
                                     3.width,
@@ -957,6 +980,7 @@ class _CallCommentsState extends State<CallComments> {
                                       text: "Lead Status",
                                       size: 15,
                                       isBold: true,
+                                      isCopy: true,
                                       colors: Colors.white,
                                     ),
                                     3.width,
@@ -1005,6 +1029,7 @@ class _CallCommentsState extends State<CallComments> {
                                           text: "Date",
                                           size: 15,
                                           isBold: true,
+                                          isCopy: true,
                                           colors: Colors.white,
                                         ),
                                         3.width,
@@ -1159,6 +1184,7 @@ class _CallCommentsState extends State<CallComments> {
                                                                             size: 16,
                                                                             isBold: true,
                                                                             colors: colorsConst.textColor,
+                                                                            isCopy: false,
                                                                           ),
                                                                           IconButton(
                                                                               onPressed: (){
@@ -1187,11 +1213,13 @@ class _CallCommentsState extends State<CallComments> {
                                                                                         text:"Customer Name",
                                                                                         colors: colorsConst.textColor,
                                                                                         size: 13,
+                                                                                        isCopy: false,
                                                                                       ),
                                                                                       const CustomText(
                                                                                         text: "*",
                                                                                         colors: Colors.red,
                                                                                         size: 25,
+                                                                                        isCopy: false,
                                                                                       )
                                                                                     ],
                                                                                   ),
@@ -1204,14 +1232,14 @@ class _CallCommentsState extends State<CallComments> {
                                                                                       borderColor: Colors.grey.shade300,
                                                                                       hintText: "Customers",
                                                                                       labelText: "",
-                                                                                      labelBuilder: (customer) =>'${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                                                                      labelBuilder: (customer) =>'${customer.name}${customer.companyName.isEmpty ? "" : " ,${customer.companyName}"} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
                                                                                       itemBuilder: (customer) {
                                                                                         return Container(
                                                                                           width: 300,
                                                                                           alignment: Alignment.topLeft,
                                                                                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                                                           child: CustomText(
-                                                                                            text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                                                                            text: '${customer.name}${customer.companyName.isEmpty ? "" : " ,${customer.companyName}"} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
                                                                                             colors: Colors.black,
                                                                                             size: 14,
                                                                                             isCopy: false,
@@ -1289,11 +1317,13 @@ class _CallCommentsState extends State<CallComments> {
                                                                                             text:"Call Type",
                                                                                             colors: colorsConst.textColor,
                                                                                             size: 13,
+                                                                                            isCopy: false,
                                                                                           ),
                                                                                           const CustomText(
                                                                                             text: "*",
                                                                                             colors: Colors.red,
                                                                                             size: 25,
+                                                                                            isCopy: false,
                                                                                           )
                                                                                         ],
                                                                                       ),
@@ -1312,7 +1342,7 @@ class _CallCommentsState extends State<CallComments> {
                                                                                                   });
                                                                                                 },
                                                                                               ),
-                                                                                              CustomText(text:type,size: 14,),
+                                                                                              CustomText(text:type,size: 14,isCopy: false,),
                                                                                               20.width, // space between options
                                                                                             ],
                                                                                           );
@@ -1335,11 +1365,13 @@ class _CallCommentsState extends State<CallComments> {
                                                                                             text:"Status",
                                                                                             colors: colorsConst.textColor,
                                                                                             size: 13,
+                                                                                            isCopy: false,
                                                                                           ),
                                                                                           const CustomText(
                                                                                             text: "*",
                                                                                             colors: Colors.red,
                                                                                             size: 25,
+                                                                                            isCopy: false,
                                                                                           )
                                                                                         ],
                                                                                       ),
@@ -1358,7 +1390,7 @@ class _CallCommentsState extends State<CallComments> {
                                                                                                   });
                                                                                                 },
                                                                                               ),
-                                                                                              CustomText(text:type,size: 14,),
+                                                                                              CustomText(text:type,size: 14,isCopy: true,),
                                                                                               20.width // space between options
                                                                                             ],
                                                                                           );
@@ -1376,6 +1408,7 @@ class _CallCommentsState extends State<CallComments> {
                                                                                     text:"Notes",
                                                                                     colors: colorsConst.textColor,
                                                                                     size: 13,
+                                                                                    isCopy: false,
                                                                                   ),
                                                                                   SizedBox(
                                                                                     width: 480,
@@ -1432,6 +1465,7 @@ class _CallCommentsState extends State<CallComments> {
                                                                                     text: "Cancel",
                                                                                     colors: colorsConst.primary,
                                                                                     size: 14,
+                                                                                    isCopy: false,
                                                                                   )),
                                                                             ),
                                                                             10.width,
@@ -1497,6 +1531,7 @@ class _CallCommentsState extends State<CallComments> {
                                                                 text: "Are you sure delete this Call records?",
                                                                 size: 16,
                                                                 isBold: true,
+                                                                isCopy: true,
                                                                 colors: colorsConst.textColor,
                                                               ),                                                                  actions: [
                                                               Row(
@@ -1522,6 +1557,7 @@ class _CallCommentsState extends State<CallComments> {
                                                                           text: "Cancel",
                                                                           colors: colorsConst.primary,
                                                                           size: 14,
+                                                                          isCopy: false,
                                                                         )),
                                                                   ),
                                                                   10.width,
@@ -1563,6 +1599,7 @@ class _CallCommentsState extends State<CallComments> {
                                                   textAlign: TextAlign.left,
                                                   text: data.customerName.toString()=="null"?"":data.customerName.toString(),
                                                   size: 14,
+                                                  isCopy: true,
                                                   colors:colorsConst.textColor,
                                                 ),
                                               ),
@@ -1573,6 +1610,7 @@ class _CallCommentsState extends State<CallComments> {
                                                 textAlign: TextAlign.left,
                                                 text:data.toData.toString()=="null"?"":data.toData.toString(),
                                                 size: 14,
+                                                isCopy: true,
                                                 colors: colorsConst.textColor,
                                               ),
                                             ),
@@ -1584,6 +1622,7 @@ class _CallCommentsState extends State<CallComments> {
                                                   textAlign: TextAlign.left,
                                                   text: data.callType.toString(),
                                                   size: 14,
+                                                  isCopy: true,
                                                   colors:colorsConst.textColor,
                                                 ),
                                               ),
@@ -1596,6 +1635,7 @@ class _CallCommentsState extends State<CallComments> {
                                                   textAlign: TextAlign.left,
                                                   text: data.message.toString(),
                                                   size: 14,
+                                                  isCopy: true,
                                                   colors:colorsConst.textColor,
                                                 ),
                                               ),
@@ -1606,6 +1646,7 @@ class _CallCommentsState extends State<CallComments> {
                                                 textAlign: TextAlign.left,
                                                 text: data.callStatus.toString(),
                                                 size: 14,
+                                                isCopy: true,
                                                 colors:colorsConst.textColor,
                                               ),
                                             ),
@@ -1615,6 +1656,7 @@ class _CallCommentsState extends State<CallComments> {
                                                 textAlign: TextAlign.left,
                                                 text: leadStatus.toString(),
                                                 size: 14,
+                                                isCopy: true,
                                                 colors:colorsConst.textColor,
                                               ),
                                             ),
@@ -1624,6 +1666,7 @@ class _CallCommentsState extends State<CallComments> {
                                                 textAlign: TextAlign.left,
                                                 text: controllers.formatDate(data.sentDate.toString()),
                                                 size: 14,
+                                                isCopy: true,
                                                 colors: colorsConst.textColor,
                                               ),
                                             ),

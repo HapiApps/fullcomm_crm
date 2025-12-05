@@ -138,6 +138,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                   content: CustomText(
                                     text: "Are you sure delete this customers?",
                                     size: 16,
+                                    isCopy: false,
                                     isBold: true,
                                     colors: colorsConst.textColor,
                                   ),
@@ -163,6 +164,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                               },
                                               child: CustomText(
                                                 text: "Cancel",
+                                                isCopy: false,
                                                 colors: colorsConst.primary,
                                                 size: 14,
                                               )),
@@ -205,6 +207,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                   content: CustomText(
                                     text: "Are you moving to the next level?",
                                     size: 16,
+                                    isCopy: false,
                                     isBold: true,
                                     colors: colorsConst.textColor,
                                   ),
@@ -230,6 +233,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                               },
                                               child: CustomText(
                                                 text: "Cancel",
+                                                isCopy: false,
                                                 colors: colorsConst.primary,
                                                 size: 14,
                                               )),
@@ -270,6 +274,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                     text: "Are you sure qualify this customers?",
                                     size: 16,
                                     isBold: true,
+                                    isCopy: false,
                                     colors: colorsConst.textColor,
                                   ),
                                   actions: [
@@ -294,6 +299,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                               },
                                               child: CustomText(
                                                 text: "Cancel",
+                                                isCopy: false,
                                                 colors: colorsConst.primary,
                                                 size: 14,
                                               )),

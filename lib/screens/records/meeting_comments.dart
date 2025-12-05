@@ -123,12 +123,14 @@ class _MeetingCommentsState extends State<MeetingComments> {
                           colors: colorsConst.textColor,
                           size: 20,
                           isBold: true,
+                          isCopy: true,
                         ),
                         5.height,
                         CustomText(
                           text: "View all Appointment Activity Report ",
                           colors: colorsConst.textColor,
                           size: 14,
+                          isCopy: true,
                         ),
                       ],
                     ),
@@ -178,6 +180,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                               text: "New Appointment",
                                               size: 14,
                                               isBold: true,
+                                              isCopy: true,
                                               colors: colorsConst.textColor,
                                             ),
                                             IconButton(
@@ -331,11 +334,13 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                           text:"Customer Name",
                                                           colors: colorsConst.textColor,
                                                           size: 13,
+                                                          isCopy: false,
                                                         ),
                                                         const CustomText(
                                                           text: "*",
                                                           colors: Colors.red,
                                                           size: 25,
+                                                          isCopy: false,
                                                         )
                                                       ],
                                                     ),
@@ -348,14 +353,14 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                         borderColor: Colors.grey.shade300,
                                                         hintText: "Customers",
                                                         labelText: "",
-                                                        labelBuilder: (customer) =>'${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                                        labelBuilder: (customer) =>'${customer.name}${customer.companyName.isEmpty ? "" : " ,${customer.companyName}"} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
                                                         itemBuilder: (customer) =>
                                                             Container(
                                                               width: 300,
                                                               alignment: Alignment.topLeft,
                                                               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                               child: CustomText(
-                                                                text: '${customer.name} ${customer.name.isEmpty?"":"-"} ${customer.companyName}',
+                                                                text: '${customer.name}${customer.companyName.isEmpty ? "" : " ,${customer.companyName}"} ${customer.name.isEmpty?"":"-"} ${customer.companyName}',
                                                                 colors: Colors.black,
                                                                 size: 14,
                                                                 isCopy: false,
@@ -393,6 +398,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                       text:"Notes",
                                                       colors: colorsConst.textColor,
                                                       size: 13,
+                                                      isCopy: false,
                                                     ),
                                                     SizedBox(
                                                       width: 480,
@@ -449,6 +455,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                       text: "Cancel",
                                                       colors: colorsConst.primary,
                                                       size: 14,
+                                                      isCopy: false,
                                                     )),
                                               ),
                                               10.width,
@@ -527,6 +534,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                           text: "New Appointment",
                           colors: Colors.white,
                           size: 14,
+                          isCopy: false,
                         ),),
                     )
                   ],
@@ -584,6 +592,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 text: "Are you sure delete this Appointment?",
                                 size: 16,
                                 isBold: true,
+                                isCopy: false,
                                 colors: colorsConst.textColor,
                               ),
                               actions: [
@@ -608,6 +617,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           },
                                           child: CustomText(
                                             text: "Cancel",
+                                            isCopy: false,
                                             colors: colorsConst.primary,
                                             size: 14,
                                           )),
@@ -658,6 +668,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               colors: colorsConst.textColor,
                               size: 14,
                               isBold: true,
+                              isCopy: false,
                             ),
                           ],
                         ),
@@ -783,6 +794,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               text: "Actions",//1
                               size: 15,
                               isBold: true,
+                              isCopy: true,
                               colors: Colors.white,
                             ),
                           ),
@@ -795,6 +807,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                   text: "Customer Name",
                                   size: 15,
                                   isBold: true,
+                                  isCopy: true,
                                   colors: Colors.white,
                                 ),
                                 const SizedBox(width: 3),
@@ -834,6 +847,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 CustomText(//2
                                   textAlign: TextAlign.left,
                                   text: "Company name",
+                                  isCopy: true,
                                   size: 15,
                                   isBold: true,
                                   colors: Colors.white,
@@ -875,6 +889,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 CustomText(
                                   textAlign: TextAlign.left,
                                   text: "Title",
+                                  isCopy: true,
                                   size: 15,
                                   isBold: true,
                                   colors: Colors.white,
@@ -916,6 +931,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 CustomText(
                                   textAlign: TextAlign.left,
                                   text: "Venue",
+                                  isCopy: true,
                                   size: 15,
                                   isBold: true,
                                   colors: Colors.white,
@@ -957,6 +973,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 CustomText(
                                   textAlign: TextAlign.left,
                                   text: "Notes",
+                                  isCopy: true,
                                   size: 15,
                                   isBold: true,
                                   colors: Colors.white,
@@ -1001,6 +1018,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                     CustomText(
                                       textAlign: TextAlign.center,
                                       text: "Date",
+                                      isCopy: true,
                                       size: 15,
                                       isBold: true,
                                       colors: Colors.white,
@@ -1138,6 +1156,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                       return AlertDialog(
                                                         content: CustomText(
                                                           text: "Are you sure delete this Appointment?",
+                                                          isCopy: true,
                                                           size: 16,
                                                           isBold: true,
                                                           colors: colorsConst.textColor,
@@ -1166,6 +1185,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                                     text: "Cancel",
                                                                     colors: colorsConst.primary,
                                                                     size: 14,
+                                                                    isCopy: false,
                                                                   )),
                                                             ),
                                                             10.width,
@@ -1207,6 +1227,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                             textAlign: TextAlign.left,
                                             text: data.cusName.toString()=="null"?"":data.cusName.toString(),
                                             size: 14,
+                                            isCopy: true,
                                             colors:colorsConst.textColor,
                                           ),
                                         ),
@@ -1217,6 +1238,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           textAlign: TextAlign.left,
                                           text:data.comName.toString()=="null"?"":data.comName.toString(),
                                           size: 14,
+                                          isCopy: true,
                                           colors: colorsConst.textColor,
                                         ),
                                       ),
@@ -1226,6 +1248,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           padding: const EdgeInsets.all(10.0),
                                           child: CustomText(
                                             textAlign: TextAlign.left,
+                                            isCopy: true,
                                             text: data.title.toString(),
                                             size: 14,
                                             colors:colorsConst.textColor,
@@ -1240,6 +1263,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                             textAlign: TextAlign.left,
                                             text: data.venue.toString(),
                                             size: 14,
+                                            isCopy: true,
                                             colors:colorsConst.textColor,
                                           ),
                                         ),
@@ -1251,6 +1275,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           child: CustomText(
                                             textAlign: TextAlign.left,
                                             text: data.notes.toString(),
+                                            isCopy: true,
                                             size: 14,
                                             colors:colorsConst.textColor,
                                           ),
@@ -1262,6 +1287,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           textAlign: TextAlign.left,
                                           text: formatFirstDate("${data.dates} ${data.time}"),
                                           size: 14,
+                                          isCopy: true,
                                           colors: colorsConst.textColor,
                                         ),
                                       ),

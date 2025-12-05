@@ -51,6 +51,7 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                           text: "General Settings",
                           colors: colorsConst.textColor,
                           size: 20,
+                          isCopy: true,
                           isBold: true,
                         ),
                         10.height,
@@ -58,6 +59,7 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                           text: "Add your office hours",
                           colors: colorsConst.textColor,
                           size: 14,
+                          isCopy: true,
                         ),
                       ],
                     ),
@@ -105,6 +107,7 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                       size: 20,
                       colors: colorsConst.textColor,
                       isBold: true,
+                      isCopy: true,
                     ),
                   ],
                 ),
@@ -130,6 +133,7 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                                 text: "*",
                                 colors: Colors.red,
                                 size: 25,
+                                isCopy: false,
                               )
                             ],
                           ),
@@ -186,6 +190,7 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                                 text: "*",
                                 colors: Colors.red,
                                 size: 25,
+                                isCopy: false,
                               )
                             ],
                           ),
@@ -247,6 +252,7 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                                 text: "*",
                                 colors: Colors.red,
                                 size: 25,
+                                isCopy: false,
                               )
                             ],
                           ),
@@ -308,6 +314,7 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                                 text: "*",
                                 colors: Colors.red,
                                 size: 25,
+                                isCopy: false,
                               )
                             ],
                           ),
@@ -364,6 +371,7 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
                                 text: "*",
                                 colors: Colors.red,
                                 size: 25,
+                                isCopy: false,
                               )
                             ],
                           ),

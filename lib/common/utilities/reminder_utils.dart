@@ -1148,6 +1148,7 @@ class ReminderUtils {
     String? customerError;
     double screenWidth = MediaQuery.of(context).size.width;
     double textFieldSize = 550;
+    controllers.selectNEmployee("1",controllers.storage.read("f_name"), controllers.storage.read("mobile",));
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -1172,6 +1173,7 @@ class ReminderUtils {
                             colors: colorsConst.textColor,
                             size: 20,
                             isBold: true,
+                            isCopy: true,
                           ),
                           IconButton(
                               onPressed: (){
@@ -1218,6 +1220,7 @@ class ReminderUtils {
                                 CustomText(text: "Event Type",
                                   colors: colorsConst.fieldHead,
                                   size: 13,
+                                  isCopy: true,
                                 ),
                                 20.width,
                                 Consumer<ReminderProvider>(
@@ -1226,7 +1229,6 @@ class ReminderUtils {
                                     final sel = provider.selectedNotification ?? "";
                                     final employeeRequired = sel == "followup" || (sel != "followup" && sel != "meeting"); // followup => employee required; default both required handled later
                                     final customerRequired = sel == "meeting" || (sel != "followup" && sel != "meeting"); // meeting => customer required
-
                                     return Row(
                                       children: [
                                         Row(
@@ -1248,6 +1250,7 @@ class ReminderUtils {
                                               text: "Follow-up",
                                               colors: Colors.black,
                                               size: 15,
+                                              isCopy: true,
                                             ),
                                           ],
                                         ),
@@ -1270,6 +1273,7 @@ class ReminderUtils {
                                               text: "Appointment",
                                               colors: Colors.black,
                                               size: 15,
+                                              isCopy: true,
                                             ),
                                           ],
                                         ),
@@ -1326,7 +1330,7 @@ class ReminderUtils {
                                 20.width,
                                 CustomDropDown(
                                   saveValue: remController.repeat,
-                                  isOptional: true,
+                                  isOptional: false,
                                   valueList: ["Immediately", "5 mins", "15 mins", "10 mins", "30 mins"],
                                   text: "Event Duration",
                                   width: 200,
@@ -1341,6 +1345,7 @@ class ReminderUtils {
                             CustomText(
                               text: "Details",
                               colors: colorsConst.fieldHead,
+                              isCopy: true,
                               size: 13,),
                             5.height,
                             SizedBox(
@@ -1389,12 +1394,14 @@ class ReminderUtils {
                                                 text: "Employees",
                                                 size: 13,
                                                 colors: colorsConst.fieldHead,
+                                                isCopy: false,
                                               ),
                                               if (employeeRequired)
                                                 const CustomText(
                                                   text: "*",
                                                   colors: Colors.red,
                                                   size: 25,
+                                                  isCopy: false,
                                                 )
                                             ],
                                           ),
@@ -1464,12 +1471,14 @@ class ReminderUtils {
                                                 text: "Assigned Customer",
                                                 size: 13,
                                                 colors: colorsConst.fieldHead,
+                                                isCopy: false,
                                               ),
                                               if (customerRequired)
                                                 const CustomText(
                                                   text: "*",
                                                   colors: Colors.red,
                                                   size: 25,
+                                                  isCopy: false,
                                                 )
                                             ],
                                           ),
@@ -1480,16 +1489,14 @@ class ReminderUtils {
                                             hintText: "Customers",
                                             labelText: "",
                                             labelBuilder: (customer) =>
-                                            '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                            '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
                                             itemBuilder: (customer) {
                                               return Container(
                                                 width: 300,
                                                 alignment: Alignment.topLeft,
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    10, 5, 10, 5),
+                                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                 child: CustomText(
-                                                  text:
-                                                  '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                                  text: '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
                                                   colors: Colors.black,
                                                   size: 14,
                                                   isCopy:false,
@@ -1568,7 +1575,7 @@ class ReminderUtils {
                                   },
                                 ),
                                 10.width,
-                                Obx(() => CustomDateBox(
+                                remController.repeatWise=="Never"?0.height:Obx(() => CustomDateBox(
                                   text: "End Date",
                                   value: remController.enDate.value,
                                   isOptional: true,
@@ -1588,7 +1595,7 @@ class ReminderUtils {
                                 ),
                                 ),
                                 10.width,
-                                Obx(() => CustomDateBox(
+                                remController.repeatWise=="Never"?0.height:Obx(() => CustomDateBox(
                                   text: "End Time",
                                   isOptional: true,
                                   value: remController.enTime.value,
@@ -1630,6 +1637,7 @@ class ReminderUtils {
                                 CustomText(
                                   text: "Add More Reminder",
                                   colors: colorsConst.textColor,
+                                  isCopy: false,
                                 ),
                               ],
                             ),

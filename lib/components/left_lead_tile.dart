@@ -434,6 +434,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                      size: 16,
                                      isBold: true,
                                      colors: colorsConst.textColor,
+                                     isCopy: true,
                                    ),
                                    actions: [
                                      Row(
@@ -461,6 +462,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                                  text: "Cancel",
                                                  colors: colorsConst.primary,
                                                  size: 14,
+                                                 isCopy: false,
                                                )),
                                          ),
                                          10.width,
@@ -557,6 +559,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                      size: 16,
                                      isBold: true,
                                      colors: colorsConst.textColor,
+                                     isCopy: true,
                                    ),
                                    actions: [
                                      Row(
@@ -586,6 +589,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                                  text: "Cancel",
                                                  colors: colorsConst.primary,
                                                  size: 14,
+                                                 isCopy: false,
                                                )),
                                          ),
                                          10.width,
@@ -663,6 +667,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                      size: 16,
                                      isBold: true,
                                      colors: colorsConst.textColor,
+                                     isCopy: true,
                                    ),
                                    actions: [
                                      Row(
@@ -692,6 +697,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                                  text: "Cancel",
                                                  colors: colorsConst.primary,
                                                  size: 14,
+                                                 isCopy: false,
                                                )),
                                          ),
                                          10.width,
@@ -1238,6 +1244,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                           text: value.toString() == "null" ? "" : value.toString(),
                           size: 14,
                           colors: colorsConst.textColor,
+                          isCopy: false,
                         ),
                       ),
                     );

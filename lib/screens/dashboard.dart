@@ -152,93 +152,115 @@ class _NewDashboardState extends State<NewDashboard> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CustomText(
-                              text: "Dashboard",
-                              colors: colorsConst.textColor,
-                              size: 20,
-                              isBold: true,
-                            ),
+                            Obx((){
+                              final range = dashController.selectedRange.value;
+                              final selected = dashController.selectedSortBy.value;
+                              if (range == null) {
+                                return const Text(
+                                  "Filter by Date Range",
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontFamily: "Lato",
+                                  ),
+                                );
+                              }
+                              String formatDate(DateTime date) => "${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}";
+                              String displayText;
+                              if (selected == "Today") {
+                                displayText = formatDate(range.start);
+                              } else if (selected == "Yesterday") {
+                                displayText = formatDate(range.start);
+                              } else {
+                                displayText = "${formatDate(range.start)}  —  ${formatDate(range.end)}";
+                              }
+                              return CustomText(
+                                text: "Dashboard for the period $displayText ($selected)",
+                                colors: colorsConst.textColor,
+                                size: 20,
+                                isBold: true,
+                                isCopy: true,
+                              );
+                            }),
                             CustomText(
                               text: version,
                               colors: colorsConst.third,
                               size: 11,
+                              isCopy: true,
                             ),
                           ],
                         ),
-                        7.height,
+                        15.height,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Obx(() {
                               return Column(
                                 children: [
-                                Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  // Left Divider
-                                  SizedBox(
-                                    width: 100, // adjust width as needed
-                                    child: Divider(
-                                      thickness: 1.2,
-                                      color: Colors.grey.shade400,
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 10),
-
-                                  // Center Text with Obx
-                                  Obx(() {
-                                    final range = dashController.selectedRange.value;
-                                    final selected = dashController.selectedSortBy.value;
-
-                                    if (range == null) {
-                                      return const Text(
-                                        "Filter by Date Range",
-                                        style: TextStyle(
-                                          color: Colors.black54,
-                                          fontFamily: "Lato",
-                                        ),
-                                      );
-                                    }
-
-                                    String formatDate(DateTime date) =>
-                                        "${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}";
-
-                                    String displayText;
-                                    if (selected == "Today") {
-                                      displayText = formatDate(range.start);
-                                    } else if (selected == "Yesterday") {
-                                      displayText = formatDate(range.start);
-                                    } else {
-                                      displayText =
-                                      "${formatDate(range.start)}  —  ${formatDate(range.end)}";
-                                    }
-
-                                    return Text(
-                                      "Dashboard Overview => $displayText",
-                                      style: const TextStyle(
-                                        color: Colors.black87,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: "Lato",
-                                        fontSize: 15,
-                                      ),
-                                    );
-                                  }),
-
-                                  const SizedBox(width: 10),
-
-                                  // Right Divider
-                                  SizedBox(
-                                    width: 100, // adjust width as needed
-                                    child: Divider(
-                                      thickness: 1.2,
-                                      color: Colors.grey.shade400,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                                  7.height,
+                              //   Row(
+                              //   mainAxisAlignment: MainAxisAlignment.center,
+                              //   crossAxisAlignment: CrossAxisAlignment.center,
+                              //   children: [
+                              //     // Left Divider
+                              //     SizedBox(
+                              //       width: 100, // adjust width as needed
+                              //       child: Divider(
+                              //         thickness: 1.2,
+                              //         color: Colors.grey.shade400,
+                              //       ),
+                              //     ),
+                              //
+                              //     const SizedBox(width: 10),
+                              //
+                              //     // Center Text with Obx
+                              //     Obx(() {
+                              //       final range = dashController.selectedRange.value;
+                              //       final selected = dashController.selectedSortBy.value;
+                              //
+                              //       if (range == null) {
+                              //         return const Text(
+                              //           "Filter by Date Range",
+                              //           style: TextStyle(
+                              //             color: Colors.black54,
+                              //             fontFamily: "Lato",
+                              //           ),
+                              //         );
+                              //       }
+                              //
+                              //       String formatDate(DateTime date) =>
+                              //           "${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}";
+                              //
+                              //       String displayText;
+                              //       if (selected == "Today") {
+                              //         displayText = formatDate(range.start);
+                              //       } else if (selected == "Yesterday") {
+                              //         displayText = formatDate(range.start);
+                              //       } else {
+                              //         displayText = "${formatDate(range.start)}  —  ${formatDate(range.end)}";
+                              //       }
+                              //
+                              //       return Text(
+                              //         "Dashboard Overview => $displayText",
+                              //         style: const TextStyle(
+                              //           color: Colors.black87,
+                              //           fontWeight: FontWeight.w600,
+                              //           fontFamily: "Lato",
+                              //           fontSize: 15,
+                              //         ),
+                              //       );
+                              //     }),
+                              //
+                              //     const SizedBox(width: 10),
+                              //
+                              //     // Right Divider
+                              //     SizedBox(
+                              //       width: 100, // adjust width as needed
+                              //       child: Divider(
+                              //         thickness: 1.2,
+                              //         color: Colors.grey.shade400,
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
                                   Row(
                                     spacing: 20,
                                     children: dashController.filters.map((filter) {
@@ -317,10 +339,7 @@ class _NewDashboardState extends State<NewDashboard> {
                               );
                             }),
                             20.width,
-
-                            Padding(
-                              padding: const EdgeInsets.only(top:25.0),
-                              child: InkWell(
+                            InkWell(
                                 onTap: (){
                                   dashController.showDatePickerDialog(context);
                                 },
@@ -360,7 +379,6 @@ class _NewDashboardState extends State<NewDashboard> {
                                   ),
                                 ),
                               ),
-                            ),
                             50.width,
                           ],
                         ),
@@ -499,6 +517,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                     size: 16,
                                                     isBold: true,
                                                     colors: colorsConst.textColor,
+                                                    isCopy: true,
                                                   ),
                                                 ],
                                               ),
@@ -579,6 +598,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                     text: "     Quotations Send",
                                                     size: 16,
                                                     isBold: true,
+                                                    isCopy: true,
                                                     colors:
                                                     colorsConst.textColor,
                                                   ),
@@ -606,6 +626,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                             width: 2.4)),
                                                     child:CustomText(
                                                       text: "0",
+                                                      isCopy: true,
                                                       colors:
                                                       colorsConst.textColor,
                                                       size: 20,
@@ -649,6 +670,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 children: [
                                                   CustomText(
                                                     text: "       New Customers",
+                                                    isCopy: true,
                                                     size: 16,
                                                     isBold: true,
                                                     colors: colorsConst.textColor,
@@ -888,11 +910,6 @@ class _NewDashboardState extends State<NewDashboard> {
                                         ],
                                       ),
                                     ),
-
-
-
-
-
                                 ],
                                     ),
                                   ),
@@ -944,10 +961,12 @@ class _NewDashboardState extends State<NewDashboard> {
             colors: colorsConst.textColor,
             size: 30,
             isBold: true,
+            isCopy: true,
           ),
           15.height,
           CustomText(
             text: head,
+            isCopy: true,
             colors: colorsConst.textColor,
             size: 15,
           ),
@@ -966,7 +985,7 @@ class _NewDashboardState extends State<NewDashboard> {
                       ),
                       borderRadius: BorderRadius.circular(5)
                     ),
-                    child: Obx(()=>CustomText(text: dashController.completedMeetings.value,colors: Colors.green,size: 14,isBold: true,))
+                    child: Obx(()=>CustomText(text: dashController.completedMeetings.value,colors: Colors.green,size: 14,isBold: true,isCopy: true,))
                 ),
               ),
               Tooltip(
@@ -980,7 +999,9 @@ class _NewDashboardState extends State<NewDashboard> {
                         ),
                         borderRadius: BorderRadius.circular(5)
                     ),
-                    child: Obx(()=>IgnorePointer(child: CustomText(text: dashController.pendingMeetings.value,colors: Colors.red,size: 14,isBold: true,)))
+                    child: Obx(()=>IgnorePointer(
+                        child: CustomText(
+                          text: dashController.pendingMeetings.value,colors: Colors.red,size: 14,isBold: true,isCopy: true,)))
                 ),
               ),
             ],

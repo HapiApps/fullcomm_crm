@@ -36,6 +36,7 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
           text: widget.text.toString(),
           colors: colorsConst.third,
           size: 13,
+          isCopy: false,
         )
       ],
     );

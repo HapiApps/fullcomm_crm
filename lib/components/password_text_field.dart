@@ -73,12 +73,14 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
               textAlign: TextAlign.start,
               colors: const Color(0xff4B5563),
               size: 13,
+              isCopy: false,
             ),
             widget.isOptional
                 ? const CustomText(
               text: "*",
               colors: Colors.red,
               size: 25,
+              isCopy: false,
             )
                 : 0.width,
           ],

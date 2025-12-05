@@ -532,6 +532,7 @@ class Utils {
                                 },
                                 child: CustomText(
                                   text: "Add Template",
+                                  isCopy: false,
                                   colors: colorsConst.third,
                                   size: 18,
                                   isBold: true,
@@ -643,6 +644,7 @@ class Utils {
                               text: "Get Form Template",
                               colors: colorsConst.third,
                               size: 18,
+                              isCopy: false,
                               isBold: true,
                             )),
                       ),
@@ -653,6 +655,7 @@ class Utils {
                             text: "To",
                             colors: colorsConst.textColor,
                             size: 15,
+                            isCopy: false,
                           ),
                           50.width,
                           SizedBox(
@@ -684,6 +687,7 @@ class Utils {
                                       text: "Subject",
                                       colors: colorsConst.textColor,
                                       size: 14,
+                                      isCopy: false,
                                     ),
                                     20.width,
                                     SizedBox(
@@ -719,7 +723,9 @@ class Utils {
                                                   padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
                                                   child: Row(
                                                     children: [
-                                                      Obx(()=>CustomText(text: imageController.empFileName.value))
+                                                      Obx(()=>CustomText(text: imageController.empFileName.value,
+                                                        isCopy: false,
+                                                      ))
                                                     ],
                                                   ),
                                                 )
@@ -789,6 +795,7 @@ class Utils {
                                                       colors: colorsConst.textColor,
                                                       size: 15,
                                                       isBold: true,
+                                                      isCopy: false,
                                                     ),
                                                     CustomText(
                                                       textAlign: TextAlign.center,
@@ -796,6 +803,7 @@ class Utils {
                                                       colors: colorsConst.textColor,
                                                       size: 15,
                                                       isBold: true,
+                                                      isCopy: false,
                                                     ),
                                                   ],
                                                 ),
@@ -1138,7 +1146,7 @@ class Utils {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Obx(()=>CustomText(text: imageController.empFileName.value)),
+                          Obx(()=>CustomText(text: imageController.empFileName.value,isCopy: false,)),
                           SizedBox(width: 10,),
                           IconButton( padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
@@ -1391,6 +1399,7 @@ class Utils {
             colors: isSelected ? colorsConst.primary : colorsConst.textColor,
             isBold: true,
             size: 15,
+            isCopy: false,
           ),
           10.width,
           CircleAvatar(
@@ -1402,6 +1411,7 @@ class Utils {
                 text: count.value,
                 colors: isSelected ? Colors.white : colorsConst.primary,
                 size: 15,
+                    isCopy: false,
               ),
             ),
           ),
@@ -1424,6 +1434,7 @@ class Utils {
       size: 14,
       colors: color,
       isBold: true,
+      isCopy: true,
     );
   }
 
@@ -1438,12 +1449,14 @@ class Utils {
             textAlign: TextAlign.start,
             colors: colorsConst.headColor,
             size: 15,
+            isCopy: true,
           ),
           isOptional == true
               ? const CustomText(
                   text: "*",
                   colors: Colors.red,
                   size: 25,
+            isCopy: false,
                 )
               : 0.width
         ],
@@ -1500,6 +1513,7 @@ class Utils {
                   colors: Colors.black,
                   size: 16,
                   isBold: true,
+                  isCopy: true,
                 ),
               ),
               MouseRegion(
@@ -1538,6 +1552,7 @@ class Utils {
                                         ? Colors.black
                                         : colorsConst.textColor,
                                     size: 15,
+                                  isCopy: false,
                                     //isBold: true,
                                   ),
                               ),
@@ -1549,6 +1564,7 @@ class Utils {
                                       : colorsConst.primary,
                                   size: 16,
                                   isBold: true,
+                                  isCopy: false,
                                 ),
                               ),
                             ],
@@ -1594,6 +1610,7 @@ class Utils {
                                         ? Colors.black
                                         : colorsConst.textColor,
                                     size: 15,
+                                  isCopy: false,
                                     //isBold: true,
                                   ),
                               ),
@@ -1605,6 +1622,7 @@ class Utils {
                                       : colorsConst.primary,
                                   size: 16,
                                   isBold: true,
+                                  isCopy: false,
                                 ),
                               ),
                             ],
@@ -1650,6 +1668,7 @@ class Utils {
                                         ? Colors.black
                                         : colorsConst.textColor,
                                                                 size: 15,
+                                        isCopy: false,
                                                                 //isBold: true,
                                                               ),
                                     ),
@@ -1661,6 +1680,7 @@ class Utils {
                                             : colorsConst.primary,
                                         size: 16,
                                         isBold: true,
+                                        isCopy: false,
                                       ),
                                     ),
                                   ],
@@ -1704,6 +1724,7 @@ class Utils {
                                         ? Colors.black
                                         : colorsConst.textColor,
                                     size: 13,
+                                  isCopy: false,
                                     //isBold: true,
                                   ),
                               ),
@@ -1715,6 +1736,7 @@ class Utils {
                                       : colorsConst.primary,
                                   size: 13,
                                   isBold: true,
+                                  isCopy: false,
                                 ),
                               ),
                             ],
@@ -1857,6 +1879,7 @@ class Utils {
                   text: templateName.toString(),
                   colors: colorsConst.textColor,
                   size: 13,
+                  isCopy: false,
                 ),
               ),
             ],
@@ -1869,6 +1892,7 @@ class Utils {
               textAlign: TextAlign.center,
               text: subject.toString(),
               colors: colorsConst.textColor,
+              isCopy: false,
               size: 13,
             ),
           ),
@@ -2073,6 +2097,7 @@ class Utils {
                     colors: colorsConst.third,
                     text: "Your uploaded Excel file should have columns matching the required fields exactly as listed below to ensure correct data insertion:",
                     isBold: true,
+                    isCopy: true,
                     size: 15,
                     textAlign: TextAlign.start,
                   ),
@@ -2082,6 +2107,7 @@ class Utils {
                     colors: colorsConst.textColor,
                     size: 15,
                     isBold: true,
+                    isCopy: true,
                   ),
                   5.height,
                   dialogText("NAME OF THE ACCOUNT MANAGER"),
@@ -2108,6 +2134,7 @@ class Utils {
                     colors: colorsConst.textColor,
                     size: 15,
                     isBold: true,
+                    isCopy: true,
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(17, 5, 5, 5),
@@ -2116,6 +2143,7 @@ class Utils {
                       text: '.xlsx, .xls',
                       colors: colorsConst.textColor,
                       size: 14,
+                      isCopy: true,
                     ),
                   ),
                 ],
@@ -2144,6 +2172,7 @@ class Utils {
                       colors: Colors.white,
                       isBold: true,
                       size: 15,
+                      isCopy: false,
                     ),
                   ),
                 ),
@@ -2177,6 +2206,7 @@ class Utils {
         text: text,
         colors: colorsConst.textColor,
         size: 13,
+        isCopy: false,
       ),
     );
   }
@@ -2250,11 +2280,13 @@ class Utils {
               text: "Missing Columns",
               colors: colorsConst.textColor,
               size: 18,
+              isCopy: true,
               isBold: true,
             ),
             content: CustomText(
               text: "The following columns are missing:\n\n${missingColumns.join(", ")}",
               colors: colorsConst.textColor,
+              isCopy: true,
               size: 16,
             ),
             actions: [
@@ -2264,6 +2296,7 @@ class Utils {
                   text: "OK",
                   colors: colorsConst.textColor,
                   size: 16,
+                  isCopy: false,
                 ),
               ),
             ],
@@ -2350,6 +2383,7 @@ class Utils {
             text: "Some entries under KEY CONTACT PERSON and CONTACT NUMBER are empty in your Excel sheet. Please check and re-upload.",
             colors: colorsConst.textColor,
             size: 16,
+            isCopy: true,
           ),
           actions: [
             TextButton(
@@ -2358,6 +2392,7 @@ class Utils {
                 text: "OK",
                 colors: colorsConst.textColor,
                 size: 16,
+                isCopy: false,
               ),
             ),
           ],
@@ -2388,6 +2423,7 @@ class Utils {
                     colors: colorsConst.textColor,
                     size: 17,
                     isBold: true,
+                    isCopy: true,
                   ),
                   10.height,
                   SizedBox(
@@ -2583,6 +2619,7 @@ class Utils {
                 colors: colorsConst.textColor,
                 isBold: true,
                 size: 18,
+                isCopy: true,
               ),
               10.height,
               SizedBox(

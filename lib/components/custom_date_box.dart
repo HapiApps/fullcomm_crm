@@ -29,12 +29,14 @@ class CustomDateBox extends StatelessWidget {
               text:text,
               colors:colorsConst.fieldHead,
               size:13,
+              isCopy: false,
             ),
             isOptional == true
                 ? const CustomText(
               text: "*",
               colors: Colors.red,
               size: 25,
+              isCopy: false,
             )
                 : 0.width
           ],
@@ -57,6 +59,7 @@ class CustomDateBox extends StatelessWidget {
                   text: value,
                   colors: colorsConst.textColor,
                   size: 15,
+                  isCopy: false,
                 ),
               ],
             ),
@@ -67,6 +70,7 @@ class CustomDateBox extends StatelessWidget {
           textAlign: TextAlign.start,
           colors: Colors.red,
           size: 13,
+          isCopy: false,
         ),
         text.isEmpty ? 10.height : 20.height,
       ],

@@ -149,12 +149,14 @@ class _AddLeadState extends State<AddLead> {
                           colors: colorsConst.textColor,
                           size: 23,
                           isBold: true,
+                          isCopy: true,
                         ),
                         5.height,
                         CustomText(
                           text: "Add your ${controllers.leadCategoryList[0]["value"]} Information",
                           colors: colorsConst.textColor,
                           size: 12,
+                          isCopy: true,
                         ),
                       ],
                     ),
@@ -377,6 +379,7 @@ class _AddLeadState extends State<AddLead> {
                                         text: "New Lead Information",
                                         colors: colorsConst.textColor,
                                         size: 20,
+                                        isCopy: true,
                                       )
                                           : 0.width,
                                       index == 0
@@ -475,6 +478,7 @@ class _AddLeadState extends State<AddLead> {
                                               text: "Remove personnel",
                                               colors: colorsConst.third,
                                               size: 13,
+                                              isCopy: false,
                                             ),
                                           ],
                                         ),
@@ -569,11 +573,13 @@ class _AddLeadState extends State<AddLead> {
                                                 colors: colorsConst.textColor,
                                                 size: 13,
                                                 textAlign: TextAlign.start,
+                                                isCopy: false,
                                               ),
                                               const CustomText(
                                                 text: "*",
                                                 colors: Colors.red,
                                                 size: 25,
+                                                isCopy: false,
                                               ),
                                               SizedBox(
                                                 width: textFieldSize-150,
@@ -583,6 +589,7 @@ class _AddLeadState extends State<AddLead> {
                                                 colors: colorsConst.textColor,
                                                 size: 13,
                                                 textAlign: TextAlign.end,
+                                                isCopy: false,
                                               ),
                                             ],
                                           ),
@@ -856,6 +863,7 @@ class _AddLeadState extends State<AddLead> {
                             text: constValue.companyInfo,
                             colors: colorsConst.textColor,
                             size: 20,
+                            isCopy: false,
                           ),
                         ],
                       ),//Todo:Company details
@@ -1098,6 +1106,7 @@ class _AddLeadState extends State<AddLead> {
                             text: "Observations (Optional)",
                             colors: colorsConst.textColor,
                             size: 20,
+                            isCopy: false,
                           ),
                         ],
                       ),//Todo:Observation
@@ -1455,6 +1464,7 @@ class _AddLeadState extends State<AddLead> {
                             text: constValue.addressInfo,
                             colors: colorsConst.textColor,
                             size: 20,
+                            isCopy: false,
                           ),
                         ],
                       ),////Todo:Address details
@@ -1642,6 +1652,7 @@ class _AddLeadState extends State<AddLead> {
                                         text:"Country",
                                         size: 13,
                                         colors: Color(0xff4B5563),
+                                        isCopy: false,
                                       ),
                                       Container(
                                           alignment: Alignment.centerLeft,
@@ -1655,6 +1666,7 @@ class _AddLeadState extends State<AddLead> {
                                               text: "    ${controllers.selectedCountry.value}",
                                               colors: colorsConst.textColor,
                                               size: 15,
+                                            isCopy: false,
                                             ),
                                           )),
                                     ],

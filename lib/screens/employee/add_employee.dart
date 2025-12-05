@@ -73,6 +73,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                 size: 20,
                                 colors: Colors.black,
                                 isBold: true,
+                                isCopy: true,
                               ),
                             ),
                           ],
@@ -254,11 +255,13 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                             text: "Role",
                                             colors: const Color(0xff757575),
                                             size: 13,
+                                            isCopy: false,
                                           ),
                                           const CustomText(
                                             text: "*",
                                             colors: Colors.red,
                                             size: 25,
+                                            isCopy: false,
                                           )
                                         ],
                                       ),
@@ -283,6 +286,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                                 size: 13,
                                                 isBold: false,
                                                 isStyle: true,
+                                                isCopy: true,
                                               ),
                                               items: employeeProvider.roleList.map((item) {
                                                 return DropdownMenuItem(
@@ -291,6 +295,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                                       text: item["role_name"],
                                                       colors: Colors.black,
                                                       size: 13,
+                                                      isCopy: false,
                                                       isBold: false),
                                                 );
                                               }).toList(),
@@ -374,6 +379,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                             text:"Country",
                                             size: 13,
                                             colors: Color(0xff4B5563),
+                                            isCopy: true,
                                           ),
                                           Container(
                                               alignment: Alignment.centerLeft,
@@ -385,6 +391,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                                   border: Border.all(color: Colors.grey.shade400)),
                                               child: Obx(() => CustomText(
                                                 text: "    ${controllers.selectedCountry.value}",
+                                                isCopy: false,
                                                 colors: colorsConst.textColor,
                                                 size: 15,
                                               ),
@@ -547,6 +554,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                   text: "Save",
                                   colors: Colors.white,
                                   isBold: true,
+                                  isCopy: false,
                                 ),
                               ),
                             ),

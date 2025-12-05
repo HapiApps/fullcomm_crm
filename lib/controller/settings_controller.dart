@@ -624,11 +624,13 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
                             text:"Message",
                             colors: colorsConst.textColor,
                             size: 13,
+                            isCopy: false,
                           ),
                           const CustomText(
                             text: "*",
                             colors: Colors.red,
                             size: 25,
+                            isCopy: false,
                           )
                         ],
                       ),
@@ -695,6 +697,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
                       text: "Cancel",
                       colors: colorsConst.primary,
                       size: 14,
+                      isCopy: false,
                     )),
               ),
               10.width,

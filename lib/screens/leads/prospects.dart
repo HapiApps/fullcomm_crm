@@ -130,6 +130,7 @@ class _ProspectsState extends State<Prospects> {
                                   content: CustomText(
                                     text: "Are you sure delete this customers?",
                                     size: 16,
+                                    isCopy: false,
                                     isBold: true,
                                     colors: colorsConst.textColor,
                                   ),
@@ -155,6 +156,7 @@ class _ProspectsState extends State<Prospects> {
                                               },
                                               child: CustomText(
                                                 text: "Cancel",
+                                                isCopy: false,
                                                 colors: colorsConst.primary,
                                                 size: 14,
                                               )),
@@ -198,6 +200,7 @@ class _ProspectsState extends State<Prospects> {
                                     text: "Are you moving to the next level?",
                                     size: 16,
                                     isBold: true,
+                                    isCopy: false,
                                     colors: colorsConst.textColor,
                                   ),
                                   actions: [
@@ -224,6 +227,7 @@ class _ProspectsState extends State<Prospects> {
                                                 text: "Cancel",
                                                 colors: colorsConst.primary,
                                                 size: 14,
+                                                isCopy: false,
                                               )),
                                         ),
                                         10.width,
@@ -261,6 +265,7 @@ class _ProspectsState extends State<Prospects> {
                                   content: CustomText(
                                     text: "Are you sure demote this customers?",
                                     size: 16,
+                                    isCopy: false,
                                     isBold: true,
                                     colors: colorsConst.textColor,
                                   ),
@@ -286,6 +291,7 @@ class _ProspectsState extends State<Prospects> {
                                               },
                                               child: CustomText(
                                                 text: "Cancel",
+                                                isCopy: false,
                                                 colors: colorsConst.primary,
                                                 size: 14,
                                               )),

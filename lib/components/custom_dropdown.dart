@@ -36,12 +36,14 @@ class _CustomDropDownState extends State<CustomDropDown> {
               text:widget.text,
               colors: colorsConst.fieldHead,
               size: 13,
+              isCopy: false,
             ),
             widget.isOptional == true
                 ? const CustomText(
               text: "*",
               colors: Colors.red,
               size: 25,
+              isCopy: false,
             )
                 : 0.width
           ],
@@ -62,6 +64,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
                     text: "",
                     colors: Colors.grey.shade400,
                     size: 13,
+                    isCopy: false,
                     isBold: false),
                 underline: const SizedBox(),
                 focusColor: Colors.transparent,
@@ -80,6 +83,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
                         text: list,
                         colors:colorsConst.textColor,
                         size: 15,
+                        isCopy: false,
                         isBold: false),
                   );
                 }).toList(),

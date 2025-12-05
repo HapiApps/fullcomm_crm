@@ -72,12 +72,14 @@ class CustomTextField extends StatelessWidget {
                     textAlign: TextAlign.start,
                     colors: Color(0xff4B5563),
                     size: 13,
+                    isCopy: false,
                   ),
                   isOptional! == true
                       ? const CustomText(
                           text: "*",
                           colors: Colors.red,
                           size: 25,
+                    isCopy: false,
                         )
                       : 0.width
                 ],

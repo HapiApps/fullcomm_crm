@@ -77,6 +77,7 @@ class _RoleManagementState extends State<RoleManagement> {
                               style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
                           const CustomText(
                             text: "*",
+                            isCopy: false,
                             colors: Colors.red,
                             size: 25,
                           )
@@ -167,6 +168,7 @@ class _RoleManagementState extends State<RoleManagement> {
                               style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
                           const CustomText(
                             text: "*",
+                            isCopy: false,
                             colors: Colors.red,
                             size: 25,
                           )
@@ -344,6 +346,7 @@ class _RoleManagementState extends State<RoleManagement> {
                               style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
                           const CustomText(
                             text: "*",
+                            isCopy: false,
                             colors: Colors.red,
                             size: 25,
                           )
@@ -436,6 +439,7 @@ class _RoleManagementState extends State<RoleManagement> {
                             text: "*",
                             colors: Colors.red,
                             size: 25,
+                            isCopy: false,
                           )
                         ],
                       ),
@@ -576,6 +580,7 @@ class _RoleManagementState extends State<RoleManagement> {
                           text: "Role Management",
                           colors: colorsConst.textColor,
                           size: 20,
+                          isCopy: false,
                           isBold: true,
                         ),
                         10.height,
@@ -583,6 +588,7 @@ class _RoleManagementState extends State<RoleManagement> {
                           text: "Define what each user can access",
                           colors: colorsConst.textColor,
                           size: 14,
+                          isCopy: false,
                         ),
                       ],
                     ),
@@ -601,6 +607,7 @@ class _RoleManagementState extends State<RoleManagement> {
                         },
                         label: CustomText(
                           text: "Add Role",
+                          isCopy: false,
                           colors: Colors.white,
                           isBold :true,
                           size: 14,
@@ -613,6 +620,7 @@ class _RoleManagementState extends State<RoleManagement> {
                   children: [
                     CustomText(
                       text: "Roles",
+                      isCopy: false,
                       colors: colorsConst.primary,
                       isBold: true,
                       size: 15,
@@ -622,6 +630,7 @@ class _RoleManagementState extends State<RoleManagement> {
                       backgroundColor: colorsConst.primary,
                       radius: 17,
                       child: Obx(()=>CustomText(
+                        isCopy: false,
                         text: settingsController.rolesCount.value.toString(),
                         colors: Colors.white,
                         size: 13,
@@ -674,6 +683,7 @@ class _RoleManagementState extends State<RoleManagement> {
                               textAlign: TextAlign.left,
                               text: "Actions",//0
                               size: 15,
+                              isCopy: false,
                               isBold: true,
                               colors: Colors.white,
                             ),
@@ -687,6 +697,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                   text: "Role",//1
                                   size: 15,
                                   isBold: true,
+                                  isCopy: false,
                                   colors: Colors.white,
                                 ),
                                 const SizedBox(width: 3),
@@ -718,6 +729,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                   text: "Description",//2
                                   size: 15,
                                   isBold: true,
+                                  isCopy: false,
                                   colors: Colors.white,
                                 ),
                                 const SizedBox(width: 3),
@@ -749,6 +761,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                   text: "Permissions",//3
                                   size: 15,
                                   isBold: true,
+                                  isCopy: false,
                                   colors: Colors.white,
                                 ),
                                 const SizedBox(width: 3),
@@ -837,6 +850,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                                       text: "Are you sure delete this role?",
                                                       size: 16,
                                                       isBold: true,
+                                                      isCopy: true,
                                                       colors: colorsConst.textColor,
                                                     ),                                                                  actions: [
                                                     Row(
@@ -862,6 +876,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                                                 text: "Cancel",
                                                                 colors: colorsConst.primary,
                                                                 size: 14,
+                                                                isCopy: false,
                                                               )),
                                                         ),
                                                         10.width,
@@ -903,6 +918,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                         textAlign: TextAlign.left,
                                         text: role.roleName.toString(),
                                         size: 14,
+                                        isCopy: false,
                                         colors:colorsConst.textColor,
                                       ),
                                     ),
@@ -913,6 +929,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                       textAlign: TextAlign.left,
                                       text: role.description.toString(),
                                       size: 14,
+                                      isCopy: false,
                                       colors:colorsConst.textColor,
                                     ),
                                   ),
@@ -922,6 +939,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                       textAlign: TextAlign.left,
                                       text:role.permission.toString(),
                                       size: 14,
+                                      isCopy: false,
                                       colors: colorsConst.textColor,
                                     ),
                                   ),

@@ -372,9 +372,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                             },
                             icon: Icon(Icons.arrow_back,color: colorsConst.third,)),
                         CustomText(
-                          text: "New Leads - Suspects",
+                          text: "Leads",
                           colors: colorsConst.textColor,
                           size:23,
+                          isCopy: true,
                           isBold: true,
                         ),
                       ],
@@ -385,6 +386,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                         CustomText(
                           text: "Update your Lead Information",
                           colors: colorsConst.textColor,
+                          isCopy: true,
                           size:18,
                         ),
                       ],
@@ -450,10 +452,12 @@ class _UpdateLeadState extends State<UpdateLead> {
                                               text: "Phone No",
                                               colors: colorsConst.textColor,
                                               size: 13,
+                                              isCopy: false,
                                               textAlign: TextAlign.start,
                                             ),
                                             const CustomText(
                                               text: "*",
+                                              isCopy: false,
                                               colors: Colors.red,
                                               size: 25,
                                             ),
@@ -614,6 +618,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       text: constValue.companyInfo,
                                       colors: colorsConst.textColor,
                                       size: 20,
+                                      isCopy: false,
                                     ),
                                   ],
                                 ),
@@ -769,6 +774,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       text: constValue.addressInfo,
                                       colors: colorsConst.textColor,
                                       size: 20,
+                                      isCopy: false,
                                     ),
                                   ],
                                 ),
@@ -893,6 +899,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             CustomText(
                                               text:"Country",
                                               size: 13,
+                                              isCopy: false,
                                               colors: Color(0xff4B5563),
                                             ),
                                             Container(
@@ -909,6 +916,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 child:Obx(() =>  CustomText(
                                                   text: "    ${controllers.selectedCountry.value}",
                                                   colors:colorsConst.textColor,
+                                                  isCopy: false,
                                                   size: 15,
                                                 ),
                                                 )
@@ -979,6 +987,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       text: constValue.customFields,
                                       colors: colorsConst.textColor,
                                       size: 20,
+                                      isCopy: false,
                                     ),
                                   ],
                                 ),

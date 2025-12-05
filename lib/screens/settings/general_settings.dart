@@ -53,11 +53,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                           colors: colorsConst.textColor,
                           size: 20,
                           isBold: true,
+                          isCopy: true,
                         ),
                         10.height,
                         CustomText(
                           text: "View all of your office hours",
                           colors: colorsConst.textColor,
+                          isCopy: true,
                           size: 14,
                         ),
                       ],
@@ -146,6 +148,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                   children: [
                     CustomText(
                       text: "Shift",
+                      isCopy: true,
                       colors: colorsConst.primary,
                       isBold: true,
                       size: 15,
@@ -155,6 +158,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       backgroundColor: colorsConst.primary,
                       radius: 17,
                       child: Obx(()=>CustomText(
+                        isCopy: true,
                         text: settingsController.officeHoursCount.value.toString(),
                         colors: Colors.white,
                         size: 13,
@@ -190,6 +194,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               content: CustomText(
                                 text: "Are you sure delete this Office Hours?",
                                 size: 16,
+                                isCopy: true,
                                 isBold: true,
                                 colors: colorsConst.textColor,
                               ),
@@ -216,6 +221,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                           child: CustomText(
                                             text: "Cancel",
                                             colors: colorsConst.primary,
+                                            isCopy: false,
                                             size: 14,
                                           )),
                                     ),
@@ -264,6 +270,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               text: "Delete",
                               colors: colorsConst.textColor,
                               size: 14,
+                              isCopy: false,
                               isBold: true,
                             ),
                           ],
@@ -319,6 +326,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               textAlign: TextAlign.left,
                               text: "Actions",//0
                               size: 15,
+                              isCopy: true,
                               isBold: true,
                               colors: Colors.white,
                             ),
@@ -331,6 +339,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   textAlign: TextAlign.left,
                                   text: "Employee",//1
                                   size: 15,
+                                  isCopy: true,
                                   isBold: true,
                                   colors: Colors.white,
                                 ),
@@ -367,6 +376,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   textAlign: TextAlign.left,
                                   text: "Shift Name",//2
                                   size: 15,
+                                  isCopy: true,
                                   isBold: true,
                                   colors: Colors.white,
                                 ),
@@ -404,6 +414,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   text: "From",//3
                                   size: 15,
                                   isBold: true,
+                                  isCopy: true,
                                   colors: Colors.white,
                                 ),
                                 const SizedBox(width: 3),
@@ -440,6 +451,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   text: "To",//4
                                   size: 15,
                                   isBold: true,
+                                  isCopy: true,
                                   colors: Colors.white,
                                 ),
                                 const SizedBox(width: 3),
@@ -476,6 +488,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   text: "Days",//4
                                   size: 15,
                                   isBold: true,
+                                  isCopy: true,
                                   colors: Colors.white,
                                 ),
                                 const SizedBox(width: 3),
@@ -512,6 +525,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   text: "Updated On",//4
                                   size: 15,
                                   isBold: true,
+                                  isCopy: true,
                                   colors: Colors.white,
                                 ),
                                 const SizedBox(width: 3),
@@ -606,6 +620,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                       text: "Are you sure delete this office hours?",
                                                       size: 16,
                                                       isBold: true,
+                                                      isCopy: true,
                                                       colors: colorsConst.textColor,
                                                     ),                                                                  actions: [
                                                     Row(
@@ -629,6 +644,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                               },
                                                               child: CustomText(
                                                                 text: "Cancel",
+                                                                isCopy: false,
                                                                 colors: colorsConst.primary,
                                                                 size: 14,
                                                               )),
@@ -672,6 +688,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                         textAlign: TextAlign.left,
                                         text:officeHour.employeeName,//1
                                         size: 14,
+                                        isCopy: true,
                                         colors:colorsConst.textColor,
                                       ),
                                     ),
@@ -682,12 +699,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                       textAlign: TextAlign.left,
                                       text: officeHour.shiftName,//2
                                       size: 14,
+                                      isCopy: true,
                                       colors:colorsConst.textColor,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
+                                      isCopy: true,
                                       textAlign: TextAlign.left,
                                       text:officeHour.fromTime,
                                       size: 14,
@@ -697,6 +716,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
+                                      isCopy: true,
                                       textAlign: TextAlign.left,
                                       text:officeHour.toTime,
                                       size: 14,
@@ -706,6 +726,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
+                                      isCopy: true,
                                       textAlign: TextAlign.left,
                                       text:officeHour.days,
                                       size: 14,
@@ -715,6 +736,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomText(
+                                      isCopy: true,
                                       textAlign: TextAlign.left,
                                       text:controllers.formatDateTime(officeHour.updatedTs),
                                       size: 14,

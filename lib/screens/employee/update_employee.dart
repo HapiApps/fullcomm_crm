@@ -97,6 +97,7 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                 child: CustomText(
                                   text:"Update Employee Details",
                                   size: 20,
+                                  isCopy: false,
                                   colors: Colors.black,
                                   isBold:true,
                                 ),
@@ -178,11 +179,13 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                             text: "Role",
                                             colors: const Color(0xff757575),
                                             size: 13,
+                                            isCopy: false,
                                           ),
                                           const CustomText(
                                             text: "*",
                                             colors: Colors.red,
                                             size: 25,
+                                            isCopy: false,
                                           )
                                         ],
                                       ),
@@ -208,6 +211,7 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                                 size: 13,
                                                 isBold: false,
                                                 isStyle: true,
+                                                isCopy: false,
                                               ),
                                               items: employeeProvider.roleList.map((item) {
                                                 return DropdownMenuItem(
@@ -216,6 +220,7 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                                       text: item["role_name"],
                                                       colors: Colors.black,
                                                       size: 13,
+                                                      isCopy: false,
                                                       isBold: false),
                                                 );
                                               }).toList(),
@@ -433,6 +438,7 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                   text: "Update Employee",
                                   colors: Colors.white,
                                   isBold:true,
+                                  isCopy: false,
                                 ),
                               ),
                             ),

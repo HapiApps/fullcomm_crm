@@ -51,6 +51,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
           text: "Dashboard",
           size: 26,
           isBold: true,
+          isCopy: true,
           colors: Colors.black,
         ),
         actions: [
@@ -62,6 +63,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                   text: version,
                   colors: colorsConst.third,
                   size: 16,
+                  isCopy: true,
                 ),
               ],
             ),
@@ -296,7 +298,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CustomText(text: "Rating", size: 19, isBold: true),
+          const CustomText(text: "Rating", size: 19, isBold: true,isCopy: true,),
           20.height,
           Obx(() {
             final hot = int.tryParse(dashController.totalHot.value) ?? 0;
@@ -372,6 +374,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                 text: "Quotations Sent",
                 size: 16,
                 isBold: true,
+                isCopy: true,
                 colors: colorsConst.textColor,
               ),
             ],
@@ -394,6 +397,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                     text: "0",
                     colors: colorsConst.textColor,
                     size: 20,
+                    isCopy: true,
                     isBold: true,
                   ),
                 ),
@@ -671,6 +675,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                         Obx(() => CustomText(
                           text: dashController.totalMails.value,
                           size: 24,
+                          isCopy: true,
                           isBold: true,
                         )),
                       ],
@@ -679,6 +684,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                     const CustomText(
                         text: "Total Mails",
                         size: 17,
+                        isCopy: true,
                         colors: Colors.black87),
                   ],
                 ),
@@ -715,6 +721,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                         Obx(() => CustomText(
                           text: dashController.totalCalls.value,
                           size: 24,
+                          isCopy: true,
                           isBold: true,
                         )),
                       ],
@@ -723,6 +730,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                     const CustomText(
                         text: "Total Calls",
                         size: 17,
+                        isCopy: true,
                         colors: Colors.black87),
                   ],
                 ),
@@ -762,6 +770,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                             color: colorsConst.primary, size: 36),
                         const SizedBox(width: 8),
                         Obx(() => CustomText(
+                          isCopy: true,
                           text: dashController.totalMeetings.value,
                           size: 24,
                           isBold: true,
@@ -772,6 +781,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                     const CustomText(
                         text: "Total Appointments",
                         size: 17,
+                        isCopy: true,
                         colors: Colors.black87),
                     const SizedBox(height: 10),
                     Row(
@@ -789,6 +799,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                             text: dashController.completedMeetings.value,
                             colors: Colors.green,
                             size: 14,
+                            isCopy: true,
                             isBold: true,
                           )),
                         ),
@@ -805,6 +816,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                             text: dashController.pendingMeetings.value,
                             colors: Colors.red,
                             size: 14,
+                            isCopy: true,
                             isBold: true,
                           )),
                         ),
@@ -844,6 +856,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                             color: colorsConst.primary, size: 36),
                         const SizedBox(width: 8),
                         Obx(() => CustomText(
+                          isCopy: true,
                           text: dashController.totalEmployees.value,
                           size: 24,
                           isBold: true,
@@ -852,6 +865,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                     ),
                     const SizedBox(height: 10),
                     const CustomText(
+                        isCopy: true,
                         text: "Total Employees",
                         size: 17,
                         colors: Colors.black87),

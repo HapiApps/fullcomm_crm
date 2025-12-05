@@ -63,6 +63,7 @@ class FilterSection extends StatelessWidget {
                   colors: colorsConst.primary,
                   isBold: true,
                   size: 15,
+                  isCopy: false,
                 ),
                 10.width,
                 CircleAvatar(
@@ -72,11 +73,12 @@ class FilterSection extends StatelessWidget {
                     text: count.toString(),
                     colors: Colors.white,
                     size: 13,
+                    isCopy: false,
                   ),
                 ),
                 10.width,
                 SizedBox(
-                  width: 250,
+                  width: 350,
                   child: KeyboardDropdownField<NewLeadObj>(
                     items: leadFuture,
                     borderRadius: 5,
@@ -84,15 +86,15 @@ class FilterSection extends StatelessWidget {
                     hintText: "",
                     labelText: "Search Mobile Number",
                     labelBuilder: (customer) =>
-                    '${customer.firstname} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
+                    '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
                     itemBuilder: (customer) {
                       return Container(
-                        width: 300,
+                        width: 400,
                         alignment: Alignment.topLeft,
                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                         child: CustomText(
                           text:
-                          '${customer.firstname} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
+                          '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
                           colors: Colors.black,
                           size: 14,
                           isCopy: false,

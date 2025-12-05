@@ -89,6 +89,7 @@ class _SignUpState extends State<SignUp> {
                       colors: colorsConst.textColor,
                       size: 25,
                       isBold: true,
+                      isCopy: false,
                     ),
                     50.height,
                     // InkWell(
@@ -186,6 +187,7 @@ class _SignUpState extends State<SignUp> {
                               text: "Whatsapp No",
                               colors: colorsConst.headColor,
                               size: 15,
+                              isCopy: false,
                             ),
                             Row(
                               children: [

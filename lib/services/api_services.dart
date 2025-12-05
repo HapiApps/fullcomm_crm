@@ -630,17 +630,18 @@ class ApiService {
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
         //controllers.clearSelectedCustomer();
-        controllers.empDOB.value = "";
+        //controllers.empDOB.value = "";
         controllers.callTime.value = "";
         controllers.callType = "Incoming";
         controllers.callStatus = "Completed";
+        remController.titleController.text = controllers.callCommentCont.text;
         controllers.callCommentCont.text = "";
         getAllCallActivity("");
         Navigator.pop(context);
         controllers.productCtr.reset();
-        if (remController.stDate.value.isNotEmpty) {
+        if (remController.stDate.value.isEmpty) {
           try {
-            String raw = remController.stDate.value;
+            String raw = controllers.empDOB.value;
             DateTime d;
             if (RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(raw)) {
               d = DateFormat("yyyy-MM-dd").parse(raw);
@@ -653,12 +654,11 @@ class ApiService {
             }
             d = d.add(Duration(days: 3));
             remController.stDate.value = DateFormat("dd.MM.yyyy").format(d);
-
           } catch (e) {
             print("DATE PARSE ERROR: $e   value='${remController.stDate.value}'");
           }
         }
-
+        print("Date ${remController.stDate.value}");
         remController.stTime.value = "11:00 AM";
         reminderUtils.showAddReminderDialog(context);
       } else {
@@ -1183,7 +1183,6 @@ class ApiService {
         controllers.sourceCrt.clear();
         controllers.prospectEnrollmentDateCrt.clear();
         controllers.statusCrt.clear();
-        controllers.empDOB.value = "";
         controllers.exDate.value = "";
         controllers.prospectDate.value = "";
         controllers.stateController.text = "";
@@ -1224,9 +1223,9 @@ class ApiService {
         customerList.clear();
         Navigator.pop(context);
         controllers.productCtr.reset();
-        if (remController.stDate.value.isNotEmpty) {
+        if (remController.stDate.value.isEmpty) {
           try {
-            String raw = remController.stDate.value;
+            String raw = controllers.empDOB.value;
             DateTime d;
             if (RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(raw)) {
               d = DateFormat("yyyy-MM-dd").parse(raw);
@@ -1244,6 +1243,7 @@ class ApiService {
             print("DATE PARSE ERROR: $e   value='${remController.stDate.value}'");
           }
         }
+        controllers.empDOB.value = "";
         remController.stTime.value = "11:00 AM";
         controllers.selectNCustomer("1", controllers.leadNameCrt[0].text.trim(), controllers.leadEmailCrt[0].text.trim(),
             controllers.leadMobileCrt[0].text.trim());
@@ -1438,6 +1438,7 @@ class ApiService {
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200) {
         controllers.storage.write("f_name", response["s_name"]);
+        controllers.storage.write("mobile", controllers.loginNumber.text.trim());
         controllers.storage.write("role", response["permission"]);
         controllers.storage.write("role_name", "Admin");
         controllers.storage.write("id", response["id"]);
@@ -2228,6 +2229,7 @@ class ApiService {
               textAlign: TextAlign.center,
               size: 14,
               isBold: true,
+              isCopy: true,
               colors: colorsConst.textColor,
             ),
           );

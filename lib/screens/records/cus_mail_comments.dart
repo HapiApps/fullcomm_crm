@@ -57,19 +57,19 @@ class _CusMailCommentsState extends State<CusMailComments> {
                   }, icon: Icon(Icons.arrow_back, color: colorsConst.textColor,)),
 
                   CustomText(text: "New Leads - Suspects",
-                    colors: colorsConst.textColor,isBold: true,size: 20,),
+                    colors: colorsConst.textColor,isBold: true,size: 20,isCopy: true,),
                   20.height,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CustomText(
                         text:widget.mainName.toString(),
-                        colors: colorsConst.textColor,isBold: true,),
+                        colors: colorsConst.textColor,isBold: true,isCopy: true,),
                       CustomText(text: widget.mainMobile.toString(),
-                        colors: colorsConst.textColor,isBold: true,),
-                      CustomText(text:widget.mainEmail.toString(),colors: colorsConst.textColor,isBold: true,),
-                      CustomText(text: widget.city.toString() ,colors: colorsConst.textColor,isBold: true,),
-                      CustomText(text:widget.companyName.toString(),colors: colorsConst.textColor,isBold: true,),
+                        colors: colorsConst.textColor,isBold: true,isCopy: true,),
+                      CustomText(text:widget.mainEmail.toString(),colors: colorsConst.textColor,isBold: true,isCopy: true,),
+                      CustomText(text: widget.city.toString() ,colors: colorsConst.textColor,isBold: true,isCopy: true,),
+                      CustomText(text:widget.companyName.toString(),colors: colorsConst.textColor,isBold: true,isCopy: true,),
                     ],
                   ),
                   20.height,
@@ -145,7 +145,7 @@ class _CusMailCommentsState extends State<CusMailComments> {
                                         children: [
                                           CustomText(
                                             text: "Command",
-                                            colors: colorsConst.headColor,
+                                            colors: colorsConst.headColor,isCopy: true,
                                           ),
                                           const SizedBox(width: 10),
                                           Expanded(
@@ -158,7 +158,7 @@ class _CusMailCommentsState extends State<CusMailComments> {
                                               child: CustomText(
                                                 text: data.message ?? '',
                                                 colors: colorsConst.textColor,
-                                                size: 13,
+                                                size: 13,isCopy: true,
                                               ),
                                             ),
                                           ),

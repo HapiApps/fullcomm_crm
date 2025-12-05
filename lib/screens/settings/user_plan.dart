@@ -168,11 +168,13 @@ class _UserPlanState extends State<UserPlan> {
                           colors: colorsConst.textColor,
                           size: 20,
                           isBold: true,
+                          isCopy: true,
                         ),
                         10.height,
                         CustomText(
                           text: "View all of your user plan & access",
                           colors: colorsConst.textColor,
+                          isCopy: true,
                           size: 14,
                         ),
                       ],
@@ -208,6 +210,7 @@ class _UserPlanState extends State<UserPlan> {
                               text: "Plan",//0
                               size: 15,
                               isBold: true,
+                              isCopy: true,
                               colors: Colors.white,
                             ),
                           ),
@@ -218,6 +221,7 @@ class _UserPlanState extends State<UserPlan> {
                               text: "Price",//1
                               size: 15,
                               isBold: true,
+                              isCopy: true,
                               colors: Colors.white,
                             ),
                           ),
@@ -227,6 +231,7 @@ class _UserPlanState extends State<UserPlan> {
                               textAlign: TextAlign.left,
                               text: "User Limit",//2
                               size: 15,
+                              isCopy: true,
                               isBold: true,
                               colors: Colors.white,
                             ),
@@ -237,6 +242,7 @@ class _UserPlanState extends State<UserPlan> {
                               textAlign: TextAlign.left,
                               text: "Status",//3
                               size: 15,
+                              isCopy: true,
                               isBold: true,
                               colors: Colors.white,
                             ),
@@ -247,6 +253,7 @@ class _UserPlanState extends State<UserPlan> {
                               textAlign: TextAlign.left,
                               text: "Upgrade Button",//3
                               size: 15,
+                              isCopy: true,
                               isBold: true,
                               colors: Colors.white,
                             ),
@@ -258,6 +265,7 @@ class _UserPlanState extends State<UserPlan> {
                               text: "User Count",//3
                               size: 15,
                               isBold: true,
+                              isCopy: true,
                               colors: Colors.white,
                             ),
                           ),

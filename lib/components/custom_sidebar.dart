@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
@@ -64,6 +66,11 @@ class SideBar extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+            CustomText(text:  controllers.storage.read("f_name") ?? "",
+              size: 20,
+              isBold: true,
+              isCopy: true,
             ),
             Image.asset(logo),
             SidebarItem(

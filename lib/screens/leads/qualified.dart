@@ -128,6 +128,7 @@ class _QualifiedState extends State<Qualified> {
                                 content: CustomText(
                                   text: "Are you sure delete this customers?",
                                   size: 16,
+                                  isCopy: false,
                                   isBold: true,
                                   colors: colorsConst.textColor,
                                 ),
@@ -153,6 +154,7 @@ class _QualifiedState extends State<Qualified> {
                                             },
                                             child: CustomText(
                                               text: "Cancel",
+                                              isCopy: false,
                                               colors: colorsConst.primary,
                                               size: 14,
                                             )),
@@ -195,6 +197,7 @@ class _QualifiedState extends State<Qualified> {
                                 content: CustomText(
                                   text: "Are you moving to the next level?",
                                   size: 16,
+                                  isCopy: false,
                                   isBold: true,
                                   colors: colorsConst.textColor,
                                 ),
@@ -220,6 +223,7 @@ class _QualifiedState extends State<Qualified> {
                                             },
                                             child: CustomText(
                                               text: "Cancel",
+                                              isCopy: false,
                                               colors: colorsConst.primary,
                                               size: 14,
                                             )),
@@ -259,6 +263,7 @@ class _QualifiedState extends State<Qualified> {
                                 content: CustomText(
                                   text: "Are you sure demote this customers?",
                                   size: 16,
+                                  isCopy: false,
                                   isBold: true,
                                   colors: colorsConst.textColor,
                                 ),
@@ -284,6 +289,7 @@ class _QualifiedState extends State<Qualified> {
                                             },
                                             child: CustomText(
                                               text: "Cancel",
+                                              isCopy: false,
                                               colors: colorsConst.primary,
                                               size: 14,
                                             )),
