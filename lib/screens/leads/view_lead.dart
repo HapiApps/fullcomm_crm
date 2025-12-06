@@ -220,88 +220,219 @@ class _ViewLeadState extends State<ViewLead> {
                                       ),
                                       onPressed: () {
                                         showDialog(
-                                            context: context,
-                                            barrierDismissible: false,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                content: CustomText(
-                                                  text:
-                                                  "Are you moving to the next level?",
-                                                  isCopy: true,
-                                                  size: 16,
-                                                  isBold: true,
-                                                  colors: colorsConst.textColor,
-                                                ),
-                                                actions: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment.end,
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (context) {
+                                            TextEditingController reasonController = TextEditingController();
+                                            String selectedStage = widget.pageName;
+                                            return StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return AlertDialog(
+                                                  title: CustomText(
+                                                    text: "Move to Next Level",
+                                                    size: 18,
+                                                    isBold: true,
+                                                    isCopy: false,
+                                                    colors: colorsConst.textColor,
+                                                  ),
+                                                  content: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
+                                                      CustomText(
+                                                        text: "Select Stage",
+                                                        size: 14,
+                                                        isBold: true,
+                                                        isCopy: false,
+                                                      ),
+                                                      8.height,
                                                       Container(
+                                                        padding: EdgeInsets.symmetric(horizontal: 8),
                                                         decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: colorsConst.primary),
-                                                            color: Colors.white),
-                                                        width: 80,
-                                                        height: 25,
-                                                        child: ElevatedButton(
-                                                            style: ElevatedButton.styleFrom(
-                                                              shape: const RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                BorderRadius.zero,
-                                                              ),
-                                                              backgroundColor: Colors.white,
-                                                            ),
-                                                            onPressed: () {
-                                                              Navigator.pop(context);
-                                                            },
-                                                            child: CustomText(
-                                                              text: "Cancel",
-                                                              colors: colorsConst.primary,
-                                                              size: 14,
-                                                              isCopy: false,
-                                                            )),
+                                                          border: Border.all(color: colorsConst.primary),
+                                                          borderRadius: BorderRadius.circular(4),
+                                                        ),
+                                                        child: DropdownButton<String>(
+                                                          value: selectedStage,
+                                                          isExpanded: true,
+                                                          underline: SizedBox(),
+                                                          items: [
+                                                            "Prospects",
+                                                            "Qualified",
+                                                            "Customers",
+                                                            "Disqualified"
+                                                          ].map((value) {
+                                                            return DropdownMenuItem(
+                                                              value: value,
+                                                              child: Text(value),
+                                                            );
+                                                          }).toList(),
+                                                          onChanged: (value) {
+                                                            setState(() {
+                                                              selectedStage = value!;
+                                                            });
+                                                          },
+                                                        ),
                                                       ),
-                                                      10.width,
-                                                      CustomLoadingButton(
-                                                        callback: () async {
-                                                          final deleteData = {
-                                                            "lead_id": widget.id.toString(),
-                                                            "user_id": controllers.storage.read("id").toString(),
-                                                            "rating": (widget.rating ?? "Warm").toString(),
-                                                            "cos_id": controllers.storage.read("cos_id").toString(),
-                                                            "mail_id": widget.email.toString(),
-                                                          };
-                                                          if (widget.pageName == "Prospects") {
-                                                            await apiService.insertQualifiedAPI(context, [deleteData]);
-                                                          } else if (widget.pageName == "Qualified") {
-                                                            await apiService.insertPromoteCustomerAPI(context, [deleteData]);
-                                                          } else if (widget.pageName == "Disqualified") {
-                                                            await apiService.qualifiedCustomersAPI(
-                                                                context, [deleteData]);
-                                                          } else {
-                                                            await apiService.insertProspectsAPI(
-                                                                context, [deleteData]);
-                                                          }
-                                                        },
-                                                        height: 35,
-                                                        isLoading: true,
-                                                        backgroundColor:
-                                                        colorsConst.primary,
-                                                        radius: 2,
-                                                        width: 80,
-                                                        controller:
-                                                        controllers.productCtr,
-                                                        isImage: false,
-                                                        text: "Promote",
-                                                        textColor: Colors.white,
+                                                      15.height,
+                                                      TextField(
+                                                        controller: reasonController,
+                                                        decoration: InputDecoration(
+                                                          labelText: "Reason",
+                                                          border: OutlineInputBorder(),
+                                                        ),
                                                       ),
-                                                      5.width
                                                     ],
                                                   ),
-                                                ],
-                                              );
-                                            });
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () => Navigator.pop(context),
+                                                      child: Text("Cancel"),
+                                                    ),
+                                                                  CustomLoadingButton(
+                                                                    callback: () async {
+                                                                      final deleteData = {
+                                                                        "lead_id": widget.id.toString(),
+                                                                        "user_id": controllers.storage.read("id").toString(),
+                                                                        "rating": (widget.rating ?? "Warm").toString(),
+                                                                        "cos_id": controllers.storage.read("cos_id").toString(),
+                                                                        "mail_id": widget.email.toString(),
+                                                                      };
+                                                                      if (selectedStage == "Prospects") {
+                                                                        await apiService.insertQualifiedAPI(context, [deleteData]);
+                                                                      } else if (selectedStage == "Qualified") {
+                                                                        await apiService.insertPromoteCustomerAPI(context, [deleteData]);
+                                                                      } else if (selectedStage == "Disqualified") {
+                                                                        await apiService.qualifiedCustomersAPI(context, [deleteData]);
+                                                                      } else {
+                                                                        await apiService.insertProspectsAPI(context, [deleteData]);
+                                                                      }
+                                                                    },
+                                                                    height: 35,
+                                                                    isLoading: true,
+                                                                    backgroundColor:
+                                                                    colorsConst.primary,
+                                                                    radius: 2,
+                                                                    width: 80,
+                                                                    controller:
+                                                                    controllers.productCtr,
+                                                                    isImage: false,
+                                                                    text: "Promote",
+                                                                    textColor: Colors.white,
+                                                                  ),
+                                                    CustomLoadingButton(
+                                                      callback: () async {
+                                                        final body = {
+                                                          "lead_id": widget.id.toString(),
+                                                          "user_id": controllers.storage.read("id").toString(),
+                                                          "rating": selectedStage,
+                                                          "cos_id": controllers.storage.read("cos_id").toString(),
+                                                          "mail_id": widget.email.toString(),
+                                                          "reason": reasonController.text,
+                                                        };
+                                                        if (selectedStage == "Prospects") {
+                                                          await apiService.insertProspectsAPI(context, [body]);
+                                                        } else if (selectedStage == "Qualified") {
+                                                          await apiService.insertQualifiedAPI(context, [body]);
+                                                        } else if (selectedStage == "Customers") {
+                                                          await apiService.insertPromoteCustomerAPI(context, [body]);
+                                                        } else {
+                                                          await apiService.qualifiedCustomersAPI(context, [body]);
+                                                        }
+                                                      },
+                                                      isLoading: true,
+                                                      text: "Save",
+                                                      width: 100,
+                                                      height: 35,
+                                                      backgroundColor: colorsConst.primary,
+                                                      textColor: Colors.white,
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                        );
+
+                                        // showDialog(
+                                        //     context: context,
+                                        //     barrierDismissible: false,
+                                        //     builder: (context) {
+                                        //       return AlertDialog(
+                                        //         content: CustomText(
+                                        //           text: "Are you moving to the next level?",
+                                        //           isCopy: true,
+                                        //           size: 16,
+                                        //           isBold: true,
+                                        //           colors: colorsConst.textColor,
+                                        //         ),
+                                        //         actions: [
+                                        //           Row(
+                                        //             mainAxisAlignment: MainAxisAlignment.end,
+                                        //             children: [
+                                        //               Container(
+                                        //                 decoration: BoxDecoration(
+                                        //                     border: Border.all(
+                                        //                         color: colorsConst.primary),
+                                        //                     color: Colors.white),
+                                        //                 width: 80,
+                                        //                 height: 25,
+                                        //                 child: ElevatedButton(
+                                        //                     style: ElevatedButton.styleFrom(
+                                        //                       shape: const RoundedRectangleBorder(
+                                        //                         borderRadius:
+                                        //                         BorderRadius.zero,
+                                        //                       ),
+                                        //                       backgroundColor: Colors.white,
+                                        //                     ),
+                                        //                     onPressed: () {
+                                        //                       Navigator.pop(context);
+                                        //                     },
+                                        //                     child: CustomText(
+                                        //                       text: "Cancel",
+                                        //                       colors: colorsConst.primary,
+                                        //                       size: 14,
+                                        //                       isCopy: false,
+                                        //                     )),
+                                        //               ),
+                                        //               10.width,
+                                        //               CustomLoadingButton(
+                                        //                 callback: () async {
+                                        //                   final deleteData = {
+                                        //                     "lead_id": widget.id.toString(),
+                                        //                     "user_id": controllers.storage.read("id").toString(),
+                                        //                     "rating": (widget.rating ?? "Warm").toString(),
+                                        //                     "cos_id": controllers.storage.read("cos_id").toString(),
+                                        //                     "mail_id": widget.email.toString(),
+                                        //                   };
+                                        //                   if (widget.pageName == "Prospects") {
+                                        //                     await apiService.insertQualifiedAPI(context, [deleteData]);
+                                        //                   } else if (widget.pageName == "Qualified") {
+                                        //                     await apiService.insertPromoteCustomerAPI(context, [deleteData]);
+                                        //                   } else if (widget.pageName == "Disqualified") {
+                                        //                     await apiService.qualifiedCustomersAPI(context, [deleteData]);
+                                        //                   } else {
+                                        //                     await apiService.insertProspectsAPI(context, [deleteData]);
+                                        //                   }
+                                        //                 },
+                                        //                 height: 35,
+                                        //                 isLoading: true,
+                                        //                 backgroundColor:
+                                        //                 colorsConst.primary,
+                                        //                 radius: 2,
+                                        //                 width: 80,
+                                        //                 controller:
+                                        //                 controllers.productCtr,
+                                        //                 isImage: false,
+                                        //                 text: "Promote",
+                                        //                 textColor: Colors.white,
+                                        //               ),
+                                        //               5.width
+                                        //             ],
+                                        //           ),
+                                        //         ],
+                                        //       );
+                                        //     });
                                       },
                                       child: MouseRegion(
                                         cursor: SystemMouseCursors.click,

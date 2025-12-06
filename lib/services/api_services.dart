@@ -846,8 +846,8 @@ class ApiService {
       "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
       request.fields['action']         = 'bulk_mail_receive';
       List<String> ids    = list.map((e) => e['lead_id'] ?? '').toList();
-      List<String> emails = list.map((e) => e['mail'] ?? '').toList();
-
+      List<String> emails = list.map((e) => e['mail_id'] ?? '').toList();
+      print("Serever Email $emails");
       request.fields['clientMail'] = emails.join(",");
       request.fields['id']         = ids.join(",");
 
@@ -2603,7 +2603,6 @@ class ApiService {
   Future<CustomerFullDetails> leadsDetailsForCustomer(String customerId) async {
     controllers.isLeadLoading.value = true;
     final url = Uri.parse(scriptApi);
-
     try {
       final response = await http.post(
         url,
