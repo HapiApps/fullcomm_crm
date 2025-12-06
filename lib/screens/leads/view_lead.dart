@@ -345,7 +345,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                       width: 100,
                                                       height: 35,
                                                       backgroundColor: colorsConst.primary,
-                                                      textColor: Colors.white,
+                                                      textColor: Colors.white, radius: 2,
                                                     ),
                                                   ],
                                                 );
