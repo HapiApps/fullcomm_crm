@@ -221,10 +221,17 @@ class _ViewLeadState extends State<ViewLead> {
                                       onPressed: () {
                                         showDialog(
                                           context: context,
-                                          barrierDismissible: false,
                                           builder: (context) {
                                             TextEditingController reasonController = TextEditingController();
-                                            String selectedStage = widget.pageName;
+                                            String dropValue = widget.pageName == "Prospects"
+                                                ? "Qualified"
+                                                : widget.pageName == "Qualified"
+                                                ? "Customers"
+                                                : widget.pageName == "Suspects"
+                                                ? "Prospects"
+                                                : "Disqualified";
+                                            print(dropValue);
+                                            String selectedStage = dropValue;
                                             return StatefulBuilder(
                                               builder: (context, setState) {
                                                 return AlertDialog(
@@ -255,6 +262,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                         child: DropdownButton<String>(
                                                           value: selectedStage,
                                                           isExpanded: true,
+                                                          focusColor: Colors.transparent,
                                                           underline: SizedBox(),
                                                           items: [
                                                             "Prospects",
@@ -285,68 +293,66 @@ class _ViewLeadState extends State<ViewLead> {
                                                     ],
                                                   ),
                                                   actions: [
-                                                    TextButton(
-                                                      onPressed: () => Navigator.pop(context),
-                                                      child: Text("Cancel"),
-                                                    ),
-                                                                  CustomLoadingButton(
-                                                                    callback: () async {
-                                                                      final deleteData = {
-                                                                        "lead_id": widget.id.toString(),
-                                                                        "user_id": controllers.storage.read("id").toString(),
-                                                                        "rating": (widget.rating ?? "Warm").toString(),
-                                                                        "cos_id": controllers.storage.read("cos_id").toString(),
-                                                                        "mail_id": widget.email.toString(),
-                                                                      };
-                                                                      if (selectedStage == "Prospects") {
-                                                                        await apiService.insertQualifiedAPI(context, [deleteData]);
-                                                                      } else if (selectedStage == "Qualified") {
-                                                                        await apiService.insertPromoteCustomerAPI(context, [deleteData]);
-                                                                      } else if (selectedStage == "Disqualified") {
-                                                                        await apiService.qualifiedCustomersAPI(context, [deleteData]);
-                                                                      } else {
-                                                                        await apiService.insertProspectsAPI(context, [deleteData]);
-                                                                      }
-                                                                    },
-                                                                    height: 35,
-                                                                    isLoading: true,
-                                                                    backgroundColor:
-                                                                    colorsConst.primary,
-                                                                    radius: 2,
-                                                                    width: 80,
-                                                                    controller:
-                                                                    controllers.productCtr,
-                                                                    isImage: false,
-                                                                    text: "Promote",
-                                                                    textColor: Colors.white,
-                                                                  ),
-                                                    CustomLoadingButton(
-                                                      callback: () async {
-                                                        final body = {
-                                                          "lead_id": widget.id.toString(),
-                                                          "user_id": controllers.storage.read("id").toString(),
-                                                          "rating": selectedStage,
-                                                          "cos_id": controllers.storage.read("cos_id").toString(),
-                                                          "mail_id": widget.email.toString(),
-                                                          "reason": reasonController.text,
-                                                        };
-                                                        if (selectedStage == "Prospects") {
-                                                          await apiService.insertProspectsAPI(context, [body]);
-                                                        } else if (selectedStage == "Qualified") {
-                                                          await apiService.insertQualifiedAPI(context, [body]);
-                                                        } else if (selectedStage == "Customers") {
-                                                          await apiService.insertPromoteCustomerAPI(context, [body]);
-                                                        } else {
-                                                          await apiService.qualifiedCustomersAPI(context, [body]);
-                                                        }
-                                                      },
-                                                      isLoading: true,
-                                                      text: "Save",
-                                                      width: 100,
-                                                      height: 35,
-                                                      backgroundColor: colorsConst.primary,
-                                                      textColor: Colors.white, radius: 2,
-                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(color: colorsConst.primary),
+                                                              color: Colors.white),
+                                                          width: 80,
+                                                          height: 25,
+                                                          child: ElevatedButton(
+                                                              style: ElevatedButton.styleFrom(
+                                                                shape: const RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.zero,
+                                                                ),
+                                                                backgroundColor: Colors.white,
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: CustomText(
+                                                                text: "Cancel",
+                                                                isCopy: false,
+                                                                colors: colorsConst.primary,
+                                                                size: 14,
+                                                              )),
+                                                        ),
+                                                        10.width,
+                                                        CustomLoadingButton(
+                                                          callback: () async {
+                                                            final deleteData = {
+                                                              "lead_id": widget.id.toString(),
+                                                              "user_id": controllers.storage.read("id").toString(),
+                                                              "rating": (widget.rating ?? "Warm").toString(),
+                                                              "cos_id": controllers.storage.read("cos_id").toString(),
+                                                              "mail_id": widget.email.toString(),
+                                                            };
+                                                            if (selectedStage == "Prospects") {
+                                                              await apiService.insertQualifiedAPI(context, [deleteData]);
+                                                            } else if (selectedStage == "Qualified") {
+                                                              await apiService.insertPromoteCustomerAPI(context, [deleteData]);
+                                                            } else if (selectedStage == "Disqualified") {
+                                                              await apiService.qualifiedCustomersAPI(context, [deleteData]);
+                                                            } else {
+                                                              await apiService.insertProspectsAPI(context, [deleteData]);
+                                                            }
+                                                          },
+                                                          height: 35,
+                                                          isLoading: true,
+                                                          backgroundColor:
+                                                          colorsConst.primary,
+                                                          radius: 2,
+                                                          width: 80,
+                                                          controller:
+                                                          controllers.productCtr,
+                                                          isImage: false,
+                                                          text: "Promote",
+                                                          textColor: Colors.white,
+                                                        ),
+                                                      ],
+                                                    )
                                                   ],
                                                 );
                                               },
