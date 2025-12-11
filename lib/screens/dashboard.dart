@@ -196,71 +196,6 @@ class _NewDashboardState extends State<NewDashboard> {
                             Obx(() {
                               return Column(
                                 children: [
-                              //   Row(
-                              //   mainAxisAlignment: MainAxisAlignment.center,
-                              //   crossAxisAlignment: CrossAxisAlignment.center,
-                              //   children: [
-                              //     // Left Divider
-                              //     SizedBox(
-                              //       width: 100, // adjust width as needed
-                              //       child: Divider(
-                              //         thickness: 1.2,
-                              //         color: Colors.grey.shade400,
-                              //       ),
-                              //     ),
-                              //
-                              //     const SizedBox(width: 10),
-                              //
-                              //     // Center Text with Obx
-                              //     Obx(() {
-                              //       final range = dashController.selectedRange.value;
-                              //       final selected = dashController.selectedSortBy.value;
-                              //
-                              //       if (range == null) {
-                              //         return const Text(
-                              //           "Filter by Date Range",
-                              //           style: TextStyle(
-                              //             color: Colors.black54,
-                              //             fontFamily: "Lato",
-                              //           ),
-                              //         );
-                              //       }
-                              //
-                              //       String formatDate(DateTime date) =>
-                              //           "${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}";
-                              //
-                              //       String displayText;
-                              //       if (selected == "Today") {
-                              //         displayText = formatDate(range.start);
-                              //       } else if (selected == "Yesterday") {
-                              //         displayText = formatDate(range.start);
-                              //       } else {
-                              //         displayText = "${formatDate(range.start)}  —  ${formatDate(range.end)}";
-                              //       }
-                              //
-                              //       return Text(
-                              //         "Dashboard Overview => $displayText",
-                              //         style: const TextStyle(
-                              //           color: Colors.black87,
-                              //           fontWeight: FontWeight.w600,
-                              //           fontFamily: "Lato",
-                              //           fontSize: 15,
-                              //         ),
-                              //       );
-                              //     }),
-                              //
-                              //     const SizedBox(width: 10),
-                              //
-                              //     // Right Divider
-                              //     SizedBox(
-                              //       width: 100, // adjust width as needed
-                              //       child: Divider(
-                              //         thickness: 1.2,
-                              //         color: Colors.grey.shade400,
-                              //       ),
-                              //     ),
-                              //   ],
-                              // ),
                                   Row(
                                     spacing: 20,
                                     children: dashController.filters.map((filter) {
@@ -339,46 +274,108 @@ class _NewDashboardState extends State<NewDashboard> {
                               );
                             }),
                             20.width,
-                            InkWell(
-                                onTap: (){
-                                  dashController.showDatePickerDialog(context);
-                                },
-                                child: Container(
-                                  width: 200,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border.all(color: Colors.grey.shade400),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Obx(() {
-                                        final range = dashController.selectedRange.value;
-                                        if (range == null) {
-                                          return const Text(
-                                            "Filter by Date Range",
-                                            style: TextStyle(color: Colors.black54,fontFamily: "Lato",),
-                                          );
-                                        }
-                                        return Text(
-                                          "${range.start.day}-${range.start.month}-${range.start.year}  -  ${range.end.day}-${range.end.month}-${range.end.year}",
-                                          style: const TextStyle(
-                                            color: Colors.black87,
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: "Lato",
-                                          ),
-                                        );
-                                      }),
-                                      const SizedBox(width: 5),
-                                      const Icon(Icons.calendar_today,
-                                          color: Colors.grey, size: 17),
-                                      const SizedBox(width: 10),
-                                    ],
-                                  ),
-                                ),
+                            Container(
+                              width: 270,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(color: Colors.grey.shade400),
                               ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                 IconButton(
+                                      padding: EdgeInsets.zero,
+                                      constraints: BoxConstraints(),
+                                      icon: Icon(Icons.chevron_left, size: 20, color: Colors.grey[700]),
+                                      onPressed: () {
+                                        dashController.shiftRange(forward: false);
+                                      },
+                                    ),
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () {
+                                        dashController.showDatePickerDialog(context);
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Obx(() {
+                                            final range = dashController.selectedRange.value;
+                                            if (range == null) {
+                                              return const Text(
+                                                "Filter by Date Range",
+                                                style: TextStyle(color: Colors.black54, fontFamily: "Lato"),
+                                              );
+                                            }
+                                            return Text(
+                                              "${range.start.day}-${range.start.month}-${range.start.year}  -  ${range.end.day}-${range.end.month}-${range.end.year}",
+                                              style: const TextStyle(
+                                                color: Colors.black87,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: "Lato",
+                                              ),
+                                            );
+                                          }),
+                                          const SizedBox(width: 6),
+                                          const Icon(Icons.calendar_today, color: Colors.grey, size: 17),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                IconButton(
+                                icon: Icon(Icons.chevron_right,
+                                size: 20,
+                                color: dashController.canMoveForward() ? Colors.grey[700] : Colors.grey[300]),
+                              onPressed: dashController.canMoveForward() ? () => dashController.shiftRange(forward: true) : null,
+                            ),
+                const SizedBox(width: 6),
+                                ],
+                              ),
+                            ),
+
+                            // InkWell(
+                            //     onTap: (){
+                            //       dashController.showDatePickerDialog(context);
+                            //     },
+                            //     child: Container(
+                            //       width: 200,
+                            //       height: 30,
+                            //       decoration: BoxDecoration(
+                            //         color: Colors.white,
+                            //         borderRadius: BorderRadius.circular(5),
+                            //         border: Border.all(color: Colors.grey.shade400),
+                            //       ),
+                            //       child: Row(
+                            //         mainAxisAlignment: MainAxisAlignment.center,
+                            //         children: [
+                            //           Obx(() {
+                            //             final range = dashController.selectedRange.value;
+                            //             if (range == null) {
+                            //               return const Text(
+                            //                 "Filter by Date Range",
+                            //                 style: TextStyle(color: Colors.black54,fontFamily: "Lato",),
+                            //               );
+                            //             }
+                            //             return Text(
+                            //               "${range.start.day}-${range.start.month}-${range.start.year}  -  ${range.end.day}-${range.end.month}-${range.end.year}",
+                            //               style: const TextStyle(
+                            //                 color: Colors.black87,
+                            //                 fontWeight: FontWeight.w500,
+                            //                 fontFamily: "Lato",
+                            //               ),
+                            //             );
+                            //           }),
+                            //           const SizedBox(width: 5),
+                            //           const Icon(Icons.calendar_today,
+                            //               color: Colors.grey, size: 17),
+                            //           const SizedBox(width: 10),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ),
                             50.width,
                           ],
                         ),

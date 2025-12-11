@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/screens/reminder/add_reminder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/reminder_utils.dart';
-import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
@@ -24,6 +22,49 @@ class ReminderPage extends StatefulWidget {
 }
 
 class _ReminderPageState extends State<ReminderPage> {
+  List<double> colWidths = [
+    50,   // 0 Checkbox
+    80,  // 1 Actions
+    150,  // 2 Event Name
+    150,  // 3 Type
+    150,  // 4 Location
+    150,  // 5 Employee Name
+    150,  // 6 Customer Name
+    150,  // 7 Start Date
+    150,  // 8 End Date
+    150,  // 9 Details
+  ];
+  Widget headerCell(int index, Widget child) {
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          alignment: index==0?Alignment.center:Alignment.centerLeft,
+          child: child,
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          bottom: 0,
+          width: 10,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onHorizontalDragUpdate: (details) {
+              setState(() {
+                colWidths[index] += details.delta.dx;
+                if (colWidths[index] < 60) colWidths[index] = 60;
+              });
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.resizeColumn,
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
 
   @override
   void initState() {
@@ -295,80 +336,72 @@ class _ReminderPageState extends State<ReminderPage> {
                  ],
                ),
                10.height,
-               Table(
-                 columnWidths: const {
-                   0: FlexColumnWidth(1),
-                   1: FlexColumnWidth(2),
-                   2: FlexColumnWidth(3),//Reminder title
-                   3: FlexColumnWidth(2),//Reminder Type
-                   4: FlexColumnWidth(2),//Location
-                   5: FlexColumnWidth(3),//Employee Name
-                   6: FlexColumnWidth(3),//Customer Name
-                   7: FlexColumnWidth(3),//Start Date - Time
-                   8: FlexColumnWidth(3),//End Date - Time
-                   9: FlexColumnWidth(4.5),//Details
-                 },
-                 border: TableBorder(
-                   horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                   verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                 ),
-                 children: [
-                   TableRow(
+               SizedBox(
+                 width: controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+                 child: Table(
+                   columnWidths: {
+                     for (int i = 0; i < colWidths.length; i++)
+                       i: FixedColumnWidth(colWidths[i]),
+                   },
+                   border: TableBorder(
+                     horizontalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
+                     verticalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
+                   ),
+                   children: [
+                     TableRow(
                        decoration: BoxDecoration(
-                           color: colorsConst.primary,
-                           borderRadius: const BorderRadius.only(
-                               topLeft: Radius.circular(5),
-                               topRight: Radius.circular(5))),
+                         color: colorsConst.primary,
+                         borderRadius: const BorderRadius.only(
+                           topLeft: Radius.circular(5),
+                           topRight: Radius.circular(5),
+                         ),
+                       ),
                        children: [
-                         Padding(
-                           padding: const EdgeInsets.all(10.0),
-                           child:  Checkbox(
+                         headerCell(0,
+                           Checkbox(
                              shape: RoundedRectangleBorder(
                                borderRadius: BorderRadius.circular(2.0),
                              ),
                              side: WidgetStateBorderSide.resolveWith(
                                    (states) => const BorderSide(width: 1.0, color: Colors.white),
                              ),
-                             value: remController.selectedReminderIds.length == remController.reminderFilteredList.length && remController.reminderFilteredList.isNotEmpty,
-                             onChanged: (value) {
-                               remController.toggleSelectAllReminder();
-                             },
+                             value: remController.selectedReminderIds.length == remController.reminderFilteredList.length &&
+                                 remController.reminderFilteredList.isNotEmpty,
+                             onChanged: (value) => remController.toggleSelectAllReminder(),
                              activeColor: Colors.white,
                              checkColor: colorsConst.primary,
                            ),
                          ),
-                         Padding(
-                           padding: const EdgeInsets.all(10.0),
-                           child: CustomText(
+                         headerCell(1,
+                           CustomText(
                              textAlign: TextAlign.left,
-                             text: "Actions",//1
+                             text: "Actions",
                              size: 15,
                              isBold: true,
                              isCopy: true,
                              colors: Colors.white,
                            ),
                          ),
-                         Padding(
-                           padding: const EdgeInsets.all(10.0),
-                           child: Row(
+                         headerCell(2,
+                           Row(
                              children: [
                                CustomText(
-                                 textAlign: TextAlign.left,
                                  text: "Event Name",
-                                 isCopy: true,
                                  size: 15,
+                                 isCopy: true,
                                  isBold: true,
                                  colors: Colors.white,
                                ),
                                const SizedBox(width: 3),
                                GestureDetector(
-                                 onTap: (){
-                                   if(remController.sortFieldCallActivity.value=='title' && remController.sortOrderCallActivity.value=='asc'){
-                                     remController.sortOrderCallActivity.value='desc';
-                                   }else{
-                                     remController.sortOrderCallActivity.value='asc';
+                                 onTap: () {
+                                   if (remController.sortFieldCallActivity.value == 'title' &&
+                                       remController.sortOrderCallActivity.value == 'asc') {
+                                     remController.sortOrderCallActivity.value = 'desc';
+                                   } else {
+                                     remController.sortOrderCallActivity.value = 'asc';
                                    }
-                                   remController.sortFieldCallActivity.value='title';
+                                   remController.sortFieldCallActivity.value = 'title';
                                    remController.sortReminders();
                                  },
                                  child: Obx(() => Image.asset(
@@ -379,33 +412,31 @@ class _ReminderPageState extends State<ReminderPage> {
                                        : "assets/images/arrow_down.png",
                                    width: 15,
                                    height: 15,
-                                 ),
-                                 ),
+                                 )),
                                ),
                              ],
                            ),
                          ),
-                         Padding(
-                           padding: const EdgeInsets.all(10.0),
-                           child: Row(
+                         headerCell(3,
+                           Row(
                              children: [
                                CustomText(
-                                 textAlign: TextAlign.left,
-                                 text: "Type",//3
+                                 text: "Type",
                                  size: 15,
-                                 isCopy: true,
                                  isBold: true,
+                                 isCopy: true,
                                  colors: Colors.white,
                                ),
                                const SizedBox(width: 3),
                                GestureDetector(
-                                 onTap: (){
-                                   if(remController.sortFieldCallActivity.value=='type' && remController.sortOrderCallActivity.value=='asc'){
-                                     remController.sortOrderCallActivity.value='desc';
-                                   }else{
-                                     remController.sortOrderCallActivity.value='asc';
+                                 onTap: () {
+                                   if (remController.sortFieldCallActivity.value == 'type' &&
+                                       remController.sortOrderCallActivity.value == 'asc') {
+                                     remController.sortOrderCallActivity.value = 'desc';
+                                   } else {
+                                     remController.sortOrderCallActivity.value = 'asc';
                                    }
-                                   remController.sortFieldCallActivity.value='type';
+                                   remController.sortFieldCallActivity.value = 'type';
                                    remController.sortReminders();
                                  },
                                  child: Obx(() => Image.asset(
@@ -416,18 +447,15 @@ class _ReminderPageState extends State<ReminderPage> {
                                        : "assets/images/arrow_down.png",
                                    width: 15,
                                    height: 15,
-                                 ),
-                                 ),
+                                 )),
                                ),
                              ],
                            ),
                          ),
-                         Padding(
-                           padding: const EdgeInsets.all(10.0),
-                           child: Row(
+                         headerCell(4,
+                           Row(
                              children: [
-                               CustomText(//4
-                                 textAlign: TextAlign.left,
+                               CustomText(
                                  text: "Location",
                                  size: 15,
                                  isBold: true,
@@ -436,13 +464,14 @@ class _ReminderPageState extends State<ReminderPage> {
                                ),
                                const SizedBox(width: 3),
                                GestureDetector(
-                                 onTap: (){
-                                   if(remController.sortFieldCallActivity.value=='location' && remController.sortOrderCallActivity.value=='asc'){
-                                     remController.sortOrderCallActivity.value='desc';
-                                   }else{
-                                     remController.sortOrderCallActivity.value='asc';
+                                 onTap: () {
+                                   if (remController.sortFieldCallActivity.value == 'location' &&
+                                       remController.sortOrderCallActivity.value == 'asc') {
+                                     remController.sortOrderCallActivity.value = 'desc';
+                                   } else {
+                                     remController.sortOrderCallActivity.value = 'asc';
                                    }
-                                   remController.sortFieldCallActivity.value='location';
+                                   remController.sortFieldCallActivity.value = 'location';
                                    remController.sortReminders();
                                  },
                                  child: Obx(() => Image.asset(
@@ -453,18 +482,15 @@ class _ReminderPageState extends State<ReminderPage> {
                                        : "assets/images/arrow_down.png",
                                    width: 15,
                                    height: 15,
-                                 ),
-                                 ),
+                                 )),
                                ),
                              ],
                            ),
                          ),
-                         Padding(
-                           padding: const EdgeInsets.all(10.0),
-                           child: Row(
+                         headerCell(5,
+                           Row(
                              children: [
                                CustomText(
-                                 textAlign: TextAlign.left,
                                  text: "Employee Name",
                                  size: 15,
                                  isCopy: true,
@@ -473,13 +499,14 @@ class _ReminderPageState extends State<ReminderPage> {
                                ),
                                const SizedBox(width: 3),
                                GestureDetector(
-                                 onTap: (){
-                                   if(remController.sortFieldCallActivity.value=='employeeName' && remController.sortOrderCallActivity.value=='asc'){
-                                     remController.sortOrderCallActivity.value='desc';
-                                   }else{
-                                     remController.sortOrderCallActivity.value='asc';
+                                 onTap: () {
+                                   if (remController.sortFieldCallActivity.value == 'employeeName' &&
+                                       remController.sortOrderCallActivity.value == 'asc') {
+                                     remController.sortOrderCallActivity.value = 'desc';
+                                   } else {
+                                     remController.sortOrderCallActivity.value = 'asc';
                                    }
-                                   remController.sortFieldCallActivity.value='employeeName';
+                                   remController.sortFieldCallActivity.value = 'employeeName';
                                    remController.sortReminders();
                                  },
                                  child: Obx(() => Image.asset(
@@ -490,18 +517,15 @@ class _ReminderPageState extends State<ReminderPage> {
                                        : "assets/images/arrow_down.png",
                                    width: 15,
                                    height: 15,
-                                 ),
-                                 ),
+                                 )),
                                ),
                              ],
                            ),
                          ),
-                         Padding(
-                           padding: const EdgeInsets.all(10.0),
-                           child: Row(
+                         headerCell(6,
+                           Row(
                              children: [
-                               CustomText(//4
-                                 textAlign: TextAlign.left,
+                               CustomText(
                                  text: "Customer Name",
                                  size: 15,
                                  isBold: true,
@@ -510,13 +534,14 @@ class _ReminderPageState extends State<ReminderPage> {
                                ),
                                const SizedBox(width: 3),
                                GestureDetector(
-                                 onTap: (){
-                                   if(remController.sortBy.value=='customerName' && remController.sortOrderCallActivity.value=='asc'){
-                                     remController.sortOrderCallActivity.value='desc';
-                                   }else{
-                                     remController.sortOrderCallActivity.value='asc';
+                                 onTap: () {
+                                   if (remController.sortBy.value == 'customerName' &&
+                                       remController.sortOrderCallActivity.value == 'asc') {
+                                     remController.sortOrderCallActivity.value = 'desc';
+                                   } else {
+                                     remController.sortOrderCallActivity.value = 'asc';
                                    }
-                                   remController.sortBy.value='customerName';
+                                   remController.sortBy.value = 'customerName';
                                    remController.sortReminders();
                                  },
                                  child: Obx(() => Image.asset(
@@ -527,33 +552,31 @@ class _ReminderPageState extends State<ReminderPage> {
                                        : "assets/images/arrow_down.png",
                                    width: 15,
                                    height: 15,
-                                 ),
-                                 ),
+                                 )),
                                ),
                              ],
                            ),
                          ),
-                         Padding(
-                           padding: const EdgeInsets.all(10.0),
-                           child: Row(
+                         headerCell(7,
+                           Row(
                              children: [
-                               CustomText(//4
-                                 textAlign: TextAlign.left,
+                               CustomText(
                                  text: "Start Date",
                                  size: 15,
-                                 isCopy: true,
                                  isBold: true,
+                                 isCopy: true,
                                  colors: Colors.white,
                                ),
                                const SizedBox(width: 3),
                                GestureDetector(
-                                 onTap: (){
-                                   if(remController.sortFieldCallActivity.value=='startDate' && remController.sortOrderCallActivity.value=='asc'){
-                                     remController.sortOrderCallActivity.value='desc';
-                                   }else{
-                                     remController.sortOrderCallActivity.value='asc';
+                                 onTap: () {
+                                   if (remController.sortFieldCallActivity.value == 'startDate' &&
+                                       remController.sortOrderCallActivity.value == 'asc') {
+                                     remController.sortOrderCallActivity.value = 'desc';
+                                   } else {
+                                     remController.sortOrderCallActivity.value = 'asc';
                                    }
-                                   remController.sortFieldCallActivity.value='startDate';
+                                   remController.sortFieldCallActivity.value = 'startDate';
                                    remController.sortReminders();
                                  },
                                  child: Obx(() => Image.asset(
@@ -564,89 +587,50 @@ class _ReminderPageState extends State<ReminderPage> {
                                        : "assets/images/arrow_down.png",
                                    width: 15,
                                    height: 15,
-                                 ),
-                                 ),
+                                 )),
                                ),
                              ],
                            ),
                          ),
-                         Row(
-                           mainAxisAlignment: MainAxisAlignment.start,
-                           children: [
-                             Padding(
-                               padding: const EdgeInsets.all(10.0),
-                               child: Row(
-                                 children: [
-                                   CustomText(
-                                     textAlign: TextAlign.left,
-                                     text: "End Date",//6
-                                     size: 15,
-                                     isBold: true,
-                                     isCopy: true,
-                                     colors: Colors.white,
-                                   ),
-                                   const SizedBox(width: 3),
-                                   GestureDetector(
-                                     onTap: (){
-                                       if(remController.sortFieldCallActivity.value=='endDate' && remController.sortOrderCallActivity.value=='asc'){
-                                         remController.sortOrderCallActivity.value='desc';
-                                       }else{
-                                         remController.sortOrderCallActivity.value='asc';
-                                       }
-                                       remController.sortFieldCallActivity.value='endDate';
-                                       remController.sortReminders();
-                                     },
-                                     child: Obx(() => Image.asset(
-                                       controllers.sortFieldCallActivity.value.isEmpty
-                                           ? "assets/images/arrow.png"
-                                           : controllers.sortOrderCallActivity.value == 'asc'
-                                           ? "assets/images/arrow_up.png"
-                                           : "assets/images/arrow_down.png",
-                                       width: 15,
-                                       height: 15,
-                                     ),
-                                     ),
-                                   ),
-                                 ],
-                               ),
-                             ),
-                             // Obx(() => GestureDetector(
-                             //   onTap: (){
-                             //     controllers.sortField.value = 'date';
-                             //     controllers.sortOrder.value = 'asc';
-                             //   },
-                             //   child: Icon(
-                             //     Icons.arrow_upward,
-                             //     size: 16,
-                             //     color: (controllers.sortField.value == 'date' &&
-                             //         controllers.sortOrder.value == 'asc')
-                             //         ? Colors.white
-                             //         : Colors.grey,
-                             //   ),
-                             // )),
-                             // Obx(() => GestureDetector(
-                             //   onTap: (){
-                             //     controllers.sortField.value = 'date';
-                             //     controllers.sortOrder.value = 'desc';
-                             //   },
-                             //   child: Icon(
-                             //     Icons.arrow_downward,
-                             //     size: 16,
-                             //     color: (controllers.sortField.value == 'date' &&
-                             //         controllers.sortOrder.value == 'desc')
-                             //         ? Colors.white
-                             //         : Colors.grey,
-                             //   ),
-                             // )
-                             // ),
-                           ],
-                         ),
-                         Padding(
-                           padding: const EdgeInsets.all(10.0),
-                           child: Row(
+                         headerCell(8,
+                           Row(
                              children: [
-                               CustomText(//9
-                                 textAlign: TextAlign.center,
+                               CustomText(
+                                 text: "End Date",
+                                 size: 15,
+                                 isBold: true,
+                                 isCopy: true,
+                                 colors: Colors.white,
+                               ),
+                               const SizedBox(width: 3),
+                               GestureDetector(
+                                 onTap: () {
+                                   if (remController.sortFieldCallActivity.value == 'endDate' &&
+                                       remController.sortOrderCallActivity.value == 'asc') {
+                                     remController.sortOrderCallActivity.value = 'desc';
+                                   } else {
+                                     remController.sortOrderCallActivity.value = 'asc';
+                                   }
+                                   remController.sortFieldCallActivity.value = 'endDate';
+                                   remController.sortReminders();
+                                 },
+                                 child: Obx(() => Image.asset(
+                                   controllers.sortFieldCallActivity.value.isEmpty
+                                       ? "assets/images/arrow.png"
+                                       : controllers.sortOrderCallActivity.value == 'asc'
+                                       ? "assets/images/arrow_up.png"
+                                       : "assets/images/arrow_down.png",
+                                   width: 15,
+                                   height: 15,
+                                 )),
+                               ),
+                             ],
+                           ),
+                         ),
+                         headerCell(9,
+                           Row(
+                             children: [
+                               CustomText(
                                  text: "Details",
                                  size: 15,
                                  isBold: true,
@@ -655,13 +639,14 @@ class _ReminderPageState extends State<ReminderPage> {
                                ),
                                const SizedBox(width: 3),
                                GestureDetector(
-                                 onTap: (){
-                                   if(remController.sortFieldCallActivity.value=='details' && remController.sortOrderCallActivity.value=='asc'){
-                                     remController.sortOrderCallActivity.value='desc';
-                                   }else{
-                                     remController.sortOrderCallActivity.value='asc';
+                                 onTap: () {
+                                   if (remController.sortFieldCallActivity.value == 'details' &&
+                                       remController.sortOrderCallActivity.value == 'asc') {
+                                     remController.sortOrderCallActivity.value = 'desc';
+                                   } else {
+                                     remController.sortOrderCallActivity.value = 'asc';
                                    }
-                                   remController.sortFieldCallActivity.value='details';
+                                   remController.sortFieldCallActivity.value = 'details';
                                    remController.sortReminders();
                                  },
                                  child: Obx(() => Image.asset(
@@ -672,14 +657,16 @@ class _ReminderPageState extends State<ReminderPage> {
                                        : "assets/images/arrow_down.png",
                                    width: 15,
                                    height: 15,
-                                 ),
-                                 ),
+                                 )),
                                ),
                              ],
                            ),
                          ),
-                       ]),
-                 ],
+
+                       ],
+                     ),
+                   ],
+                 ),
                ),
                Expanded(
                  child: Obx(() {
@@ -702,17 +689,9 @@ class _ReminderPageState extends State<ReminderPage> {
                      itemBuilder: (context, index) {
                        final reminder = filteredList[index];
                        return Table(
-                         columnWidths:const {
-                           0: FlexColumnWidth(1),
-                           1: FlexColumnWidth(2),
-                           2: FlexColumnWidth(3),//Reminder title
-                           3: FlexColumnWidth(2),//Reminder Type
-                           4: FlexColumnWidth(2),//Location
-                           5: FlexColumnWidth(3),//Employee Name
-                           6: FlexColumnWidth(3),//Customer Name
-                           7: FlexColumnWidth(3),//Start Date - Time
-                           8: FlexColumnWidth(3),//End Date - Time
-                           9: FlexColumnWidth(4.5),//Details
+                         columnWidths: {
+                           for (int i = 0; i < colWidths.length; i++)
+                             i: FixedColumnWidth(colWidths[i]),
                          },
                          border: TableBorder(
                            horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),

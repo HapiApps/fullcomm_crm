@@ -564,6 +564,45 @@ class ApiService {
       controllers.productCtr.reset();
     }
   }
+
+  Future insertLeadPromoteAPI(BuildContext context,List<Map<String, String>> list) async {
+    try{
+      print("data ${list.toString()}");
+      Map data = {
+        "action": "lead_promote",
+        "cusList": list
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            "Accept": "application/text",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 && response["message"]=="OK"){
+        apiService.allLeadsDetails();
+        apiService.allQualifiedDetails();
+        apiService.allNewLeadsDetails();
+        apiService.allGoodLeadsDetails();
+        apiService.allCustomerDetails();
+        prospectsList.clear();
+        qualifiedList.clear();
+        customerList.clear();
+        Navigator.pop(context);
+        //Get.to(const Prospects(),duration: Duration.zero);
+        controllers.productCtr.reset();
+      } else {
+        errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
   Future insertSuspectsAPI(BuildContext context) async {
     try {
       print("data ${qualifiedList.toString()}");

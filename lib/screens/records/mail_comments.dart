@@ -36,6 +36,43 @@ class MailComments extends StatefulWidget {
 }
 
 class _MailCommentsState extends State<MailComments> {
+  List<double> colWidths = [
+    150,   // 0 Checkbox
+    150,  // 1 Actions
+    150,  // 2 Event Name
+    150,  // 3 Type
+    150,  // 4 Location
+  ];
+  Widget headerCell(int index, Widget child) {
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          alignment: index==0?Alignment.center:Alignment.centerLeft,
+          child: child,
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          bottom: 0,
+          width: 10,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onHorizontalDragUpdate: (details) {
+              setState(() {
+                colWidths[index] += details.delta.dx;
+                if (colWidths[index] < 60) colWidths[index] = 60;
+              });
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.resizeColumn,
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
   late FocusNode _focusNode;
   final ScrollController _controller = ScrollController();
   @override
@@ -280,29 +317,26 @@ class _MailCommentsState extends State<MailComments> {
                         ],
                       ),
                       15.height,
-                      Table(
-                        columnWidths: const {
-                          0: FlexColumnWidth(3),//date
-                          1: FlexColumnWidth(2),//Mobile No.
-                          2: FlexColumnWidth(3),//Call Type
-                          3: FlexColumnWidth(4.5),//Message
-                          4: FlexColumnWidth(4),//Attachment
-                        },
-                        border: TableBorder(
-                          horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                          verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                        ),
-                        children: [
-                          TableRow(
-                              decoration: BoxDecoration(
-                                  color: colorsConst.primary,
-                                  borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(5),
-                                      topRight: Radius.circular(5))),
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Row(
+                      SizedBox(
+                        width: controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+                        child: Table(
+                          columnWidths: {
+                            for (int i = 0; i < colWidths.length; i++)
+                              i: FixedColumnWidth(colWidths[i]),
+                          },
+                          border: TableBorder(
+                            horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                            verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                          ),
+                          children: [
+                            TableRow(
+                                decoration: BoxDecoration(
+                                    color: colorsConst.primary,
+                                    borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(5),
+                                        topRight: Radius.circular(5))),
+                                children: [
+                                  headerCell(0, Row(
                                     children: [
                                       CustomText(
                                         textAlign: TextAlign.left,
@@ -335,137 +369,128 @@ class _MailCommentsState extends State<MailComments> {
                                         ),
                                       ),
                                     ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Row(
+                                  ),),
+                                 headerCell(1, Row(
+                                   children: [
+                                     CustomText(
+                                       textAlign: TextAlign.left,
+                                       text: "Subject",
+                                       size: 15,
+                                       isBold: true,
+                                       isCopy: true,
+                                       colors: Colors.white,
+                                     ),
+                                     const SizedBox(width: 3),
+                                     GestureDetector(
+                                       onTap: (){
+                                         if(remController.sortFieldCallActivity.value=='subject' && remController.sortOrderCallActivity.value=='asc'){
+                                           remController.sortOrderCallActivity.value='desc';
+                                         }else{
+                                           remController.sortOrderCallActivity.value='asc';
+                                         }
+                                         remController.sortFieldCallActivity.value='subject';
+                                         remController.sortMails();
+                                       },
+                                       child: Obx(() => Image.asset(
+                                         controllers.sortFieldCallActivity.value.isEmpty
+                                             ? "assets/images/arrow.png"
+                                             : controllers.sortOrderCallActivity.value == 'asc'
+                                             ? "assets/images/arrow_up.png"
+                                             : "assets/images/arrow_down.png",
+                                         width: 15,
+                                         height: 15,
+                                       ),
+                                       ),
+                                     ),
+                                   ],
+                                 ),),
+                                 headerCell(2, Row(
+                                   children: [
+                                     CustomText(
+                                       textAlign: TextAlign.left,
+                                       text: "Message",
+                                       size: 15,
+                                       isBold: true,
+                                       isCopy: true,
+                                       colors: Colors.white,
+                                     ),
+                                     const SizedBox(width: 3),
+                                     GestureDetector(
+                                       onTap: (){
+                                         if(remController.sortFieldCallActivity.value=='msg' && remController.sortOrderCallActivity.value=='asc'){
+                                           remController.sortOrderCallActivity.value='desc';
+                                         }else{
+                                           remController.sortOrderCallActivity.value='asc';
+                                         }
+                                         remController.sortFieldCallActivity.value='msg';
+                                         remController.sortMails();
+                                       },
+                                       child: Obx(() => Image.asset(
+                                         controllers.sortFieldCallActivity.value.isEmpty
+                                             ? "assets/images/arrow.png"
+                                             : controllers.sortOrderCallActivity.value == 'asc'
+                                             ? "assets/images/arrow_up.png"
+                                             : "assets/images/arrow_down.png",
+                                         width: 15,
+                                         height: 15,
+                                       ),
+                                       ),
+                                     ),
+                                   ],
+                                 ),),
+                                headerCell(3,  CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Attachment",
+                                  size: 15,
+                                  isBold: true,
+                                  isCopy: true,
+                                  colors: Colors.white,
+                                ),),
+                                  headerCell(4, Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      CustomText(
-                                        textAlign: TextAlign.left,
-                                        text: "Subject",
-                                        size: 15,
-                                        isBold: true,
-                                        isCopy: true,
-                                        colors: Colors.white,
-                                      ),
-                                      const SizedBox(width: 3),
-                                      GestureDetector(
-                                        onTap: (){
-                                          if(remController.sortFieldCallActivity.value=='subject' && remController.sortOrderCallActivity.value=='asc'){
-                                            remController.sortOrderCallActivity.value='desc';
-                                          }else{
-                                            remController.sortOrderCallActivity.value='asc';
-                                          }
-                                          remController.sortFieldCallActivity.value='subject';
-                                          remController.sortMails();
-                                        },
-                                        child: Obx(() => Image.asset(
-                                          controllers.sortFieldCallActivity.value.isEmpty
-                                              ? "assets/images/arrow.png"
-                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                              ? "assets/images/arrow_up.png"
-                                              : "assets/images/arrow_down.png",
-                                          width: 15,
-                                          height: 15,
-                                        ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Row(
+                                          children: [
+                                            CustomText(
+                                              textAlign: TextAlign.center,
+                                              text: "Date",
+                                              size: 15,
+                                              isBold: true,
+                                              isCopy: true,
+                                              colors: Colors.white,
+                                            ),
+                                            const SizedBox(width: 3),
+                                            GestureDetector(
+                                              onTap: (){
+                                                if(remController.sortFieldCallActivity.value=='date' && remController.sortOrderCallActivity.value=='asc'){
+                                                  remController.sortOrderCallActivity.value='desc';
+                                                }else{
+                                                  remController.sortOrderCallActivity.value='asc';
+                                                }
+                                                remController.sortFieldCallActivity.value='date';
+                                                remController.sortMails();
+                                              },
+                                              child: Obx(() => Image.asset(
+                                                controllers.sortFieldCallActivity.value.isEmpty
+                                                    ? "assets/images/arrow.png"
+                                                    : controllers.sortOrderCallActivity.value == 'asc'
+                                                    ? "assets/images/arrow_up.png"
+                                                    : "assets/images/arrow_down.png",
+                                                width: 15,
+                                                height: 15,
+                                              ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Row(
-                                    children: [
-                                      CustomText(
-                                        textAlign: TextAlign.left,
-                                        text: "Message",
-                                        size: 15,
-                                        isBold: true,
-                                        isCopy: true,
-                                        colors: Colors.white,
-                                      ),
-                                      const SizedBox(width: 3),
-                                      GestureDetector(
-                                        onTap: (){
-                                          if(remController.sortFieldCallActivity.value=='msg' && remController.sortOrderCallActivity.value=='asc'){
-                                            remController.sortOrderCallActivity.value='desc';
-                                          }else{
-                                            remController.sortOrderCallActivity.value='asc';
-                                          }
-                                          remController.sortFieldCallActivity.value='msg';
-                                          remController.sortMails();
-                                        },
-                                        child: Obx(() => Image.asset(
-                                          controllers.sortFieldCallActivity.value.isEmpty
-                                              ? "assets/images/arrow.png"
-                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                              ? "assets/images/arrow_up.png"
-                                              : "assets/images/arrow_down.png",
-                                          width: 15,
-                                          height: 15,
-                                        ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: CustomText(
-                                    textAlign: TextAlign.left,
-                                    text: "Attachment",
-                                    size: 15,
-                                    isBold: true,
-                                    isCopy: true,
-                                    colors: Colors.white,
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Row(
-                                        children: [
-                                          CustomText(
-                                            textAlign: TextAlign.center,
-                                            text: "Date",
-                                            size: 15,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: Colors.white,
-                                          ),
-                                          const SizedBox(width: 3),
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(remController.sortFieldCallActivity.value=='date' && remController.sortOrderCallActivity.value=='asc'){
-                                                remController.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                remController.sortOrderCallActivity.value='asc';
-                                              }
-                                              remController.sortFieldCallActivity.value='date';
-                                              remController.sortMails();
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ]),
-                        ],
+                                  ),)
+                                ]),
+                          ],
+                        ),
                       ),
                       Expanded(
                           child: Obx((){
@@ -512,12 +537,9 @@ class _MailCommentsState extends State<MailComments> {
                                 itemBuilder: (context, index) {
                                   final data = filteredList[index];
                                   return Table(
-                                    columnWidths:const {
-                                      0: FlexColumnWidth(3),//date
-                                      1: FlexColumnWidth(2),//Mobile No.
-                                      2: FlexColumnWidth(3),//Call Type
-                                      3: FlexColumnWidth(4.5),//Message
-                                      4: FlexColumnWidth(4),//Attachment
+                                    columnWidths: {
+                                      for (int i = 0; i < colWidths.length; i++)
+                                        i: FixedColumnWidth(colWidths[i]),
                                     },
                                     border: TableBorder(
                                       horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),

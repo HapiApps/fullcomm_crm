@@ -27,7 +27,47 @@ class CallComments extends StatefulWidget {
 }
 
 class _CallCommentsState extends State<CallComments> {
-
+  List<double> colWidths = [
+    50,   // 0 Checkbox
+    80,  // 1 Actions
+    150,  // 2 Event Name
+    150,  // 3 Type
+    150,  // 4 Location
+    150,  // 5 Employee Name
+    150,  // 6 Customer Name
+    150,  // 7 Start Date
+    150,  // 8 End Date
+  ];
+  Widget headerCell(int index, Widget child) {
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          alignment: index==0?Alignment.center:Alignment.centerLeft,
+          child: child,
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          bottom: 0,
+          width: 10,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onHorizontalDragUpdate: (details) {
+              setState(() {
+                colWidths[index] += details.delta.dx;
+                if (colWidths[index] < 60) colWidths[index] = 60;
+              });
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.resizeColumn,
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
   bool dateCheck() {
     return controllers.stDate.value !=
         "${DateTime.now().day.toString().padLeft(2, "0")}"
@@ -684,66 +724,53 @@ class _CallCommentsState extends State<CallComments> {
                       ],
                     ),
                     15.height,
-                    Table(
-                      columnWidths: const {
-                        0: FlexColumnWidth(1),//date
-                        1: FlexColumnWidth(1.5),//Customer Name
-                        2: FlexColumnWidth(2),//Mobile No.
-                        3: FlexColumnWidth(2),//Call Type
-                        4: FlexColumnWidth(2),//Message
-                        5: FlexColumnWidth(2.5),//Status
-                        6: FlexColumnWidth(3),//Lead Status
-                        7: FlexColumnWidth(3.5),//Status
-                        8: FlexColumnWidth(3),
-                        //6: FlexColumnWidth(4.5),//Actions
-                      },
-                      border: TableBorder(
-                        horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                        verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                    SizedBox(
+                      width: controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+                      child: Table(
+                        columnWidths: {
+                          for (int i = 0; i < colWidths.length; i++)
+                            i: FixedColumnWidth(colWidths[i]),
+                        },
+                        border: TableBorder(
+                          horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                          verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                        ),
+                        children: [
+                          TableRow(
+                              decoration: BoxDecoration(
+                                  color: colorsConst.primary,
+                                  borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(5),
+                                      topRight: Radius.circular(5))),
+                              children: [
+                               headerCell(0, Obx(() => Checkbox(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(2.0),
                       ),
-                      children: [
-                        TableRow(
-                            decoration: BoxDecoration(
-                                color: colorsConst.primary,
-                                borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(5),
-                                    topRight: Radius.circular(5))),
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child:  Obx(() => Checkbox(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(2.0),
-                                  ),
-                                  side: WidgetStateBorderSide.resolveWith(
-                                        (states) => const BorderSide(width: 1.0, color: Colors.white),
-                                  ),
-                                  value: remController.selectedRecordCallIds.length == remController.callFilteredList.length && remController.callFilteredList.isNotEmpty,
-                                  onChanged: (value) {
-                                    if (value == true) {
-                                      remController.selectAllCalls();
-                                    } else {
-                                      remController.unselectAllCalls();
-                                    }
-                                  },
-                                  activeColor: Colors.white,
-                                  checkColor: colorsConst.primary,
-                                )),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: CustomText(
-                                  textAlign: TextAlign.left,
-                                  text: "Actions",//1
-                                  size: 15,
-                                  isBold: true,
-                                  isCopy: false,
-                                  colors: Colors.white,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
+                      side: WidgetStateBorderSide.resolveWith(
+                            (states) => const BorderSide(width: 1.0, color: Colors.white),
+                      ),
+                      value: remController.selectedRecordCallIds.length == remController.callFilteredList.length && remController.callFilteredList.isNotEmpty,
+                      onChanged: (value) {
+                        if (value == true) {
+                          remController.selectAllCalls();
+                        } else {
+                          remController.unselectAllCalls();
+                        }
+                      },
+                      activeColor: Colors.white,
+                      checkColor: colorsConst.primary,
+                    ))),
+                              headerCell(1, CustomText(
+                                textAlign: TextAlign.left,
+                                text: "Actions",//1
+                                size: 15,
+                                isBold: true,
+                                isCopy: false,
+                                colors: Colors.white,
+                              ),),
+                                headerCell(
+                                  2,  Row(
                                   children: [
                                     CustomText(
                                       textAlign: TextAlign.left,
@@ -785,11 +812,8 @@ class _CallCommentsState extends State<CallComments> {
                                       ),
                                     ),
                                   ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
+                                ),),
+                                headerCell(3, Row(
                                   children: [
                                     CustomText(//2
                                       textAlign: TextAlign.left,
@@ -831,11 +855,8 @@ class _CallCommentsState extends State<CallComments> {
                                       ),
                                     ),
                                   ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
+                                ),),
+                                headerCell(4, Row(
                                   children: [
                                     CustomText(
                                       textAlign: TextAlign.left,
@@ -877,11 +898,8 @@ class _CallCommentsState extends State<CallComments> {
                                       ),
                                     ),
                                   ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
+                                ),),
+                                headerCell(5, Row(
                                   children: [
                                     CustomText(
                                       textAlign: TextAlign.left,
@@ -923,11 +941,8 @@ class _CallCommentsState extends State<CallComments> {
                                       ),
                                     ),
                                   ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
+                                ),),
+                                headerCell(6, Row(
                                   children: [
                                     CustomText(//4
                                       textAlign: TextAlign.left,
@@ -969,11 +984,8 @@ class _CallCommentsState extends State<CallComments> {
                                       ),
                                     ),
                                   ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
+                                ),),
+                                headerCell(7, Row(
                                   children: [
                                     CustomText(//4
                                       textAlign: TextAlign.left,
@@ -1015,61 +1027,53 @@ class _CallCommentsState extends State<CallComments> {
                                       ),
                                     ),
                                   ],
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Row(
-                                      children: [
-                                        CustomText(
-                                          textAlign: TextAlign.left,
-                                          text: "Date",
-                                          size: 15,
-                                          isBold: true,
-                                          isCopy: true,
-                                          colors: Colors.white,
-                                        ),
-                                        3.width,
-                                        GestureDetector(
-                                          onTap: (){
-                                            if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
-                                              controllers.sortOrderCallActivity.value='desc';
-                                            }else{
-                                              controllers.sortOrderCallActivity.value='asc';
-                                            }
-                                            controllers.sortFieldCallActivity.value='date';
-                                            remController.filterAndSortCalls(
-                                              allCalls: controllers.callActivity,
-                                              searchText: controllers.searchText.value.toLowerCase(),
-                                              callType: controllers.selectCallType.value,
-                                              sortField: controllers.sortFieldCallActivity.value,
-                                              sortOrder: controllers.sortOrderCallActivity.value,
-                                              selectedMonth: remController.selectedCallMonth.value,
-                                              selectedRange: remController.selectedCallRange.value,
-                                              selectedDateFilter: remController.selectedCallSortBy.value,
-                                            );
-                                          },
-                                          child: Obx(() => Image.asset(
-                                            controllers.sortFieldCallActivity.value.isEmpty
-                                                ? "assets/images/arrow.png"
-                                                : controllers.sortOrderCallActivity.value == 'asc'
-                                                ? "assets/images/arrow_up.png"
-                                                : "assets/images/arrow_down.png",
-                                            width: 15,
-                                            height: 15,
-                                          ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ]),
-                      ],
+                                ),),
+                             headerCell(8, Row(
+                               children: [
+                                 CustomText(
+                                   textAlign: TextAlign.left,
+                                   text: "Date",
+                                   size: 15,
+                                   isBold: true,
+                                   isCopy: true,
+                                   colors: Colors.white,
+                                 ),
+                                 3.width,
+                                 GestureDetector(
+                                   onTap: (){
+                                     if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
+                                       controllers.sortOrderCallActivity.value='desc';
+                                     }else{
+                                       controllers.sortOrderCallActivity.value='asc';
+                                     }
+                                     controllers.sortFieldCallActivity.value='date';
+                                     remController.filterAndSortCalls(
+                                       allCalls: controllers.callActivity,
+                                       searchText: controllers.searchText.value.toLowerCase(),
+                                       callType: controllers.selectCallType.value,
+                                       sortField: controllers.sortFieldCallActivity.value,
+                                       sortOrder: controllers.sortOrderCallActivity.value,
+                                       selectedMonth: remController.selectedCallMonth.value,
+                                       selectedRange: remController.selectedCallRange.value,
+                                       selectedDateFilter: remController.selectedCallSortBy.value,
+                                     );
+                                   },
+                                   child: Obx(() => Image.asset(
+                                     controllers.sortFieldCallActivity.value.isEmpty
+                                         ? "assets/images/arrow.png"
+                                         : controllers.sortOrderCallActivity.value == 'asc'
+                                         ? "assets/images/arrow_up.png"
+                                         : "assets/images/arrow_down.png",
+                                     width: 15,
+                                     height: 15,
+                                   ),
+                                   ),
+                                 ),
+                               ],
+                             ),)
+                              ]),
+                        ],
+                      ),
                     ),
                     Expanded(
                           child: Obx((){
@@ -1114,16 +1118,9 @@ class _CallCommentsState extends State<CallComments> {
                                       ? "Qualified"
                                       : "Customers";
                                   return Table(
-                                    columnWidths:const {
-                                      0: FlexColumnWidth(1),//date
-                                      1: FlexColumnWidth(1.5),//Customer Name
-                                      2: FlexColumnWidth(2),//Mobile No.
-                                      3: FlexColumnWidth(2),//Call Type
-                                      4: FlexColumnWidth(2),//Message
-                                      5: FlexColumnWidth(2.5),//Status
-                                      6: FlexColumnWidth(3),//Lead Status
-                                      7: FlexColumnWidth(3.5),//Status
-                                      8: FlexColumnWidth(3),
+                                    columnWidths: {
+                                      for (int i = 0; i < colWidths.length; i++)
+                                        i: FixedColumnWidth(colWidths[i]),
                                     },
                                     border: TableBorder(
                                       horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),

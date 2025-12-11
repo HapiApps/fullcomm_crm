@@ -183,6 +183,67 @@ class DashboardController extends GetxController {
     );
   }
 
+  String _fmt(DateTime d) =>
+      "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
+  bool canMoveForward() {
+    final amount = dashController._shiftAmountForFilter(dashController.selectedSortBy.value);
+    final current = dashController.selectedRange.value;
+    if (current == null) return false;
+
+    final newEnd = current.end.add(Duration(days: amount));
+    final today = DateTime.now();
+    return !DateTime(newEnd.year, newEnd.month, newEnd.day)
+        .isAfter(DateTime(today.year, today.month, today.day));
+  }
+  int _shiftAmountForFilter(String filter) {
+    switch (filter) {
+      case "Last 7 Days":
+        return 7;
+      case "Last 30 Days":
+        return 30;
+      default:
+        return 1;
+    }
+  }
+
+  void shiftRange({required bool forward}) {
+    final amount = _shiftAmountForFilter(selectedSortBy.value);
+    final sign = forward ? 1 : -1;
+
+    final now = DateTime.now();
+    DateTimeRange current = selectedRange.value ??
+        DateTimeRange(
+          start: DateTime(now.year, now.month, now.day),
+          end: DateTime(now.year, now.month, now.day),
+        );
+
+    final DateTime newStart = current.start.add(Duration(days: sign * amount));
+    final DateTime newEnd = current.end.add(Duration(days: sign * amount));
+
+    if (forward) {
+      final today = DateTime(now.year, now.month, now.day);
+      if (DateTime(newEnd.year, newEnd.month, newEnd.day).isAfter(today)) {
+        return;
+      }
+    }
+
+    final normalizedStart = DateTime(newStart.year, newStart.month, newStart.day);
+    final normalizedEnd = DateTime(newEnd.year, newEnd.month, newEnd.day);
+
+    selectedRange.value = DateTimeRange(start: normalizedStart, end: normalizedEnd);
+
+    getDashboardReport();
+
+    if (selectedSortBy.value != "Today" && selectedSortBy.value != "Yesterday") {
+      getCustomerReport(_fmt(normalizedStart), _fmt(normalizedEnd));
+    } else {
+      final today = DateTime.now();
+      final last7days = today.subtract(Duration(days: 7));
+      getCustomerReport(_fmt(last7days), _fmt(today));
+    }
+  }
+
+
   Future getCustomerReport(String stDate,String endDate) async {
     try {
       Map data = {

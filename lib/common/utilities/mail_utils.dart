@@ -469,7 +469,6 @@ class MailUtils {
                                       //     ),
                                       //   ),
                                       // ),
-
                                     ],
                                   ),
                                 )),
@@ -480,7 +479,120 @@ class MailUtils {
               });
         });
   }
-  // void bulkTargetEmailDialog(FocusNode focusNode, {required List<Map<String, String>> list}) {
+
+  Future<void> showPromoteDialog({
+    required BuildContext context,
+    required String pageName,
+    required VoidCallback onSubmit,
+  }) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        TextEditingController reasonController = TextEditingController();
+        String dropValue = pageName == "Prospects"
+            ? "Qualified"
+            : pageName == "Qualified"
+            ? "Customers"
+            : "Prospects";
+        String selectedStage = dropValue;
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(
+                "Move to Next Level",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Select Stage", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.blue),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedStage,
+                      isExpanded: true,
+                      underline: SizedBox(),
+                      items: [
+                        "Prospects",
+                        "Qualified",
+                        "Customers"
+                      ].map((value) => DropdownMenuItem(value: value, child: Text(value))).toList(),
+                      onChanged: (value) {
+                        setState(() => selectedStage = value!);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: reasonController,
+                    decoration: InputDecoration(
+                      labelText: "Reason",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: colorsConst.primary),
+                          color: Colors.white),
+                      width: 80,
+                      height: 25,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                            ),
+                            backgroundColor: Colors.white,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: CustomText(
+                            text: "Cancel",
+                            isCopy: false,
+                            colors: colorsConst.primary,
+                            size: 14,
+                          )),
+                    ),
+                    10.width,
+                    CustomLoadingButton(
+                      callback: onSubmit,
+                      height: 35,
+                      isLoading: true,
+                      backgroundColor:
+                      colorsConst.primary,
+                      radius: 2,
+                      width: 80,
+                      controller:
+                      controllers.productCtr,
+                      isImage: false,
+                      text: "Promote",
+                      textColor: Colors.white,
+                    ),
+                  ],
+                )
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+
+
+// void bulkTargetEmailDialog(FocusNode focusNode, {required List<Map<String, String>> list}) {
   //   int total = list.length;
   //   int withMail = list.where((e) => (e["mail_id"] != null && e["mail_id"]!.trim().isNotEmpty && e["mail_id"]!.trim() != "null")).length;
   //   int withoutMail = total - withMail;
