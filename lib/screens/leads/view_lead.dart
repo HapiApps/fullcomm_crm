@@ -1274,108 +1274,110 @@ class _ViewLeadState extends State<ViewLead> {
                                                 20.width,
                                                 SizedBox(
                                                   width: screenWidth / 3.5,
-                                                  child: Row(
-                                                    children: [
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                        children: [
-                                                          CustomText(
-                                                            text: "",
-                                                            colors: colorsConst.textColor,
-                                                            isBold: true,
-                                                            size: 16,
-                                                            isCopy: true,
-                                                          ),
-                                                          20.height,
-                                                          utils.leadText(
-                                                              text: "Additional Notes",
-                                                              color: colorsConst.primary),
-                                                          20.height,
-                                                          utils.leadText(
-                                                              text: "Response Priority",
-                                                              color: colorsConst.primary),
-                                                          20.height,
-                                                          utils.leadText(
-                                                              text: _formatHeading(controllers
-                                                                  .getUserHeading("arpu_value") ??
-                                                                  "ARPU Value"),
-                                                              color: colorsConst.primary),
-                                                          20.height,
-                                                          utils.leadText(
-                                                              text:
-                                                              _formatHeading(controllers.getUserHeading(
-                                                                  "expected_convertion_date") ??
-                                                                  "Expected Conversion Date"),
-                                                              color: colorsConst.primary),
-                                                          20.height,
-                                                          utils.leadText(
-                                                              text: _formatHeading(controllers
-                                                                  .getUserHeading(
-                                                                  "prospect_enrollment_date") ??
-                                                                  "Prospect Enrollment Date"),
-                                                              color: colorsConst.primary),
-                                                          10.height,
-                                                          utils.leadText(
-                                                              text: _formatHeading(controllers
-                                                                  .getUserHeading("source") ??
-                                                                  "SOURCE OF PROSPECT"),
-                                                              color: colorsConst.primary),
-                                                          20.height,
-                                                          utils.leadText(
-                                                              text: _formatHeading(controllers
-                                                                  .getUserHeading("status_update") ??
-                                                                  "Status Update"),
-                                                              color: colorsConst.primary),
-                                                          25.height,
-                                                        ],
-                                                      ),
-                                                      20.width,
-                                                      Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          CustomText(
-                                                            text: "",
-                                                            colors: colorsConst.textColor,
-                                                            isBold: true,
-                                                            size: 16,
-                                                            isCopy: true,
-                                                          ),
-                                                          20.height,
-                                                          utils.leadText(
-                                                              text: widget.notes ?? "",
-                                                              color: colorsConst.textColor),
-                                                          20.height,
-                                                          utils.leadText(
-                                                              text:"Normal",
-                                                              color: colorsConst.textColor),
-                                                          20.height,
-                                                          utils.leadText(
-                                                              text: cust?.arpuValue ?? "",
-                                                              color: colorsConst.textColor),
-                                                          20.height,
-                                                          utils.leadText(
-                                                              text: cust?.expectedConvertionDate ?? "",
-                                                              color: colorsConst.textColor),
-                                                          20.height,
-                                                          utils.leadText(
-                                                              text: cust?.prospectEnrollmentDate ?? "",
-                                                              color: colorsConst.textColor),
-                                                          20.height,
-                                                          utils.leadText(
-                                                              text: cust?.source ?? "",
-                                                              color: colorsConst.textColor),
-                                                          20.height,
-                                                          Tooltip(
-                                                            message: cust?.statusUpdate ?? "",
-                                                            child: utils.leadText(
-                                                                text: cust?.statusUpdate ?? "",
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection: Axis.horizontal,
+                                                    child: Row(
+                                                      children: [
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            CustomText(
+                                                              text: "",
+                                                              colors: colorsConst.textColor,
+                                                              isBold: true,
+                                                              size: 16,
+                                                              isCopy: true,
+                                                            ),
+                                                            20.height,
+                                                            utils.leadText(
+                                                                text: "Additional Notes",
+                                                                color: colorsConst.primary),
+                                                            20.height,
+                                                            utils.leadText(
+                                                                text: "Response Priority",
+                                                                color: colorsConst.primary),
+                                                            20.height,
+                                                            utils.leadText(
+                                                                text: _formatHeading(controllers
+                                                                    .getUserHeading("arpu_value") ??
+                                                                    "ARPU Value"),
+                                                                color: colorsConst.primary),
+                                                            20.height,
+                                                            utils.leadText(
+                                                                text:
+                                                                _formatHeading(controllers.getUserHeading(
+                                                                    "expected_convertion_date") ??
+                                                                    "Expected Conversion Date"),
+                                                                color: colorsConst.primary),
+                                                            20.height,
+                                                            utils.leadText(
+                                                                text: _formatHeading(controllers
+                                                                    .getUserHeading(
+                                                                    "prospect_enrollment_date") ??
+                                                                    "Prospect Enrollment Date"),
+                                                                color: colorsConst.primary),
+                                                            10.height,
+                                                            utils.leadText(
+                                                                text: _formatHeading(controllers
+                                                                    .getUserHeading("source") ??
+                                                                    "SOURCE OF PROSPECT"),
+                                                                color: colorsConst.primary),
+                                                            20.height,
+                                                            utils.leadText(
+                                                                text: _formatHeading(controllers
+                                                                    .getUserHeading("status_update") ??
+                                                                    "Status Update"),
+                                                                color: colorsConst.primary),
+                                                            25.height,
+                                                          ],
+                                                        ),
+                                                        20.width,
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            CustomText(
+                                                              text: "",
+                                                              colors: colorsConst.textColor,
+                                                              isBold: true,
+                                                              size: 16,
+                                                              isCopy: true,
+                                                            ),
+                                                            20.height,
+                                                            utils.leadText(
+                                                                text: widget.notes ?? "",
                                                                 color: colorsConst.textColor),
-                                                          ),
-                                                          25.height,
-                                                        ],
-                                                      ),
-                                                    ],
+                                                            20.height,
+                                                            utils.leadText(
+                                                                text:"Normal",
+                                                                color: colorsConst.textColor),
+                                                            20.height,
+                                                            utils.leadText(
+                                                                text: cust?.arpuValue ?? "",
+                                                                color: colorsConst.textColor),
+                                                            20.height,
+                                                            utils.leadText(
+                                                                text: cust?.expectedConvertionDate ?? "",
+                                                                color: colorsConst.textColor),
+                                                            20.height,
+                                                            utils.leadText(
+                                                                text: cust?.prospectEnrollmentDate ?? "",
+                                                                color: colorsConst.textColor),
+                                                            20.height,
+                                                            utils.leadText(
+                                                                text: cust?.source ?? "",
+                                                                color: colorsConst.textColor),
+                                                            20.height,
+                                                            Tooltip(
+                                                              message: cust?.statusUpdate ?? "",
+                                                              child: utils.leadText(
+                                                                  text: cust?.statusUpdate ?? "",
+                                                                  color: colorsConst.textColor),
+                                                            ),
+                                                            25.height,
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                                 20.width
