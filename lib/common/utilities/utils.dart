@@ -1926,6 +1926,7 @@ class Utils {
   List<Map<String, dynamic>> mCustomerData = [];
 
   void parseExcelFile(Uint8List bytes, BuildContext context, String leadStatus) async {
+    //print("Bites $bytes");
     customerData = [];
     controllers.customerCtr.start();
     var excelD = excel.Excel.decodeBytes(bytes);
