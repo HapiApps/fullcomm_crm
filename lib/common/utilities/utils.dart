@@ -1925,6 +1925,7 @@ class Utils {
   List<Map<String, dynamic>> customerData = [];
   List<Map<String, dynamic>> mCustomerData = [];
 
+
   void parseExcelFile(Uint8List bytes, BuildContext context, String leadStatus) async {
     //print("Bites $bytes");
     customerData = [];
@@ -1932,6 +1933,7 @@ class Utils {
     var excelD = excel.Excel.decodeBytes(bytes);
 
     for (var table in excelD.tables.keys) {
+      print("rows ${excelD.tables[table]!.rows}");
       var rows = excelD.tables[table]!.rows;
 
       if (rows.length < 6) {
@@ -2029,7 +2031,7 @@ class Utils {
         "cusList": customerData,
       };
 
-      //print("Payload: ${jsonEncode(finalPayload)}");
+      print("Payload: ${jsonEncode(finalPayload)}");
 
       await apiService.insertCustomersAPI(context, customerData, fieldMappings, bytes, "CRMSheet");
     }
