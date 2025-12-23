@@ -188,10 +188,11 @@ class TableController extends GetxController {
           encoding: Encoding.getByName("utf-8")
       );
       print("request ${request.body}");
-      Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200 && response["message"]=="Heading added successfully"){
-        apiService.getUserHeading();
+      //Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200 ){
         Navigator.pop(context);
+        apiService.getUserHeading();
+
         utils.snackBar(context: context, msg: "Heading added successfully", color: Colors.green);
         controllers.productCtr.reset();
       } else {

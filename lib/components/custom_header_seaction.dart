@@ -9,6 +9,7 @@ import 'package:fullcomm_crm/controller/table_controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/colors_constant.dart';
+import '../common/styles/styles.dart';
 import '../common/utilities/utils.dart';
 import '../controller/controller.dart';
 import '../models/new_lead_obj.dart';
@@ -300,18 +301,31 @@ class _HeaderSectionState extends State<HeaderSection> {
             content: SizedBox(
               width: 300,
               height: 100,
-              child: CustomTextField(
-                text: "Name",
+              child: TextField(
                 controller: columnNameController,
-                isOptional: true,
-                hintText: "Enter name here",
-                width: 300,
+                autofocus: true,
+                onEditingComplete: (){
+                  if(columnNameController.text.isEmpty){
+                    setState((){
+                      errorText = "Please enter name";
+                    });
+                    return;
+                  }
+                  //Navigator.of(context).pop();
+                  tableController.addColumnNameAPI(context, columnNameController.text);
+                },
+                decoration: customStyle.inputDecoration(
+                    text: "Enter name here",
+                    image: "",
+                    isIcon: false,
+                    isLogin: false,
+                    errorText: errorText,
+                    onPressed: (){}),
                 onChanged: (value){
                   setState(() {
                     errorText = null;
                   });
                 },
-                errorText: errorText,
               ),
             ),
             actions: <Widget>[
@@ -330,8 +344,9 @@ class _HeaderSectionState extends State<HeaderSection> {
                     });
                     return;
                   }
+                  //Navigator.of(context).pop();
                   tableController.addColumnNameAPI(context, columnNameController.text);
-                  Navigator.of(context).pop();
+
                 },
               ),
             ],
@@ -357,6 +372,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                   IconButton(
                     tooltip: "Add Column",
                       onPressed: (){
+                      Navigator.of(context).pop();
                       showAddColumnDialog(context);
                       },
                       icon: Icon(Icons.add))
