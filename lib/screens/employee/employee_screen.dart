@@ -5,6 +5,7 @@ import 'package:fullcomm_crm/screens/employee/update_employee.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
@@ -84,8 +85,19 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   ),
                                 ),
                                 onPressed: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage(
-                                  )));
+                                  if(controllers.planType.value=="Business Essential"&&(employeeProvider.filteredStaff.length ?? 0) < 2){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
+                                  }else if(controllers.planType.value=="Business Fit"&&(employeeProvider.filteredStaff.length ?? 0) < 10){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
+                                  }else if(controllers.planType.value=="Business Pro"||controllers.planType.value=="Enterprise"){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
+                                  }else{
+                                    utils.snackBar(
+                                      context: context,
+                                      msg: "Update your business plan",
+                                      color: Colors.red,
+                                    );
+                                  }
                                 },
                                 label: CustomText(
                                   text: "Add Employee",

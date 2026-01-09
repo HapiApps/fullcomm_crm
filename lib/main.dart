@@ -12,6 +12,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'common/constant/api.dart';
 import 'common/constant/colors_constant.dart';
 import 'common/widgets/log_in.dart';
@@ -76,6 +77,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    remController.dataSource = _getDataSource();
     settingsController.allTemplates();
     remController.loadSavedFilters();
     if (widget.loginScreen) {
@@ -159,5 +161,15 @@ class _MyAppState extends State<MyApp> {
               child:widget.loginScreen == false ? const LoginPage() : kIsWeb?NewDashboard():MobileDashboard()),
         ),
       );
+  }
+  _DataSource _getDataSource() {
+    List<Appointment> appointments = <Appointment>[];
+    return _DataSource(appointments);
+  }
+}
+
+class _DataSource extends CalendarDataSource {
+  _DataSource(List<Appointment> source) {
+    appointments = source;
   }
 }

@@ -74,7 +74,7 @@ dependencies:
   flutter_datetime_picker_plus: ^2.2.0
   device_info_plus:
   otp_text_field_v2: ^1.0.3
-
+  syncfusion_flutter_calendar: ^29.1.41
 dev_dependencies:
   flutter_test:
     sdk: flutter

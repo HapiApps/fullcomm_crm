@@ -8,12 +8,14 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../common/constant/api.dart';
 import '../models/customer_activity.dart';
 import '../models/meeting_obj.dart';
 import '../models/reminder_obj.dart';
 import '../provider/reminder_provider.dart';
+import '../screens/reminder/reminder_page.dart';
 import 'controller.dart';
 
 class AddReminderModel {
@@ -35,6 +37,22 @@ class AddReminderModel {
 final remController = Get.put(ReminderController());
 
 class ReminderController extends GetxController with GetSingleTickerProviderStateMixin {
+  // late CalendarDataSource dataSource;
+  late CalendarDataSource dataSource;
+
+  bool hasAppointment(DateTime date) {
+    return dataSource.appointments!.any((appt) =>
+    appt.startTime.year == date.year &&
+        appt.startTime.month == date.month &&
+        appt.startTime.day == date.day);
+  }
+  bool hasStatus(DateTime date, String status) {
+    return dataSource.appointments!.any((appt) =>
+    appt.startTime.year == date.year &&
+        appt.startTime.month == date.month &&
+        appt.startTime.day == date.day &&
+        (appt.subject?.toLowerCase() ?? '') == status.toLowerCase());
+  }
   TextEditingController titleController       = TextEditingController();
   TextEditingController detailsController     = TextEditingController();
   TextEditingController startController       = TextEditingController();
@@ -777,9 +795,13 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   var isLoadingReminders = false.obs;
   var followUpReminderCount = 0.obs;
   var meetingReminderCount = 0.obs;
+  var defaultMonth=DateTime.now().month.obs;
+  var thisMonthLeave = "0".obs;
   Future<void> allReminders(String type) async {
     isLoadingReminders.value = true;
-
+    thisMonthLeave.value="0";
+    dataSource.dispose();
+    dataSource.appointments?.clear();
     final url = Uri.parse(scriptApi);
     try {
       final response = await http.post(
@@ -791,8 +813,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           "search_type": "allReminders"
         }),
       );
-
+      print("data.toString()");
       if (response.statusCode == 200) {
+        print(response.body);
         final data = jsonDecode(response.body);
 
         if (data is List) {
@@ -805,12 +828,39 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
           followUpReminderCount.value = followUpCount;
           meetingReminderCount.value = meetingCount;
-          remController.sortReminders();
+
+          for (var i = 0; i < reminderList.length; i++) {
+            String dateStr = reminderList[i].startDt.toString();
+            DateTime parsedDate = DateFormat('dd.MM.yyyy H:mm').parse(dateStr);
+
+            DateTime dateOnly = DateTime(parsedDate.year, parsedDate.month, parsedDate.day);
+
+            Appointment app = Appointment(
+              startTime: dateOnly,
+              endTime: dateOnly,
+              subject: reminderList[i].title.toString(),
+              color: Colors.redAccent,
+            );
+
+            dataSource.appointments!.add(app);
+            dataSource.notifyListeners(CalendarDataSourceAction.add, <Appointment>[app]);
+
+            var count = 0;
+
+            if (defaultMonth.value.toString().padLeft(2, "0") ==
+                parsedDate.month.toString().padLeft(2, "0")) {
+              count++;
+            }
+
+            thisMonthLeave.value = count.toString();
+          }
+
         } else {
           reminderList.value = [];
           followUpReminderCount.value = 0;
           meetingReminderCount.value = 0;
         }
+        isLoadingReminders.value = false;
       } else {
         reminderList.value = [];
         followUpReminderCount.value = 0;

@@ -174,7 +174,8 @@ class _NewDashboardState extends State<NewDashboard> {
                                 displayText = "${formatDate(range.start)}  —  ${formatDate(range.end)}";
                               }
                               return CustomText(
-                                text: "Dashboard for the period $displayText ($selected)",
+                                text: "Dashboard for the period $displayText ($selected) ${controllers.planType.value}",
+                                // text: "Dashboard for the period $displayText ($selected)",
                                 colors: colorsConst.textColor,
                                 size: 20,
                                 isBold: true,

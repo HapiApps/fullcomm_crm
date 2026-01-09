@@ -485,11 +485,11 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     );
                                   } else {
                                    final int currentLimit = int.tryParse(controllers.currentUserCount.value) ?? 0;
-                                   if (employeeProvider.filteredStaff.length >= currentLimit) {
-                                     print("Only after making a payment, you can add employees.");
-                                     utils.expiredEmpDialog();
-                                     employeeProvider.addEmployeeButtonController.reset();
-                                   }else{
+                                   // if (employeeProvider.filteredStaff.length >= currentLimit) {
+                                   //   print("Only after making a payment, you can add employees.");
+                                   //   utils.expiredEmpDialog();
+                                   //   employeeProvider.addEmployeeButtonController.reset();
+                                   // }else{
                                      if(employeeProvider.emailController.text.isEmpty){
                                        employeeProvider.employeeInsert(
                                          context: context,
@@ -548,7 +548,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                          }
                                      }
                                    }
-                                  }
+                                  // }
                                 },
                                 child: CustomText(
                                   text: "Save",

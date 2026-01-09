@@ -5,6 +5,7 @@ import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
@@ -603,7 +604,19 @@ class _RoleManagementState extends State<RoleManagement> {
                           ),
                         ),
                         onPressed: (){
-                          _showAddRoleDialog();
+                          if(controllers.planType.value=="Business Essential"&&(settingsController.roleList.length ?? 0) < 2){
+                            _showAddRoleDialog();
+                          }else if(controllers.planType.value=="Business Fit"&&(settingsController.roleList.length ?? 0) < 5){
+                            _showAddRoleDialog();
+                          }else if(controllers.planType.value=="Business Pro"||controllers.planType.value=="Enterprise"){
+                            _showAddRoleDialog();
+                          }else{
+                            utils.snackBar(
+                              context: context,
+                              msg: "Update your business plan",
+                              color: Colors.red,
+                            );
+                          }
                         },
                         label: CustomText(
                           text: "Add Role",

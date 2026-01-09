@@ -566,6 +566,7 @@ class Utils {
                             //     onPressed: (){},
                             //     icon:SvgPicture.asset(assets.textFilter,width: 17,height: 17,)
                             // ),
+                            if(controllers.planType.value!="Business Essential")
                             IconButton(
                                 onPressed: () {
                                   utils.chooseFile(
@@ -2637,6 +2638,7 @@ class Utils {
                         controller: TextEditingController(
                           text: item["value"].toString(),
                         ),
+                        readOnly: controllers.planType.value=="Business Essential"||controllers.planType.value=="Business Fit"?true:false,
                         onChanged: (val) {
                           controllers.leadCategoryList[index]["value"] = val;
                           controllers.editMode[index]=true;
@@ -2645,17 +2647,18 @@ class Utils {
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      trailing: SvgPicture.asset(
+                    trailing: controllers.planType.value!="Business Essential"&&controllers.planType.value!="Business Fit"?SvgPicture.asset(
                         "assets/images/a_edit.svg",
                         width: 16,
                         height: 16,
-                      ),
+                      ):null,
                     );
                   },
                 )),
               ),
 
               20.height,
+              if(controllers.planType.value!="Business Essential"&&controllers.planType.value!="Business Fit")
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -2668,6 +2671,9 @@ class Utils {
                   ),
                   ElevatedButton(
                     onPressed: () async {
+                      // print("editMode len = ${controllers.editMode.length}");
+                      // print("category len = ${controllers.leadCategoryList.length}");
+
                       bool anyEdit = controllers.editMode.contains(true);
                       if (!anyEdit) {
                         utils.snackBar(

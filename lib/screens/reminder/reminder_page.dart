@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/screens/reminder/reminder_calendar.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/reminder_utils.dart';
 import '../../components/custom_loading_button.dart';
@@ -110,43 +112,81 @@ class _ReminderPageState extends State<ReminderPage> {
                        ),
                      ],
                    ),
-                   SizedBox(
-                     height: 40,
-                     child: ElevatedButton(
-                       onPressed: (){
-                         // Navigator.push(
-                         //   context,
-                         //   PageRouteBuilder(
-                         //     pageBuilder: (context, animation1, animation2) => AddReminder(),
-                         //     transitionDuration: Duration.zero,
-                         //     reverseTransitionDuration: Duration.zero,
-                         //   ),
-                         // );
-                         reminderUtils.showAddReminderDialog(context);
-                       },
-                       style: ElevatedButton.styleFrom(
-                         backgroundColor: const Color(0xff0078D7),
-                         padding: const EdgeInsets.symmetric(
-                             horizontal: 20, vertical: 12),
-                         shape: RoundedRectangleBorder(
-                           borderRadius: BorderRadius.circular(4),
-                         ),
-                       ),
-                       child: Row(
-                         children: [
-                           const Icon(Icons.add,color: Colors.white),
-                           const SizedBox(width: 5),
-                           Text(
-                             'Add Reminder',
+                   Row(
+                     mainAxisAlignment: MainAxisAlignment.end,
+                     children: [
+                      if(controllers.planType.value!="Business Essential"&&controllers.planType.value!="Business Fit")
+                       SizedBox(
+                         height: 40,
+                         child: ElevatedButton(
+                           onPressed: (){
+                             Navigator.push(
+                               context,
+                               PageRouteBuilder(
+                                 pageBuilder: (context, animation1, animation2) =>
+                                 const ReminderCalender(),
+                                 transitionDuration: Duration.zero,
+                                 reverseTransitionDuration: Duration.zero,
+                               ),
+                             );
+                             },
+                           style: ElevatedButton.styleFrom(
+                             backgroundColor: const Color(0xff0078D7),
+                             padding: const EdgeInsets.symmetric(
+                                 horizontal: 20, vertical: 12),
+                             shape: RoundedRectangleBorder(
+                               borderRadius: BorderRadius.circular(4),
+                             ),
+                           ),
+                           child: Text(
+                             'Reminder Calender',
                              style: GoogleFonts.lato(
                                color: Colors.white,
                                fontSize: 14,
                                fontWeight: FontWeight.bold
                              ),
                            ),
-                         ],
+                         ),
+                       ),10.width,
+                       SizedBox(
+                         height: 40,
+                         child: ElevatedButton(
+                           onPressed: (){
+                             // Navigator.push(
+                             //   context,
+                             //   PageRouteBuilder(
+                             //     pageBuilder: (context, animation1, animation2) => AddReminder(),
+                             //     transitionDuration: Duration.zero,
+                             //     reverseTransitionDuration: Duration.zero,
+                             //   ),
+                             // );
+                             reminderUtils.showAddReminderDialog(context);
+                           },
+                           style: ElevatedButton.styleFrom(
+                             backgroundColor: const Color(0xff0078D7),
+                             padding: const EdgeInsets.symmetric(
+                                 horizontal: 20, vertical: 12),
+                             shape: RoundedRectangleBorder(
+                               borderRadius: BorderRadius.circular(4),
+                             ),
+                           ),
+                           child: Row(
+                             children: [
+                               const Icon(Icons.add,color: Colors.white),
+                               const SizedBox(width: 5),
+                               Text(
+                                 'Add Reminder',
+                                 style: GoogleFonts.lato(
+                                     color: Colors.white,
+                                     fontSize: 14,
+                                     fontWeight: FontWeight.bold
+                                 ),
+                               ),
+                             ],
+                           ),
+                         ),
                        ),
-                     ),
+                     ],
                    ),
                  ],
                ),

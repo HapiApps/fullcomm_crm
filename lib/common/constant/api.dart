@@ -6,13 +6,14 @@ import 'package:flutter/material.dart';
 /// Dev
 // const String domain      = "https://aruu.celwiz.com";
 // const bool isRelease     = false;
-// const String version     = "Version 0.0.7";
-// const String versionNum  = "0.0.7";
+// const String version     = "Version 0.0.1";
+// const String versionNum  = "0.0.1";
 /// Prod
 const String domain      = "https://aruu.in/";//Logo change panna nu
 const bool isRelease     = true;
 const String version     = "Version 0.0.9";
 const String versionNum  = "0.0.9";
+
 const String version1        = "v1/CRM/web";
 const String appName         = "ARUU’s EasyCRM";
 const String logo            = "assets/images/logo.png";

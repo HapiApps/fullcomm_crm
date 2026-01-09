@@ -59,6 +59,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       currentUserCount = "".obs,
       currentCRMLink = "".obs,
       versionActive = true.obs,
+      planType = "".obs,
       updateAvailable = true.obs;
   var selectedChartMonth = DateTime.now().month.obs;
   var selectedChartYear = DateTime.now().year.obs;

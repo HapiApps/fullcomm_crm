@@ -1473,6 +1473,7 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      print("Login Res ${data}");
       print("Login Res ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200) {
@@ -1651,8 +1652,7 @@ class ApiService {
           };
         }).toList();
         controllers.leadCategoryList.assignAll(converted);
-        controllers.editMode.value =
-            List.generate(controllers.leadCategoryList.length, (index) => false);
+        controllers.editMode.value =List.generate(controllers.leadCategoryList.length, (index) => false);
 
         print("Lead category ${controllers.leadCategoryList}");
       } else {
@@ -2939,7 +2939,6 @@ class ApiService {
         "cos_id": controllers.storage.read("cos_id"),
         "action":"get_data"
       };
-      log("data version $data");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/json",
@@ -2947,12 +2946,15 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      log("checkVersion ${data}");
+      log("checkVersion ${request.body}");
       controllers.versionActive.value = false;
       controllers.updateAvailable.value = false;
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         controllers.serverVersion.value = response[0]["current_version"];
         controllers.currentUserCount.value = response[0]["user_count"];
+        controllers.planType.value = response[0]["plan_type"].toString();
         final expiredDate = parseExpiredDate(response[0]["expired_date"]);
         final now = DateTime.now();
         if (expiredDate != null && now.isAfter(expiredDate)) {

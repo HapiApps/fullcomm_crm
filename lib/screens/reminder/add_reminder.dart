@@ -85,7 +85,7 @@ class _AddReminderState extends State<AddReminder> {
                         width: 120,
                         controller: controllers.productCtr,
                         isImage: false,
-                        text: "Save Reminder",
+                        text: "Save Reminder...",
                         textColor: Colors.white,
                       ),
                     ],
