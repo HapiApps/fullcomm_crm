@@ -2638,7 +2638,7 @@ class Utils {
                         controller: TextEditingController(
                           text: item["value"].toString(),
                         ),
-                        readOnly: controllers.planType.value=="Business Essential"||controllers.planType.value=="Business Fit"?true:false,
+                        //readOnly: controllers.planType.value=="Business Essential"||controllers.planType.value=="Business Fit"?true:false,
                         onChanged: (val) {
                           controllers.leadCategoryList[index]["value"] = val;
                           controllers.editMode[index]=true;
@@ -2658,7 +2658,7 @@ class Utils {
               ),
 
               20.height,
-              if(controllers.planType.value!="Business Essential"&&controllers.planType.value!="Business Fit")
+             // if(controllers.planType.value!="Business Essential"&&controllers.planType.value!="Business Fit")
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

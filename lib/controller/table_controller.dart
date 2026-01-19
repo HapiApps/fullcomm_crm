@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fullcomm_crm/controller/controller.dart';
@@ -66,11 +67,9 @@ class TableController extends GetxController {
       for (var h in tableHeadings) {
         colWidth[h] = 150;
       }
-      print("Saved Headings: $headingFields");
-      print("tableHeadings Headings: $tableHeadings");
       await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
     } catch (e) {
-      print("Set Heading fields error: $e");
+      log("Set Heading fields error: $e");
     }
   }
 
@@ -154,7 +153,6 @@ class TableController extends GetxController {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"]=="Heading updated successfully"){
         apiService.getUserHeading();
@@ -187,12 +185,9 @@ class TableController extends GetxController {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
-      //Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 ){
         Navigator.pop(context);
         apiService.getUserHeading();
-
         utils.snackBar(context: context, msg: "Heading added successfully", color: Colors.green);
         controllers.productCtr.reset();
       } else {

@@ -36,10 +36,9 @@ class DashboardController extends GetxController {
   Future<void> getToken() async {
     try {
       String? token = await FirebaseMessaging.instance.getToken();
-      print("token $token");
       apiService.updateTokenAPI(token.toString());
     }catch(e){
-      print("Token error $e");
+      log("Token error $e");
     }
   }
   final List<String> filters = [

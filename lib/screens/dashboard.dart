@@ -34,7 +34,6 @@ class _NewDashboardState extends State<NewDashboard> {
   final ScrollController _leftController = ScrollController();
   final ScrollController _rightController = ScrollController();
   @override
-  @override
   void initState() {
     super.initState();
     _focusNode = FocusNode();

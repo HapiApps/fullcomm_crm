@@ -160,17 +160,10 @@ class ApiService {
         "action": "insert_lead"
       };
 
-      print("data lead ${data.toString()}");
       final request = await http.post(
         Uri.parse(scriptApi),
-        // headers: {
-        //   "Accept": "application/text",
-        //   "Content-Type": "application/x-www-form-urlencoded"
-        // },
         body: jsonEncode(data),
-        // encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
         utils.snackBar(
@@ -215,21 +208,12 @@ class ApiService {
           controllers.leadTitleCrt[i].text = "";
           controllers.leadWhatsCrt[i].text = "";
         }
-        //Get.to(const CompanyCamera(),transition: Transition.downToUp,duration: const Duration(seconds: 2));
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         controllers.allCustomerFuture = apiService.allCustomerDetails();
         await Future.delayed(const Duration(milliseconds: 100));
         Get.to(const Suspects(), duration: Duration.zero);
-        // Navigator.push(context,
-        //   PageRouteBuilder(
-        //     pageBuilder: (context, animation1, animation2) => const ViewLead(),
-        //     transitionDuration: Duration.zero,
-        //     reverseTransitionDuration: Duration.zero,
-        //   ),
-        // );
-        //Get.to(const ViewLead());
         controllers.leadCtr.reset();
       } else {
         errorDialog(Get.context!, request.body);
@@ -241,8 +225,7 @@ class ApiService {
     }
   }
 
-  Future updateLeadAPI(
-      BuildContext context, String leadId, String addressId) async {
+  Future updateLeadAPI(BuildContext context, String leadId, String addressId) async {
     try {
       Map data = {
         "cos_id": controllers.storage.read("cos_id"),
@@ -285,18 +268,10 @@ class ApiService {
         "action": "update_customer"
       };
 
-      print("data lead ${data.toString()}");
       final request = await http.post(
         Uri.parse(scriptApi),
-        // headers: {
-        //   "Accept": "application/text",
-        //   "Content-Type": "application/x-www-form-urlencoded"
-        // },
         body: jsonEncode(data),
-        // encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
-
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 &&
           response["message"] == "Customer updated successfully") {
@@ -306,20 +281,9 @@ class ApiService {
             context: Get.context!);
         controllers.leadFuture = apiService.leadsDetailsForCustomer(leadId);
         Get.back();
-        //Get.to(const CompanyCamera(),transition: Transition.downToUp,duration: const Duration(seconds: 2));
         apiService.allNewLeadsDetails();
         apiService.allLeadsDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
-        // await Future.delayed(const Duration(milliseconds: 100));
-        // Get.to(const Suspects(),duration: Duration.zero);
-        // Navigator.push(context,
-        //   PageRouteBuilder(
-        //     pageBuilder: (context, animation1, animation2) => const ViewLead(),
-        //     transitionDuration: Duration.zero,
-        //     reverseTransitionDuration: Duration.zero,
-        //   ),
-        // );
-        //Get.to(const ViewLead());
         controllers.leadCtr.reset();
       } else {
         errorDialog(Get.context!, request.body);
@@ -348,30 +312,20 @@ class ApiService {
           controllers.selectedCountry.value = country;
           controllers.selectedState.value = state;
           controllers.selectedCity.value = district;
-          // return {
-          //   'district': district,
-          //   'state': state,
-          //   'country': country,
-          // };
         } else {
           controllers.selectedCountry.value = "India";
           controllers.selectedState.value = "";
           controllers.selectedCity.value = "";
-          print('Failed to fetch location data: ${data[0]['Message']}');
-          // throw Exception('Failed to fetch location data: ${data[0]['Message']}');
         }
       } else {
         controllers.selectedCountry.value = "India";
         controllers.selectedState.value = "";
         controllers.selectedCity.value = "";
-        print('Failed to fetch location data');
-        //throw Exception('Failed to fetch location data');
       }
     } catch (e) {
       controllers.selectedCountry.value = "India";
       controllers.selectedState.value = "";
       controllers.selectedCity.value = "";
-      print('Failed to fetch location data');
     }
   }
 
@@ -393,11 +347,7 @@ class ApiService {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-
-      print("response ${request.body}");
-
       Map<String, dynamic> response = json.decode(request.body);
-
       if (request.statusCode == 200 &&
           response["responseMsg"] == "Category updated successfully") {
         getLeadCategories();
@@ -426,19 +376,13 @@ class ApiService {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-
-      print("response ${request.body}");
-
-      Map<String, dynamic> response = json.decode(request.body);
-
       if (request.statusCode == 200) {
-        print("Token updated success");
-       // getLeadCategories();
+        log("Token updated success");
       } else {
-        print("Token error ${request.body}");
+        log("Token error ${request.body}");
       }
     } catch (e) {
-      print("Token Error $e");
+      log("Token Error $e");
 
     }
   }
@@ -450,7 +394,6 @@ class ApiService {
   Future insertProspectsAPI(
       BuildContext context, List<Map<String, String>> list) async {
     try {
-      print("data ${list.toString()}");
       final request = await http.post(Uri.parse(prospectsScript),
           headers: {
             "Accept": "application/text",
@@ -458,10 +401,8 @@ class ApiService {
           },
           body: jsonEncode(list),
           encoding: Encoding.getByName("utf-8"));
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
-        print("success");
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
         allQualifiedDetails();
@@ -476,11 +417,9 @@ class ApiService {
     } on SocketException {
       controllers.productCtr.reset();
       errorDialog(Get.context!, 'No internet connection');
-      //throw Exception('No internet connection'); // Handle network errors
     } on HttpException catch (e) {
       controllers.productCtr.reset();
       errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
-      //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
     } catch (e) {
       errorDialog(Get.context!, e.toString());
       controllers.productCtr.reset();
@@ -501,10 +440,8 @@ class ApiService {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"]=="OK"){
-        print("success");
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
         apiService.allQualifiedDetails();
@@ -513,7 +450,6 @@ class ApiService {
         qualifiedList.clear();
         customerList.clear();
         Navigator.pop(context);
-        //Get.to(const Prospects(),duration: Duration.zero);
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!,request.body);
@@ -527,7 +463,6 @@ class ApiService {
 
   Future qualifiedCustomersAPI(BuildContext context,List<Map<String, String>> list) async {
     try{
-      print("data ${list.toString()}");
       Map data = {
         "action": "disqualified",
         "active": "1",
@@ -541,7 +476,6 @@ class ApiService {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"]=="OK"){
         apiService.allLeadsDetails();
@@ -553,7 +487,6 @@ class ApiService {
         qualifiedList.clear();
         customerList.clear();
         Navigator.pop(context);
-        //Get.to(const Prospects(),duration: Duration.zero);
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!,request.body);
@@ -567,7 +500,6 @@ class ApiService {
 
   Future insertLeadPromoteAPI(BuildContext context,List<Map<String, String>> list) async {
     try{
-      print("data ${list.toString()}");
       Map data = {
         "action": "lead_promote",
         "cusList": list
@@ -580,7 +512,6 @@ class ApiService {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"]=="OK"){
         apiService.allLeadsDetails();
@@ -592,7 +523,6 @@ class ApiService {
         qualifiedList.clear();
         customerList.clear();
         Navigator.pop(context);
-        //Get.to(const Prospects(),duration: Duration.zero);
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!,request.body);
@@ -605,7 +535,6 @@ class ApiService {
   }
   Future insertSuspectsAPI(BuildContext context) async {
     try {
-      print("data ${qualifiedList.toString()}");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
@@ -614,7 +543,6 @@ class ApiService {
           body:
               jsonEncode({"action": "insert_suspects", "list": qualifiedList}),
           encoding: Encoding.getByName("utf-8"));
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
         allLeadsDetails();
@@ -632,11 +560,9 @@ class ApiService {
     } on SocketException {
       controllers.productCtr.reset();
       errorDialog(Get.context!, 'No internet connection');
-      //throw Exception('No internet connection'); // Handle network errors
     } on HttpException catch (e) {
       controllers.productCtr.reset();
       errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
-      //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
     } catch (e) {
       errorDialog(Get.context!, e.toString());
       controllers.productCtr.reset();
@@ -659,17 +585,13 @@ class ApiService {
                 "cos_id": controllers.storage.read("cos_id"),
                 "call_type":controllers.callType,
                 "call_status":controllers.callStatus,
-                //"date":"${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}",
                 "date":"${controllers.empDOB.value} ${controllers.callTime.value}",
                 "created_by": controllers.storage.read("id"),
                 "comments": controllers.callCommentCont.text.trim(),
               }),
           encoding: Encoding.getByName("utf-8"));
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
-        //controllers.clearSelectedCustomer();
-        //controllers.empDOB.value = "";
         controllers.callTime.value = "";
         controllers.callType = "Incoming";
         controllers.callStatus = "Completed";
@@ -694,10 +616,9 @@ class ApiService {
             d = d.add(Duration(days: 3));
             remController.stDate.value = DateFormat("dd.MM.yyyy").format(d);
           } catch (e) {
-            print("DATE PARSE ERROR: $e   value='${remController.stDate.value}'");
+            log("DATE PARSE ERROR: $e   value='${remController.stDate.value}'");
           }
         }
-        print("Date ${remController.stDate.value}");
         remController.stTime.value = "11:00 AM";
         reminderUtils.showAddReminderDialog(context);
       } else {
@@ -707,11 +628,9 @@ class ApiService {
     } on SocketException {
       controllers.productCtr.reset();
       errorDialog(Get.context!, 'No internet connection');
-      //throw Exception('No internet connection'); // Handle network errors
     } on HttpException catch (e) {
       controllers.productCtr.reset();
       errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
-      //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
     } catch (e) {
       errorDialog(Get.context!, e.toString());
       controllers.productCtr.reset();
@@ -740,7 +659,6 @@ class ApiService {
                 "id":id
               }),
           encoding: Encoding.getByName("utf-8"));
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "Record updated successfully") {
         controllers.clearSelectedCustomer();
@@ -778,13 +696,11 @@ class ApiService {
         "title": controllers.meetingTitleCrt.text.trim(),
         "cos_id": controllers.storage.read("cos_id"),
         "venue":controllers.meetingVenueCrt.text.trim(),
-        //"date":"${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}",
         "dates":"${controllers.fDate.value}||${controllers.toDate.value}",
         "times":"${controllers.fTime.value}||${controllers.toTime.value}",
         "created_by": controllers.storage.read("id"),
         "notes": controllers.callCommentCont.text.trim(),
       };
-      print("data ${data.toString()}");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
@@ -792,7 +708,6 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
         getAllMeetingActivity("");
@@ -813,11 +728,9 @@ class ApiService {
     } on SocketException {
       controllers.productCtr.reset();
       errorDialog(Get.context!, 'No internet connection');
-      //throw Exception('No internet connection'); // Handle network errors
     } on HttpException catch (e) {
       controllers.productCtr.reset();
       errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
-      //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
     } catch (e) {
       errorDialog(Get.context!, e.toString());
       controllers.productCtr.reset();
@@ -852,21 +765,17 @@ class ApiService {
             "mail_id": data[i]["email_id"].toString(),
           });
         }
-        // Update the observable list with the fetched data
         controllers.disqualifiedFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
     } on SocketException {
-      print('No internet connection');
       throw Exception('No internet connection');
     } on HttpException catch (e) {
-      print('Server error: ${e.toString()}');
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
       controllers.disqualifiedFuture.value = [];
       controllers.isDisqualifiedList.value = [];
-      print('Unexpected error: ${e.toString()}');
       throw Exception('Unexpected error: ${e.toString()}');
     }
   }
@@ -874,7 +783,6 @@ class ApiService {
   Future bulkEmailAPI(BuildContext context, List<Map<String, String>> list, String image) async {
     try {
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
-
       request.fields['subject']        = controllers.emailSubjectCtr.text;
       request.fields['cos_id']         = controllers.storage.read("cos_id").toString();
       request.fields['count']          = '${controllers.emailCount.value + 1}';
@@ -886,7 +794,6 @@ class ApiService {
       request.fields['action']         = 'bulk_mail_receive';
       List<String> ids    = list.map((e) => e['lead_id'] ?? '').toList();
       List<String> emails = list.map((e) => e['mail_id'] ?? '').toList();
-      print("Serever Email $emails");
       request.fields['clientMail'] = emails.join(",");
       request.fields['id']         = ids.join(",");
 
@@ -901,18 +808,13 @@ class ApiService {
 
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      print("Response: $body");
-      print("Response: ${request.fields}");
-
       if (response.statusCode == 200 && body.trim()== "Mail process completed.") {
         utils.snackBar(msg: "Mail has been sent", color: Colors.green, context: Get.context!);
         controllers.emailMessageCtr.clear();
         controllers.emailToCtr.clear();
         controllers.emailSubjectCtr.clear();
         prospectsList.clear();
-        // apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
-        // controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         await Future.delayed(const Duration(milliseconds: 100));
         Navigator.pop(Get.context!);
         Get.off(const Suspects(), duration: Duration.zero);
@@ -927,10 +829,8 @@ class ApiService {
     }
   }
 
-  Future deleteCustomersAPI(
-      BuildContext context, List<Map<String, String>> list) async {
+  Future deleteCustomersAPI(BuildContext context, List<Map<String, String>> list) async {
     try {
-      print("data ${list.toString()}");
       Map data = {"action": "delete_customers", "cusList": list};
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -939,10 +839,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
-        print("success");
         allLeadsDetails();
         allNewLeadsDetails();
         allGoodLeadsDetails();
@@ -952,7 +850,6 @@ class ApiService {
         qualifiedList.clear();
         customerList.clear();
         Navigator.pop(context);
-        //Get.to(const Prospects(),duration: Duration.zero);
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!, request.body);
@@ -972,19 +869,10 @@ class ApiService {
       String excelFileName,
       ) async {
     try {
-      Map<String, dynamic> data = {
-        "action": "sheet_customers",
-        "field_mappings": fieldMappings,
-        "cusList": customerData,
-      };
-
       var request = http.MultipartRequest(
         'POST',
         Uri.parse(scriptApi),
       );
-      // data.forEach((key, value) {
-      //   request.fields[key] = jsonEncode(value);
-      // });
       request.fields["action"] = "sheet_customers";
       request.fields["field_mappings"] = jsonEncode(fieldMappings);
       request.fields["cusList"] = jsonEncode(customerData);
@@ -994,12 +882,9 @@ class ApiService {
         excelBytes,
         filename: excelFileName,
       ));
-
-      print("Server fields: ${request.fields}");
       var response = await request.send();
       var responseData = await http.Response.fromStream(response);
       Map<String, dynamic> res = json.decode(responseData.body);
-      print("Server response: ${responseData.body}");
 
       if (response.statusCode == 200 && res["message"] == "Customer save process completed.") {
         apiService.allLeadsDetails();
@@ -1040,7 +925,6 @@ class ApiService {
       }
     } catch (e) {
       Navigator.pop(context);
-      print("Customer insert Error: $e");
       errorDialog(Get.context!, "Failed to insert customer details: $e");
       controllers.customerCtr.reset();
     }
@@ -1048,9 +932,6 @@ class ApiService {
 
   Future insertThirumalCustomersAPI(BuildContext context, List<Map<String, dynamic>> customerData) async {
     try {
-      print("data ${customerData.toString()}");
-
-      // Convert values to strings if necessary
       List<Map<String, dynamic>> formattedData = customerData.map((customer) {
         return customer.map((key, value) {
           return MapEntry(key, value.toString()); // Convert all values to String
@@ -1062,18 +943,14 @@ class ApiService {
         "cusList": formattedData
       };
 
-      print("Final Data to be sent: ${jsonEncode(data)}"); // Debug JSON
-
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {
           "Accept": "application/json",
-          "Content-Type": "application/json" // Change Content-Type to JSON
+          "Content-Type": "application/json"
         },
         body: jsonEncode(data),
       );
-
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
 
       if (request.statusCode == 200 && response["message"] == "Customer saved successfully.") {
@@ -1089,40 +966,29 @@ class ApiService {
         Navigator.pop(context);
         controllers.customerCtr.reset();
         if (failed == 0) {
-          print("All customers saved successfully.");
+          log("All customers saved successfully.");
         } else {
-          print("⚠️ $success saved, $failed failed.");
           for (var failure in response["failures"]) {
-            print("Failed Phone: ${failure["phone_no"]} — ${failure["error"]}");
+            log("Failed Phone: ${failure["phone_no"]} — ${failure["error"]}");
           }
           errorDialog(Get.context!, "$success saved, $failed failed.\n Failed Phone: ${response["failures"]}");
         }
       } else {
-        print("insert customers error ${request.body}");
         Navigator.pop(context);
         errorDialog(Get.context!, "Failed to insert customer details.");
         controllers.customerCtr.reset();
       }
     } catch (e) {
-      print("Result $e");
       Navigator.pop(context);
       errorDialog(Get.context!, "Failed to insert customer details.");
       controllers.customerCtr.reset();
     }
   }
 
-
-
   Future<void> insertSingleCustomer(context) async {
     try {
       //1-Suspects,2-Prospects,3-Qualified,4-Customers.
-      var leadId; //controllers.visitType
-      // for (var role in controllers.leadCategoryList) {
-      //   if (role['value'] == controllers.leadCategory) {
-      //     leadId = role['id'];
-      //     break;
-      //   }
-      // }
+      var leadId;
       leadId = controllers.leadCategory == "Suspects"
           ? "1"
           : controllers.leadCategory == "Prospects"
@@ -1138,7 +1004,6 @@ class ApiService {
         }
       }
       List<Map<String, String>> customersList = [];
-      //for (int i = 0; i < _addCustomer.length; i++) {
       customersList.add({
         "cos_id": controllers.storage.read("cos_id"),
         "name": controllers.leadNameCrt[0].text.trim(),
@@ -1151,7 +1016,6 @@ class ApiService {
         "designation": "",
         "main_person": "1"
       });
-      // }
       String jsonString = json.encode(customersList);
       Map<String, dynamic> data = {
         "action": "single_customer",
@@ -1198,7 +1062,6 @@ class ApiService {
         'rating': controllers.prospectGradingCrt.text.trim(),
         'owner': controllers.leadTitleCrt[0].text.trim()
       };
-      print("insert lead $data");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
@@ -1206,8 +1069,6 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("request ${request.body}");
-      //Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && request.body.toString().contains("Customer saved successfully.")) {
         apiService.getAllCustomers();
         final prefs = await SharedPreferences.getInstance();
@@ -1279,7 +1140,7 @@ class ApiService {
             remController.stDate.value = DateFormat("dd.MM.yyyy").format(d);
 
           } catch (e) {
-            print("DATE PARSE ERROR: $e   value='${remController.stDate.value}'");
+            log("DATE PARSE ERROR: $e   value='${remController.stDate.value}'");
           }
         }
         controllers.empDOB.value = "";
@@ -1303,7 +1164,6 @@ class ApiService {
   List<Map<String, String>> qualifiedList = [];
   Future insertQualifiedAPI(BuildContext context,List<Map<String, String>> list) async {
     try {
-      print("data ${qualifiedList.toString()}");
       final request = await http.post(Uri.parse(qualifiedScript),
           headers: {
             "Accept": "application/text",
@@ -1311,10 +1171,8 @@ class ApiService {
           },
           body: jsonEncode(list),
           encoding: Encoding.getByName("utf-8"));
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
-        print("success");
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
         allCustomerDetails();
@@ -1346,7 +1204,6 @@ class ApiService {
   Future insertPromoteCustomerAPI(BuildContext context,List<Map<String, String>> list) async {
     try {
       Map data = {"action": "promote_customers", "cusList": list};
-      print("customer $data");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
@@ -1354,10 +1211,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
-        print("success");
         apiService.allLeadsDetails();
         apiService.allNewLeadsDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
@@ -1373,89 +1228,12 @@ class ApiService {
     } on SocketException {
       controllers.productCtr.reset();
       errorDialog(Get.context!, 'No internet connection');
-      //throw Exception('No internet connection'); // Handle network errors
     } on HttpException catch (e) {
       controllers.productCtr.reset();
       errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
-      //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
     } catch (e) {
       errorDialog(Get.context!, e.toString());
       controllers.productCtr.reset();
-    }
-  }
-
-  Future insertCompanyAPI(BuildContext context) async {
-    try {
-      Map data = {
-        "coName": controllers.coNameController.text.trim(),
-        "industry": controllers.coIndustry,
-        "phone_map": controllers.coMobileController.text.trim(),
-        "product": controllers.coProductController.text.trim(),
-        "email": controllers.coEmailController.text.trim(),
-        "website": controllers.coWebSiteController.text.trim(),
-        "cos_id": controllers.storage.read("cos_id"),
-        "x": controllers.coXController.text.trim(),
-        "linkedin": controllers.coLinkedinController.text.trim(),
-        "door_no": controllers.coDNoController.text.trim(),
-        "street_name": controllers.coStreetController.text.trim(),
-        "area": controllers.coAreaController.text.trim(),
-        "city": controllers.selectedCity,
-        "state": controllers.selectedState,
-        "pin_code": controllers.coPinCodeController.text.trim(),
-        "country": controllers.selectedCountry.value,
-      };
-
-      print("data ${data.toString()}");
-      final request = await http.post(
-        Uri.parse(scriptApi),
-        // headers: {
-        //   "Accept": "application/text",
-        //   "Content-Type": "application/x-www-form-urlencoded"
-        // },
-        body: jsonEncode(data),
-        // encoding: Encoding.getByName("utf-8")
-      );
-      print("request ${request.body}");
-      // Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200 &&
-          request.body == "{\"status_code\":200,\"message\":\"OK\"}") {
-        utils.snackBar(
-            msg: "Your company created successfully",
-            color: colorsConst.primary,
-            context: Get.context!);
-        final prefs = await SharedPreferences.getInstance();
-        prefs.remove("coName");
-        prefs.remove("coMobile");
-        prefs.remove("coWebsite");
-        prefs.remove("coEmail");
-        prefs.remove("coProduct");
-        prefs.remove("coIndustry");
-
-        prefs.remove("coDNo");
-        prefs.remove("coStreet");
-        prefs.remove("coArea");
-        prefs.remove("leadPinCode");
-        prefs.remove("coX");
-        prefs.remove("coLinkedin");
-        //Get.to(const CompanyCamera(),transition: Transition.downToUp,duration: const Duration(seconds: 2));
-        //controllers.allProductFuture=apiService.allProductDetails();
-        await Future.delayed(const Duration(milliseconds: 100));
-        // Navigator.push(context,
-        //   PageRouteBuilder(
-        //     pageBuilder: (context, animation1, animation2) => const ViewProduct(),
-        //     transitionDuration: Duration.zero,
-        //     reverseTransitionDuration: Duration.zero,
-        //   ),
-        // );
-        //Get.to(const ViewProduct(),duration: Duration.zero,);
-        controllers.leadCtr.reset();
-      } else {
-        errorDialog(Get.context!, request.body);
-        controllers.leadCtr.reset();
-      }
-    } catch (e) {
-      errorDialog(Get.context!, e.toString());
-      controllers.leadCtr.reset();
     }
   }
 
@@ -1473,8 +1251,7 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("Login Res ${data}");
-      print("Login Res ${request.body}");
+
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200) {
         controllers.storage.write("f_name", response["s_name"]);
@@ -1550,15 +1327,14 @@ class ApiService {
             "Content-Type": "application/x-www-form-urlencoded"
           },
           body: jsonEncode(data),
+
           encoding: Encoding.getByName("utf-8"));
       if (request.statusCode == 200) {
-        print("Login history added success");
+        log("Login history added success");
       } else {
-        print('Login failed');
         controllers.loginCtr.reset();
       }
     } catch (e) {
-      print('Login failed: ${e.toString()}');
       controllers.loginCtr.reset();
     }
   }
@@ -1578,7 +1354,6 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("Category res ${request.body}");
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         controllers.leadCategoryList.clear();
@@ -1653,13 +1428,10 @@ class ApiService {
         }).toList();
         controllers.leadCategoryList.assignAll(converted);
         controllers.editMode.value =List.generate(controllers.leadCategoryList.length, (index) => false);
-
-        print("Lead category ${controllers.leadCategoryList}");
       } else {
         throw Exception('Failed to load album');
       }
     } catch (e) {
-      print("Lead category error $e");
       throw Exception('Failed to load album');
     }
   }
@@ -1725,7 +1497,6 @@ class ApiService {
         "type": "7",
         "cus_id": cusId
       };
-      print("Call data $data");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
@@ -1796,7 +1567,6 @@ class ApiService {
         body: jsonEncode(data),
       );
       controllers.isMailLoading.value = false;
-
       if (request.statusCode == 200) {
         final List response = json.decode(request.body);
         controllers.mailActivity.clear();
@@ -1810,7 +1580,6 @@ class ApiService {
     } catch (e) {
       controllers.mailActivity.clear();
       controllers.isMailLoading.value = false;
-      print("Error in getAllMailActivity: $e");
       rethrow;
     }
   }
@@ -1968,37 +1737,17 @@ class ApiService {
         "action":"status_update"
       };
 
-      print("data lead ${data.toString()}");
       final request = await http.post(Uri.parse(scriptApi),
-        // headers: {
-        //   "Accept": "application/text",
-        //   "Content-Type": "application/x-www-form-urlencoded"
-        // },
         body: jsonEncode(data),
-        // encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
-      //Navigator.of(context).pop();
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"]=="Customer updated successfully."){
         utils.snackBar(msg: "Your Lead is updated successfully !",
             color: colorsConst.primary,context:Get.context!);
-        //controllers.leadFuture = apiService.leadsDetails(leadId);
         Get.back();
-        //Get.to(const CompanyCamera(),transition: Transition.downToUp,duration: const Duration(seconds: 2));
         apiService.allNewLeadsDetails();
         apiService.allLeadsDetails();
         apiService.allGoodLeadsDetails();
-        // await Future.delayed(const Duration(milliseconds: 100));
-        // Get.to(const Suspects(),duration: Duration.zero);
-        // Navigator.push(context,
-        //   PageRouteBuilder(
-        //     pageBuilder: (context, animation1, animation2) => const ViewLead(),
-        //     transitionDuration: Duration.zero,
-        //     reverseTransitionDuration: Duration.zero,
-        //   ),
-        // );
-        //Get.to(const ViewLead());
         controllers.leadCtr.reset();
       } else {
         Navigator.of(context).pop();
@@ -2053,7 +1802,6 @@ class ApiService {
           encoding: Encoding.getByName("utf-8"));
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
-        print("response $response");
         controllers.fields.clear();
         controllers.fields.value = response.map((e) => CustomerField.fromJson(e)).toList();
         tableController.setHeadingFields(response);
@@ -2096,7 +1844,6 @@ class ApiService {
       }
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      print("Response: $body");
       if (response.statusCode == 200 && body == "Message has been sent") {
         utils.snackBar(
             msg: "Mail has been sent",
@@ -2149,13 +1896,8 @@ class ApiService {
       }
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      print("Response: $body");
       if (response.statusCode == 200 && body == "Message has been sent") {
-        // utils.snackBar(
-        //     msg: "Mail has been sent",
-        //     color: Colors.green,
-        //     context: Get.context!);
-
+        log("Mail sent successfully");
       } else {
         controllers.emailCtr.reset();
         errorDialog(Get.context!, "Mail has been not sent");
@@ -2165,80 +1907,6 @@ class ApiService {
       controllers.emailCtr.reset();
     }
   }
-
-  // Future insertCustomerAPI(BuildContext context) async {
-  //   try{
-  //     Map data ={
-  //       "name":controllers.customerNameController.text.trim(),
-  //       "customer_id":controllers.customerIdController.text.trim(),
-  //       "mobile_number":controllers.customerMobileController.text.trim(),
-  //       "email":controllers.customerEmailController.text.trim(),
-  //       "co_name":controllers.customerCoNameController.text.trim(),
-  //       "no_unit":controllers.customerNoUnitController.text.trim(),
-  //       "no_employees":controllers.noOfEmpController.text.trim(),
-  //       "cos_id":controllers.storage.read("cos_id"),
-  //       "field_officer":controllers.customerFieldOfficerController.text.trim(),
-  //       "description":controllers.customerDescriptionController.text.trim(),
-  //       "door_no":controllers.customerUnitNameController.text.trim(),
-  //       "street_name":controllers.customerStreetController.text.trim(),
-  //       "area":controllers.customerAreaController.text.trim(),
-  //       "city":controllers.customerCityController.text.trim(),
-  //       "state":controllers.states,
-  //       "pin_code":controllers.customerPinCodeController.text.trim(),
-  //       "country":controllers.customerCountryController.text.trim(),
-  //     };
-  //
-  //     print("data ${data.toString()}");
-  //     final request = await http.post(Uri.parse(insertCustomer),
-  //         // headers: {
-  //         //   "Accept": "application/text",
-  //         //   "Content-Type": "application/x-www-form-urlencoded"
-  //         // },
-  //         body: jsonEncode(data),
-  //         // encoding: Encoding.getByName("utf-8")
-  //     );
-  //     //print("request ${request.body}");
-  //     // Map<String, dynamic> response = json.decode(request.body);
-  //     if (request.statusCode == 200){
-  //       utils.snackBar(msg: "Your customer created successfully",color: colorsConst.primary,context:Get.context!);
-  //       //final prefs =await SharedPreferences.getInstance();
-  //       controllers.customerNameController.clear();
-  //       controllers.customerIdController.clear();
-  //        controllers.customerMobileController.clear();
-  //       controllers.customerEmailController.clear();
-  //       controllers.customerCoNameController.clear();
-  //       controllers.customerNoUnitController.clear();
-  //       controllers.noOfEmpController.clear();
-  //       controllers.customerFieldOfficerController.clear();
-  //        controllers.customerDescriptionController.clear();
-  //        controllers.customerUnitNameController.clear();
-  //        controllers.customerStreetController.clear();
-  //         controllers.customerAreaController.clear();
-  //         controllers.customerCityController.clear();
-  //         controllers.states=null;
-  //         controllers.customerPinCodeController.clear();
-  //         controllers.customerCountryController.clear();
-  //       //Get.to(const CompanyCamera(),transition: Transition.downToUp,duration: const Duration(seconds: 2));
-  //       controllers.allCustomerFuture=apiService.allCustomerDetails();
-  //       await Future.delayed(const Duration(milliseconds: 100));
-  //       Navigator.push(Get.context!,
-  //         PageRouteBuilder(
-  //           pageBuilder: (context, animation1, animation2) => const ViewCustomer(),
-  //           transitionDuration: Duration.zero,
-  //           reverseTransitionDuration: Duration.zero,
-  //         ),
-  //       );
-  //       //Get.to(const ViewCustomer());
-  //       controllers.customerCtr.reset();
-  //     } else {
-  //       controllers.customerCtr.reset();
-  //       errorDialog(Get.context!,request.body);
-  //     }
-  //   }catch(e){
-  //     errorDialog(Get.context!,e.toString());
-  //     controllers.customerCtr.reset();
-  //   }
-  // }
   void errorDialog(BuildContext context, String text) {
     showDialog(
         context: context,
@@ -2393,7 +2061,6 @@ class ApiService {
 
   Future<List<MailReceiveObj>> mailCommentDetails(String id) async {
     final url = Uri.parse(scriptApi);
-    print("Id $id}");
     try {
       final response = await http.post(
         url,
@@ -2407,10 +2074,6 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
-        // var type1Count = data.where((item) => item['type'] == "1").length;
-        // var type2Count = data.where((item) => item['type'] == "2").length;
-        // controllers.allDirectVisit.value = type1Count.toString();
-        // controllers.allTelephoneCalls.value = type2Count.toString();
         return data.map((json) => MailReceiveObj.fromJson(json)).toList();
       } else {
         throw Exception(
@@ -2440,7 +2103,6 @@ class ApiService {
           "action": "get_data"
         }),
       );
-      print("com ${response.body}");
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
         var type1Count = data.where((item) => item['type'] == "1").length;
@@ -2488,8 +2150,6 @@ class ApiService {
         controllers.emailCount.value = int.parse(controllers
                 .mailReceivesList[controllers.mailReceivesList.length - 1]
             ['sent_count']);
-        print(controllers.emailCount.value);
-        //print("Mails ${controllers.mailReceivesList}");
       } else {
         controllers.mailReceivesList.value = [];
         throw Exception(
@@ -2497,13 +2157,10 @@ class ApiService {
       }
     } on SocketException {
       controllers.mailReceivesList.value = [];
-      print('No internet connection');
     } on HttpException catch (e) {
       controllers.mailReceivesList.value = [];
-      print('Server error: ${e.toString()}');
     } catch (e) {
       controllers.mailReceivesList.value = [];
-      print('Unexpected error lead : ${e.toString()}');
     }
   }
 
@@ -2546,59 +2203,16 @@ class ApiService {
             'Failed to load leads: Status code ${response.body}'); // Provide more specific error message
       }
     } on SocketException {
-      print('No internet connection');
       throw Exception('No internet connection'); // Handle network errors
     } on HttpException catch (e) {
-      print('Server error: ${e.toString()}');
       throw Exception('Server error: ${e.toString()}'); // Handle HTTP errors
     } catch (e) {
       controllers.allLeadFuture.value = [];
       controllers.allLeads.value = [];
-      print('Unexpected error lead: ${e.toString()}');
       throw Exception(
           'Unexpected error lead: ${e.toString()}'); // Catch other exceptions
     }
   }
-
-  // Future<List<NewLeadObj>> leadsDetails(String leadId) async {
-  //   controllers.isLeadLoading.value = true;
-  //   final url = Uri.parse(scriptApi);
-  //   try {
-  //     final response = await http.post(
-  //       url,
-  //       body: jsonEncode({
-  //         "search_type": "lead_details",
-  //         "cos_id": controllers.storage.read("cos_id"),
-  //         "lead_id": leadId,
-  //         "action": "get_data"
-  //       }),
-  //     );
-  //     controllers.isLead.value = true;
-  //     controllers.isLeadLoading.value = false;
-  //     if (response.statusCode == 200) {
-  //       final data = jsonDecode(response.body) as List;
-  //       print("pincode ${data[0]['pincode']}");
-  //       //controllers.allLeads.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
-  //       return data.map((json) => NewLeadObj.fromJson(json)).toList();
-  //     } else {
-  //       throw Exception(
-  //           'Failed to load leads: Status code ${response.body}'); // Provide more specific error message
-  //     }
-  //   } on SocketException {
-  //     controllers.isLeadLoading.value = false;
-  //     print('No internet connection');
-  //     throw Exception('No internet connection'); // Handle network errors
-  //   } on HttpException catch (e) {
-  //     controllers.isLeadLoading.value = false;
-  //     print('Server error: ${e.toString()}');
-  //     throw Exception('Server error: ${e.toString()}'); // Handle HTTP errors
-  //   } catch (e) {
-  //     controllers.isLeadLoading.value = false;
-  //     print('Unexpected error lead: ${e.toString()}');
-  //     throw Exception(
-  //         'Unexpected error lead: ${e.toString()}'); // Catch other exceptions
-  //   }
-  // }
 
   Future<List<NewLeadObj>> leadsDetails(String leadId) async {
     controllers.isLeadLoading.value = true;
@@ -2617,25 +2231,19 @@ class ApiService {
       controllers.isLeadLoading.value = false;
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
-        //controllers.allLeads.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         return data.map((json) => NewLeadObj.fromJson(json)).toList();
       } else {
-        throw Exception(
-            'Failed to load leads: Status code ${response.body}'); // Provide more specific error message
+        throw Exception('Failed to load leads: Status code ${response.body}'); // Provide more specific error message
       }
     } on SocketException {
       controllers.isLeadLoading.value = false;
-      print('No internet connection');
       throw Exception('No internet connection'); // Handle network errors
     } on HttpException catch (e) {
       controllers.isLeadLoading.value = false;
-      print('Server error: ${e.toString()}');
       throw Exception('Server error: ${e.toString()}'); // Handle HTTP errors
     } catch (e) {
       controllers.isLeadLoading.value = false;
-      print('Unexpected error lead: ${e.toString()}');
-      throw Exception(
-          'Unexpected error lead: ${e.toString()}'); // Catch other exceptions
+      throw Exception('Unexpected error lead: ${e.toString()}'); // Catch other exceptions
     }
   }
 
@@ -2718,63 +2326,14 @@ class ApiService {
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
     } on SocketException {
-      print('No internet connection');
       throw Exception('No internet connection');
     } on HttpException catch (e) {
-      print('Server error: ${e.toString()}');
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
       controllers.allNewLeadFuture.value = [];
-      print('Unexpected error: ${e.toString()}');
       throw Exception('Unexpected error: ${e.toString()}');
     }
   }
-
-
-  // Future<List<NewLeadObj>> allNewLeadsDetails() async {
-  //   controllers.isLead.value=false;
-  //   final url = Uri.parse(scriptApi);
-  //   controllers.allNewLeadsLength.value=0;
-  //   try {
-  //     final response = await http.post(
-  //       url,
-  //       body: jsonEncode({
-  //         "search_type": "leads",
-  //         "cos_id":controllers.storage.read("cos_id"),
-  //         "role":controllers.storage.read("role"),
-  //         "id":controllers.storage.read("id"),
-  //         "lead_id":"1",
-  //         "action":"get_data"
-  //       }),
-  //     );
-  //     controllers.isLead.value=true;
-  //     if (response.statusCode == 200){
-  //       final data = jsonDecode(response.body) as List;
-  //       controllers.allNewLeadsLength.value=data.length;
-  //       controllers.isNewLeadList.value=[];
-  //       for(int i=0;i<controllers.allNewLeadsLength.value;i++){
-  //         controllers.isNewLeadList.add({
-  //           "isSelect":false,
-  //           "lead_id":data[i]["user_id"].toString(),
-  //           "rating":data[i]["rating"].toString(),
-  //         });
-  //       }
-  //       return data.map((json) => NewLeadObj.fromJson(json)).toList();
-  //     } else {
-  //       throw Exception('Failed to load leads: Status code ${response.body}'); // Provide more specific error message
-  //     }
-  //   } on SocketException {
-  //     print('No internet connection');
-  //     throw Exception('No internet connection'); // Handle network errors
-  //   } on HttpException catch (e) {
-  //     print('Server error: ${e.toString()}');
-  //     throw Exception('Server error: ${e.toString()}'); // Handle HTTP errors
-  //   } catch (e) {
-  //     print('Unexpected error lead: ${e.toString()}');
-  //     throw Exception('Unexpected error lead: ${e.toString()}'); // Catch other exceptions
-  //
-  //   }
-  // }
 
   Future<List<NewLeadObj>> allGoodLeadsDetails() async {
     controllers.isLead.value = false;
@@ -2792,14 +2351,12 @@ class ApiService {
           "action": "get_data"
         }),
       );
-      //print("lead ${response.body}");
       controllers.isLead.value = true;
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List; // Cast to List
         controllers.allGoodLeadsLength.value = data.length;
         controllers.isGoodLeadList.value = [];
         for (int i = 0; i < controllers.allGoodLeadsLength.value; i++) {
-          //controllers.isGoodLeadList.add(false);
           controllers.isGoodLeadList.add({
             "isSelect": false,
             "lead_id": data[i]["user_id"].toString(),
@@ -2814,13 +2371,10 @@ class ApiService {
             'Failed to load leads: Status code ${response.body}'); // Provide more specific error message
       }
     } on SocketException {
-      print('No internet connection');
       throw Exception('No internet connection'); // Handle network errors
     } on HttpException catch (e) {
-      print('Server error: ${e.toString()}');
       throw Exception('Server error: ${e.toString()}'); // Handle HTTP errors
     } catch (e) {
-      print('Unexpected error lead: ${e.toString()}');
       throw Exception(
           'Unexpected error lead: ${e.toString()}'); // Catch other exceptions
     }
@@ -2896,7 +2450,6 @@ class ApiService {
               "cos_id": controllers.storage.read("cos_id"),
               "action": "get_data"}),
       );
-      //print("Company ${response.body}");
       controllers.isLead.value = true;
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
@@ -2907,13 +2460,10 @@ class ApiService {
             'Failed to load companies: Status code ${response.statusCode}');
       }
     } on SocketException {
-      print('No internet connection');
       throw Exception('No internet connection');
     } on HttpException catch (e) {
-      print('Server error: ${e.toString()}');
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
-      print('Unexpected error lead: ${e.toString()}');
       throw Exception('Unexpected error lead: ${e.toString()}');
     }
   }
@@ -2946,8 +2496,6 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      log("checkVersion ${data}");
-      log("checkVersion ${request.body}");
       controllers.versionActive.value = false;
       controllers.updateAvailable.value = false;
       if (request.statusCode == 200) {
@@ -3078,7 +2626,6 @@ class ApiService {
         throw Exception('Failed to load album');
       }
     } catch (e) {
-      print("day_report $e");
       throw Exception('Failed to load album');
     }
   }
@@ -3238,7 +2785,6 @@ class ApiService {
           "action": "get_data"
         }),
       );
-      //print("Customer ${response.body}");
       controllers.isLead.value = true;
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
@@ -3301,14 +2847,11 @@ class ApiService {
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
     } on SocketException {
-      print('No internet connection');
       throw Exception('No internet connection');
     } on HttpException catch (e) {
-      print('Server error: ${e.toString()}');
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
       controllers.isTargetLeadList.clear();
-      print('Unexpected error: ${e.toString()}');
       throw Exception('Unexpected error: ${e.toString()}');
     }
   }
