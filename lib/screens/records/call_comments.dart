@@ -153,7 +153,7 @@ class _CallCommentsState extends State<CallComments> {
                               setState(() {
                                 controllers.clearSelectedCustomer();
                                 controllers.cusController.text = "";
-                                controllers.callType = "Incoming";
+                                controllers.callType = "Outgoing";
                                 controllers.callStatus = "Completed";
                               });
                               controllers.callCommentCont.text = "";

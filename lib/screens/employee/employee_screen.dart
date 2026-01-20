@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -85,9 +87,10 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   ),
                                 ),
                                 onPressed: (){
-                                  if(controllers.planType.value=="Business Essential"&&(employeeProvider.filteredStaff.length ?? 0) < 2){
+                                  log("Plan Type: ${controllers.planType.value} ${employeeProvider.filteredStaff.length}");
+                                  if(controllers.planType.value=="Business Essential"&&(employeeProvider.filteredStaff.length) < 2){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
-                                  }else if(controllers.planType.value=="Business Fit"&&(employeeProvider.filteredStaff.length ?? 0) < 10){
+                                  }else if(controllers.planType.value=="Business Fit"&&(employeeProvider.filteredStaff.length) < 10){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
                                   }else if(controllers.planType.value=="Business Pro"||controllers.planType.value=="Enterprise"){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));

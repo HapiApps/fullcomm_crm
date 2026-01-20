@@ -78,11 +78,11 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   Future<List<MailReceiveObj>>? customMailFuture;
   Future<List<NewLeadObj>>? allGoodLeadFuture;
   Future<List<CompanyObj>>? allCompanyFuture;
-  var disqualifiedFuture      = <NewLeadObj>[].obs;
-  var targetLeadsFuture       = <NewLeadObj>[].obs;
-  var allNewLeadFuture        = <NewLeadObj>[].obs;
-  var allLeadFuture           = <NewLeadObj>[].obs;
-  var allQualifiedLeadFuture  = <NewLeadObj>[].obs;
+  var disqualifiedFuture     = <NewLeadObj>[].obs;
+  var targetLeadsFuture      = <NewLeadObj>[].obs;
+  var allNewLeadFuture       = <NewLeadObj>[].obs;
+  var allLeadFuture          = <NewLeadObj>[].obs;
+  var allQualifiedLeadFuture = <NewLeadObj>[].obs;
   var allCustomerLeadFuture  = <NewLeadObj>[].obs;
   RxString selectedTemperature = "".obs;
   RxString selectedProspectTemperature = "".obs;
@@ -1518,8 +1518,8 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   ];
 
   var callTypeList = [
-    "Incoming",
     "Outgoing",
+    "Incoming",
     "Missed"
   ];
   var callStatusList = [
@@ -1601,7 +1601,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       status,
       rating,
       industry,
-      callType="Incoming",
+      callType="Outgoing",
       callStatus="Completed",
       upCallType="Incoming",
       upcallStatus="Completed",

@@ -593,7 +593,7 @@ class ApiService {
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "OK") {
         controllers.callTime.value = "";
-        controllers.callType = "Incoming";
+        controllers.callType = "Outgoing";
         controllers.callStatus = "Completed";
         remController.titleController.text = controllers.callCommentCont.text;
         controllers.callCommentCont.text = "";
@@ -664,7 +664,7 @@ class ApiService {
         controllers.clearSelectedCustomer();
         controllers.empDOB.value = "";
         controllers.callTime.value = "";
-        controllers.callType = "Incoming";
+        controllers.callType = "Outgoing";
         controllers.callStatus = "Completed";
         controllers.callCommentCont.text = "";
         getAllCallActivity("");

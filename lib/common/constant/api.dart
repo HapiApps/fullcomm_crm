@@ -31,7 +31,7 @@ const String getImage        = "$domain/CRM/get_files.php";
 // const String version     = "Version 0.0.22";
 // const String versionNum  = "0.0.22";
 // ///Prod
-// // const String domain      = "https://thirumal.hrides.in";//Logo change panna nu
+// // const String domain      = "https://thirumal.hrides.in";//Logo change panna nu,lead details php change panna nu
 // // const bool isRelease     = true;
 // // const String version     = "Version 0.0.27";
 // // const String versionNum  = "0.0.27";

@@ -138,8 +138,7 @@ class FilterSection extends StatelessWidget {
                                 width: 100,
                                 image: "assets/images/action_delete.png",
                                 name: "Delete",
-                                toolTip:
-                                    "Click here to delete the customer details",
+                                toolTip: "Click here to delete the customer details",
                                 callback: onDelete,
                               ),
                               10.width,

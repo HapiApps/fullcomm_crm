@@ -192,7 +192,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                           setState(() {
                             controllers.clearSelectedCustomer();
                             controllers.cusController.text = "";
-                            controllers.callType = "Incoming";
+                            controllers.callType = "Outgoing";
                             controllers.callStatus = "Completed";
                           });
                           controllers.callCommentCont.text = "";
