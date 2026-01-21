@@ -2335,6 +2335,52 @@ class ApiService {
     }
   }
 
+  Future<void> allRatingLeadsDetails() async {
+    controllers.isLead.value = false;
+    final url = Uri.parse(scriptApi);
+    try {
+      final response = await http.post(
+        url,
+        body: jsonEncode({
+          "search_type": "leads",
+          "cos_id": controllers.storage.read("cos_id"),
+          "role": controllers.storage.read("role"),
+          "id": controllers.storage.read("id"),
+          "lead_id": "1",
+          "action": "get_data"
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as List;
+
+        controllers.allNewLeadsLength.value = data.length;
+        controllers.isNewLeadList.clear();
+
+        for (int i = 0; i < data.length; i++) {
+          controllers.isNewLeadList.add({
+            "isSelect": false,
+            "lead_id": data[i]["user_id"].toString(),
+            "rating": data[i]["rating"].toString(),
+            "mail": data[i]["email_id"].toString(),
+          });
+        }
+
+        controllers.allNewLeadFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        controllers.isLead.value = true;
+      } else {
+        throw Exception('Failed to load leads: Status code ${response.body}');
+      }
+    } on SocketException {
+      throw Exception('No internet connection');
+    } on HttpException catch (e) {
+      throw Exception('Server error: ${e.toString()}');
+    } catch (e) {
+      controllers.allNewLeadFuture.value = [];
+      throw Exception('Unexpected error: ${e.toString()}');
+    }
+  }
+
   Future<List<NewLeadObj>> allGoodLeadsDetails() async {
     controllers.isLead.value = false;
     final url = Uri.parse(scriptApi); // Double-check URL correctness

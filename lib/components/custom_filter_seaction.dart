@@ -13,6 +13,7 @@ import 'keyboard_search.dart';
 class FilterSection extends StatelessWidget {
   final String title;
   final int count;
+  final bool isActionEnabled;
   final List<dynamic> itemList;
   final RxList<NewLeadObj> leadFuture;
   final VoidCallback onDelete;
@@ -45,15 +46,16 @@ class FilterSection extends StatelessWidget {
     required this.selectedSortBy,
     required this.isMenuOpen,
     this.onQualify,
-    required this.leadFuture
+    required this.leadFuture,
+    this.isActionEnabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final FocusNode _focusNode = FocusNode();
+    final FocusNode focusNode = FocusNode();
     return Column(
       children: [
-        Row(
+        isActionEnabled?Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
@@ -186,9 +188,9 @@ class FilterSection extends StatelessWidget {
               ],
             ),
           ],
-        ),
+        ):0.height,
         10.height,
-        Divider(thickness: 1.5, color: colorsConst.secondary),
+        isActionEnabled?Divider(thickness: 1.5, color: colorsConst.secondary) :0.height,
         10.height,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -240,7 +242,7 @@ class FilterSection extends StatelessWidget {
                                 selectedSortBy.value = val!;
                                 onSearchChanged!("");
                                 controllers.clearSelectedCustomer();
-                                _focusNode.requestFocus();
+                                focusNode.requestFocus();
                               },
                             ),
                             Text(

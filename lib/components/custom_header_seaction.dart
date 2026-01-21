@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/components/custom_textfield.dart';
 import 'package:fullcomm_crm/controller/table_controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,17 +16,17 @@ import '../models/user_heading_obj.dart';
 import '../screens/leads/add_lead.dart';
 import 'custom_loading_button.dart';
 import 'custom_text.dart';
-import 'package:intl/intl.dart';
 
 class HeaderSection extends StatefulWidget {
   final String title;
   final String subtitle;
+  final bool isAction;
   final RxList<NewLeadObj> list;
 
   const HeaderSection({
     super.key,
     required this.title,
-    required this.subtitle, required this.list,
+    required this.subtitle, required this.list,this.isAction = true
   });
 
   @override
@@ -35,56 +34,12 @@ class HeaderSection extends StatefulWidget {
 }
 
 class _HeaderSectionState extends State<HeaderSection> {
-  dynamic getFieldValue(NewLeadObj lead, String field) {
-    switch (field) {
-      case 'name':
-        var name = lead.firstname ?? '';
-        if (name.contains('||')) name = name.split('||')[0].trim();
-        return name;
-      case 'company_name':
-        return lead.companyName ?? '';
-      case 'mobile_number':
-        return lead.mobileNumber ?? '';
-      case 'detailsOfServiceRequired':
-        return lead.detailsOfServiceRequired ?? '';
-      case 'source':
-        return lead.source ?? '';
-      case 'city':
-        return lead.city ?? '';
-      case 'status_update':
-        return lead.statusUpdate ?? '';
-      case 'prospect_enrollment_date':
-      case 'date':
-        DateTime parseDate(String? dateStr, String? fallback) {
-          if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-            dateStr = fallback;
-          }
-          if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-            return DateTime(1900);
-          }
-          DateTime? parsed;
-          try {
-            parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
-          } catch (_) {
-            parsed = DateTime.tryParse(dateStr);
-          }
-          return parsed ?? DateTime(1900);
-        }
-        final date = parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
-        return DateFormat('dd-MM-yyyy').format(date);
-      default:
-        final value = lead.asMap()[field];
-        return value?.toString() ?? '';
-    }
-  }
   Future<void> exportLeadsToExcel(
       List<NewLeadObj> leads,
       List<CustomerField> fields,
       ) async {
     final excel = Excel.createExcel();
     final sheet = excel.sheets[excel.getDefaultSheet()!];
-    String normalize(String s) =>
-        s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
     final headers = fields.map((f) => f.userHeading).toList();
     sheet?.appendRow(headers.map((h) => TextCellValue(h)).toList());
 
@@ -117,62 +72,10 @@ class _HeaderSectionState extends State<HeaderSection> {
     html.Url.revokeObjectUrl(url);
   }
 
-  // Future<void> exportLeadsToExcel(
-  //     List<NewLeadObj> leads,
-  //     List<CustomerField> fields, // your controllers.fields
-  //     ) async {
-  //   final excel = Excel.createExcel();
-  //   excel.delete('Sheet1');
-  //   final sheet = excel['Leads'];
-  //
-  //   String normalize(String s) =>
-  //       s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
-  //
-  //   final headers = fields.map((f) => f.userHeading).toList();
-  //   sheet.appendRow(headers.map((h) => TextCellValue(h)).toList());
-  //
-  //   final headerStyle = CellStyle(
-  //     bold: true,
-  //     backgroundColorHex: ExcelColor.blue,
-  //     fontColorHex: ExcelColor.white,
-  //   );
-  //   for (var col = 0; col < headers.length; col++) {
-  //     final cell = sheet.cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: 0));
-  //     cell.cellStyle = headerStyle;
-  //   }
-  //   for (final lead in leads) {
-  //     // print("--------------------------------------------------");
-  //     // print("Lead Object: ${lead.toJson()}");
-  //     //
-  //     // for (final f in fields) {
-  //     //   final key = f.systemField;
-  //     //   final heading = f.userHeading;
-  //     //   final value = lead.toJson()[key];
-  //     //   print("[$heading] key=$key => value=$value");
-  //     // }
-  //     final map = lead.toJson();
-  //     final row = fields.map((f) {
-  //       final key = f.systemField;
-  //       final value = map[key];
-  //       return TextCellValue(
-  //         (value == null || value.toString() == 'null') ? '' : value.toString(),
-  //       );
-  //     }).toList();
-  //     sheet.appendRow(row);
-  //   }
-  //   final fileBytes = excel.encode();
-  //   final blob = html.Blob([fileBytes]);
-  //   final url = html.Url.createObjectUrlFromBlob(blob);
-  //   final anchor = html.AnchorElement(href: url)
-  //     ..setAttribute("download", "leads_${DateTime.now().millisecondsSinceEpoch}.xlsx")
-  //     ..click();
-  //   html.Url.revokeObjectUrl(url);
-  // }
-
   @override
   Widget build(BuildContext context) {
     final controllers = Get.find<Controller>();
-    final FocusNode _focusNode = FocusNode();
+    final FocusNode focusNode = FocusNode();
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -195,14 +98,14 @@ class _HeaderSectionState extends State<HeaderSection> {
             ),
           ],
         ),
-        Row(
+        widget.isAction?Row(
           children: [
             // ---- Export button ----
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()
                 : CustomLoadingButton(
               callback: () {
-                _focusNode.requestFocus();
+                focusNode.requestFocus();
                 exportLeadsToExcel(widget.list, controllers.fields);
               },
               isLoading: false,
@@ -218,7 +121,7 @@ class _HeaderSectionState extends State<HeaderSection> {
             // ---- Import button ----
             CustomLoadingButton(
               callback: () {
-                _focusNode.requestFocus();
+                focusNode.requestFocus();
                 if(appName=="ARUU’s EasyCRM") {
                   utils.showImportDialog(
                       context, widget.title == "Target Leads" ? "0" : "1");
@@ -253,7 +156,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                 setState(() {
                   controllers.visitType = null;
                 });
-                _focusNode.requestFocus();
+                focusNode.requestFocus();
                 controllers.empDOB.value = "${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}";
                 Get.to(const AddLead(), duration: Duration.zero);
               },
@@ -280,7 +183,7 @@ class _HeaderSectionState extends State<HeaderSection> {
               textColor: colorsConst.primary,
             ),
           ],
-        ),
+        ):SizedBox.shrink(),
       ],
     );
   }

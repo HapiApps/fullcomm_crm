@@ -81,6 +81,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   var disqualifiedFuture     = <NewLeadObj>[].obs;
   var targetLeadsFuture      = <NewLeadObj>[].obs;
   var allNewLeadFuture       = <NewLeadObj>[].obs;
+  var allRatingLeadFuture    = <NewLeadObj>[].obs;
   var allLeadFuture          = <NewLeadObj>[].obs;
   var allQualifiedLeadFuture = <NewLeadObj>[].obs;
   var allCustomerLeadFuture  = <NewLeadObj>[].obs;

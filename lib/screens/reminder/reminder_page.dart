@@ -4,7 +4,6 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/screens/reminder/reminder_calendar.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/reminder_utils.dart';
 import '../../components/custom_loading_button.dart';

@@ -3,6 +3,7 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/notification_utils.dart';
 import 'package:fullcomm_crm/components/line_chart.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
+import 'package:fullcomm_crm/screens/leads/rating_leads.dart';
 import 'package:fullcomm_crm/screens/records/records.dart';
 import 'package:fullcomm_crm/screens/reminder/reminder_page.dart';
 import 'package:get/get.dart';
@@ -174,7 +175,6 @@ class _NewDashboardState extends State<NewDashboard> {
                               }
                               return CustomText(
                                 text: "Dashboard for the period $displayText ($selected) ${controllers.planType.value}",
-                                // text: "Dashboard for the period $displayText ($selected)",
                                 colors: colorsConst.textColor,
                                 size: 20,
                                 isBold: true,
@@ -331,7 +331,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                 color: dashController.canMoveForward() ? Colors.grey[700] : Colors.grey[300]),
                               onPressed: dashController.canMoveForward() ? () => dashController.shiftRange(forward: true) : null,
                             ),
-                const SizedBox(width: 6),
+                             const SizedBox(width: 6),
                                 ],
                               ),
                             ),
@@ -529,7 +529,18 @@ class _NewDashboardState extends State<NewDashboard> {
                                                   children: [
                                                     InkWell(
                                                       onTap: ()async{
-                                                        notificationUtils.showBrowserNotification();
+                                                        Navigator.push(
+                                                          context,
+                                                          PageRouteBuilder(
+                                                            pageBuilder: (context, animation1, animation2) =>
+                                                            const RatingLeads(),
+                                                            transitionDuration: Duration.zero,
+                                                            reverseTransitionDuration: Duration.zero,
+                                                          ),
+                                                        );
+                                                        controllers.oldIndex.value = controllers.selectedIndex.value;
+                                                        controllers.selectedIndex.value = 0;
+                                                        //notificationUtils.showBrowserNotification();
                                                       },
                                                       child: RatingIndicator(
                                                         color: Colors.red,

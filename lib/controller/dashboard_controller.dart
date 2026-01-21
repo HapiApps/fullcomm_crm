@@ -290,8 +290,6 @@ class DashboardController extends GetxController {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("view dashboard report");
-      print(request.body);
       totalCold.value = "0";
       totalHot.value = "0";
       totalWarm.value = "0";
@@ -340,7 +338,6 @@ class DashboardController extends GetxController {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      print("Dashboard Report ${request.body}");
       if (request.statusCode == 200) {
         var response = jsonDecode(request.body) as List;
         dashController.totalMails.value       = response[0]["total_mails"] ?? "0";
@@ -362,7 +359,6 @@ class DashboardController extends GetxController {
         throw Exception('Failed to load dashboard report');
       }
     } catch (e) {
-      print("dashboard_report error: $e");
       throw Exception('Failed to load dashboard report');
     }
   }

@@ -30,13 +30,13 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.web,
   );
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print("📩 Foreground message: ${message.data}");
+    print(" Foreground message: ${message.data}");
 
     // App already open -> show dialog/snackbar
   });
 
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    print("📩 Notification tapped: ${message.data}");
+    print(" Notification tapped: ${message.data}");
 
     // When user clicks the notification and app opens
   });
