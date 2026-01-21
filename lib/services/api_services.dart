@@ -595,7 +595,8 @@ class ApiService {
         controllers.callTime.value = "";
         controllers.callType = "Outgoing";
         controllers.callStatus = "Completed";
-        remController.titleController.text = controllers.callCommentCont.text;
+        remController.titleController.text = "Follow-up calling";
+        remController.detailsController.text = controllers.callCommentCont.text;
         controllers.callCommentCont.text = "";
         getAllCallActivity("");
         Navigator.pop(context);
@@ -1123,6 +1124,7 @@ class ApiService {
         customerList.clear();
         Navigator.pop(context);
         controllers.productCtr.reset();
+        remController.titleController.text = "Follow-up calling";
         if (remController.stDate.value.isEmpty) {
           try {
             String raw = controllers.empDOB.value;
@@ -2335,18 +2337,18 @@ class ApiService {
     }
   }
 
-  Future<void> allRatingLeadsDetails() async {
+  Future<void> allRatingLeadsDetails(String type) async {
     controllers.isLead.value = false;
     final url = Uri.parse(scriptApi);
     try {
       final response = await http.post(
         url,
         body: jsonEncode({
-          "search_type": "leads",
+          "search_type": "rating_leads",
           "cos_id": controllers.storage.read("cos_id"),
           "role": controllers.storage.read("role"),
           "id": controllers.storage.read("id"),
-          "lead_id": "1",
+          "type": type,
           "action": "get_data"
         }),
       );
@@ -2354,19 +2356,7 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
 
-        controllers.allNewLeadsLength.value = data.length;
-        controllers.isNewLeadList.clear();
-
-        for (int i = 0; i < data.length; i++) {
-          controllers.isNewLeadList.add({
-            "isSelect": false,
-            "lead_id": data[i]["user_id"].toString(),
-            "rating": data[i]["rating"].toString(),
-            "mail": data[i]["email_id"].toString(),
-          });
-        }
-
-        controllers.allNewLeadFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        controllers.allRatingLeadFuture.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         controllers.isLead.value = true;
       } else {
         throw Exception('Failed to load leads: Status code ${response.body}');
@@ -2376,7 +2366,7 @@ class ApiService {
     } on HttpException catch (e) {
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
-      controllers.allNewLeadFuture.value = [];
+      controllers.allRatingLeadFuture.value = [];
       throw Exception('Unexpected error: ${e.toString()}');
     }
   }

@@ -48,8 +48,8 @@ class LeftTableHeader extends StatelessWidget {
 
       // Column widths
       final Map<int, TableColumnWidth> columnWidths = {
-        0: showCheckbox ? const FlexColumnWidth(1) : const FlexColumnWidth(3),
-        1: const FlexColumnWidth(1.5),
+        0: showCheckbox ? const FlexColumnWidth(1) : const FlexColumnWidth(1.5),
+        1: showCheckbox ? const FlexColumnWidth(1.5) : const FlexColumnWidth(2.3),
         2: FixedColumnWidth(tableController.colWidth[headings.first] ?? 150),
       };
 

@@ -287,8 +287,7 @@ class _CallCommentsState extends State<CallComments> {
                                                         onTap: () {
                                                           utils.timePicker(
                                                               context: context,
-                                                              textEditingController:
-                                                              controllers.timeOfConCtr,
+                                                              textEditingController: controllers.timeOfConCtr,
                                                               pathVal: controllers.callTime);
                                                         },
                                                       ),
@@ -528,6 +527,16 @@ class _CallCommentsState extends State<CallComments> {
                             Obx(()=>utils.selectHeatingType("All",
                                 controllers.selectCallType.value=="All", (){
                                   controllers.selectCallType.value="All";
+                                  remController.filterAndSortCalls(
+                                    allCalls: controllers.callActivity,
+                                    searchText: controllers.searchText.value.toLowerCase(),
+                                    callType: controllers.selectCallType.value,
+                                    sortField: controllers.sortFieldCallActivity.value,
+                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                    selectedMonth: remController.selectedCallMonth.value,
+                                    selectedRange: remController.selectedCallRange.value,
+                                    selectedDateFilter: remController.selectedCallSortBy.value,
+                                  );
                                 }, false,controllers.allCalls),),
                             10.width,
                             Obx(()=> utils.selectHeatingType("Incoming",
@@ -538,11 +547,31 @@ class _CallCommentsState extends State<CallComments> {
                             Obx(()=>utils.selectHeatingType("Outgoing",
                                 controllers.selectCallType.value=="Outgoing", (){
                                   controllers.selectCallType.value="Outgoing";
+                                  remController.filterAndSortCalls(
+                                    allCalls: controllers.callActivity,
+                                    searchText: controllers.searchText.value.toLowerCase(),
+                                    callType: controllers.selectCallType.value,
+                                    sortField: controllers.sortFieldCallActivity.value,
+                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                    selectedMonth: remController.selectedCallMonth.value,
+                                    selectedRange: remController.selectedCallRange.value,
+                                    selectedDateFilter: remController.selectedCallSortBy.value,
+                                  );
                                 }, false,controllers.allOutgoingCalls),),
                             10.width,
                             Obx(()=> utils.selectHeatingType("Missed",
                                 controllers.selectCallType.value=="Missed", (){
                                   controllers.selectCallType.value="Missed";
+                                  remController.filterAndSortCalls(
+                                    allCalls: controllers.callActivity,
+                                    searchText: controllers.searchText.value.toLowerCase(),
+                                    callType: controllers.selectCallType.value,
+                                    sortField: controllers.sortFieldCallActivity.value,
+                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                    selectedMonth: remController.selectedCallMonth.value,
+                                    selectedRange: remController.selectedCallRange.value,
+                                    selectedDateFilter: remController.selectedCallSortBy.value,
+                                  );
                                 }, true,controllers.allMissedCalls),),
                           ],
                         ),

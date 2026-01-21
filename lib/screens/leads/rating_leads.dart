@@ -19,7 +19,8 @@ import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
 
 class RatingLeads extends StatefulWidget {
-  const RatingLeads({super.key});
+  final String type;
+  const RatingLeads({super.key,required this.type});
 
   @override
   State<RatingLeads> createState() => _RatingLeadsState();
@@ -42,7 +43,7 @@ class _RatingLeadsState extends State<RatingLeads> {
     });
     Future.delayed(Duration.zero, () {
       apiService.currentVersion();
-      controllers.selectedIndex.value = 1;
+      controllers.selectedIndex.value = 0;
       controllers.groupController.selectIndex(0);
       setState(() {
         apiService.prospectsList = [];
@@ -119,8 +120,8 @@ class _RatingLeadsState extends State<RatingLeads> {
                     children: [
                       // Header Section
                       HeaderSection(
-                        title: "New Leads - ${controllers.leadCategoryList[0]["value"]}",
-                        subtitle: "View all of your ${controllers.leadCategoryList[0]["value"]} Information",
+                        title: "Rating - ${widget.type} Leads",
+                        subtitle: "View all of your Rating - ${widget.type} Information",
                         list: controllers.allNewLeadFuture,
                         isAction: false,
                       ),
@@ -361,10 +362,10 @@ class _RatingLeadsState extends State<RatingLeads> {
                               child: Column(
                                 children: [
                                   LeftTableHeader(
-                                    showCheckbox: true,
+                                    showCheckbox: false,
                                     isAllSelected: apiService.prospectsList.isEmpty?false:controllers.isAllSelected.value,
                                     onSelectAll: (value) {
-                                      if(controllers.paginatedLeads.isNotEmpty){
+                                      if(controllers.paginatedRatingLeads.isNotEmpty){
                                         if (value == true) {
                                           controllers.isAllSelected.value = true;
                                           setState(() {
@@ -403,18 +404,19 @@ class _RatingLeadsState extends State<RatingLeads> {
                                     height: MediaQuery.of(context).size.height - 345,
                                     child: Obx(() => controllers.isLead.value == false
                                         ? 0.height
-                                        : controllers.paginatedLeads.isNotEmpty?
+                                        : controllers.paginatedRatingLeads.isNotEmpty?
                                     ScrollConfiguration(
                                       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                                       child: ListView.builder(
                                         controller: _leftController,
                                         shrinkWrap: true,
                                         physics: const ScrollPhysics(),
-                                        itemCount: controllers.paginatedLeads.length,
+                                        itemCount: controllers.paginatedRatingLeads.length,
                                         itemBuilder: (context, index) {
-                                          final data = controllers.paginatedLeads[index];
+                                          final data = controllers.paginatedRatingLeads[index];
                                           return Obx(()=>LeftLeadTile(
-                                            pageName: "Suspects",
+                                            showCheckbox: false,
+                                            pageName: "Rating Leads",
                                             saveValue: controllers.isNewLeadList[index]["isSelect"],
                                             onChanged: (value){
                                               setState(() {
@@ -568,14 +570,14 @@ class _RatingLeadsState extends State<RatingLeads> {
                                             height: MediaQuery.of(context).size.height,
                                             padding: EdgeInsets.fromLTRB(160, 0, 0, 0),
                                             child: const Center(child: CircularProgressIndicator()))
-                                            : controllers.paginatedLeads.isNotEmpty?
+                                            : controllers.paginatedRatingLeads.isNotEmpty?
                                         ListView.builder(
                                           controller: _rightController,
                                           shrinkWrap: true,
                                           physics: const ScrollPhysics(),
-                                          itemCount: controllers.paginatedLeads.length,
+                                          itemCount: controllers.paginatedRatingLeads.length,
                                           itemBuilder: (context, index) {
-                                            final data = controllers.paginatedLeads[index];
+                                            final data = controllers.paginatedRatingLeads[index];
                                             return Obx(()=>CustomLeadTile(
                                               pageName: "Suspects",
                                               saveValue: controllers.isNewLeadList[index]["isSelect"],
@@ -665,7 +667,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                           ],
                         ),
                       ),
-                      controllers.paginatedLeads.isNotEmpty?Obx(() {
+                      controllers.paginatedRatingLeads.isNotEmpty?Obx(() {
                         final totalPages = controllers.totalPages == 0 ? 1 : controllers.totalPages;
                         final currentPage = controllers.currentPage.value;
                         return Row(

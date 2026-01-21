@@ -638,6 +638,168 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     return filteredLeads.sublist(start, end);
   }
 
+  List<NewLeadObj> get paginatedRatingLeads {
+    final query = searchQuery.value.toLowerCase();
+    final ratingFilter = selectedTemperature.value;
+    final sortBy = selectedProspectSortBy.value;
+    final now = DateTime.now();
+
+    final filteredLeads = allRatingLeadFuture.where((lead) {
+      final matchesQuery = query.isEmpty ||
+          (lead.firstname?.toLowerCase().contains(query) ?? false) ||
+          (lead.mobileNumber?.toLowerCase().contains(query) ?? false) ||
+          (lead.companyName?.toLowerCase().contains(query) ?? false);
+
+      final matchesRating = ratingFilter.isEmpty ||
+          ((lead.rating ?? '').toLowerCase() == ratingFilter.toLowerCase());
+
+      bool matchesSort = true;
+
+      DateTime? updatedDate;
+      if (lead.prospectEnrollmentDate != null ||
+          (lead.updatedTs != null && lead.updatedTs!.isNotEmpty)) {
+        try {
+          if (lead.updatedTs != null &&
+              lead.updatedTs != "null" &&
+              lead.updatedTs!.isNotEmpty) {
+            updatedDate = DateTime.tryParse(lead.updatedTs!);
+          } else if (lead.prospectEnrollmentDate != null &&
+              lead.prospectEnrollmentDate!.isNotEmpty) {
+            updatedDate =
+                DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
+          }
+        } catch (_) {
+          updatedDate = null;
+          matchesSort = false;
+        }
+      }
+      if (updatedDate != null) {
+        final diff = now.difference(updatedDate).inDays;
+        switch (sortBy) {
+          case 'Today':
+            matchesSort = isSameDate(updatedDate, now);
+            break;
+          case 'Yesterday':
+            matchesSort = diff == 1;
+            break;
+          case 'Last 7 Days':
+            matchesSort = diff <= 7;
+            break;
+          case 'Last 30 Days':
+            matchesSort = diff <= 30;
+            break;
+          case 'Custom Month':
+            if (selectedMonth.value != null) {
+              matchesSort = updatedDate.year == selectedMonth.value!.year &&
+                  updatedDate.month == selectedMonth.value!.month;
+            } else {
+              matchesSort = true;
+            }
+            break;
+          case 'All':
+          default:
+            matchesSort = true;
+        }
+        if (selectedRange.value != null) {
+          final range = selectedRange.value!;
+          final start = DateTime(range.start.year, range.start.month, range.start.day);
+          final end = DateTime(range.end.year, range.end.month, range.end.day, 23, 59, 59);
+          matchesSort = matchesSort &&
+              (updatedDate.isAfter(start) || updatedDate.isAtSameMomentAs(start)) &&
+              (updatedDate.isBefore(end) || updatedDate.isAtSameMomentAs(end));
+        }
+      } else {
+        matchesSort = false;
+      }
+      return matchesQuery && matchesRating && matchesSort;
+    }).toList();
+    if (sortBy == 'Custom Month') {
+      DateTime parseDate(String? dateStr, String? fallback) {
+        if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+          dateStr = fallback;
+        }
+        DateTime? parsed;
+        try {
+          parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+        } catch (_) {
+          parsed = DateTime.tryParse(dateStr!);
+        }
+        return parsed ?? DateTime(1900);
+      }
+
+      filteredLeads.sort((a, b) {
+        final dateA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
+        final dateB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+        return dateB.compareTo(dateA); // reverse order
+      });
+    }
+    if (sortField.isNotEmpty) {
+      filteredLeads.sort((a, b) {
+        dynamic getFieldValue(NewLeadObj lead, String field) {
+          switch (field) {
+            case 'name':
+              var name = lead.firstname ?? '';
+              if (name.contains('||')) name = name.split('||')[0].trim();
+              return name.toLowerCase();
+            case 'company_name':
+              return (lead.companyName ?? '').toLowerCase();
+            case 'mobile_number':
+              return (lead.mobileNumber ?? '').toLowerCase();
+            case 'detailsOfServiceRequired':
+              return (lead.detailsOfServiceRequired ?? '').toLowerCase();
+            case 'source':
+              return (lead.source ?? '').toLowerCase();
+            case 'city':
+              return (lead.city ?? '').toLowerCase();
+            case 'status_update':
+              return (lead.statusUpdate ?? '').toLowerCase();
+            case 'date':
+            case 'prospect_enrollment_date':
+              DateTime parseDate(String? dateStr, String? fallback) {
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  dateStr = fallback;
+                }
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  return DateTime(1900);
+                }
+                DateTime? parsed;
+                try {
+                  parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+                } catch (_) {
+                  parsed = DateTime.tryParse(dateStr);
+                }
+                return parsed ?? DateTime(1900);
+              }
+              return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
+            default:
+              final value = lead.asMap()[field];
+              return value.toString().toLowerCase();
+          }
+        }
+
+        final valA = getFieldValue(a, sortField.value);
+        final valB = getFieldValue(b, sortField.value);
+
+        if (valA is DateTime && valB is DateTime) {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        } else {
+          return sortOrderN.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        }
+      });
+    }
+    int start = (currentPage.value - 1) * itemsPerPage;
+    if (start >= filteredLeads.length) return [];
+
+    int end = start + itemsPerPage;
+    end = end > filteredLeads.length ? filteredLeads.length : end;
+
+    return filteredLeads.sublist(start, end);
+  }
+
   final int mailPerPage = 100;
 
   List<String> get leadRanges {

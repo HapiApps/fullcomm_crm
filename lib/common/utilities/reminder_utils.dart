@@ -1169,7 +1169,7 @@ class ReminderUtils {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           CustomText(
-                            text: "Add Reminder",
+                            text: "Add Follow-up Reminder",
                             colors: colorsConst.textColor,
                             size: 20,
                             isBold: true,
