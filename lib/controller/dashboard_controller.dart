@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:fullcomm_crm/controller/reminder_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
@@ -161,6 +162,14 @@ class DashboardController extends GetxController {
                         var today = DateTime.now();
                         getCustomerReport(range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}", range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
                         dashController.selectedSortBy.value = "";
+                        remController.selectedMeetRange.value = range;
+                        remController.selectedMeetSortBy.value = "Custom Range";
+                        remController.filterAndSortMeetings(
+                          searchText: controllers.searchText.value.toLowerCase(),
+                          callType: controllers.selectMeetingType.value,
+                          sortField: controllers.sortFieldMeetingActivity.value,
+                          sortOrder: controllers.sortOrderMeetingActivity.value,
+                        );
                         Navigator.pop(context);
                       },
                       child: const Text(

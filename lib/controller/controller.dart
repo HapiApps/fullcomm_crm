@@ -1690,7 +1690,12 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     "Pending",
     "Missed"
   ];
-
+  var hCallStatusList = [
+    "Contacted",
+    "Call back",
+    "Demo Scheduled",
+    "Not Interested"
+  ];
   var stateList = [
     "Andhra Pradesh",
     "Arunachal Pradesh",
@@ -1765,7 +1770,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       rating,
       industry,
       callType="Outgoing",
-      callStatus="Completed",
+      callStatus="Contacted",
       upCallType="Incoming",
       upcallStatus="Completed",
       visitType,

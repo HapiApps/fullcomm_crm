@@ -594,7 +594,7 @@ class ApiService {
       if (request.statusCode == 200 && response["message"] == "OK") {
         controllers.callTime.value = "";
         controllers.callType = "Outgoing";
-        controllers.callStatus = "Completed";
+        controllers.callStatus = "Contacted";
         remController.titleController.text = "Follow-up calling";
         remController.detailsController.text = controllers.callCommentCont.text;
         controllers.callCommentCont.text = "";
@@ -666,7 +666,7 @@ class ApiService {
         controllers.empDOB.value = "";
         controllers.callTime.value = "";
         controllers.callType = "Outgoing";
-        controllers.callStatus = "Completed";
+        controllers.callStatus = "Contacted";
         controllers.callCommentCont.text = "";
         getAllCallActivity("");
         Navigator.pop(context);
@@ -1263,7 +1263,7 @@ class ApiService {
         controllers.storage.write("id", response["id"]);
         controllers.storage.write("cos_id", response["cos_id"]);
         final prefs = await SharedPreferences.getInstance();
-        prefs.setBool("loginScreen${versionNum}", true);
+        prefs.setBool("loginScreen$versionNum", true);
         String input = "Admin";
         controllers.isAdmin.value = input == "Admin" ? true : false;
         prefs.setBool("isAdmin", controllers.isAdmin.value);

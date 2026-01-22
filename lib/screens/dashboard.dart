@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:fullcomm_crm/screens/leads/suspects.dart';
+import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/common/utilities/notification_utils.dart';
 import 'package:fullcomm_crm/components/line_chart.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'package:fullcomm_crm/screens/leads/rating_leads.dart';
@@ -14,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
-import '../components/custom_loading_button.dart';
 import '../components/custom_rating.dart';
 import '../components/custom_sidebar.dart';
 import '../components/custom_text.dart';
@@ -44,19 +43,24 @@ class _NewDashboardState extends State<NewDashboard> {
     dashController.getToken();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
-      final employeeData =
-          Provider.of<EmployeeProvider>(context, listen: false);
+      final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
       employeeData.staffRoleDetailsData(context: context);
     });
 
     Future.delayed(Duration.zero, () async {
       apiService.currentVersion();
       controllers.selectedIndex.value = 0;
-
       final prefs = await SharedPreferences.getInstance();
       controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
       DateTime now = DateTime.now();
       dashController.selectedSortBy.value = "Today";
+      remController.selectedMeetSortBy.value = "Today";
+      remController.filterAndSortMeetings(
+        searchText: controllers.searchText.value.toLowerCase(),
+        callType: controllers.selectMeetingType.value,
+        sortField: controllers.sortFieldMeetingActivity.value,
+        sortOrder: controllers.sortOrderMeetingActivity.value,
+      );
       dashController.selectedRange.value = DateTimeRange(
         start: DateTime(now.year, now.month, now.day),
         end: DateTime(now.year, now.month, now.day),
@@ -72,22 +76,6 @@ class _NewDashboardState extends State<NewDashboard> {
     });
   }
 
-  String _getTooltipText(String label) {
-    switch (label) {
-      case 'Suspects':
-        return "Initial leads with low interest";
-      case 'Prospects':
-        return "Interested potential customers";
-      case 'Qualified':
-        return "Verified serious buyers";
-      case 'Disqualified':
-        return "Rejected / not usable leads";
-      case 'Customers':
-        return "Successfully converted customers";
-      default:
-        return "No data available";
-    }
-  }
 
   void showWebNotification() {
     // Ask permission
@@ -222,16 +210,13 @@ class _NewDashboardState extends State<NewDashboard> {
                                   spacing: 20,
                                   children:
                                       dashController.filters.map((filter) {
-                                    final bool isSelected =
-                                        dashController.selectedSortBy.value ==
-                                            filter;
+                                    final bool isSelected = dashController.selectedSortBy.value == filter;
                                     return MouseRegion(
                                       cursor: SystemMouseCursors.click,
                                       child: GestureDetector(
                                         behavior: HitTestBehavior.opaque,
                                         onTap: () {
-                                          dashController.selectedSortBy.value =
-                                              filter;
+                                          dashController.selectedSortBy.value = filter;
                                           DateTime now = DateTime.now();
                                           switch (filter) {
                                             case "Today":
@@ -274,8 +259,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                               break;
                                           }
                                           dashController.getDashboardReport();
-                                          final range = dashController
-                                              .selectedRange.value;
+                                          final range = dashController.selectedRange.value;
                                           var today = DateTime.now();
                                           if (dashController.selectedSortBy.value != "Today" &&
                                               dashController.selectedSortBy.value != "Yesterday") {
@@ -287,14 +271,19 @@ class _NewDashboardState extends State<NewDashboard> {
                                                     ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
                                                     : "${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
                                           } else {
-                                            var today =
-                                                "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
-                                            var last7days = DateTime.now()
-                                                .subtract(Duration(days: 7));
+                                            var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
+                                            var last7days = DateTime.now().subtract(Duration(days: 7));
                                             dashController.getCustomerReport(
                                                 "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
                                                 today);
                                           }
+                                          remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
+                                          remController.filterAndSortMeetings(
+                                            searchText: controllers.searchText.value.toLowerCase(),
+                                            callType: controllers.selectMeetingType.value,
+                                            sortField: controllers.sortFieldMeetingActivity.value,
+                                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                                          );
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(
@@ -356,8 +345,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                 Expanded(
                                   child: InkWell(
                                     onTap: () {
-                                      dashController
-                                          .showDatePickerDialog(context);
+                                      dashController.showDatePickerDialog(context);
                                     },
                                     child: Row(
                                       mainAxisAlignment:
@@ -473,18 +461,13 @@ class _NewDashboardState extends State<NewDashboard> {
                                                       Duration.zero,
                                                 ),
                                               );
-                                              controllers.oldIndex.value =
-                                                  controllers
-                                                      .selectedIndex.value;
-                                              controllers.selectedIndex.value =
-                                                  6;
+                                              controllers.oldIndex.value = controllers.selectedIndex.value;
+                                              controllers.selectedIndex.value = 6;
                                             },
                                             child: countShown(
                                                 width: 130,
                                                 head: " Calls",
-                                                count: dashController
-                                                    .totalCalls.value
-                                                    .toString(),
+                                                count: dashController.totalCalls.value.toString(),
                                                 icon: Icons.call)),
                                         InkWell(
                                           onTap: () {
@@ -492,56 +475,40 @@ class _NewDashboardState extends State<NewDashboard> {
                                             Navigator.push(
                                               context,
                                               PageRouteBuilder(
-                                                pageBuilder: (context,
-                                                        animation1,
-                                                        animation2) =>
+                                                pageBuilder: (context, animation1, animation2) =>
                                                     const Records(
                                                   isReload: "true",
                                                 ),
-                                                transitionDuration:
-                                                    Duration.zero,
-                                                reverseTransitionDuration:
-                                                    Duration.zero,
+                                                transitionDuration: Duration.zero,
+                                                reverseTransitionDuration: Duration.zero,
                                               ),
                                             );
-                                            controllers.oldIndex.value =
-                                                controllers.selectedIndex.value;
+                                            controllers.oldIndex.value = controllers.selectedIndex.value;
                                             controllers.selectedIndex.value = 6;
                                           },
                                           child: countShown(
                                               width: 135,
                                               head: "Appointments",
-                                              count: dashController
-                                                  .totalMeetings.value
-                                                  .toString(),
-                                              icon: Icons
-                                                  .calendar_month_outlined),
+                                              count: dashController.totalMeetings.value.toString(),
+                                              icon: Icons.calendar_month_outlined),
                                         ),
                                         InkWell(
                                           onTap: () {
                                             Navigator.push(
                                               context,
                                               PageRouteBuilder(
-                                                pageBuilder: (context,
-                                                        animation1,
-                                                        animation2) =>
-                                                    const EmployeeScreen(),
-                                                transitionDuration:
-                                                    Duration.zero,
-                                                reverseTransitionDuration:
-                                                    Duration.zero,
+                                                pageBuilder: (context, animation1, animation2) => const Suspects(),
+                                                transitionDuration: Duration.zero,
+                                                reverseTransitionDuration: Duration.zero,
                                               ),
                                             );
-                                            controllers.oldIndex.value =
-                                                controllers.selectedIndex.value;
-                                            controllers.selectedIndex.value = 9;
+                                            controllers.oldIndex.value = controllers.selectedIndex.value;
+                                            controllers.selectedIndex.value = 0;
                                           },
                                           child: countShown(
                                             width: 130,
-                                            head: "New Employees",
-                                            count: dashController
-                                                .totalEmployees.value
-                                                .toString(),
+                                            head: "New Customers",
+                                            count: dashController.totalSuspects.value.toString(),
                                             icon: Icons.people_outline,
                                           ),
                                         ),
@@ -805,8 +772,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 right: 25,
                                                 child: CircleAvatar(
                                                   radius: 5,
-                                                  backgroundColor:
-                                                      Color(0xff5D5FEF),
+                                                  backgroundColor: Color(0xff5D5FEF),
                                                 ),
                                               )
                                             ],
@@ -819,28 +785,25 @@ class _NewDashboardState extends State<NewDashboard> {
                               ),
                             ),
                             SizedBox(
-                              //height: screenHeight-60,
                               width: (screenWidth - 420) / 2.1,
                               child: SingleChildScrollView(
                                 controller: _rightController,
                                 child: Column(
                                   children: [
                                     Container(
-                                      height: 200,
+                                      height: 220,
                                       decoration: BoxDecoration(
-                                        color: Colors.white
+                                          color: Colors.white
                                       ),
                                       child: Column(
                                         children: [
                                           SizedBox(
-                                            width: controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+                                            width: (screenWidth - 420) / 2.1,
                                             child: Table(
                                               columnWidths: {
-                                                0: FixedColumnWidth(40),
-                                                1: FixedColumnWidth(60),
+                                                0: FixedColumnWidth(150),
+                                                1: FixedColumnWidth(150),
                                                 2: FixedColumnWidth(150),
-                                                3: FixedColumnWidth(120),
-                                                4: FixedColumnWidth(150),
                                               },
                                               border: TableBorder(
                                                 horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -932,123 +895,6 @@ class _NewDashboardState extends State<NewDashboard> {
                                                           ),
                                                         ],
                                                       ),),
-                                                      headerCell(4, Row(
-                                                        children: [
-                                                          CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: "Title",
-                                                            isCopy: true,
-                                                            size: 15,
-                                                            isBold: true,
-                                                            colors: Colors.white,
-                                                          ),
-                                                          const SizedBox(width: 3),
-                                                          GestureDetector(
-                                                            onTap: (){
-                                                              if(controllers.sortFieldMeetingActivity.value=='title' && controllers.sortOrderMeetingActivity.value=='asc'){
-                                                                controllers.sortOrderMeetingActivity.value='desc';
-                                                              }else{
-                                                                controllers.sortOrderMeetingActivity.value='asc';
-                                                              }
-                                                              controllers.sortFieldMeetingActivity.value='title';
-                                                              remController.filterAndSortMeetings(
-                                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                                callType: controllers.selectMeetingType.value,
-                                                                sortField: controllers.sortFieldMeetingActivity.value,
-                                                                sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                              );
-                                                            },
-                                                            child: Obx(() => Image.asset(
-                                                              controllers.sortFieldMeetingActivity.value.isEmpty
-                                                                  ? "assets/images/arrow.png"
-                                                                  : controllers.sortOrderMeetingActivity.value == 'asc'
-                                                                  ? "assets/images/arrow_up.png"
-                                                                  : "assets/images/arrow_down.png",
-                                                              width: 15,
-                                                              height: 15,
-                                                            ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),),
-                                                      headerCell(5,  Row(
-                                                        children: [
-                                                          CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: "Venue",
-                                                            isCopy: true,
-                                                            size: 15,
-                                                            isBold: true,
-                                                            colors: Colors.white,
-                                                          ),
-                                                          const SizedBox(width: 3),
-                                                          GestureDetector(
-                                                            onTap: (){
-                                                              if(controllers.sortFieldMeetingActivity.value=='venue' && controllers.sortOrderMeetingActivity.value=='asc'){
-                                                                controllers.sortOrderMeetingActivity.value='desc';
-                                                              }else{
-                                                                controllers.sortOrderMeetingActivity.value='asc';
-                                                              }
-                                                              controllers.sortFieldMeetingActivity.value='venue';
-                                                              remController.filterAndSortMeetings(
-                                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                                callType: controllers.selectMeetingType.value,
-                                                                sortField: controllers.sortFieldMeetingActivity.value,
-                                                                sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                              );
-                                                            },
-                                                            child: Obx(() => Image.asset(
-                                                              controllers.sortFieldMeetingActivity.value.isEmpty
-                                                                  ? "assets/images/arrow.png"
-                                                                  : controllers.sortOrderMeetingActivity.value == 'asc'
-                                                                  ? "assets/images/arrow_up.png"
-                                                                  : "assets/images/arrow_down.png",
-                                                              width: 15,
-                                                              height: 15,
-                                                            ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),),
-                                                      headerCell(6, Row(
-                                                        children: [
-                                                          CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: "Notes",
-                                                            isCopy: true,
-                                                            size: 15,
-                                                            isBold: true,
-                                                            colors: Colors.white,
-                                                          ),
-                                                          const SizedBox(width: 3),
-                                                          GestureDetector(
-                                                            onTap: (){
-                                                              if(controllers.sortFieldMeetingActivity.value=='notes' && controllers.sortOrderMeetingActivity.value=='asc'){
-                                                                controllers.sortOrderMeetingActivity.value='desc';
-                                                              }else{
-                                                                controllers.sortOrderMeetingActivity.value='asc';
-                                                              }
-                                                              controllers.sortFieldMeetingActivity.value='notes';
-                                                              remController.filterAndSortMeetings(
-                                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                                callType: controllers.selectMeetingType.value,
-                                                                sortField: controllers.sortFieldMeetingActivity.value,
-                                                                sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                              );
-                                                            },
-                                                            child: Obx(() => Image.asset(
-                                                              controllers.sortFieldMeetingActivity.value.isEmpty
-                                                                  ? "assets/images/arrow.png"
-                                                                  : controllers.sortOrderMeetingActivity.value == 'asc'
-                                                                  ? "assets/images/arrow_up.png"
-                                                                  : "assets/images/arrow_down.png",
-                                                              width: 15,
-                                                              height: 15,
-                                                            ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),),
                                                       headerCell(7, Row(
                                                         children: [
                                                           CustomText(
@@ -1099,7 +945,11 @@ class _NewDashboardState extends State<NewDashboard> {
                                                     width: MediaQuery.of(context).size.width,
                                                     height: MediaQuery.of(context).size.height/2,
                                                     alignment: Alignment.center,
-                                                    child: CustomText(text: "No data Found", isCopy: true, colors: colorsConst.textColor, size: 16,))
+                                                    child: CustomText(
+                                                      text: "No Appointments",
+                                                      isCopy: true,
+                                                      colors: colorsConst.textColor,
+                                                      size: 16,))
                                                     :RawKeyboardListener(
                                                   focusNode: _focusNode,
                                                   autofocus: true,
@@ -1112,11 +962,9 @@ class _NewDashboardState extends State<NewDashboard> {
                                                       final data = remController.meetingFilteredList[index];
                                                       return Table(
                                                         columnWidths: {
-                                                          0: FixedColumnWidth(40),
-                                                          1: FixedColumnWidth(60),
+                                                          0: FixedColumnWidth(150),
+                                                          1: FixedColumnWidth(150),
                                                           2: FixedColumnWidth(150),
-                                                          3: FixedColumnWidth(120),
-                                                          4: FixedColumnWidth(150),
                                                         },
                                                         border: TableBorder(
                                                           horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -1129,107 +977,6 @@ class _NewDashboardState extends State<NewDashboard> {
                                                                 color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                                               ),
                                                               children:[
-                                                                Padding(
-                                                                  padding: const EdgeInsets.all(10.0),
-                                                                  child: Checkbox(
-                                                                    value: remController.isCheckedMeeting(data.id.toString()),
-                                                                    onChanged: (value) {
-                                                                      setState(() {
-                                                                        remController.toggleMeetingSelection(data.id.toString());
-                                                                      });
-                                                                    },
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.all(10.0),
-                                                                  child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                                    children: [
-                                                                      IconButton(
-                                                                          onPressed: (){
-                                                                            // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
-                                                                            // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
-                                                                            // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
-                                                                            // remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
-                                                                            // remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
-                                                                            //utils.showUpdateRecordDialog("",context);
-                                                                          },
-                                                                          icon:  SvgPicture.asset(
-                                                                            "assets/images/a_edit.svg",
-                                                                            width: 16,
-                                                                            height: 16,
-                                                                          )),
-                                                                      IconButton(
-                                                                          onPressed: (){
-                                                                            showDialog(
-                                                                              context: context,
-                                                                              builder: (BuildContext context) {
-                                                                                return AlertDialog(
-                                                                                  content: CustomText(
-                                                                                    text: "Are you sure delete this Appointment?",
-                                                                                    isCopy: true,
-                                                                                    size: 16,
-                                                                                    isBold: true,
-                                                                                    colors: colorsConst.textColor,
-                                                                                  ),
-                                                                                  actions: [
-                                                                                    Row(
-                                                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                                                      children: [
-                                                                                        Container(
-                                                                                          decoration: BoxDecoration(
-                                                                                              border: Border.all(color: colorsConst.primary),
-                                                                                              color: Colors.white),
-                                                                                          width: 80,
-                                                                                          height: 25,
-                                                                                          child: ElevatedButton(
-                                                                                              style: ElevatedButton.styleFrom(
-                                                                                                shape: const RoundedRectangleBorder(
-                                                                                                  borderRadius: BorderRadius.zero,
-                                                                                                ),
-                                                                                                backgroundColor: Colors.white,
-                                                                                              ),
-                                                                                              onPressed: () {
-                                                                                                Navigator.pop(context);
-                                                                                              },
-                                                                                              child: CustomText(
-                                                                                                text: "Cancel",
-                                                                                                colors: colorsConst.primary,
-                                                                                                size: 14,
-                                                                                                isCopy: false,
-                                                                                              )),
-                                                                                        ),
-                                                                                        10.width,
-                                                                                        CustomLoadingButton(
-                                                                                          callback: ()async{
-                                                                                            remController.selectedMeetingIds.add(data.id.toString());
-                                                                                            remController.deleteMeetingAPI(context);
-                                                                                          },
-                                                                                          height: 35,
-                                                                                          isLoading: true,
-                                                                                          backgroundColor: colorsConst.primary,
-                                                                                          radius: 2,
-                                                                                          width: 80,
-                                                                                          controller: controllers.productCtr,
-                                                                                          isImage: false,
-                                                                                          text: "Delete",
-                                                                                          textColor: Colors.white,
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
-                                                                                  ],
-                                                                                );
-                                                                              },
-                                                                            );
-                                                                          },
-                                                                          icon: SvgPicture.asset(
-                                                                            "assets/images/a_delete.svg",
-                                                                            width: 16,
-                                                                            height: 16,
-                                                                          ))
-                                                                    ],
-                                                                  ),
-                                                                ),
                                                                 Tooltip(
                                                                   message: data.cusName.toString()=="null"?"":data.cusName.toString(),
                                                                   child: Padding(
@@ -1251,45 +998,6 @@ class _NewDashboardState extends State<NewDashboard> {
                                                                     size: 14,
                                                                     isCopy: true,
                                                                     colors: colorsConst.textColor,
-                                                                  ),
-                                                                ),
-                                                                Tooltip(
-                                                                  message: data.title.toString()=="null"?"":data.title.toString(),
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets.all(10.0),
-                                                                    child: CustomText(
-                                                                      textAlign: TextAlign.left,
-                                                                      isCopy: true,
-                                                                      text: data.title.toString(),
-                                                                      size: 14,
-                                                                      colors:colorsConst.textColor,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Tooltip(
-                                                                  message: data.venue.toString()=="null"?"":data.venue.toString(),
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets.all(10.0),
-                                                                    child: CustomText(
-                                                                      textAlign: TextAlign.left,
-                                                                      text: data.venue.toString(),
-                                                                      size: 14,
-                                                                      isCopy: true,
-                                                                      colors:colorsConst.textColor,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Tooltip(
-                                                                  message: data.notes.toString()=="null"?"":data.notes.toString(),
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets.all(10.0),
-                                                                    child: CustomText(
-                                                                      textAlign: TextAlign.left,
-                                                                      text: data.notes.toString(),
-                                                                      isCopy: true,
-                                                                      size: 14,
-                                                                      colors:colorsConst.textColor,
-                                                                    ),
                                                                   ),
                                                                 ),
                                                                 Padding(
@@ -1314,6 +1022,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                         ],
                                       ),
                                     ),
+                                    20.height,
                                     Container(
                                       height: 300,
                                       decoration: BoxDecoration(
@@ -1644,6 +1353,40 @@ class _NewDashboardState extends State<NewDashboard> {
     150,  // 6 Customer Name
     150,  // 7 Start Date
   ];
+  String formatFirstDate(String input) {
+    try {
+      List<String> parts = input.split("||").map((e) => e.trim()).toList();
+      String datePart = parts.isNotEmpty ? parts.first : "";
+      String? timePart;
+      if (parts.length >= 2) {
+        for (String p in parts.reversed) {
+          if (p.contains(':') ||
+              p.toLowerCase().contains('am') ||
+              p.toLowerCase().contains('pm')) {
+            timePart = p;
+            break;
+          }
+        }
+      }
+      datePart = datePart.replaceAll('.', '-');
+      String combined = timePart != null && timePart.isNotEmpty
+          ? "$datePart $timePart"
+          : datePart;
+      DateTime parsedDate;
+      if (combined.contains(':') ||
+          combined.toLowerCase().contains('am') ||
+          combined.toLowerCase().contains('pm')) {
+        parsedDate = DateFormat("dd-MM-yyyy h:mm a").parse(combined);
+        return DateFormat("dd-MM-yyyy h:mm a").format(parsedDate);
+      } else {
+        parsedDate = DateFormat("dd-MM-yyyy").parse(combined);
+        return DateFormat("dd-MM-yyyy").format(parsedDate);
+      }
+    } catch (e) {
+      print("Error parsing: $e");
+      return "";
+    }
+  }
   Widget headerCell(int index, Widget child) {
     return Stack(
       children: [

@@ -146,8 +146,6 @@ class _ViewLeadState extends State<ViewLead> {
                       final mails = data.mailRecords;
                       final meetings = data.meetings;
                       final reminders = data.reminders;
-
-                      // fallback values from widget props if API missing fields
                       final displayName = primaryPerson?.name ?? cust?.companyName ?? widget.name ?? "";
                       final displayMobile = primaryPerson?.phone ?? widget.mobileNumber ?? "";
                       final displayEmail = primaryPerson?.email ?? widget.email ?? "";
@@ -198,7 +196,7 @@ class _ViewLeadState extends State<ViewLead> {
                                           ),
                                         ),
                                         CustomText(
-                                          text: "View Lead",
+                                          text: "View all ${widget.pageName}",
                                           isCopy: true,
                                           colors: colorsConst.textColor,
                                           size: 20,
@@ -271,7 +269,8 @@ class _ViewLeadState extends State<ViewLead> {
                                                           isExpanded: true,
                                                           focusColor: Colors.transparent,
                                                           underline: SizedBox(),
-                                                          items: [
+                                                          items: [//santhiya2
+                                                            "Suspects",
                                                             "Prospects",
                                                             "Qualified",
                                                             "Customers",

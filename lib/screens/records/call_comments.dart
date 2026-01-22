@@ -154,7 +154,7 @@ class _CallCommentsState extends State<CallComments> {
                                 controllers.clearSelectedCustomer();
                                 controllers.cusController.text = "";
                                 controllers.callType = "Outgoing";
-                                controllers.callStatus = "Completed";
+                                controllers.callStatus = "Contacted";
                               });
                               controllers.callCommentCont.text = "";
                               showDialog(
@@ -187,12 +187,12 @@ class _CallCommentsState extends State<CallComments> {
                                           ],
                                         ),
                                         content: SizedBox(
-                                          width: 500,
+                                          width: 550,
                                           height: 450,
                                           child: SingleChildScrollView(
                                             child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                // Divider(),
                                                 Column(
@@ -215,7 +215,7 @@ class _CallCommentsState extends State<CallComments> {
                                                       ],
                                                     ),
                                                     SizedBox(
-                                                      width: 480,
+                                                      width: 510,
                                                       height: 50,
                                                       child: KeyboardDropdownField<AllCustomersObj>(
                                                         items: controllers.customers,
@@ -261,14 +261,14 @@ class _CallCommentsState extends State<CallComments> {
                                                 ),
                                                 10.height,
                                                 Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                   children: [
                                                     Obx(() => CustomDateBox(
                                                         text: "Date",
                                                         isOptional: true,
                                                         errorText: dateError,
                                                         value: controllers.empDOB.value,
-                                                        width: 235,
+                                                        width: 255,
                                                         onTap: () {
                                                           utils.datePicker(
                                                               context: context,
@@ -283,7 +283,7 @@ class _CallCommentsState extends State<CallComments> {
                                                       isOptional: true,
                                                         errorText: timeError,
                                                         value: controllers.callTime.value,
-                                                        width: 235,
+                                                        width: 255,
                                                         onTap: () {
                                                           utils.timePicker(
                                                               context: context,
@@ -321,6 +321,7 @@ class _CallCommentsState extends State<CallComments> {
                                                           children: controllers.callTypeList.map<Widget>((type) {
                                                             return Row(
                                                               mainAxisSize: MainAxisSize.min,
+                                                              mainAxisAlignment: MainAxisAlignment.start,
                                                               children: [
                                                                 Radio<String>(
                                                                   value: type,
@@ -366,7 +367,11 @@ class _CallCommentsState extends State<CallComments> {
                                                           ],
                                                         ),
                                                         Row(
-                                                          children: controllers.callStatusList.map<Widget>((type) {
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: (controllers.storage.read("cos_id") == "202510" || controllers.storage.read("cos_id") == "202610"
+                                                              ? controllers.hCallStatusList
+                                                              : controllers.callStatusList)
+                                                              .map<Widget>((type) {
                                                             return Row(
                                                               mainAxisSize: MainAxisSize.min,
                                                               children: [
@@ -380,8 +385,12 @@ class _CallCommentsState extends State<CallComments> {
                                                                     });
                                                                   },
                                                                 ),
-                                                                CustomText(text:type,size: 14,isCopy: false,),
-                                                                20.width
+                                                                CustomText(
+                                                                  text: type,
+                                                                  size: 14,
+                                                                  isCopy: false,
+                                                                ),
+                                                                20.width,
                                                               ],
                                                             );
                                                           }).toList(),
@@ -401,7 +410,7 @@ class _CallCommentsState extends State<CallComments> {
                                                       isCopy: false,
                                                     ),
                                                     SizedBox(
-                                                      width: 480,
+                                                      width: 510,
                                                       height: 80,
                                                       child: TextField(
                                                         controller: controllers.callCommentCont,
@@ -575,101 +584,106 @@ class _CallCommentsState extends State<CallComments> {
                                 }, true,controllers.allMissedCalls),),
                           ],
                         ),
-                        remController.selectedRecordCallIds.isNotEmpty?
-                        InkWell(
-                          focusColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          onTap: (){
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  content: CustomText(
-                                    text: "Are you sure delete this Call records?",
-                                    size: 16,
-                                    isBold: true,
-                                    isCopy: true,
-                                    colors: colorsConst.textColor,
-                                  ),
-                                  actions: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              border: Border.all(color: colorsConst.primary),
-                                              color: Colors.white),
-                                          width: 80,
-                                          height: 25,
-                                          child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                shape: const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.zero,
-                                                ),
-                                                backgroundColor: Colors.white,
+                        if(remController.selectedRecordCallIds.isNotEmpty)
+                          Row(
+                            children: [
+                              CustomText(text: "Selected count: ${remController.selectedRecordCallIds.value.length}", isCopy: false),15.width,
+                              InkWell(
+                                focusColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                onTap: (){
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: CustomText(
+                                          text: "Are you sure delete this Call records?",
+                                          size: 16,
+                                          isBold: true,
+                                          isCopy: true,
+                                          colors: colorsConst.textColor,
+                                        ),
+                                        actions: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(color: colorsConst.primary),
+                                                    color: Colors.white),
+                                                width: 80,
+                                                height: 25,
+                                                child: ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      shape: const RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.zero,
+                                                      ),
+                                                      backgroundColor: Colors.white,
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: CustomText(
+                                                      text: "Cancel",
+                                                      isCopy: false,
+                                                      colors: colorsConst.primary,
+                                                      size: 14,
+                                                    )),
                                               ),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: CustomText(
-                                                text: "Cancel",
-                                                isCopy: false,
-                                                colors: colorsConst.primary,
-                                                size: 14,
-                                              )),
-                                        ),
-                                        10.width,
-                                        CustomLoadingButton(
-                                          callback: ()async{
-                                            remController.deleteRecordCallAPI(context);
-                                          },
-                                          height: 35,
-                                          isLoading: true,
-                                          backgroundColor: colorsConst.primary,
-                                          radius: 2,
-                                          width: 80,
-                                          controller: controllers.productCtr,
-                                          isImage: false,
-                                          text: "Delete",
-                                          textColor: Colors.white,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          child: Container(
-                            height: 40,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              color: colorsConst.secondary,
-                              borderRadius: BorderRadius.circular(4),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  spreadRadius: 1,
-                                  blurRadius: 5,
+                                              10.width,
+                                              CustomLoadingButton(
+                                                callback: ()async{
+                                                  remController.deleteRecordCallAPI(context);
+                                                },
+                                                height: 35,
+                                                isLoading: true,
+                                                backgroundColor: colorsConst.primary,
+                                                radius: 2,
+                                                width: 80,
+                                                controller: controllers.productCtr,
+                                                isImage: false,
+                                                text: "Delete",
+                                                textColor: Colors.white,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  height: 40,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                    color: colorsConst.secondary,
+                                    borderRadius: BorderRadius.circular(4),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        spreadRadius: 1,
+                                        blurRadius: 5,
+                                      ),
+                                    ],
+                                  ),
+                                  child:  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset("assets/images/action_delete.png"),
+                                      10.width,
+                                      CustomText(
+                                        text: "Delete",
+                                        isCopy: false,
+                                        colors: colorsConst.textColor,
+                                        size: 14,
+                                        isBold: true,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
-                            child:  Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset("assets/images/action_delete.png"),
-                                10.width,
-                                CustomText(
-                                  text: "Delete",
-                                  isCopy: false,
-                                  colors: colorsConst.textColor,
-                                  size: 14,
-                                  isBold: true,
-                                ),
-                              ],
-                            ),
+                              )
+                            ],
                           ),
-                        ):1.width,
                       ],
                     ),
                     5.height,
@@ -781,11 +795,13 @@ class _CallCommentsState extends State<CallComments> {
                       ),
                       value: remController.selectedRecordCallIds.length == remController.callFilteredList.length && remController.callFilteredList.isNotEmpty,
                       onChanged: (value) {
-                        if (value == true) {
-                          remController.selectAllCalls();
-                        } else {
-                          remController.unselectAllCalls();
-                        }
+                       setState(() {
+                         if (value == true) {
+                           remController.selectAllCalls();
+                         } else {
+                           remController.unselectAllCalls();
+                         }
+                       });
                       },
                       activeColor: Colors.white,
                       checkColor: colorsConst.primary,

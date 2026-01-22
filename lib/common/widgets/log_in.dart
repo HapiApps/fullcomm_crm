@@ -43,10 +43,21 @@ class _LoginPageState extends State<LoginPage> {
       }
     });
   }
+  //santhiya2
+  final FocusNode mobileFocus = FocusNode();
+  final FocusNode passwordFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
     readValue();
+  }
+  //santhiya2
+  @override
+  void dispose() {
+    mobileFocus.dispose();
+    passwordFocus.dispose();
+    super.dispose();
   }
 
   @override
@@ -104,9 +115,13 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CustomTextField(
+                        focusNode: mobileFocus,
                         onChanged: (value) async {
                           SharedPreferences sharedPref = await SharedPreferences.getInstance();
                           sharedPref.setString("loginNumber", value.toString().trim());
+                        },
+                        onFieldSubmitted: (value) {
+                          FocusScope.of(context).requestFocus(passwordFocus);
                         },
                         width: MediaQuery.of(context).size.width / 3.5,
                         height: 40,
@@ -128,63 +143,64 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CustomPasswordTextField(
-                          onChanged: (value) async {
-                            SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                            sharedPref.setString("loginPassword", value.toString().trim());
-                          },
-                          width: MediaQuery.of(context).size.width / 3.5,
-                          height: 40,
-                          isLogin: true,
-                          textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.visiblePassword,
-                          controller: controllers.loginPassword,
-                          inputFormatters: constInputFormatters.passwordInput,
-                          text: 'Password',
-                          hintText: 'Enter Your Password',
-                          isOptional: true,
-                        ),
+                        focusNode: passwordFocus,
+                        onChanged: (value) async {
+                          SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                          sharedPref.setString("loginPassword", value.toString().trim());
+                        },
+                        width: MediaQuery.of(context).size.width / 3.5,
+                        height: 40,
+                        isLogin: true,
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.visiblePassword,
+                        controller: controllers.loginPassword,
+                        inputFormatters: constInputFormatters.passwordInput,
+                        text: 'Password',
+                        hintText: 'Enter Your Password',
+                        isOptional: true,
+                      ),
                     ],
                   ),
-                      InkWell(
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        onTap: ()async{
-                          if(controllers.loginNumber.text.isEmpty) {
-                            mobileUtils.snackBar(
-                                context: Get.context!,
-                                msg: "Please enter your mobile number",
-                                color: Colors.red);
-                          }else{
-                            bool isCheck = await apiService.checkMobileAPI(mobile: controllers.loginNumber.text.trim());
-                            if(!isCheck){
-                              mobileUtils.snackBar(
-                                  context: Get.context!,
-                                  msg: "Mobile number not registered",
-                                  color: Colors.red);
-                              return;
-                            }
-                            if(isRelease) {
-                              apiService.sendOtpAPI(mobile: controllers
-                                  .loginNumber.text.trim());
-                              showOtpDialog(context, mobile: controllers
-                                  .loginNumber.text.trim());
-                            }else{
-                              showForgotPasswordDialog(context, controllers.loginNumber.text.trim());
-                            }
-                          }
-                        },
-                        child: Container(
-                          alignment: Alignment.bottomRight,
-                          width: MediaQuery.of(context).size.width / 3.5,
-                          child: CustomText(text: "Forgot Password?",
-                            colors: colorsConst.primary,
-                            size: 14,
-                            isCopy: false,
-                          ),
-                        ),
+                  InkWell(
+                    focusColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: ()async{
+                      if(controllers.loginNumber.text.isEmpty) {
+                        mobileUtils.snackBar(
+                            context: Get.context!,
+                            msg: "Please enter your mobile number",
+                            color: Colors.red);
+                      }else{
+                        bool isCheck = await apiService.checkMobileAPI(mobile: controllers.loginNumber.text.trim());
+                        if(!isCheck){
+                          mobileUtils.snackBar(
+                              context: Get.context!,
+                              msg: "Mobile number not registered",
+                              color: Colors.red);
+                          return;
+                        }
+                        if(isRelease) {
+                          apiService.sendOtpAPI(mobile: controllers
+                              .loginNumber.text.trim());
+                          showOtpDialog(context, mobile: controllers
+                              .loginNumber.text.trim());
+                        }else{
+                          showForgotPasswordDialog(context, controllers.loginNumber.text.trim());
+                        }
+                      }
+                    },
+                    child: Container(
+                      alignment: Alignment.bottomRight,
+                      width: MediaQuery.of(context).size.width / 3.5,
+                      child: CustomText(text: "Forgot Password?",
+                        colors: colorsConst.primary,
+                        size: 14,
+                        isCopy: false,
                       ),
+                    ),
+                  ),
                   70.height,
                   CustomLoadingButton(
                       callback: () {
@@ -194,18 +210,21 @@ class _LoginPageState extends State<LoginPage> {
                               msg: "Please enter your mobile number",
                               color: Colors.red);
                           controllers.loginCtr.reset();
+                          FocusScope.of(context).requestFocus(mobileFocus);
                         } else if (controllers.loginNumber.text.length != 10) {
                           mobileUtils.snackBar(
                               context: Get.context!,
                               msg: "Please enter 10 digits mobile number",
                               color: Colors.red);
                           controllers.loginCtr.reset();
+                          FocusScope.of(context).requestFocus(mobileFocus);
                         } else if (controllers.loginPassword.text.isEmpty) {
                           mobileUtils.snackBar(
                               context: Get.context!,
                               msg: "Please enter your password",
                               color: Colors.red);
                           controllers.loginCtr.reset();
+                          FocusScope.of(context).requestFocus(passwordFocus);
                         } else if (controllers.loginPassword.text.length < 8 ||
                             controllers.loginPassword.text.length > 16) {
                           mobileUtils.snackBar(
@@ -213,10 +232,13 @@ class _LoginPageState extends State<LoginPage> {
                               msg: "Password must be 8–16 characters",
                               color: Colors.red);
                           controllers.loginCtr.reset();
+                          FocusScope.of(context).requestFocus(passwordFocus);
                         } else {
+                          FocusScope.of(context).unfocus();
                           apiService.loginCApi();
                         }
                       },
+
                       isLoading: true,
                       text: "Login",
                       textSize: 20,

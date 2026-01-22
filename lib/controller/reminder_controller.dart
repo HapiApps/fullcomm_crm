@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../common/constant/api.dart';
+import '../models/all_customers_obj.dart';
 import '../models/customer_activity.dart';
 import '../models/meeting_obj.dart';
 import '../models/reminder_obj.dart';
@@ -77,6 +78,49 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   void removeReminder(int index) {
     reminders.removeAt(index);
   }
+  DateTime selectedDate = DateTime.now();
+  var filterDate = "".obs;
+  void filterDateList(String value,DateTime dateTime){
+    filterDate.value=value;
+    selectedDate = dateTime;
+  }
+  var assignedIds="".obs;
+  var assignedNames="".obs;
+  var assignedNumbers="".obs;
+  var assignedEmail="".obs;
+  void changeAssignedIs(context, List<dynamic> names) {
+    List<String> ids = [];
+    List<String> selectedNames = [];
+    List<String> numbers = [];
+    List<String> mails = [];
+
+
+    for (var name in names) {
+      var found = controllers.employees.firstWhere(
+            (element) => element.name.toString().trim().toLowerCase() == name.toString().trim().toLowerCase(),
+        orElse: () => AllEmployeesObj(id: "0", name: '', phoneNo: '', email: ''),
+      );
+
+      if (found.id != "0") {
+        ids.add(found.id.toString());
+        selectedNames.add(found.name.toString());
+        numbers.add(found.phoneNo.toString());
+        mails.add(found.email.toString());
+      }
+    }
+
+    assignedIds.value = ids.join(",");
+    assignedNames.value = selectedNames.join(", ");
+    assignedNumbers.value = numbers.join(", ");
+    assignedEmail.value = mails.join(", ");
+    controllers.selectedEmployeeId.value = assignedIds.value;
+    controllers.selectedEmployeeName.value = assignedNames.value;
+    controllers.selectedEmployeeMobile.value = assignedNumbers.value;
+    controllers.selectedEmployeeEmail.value = assignedEmail.value;
+    // print("Assigned IDs: $_assignedId");
+    // print("Assigned Names: $_assignedNames");
+  }
+
   TextEditingController updateTitleController   = TextEditingController();
   TextEditingController updateDetailsController = TextEditingController();
   TextEditingController updateStartController   = TextEditingController();
@@ -94,7 +138,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   final Rxn<DateTime> selectedReminderMonth = Rxn<DateTime>();
   RxString selectedCallSortBy = "All".obs;
   RxString selectedMailSortBy = "All".obs;
-  RxString selectedMeetSortBy = "All".obs;
+  RxString selectedMeetSortBy = "Today".obs;
   RxString selectedReminderSortBy = "All".obs;
 
   void loadSavedFilters() {
@@ -797,12 +841,16 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   var meetingReminderCount = 0.obs;
   var defaultMonth=DateTime.now().month.obs;
   var thisMonthLeave = "0".obs;
+
   Future<void> allReminders(String type) async {
     isLoadingReminders.value = true;
-    thisMonthLeave.value="0";
+    thisMonthLeave.value = "0";
+
     dataSource.dispose();
     dataSource.appointments?.clear();
+
     final url = Uri.parse(scriptApi);
+
     try {
       final response = await http.post(
         url,
@@ -813,65 +861,97 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           "search_type": "allReminders"
         }),
       );
-      print("data.toString()");
+
       if (response.statusCode == 200) {
-        print(response.body);
+
         final data = jsonDecode(response.body);
 
         if (data is List) {
-          reminderList.value = data.map((e) => ReminderModel.fromJson(e)).toList();
-          int followUpCount = reminderList
-              .where((r) => r.type.toString() == '1').length;
-          int meetingCount = reminderList
-              .where((r) => r.type.toString() == '2')
-              .length;
 
-          followUpReminderCount.value = followUpCount;
-          meetingReminderCount.value = meetingCount;
+          reminderList.value =
+              data.map((e) => ReminderModel.fromJson(e)).toList();
 
+          // ---------- COUNTS ----------
+          followUpReminderCount.value =
+              reminderList.where((r) => r.type.toString() == '1').length;
+
+          meetingReminderCount.value =
+              reminderList.where((r) => r.type.toString() == '2').length;
+
+          int monthCount = 0;
+
+          // ---------- LOOP ----------
           for (var i = 0; i < reminderList.length; i++) {
-            String dateStr = reminderList[i].startDt.toString();
-            DateTime parsedDate = DateFormat('dd.MM.yyyy H:mm').parse(dateStr);
 
-            DateTime dateOnly = DateTime(parsedDate.year, parsedDate.month, parsedDate.day);
+            String dateStr = reminderList[i].startDt ?? '';
 
+            // Skip empty dates
+            if (dateStr.trim().isEmpty) {
+              print("Empty date skipped");
+              continue;
+            }
+
+            DateTime? parsedDate;
+
+            // ---------- SAFE DATE PARSE ----------
+            try {
+              // Format: 03.02.2026 11:00 AM
+              parsedDate = DateFormat('dd.MM.yyyy hh:mm a').parse(dateStr);
+            } catch (e) {
+              try {
+                // Format: 26-10-2025 09:50 PM
+                parsedDate = DateFormat('dd-MM-yyyy hh:mm a').parse(dateStr);
+              } catch (e) {
+                print("Date parse failed => $dateStr");
+                continue;
+              }
+            }
+
+            DateTime dateOnly = DateTime(
+              parsedDate.year,
+              parsedDate.month,
+              parsedDate.day,
+            );
+
+            // ---------- CALENDAR APPOINTMENT ----------
             Appointment app = Appointment(
               startTime: dateOnly,
               endTime: dateOnly,
-              subject: reminderList[i].title.toString(),
+              subject: reminderList[i].title ?? '',
               color: Colors.redAccent,
             );
 
             dataSource.appointments!.add(app);
-            dataSource.notifyListeners(CalendarDataSourceAction.add, <Appointment>[app]);
+            dataSource.notifyListeners(
+                CalendarDataSourceAction.add, <Appointment>[app]);
 
-            var count = 0;
-
+            // ---------- MONTH COUNT ----------
             if (defaultMonth.value.toString().padLeft(2, "0") ==
                 parsedDate.month.toString().padLeft(2, "0")) {
-              count++;
+              monthCount++;
             }
-
-            thisMonthLeave.value = count.toString();
           }
+
+          thisMonthLeave.value = monthCount.toString();
 
         } else {
           reminderList.value = [];
           followUpReminderCount.value = 0;
           meetingReminderCount.value = 0;
         }
-        isLoadingReminders.value = false;
+
       } else {
         reminderList.value = [];
         followUpReminderCount.value = 0;
         meetingReminderCount.value = 0;
-        print("Failed to load reminders: ${response.body}");
+        print("Failed API Response: ${response.body}");
       }
+
     } catch (e) {
       reminderList.value = [];
       followUpReminderCount.value = 0;
       meetingReminderCount.value = 0;
-      print("Error fetching reminders: $e");
+      print("Reminder API Error: $e");
     } finally {
       isLoadingReminders.value = false;
     }

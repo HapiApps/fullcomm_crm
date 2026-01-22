@@ -61,5 +61,10 @@ class AllEmployeesObj {
       'email': email,
     };
   }
+
+  @override
+  String toString() {
+    return name;
+  }
 }
 

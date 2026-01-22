@@ -30,32 +30,34 @@ class CustomTextField extends StatelessWidget {
   final String? errorText;
   final VoidCallback? onPressed;
   final VoidCallback? onEdit;
+  //Santhiys2
+  final ValueChanged? onFieldSubmitted;
 
   const CustomTextField(
       {super.key,
-      required this.text,
-      this.height = 70,
-      this.width = 270,
-      required this.controller,
-      this.focusNode,
-      this.onChanged,
-      this.onTap,
-      this.keyboardType = TextInputType.text,
-      this.textInputAction = TextInputAction.next,
-      this.textCapitalization = TextCapitalization.words,
-      this.validator,
-      this.inputFormatters,
-      this.hintText,
-      this.isIcon,
-      this.iconData,
-      this.isShadow = false,
-      this.isLogin = false,
-      this.image,
-      this.onPressed,
-      this.prefixText,
-      this.onEdit,
+        required this.text,
+        this.height = 70,
+        this.width = 270,
+        required this.controller,
+        this.focusNode,
+        this.onChanged,
+        this.onTap,
+        this.keyboardType = TextInputType.text,
+        this.textInputAction = TextInputAction.next,
+        this.textCapitalization = TextCapitalization.words,
+        this.validator,
+        this.inputFormatters,
+        this.hintText,
+        this.isIcon,
+        this.iconData,
+        this.isShadow = false,
+        this.isLogin = false,
+        this.image,
+        this.onPressed,
+        this.prefixText,
+        this.onEdit,
         this.errorText,
-      this.isOptional});
+        this.isOptional, this.onFieldSubmitted});
 
   @override
   Widget build(BuildContext context) {
@@ -66,30 +68,32 @@ class CustomTextField extends StatelessWidget {
         hintText!.isEmpty
             ? 2.height
             : Row(
-                children: [
-                  CustomText(
-                    text: text,
-                    textAlign: TextAlign.start,
-                    colors: Color(0xff4B5563),
-                    size: 13,
-                    isCopy: false,
-                  ),
-                  isOptional! == true
-                      ? const CustomText(
-                          text: "*",
-                          colors: Colors.red,
-                          size: 25,
-                    isCopy: false,
-                        )
-                      : 0.width
-                ],
-              ),
+          children: [
+            CustomText(
+              text: text,
+              textAlign: TextAlign.start,
+              colors: Color(0xff4B5563),
+              size: 13,
+              isCopy: false,
+            ),
+            isOptional! == true
+                ? const CustomText(
+              text: "*",
+              colors: Colors.red,
+              size: 25,
+              isCopy: false,
+            )
+                : 0.width
+          ],
+        ),
         isOptional! == true ? 0.height : 5.height,
         SizedBox(
           width: width,
           height:40,
           child: Center(
             child: TextFormField(
+              //santhiya2
+                onFieldSubmitted: onFieldSubmitted,
                 key: ValueKey(text),
                 maxLines: null,
                 style: const TextStyle(
