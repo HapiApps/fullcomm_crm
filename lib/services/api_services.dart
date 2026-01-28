@@ -225,7 +225,7 @@ class ApiService {
     }
   }
 
-  Future updateLeadAPI(BuildContext context, String leadId, String addressId) async {
+  Future updateLeadAPI(BuildContext context, String leadId,  String type, String addressId) async {
     try {
       Map data = {
         "cos_id": controllers.storage.read("cos_id"),
@@ -263,7 +263,7 @@ class ApiService {
         "name": controllers.leadNameCrt[0].text,
         "title": controllers.leadTitles.value,
         "phone_no": controllers.leadMobileCrt[0].text,
-        "whatsapp_number": controllers.leadMobileCrt[0].text,
+        "whatsapp_number": controllers.leadWhatsCrt[0].text,
         "email": controllers.leadEmailCrt[0].text,
         "action": "update_customer"
       };
@@ -277,10 +277,15 @@ class ApiService {
           response["message"] == "Customer updated successfully") {
         utils.snackBar(
             msg: "Your Lead is updated successfully !",
-            color: colorsConst.primary,
+            color: Colors.green,
             context: Get.context!);
         controllers.leadFuture = apiService.leadsDetailsForCustomer(leadId);
-        Get.back();
+        if(type=="1"){
+          Get.back();
+        }else{
+          Get.back();
+          Get.back();
+        }
         apiService.allNewLeadsDetails();
         apiService.allLeadsDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
@@ -428,7 +433,7 @@ class ApiService {
   Future disqualifiedCustomersAPI(BuildContext context,List<Map<String, String>> list) async {
     try{
       Map data = {
-        "action": "disqualified",
+        "action": "No Matches",
         "active": "2",
         "cusList": list
       };
@@ -464,7 +469,7 @@ class ApiService {
   Future qualifiedCustomersAPI(BuildContext context,List<Map<String, String>> list) async {
     try{
       Map data = {
-        "action": "disqualified",
+        "action": "No Matches",
         "active": "1",
         "cusList": list
       };
@@ -746,7 +751,7 @@ class ApiService {
       final response = await http.post(
         url,
         body: jsonEncode({
-          "search_type": "disqualified",
+          "search_type": "No Matches",
           "cos_id": controllers.storage.read("cos_id"),
           "role": controllers.storage.read("role"),
           "id": controllers.storage.read("id"),
@@ -1122,7 +1127,19 @@ class ApiService {
         prospectsList.clear();
         qualifiedList.clear();
         customerList.clear();
-        Navigator.pop(context);
+        //Santhiya
+        // Navigator.pop(context);
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => const Suspects(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+        controllers.oldIndex.value = controllers.selectedIndex.value;
+        controllers.selectedIndex.value = 0;
+
         controllers.productCtr.reset();
         remController.titleController.text = "Follow-up calling";
         if (remController.stDate.value.isEmpty) {
@@ -2791,14 +2808,16 @@ class ApiService {
         controllers.loginCtr.reset();
         return true;
       } else {
+        //Santhiya
         utils.snackBar(
-            msg: response.toString(), color: Colors.red, context: Get.context!);
+            msg: "Mobile number not registered", color: Colors.red, context: Get.context!);
         controllers.loginCtr.reset();
         return false;
       }
     } catch (e) {
+      //Santhiya
       utils.snackBar(
-          msg: e.toString(), color: Colors.red, context: Get.context!);
+          msg: "Mobile number not registered", color: Colors.red, context: Get.context!);
       controllers.loginCtr.reset();
       return false;
     }

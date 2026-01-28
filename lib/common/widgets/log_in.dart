@@ -158,6 +158,47 @@ class _LoginPageState extends State<LoginPage> {
                         text: 'Password',
                         hintText: 'Enter Your Password',
                         isOptional: true,
+                        //Santhiya
+                        onEdit: () {
+                          controllers.loginCtr.start();
+                          if (controllers.loginNumber.text.isEmpty) {
+                            mobileUtils.snackBar(
+                                context: Get.context!,
+                                msg: "Please enter your mobile number",
+                                color: Colors.red);
+                            controllers.loginCtr.reset();
+                            FocusScope.of(context).requestFocus(mobileFocus);
+                          }
+                          else if (controllers.loginNumber.text.length != 10) {
+                            mobileUtils.snackBar(
+                                context: Get.context!,
+                                msg: "Please enter 10 digits mobile number",
+                                color: Colors.red);
+                            controllers.loginCtr.reset();
+                            FocusScope.of(context).requestFocus(mobileFocus);
+                          }
+                          else if (controllers.loginPassword.text.isEmpty) {
+                            mobileUtils.snackBar(
+                                context: Get.context!,
+                                msg: "Please enter your password",
+                                color: Colors.red);
+                            controllers.loginCtr.reset();
+                            FocusScope.of(context).requestFocus(passwordFocus);
+                          }
+                          else if (controllers.loginPassword.text.length < 8 ||
+                              controllers.loginPassword.text.length > 16) {
+                            mobileUtils.snackBar(
+                                context: Get.context!,
+                                msg: "Password must be 8–16 characters",
+                                color: Colors.red);
+                            controllers.loginCtr.reset();
+                            FocusScope.of(context).requestFocus(passwordFocus);
+                          }
+                          else {
+                            FocusScope.of(context).unfocus();
+                            apiService.loginCApi();
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -172,6 +213,7 @@ class _LoginPageState extends State<LoginPage> {
                             context: Get.context!,
                             msg: "Please enter your mobile number",
                             color: Colors.red);
+                        FocusScope.of(context).requestFocus(mobileFocus);
                       }else{
                         bool isCheck = await apiService.checkMobileAPI(mobile: controllers.loginNumber.text.trim());
                         if(!isCheck){
@@ -211,21 +253,24 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.red);
                           controllers.loginCtr.reset();
                           FocusScope.of(context).requestFocus(mobileFocus);
-                        } else if (controllers.loginNumber.text.length != 10) {
+                        }
+                        else if (controllers.loginNumber.text.length != 10) {
                           mobileUtils.snackBar(
                               context: Get.context!,
                               msg: "Please enter 10 digits mobile number",
                               color: Colors.red);
                           controllers.loginCtr.reset();
                           FocusScope.of(context).requestFocus(mobileFocus);
-                        } else if (controllers.loginPassword.text.isEmpty) {
+                        }
+                        else if (controllers.loginPassword.text.isEmpty) {
                           mobileUtils.snackBar(
                               context: Get.context!,
                               msg: "Please enter your password",
                               color: Colors.red);
                           controllers.loginCtr.reset();
                           FocusScope.of(context).requestFocus(passwordFocus);
-                        } else if (controllers.loginPassword.text.length < 8 ||
+                        }
+                        else if (controllers.loginPassword.text.length < 8 ||
                             controllers.loginPassword.text.length > 16) {
                           mobileUtils.snackBar(
                               context: Get.context!,
@@ -233,7 +278,8 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.red);
                           controllers.loginCtr.reset();
                           FocusScope.of(context).requestFocus(passwordFocus);
-                        } else {
+                        }
+                        else {
                           FocusScope.of(context).unfocus();
                           apiService.loginCApi();
                         }

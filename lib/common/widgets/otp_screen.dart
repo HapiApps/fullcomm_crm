@@ -23,7 +23,6 @@ class OtpDialogContent extends StatefulWidget {
 
 class _OtpDialogContentState extends State<OtpDialogContent> {
   late OtpFieldControllerV2 otpController;
-
   @override
   void initState() {
     super.initState();
@@ -119,16 +118,27 @@ class _OtpDialogContentState extends State<OtpDialogContent> {
   }
 
 }
+//Santhiya
 void showForgotPasswordDialog(BuildContext context,String mobile) {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   String? errorMessage;
-
+  final FocusNode passwordFocus1 = FocusNode();
+  final FocusNode passwordFocus2 = FocusNode();
+  bool isStrongPassword(String password) {
+    final regex = RegExp(
+        r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+    );
+    return regex.hasMatch(password);
+  }
   showDialog(
     context: context,
     builder: (context) {
       return StatefulBuilder(
         builder: (context, setState) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            FocusScope.of(context).requestFocus(passwordFocus1);
+          });
           return AlertDialog(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             title: CustomText(
@@ -142,17 +152,22 @@ void showForgotPasswordDialog(BuildContext context,String mobile) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTextField(
+                  focusNode: passwordFocus1,
                   controller: passwordController,
                   text: 'New Password',
                   hintText: 'Enter Your New Password',
                   width: MediaQuery.of(context).size.width / 3.5,
                   //height: 40,
                   textInputAction: TextInputAction.next,
-                  inputFormatters: constInputFormatters.mobileNumberInput,
+                  inputFormatters: constInputFormatters.passwordInput,
                   keyboardType: TextInputType.number,
                   isOptional: true,
+                  onFieldSubmitted: (value) {
+                    FocusScope.of(context).requestFocus(passwordFocus2);
+                  },
                 ),
                 CustomTextField(
+                  focusNode: passwordFocus2,
                   controller: confirmPasswordController,
                   text: 'Confirm Password',
                   hintText: 'Re-enter Password',
@@ -160,9 +175,100 @@ void showForgotPasswordDialog(BuildContext context,String mobile) {
                   //height: 40,
                   //errorText: errorMessage,
                   textInputAction: TextInputAction.next,
-                  inputFormatters: constInputFormatters.mobileNumberInput,
+                  inputFormatters: constInputFormatters.passwordInput,
                   keyboardType: TextInputType.number,
                   isOptional: true,
+                  // onEdit: () {
+                  //   controllers.loginCtr.start();
+                  //   String pass = passwordController.text.trim();
+                  //   String confirm = confirmPasswordController.text.trim();
+                  //   if (pass.isEmpty || confirm.isEmpty) {
+                  //     controllers.loginCtr.reset();
+                  //     setState(() {
+                  //       errorMessage = "Please fill both fields";
+                  //     });
+                  //     FocusScope.of(context).requestFocus(passwordFocus1);
+                  //     return;
+                  //   }
+                  //   if (pass != confirm) {
+                  //     controllers.loginCtr.reset();
+                  //     setState(() {
+                  //       errorMessage = "Passwords do not match";
+                  //     });
+                  //     FocusScope.of(context).requestFocus(passwordFocus1);
+                  //     return;
+                  //   }
+                  //   FocusScope.of(context).unfocus();
+                  //   apiService.resetPasswordAPI(
+                  //     mobile: mobile.trim(),
+                  //     pass: pass,
+                  //   );
+                  // },
+                  onEdit: () {
+                    controllers.loginCtr.start();
+
+                    String pass = passwordController.text.trim();
+                    String confirm = confirmPasswordController.text.trim();
+
+                    if (pass.isEmpty || confirm.isEmpty) {
+                      controllers.loginCtr.reset();
+
+                      setState(() {
+                        errorMessage = "Please fill both password fields";
+                      });
+
+                      FocusScope.of(context).requestFocus(passwordFocus1);
+                      return;
+                    }
+                    if (pass.length < 8 ||
+                        pass.length > 16) {
+                      controllers.loginCtr.reset();
+
+                      setState(() {
+                        errorMessage =
+                        "Password must be 8–16 characters";
+                      });
+
+                      FocusScope.of(context).requestFocus(passwordFocus1);
+                      return;
+                    }
+
+                    if (pass != confirm) {
+                      controllers.loginCtr.reset();
+
+                      setState(() {
+                        errorMessage = "Passwords do not match";
+                      });
+
+                      FocusScope.of(context).requestFocus(passwordFocus1);
+                      return;
+                    }
+
+                    // ✅ Strong password validation
+                    if (!isStrongPassword(pass)) {
+                      controllers.loginCtr.reset();
+
+                      setState(() {
+                        errorMessage =
+                        "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character";
+                      });
+
+                      FocusScope.of(context).requestFocus(passwordFocus1);
+                      return;
+                    }
+
+                    // ✅ Clear error
+                    setState(() {
+                      errorMessage = "";
+                    });
+
+                    FocusScope.of(context).unfocus();
+
+                    apiService.resetPasswordAPI(
+                      mobile: mobile.trim(),
+                      pass: pass,
+                    );
+                  },
                 ),
                 if (errorMessage != null) ...[
                   CustomText(
@@ -183,25 +289,65 @@ void showForgotPasswordDialog(BuildContext context,String mobile) {
                   callback: () {
                     String pass = passwordController.text.trim();
                     String confirm = confirmPasswordController.text.trim();
+
                     if (pass.isEmpty || confirm.isEmpty) {
                       controllers.loginCtr.reset();
+
                       setState(() {
-                        errorMessage = "Please fill both fields";
+                        errorMessage = "Please fill both password fields";
                       });
+
+                      FocusScope.of(context).requestFocus(passwordFocus1);
                       return;
                     }
+                    if (pass.length < 8 ||
+                        pass.length > 16) {
+                      controllers.loginCtr.reset();
+
+                      setState(() {
+                        errorMessage =
+                        "Password must be 8–16 characters";
+                      });
+
+                      FocusScope.of(context).requestFocus(passwordFocus1);
+                      return;
+                    }
+
                     if (pass != confirm) {
                       controllers.loginCtr.reset();
+
                       setState(() {
                         errorMessage = "Passwords do not match";
                       });
+
+                      FocusScope.of(context).requestFocus(passwordFocus1);
                       return;
                     }
+
+                    // ✅ Strong password validation
+                    if (!isStrongPassword(pass)) {
+                      controllers.loginCtr.reset();
+
+                      setState(() {
+                        errorMessage =
+                        "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character";
+                      });
+
+                      FocusScope.of(context).requestFocus(passwordFocus1);
+                      return;
+                    }
+
+                    // ✅ Clear error
+                    setState(() {
+                      errorMessage = "";
+                    });
+
+                    FocusScope.of(context).unfocus();
+
                     apiService.resetPasswordAPI(
                       mobile: mobile.trim(),
                       pass: pass,
                     );
-                    //Navigator.pop(context);
                   },
                   isLoading: true,
                   text: "Reset",

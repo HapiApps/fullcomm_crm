@@ -1799,19 +1799,48 @@ class Utils {
       {BuildContext? context,
       TextEditingController? textEditingController,
       RxString? pathVal}) async {
-    controllers.dateTime =
-        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    // controllers.dateTime =
+    //     DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    DateTime dateTime = DateTime.now();
+
+    if (textEditingController != null && textEditingController.text.isNotEmpty) {
+      try {
+        String cleaned = textEditingController.text.replaceAll("/", "-").trim();
+        List<String> parts = cleaned.split("-");
+
+        if (parts.length == 3) {
+          int p1 = int.tryParse(parts[0]) ?? 0;
+          int p2 = int.tryParse(parts[1]) ?? 0;
+          int p3 = int.tryParse(parts[2]) ?? 0;
+
+          // Try to detect the format automatically
+          if (p1 > 31) {
+            // Format: YYYY-MM-DD
+            dateTime = DateTime(p1, p2, p3);
+          } else if (p3 < 100) {
+            // Handle short year like 25 -> 2025
+            dateTime = DateTime(2000 + p3, p2, p1);
+          } else {
+            // Format: DD-MM-YYYY
+            dateTime = DateTime(p3, p2, p1);
+          }
+        }
+      } catch (e) {
+        // Fallback safely
+        dateTime = DateTime.now();
+      }
+    }
     showDatePicker(
       context: context!,
-      initialDate: controllers.dateTime,
+      initialDate: dateTime,
       firstDate: DateTime(2010),
       lastDate: DateTime(2030),
     ).then((value) {
-      controllers.dateTime = value!;
+      dateTime = value!;
       textEditingController?.text =
-          "${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}";
+          "${(dateTime.day.toString().padLeft(2, "0"))}.${(dateTime.month.toString().padLeft(2, "0"))}.${(dateTime.year.toString())}";
       pathVal?.value =
-          "${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}";
+          "${(dateTime.day.toString().padLeft(2, "0"))}.${(dateTime.month.toString().padLeft(2, "0"))}.${(dateTime.year.toString())}";
     });
   }
   Future<void> chooseFile({RxList? mediaDataV, RxString? fileName, RxString? pathName}) async {

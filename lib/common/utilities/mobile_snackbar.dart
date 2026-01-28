@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../main.dart';
 
 final MobileUtils mobileUtils = MobileUtils._();
@@ -22,5 +22,32 @@ class MobileUtils {
       ),
     );
     return rootScaffoldMessengerKey.currentState!.showSnackBar(snack);
+  }
+//Santhiya
+//   void toastBox({required BuildContext context, required String text}){
+//     Fluttertoast.showToast(
+//         msg: text,
+//         // toastLength: Toast.LENGTH_SHORT,
+//         gravity: ToastGravity.CENTER,
+//         timeInSecForIosWeb: 1,
+//         backgroundColor: Colors.red,
+//         textColor: Colors.white,
+//         fontSize: 14.0
+//     );
+//   }
+  void toastBox({required BuildContext context, required String text}) {
+    Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+
+      backgroundColor: Colors.red, // Android old versions
+      textColor: Colors.white,
+      fontSize: 14.0,
+
+      webBgColor: "#FF0000", // IMPORTANT for Web
+      // webPosition: "center",
+    );
   }
 }

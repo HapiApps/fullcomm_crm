@@ -1246,7 +1246,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                               totalProspects,
                                                           'Qualified':
                                                               totalQualified,
-                                                          'Disqualified':
+                                                          'No Matches':
                                                               totalUnQualified,
                                                           'Customers':
                                                               totalCustomers,

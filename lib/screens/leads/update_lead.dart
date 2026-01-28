@@ -19,6 +19,7 @@ import '../../controller/controller.dart';
 
 
 class UpdateLead extends StatefulWidget {
+  final String type;
   final String? id;
   final String? mainName;
   final String? mainMobile;
@@ -117,7 +118,7 @@ class UpdateLead extends StatefulWidget {
     this.quotationRequired, this.arpuValue,
     this.prospectEnrollmentDate, this.expectedConvertionDate,
     this.statusUpdate, this.numOfHeadcount, this.expectedBillingValue,
-    required this.notes,required this.sourceDetails,required this.updateTs, this.detailsOfRequired, required this.visitType
+    required this.notes,required this.sourceDetails,required this.updateTs, this.detailsOfRequired, required this.visitType, required this.type
   });
 
 
@@ -208,125 +209,38 @@ class _UpdateLeadState extends State<UpdateLead> {
     });
   }
 
-  // Future<void> getStringValue()async{
-  //   setState((){
-  //     final whatsApp=widget.mainWhatsApp??"";
-  //     final companyName=widget.companyName ?? "";
-  //     final companyPhone=widget.companyNumber ?? "";
-  //     final webSite=widget.companyWebsite ?? "";
-  //     final coEmail=widget.companyEmail ?? "";
-  //     final product=widget.productServices ?? "";
-  //     final ownerName= widget.owner?? "";
-  //     final industry=widget.industry;
-  //     final source=widget.source;
-  //     final status=widget.status;
-  //     final rating=widget.rating;
-  //     final service=widget.serviceInterest;
-  //     final doorNo=widget.addressLine1 ?? "";
-  //     final street=widget.addressLine2 ?? "";
-  //     final area=widget.area ?? "";
-  //     final city=widget.city ?? "";
-  //     final pinCode=widget.pinCode ?? "";
-  //     final budget=widget.budget ?? "";
-  //     final state=widget.state ?? "Tamil Nadu";
-  //     final country=widget.country ?? "India";
-  //     final twitter=widget.x.toString()=="null"?"":widget.x;
-  //     final linkedin=widget.linkedin.toString()=="null"?"":widget.linkedin;
-  //     final time=widget.timelineDecision ?? "";
-  //     final leadDescription=widget.description ?? "";
-  //     controllers.leadNameCrt.clear();
-  //     controllers.leadMobileCrt.clear();
-  //     controllers.leadTitleCrt.clear();
-  //     controllers.leadEmailCrt.clear();
-  //     controllers.leadWhatsCrt.clear();
-  //     // if(widget.name.toString().contains("||")){
-  //     //   leadPersonalCount=widget.name.toString().split("||").length;
-  //     //
-  //     //   controllers.leadPersonalItems.value=leadPersonalCount;
-  //     //   controllers.isMainPersonList.value=[];
-  //     //   controllers.isCoMobileNumberList.value=[];
-  //     //   for(int i=0;i<leadPersonalCount;i++){
-  //     //     controllers.leadNameCrt.add(TextEditingController());
-  //     //     controllers.leadMobileCrt.add(TextEditingController());
-  //     //     controllers.leadTitleCrt.add(TextEditingController());
-  //     //     controllers.leadEmailCrt.add(TextEditingController());
-  //     //     controllers.isMainPersonList.add(false);
-  //     //     controllers.isCoMobileNumberList.add(false);
-  //     //     final name=widget.name.toString().split("||")[i];
-  //     //     final email=widget.email.toString().split("||")[i];
-  //     //     final title=widget.title.toString().split("||")[i];
-  //     //     controllers.leadNameCrt[i].text=name;
-  //     //     final mobile=widget.mobileNumber.toString().split("||")[i];
-  //     //     controllers.leadMobileCrt[i].text=mobile.toString();
-  //     //     controllers.leadEmailCrt[i].text=email.toString();
-  //     //     controllers.leadTitleCrt[i].text=title.toString();
-  //     //   }
-  //     // }else{
-  //     //   leadPersonalCount=1;
-  //     //   print("lead count error $leadPersonalCount");
-  //     //   controllers.leadPersonalItems.value=leadPersonalCount;
-  //     //   controllers.isMainPersonList.value=[];
-  //     //   controllers.isCoMobileNumberList.value=[];
-  //     //   for(int i=0;i<leadPersonalCount;i++){
-  //     controllers.leadNameCrt.add(TextEditingController());
-  //     controllers.leadMobileCrt.add(TextEditingController());
-  //     controllers.leadTitleCrt.add(TextEditingController());
-  //     controllers.leadEmailCrt.add(TextEditingController());
-  //     controllers.leadWhatsCrt.add(TextEditingController());
-  //     controllers.leadNameCrt[0].text=widget.mainName.toString();
-  //     print("lead count error ${widget.mainName} ${controllers.leadNameCrt[0].text}");
-  //     controllers.leadMobileCrt[0].text=widget.mainMobile.toString();
-  //     controllers.leadEmailCrt[0].text=widget.mainEmail.toString();
-  //     controllers.leadWhatsCrt[0].text=widget.mainWhatsApp.toString();
-  //     controllers.leadTitleCrt[0].text=widget.owner.toString();
-  //     controllers.visitType = widget.visitType.isEmpty?null:controllers.callNameList.contains(widget.visitType)?widget.visitType:null;
-  //     controllers.leadCoNameCrt.text=companyName.toString();
-  //     controllers.leadCoMobileCrt.text=companyPhone.toString();
-  //     controllers.leadWebsite.text=webSite.toString();
-  //     controllers.leadCoEmailCrt.text=coEmail.toString();
-  //     controllers.leadProduct.text=product.toString();
-  //     controllers.leadOwnerNameCrt.text=ownerName.toString();
-  //     controllers.prodDescriptionController.text = widget.productDiscussion.toString()=="null"?"":widget.productDiscussion.toString();
-  //     controllers.statusCrt.text = widget.status .toString()=="null"?"":widget.status.toString();
-  //     controllers.exMonthBillingValCrt.text = widget.expectedBillingValue.toString()=="null"?"":widget.expectedBillingValue.toString();
-  //     controllers.noOfHeadCountCrt.text = widget.numOfHeadcount.toString()=="null"?"":widget.numOfHeadcount.toString();
-  //     controllers.sourceCrt.text = widget.detailsOfRequired.toString()=="null"?"":widget.detailsOfRequired.toString();
-  //     controllers.additionalNotesCrt.text = widget.notes.toString()=="null"?"":widget.notes.toString();
-  //     controllers.arpuCrt.text = widget.arpuValue.toString()=="null"?"":widget.arpuValue.toString();
-  //     controllers.expectedConversionDateCrt.text = widget.expectedConvertionDate.toString()=="null"?"":widget.expectedConvertionDate.toString();
-  //     controllers.prospectEnrollmentDateCrt.text = widget.prospectEnrollmentDate.toString()=="null"?"":widget.prospectEnrollmentDate.toString();
-  //     controllers.prospectDate.value = widget.prospectEnrollmentDate.toString()=="null"?"":widget.prospectEnrollmentDate.toString();
-  //     controllers.exDate.value = widget.expectedConvertionDate.toString()=="null"?"":widget.expectedConvertionDate.toString();
-  //     controllers.statusCrt.text = widget.statusUpdate.toString()=="null"?"":widget.statusUpdate.toString();
-  //     controllers.leadDisPointsCrt.text = widget.source.toString()=="null"?"":widget.source.toString();
-  //     controllers.industry = (industry == null || industry == "null" || industry.toString().trim().isEmpty) ? null : industry;
-  //     controllers.source = (source == null || source == "null" || source.toString().trim().isEmpty) ? null : source;
-  //     controllers.status = (status == null || status == "null" || status.toString().trim().isEmpty) ? null : status;
-  //     controllers.rating = (rating == null || rating == "null" || rating.toString().trim().isEmpty) ? null : rating;
-  //     controllers.service = (service == null || service == "null" || service.toString().trim().isEmpty) ? null : service;
-  //     controllers.doorNumberController.text=doorNo.toString();
-  //     controllers.leadDescription.text=leadDescription.toString();
-  //     controllers.leadTime.text=time.toString();
-  //     controllers.budgetCrt.text=budget.toString();
-  //     controllers.streetNameController.text=street.toString();
-  //     controllers.areaController.text=area.toString();
-  //     controllers.selectedCity.value=city.toString();
-  //     controllers.cityController.text=city.toString();
-  //     controllers.pinCode=pinCode.toString();
-  //     controllers.pinCodeController.text=pinCode.toString();
-  //     controllers.stateController.text=state.toString();
-  //     controllers.selectedState.value=state.toString();
-  //     controllers.countryController.text=country.toString();
-  //     controllers.leadXCrt.text=twitter.toString();
-  //     controllers.leadLinkedinCrt.text=linkedin.toString();
-  //     controllers.leadActions.text=widget.points.toString();
-  //     controllers.prospectGradingCrt.text=widget.rating.toString();
-  //     controllers.selectPinCodeList=[];
-  //     //controllers.leadWhatsCrt[0].text=whatsApp.toString();
-  //   });
-  // }
   final ScrollController _controller = ScrollController();
   late FocusNode _focusNode;
+  final FocusNode name = FocusNode();
+  final FocusNode phone = FocusNode();
+  final FocusNode whatsApp = FocusNode();
+  final FocusNode account = FocusNode();
+  final FocusNode email = FocusNode();
+  final FocusNode date = FocusNode();
+  final FocusNode cName = FocusNode();
+  final FocusNode cNo = FocusNode();
+  final FocusNode linkedin = FocusNode();
+  final FocusNode cEmail = FocusNode();
+  final FocusNode cProduct = FocusNode();
+  final FocusNode cServices = FocusNode();
+  final FocusNode website = FocusNode();
+  final FocusNode cX = FocusNode();
+
+  final FocusNode ob1 = FocusNode();
+  final FocusNode ob2 = FocusNode();
+  final FocusNode ob3 = FocusNode();
+  final FocusNode ob4 = FocusNode();
+  final FocusNode ob5 = FocusNode();
+  final FocusNode ob6 = FocusNode();
+  final FocusNode ob7 = FocusNode();
+  final FocusNode ob8 = FocusNode();
+  final FocusNode ob9 = FocusNode();
+
+  final FocusNode door = FocusNode();
+  final FocusNode area = FocusNode();
+  final FocusNode city = FocusNode();
+  final FocusNode state = FocusNode();
+  final FocusNode pincode = FocusNode();
   @override
   void initState(){
     // TODO: implement initState
@@ -335,6 +249,9 @@ class _UpdateLeadState extends State<UpdateLead> {
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
+      FocusScope.of(context)
+          .requestFocus(
+          name);
     });
     //setDefaults();
   }
@@ -342,6 +259,36 @@ class _UpdateLeadState extends State<UpdateLead> {
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
+    name.dispose();
+    phone.dispose();
+    whatsApp.dispose();
+    account.dispose();
+    email.dispose();
+    date.dispose();
+    cName.dispose();
+    cNo.dispose();
+    linkedin.dispose();
+    cEmail.dispose();
+    cProduct.dispose();
+    cServices.dispose();
+    website.dispose();
+    cX.dispose();
+
+    ob1.dispose();
+    ob2.dispose();
+    ob3.dispose();
+    ob4.dispose();
+    ob5.dispose();
+    ob6.dispose();
+    ob7.dispose();
+    ob8.dispose();
+    ob9.dispose();
+
+    door.dispose();
+    area.dispose();
+    city.dispose();
+    state.dispose();
+    pincode.dispose();
     super.dispose();
   }
 
@@ -433,6 +380,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         CustomTextField(
                                           hintText:"Name",
                                           text:"Name",
+                                          focusNode: name,
+                                          onEdit: () {
+                                            FocusScope.of(context)
+                                                .requestFocus(phone);
+                                          },
                                           isOptional: true,
                                           controller: controllers.leadNameCrt[0],
                                           width:textFieldSize,
@@ -479,13 +431,23 @@ class _UpdateLeadState extends State<UpdateLead> {
                                               width:textFieldSize,
                                               height: 50,
                                               child: TextFormField(
+                                                  onEditingComplete: () {
+                                                    FocusScope.of(context)
+                                                        .requestFocus(
+                                                        whatsApp);
+                                                  },
+                                                  focusNode: phone,
                                                   style: TextStyle(
                                                       color:colorsConst.textColor,fontSize: 14,
                                                       fontFamily:"Lato"
                                                   ),
                                                   cursorColor: colorsConst.primary,
-                                                  onChanged:(value) async {
-                                                    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                                  onChanged:(value)  {
+                                                    setState(() {
+                                                      if (controllers.isCoMobileNumberList[0] ==true) {
+                                                        controllers.leadWhatsCrt[0].text =controllers.leadMobileCrt[0].text;
+                                                      }
+                                                    });
                                                     //sharedPref.setString("leadMobileNumber$index", value.toString().trim());
                                                   },
                                                   onTap:(){},
@@ -524,6 +486,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         ),
                                         15.height,
                                         CustomTextField(
+                                          onEdit: () {
+                                            FocusScope.of(context)
+                                                .requestFocus(account);
+                                          },
+                                          focusNode: whatsApp,
                                           hintText: "Whatsapp No",
                                           text: "Whatsapp",
                                           controller:
@@ -533,6 +500,13 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           keyboardType: TextInputType.number,
                                           textInputAction: TextInputAction.next,
                                           inputFormatters: constInputFormatters.mobileNumberInput,
+                                          onChanged: (value)  {
+                                            if (controllers.leadWhatsCrt[0].text !=controllers.leadMobileCrt[0].text) {
+                                              controllers.isCoMobileNumberList[0] =false;
+                                            } else {
+                                              controllers.isCoMobileNumberList[0] =true;
+                                            }
+                                          },
                                           // validator:(value){
                                           //   if(value.toString().isEmpty){
                                           //     return "This field is required";
@@ -550,6 +524,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       children:[
                                         10.height,
                                         CustomTextField(
+                                          onEdit: () {
+                                            FocusScope.of(context)
+                                                .requestFocus(email);
+                                          },
+                                          focusNode: account,
                                           hintText:"Account Manager (Optional)",
                                           text:"Account Manager (Optional)",
                                           isOptional: false,
@@ -562,6 +541,12 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         ),
                                         7.height,
                                         CustomTextField(
+                                          focusNode: email,
+                                          onEdit: () {
+                                            FocusScope.of(context)
+                                                .requestFocus(
+                                                cName);
+                                          },
                                           hintText:"Email Id (Optional)",
                                           text:"Email Id",
                                           controller: controllers.leadEmailCrt[0],
@@ -586,6 +571,9 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             setState((){
                                               controllers.visitType = value;
                                             });
+                                            FocusScope.of(context)
+                                                .requestFocus(
+                                                cName);
                                             SharedPreferences sharedPref =
                                             await SharedPreferences.getInstance();
                                             sharedPref.setString("callVisitType", value.toString().trim());
@@ -635,6 +623,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children:[
                                         CustomTextField(
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(cNo);
+                                          },
+                                          focusNode: cName,
                                           hintText:"Company Name",
                                           text:"Company Name",
                                           controller: controllers.leadCoNameCrt,
@@ -648,7 +640,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             sharedPref.setString("leadCoName", value.toString().trim());
                                           },
                                         ),
-                                        CustomTextField(
+                                          CustomTextField(
+                                            focusNode: cNo,
+                                            onEdit: () {
+                                              FocusScope.of(context).requestFocus(linkedin);
+                                            },
                                           hintText:"Company Phone No",
                                           text:"Company Phone No.",
                                           controller: controllers.leadCoMobileCrt,
@@ -688,6 +684,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         CustomTextField(
                                           hintText:"Linkedin(Optional)",
                                           text:"Linkedin(Optional)",
+                                          focusNode: linkedin,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(cEmail);
+                                          },
                                           isOptional: false,
                                           controller: controllers.leadLinkedinCrt,
                                           width:textFieldSize,
@@ -707,6 +707,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children:[
                                         CustomTextField(
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(cServices);
+                                          },
+                                          focusNode: cEmail,
                                           hintText:"Company Email",
                                           text:"Company Email",
                                           controller: controllers.leadCoEmailCrt,
@@ -721,6 +725,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           },
                                         ),
                                         CustomTextField(
+                                          focusNode: cServices,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(website);
+                                          },
                                           hintText:"Product/Services",
                                           text:"Product/Services",
                                           isOptional: false,
@@ -735,6 +743,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           },
                                         ),
                                         CustomTextField(
+                                          focusNode: website,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(cX);
+                                          },
                                           hintText:"Website(Optional)",
                                           text:"Website(Optional)",
                                           isOptional: false,
@@ -749,6 +761,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           },
                                         ),
                                         CustomTextField(
+                                          focusNode: cX,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(door);
+                                          },
                                           hintText:"X(Optional)",
                                           text:"X(Optional)",
                                           controller: controllers.leadXCrt,
@@ -791,6 +807,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children:[
                                         CustomTextField(
+                                          focusNode: door,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(area);
+                                          },
                                           hintText:"Door No(Optional)",
                                           text:"Door No(Optional)",
                                           controller: controllers.doorNumberController,
@@ -805,6 +825,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           },
                                         ),
                                         CustomTextField(
+                                          focusNode: area,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(city);
+                                          },
                                           hintText:"Area(Optional)",
                                           text:"Area(Optional)",
                                           isOptional: false,
@@ -819,18 +843,23 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           },
                                         ),
                                         CustomTextField(
-                                          hintText: "State (Optional)",
-                                          text: "State (Optional)",
-                                          controller:controllers.stateController,
+                                          hintText: "City (Optional)",
+                                          text: "City (Optional)",
+                                          focusNode: city,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(pincode);
+                                          },
+                                          controller:controllers.cityController,
                                           width: textFieldSize,
                                           keyboardType: TextInputType.text,
                                           textInputAction: TextInputAction.next,
                                           isOptional: false,
                                           onChanged: (value) async {
                                             SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                            sharedPref.setString("leadState",value.toString().trim());
+                                            sharedPref.setString("leadCity",value.toString().trim());
                                           },
                                         ),
+
                                         // utils.stateDropdown(
                                         //     MediaQuery.of(context).size.width/2-30,
                                         //     controllers.cityController,
@@ -842,8 +871,12 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children:[
                                         CustomTextField(
-                                          hintText:"PIN",
-                                          text:"PIN",
+                                          focusNode: pincode,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(state);
+                                          },
+                                          hintText:"Pincode",
+                                          text:"Pincode",
                                           controller: controllers.pinCodeController,
                                           width:textFieldSize,
                                           isOptional: false,
@@ -853,6 +886,23 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           onChanged:(value) async {
                                             SharedPreferences sharedPref = await SharedPreferences.getInstance();
                                             sharedPref.setString("leadPinCode", value.toString().trim());
+                                          },
+                                        ),
+                                        CustomTextField(
+                                          focusNode: state,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(ob1);
+                                          },
+                                          hintText: "State (Optional)",
+                                          text: "State (Optional)",
+                                          controller:controllers.stateController,
+                                          width: textFieldSize,
+                                          keyboardType: TextInputType.text,
+                                          textInputAction: TextInputAction.next,
+                                          isOptional: false,
+                                          onChanged: (value) async {
+                                            SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                            sharedPref.setString("leadState",value.toString().trim());
                                           },
                                         ),
                                         // CustomTextField(
@@ -869,19 +919,23 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         //     sharedPref.setString("leadStreet", value.toString().trim());
                                         //   },
                                         // ),
-                                        CustomTextField(
-                                          hintText: "City (Optional)",
-                                          text: "City (Optional)",
-                                          controller:controllers.cityController,
-                                          width: textFieldSize,
-                                          keyboardType: TextInputType.text,
-                                          textInputAction: TextInputAction.next,
-                                          isOptional: false,
-                                          onChanged: (value) async {
-                                            SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                            sharedPref.setString("leadCity",value.toString().trim());
-                                          },
-                                        ),
+                                        // CustomTextField(
+                                        //   hintText: "City (Optional)",
+                                        //   text: "City (Optional)",
+                                        //   focusNode: city,
+                                        //   onEdit: () {
+                                        //     FocusScope.of(context).requestFocus(pincode);
+                                        //   },
+                                        //   controller:controllers.cityController,
+                                        //   width: textFieldSize,
+                                        //   keyboardType: TextInputType.text,
+                                        //   textInputAction: TextInputAction.next,
+                                        //   isOptional: false,
+                                        //   onChanged: (value) async {
+                                        //     SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                        //     sharedPref.setString("leadCity",value.toString().trim());
+                                        //   },
+                                        // ),
                                         // utils.cityDropdown(MediaQuery.of(context).size.width/2-30,
                                         //   controllers.cityController,
                                         //   controllers.stateController,
@@ -1004,6 +1058,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children:[
                                         CustomTextField(
+                                          focusNode: ob1,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(ob2);
+                                          },
                                           hintText:"Actions to be taken",
                                           text:"Actions to be taken",
                                           isOptional: false,
@@ -1015,6 +1073,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           onChanged:(value) async {},
                                         ),
                                         CustomTextField(
+                                          focusNode: ob2,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(ob3);
+                                          },
                                           hintText:"Source Of Prospect",
                                           text:"Source Of Prospect",
                                           isOptional: false,
@@ -1027,6 +1089,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           },
                                         ),
                                         CustomTextField(
+                                          focusNode: ob3,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(ob4);
+                                          },
                                           hintText:"Product Discussed",
                                           text:"Product Discussed",
                                           isOptional: false,
@@ -1039,6 +1105,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           },
                                         ),
                                         CustomTextField(
+                                          focusNode: ob4,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(ob5);
+                                          },
                                           hintText: "Expected Monthly Billing Value",
                                           text: "Expected Monthly Billing Value",
                                           controller: controllers.exMonthBillingValCrt,
@@ -1053,6 +1123,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           // }
                                         ),
                                         CustomTextField(
+                                          focusNode: ob5,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(ob6);
+                                          },
                                           hintText:"ARPU Value",
                                           text:"ARPU Value",
                                           isOptional: false,
@@ -1065,6 +1139,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           },
                                         ),
                                         CustomTextField(
+                                          focusNode: ob6,
+                                          onEdit: () {
+                                            FocusScope.of(context).requestFocus(ob7);
+                                          },
                                           hintText:"Prospect Grading",
                                           text:"Prospect Grading",
                                           isOptional: false,
@@ -1108,6 +1186,14 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children:[
                                         CustomTextField(
+                                          focusNode: ob7,
+                                          onEdit: () {
+                                            utils.datePicker(
+                                                context: context,
+                                                textEditingController: controllers.dateOfConCtr,
+                                                pathVal: controllers.exDate);
+                                            FocusScope.of(context).requestFocus(ob8);
+                                          },
                                           hintText:"Total Number Of Head Count",
                                           text:"Total Number Of Head Count",
                                           isOptional: false,
@@ -1135,10 +1221,19 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 context: context,
                                                 textEditingController: controllers.dateOfConCtr,
                                                 pathVal: controllers.exDate);
+                                            FocusScope.of(context).requestFocus(ob8);
                                           },
                                         ),
                                         ),
                                         CustomTextField(
+                                          focusNode: ob8,
+                                          onEdit: () {
+                                            utils.datePicker(
+                                                context: context,
+                                                textEditingController: controllers.dateOfConCtr,
+                                                pathVal: controllers.prospectDate);
+                                            FocusScope.of(context).requestFocus(ob9);
+                                          },
                                           hintText:"Details of Service Required",
                                           text:"Details of Service Required",
                                           isOptional: false,
@@ -1162,10 +1257,71 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 context: context,
                                                 textEditingController: controllers.dateOfConCtr,
                                                 pathVal: controllers.prospectDate);
+                                            FocusScope.of(context).requestFocus(ob9);
                                           },
                                         ),
                                         ),
                                         CustomTextField(
+                                          focusNode: ob9,
+                                          onEdit: () {
+                                            controllers.leadCtr.start();
+                                            if (controllers.leadNameCrt[0].text.isEmpty) {
+                                              utils.snackBar(
+                                                  msg: "Please add name",
+                                                  color: Colors.red,
+                                                  context: context);
+                                              controllers.leadCtr.reset();
+                                            } else if (controllers.leadMobileCrt[0].text.isEmpty) {
+                                              utils.snackBar(
+                                                  msg: "Please Add Mobile Number",
+                                                  color: Colors.red,
+                                                  context: context);
+                                              controllers.leadCtr.reset();
+                                            } else if (controllers.leadMobileCrt[0].text.length != 10) {
+                                              utils.snackBar(
+                                                  msg: "Invalid Mobile Number",
+                                                  color: Colors.red,
+                                                  context: context);
+                                              controllers.leadCtr.reset();
+                                            } else if (controllers.visitType == null || controllers.visitType.toString().isEmpty) {
+                                              utils.snackBar(
+                                                  msg: "Please Select Call Visit Type",
+                                                  color: Colors.red,
+                                                  context: context);
+                                              controllers.leadCtr.reset();
+                                            } else {
+                                              if(controllers.leadEmailCrt[0].text.isNotEmpty){
+                                                if (controllers.leadEmailCrt[0].text.isEmail) {
+                                                  if(controllers.pinCodeController.text.isEmpty){
+                                                    apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
+                                                  }else{
+                                                    if(controllers.pinCodeController.text.length==6){
+                                                      apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
+                                                    }else{
+                                                      utils.snackBar(msg: "Please add 6 digits pin code",
+                                                          color: colorsConst.primary,context:context);
+                                                      controllers.leadCtr.reset();
+                                                    }
+                                                  }
+                                                }else{
+                                                  utils.snackBar(msg: "Please add valid email",
+                                                      color: colorsConst.primary,context:context);
+                                                  controllers.leadCtr.reset();
+                                                }
+                                              }else{
+                                                if(controllers.pinCodeController.text.isEmpty){
+                                                  apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
+                                                }else{
+                                                  if(controllers.pinCodeController.text.length==6){
+                                                    apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
+                                                  }else{
+                                                    utils.snackBar(msg: "Please add 6 digits pin code",
+                                                        color: colorsConst.primary,context:context);
+                                                    controllers.leadCtr.reset();
+                                                  }
+                                                }
+                                              }}
+                                            },
                                           hintText: "Status Update",
                                           text: "Status Update",
                                           controller: controllers.statusCrt,
@@ -1214,10 +1370,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         if(controllers.leadEmailCrt[0].text.isNotEmpty){
                                           if (controllers.leadEmailCrt[0].text.isEmail) {
                                             if(controllers.pinCodeController.text.isEmpty){
-                                              apiService.updateLeadAPI(context,widget.id.toString(),widget.addressId.toString());
+                                              apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
                                             }else{
                                               if(controllers.pinCodeController.text.length==6){
-                                                apiService.updateLeadAPI(context,widget.id.toString(),widget.addressId.toString());
+                                                apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
                                               }else{
                                                 utils.snackBar(msg: "Please add 6 digits pin code",
                                                     color: colorsConst.primary,context:context);
@@ -1231,10 +1387,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           }
                                         }else{
                                           if(controllers.pinCodeController.text.isEmpty){
-                                            apiService.updateLeadAPI(context,widget.id.toString(),widget.addressId.toString());
+                                            apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
                                           }else{
                                             if(controllers.pinCodeController.text.length==6){
-                                              apiService.updateLeadAPI(context,widget.id.toString(),widget.addressId.toString());
+                                              apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
                                             }else{
                                               utils.snackBar(msg: "Please add 6 digits pin code",
                                                   color: colorsConst.primary,context:context);

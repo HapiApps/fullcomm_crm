@@ -22,6 +22,7 @@ class ViewLead extends StatefulWidget {
   final String pageName;
   final String? name;
   final String? mobileNumber;
+  final String whatsAppNo;
   final String? email;
   final String? companyName;
   final String? status;
@@ -62,7 +63,7 @@ class ViewLead extends StatefulWidget {
     this.pinCode,
     required this.updateTs,
     required this.notes,
-    required this.sourceDetails,
+    required this.sourceDetails, required this.whatsAppNo,
   });
 
   @override
@@ -340,7 +341,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                             //   await apiService.insertQualifiedAPI(context, [deleteData]);
                                                             // } else if (selectedStage == "Qualified") {
                                                             //   await apiService.insertPromoteCustomerAPI(context, [deleteData]);
-                                                            // } else if (selectedStage == "Disqualified") {
+                                                            // } else if (selectedStage == "No Matches") {
                                                             //   await apiService.qualifiedCustomersAPI(context, [deleteData]);
                                                             // } else {
                                                             //   await apiService.insertProspectsAPI(context, [deleteData]);
@@ -422,7 +423,7 @@ class _ViewLeadState extends State<ViewLead> {
                                         //                     await apiService.insertQualifiedAPI(context, [deleteData]);
                                         //                   } else if (widget.pageName == "Qualified") {
                                         //                     await apiService.insertPromoteCustomerAPI(context, [deleteData]);
-                                        //                   } else if (widget.pageName == "Disqualified") {
+                                        //                   } else if (widget.pageName == "No Matches") {
                                         //                     await apiService.qualifiedCustomersAPI(context, [deleteData]);
                                         //                   } else {
                                         //                     await apiService.insertProspectsAPI(context, [deleteData]);
@@ -608,10 +609,12 @@ class _ViewLeadState extends State<ViewLead> {
                                         // prepare values for UpdateLead
                                         Get.to(
                                           UpdateLead(
+                                            type: "2",
                                             id: widget.id,
                                             mainName: displayName,
                                             mainMobile: displayMobile,
                                             mainEmail: displayEmail,
+                                            mainWhatsApp: widget.whatsAppNo,
                                             companyName: cust?.companyName ?? widget.companyName,
                                             status: cust?.status?.toString(),
                                             rating: cust?.rating,
@@ -838,7 +841,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                               color: colorsConst.textColor),
                                                           20.height,
                                                           utils.leadText(
-                                                              text: displayMobile,
+                                                              text: widget.whatsAppNo,
                                                               color: colorsConst.textColor),
                                                           20.height,
                                                           utils.leadText(

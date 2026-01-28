@@ -20,6 +20,9 @@ final MailUtils mailUtils = MailUtils._();
 class MailUtils {
   MailUtils._();
   void bulkEmailDialog(FocusNode focusNode, {required List<Map<String, String>> list, bool isTarget = false}) {
+    controllers.emailSubjectCtr.clear();
+    controllers.emailMessageCtr.clear();
+    imageController.photo1.value="";
     int total = list.length;
     int withMail = list.where((e) => (e["mail_id"] != null && e["mail_id"]!.trim().isNotEmpty && e["mail_id"]!.trim() != "null")).length;
     int withoutMail = total - withMail;
@@ -123,6 +126,16 @@ class MailUtils {
                               callback: () {
                                 if(apiService.prospectsList.isEmpty){
                                   apiService.errorDialog(context, "Please Select range to send email.");
+                                  controllers.emailCtr.reset();
+                                  return;
+                                }
+                                if(controllers.emailSubjectCtr.text.isEmpty){
+                                  apiService.errorDialog(context, "Please fill subject.");
+                                  controllers.emailCtr.reset();
+                                  return;
+                                }
+                                if(controllers.emailMessageCtr.text.isEmpty){
+                                  apiService.errorDialog(context, "Please fill message.");
                                   controllers.emailCtr.reset();
                                   return;
                                 }

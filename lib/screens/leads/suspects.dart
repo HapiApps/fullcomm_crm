@@ -48,6 +48,14 @@ class _SuspectsState extends State<Suspects> {
         apiService.prospectsList = [];
         apiService.prospectsList.clear();
         controllers.search.clear();
+        //Santhiya
+        controllers.isAllSelected.value = false;
+        for (var item in controllers.isNewLeadList) {
+          item["isSelect"] = false;
+          apiService.prospectsList.removeWhere(
+                (e) => e["lead_id"] == item["lead_id"],
+          );
+        }
       });
       controllers.searchQuery.value = "";
     });
@@ -126,6 +134,8 @@ class _SuspectsState extends State<Suspects> {
                       20.height,
                       // Filter Section
                       FilterSection(
+                        //Santhiya
+                        focusNode: _focusNode,
                         leadFuture: controllers.allNewLeadFuture,
                         title: "Suspects",
                         count: controllers.allNewLeadsLength.value,
@@ -273,7 +283,7 @@ class _SuspectsState extends State<Suspects> {
                               builder: (context) {
                                 return AlertDialog(
                                   content: CustomText(
-                                    text: "Are you sure disqualify this customers?",
+                                    text: "Are you sure No Matches this customers?",
                                     size: 16,
                                     isBold: true,
                                     isCopy: false,
@@ -320,7 +330,7 @@ class _SuspectsState extends State<Suspects> {
                                           width: 100,
                                           controller: controllers.productCtr,
                                           isImage: false,
-                                          text: "Disqualified",
+                                          text: "No Matches",
                                           textColor:Colors.white,
                                         ),
                                         5.width
@@ -362,34 +372,33 @@ class _SuspectsState extends State<Suspects> {
                                       showCheckbox: true,
                                       isAllSelected: apiService.prospectsList.isEmpty?false:controllers.isAllSelected.value,
                                       onSelectAll: (value) {
-                                      if(controllers.paginatedLeads.isNotEmpty){
-                                        if (value == true) {
-                                          controllers.isAllSelected.value = true;
-                                          setState(() {
-                                            for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                              controllers.isNewLeadList[j]["isSelect"] = true;
-                                              apiService.prospectsList.add({
-                                                "lead_id": controllers.isNewLeadList[j]["lead_id"],
-                                                "user_id": controllers.storage.read("id"),
-                                                "rating": controllers.isNewLeadList[j]["rating"],
-                                                "cos_id": controllers.storage.read("cos_id"),
-                                                "mail_id":controllers.isNewLeadList[j]["mail"]
-                                              });
+                                        setState(() {
+                                          apiService.prospectsList.clear();
+                                          if(controllers.paginatedLeads.isNotEmpty){
+                                            if (value == true) {
+                                              controllers.isAllSelected.value = true;
+                                                for (int j = 0; j < controllers.isNewLeadList.length; j++) {
+                                                  controllers.isNewLeadList[j]["isSelect"] = true;
+                                                  apiService.prospectsList.add({
+                                                    "lead_id": controllers.isNewLeadList[j]["lead_id"],
+                                                    "user_id": controllers.storage.read("id"),
+                                                    "rating": controllers.isNewLeadList[j]["rating"],
+                                                    "cos_id": controllers.storage.read("cos_id"),
+                                                    "mail_id":controllers.isNewLeadList[j]["mail"]
+                                                  });
+                                                }
+                                            } else {
+                                              controllers.isAllSelected.value = false;
+                                              for (int j = 0; j < controllers.isNewLeadList.length; j++) {
+                                                controllers.isNewLeadList[j]["isSelect"] = false;
+                                                  var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==controllers.isNewLeadList[j]["lead_id"]);
+                                                  apiService.prospectsList.removeAt(i);
+                                              }
                                             }
-                                          });
-                                        } else {
-                                          controllers.isAllSelected.value = false;
-                                          for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                            controllers.isNewLeadList[j]["isSelect"] = false;
-                                            setState((){
-                                              var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==controllers.isNewLeadList[j]["lead_id"]);
-                                              apiService.prospectsList.removeAt(i);
-                                            });
+                                          }else{
+                                            controllers.isAllSelected.value = false;
                                           }
-                                        }
-                                      }else{
-                                        controllers.isAllSelected.value = false;
-                                      }
+                                        });
                                       },
                                       onSortDate: () {
                                         controllers.sortField.value = 'date';
@@ -416,6 +425,7 @@ class _SuspectsState extends State<Suspects> {
                                               saveValue: controllers.isNewLeadList[index]["isSelect"],
                                               onChanged: (value){
                                                 setState(() {
+                                                  controllers.isAllSelected.value = false;
                                                   if(controllers.isNewLeadList[index]["isSelect"]==true){
                                                     controllers.isNewLeadList[index]["isSelect"]=false;
                                                     var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());

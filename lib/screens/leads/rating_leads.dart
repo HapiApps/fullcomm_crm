@@ -128,6 +128,8 @@ class _RatingLeadsState extends State<RatingLeads> {
                       20.height,
                       // Filter Section
                       FilterSection(
+                        //Santhiya
+                        focusNode: _focusNode,
                         isActionEnabled: false,
                         leadFuture: controllers.allNewLeadFuture,
                         title: "Suspects",
@@ -276,7 +278,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                               builder: (context) {
                                 return AlertDialog(
                                   content: CustomText(
-                                    text: "Are you sure disqualify this customers?",
+                                    text: "Are you sure No Matches this customers?",
                                     size: 16,
                                     isBold: true,
                                     isCopy: false,
@@ -323,7 +325,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                                           width: 100,
                                           controller: controllers.productCtr,
                                           isImage: false,
-                                          text: "Disqualified",
+                                          text: "No Matches",
                                           textColor:Colors.white,
                                         ),
                                         5.width
@@ -365,10 +367,12 @@ class _RatingLeadsState extends State<RatingLeads> {
                                     showCheckbox: false,
                                     isAllSelected: apiService.prospectsList.isEmpty?false:controllers.isAllSelected.value,
                                     onSelectAll: (value) {
+                                      setState(() {
+                                        apiService.prospectsList.clear();
+                                      });
                                       if(controllers.paginatedRatingLeads.isNotEmpty){
                                         if (value == true) {
                                           controllers.isAllSelected.value = true;
-                                          setState(() {
                                             for (int j = 0; j < controllers.isNewLeadList.length; j++) {
                                               controllers.isNewLeadList[j]["isSelect"] = true;
                                               apiService.prospectsList.add({
@@ -379,15 +383,12 @@ class _RatingLeadsState extends State<RatingLeads> {
                                                 "mail_id":controllers.isNewLeadList[j]["mail"]
                                               });
                                             }
-                                          });
                                         } else {
                                           controllers.isAllSelected.value = false;
                                           for (int j = 0; j < controllers.isNewLeadList.length; j++) {
                                             controllers.isNewLeadList[j]["isSelect"] = false;
-                                            setState((){
                                               var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==controllers.isNewLeadList[j]["lead_id"]);
                                               apiService.prospectsList.removeAt(i);
-                                            });
                                           }
                                         }
                                       }else{

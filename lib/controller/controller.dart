@@ -114,26 +114,66 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     return null;
   }
 
-  void selectMonth(BuildContext context, RxString sortByKey, Rxn<DateTime> selectedMonthTarget) async {
+  // void selectMonth(BuildContext context, RxString sortByKey, Rxn<DateTime> selectedMonthTarget) async {
+  //   showMonthPicker(
+  //     context: context,
+  //     monthStylePredicate: (month) {
+  //       final now = DateTime.now();
+  //       if (month.month == now.month && month.year == now.year) {
+  //         return ButtonStyle(
+  //           foregroundColor: WidgetStateProperty.all(Colors.white),
+  //           backgroundColor: WidgetStateProperty.all(Colors.blue.withOpacity(0.2)),
+  //         );
+  //       } else {
+  //         return ButtonStyle(
+  //           foregroundColor: WidgetStateProperty.all(Colors.black),
+  //           backgroundColor: WidgetStateProperty.all(Colors.transparent),
+  //         );
+  //       }
+  //     },
+  //     initialDate: selectedMonthTarget.value,
+  //     firstDate: DateTime(2020),
+  //       lastDate: DateTime(DateTime.now().year, DateTime.now().month + 1, 0),//Santhiya
+  //   ).then((selected) {
+  //     if (selected != null) {
+  //       sortByKey.value = 'Custom Month';
+  //       selectedMonthTarget.value = selected;
+  //     }
+  //   });
+  // }
+  //Santhiya
+  void selectMonth(
+      BuildContext context,
+      RxString sortByKey,
+      Rxn<DateTime> selectedMonthTarget,
+      ) {
+
+    final now = DateTime.now();
+
     showMonthPicker(
       context: context,
+
+      // ✅ Highlight current month
       monthStylePredicate: (month) {
-        final now = DateTime.now();
         if (month.month == now.month && month.year == now.year) {
           return ButtonStyle(
             foregroundColor: WidgetStateProperty.all(Colors.white),
-            backgroundColor: WidgetStateProperty.all(Colors.blue.withOpacity(0.2)),
-          );
-        } else {
-          return ButtonStyle(
-            foregroundColor: WidgetStateProperty.all(Colors.black),
-            backgroundColor: WidgetStateProperty.all(Colors.transparent),
+            backgroundColor:
+            WidgetStateProperty.all(Colors.blue.withOpacity(0.2)),
           );
         }
+        return null;
       },
-      initialDate: selectedMonthTarget.value,
+
+      // ✅ Default open month
+      initialDate: selectedMonthTarget.value ?? now,
+
+      // ✅ Starting limit
       firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
+
+      // ✅ Allow full current month (Important)
+      lastDate: DateTime(now.year, now.month + 1, 0),
+
     ).then((selected) {
       if (selected != null) {
         sortByKey.value = 'Custom Month';
@@ -311,6 +351,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     final filteredLeads = disqualifiedFuture.where((lead) {
       final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
           (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+          (lead.companyName ?? '').toLowerCase().contains(query) ||
           (lead.email ?? '').toLowerCase().contains(query);
 
       final matchesRating = ratingFilter.isEmpty ||
@@ -843,6 +884,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     final filteredLeads = allQualifiedLeadFuture.where((lead) {
       final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
           (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+          (lead.companyName ?? '').toLowerCase().contains(query) ||
           (lead.email ?? '').toLowerCase().contains(query);
 
       final matchesRating = ratingFilter.isEmpty ||
@@ -1017,6 +1059,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     final filteredLeads = allCustomerLeadFuture.where((lead) {
       final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
           (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+          (lead.companyName ?? '').toLowerCase().contains(query) ||
           (lead.email ?? '').toLowerCase().contains(query);
 
       final matchesRating = ratingFilter.isEmpty ||
@@ -1179,6 +1222,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       final matchesQuery =
           (lead.firstname ?? '').toLowerCase().contains(query) ||
               (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+              (lead.companyName ?? '').toLowerCase().contains(query) ||
               (lead.email ?? '').toLowerCase().contains(query);
 
       final matchesRating = ratingFilter.isEmpty ||
@@ -1801,7 +1845,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     {"lead_status": "3", "value": "Qualified","id" : "3"},
     {"lead_status": "4", "value": "Customers","id" : "4"},
     {"lead_status": "0", "value": "Target Leads","id" : "5"},
-    {"lead_status": "5", "value": "DisQualified","id" : "6"}].obs;
+    {"lead_status": "5", "value": "No Matches","id" : "6"}].obs;
 
   RxList leadCategoryGrList = [].obs;
   List eventImages = [

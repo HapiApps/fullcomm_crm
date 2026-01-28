@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/styles/styles.dart';
+import '../common/utilities/mobile_snackbar.dart';
 import '../common/utilities/utils.dart';
 import '../controller/controller.dart';
 import '../models/new_lead_obj.dart';
@@ -106,7 +107,15 @@ class _HeaderSectionState extends State<HeaderSection> {
                 : CustomLoadingButton(
               callback: () {
                 focusNode.requestFocus();
-                exportLeadsToExcel(widget.list, controllers.fields);
+                //Santhiya
+                if(widget.list.isEmpty){
+                  mobileUtils.snackBar(
+                      context: Get.context!,
+                      msg: "No data available to export",
+                      color: Colors.red);
+                }else{
+                  exportLeadsToExcel(widget.list, controllers.fields);
+                }
               },
               isLoading: false,
               height: 35,
@@ -356,7 +365,8 @@ class _HeaderSectionState extends State<HeaderSection> {
                 children: [
                   CustomLoadingButton(
                     callback: () {
-                      tableController.cancelChanges();
+                      //Santhiya
+                      // tableController.cancelChanges();
                       Get.back();
                     },
                     isLoading: false,

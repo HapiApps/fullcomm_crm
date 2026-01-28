@@ -47,6 +47,15 @@ class _ProspectsState extends State<Prospects> {
         controllers.search.clear();
         apiService.qualifiedList = [];
         apiService.qualifiedList.clear();
+        //Santhiya
+        controllers.isAllSelected.value = false;
+        for (var item in controllers.isLeadsList) {
+          item["isSelect"] = false;
+
+          apiService.qualifiedList.removeWhere(
+                (e) => e["lead_id"] == item["lead_id"],
+          );
+        }
       });
       controllers.searchProspects.value = "";
     });
@@ -116,6 +125,8 @@ class _ProspectsState extends State<Prospects> {
                       20.height,
                       // Filter Section
                       FilterSection(
+                        //Santhiya
+                        focusNode: _focusNode,
                         leadFuture: controllers.allLeadFuture,
                         title: "Prospects",
                         count: controllers.allLeadsLength.value,
@@ -352,10 +363,11 @@ class _ProspectsState extends State<Prospects> {
                                     showCheckbox: true,
                                     isAllSelected: controllers.isAllSelected.value,
                                     onSelectAll: (value) {
-                                      if(controllers.paginatedProspectsLeads.isNotEmpty) {
-                                        if (value == true) {
-                                          controllers.isAllSelected.value = true;
-                                          setState(() {
+                                      setState(() {
+                                        apiService.qualifiedList.clear();
+                                        if(controllers.paginatedProspectsLeads.isNotEmpty) {
+                                          if (value == true) {
+                                            controllers.isAllSelected.value = true;
                                             apiService.qualifiedList = [];
                                             for (int j = 0; j <
                                                 controllers.isLeadsList
@@ -374,16 +386,14 @@ class _ProspectsState extends State<Prospects> {
                                                     .read("cos_id"),
                                               });
                                             }
-                                          });
-                                        } else {
-                                          controllers.isAllSelected.value = false;
-                                          for (int j = 0; j <
-                                              controllers.isLeadsList
-                                                  .length; j++) {
-                                            controllers
-                                                .isLeadsList[j]["isSelect"] =
-                                            false;
-                                            setState(() {
+                                          } else {
+                                            controllers.isAllSelected.value = false;
+                                            for (int j = 0; j <
+                                                controllers.isLeadsList
+                                                    .length; j++) {
+                                              controllers
+                                                  .isLeadsList[j]["isSelect"] =
+                                              false;
                                               var i = apiService.qualifiedList
                                                   .indexWhere((
                                                   element) => element["lead_id"] ==
@@ -391,10 +401,10 @@ class _ProspectsState extends State<Prospects> {
                                                       .isLeadsList[j]["lead_id"]);
                                               apiService.qualifiedList.removeAt(
                                                   i);
-                                            });
+                                            }
                                           }
                                         }
-                                      }
+                                      });
                                     },
                                     onSortDate: () {
                                       controllers.sortField.value = 'date';
@@ -419,6 +429,7 @@ class _ProspectsState extends State<Prospects> {
                                             saveValue: controllers.isLeadsList[index]["isSelect"],
                                             onChanged: (value){
                                               setState(() {
+                                                controllers.isAllSelected.value = false;
                                                 if(controllers.isLeadsList[index]["isSelect"]==true){
                                                   controllers.isLeadsList[index]["isSelect"]=false;
                                                   var i=apiService.qualifiedList.indexWhere((element) => element["lead_id"]==data.userId.toString());

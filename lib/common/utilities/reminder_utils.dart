@@ -20,6 +20,7 @@ import '../../models/all_customers_obj.dart';
 import '../../provider/reminder_provider.dart';
 import '../constant/colors_constant.dart';
 import '../styles/styles.dart';
+import 'mobile_snackbar.dart';
 
 final ReminderUtils reminderUtils = ReminderUtils._();
 
@@ -1042,6 +1043,8 @@ class ReminderUtils {
     double screenWidth = MediaQuery.of(context).size.width;
     double textFieldSize = 550;
     controllers.selectNEmployee("1",controllers.storage.read("f_name"), controllers.storage.read("mobile",));
+    remController.assignedIds.value="";
+    remController.assignedNames.value="";
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -1268,173 +1271,179 @@ class ReminderUtils {
                                 });
                               },
                             ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Employees column - show red * dynamically based on selected type
-                                Consumer<ReminderProvider>(
-                                  builder: (context, provider, _) {
-                                    final sel = provider.selectedNotification ?? "";
-                                    final employeeRequired = sel == "followup" || (sel != "followup" && sel != "meeting");
-                                    return SizedBox(
-                                      width: 270,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              CustomText(
-                                                text: "Employees",
-                                                size: 13,
-                                                colors: colorsConst.fieldHead,
-                                                isCopy: false,
-                                              ),
-                                              if (employeeRequired)
-                                                const CustomText(
-                                                  text: "*",
-                                                  colors: Colors.red,
-                                                  size: 25,
+                            SizedBox(
+                              // color: Colors.pinkAccent,
+                              height:70,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Employees column - show red * dynamically based on selected type
+                                  Consumer<ReminderProvider>(
+                                    builder: (context, provider, _) {
+                                      final sel = provider.selectedNotification ?? "";
+                                      final employeeRequired = sel == "followup" || (sel != "followup" && sel != "meeting");
+                                      return SizedBox(
+                                        width: 270,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                CustomText(
+                                                  text: "Employees",
+                                                  size: 13,
+                                                  colors: colorsConst.fieldHead,
                                                   isCopy: false,
-                                                )
-                                            ],
-                                          ),
-                                          ///Santhiya
-                                          // KeyboardDropdownField<AllEmployeesObj>(
-                                          //   items: controllers.employees,
-                                          //   borderRadius: 5,
-                                          //   borderColor: Colors.grey.shade300,
-                                          //   hintText: "Employees",
-                                          //   labelText: "",
-                                          //   labelBuilder: (customer) =>
-                                          //   '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
-                                          //   itemBuilder: (customer) {
-                                          //     return Container(
-                                          //       width: 300,
-                                          //       alignment: Alignment.topLeft,
-                                          //       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                          //       child: CustomText(
-                                          //         text:
-                                          //         '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
-                                          //         colors: Colors.black,
-                                          //         size: 14,
-                                          //         isCopy:false,
-                                          //         textAlign: TextAlign.start,
-                                          //       ),
-                                          //     );
-                                          //   },
-                                          //   textEditingController: controllers.empController,
-                                          //   onSelected: (value) {
-                                          //     setState((){
-                                          //       employeeError=null;
-                                          //     });
-                                          //     controllers.selectEmployee(value);
-                                          //   },
-                                          //   onClear: () {
-                                          //     controllers.clearSelectedEmployee();
-                                          //   },
-                                          // ),
-                                          SearchCustomDropdown(
-                                            text: "",isOptional: false,
-                                            hintText: remController.assignedIds.value==""?"Assign To":remController.assignedNames.value,
-                                            valueList: controllers.employees,
-                                            onChanged: (value) {
-                                              employeeError=null;
-                                              // taskProvider.saveDraft();
-                                            },
-                                            width: screenWidth/4,
-                                          ),
-                                          if (employeeError != null)
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 4.0),
-                                              child: Text(
-                                                employeeError!,
-                                                style: const TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 13),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                                20.width,
-                                // Customer column - star shown dynamically
-                                Consumer<ReminderProvider>(
-                                  builder: (context, provider, _) {
-                                    final sel = provider.selectedNotification ?? "";
-                                    final customerRequired = sel == "meeting" || (sel != "followup" && sel != "meeting");
-                                    return SizedBox(
-                                      width: 270,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              CustomText(
-                                                text: "Assigned Customer",
-                                                size: 13,
-                                                colors: colorsConst.fieldHead,
-                                                isCopy: false,
-                                              ),
-                                              if (customerRequired)
-                                                const CustomText(
-                                                  text: "*",
-                                                  colors: Colors.red,
-                                                  size: 25,
-                                                  isCopy: false,
-                                                )
-                                            ],
-                                          ),
-                                          KeyboardDropdownField<AllCustomersObj>(
-                                            items: controllers.customers,
-                                            borderRadius: 5,
-                                            borderColor: Colors.grey.shade300,
-                                            hintText: "Customers",
-                                            labelText: "",
-                                            labelBuilder: (customer) =>
-                                            '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
-                                            itemBuilder: (customer) {
-                                              return Container(
-                                                width: 300,
-                                                alignment: Alignment.topLeft,
-                                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                                child: CustomText(
-                                                  text: '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
-                                                  colors: Colors.black,
-                                                  size: 14,
-                                                  isCopy:false,
-                                                  textAlign: TextAlign.start,
                                                 ),
-                                              );
-                                            },
-                                            textEditingController: controllers.cusController,
-                                            onSelected: (value) {
-                                              setState((){
-                                                customerError=null;
-                                              });
-                                              controllers.selectCustomer(value);
-                                            },
-                                            onClear: () {
-                                              controllers.clearSelectedCustomer();
-                                            },
-                                          ),
-                                          if (customerError != null)
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 4.0),
-                                              child: Text(
-                                                customerError!,
-                                                style: const TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 13),
-                                              ),
+                                                if (employeeRequired)
+                                                  const CustomText(
+                                                    text: "*",
+                                                    colors: Colors.red,
+                                                    size: 13,
+                                                    isCopy: false,
+                                                  )
+                                              ],
                                             ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
+                                            ///Santhiya
+                                            // KeyboardDropdownField<AllEmployeesObj>(
+                                            //   items: controllers.employees,
+                                            //   borderRadius: 5,
+                                            //   borderColor: Colors.grey.shade300,
+                                            //   hintText: "Employees",
+                                            //   labelText: "",
+                                            //   labelBuilder: (customer) =>
+                                            //   '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                            //   itemBuilder: (customer) {
+                                            //     return Container(
+                                            //       width: 300,
+                                            //       alignment: Alignment.topLeft,
+                                            //       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                            //       child: CustomText(
+                                            //         text:
+                                            //         '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                            //         colors: Colors.black,
+                                            //         size: 14,
+                                            //         isCopy:false,
+                                            //         textAlign: TextAlign.start,
+                                            //       ),
+                                            //     );
+                                            //   },
+                                            //   textEditingController: controllers.empController,
+                                            //   onSelected: (value) {
+                                            //     setState((){
+                                            //       employeeError=null;
+                                            //     });
+                                            //     controllers.selectEmployee(value);
+                                            //   },
+                                            //   onClear: () {
+                                            //     controllers.clearSelectedEmployee();
+                                            //   },
+                                            // ),
+                                            SearchCustomDropdown(
+                                              text: "",isOptional: false,
+                                              hintText: remController.assignedIds.value==""?"":remController.assignedNames.value,
+                                              valueList: controllers.employees,
+                                              onChanged: (value) {
+                                                setState((){
+                                                  employeeError=null;
+                                                });
+                                                // taskProvider.saveDraft();
+                                              },
+                                              width: screenWidth/4,
+                                            ),
+                                            if (employeeError != null)
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 4.0),
+                                                child: Text(
+                                                  employeeError!,
+                                                  style: const TextStyle(
+                                                      color: Colors.red,
+                                                      fontSize: 13),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  20.width,
+                                  // Customer column - star shown dynamically
+                                  Consumer<ReminderProvider>(
+                                    builder: (context, provider, _) {
+                                      final sel = provider.selectedNotification ?? "";
+                                      final customerRequired = sel == "meeting" || (sel != "followup" && sel != "meeting");
+                                      return SizedBox(
+                                        width: 270,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                CustomText(
+                                                  text: "Assigned Customer",
+                                                  size: 13,
+                                                  colors: colorsConst.fieldHead,
+                                                  isCopy: false,
+                                                ),
+                                                if (customerRequired)
+                                                  const CustomText(
+                                                    text: "*",
+                                                    colors: Colors.red,
+                                                    size: 25,
+                                                    isCopy: false,
+                                                  )
+                                              ],
+                                            ),
+                                            KeyboardDropdownField<AllCustomersObj>(
+                                              items: controllers.customers,
+                                              borderRadius: 5,
+                                              borderColor: Colors.grey.shade300,
+                                              hintText: "Customers",
+                                              labelText: "",
+                                              labelBuilder: (customer) =>
+                                              '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                              itemBuilder: (customer) {
+                                                return Container(
+                                                  width: 300,
+                                                  alignment: Alignment.topLeft,
+                                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                  child: CustomText(
+                                                    text: '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                                    colors: Colors.black,
+                                                    size: 14,
+                                                    isCopy:false,
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                );
+                                              },
+                                              textEditingController: controllers.cusController,
+                                              onSelected: (value) {
+                                                setState((){
+                                                  customerError=null;
+                                                });
+                                                controllers.selectCustomer(value);
+                                              },
+                                              onClear: () {
+                                                controllers.clearSelectedCustomer();
+                                              },
+                                            ),
+                                            if (customerError != null)
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 4.0),
+                                                child: Text(
+                                                  customerError!,
+                                                  style: const TextStyle(
+                                                      color: Colors.red,
+                                                      fontSize: 13),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                             20.height,
                             Row(
@@ -1577,61 +1586,6 @@ class ReminderUtils {
                           10.width,
                           CustomLoadingButton(
                             callback: () async {
-                              print("0000");
-                              // if (remController.titleController.text.trim().isEmpty) {
-                              //   setState(() {
-                              //     titleError = "Please enter reminder title";
-                              //   });
-                              //   controllers.productCtr.reset();
-                              //   return;
-                              // }
-                              // if (remController.stDate.value.isEmpty) {
-                              //   setState(() {
-                              //     startDError = "Please select start date";
-                              //   });
-                              //   controllers.productCtr.reset();
-                              //   return;
-                              // }
-                              // if (remController.stTime.value.isEmpty) {
-                              //   setState(() {
-                              //     startTError = "Please select start time";
-                              //   });
-                              //   controllers.productCtr.reset();
-                              //   return;
-                              // }
-                              // if (remController.enDate.value.isEmpty) {
-                              //   setState(() {
-                              //     endDError = "Please select end date";
-                              //   });
-                              //   controllers.productCtr.reset();
-                              //   return;
-                              // }
-                              // if (remController.enTime.value.isEmpty) {
-                              //   setState(() {
-                              //     endTError = "Please select end time";
-                              //   });
-                              //   controllers.productCtr.reset();
-                              //   return;
-                              // }
-                              // final selType = Provider.of<ReminderProvider>(context, listen: false).selectedNotification ?? "";
-                              // final needEmployee = selType == "followup" || (selType != "followup" && selType != "meeting");
-                              // final needCustomer = selType == "meeting" || (selType != "followup" && selType != "meeting");
-                              //
-                              // if (needEmployee && controllers.selectedEmployeeId.value.isEmpty) {
-                              //   setState(() {
-                              //     employeeError = "Please select employee";
-                              //   });
-                              //   controllers.productCtr.reset();
-                              //   return;
-                              // }
-                              //
-                              // if (needCustomer && controllers.selectedCustomerId.value.isEmpty) {
-                              //   setState(() {
-                              //     customerError = "Please select customer";
-                              //   });
-                              //   controllers.productCtr.reset();
-                              //   return;
-                              // }
                               if (remController.titleController.text.trim().isEmpty) {
                                 print("❌ Validation Failed => Title Empty");
                                 setState(() {
@@ -1659,24 +1613,6 @@ class ReminderUtils {
                                 return;
                               }
 
-                              // if (remController.enDate.value.isEmpty) {
-                              //   print("❌ Validation Failed => End Date Empty");
-                              //   setState(() {
-                              //     endDError = "Please select end date";
-                              //   });
-                              //   controllers.productCtr.reset();
-                              //   return;
-                              // }
-                              //
-                              // if (remController.enTime.value.isEmpty) {
-                              //   print("❌ Validation Failed => End Time Empty");
-                              //   setState(() {
-                              //     endTError = "Please select end time";
-                              //   });
-                              //   controllers.productCtr.reset();
-                              //   return;
-                              // }
-
                               final selType = Provider.of<ReminderProvider>(context, listen: false).selectedNotification ?? "";
                               print("Selected Type => $selType");
 
@@ -1685,14 +1621,20 @@ class ReminderUtils {
 
                               print("needEmployee => $needEmployee");
                               print("needCustomer => $needCustomer");
-
-                              if (needEmployee && controllers.selectedEmployeeId.value.isEmpty) {
+                              print(remController.assignedIds.value);
+                              //Santhiya
+                              if (remController.assignedIds.value=="") {
+                              // if (needEmployee && controllers.selectedEmployeeId.value.isEmpty) {
                                 print("❌ Validation Failed => Employee Not Selected");
                                 setState(() {
                                   employeeError = "Please select employee";
                                 });
                                 controllers.productCtr.reset();
                                 return;
+                              }else{
+                                setState(() {
+                                  employeeError = null;
+                                });
                               }
 
                               if (needCustomer && controllers.selectedCustomerId.value.isEmpty) {
@@ -1700,6 +1642,21 @@ class ReminderUtils {
                                 setState(() {
                                   customerError = "Please select customer";
                                 });
+                                controllers.productCtr.reset();
+                                return;
+                              }
+
+                              bool allFilled = true;
+                              for (var i = 0; i < remController.reminders.length; i++) {
+                                if (remController.reminders[i].titleController.text.isEmpty) {
+                                  allFilled = false;
+                                  break;
+                                }
+                              }
+                              if (!allFilled) {
+                                mobileUtils.toastBox(
+                                    context: Get.context!,
+                                    text: "Please enter reminder title");
                                 controllers.productCtr.reset();
                                 return;
                               }

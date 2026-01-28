@@ -28,6 +28,8 @@ class FilterSection extends StatelessWidget {
   final Rx<DateTime?> selectedMonth;
   final RxString selectedSortBy;
   final RxBool isMenuOpen;
+  //Santhiya
+  final FocusNode? focusNode;
 
   const FilterSection({
     super.key,
@@ -47,12 +49,11 @@ class FilterSection extends StatelessWidget {
     required this.isMenuOpen,
     this.onQualify,
     required this.leadFuture,
-    this.isActionEnabled = true,
+    this.isActionEnabled = true, this.focusNode,
   });
 
   @override
   Widget build(BuildContext context) {
-    final FocusNode focusNode = FocusNode();
     return Column(
       children: [
         isActionEnabled?Row(
@@ -114,6 +115,7 @@ class FilterSection extends StatelessWidget {
                       //controllers.selectCustomer(value);
                     },
                     onClear: () {
+                      if (onSearchChanged != null) onSearchChanged!("");
                       controllers.clearSelectedCustomer();
                     },
                   ),
@@ -124,9 +126,11 @@ class FilterSection extends StatelessWidget {
             // --- Action Buttons ---
             Row(
               children: [
+                if(itemList.isNotEmpty)
+                CustomText(text: "Selected count: ${itemList.length}", isCopy: false),15.width,
                 itemList.isEmpty
                     ? 0.height
-                    : title == "Disqualified" || title == "Target Leads"
+                    : title == "No Matches" || title == "Target Leads"
                         ? ActionButton(
                             width: 100,
                             image: "assets/images/action_promote.png",
@@ -157,12 +161,12 @@ class FilterSection extends StatelessWidget {
                               10.width,
                               title == "Suspects"
                                   ? ActionButton(
-                                      width: 100,
+                                      width: 110,
                                       image:
                                           "assets/images/action_disqualified.png",
-                                      name: "Disqualify",
+                                      name: "No Matches",
                                       toolTip:
-                                          "Click here to disqualify the customer details",
+                                          "Click here to No Matches the customer details",
                                       callback: onDisqualify!,
                                     )
                                   : ActionButton(
@@ -171,7 +175,7 @@ class FilterSection extends StatelessWidget {
                                           "assets/images/action_disqualified.png",
                                       name: "Demote",
                                       toolTip:
-                                          "Click here to disqualify the customer details",
+                                          "Click here to No Matches the customer details",
                                       callback: onDemote!,
                                     ),
                               10.width,
@@ -199,6 +203,7 @@ class FilterSection extends StatelessWidget {
             Expanded(
               flex: 3,
               child: CustomSearchTextField(
+                focusNode:focusNode,
                 hintText: "Search Name, Company",
                 controller: searchController,
                 onChanged: (value) {
@@ -242,7 +247,7 @@ class FilterSection extends StatelessWidget {
                                 selectedSortBy.value = val!;
                                 onSearchChanged!("");
                                 controllers.clearSelectedCustomer();
-                                focusNode.requestFocus();
+                                focusNode?.requestFocus();
                               },
                             ),
                             Text(

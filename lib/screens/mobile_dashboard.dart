@@ -588,7 +588,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                     SizedBox(height:10 ,),
                     _legendItem("Qualified", totalQualified, colors[2]),
                     SizedBox(height:10 ,),
-                    _legendItem("Disqualified", totalUnQualified, colors[3]),
+                    _legendItem("No Matches", totalUnQualified, colors[3]),
                     SizedBox(height:10 ,),
                     _legendItem("Customers", totalCustomers, colors[4]),
                   ],

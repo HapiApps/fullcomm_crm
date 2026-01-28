@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../common/constant/api.dart';
+import '../common/utilities/mobile_snackbar.dart';
 import '../models/all_customers_obj.dart';
 import '../models/customer_activity.dart';
 import '../models/meeting_obj.dart';
@@ -72,9 +73,25 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   String defaultTime = "Immediately";
   RxList<AddReminderModel> reminders = <AddReminderModel>[AddReminderModel()].obs;
   final listKey = GlobalKey<AnimatedListState>();
+  //Santhiya
   void addReminder() {
-    reminders.add(AddReminderModel());
+    bool allFilled = true;
+    for (var i = 0; i < reminders.length; i++) {
+      if (reminders[i].titleController.text.isEmpty) {
+        allFilled = false;
+        break;
+      }
+    }
+    if (allFilled) {
+      reminders.add(AddReminderModel());
+    }else{
+      mobileUtils.snackBar(
+          context: Get.context!,
+          msg: "Please enter reminder title",
+          color: Colors.red);
+    }
   }
+
   void removeReminder(int index) {
     reminders.removeAt(index);
   }

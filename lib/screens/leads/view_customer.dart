@@ -49,6 +49,14 @@ class _ViewCustomerState extends State<ViewCustomer> {
       controllers.search.clear();
       controllers.selectedIndex.value = 4;
       controllers.groupController.selectIndex(0);
+      //Santhiya
+      controllers.isAllSelected.value = false;
+      setState(() {
+        for (var item in controllers.isCustomerList) {
+          item["isSelect"] = false;
+        }
+        apiService.prospectsList.clear();
+      });
     });
     _leftController.addListener(() {
       if (_rightController.hasClients &&
@@ -114,6 +122,8 @@ class _ViewCustomerState extends State<ViewCustomer> {
                     ),
                     // Filter Section
                     FilterSection(
+                      //Santhiya
+                      focusNode: _focusNode,
                       title: "Customers",
                       leadFuture: controllers.allCustomerLeadFuture,
                       count: controllers.allCustomerLength.value,
@@ -244,7 +254,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                         width: 100,
                                         controller: controllers.productCtr,
                                         isImage: false,
-                                        text: "Disqualified",
+                                        text: "No Matches",
                                         textColor:Colors.white,
                                       ),
                                       5.width
@@ -350,31 +360,32 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                   showCheckbox: true,
                                 isAllSelected: apiService.prospectsList.isEmpty?false:controllers.isAllSelected.value,
                                   onSelectAll: (value) {
-                                    controllers.isAllSelected.value = value!;
-                                    if (value == true) {
-                                      for (var item in controllers.isCustomerList) {
-                                        item["isSelect"] = true;
-                                      }
+                                    setState(() {
                                       apiService.prospectsList.clear();
-                                      for (var item in controllers.isCustomerList) {
-                                        apiService.prospectsList.add({
-                                          "lead_id": item["lead_id"].toString(),
-                                          "user_id": controllers.storage.read("id"),
-                                          "rating": item["rating"] ?? "Warm",
-                                          "cos_id": controllers.storage.read("cos_id"),
-                                          "mail_id": item["email_id"].toString()==""
-                                            ?""
-                                            :item["email_id"].toString(),
-                                        });
+                                      controllers.isAllSelected.value = value!;
+                                      if (value == true) {
+                                        for (var item in controllers.isCustomerList) {
+                                          item["isSelect"] = true;
+                                        }
+                                        apiService.prospectsList.clear();
+                                        for (var item in controllers.isCustomerList) {
+                                          apiService.prospectsList.add({
+                                            "lead_id": item["lead_id"].toString(),
+                                            "user_id": controllers.storage.read("id"),
+                                            "rating": item["rating"] ?? "Warm",
+                                            "cos_id": controllers.storage.read("cos_id"),
+                                            "mail_id": item["email_id"].toString()==""
+                                                ?""
+                                                :item["email_id"].toString(),
+                                          });
+                                        }
+                                      } else {
+                                        for (var item in controllers.isCustomerList) {
+                                          item["isSelect"] = false;
+                                        }
+                                        apiService.prospectsList.clear();
                                       }
-                                    } else {
-                                      for (var item in controllers.isCustomerList) {
-                                        item["isSelect"] = false;
-                                      }
-                                      apiService.prospectsList.clear();
-                                    }
-
-                                    setState(() {});
+                                    });
                                   },
 
                                   onSortDate: () {
@@ -401,7 +412,8 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                           saveValue: controllers.isCustomerList[index]["isSelect"],
                                           onChanged: (value){
                                             setState(() {
-                                         try{
+                                              controllers.isAllSelected.value = false;
+                                              try{
                                            if(controllers.isCustomerList[index]["isSelect"]==true){
                                              controllers.isCustomerList[index]["isSelect"]=false;
                                              var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());

@@ -291,6 +291,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
               rating: widget.rating,
               name: widget.name,
               mobileNumber: widget.mobileNumber,
+              whatsAppNo: widget.whatsappNumber.toString(),
               email: widget.email,
               addressId: widget.addressId,
               source: "",
@@ -344,6 +345,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                         child: InkWell(
                             onTap: () {
                               Get.to(UpdateLead(
+                                type:"1",
                                 visitType: widget.visitType.toString(),
                                 id: widget.id,
                                 detailsOfRequired: widget.detailsOfServiceReq,
@@ -998,7 +1000,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                                       context,
                                                       [deleteData]);
                                                 } else if (widget.pageName ==
-                                                    "Disqualified") {
+                                                    "No Matches") {
                                                   await apiService
                                                       .qualifiedCustomersAPI(
                                                       context,
@@ -1028,7 +1030,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                       ],
                                     );
                                   });
-                            }else if(value=="Disqualify"){
+                            }else if(value=="No Matches"){
                               showDialog(
                                   context: context,
                                   barrierDismissible: false,
@@ -1036,7 +1038,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                     return AlertDialog(
                                       content: CustomText(
                                         text:
-                                        "Are you sure to disqualify this lead?",
+                                        "Are you sure to No Matches this lead?",
                                         size: 16,
                                         isBold: true,
                                         colors: colorsConst.textColor,
@@ -1094,7 +1096,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                               controller:
                                               controllers.productCtr,
                                               isImage: false,
-                                              text: "Disqualify",
+                                              text: "No Matches",
                                               textColor: Colors.white,
                                             ),
                                             5.width
@@ -1112,6 +1114,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                           //   isMenuOpen.value = true;
                           // },
                           itemBuilder: (context) => [
+                            // if(widget.title.toString()!="Customers")
                             PopupMenuItem(
                                 value: "Promote",
                                 child: Text("Promote",
@@ -1137,8 +1140,8 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                     style:
                                     TextStyle(color: colorsConst.textColor))),
                             PopupMenuItem(
-                                value: "Disqualify",
-                                child: Text("Disqualify",
+                                value: "No Matches",
+                                child: Text("No Matches",
                                     style:
                                     TextStyle(color: colorsConst.textColor))),
                             PopupMenuItem(

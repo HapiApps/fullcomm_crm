@@ -9,13 +9,15 @@ class CustomSearchTextField extends StatefulWidget {
   final ValueChanged<Object?>? onChanged;
   final VoidCallback? onTap;
   final String? hintText;
+  //Santhiya
+  final FocusNode? focusNode;
 
   const CustomSearchTextField(
       {super.key,
       this.onChanged,
       required this.controller,
       this.onTap,
-      this.hintText = "Search Name"});
+      this.hintText = "Search Name", this.focusNode});
 
   @override
   State<CustomSearchTextField> createState() => _CustomSearchTextFieldState();
@@ -35,6 +37,7 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
       width: MediaQuery.of(context).size.width / 3,
       height: 50,
       child: TextField(
+        focusNode: widget.focusNode,
         textCapitalization: TextCapitalization.words,
         keyboardType: TextInputType.text,
         controller: widget.controller,

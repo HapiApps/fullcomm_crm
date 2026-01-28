@@ -32,50 +32,44 @@ class _SearchCustomDropdownState extends State<SearchCustomDropdown> {
   //SingleSelectController searchCont = SingleSelectController;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: widget.width,
-          height: 50,
-          alignment: Alignment.center,
-          decoration: customDecoration.baseBackgroundDecoration(
-              radius: 10, color: Colors.white, borderColor: Colors.grey.shade300),
-          child: CustomDropdown.multiSelect(
-            hintText: widget.hintText,
-            items: widget.valueList,
-            decoration: CustomDropdownDecoration(
-                hintStyle: TextStyle(
-                  color: colorsConst.primary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  // fontStyle: FontStyle.italic,
-                ),
-                headerStyle: const TextStyle(
-                    color: Colors.black, fontSize: 13, fontFamily: "Lato"),
-                searchFieldDecoration: SearchFieldDecoration(
-                  hintStyle: TextStyle(
-                    color: colorsConst.primary,
-                    fontSize: 13,
-                  ),
-                  prefixIcon:
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.add,size: 15,)),
-                  textStyle: const TextStyle(
-                      color: Colors.black, fontSize: 13, fontFamily: "Lato"),
-                ),
+    return Container(
+      width: widget.width,
+      height: 40,
+      alignment: Alignment.center,
+      decoration: customDecoration.baseBackgroundDecoration(
+          radius: 5, color: Colors.white, borderColor: Colors.grey.shade300),
+      child: CustomDropdown.multiSelect(
+        hintText: widget.hintText,
+        items: widget.valueList,
+        decoration: CustomDropdownDecoration(
+            hintStyle: TextStyle(
+              color: colorsConst.primary,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              // fontStyle: FontStyle.italic,
+            ),
+            headerStyle: const TextStyle(
+                color: Colors.black, fontSize: 13, fontFamily: "Lato"),
+            searchFieldDecoration: SearchFieldDecoration(
+              hintStyle: TextStyle(
+                color: colorsConst.primary,
+                fontSize: 13,
+              ),
+              prefixIcon:
+              IconButton(onPressed: () {}, icon: const Icon(Icons.add,size: 15,)),
+              textStyle: const TextStyle(
+                  color: Colors.black, fontSize: 13, fontFamily: "Lato"),
+            ),
 
-                listItemStyle: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500)),
-                  onListChanged: (item) {
-                    FocusScope.of(context).unfocus();
-                    remController.changeAssignedIs(context,item);
-                  },
-          ),
-        ),
-        10.height,
-      ],
+            listItemStyle: const TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontWeight: FontWeight.w500)),
+              onListChanged: (item) {
+                FocusScope.of(context).unfocus();
+                remController.changeAssignedIs(context,item);
+              },
+      ),
     );
   }
 }

@@ -48,6 +48,15 @@ class _TargetLeadsState extends State<TargetLeads> {
         apiService.qualifiedList = [];
         apiService.qualifiedList.clear();
         controllers.search.clear();
+        //Santhiya
+        controllers.isAllSelected.value = false;
+        final ids = controllers.isTargetLeadList.map((e) => e["lead_id"]).toSet();
+
+        controllers.isTargetLeadList.forEach((e) => e["isSelect"] = false);
+
+        apiService.qualifiedList.removeWhere(
+              (e) => ids.contains(e["lead_id"]),
+        );
       });
       controllers.searchQuery.value = "";
     });
@@ -126,6 +135,8 @@ class _TargetLeadsState extends State<TargetLeads> {
                       20.height,
                       // Filter Section
                       FilterSection(
+                        //Santhiya
+                        focusNode: _focusNode,
                         leadFuture: controllers.targetLeadsFuture,
                         title: "Target Leads",
                         count: controllers.allTargetLength.value,
@@ -274,7 +285,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                 return AlertDialog(
                                   content: CustomText(
                                     isCopy: false,
-                                    text: "Are you sure disqualify this customers?",
+                                    text: "Are you sure No Matches this customers?",
                                     size: 16,
                                     isBold: true,
                                     colors: colorsConst.textColor,
@@ -320,7 +331,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                           width: 100,
                                           controller: controllers.productCtr,
                                           isImage: false,
-                                          text: "Disqualified",
+                                          text: "No Matches",
                                           textColor:Colors.white,
                                         ),
                                         5.width
@@ -418,50 +429,49 @@ class _TargetLeadsState extends State<TargetLeads> {
                                   showCheckbox: true,
                                   isAllSelected: controllers.isAllSelected.value,
                                   onSelectAll: (value) {
-                                    if(controllers.paginatedTargetLead.isNotEmpty) {
-                                      if (controllers.isAllSelected.value ==
-                                          true) {
-                                        controllers.isAllSelected.value = false;
-                                        for (int j = 0; j <
-                                            controllers.isTargetLeadList
-                                                .length; j++) {
-                                          controllers
-                                              .isTargetLeadList[j]["isSelect"] =
-                                          false;
-                                          setState(() {
-                                            var i = apiService.qualifiedList
-                                                .indexWhere((element) =>
-                                            element["lead_id"] == controllers
-                                                .isTargetLeadList[j]["lead_id"]);
-                                            apiService.qualifiedList.removeAt(
-                                                i);
-                                          });
-                                        }
-                                      } else {
-                                        controllers.isAllSelected.value = true;
-                                        setState(() {
+                                    setState(() {
+                                      apiService.qualifiedList.clear();
+                                      if(controllers.paginatedTargetLead.isNotEmpty) {
+                                        if (controllers.isAllSelected.value ==
+                                            true) {
+                                          controllers.isAllSelected.value = false;
                                           for (int j = 0; j <
                                               controllers.isTargetLeadList
                                                   .length; j++) {
                                             controllers
                                                 .isTargetLeadList[j]["isSelect"] =
-                                            true;
-                                            apiService.qualifiedList.add({
-                                              "lead_id": controllers
-                                                  .isTargetLeadList[j]["lead_id"],
-                                              "user_id": controllers.storage
-                                                  .read("id"),
-                                              "rating": controllers
-                                                  .isTargetLeadList[j]["rating"],
-                                              "cos_id": controllers.storage
-                                                  .read("cos_id"),
-                                              "mail_id": controllers
-                                                  .isTargetLeadList[j]["mail_id"]
-                                            });
+                                            false;
+                                              var i = apiService.qualifiedList
+                                                  .indexWhere((element) =>
+                                              element["lead_id"] == controllers
+                                                  .isTargetLeadList[j]["lead_id"]);
+                                              apiService.qualifiedList.removeAt(
+                                                  i);
                                           }
-                                        });
+                                        } else {
+                                          controllers.isAllSelected.value = true;
+                                            for (int j = 0; j <
+                                                controllers.isTargetLeadList
+                                                    .length; j++) {
+                                              controllers
+                                                  .isTargetLeadList[j]["isSelect"] =
+                                              true;
+                                              apiService.qualifiedList.add({
+                                                "lead_id": controllers
+                                                    .isTargetLeadList[j]["lead_id"],
+                                                "user_id": controllers.storage
+                                                    .read("id"),
+                                                "rating": controllers
+                                                    .isTargetLeadList[j]["rating"],
+                                                "cos_id": controllers.storage
+                                                    .read("cos_id"),
+                                                "mail_id": controllers
+                                                    .isTargetLeadList[j]["mail_id"]
+                                              });
+                                            }
+                                        }
                                       }
-                                    }
+                                    });
                                   },
                                   onSortDate: () {
                                     controllers.sortField.value = 'date';
@@ -494,6 +504,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                             saveValue: controllers.isTargetLeadList[index]["isSelect"],
                                             onChanged: (value){
                                               setState(() {
+                                                controllers.isAllSelected.value = false;
                                                 if(controllers.isTargetLeadList[index]["isSelect"]==true){
                                                   controllers.isTargetLeadList[index]["isSelect"]=false;
                                                   var i=apiService.qualifiedList.indexWhere((element) => element["lead_id"]==data.userId.toString());

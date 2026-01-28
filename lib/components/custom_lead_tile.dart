@@ -287,6 +287,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                 rating: widget.rating,
                 name: widget.name,
                 mobileNumber: widget.mobileNumber,
+                whatsAppNo: widget.whatsappNumber.toString(),
                 email: widget.email,
                 addressId: widget.addressId,
                 source: "",

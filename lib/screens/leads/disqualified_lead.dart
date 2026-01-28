@@ -47,6 +47,15 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
         apiService.prospectsList = [];
         apiService.prospectsList.clear();
         controllers.search.clear();
+        //Santhiya
+        controllers.isAllSelected.value = false;
+        final ids = controllers.isDisqualifiedList.map((e) => e["lead_id"]).toSet();
+
+        controllers.isDisqualifiedList.forEach((e) => e["isSelect"] = false);
+
+        apiService.prospectsList.removeWhere(
+              (e) => ids.contains(e["lead_id"]),
+        );
       });
       controllers.searchQuery.value = "";
     });
@@ -117,14 +126,16 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                     children: [
                       // Header Section
                       HeaderSection(
-                        title: "Disqualified",
+                        title: "No Matches",
                         subtitle: "View all of your disqualified Information",
                         list: controllers.disqualifiedFuture,
                       ),
                       20.height,
                       // Filter Section
                       FilterSection(
-                        title: "Disqualified",
+                        //Santhiya
+                        focusNode: _focusNode,
+                        title: "No Matches",
                         leadFuture: controllers.disqualifiedFuture,
                         count: controllers.allDisqualifiedLength.value,
                         itemList: apiService.prospectsList,
@@ -360,10 +371,11 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                     showCheckbox: true,
                                     isAllSelected: controllers.isAllSelected.value,
                                     onSelectAll: (value) {
-                                      if(controllers.paginatedDisqualified.isNotEmpty) {
-                                        if (value == true) {
-                                          controllers.isAllSelected.value = true;
-                                          setState(() {
+                                      setState(() {
+                                        apiService.prospectsList.clear();
+                                        if(controllers.paginatedDisqualified.isNotEmpty) {
+                                          if (value == true) {
+                                            controllers.isAllSelected.value = true;
                                             for (int j = 0; j <
                                                 controllers.isDisqualifiedList
                                                     .length; j++) {
@@ -383,26 +395,24 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                                     .isDisqualifiedList[j]["mail_id"],
                                               });
                                             }
-                                          });
-                                        } else {
-                                          controllers.isAllSelected.value = false;
-                                          for (int j = 0; j <
-                                              controllers.isDisqualifiedList
-                                                  .length; j++) {
-                                            controllers
-                                                .isDisqualifiedList[j]["isSelect"] =
-                                            false;
-                                            setState(() {
+                                          } else {
+                                            controllers.isAllSelected.value = false;
+                                            for (int j = 0; j <
+                                                controllers.isDisqualifiedList
+                                                    .length; j++) {
+                                              controllers
+                                                  .isDisqualifiedList[j]["isSelect"] =
+                                              false;
                                               var i = apiService.prospectsList
                                                   .indexWhere((element) =>
                                               element["lead_id"] == controllers
                                                   .isDisqualifiedList[j]["lead_id"]);
                                               apiService.prospectsList.removeAt(
                                                   i);
-                                            });
+                                            }
                                           }
                                         }
-                                      }
+                                      });
                                     },
                                     onSortDate: () {
                                       controllers.sortField.value = 'date';
@@ -425,9 +435,10 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                         itemBuilder: (context, index) {
                                           final data = controllers.paginatedDisqualified[index];
                                           return Obx(()=>LeftLeadTile(
-                                            pageName: "Disqualified",
+                                            pageName: "No Matches",
                                             onChanged: (value){
                                               setState(() {
+                                                controllers.isAllSelected.value = false;
                                                 if(controllers.isDisqualifiedList[index]["isSelect"]==true){
                                                   controllers.isDisqualifiedList[index]["isSelect"]=false;
                                                   var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
@@ -586,7 +597,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                               itemBuilder: (context, index) {
                                                 final data = controllers.paginatedDisqualified[index];
                                                 return Obx(()=>CustomLeadTile(
-                                                  pageName: "Disqualified",
+                                                  pageName: "No Matches",
                                                   onChanged: (value){
                                                     setState(() {
                                                       if(controllers.isDisqualifiedList[index]["isSelect"]==true){
