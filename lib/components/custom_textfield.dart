@@ -7,6 +7,7 @@ import '../common/styles/styles.dart';
 import 'custom_text.dart';
 
 class CustomTextField extends StatelessWidget {
+
   final String text;
   final String? hintText;
   final double? height;
@@ -21,7 +22,7 @@ class CustomTextField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final List<TextInputFormatter>? inputFormatters;
   final bool? isIcon;
-  final bool? isOptional;
+  final bool isOptional;
   final bool? isLogin;
   final bool? isShadow;
   final IconData? iconData;
@@ -30,100 +31,121 @@ class CustomTextField extends StatelessWidget {
   final String? errorText;
   final VoidCallback? onPressed;
   final VoidCallback? onEdit;
-  //Santhiys2
-  final ValueChanged? onFieldSubmitted;
+  final ValueChanged<String>? onFieldSubmitted;
+  final bool autofocus;
 
-  const CustomTextField(
-      {super.key,
-        required this.text,
-        this.height = 70,
-        this.width = 270,
-        required this.controller,
-        this.focusNode,
-        this.onChanged,
-        this.onTap,
-        this.keyboardType = TextInputType.text,
-        this.textInputAction = TextInputAction.next,
-        this.textCapitalization = TextCapitalization.words,
-        this.validator,
-        this.inputFormatters,
-        this.hintText,
-        this.isIcon,
-        this.iconData,
-        this.isShadow = false,
-        this.isLogin = false,
-        this.image,
-        this.onPressed,
-        this.prefixText,
-        this.onEdit,
-        this.errorText,
-        this.isOptional, this.onFieldSubmitted});
+  const CustomTextField({
+    super.key,
+    required this.text,
+    this.height = 70,
+    this.width = 270,
+    required this.controller,
+    this.focusNode,
+    this.onChanged,
+    this.onTap,
+    this.keyboardType = TextInputType.text,
+    this.textInputAction = TextInputAction.next,
+    this.textCapitalization = TextCapitalization.words,
+    this.validator,
+    this.inputFormatters,
+    this.hintText,
+    this.isIcon,
+    this.iconData,
+    this.isShadow = false,
+    this.isLogin = false,
+    this.image,
+    this.onPressed,
+    this.prefixText,
+    this.onEdit,
+    this.errorText,
+    this.onFieldSubmitted,
+    this.autofocus = false,
+    this.isOptional = false,
+  });
 
   @override
   Widget build(BuildContext context) {
+
+    final String safeHint = hintText ?? "";
+    final bool showOptional = isOptional == true;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        hintText!.isEmpty
-            ? 2.height
+
+        safeHint.isEmpty
+            ? const SizedBox(height: 2)
             : Row(
           children: [
             CustomText(
               text: text,
-              textAlign: TextAlign.start,
-              colors: Color(0xff4B5563),
+              colors: const Color(0xff4B5563),
               size: 13,
               isCopy: false,
             ),
-            isOptional! == true
-                ? const CustomText(
-              text: "*",
-              colors: Colors.red,
-              size: 25,
-              isCopy: false,
-            )
-                : 0.width
+
+            if (showOptional)
+              const CustomText(
+                text: "*",
+                colors: Colors.red,
+                size: 20,
+                isCopy: false,
+              ),
           ],
         ),
-        isOptional! == true ? 0.height : 5.height,
+
+        showOptional ? const SizedBox(height: 0) : const SizedBox(height: 5),
+
         SizedBox(
           width: width,
-          height:40,
-          child: Center(
-            child: TextFormField(
-              //santhiya2
-                onFieldSubmitted: onFieldSubmitted,
-                key: ValueKey(text),
-                maxLines: null,
-                style: const TextStyle(
-                    color: Colors.black, fontSize: 15, fontFamily: "Lato"),
-                // readOnly: widget.controller==controllers.upDOBController||widget.controller==controllers.upDOBController?true:false,
-                //obscureText: widget.controller==controllers.loginPassword||widget.controller==controllers.signupPasswordController?!controllers.isEyeOpen.value:false,
-                // focusNode: FocusNode(),
-                cursorColor: colorsConst.primary,
-                focusNode: focusNode,
-                onChanged: onChanged,
-                onTap: onTap,
-                inputFormatters: inputFormatters,
-                textCapitalization: textCapitalization!,
-                textInputAction: textInputAction,
-                keyboardType: keyboardType,
-                validator: validator,
-                controller: controller,
-                onEditingComplete: onEdit,
-                decoration: customStyle.inputDecoration(
-                    text: hintText,
-                    iconData: iconData,
-                    image: image,
-                    isIcon: isIcon,
-                    isLogin: isLogin,
-                    errorText: errorText,
-                    onPressed: onPressed)),
+          height: 40,
+
+          child: TextFormField(
+
+            key: ValueKey(text),
+
+            controller: controller,
+            focusNode: focusNode,
+
+            autofocus: autofocus, // ✅ SAFE
+
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 15,
+              fontFamily: "Lato",
+            ),
+
+            cursorColor: colorsConst.primary,
+
+            onChanged: onChanged,
+            onTap: onTap,
+
+            onFieldSubmitted: onFieldSubmitted,
+            onEditingComplete: onEdit,
+
+            inputFormatters: inputFormatters,
+
+            textCapitalization: textCapitalization!,
+            textInputAction: textInputAction,
+            keyboardType: keyboardType,
+
+            validator: validator,
+
+            decoration: customStyle.inputDecoration(
+              text: safeHint,
+              iconData: iconData,
+              image: image,
+              isIcon: isIcon,
+              isLogin: isLogin,
+              errorText: errorText,
+              onPressed: onPressed,
+            ),
           ),
         ),
 
-        hintText!.isEmpty ? 10.height : 20.height,
+        safeHint.isEmpty
+            ? const SizedBox(height: 10)
+            : const SizedBox(height: 20),
       ],
     );
   }

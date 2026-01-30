@@ -369,7 +369,9 @@ class SideBar extends StatelessWidget {
                                   final prefs = await SharedPreferences.getInstance();
                                   prefs.setBool("loginScreen$versionNum", false);
                                   prefs.setBool("isAdmin", false);
-                                  Get.to(const LoginPage(), duration: Duration.zero);
+                                  // FocusManager.instance.primaryFocus?.unfocus();
+                                  Get.offAll(() => LoginPage());
+                                  // Get.to(const LoginPage(), duration: Duration.zero);
                                   controllers.selectedIndex.value = 10;
                                 },
                                 style: ElevatedButton.styleFrom(

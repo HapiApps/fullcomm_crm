@@ -26,6 +26,7 @@ final controllers = Get.put(Controller());
 class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   late TabController tabController;
   var tabCurrentIndex = 0.obs;
+  bool isDialogOpen = false;
 
   final sortFieldCallActivity = ''.obs;
   final sortOrderCallActivity = 'asc'.obs;

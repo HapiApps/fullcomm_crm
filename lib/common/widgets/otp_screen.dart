@@ -49,12 +49,12 @@ class _OtpDialogContentState extends State<OtpDialogContent> {
                 onPressed: () => Navigator.pop(context),
               ),
             ),
-             CustomText(
+            CustomText(
               text: "OTP Verification",
               colors: colorsConst.primary,
               size: 22,
               isBold: true,
-               isCopy: false,
+              isCopy: false,
             ),
             20.height,
             CustomText(
@@ -119,7 +119,7 @@ class _OtpDialogContentState extends State<OtpDialogContent> {
 
 }
 //Santhiya
-void showForgotPasswordDialog(BuildContext context,String mobile) {
+Future<void> showForgotPasswordDialog(BuildContext context,String mobile) async {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   String? errorMessage;
@@ -127,7 +127,7 @@ void showForgotPasswordDialog(BuildContext context,String mobile) {
   final FocusNode passwordFocus2 = FocusNode();
   bool isStrongPassword(String password) {
     final regex = RegExp(
-        r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$',
     );
     return regex.hasMatch(password);
   }
@@ -136,9 +136,12 @@ void showForgotPasswordDialog(BuildContext context,String mobile) {
     builder: (context) {
       return StatefulBuilder(
         builder: (context, setState) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            FocusScope.of(context).requestFocus(passwordFocus1);
-          });
+          // Future.delayed(const Duration(milliseconds: 150), () {
+          //   if (passwordFocus1.canRequestFocus) {
+          //     passwordFocus1.requestFocus();
+          //   }
+          // });
+
           return AlertDialog(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             title: CustomText(
@@ -152,6 +155,7 @@ void showForgotPasswordDialog(BuildContext context,String mobile) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTextField(
+                  autofocus: true,
                   focusNode: passwordFocus1,
                   controller: passwordController,
                   text: 'New Password',
@@ -178,32 +182,6 @@ void showForgotPasswordDialog(BuildContext context,String mobile) {
                   inputFormatters: constInputFormatters.passwordInput,
                   keyboardType: TextInputType.number,
                   isOptional: true,
-                  // onEdit: () {
-                  //   controllers.loginCtr.start();
-                  //   String pass = passwordController.text.trim();
-                  //   String confirm = confirmPasswordController.text.trim();
-                  //   if (pass.isEmpty || confirm.isEmpty) {
-                  //     controllers.loginCtr.reset();
-                  //     setState(() {
-                  //       errorMessage = "Please fill both fields";
-                  //     });
-                  //     FocusScope.of(context).requestFocus(passwordFocus1);
-                  //     return;
-                  //   }
-                  //   if (pass != confirm) {
-                  //     controllers.loginCtr.reset();
-                  //     setState(() {
-                  //       errorMessage = "Passwords do not match";
-                  //     });
-                  //     FocusScope.of(context).requestFocus(passwordFocus1);
-                  //     return;
-                  //   }
-                  //   FocusScope.of(context).unfocus();
-                  //   apiService.resetPasswordAPI(
-                  //     mobile: mobile.trim(),
-                  //     pass: pass,
-                  //   );
-                  // },
                   onEdit: () {
                     controllers.loginCtr.start();
 
@@ -250,7 +228,7 @@ void showForgotPasswordDialog(BuildContext context,String mobile) {
 
                       setState(() {
                         errorMessage =
-                        "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character";
+                        "Password must contain at least 8 characters, one uppercase letter,\none lowercase letter, one number and one special character";
                       });
 
                       FocusScope.of(context).requestFocus(passwordFocus1);
@@ -277,7 +255,7 @@ void showForgotPasswordDialog(BuildContext context,String mobile) {
                     size: 14,
                     isCopy: false,
                   ),
-          ]
+                ]
               ],
             ),
             actions: [

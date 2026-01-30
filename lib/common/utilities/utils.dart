@@ -1795,54 +1795,146 @@ class Utils {
       pathVal?.value = formattedTime;
     }
   }
-  Future<void> datePicker(
-      {BuildContext? context,
-      TextEditingController? textEditingController,
-      RxString? pathVal}) async {
-    // controllers.dateTime =
-    //     DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  // Future<void> datePicker(
+  //     {BuildContext? context,
+  //     TextEditingController? textEditingController,
+  //     RxString? pathVal}) async {
+  //   DateTime dateTime = DateTime.now();
+  //
+  //   if (textEditingController != null && textEditingController.text.isNotEmpty) {
+  //     try {
+  //       String cleaned = textEditingController.text.replaceAll("/", "-").trim();
+  //       List<String> parts = cleaned.split("-");
+  //
+  //       if (parts.length == 3) {
+  //         int p1 = int.tryParse(parts[0]) ?? 0;
+  //         int p2 = int.tryParse(parts[1]) ?? 0;
+  //         int p3 = int.tryParse(parts[2]) ?? 0;
+  //
+  //         // Try to detect the format automatically
+  //         if (p1 > 31) {
+  //           // Format: YYYY-MM-DD
+  //           dateTime = DateTime(p1, p2, p3);
+  //         } else if (p3 < 100) {
+  //           // Handle short year like 25 -> 2025
+  //           dateTime = DateTime(2000 + p3, p2, p1);
+  //         } else {
+  //           // Format: DD-MM-YYYY
+  //           dateTime = DateTime(p3, p2, p1);
+  //         }
+  //       }
+  //     } catch (e) {
+  //       // Fallback safely
+  //       dateTime = DateTime.now();
+  //     }
+  //   }
+  //   showDatePicker(
+  //     context: context!,
+  //     initialDate: dateTime,
+  //     firstDate: DateTime(2010),
+  //     lastDate: DateTime(2030),
+  //   ).then((value) {
+  //     dateTime = value!;
+  //     textEditingController?.text =
+  //         "${(dateTime.day.toString().padLeft(2, "0"))}.${(dateTime.month.toString().padLeft(2, "0"))}.${(dateTime.year.toString())}";
+  //     pathVal?.value =
+  //         "${(dateTime.day.toString().padLeft(2, "0"))}.${(dateTime.month.toString().padLeft(2, "0"))}.${(dateTime.year.toString())}";
+  //   });
+  // }
+  Future<void> datePicker({
+    BuildContext? context,
+    TextEditingController? textEditingController,
+    RxString? pathVal,
+  }) async {
+
     DateTime dateTime = DateTime.now();
 
-    if (textEditingController != null && textEditingController.text.isNotEmpty) {
+    print("---- DATE PICKER OPEN ----");
+    print("Controller Text : ${textEditingController?.text}");
+
+    // ---------- Parse Existing Date ----------
+    if (textEditingController != null &&
+        textEditingController.text.isNotEmpty) {
+
       try {
-        String cleaned = textEditingController.text.replaceAll("/", "-").trim();
+
+        String cleaned = textEditingController.text
+            .replaceAll("/", "-")
+            .replaceAll(".", "-")
+            .trim();
+
+        print("Cleaned Date String : $cleaned");
+
         List<String> parts = cleaned.split("-");
 
+        print("Split Parts : $parts");
+
         if (parts.length == 3) {
+
           int p1 = int.tryParse(parts[0]) ?? 0;
           int p2 = int.tryParse(parts[1]) ?? 0;
           int p3 = int.tryParse(parts[2]) ?? 0;
 
-          // Try to detect the format automatically
+          print("Parsed => p1:$p1  p2:$p2  p3:$p3");
+
+          // Detect format
           if (p1 > 31) {
-            // Format: YYYY-MM-DD
+            // YYYY-MM-DD
             dateTime = DateTime(p1, p2, p3);
-          } else if (p3 < 100) {
-            // Handle short year like 25 -> 2025
-            dateTime = DateTime(2000 + p3, p2, p1);
+            print("Format Detected : YYYY-MM-DD");
+
           } else {
-            // Format: DD-MM-YYYY
+            // DD-MM-YYYY
             dateTime = DateTime(p3, p2, p1);
+            print("Format Detected : DD-MM-YYYY");
           }
+
+          print("Initial DateTime Set : $dateTime");
         }
+
       } catch (e) {
-        // Fallback safely
+        print("Date Parse Error : $e");
         dateTime = DateTime.now();
       }
     }
-    showDatePicker(
+
+    print("Opening DatePicker with Initial Date : $dateTime");
+
+    // ---------- Show Date Picker ----------
+    final value = await showDatePicker(
       context: context!,
       initialDate: dateTime,
       firstDate: DateTime(2010),
       lastDate: DateTime(2030),
-    ).then((value) {
-      dateTime = value!;
-      textEditingController?.text =
-          "${(dateTime.day.toString().padLeft(2, "0"))}.${(dateTime.month.toString().padLeft(2, "0"))}.${(dateTime.year.toString())}";
-      pathVal?.value =
-          "${(dateTime.day.toString().padLeft(2, "0"))}.${(dateTime.month.toString().padLeft(2, "0"))}.${(dateTime.year.toString())}";
-    });
+    );
+
+    print("Selected Date From Picker : $value");
+
+    // ---------- Set Selected Date ----------
+    if (value != null) {
+
+      dateTime = value;
+
+      String formattedDate =
+          "${dateTime.day.toString().padLeft(2, "0")}."
+          "${dateTime.month.toString().padLeft(2, "0")}."
+          "${dateTime.year}";
+
+      print("Formatted Date : $formattedDate");
+
+      textEditingController?.text = formattedDate;
+      pathVal?.value = formattedDate;
+
+      print("Controller Updated Successfully ✅");
+
+    } else {
+      print("User Cancelled Date Picker ❌");
+    }
+
+    print("---- DATE PICKER END ----");
   }
+
+
   Future<void> chooseFile({RxList? mediaDataV, RxString? fileName, RxString? pathName}) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,

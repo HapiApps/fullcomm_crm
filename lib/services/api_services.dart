@@ -1314,12 +1314,12 @@ class ApiService {
         Get.to(const NewDashboard(), duration: Duration.zero);
         controllers.loginCtr.reset();
       } else {
-        errorDialog(Get.context!, 'No Account Found');
         controllers.loginCtr.reset();
+        errorDialog(Get.context!, 'No Account Found');
       }
     } catch (e) {
-      errorDialog(Get.context!, 'Login failed: ${e.toString()}');
       controllers.loginCtr.reset();
+      errorDialog(Get.context!, 'Login failed: ${e.toString()}');
     }
   }
 
