@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../common/constant/api.dart';
+import '../common/utilities/jwt_storage.dart';
 import '../models/month_report_obj.dart';
 import 'controller.dart';
 
@@ -266,8 +267,8 @@ class DashboardController extends GetxController {
       dayReport.value = [];
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -294,8 +295,8 @@ class DashboardController extends GetxController {
       log("main ${data.toString()}");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -341,8 +342,8 @@ class DashboardController extends GetxController {
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {
-          "Accept": "application/text",
-          "Content-Type": "application/x-www-form-urlencoded"
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
         },
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),

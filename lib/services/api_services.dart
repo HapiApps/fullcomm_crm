@@ -23,6 +23,7 @@ import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/models/product_obj.dart';
 import 'package:fullcomm_crm/screens/leads/view_customer.dart';
 import '../common/constant/colors_constant.dart';
+import '../common/utilities/jwt_storage.dart';
 import '../common/utilities/reminder_utils.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_text.dart';
@@ -162,6 +163,10 @@ class ApiService {
 
       final request = await http.post(
         Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode(data),
       );
       Map<String, dynamic> response = json.decode(request.body);
@@ -271,6 +276,10 @@ class ApiService {
       final request = await http.post(
         Uri.parse(scriptApi),
         body: jsonEncode(data),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
       );
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 &&
@@ -345,13 +354,18 @@ class ApiService {
 
       final request = await http.post(
         Uri.parse(scriptApi),
+        // headers: {
+        //   "Accept": "application/text",
+        //   "Content-Type": "application/x-www-form-urlencoded"
+        // },
         headers: {
-          "Accept": "application/text",
-          "Content-Type": "application/x-www-form-urlencoded"
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
         },
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
+      // print(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 &&
           response["responseMsg"] == "Category updated successfully") {
@@ -374,9 +388,13 @@ class ApiService {
 
       final request = await http.post(
         Uri.parse(scriptApi),
+        // headers: {
+        //   "Accept": "application/text",
+        //   "Content-Type": "application/x-www-form-urlencoded"
+        // },
         headers: {
-          "Accept": "application/text",
-          "Content-Type": "application/x-www-form-urlencoded"
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
         },
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
@@ -542,8 +560,8 @@ class ApiService {
     try {
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body:
               jsonEncode({"action": "insert_suspects", "list": qualifiedList}),
@@ -578,8 +596,8 @@ class ApiService {
     try {
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode({
                 "action": "insert_call_comments",
@@ -646,9 +664,13 @@ class ApiService {
   Future updateCallCommentAPI(BuildContext context,String type,String id) async {
     try {
       final request = await http.post(Uri.parse(scriptApi),
+          // headers: {
+          //   "Accept": "application/text",
+          //   "Content-Type": "application/x-www-form-urlencoded"
+          // },
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode({
                 "action": "update_call_comments",
@@ -665,6 +687,8 @@ class ApiService {
                 "id":id
               }),
           encoding: Encoding.getByName("utf-8"));
+      print("request.body");
+      print(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"] == "Record updated successfully") {
         controllers.clearSelectedCustomer();
@@ -709,8 +733,8 @@ class ApiService {
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -750,6 +774,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "search_type": "No Matches",
           "cos_id": controllers.storage.read("cos_id"),
@@ -802,7 +830,10 @@ class ApiService {
       List<String> emails = list.map((e) => e['mail_id'] ?? '').toList();
       request.fields['clientMail'] = emails.join(",");
       request.fields['id']         = ids.join(",");
-
+      request.headers.addAll({
+        'X-API-TOKEN': "${TokenStorage().readToken()}",
+        'Content-Type': 'application/json'
+      });
       if (imageController.empFileName.value.isNotEmpty) {
         var picture1 = http.MultipartFile.fromBytes(
           "attachment",
@@ -882,7 +913,10 @@ class ApiService {
       request.fields["action"] = "sheet_customers";
       request.fields["field_mappings"] = jsonEncode(fieldMappings);
       request.fields["cusList"] = jsonEncode(customerData);
-
+      request.headers.addAll({
+        'X-API-TOKEN': "${TokenStorage().readToken()}",
+        'Content-Type': 'application/json',
+      });
       request.files.add(http.MultipartFile.fromBytes(
         'sheet',
         excelBytes,
@@ -1069,9 +1103,13 @@ class ApiService {
         'owner': controllers.leadTitleCrt[0].text.trim()
       };
       final request = await http.post(Uri.parse(scriptApi),
+          // headers: {
+          //   "Accept": "application/text",
+          //   "Content-Type": "application/x-www-form-urlencoded"
+          // },
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -1261,7 +1299,7 @@ class ApiService {
       Map data = {
         "mobile_number": controllers.loginNumber.text,
         "password": controllers.loginPassword.text,
-        "action": "login"
+        "action": "login_jwt"
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -1271,14 +1309,17 @@ class ApiService {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
 
-      Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200) {
-        controllers.storage.write("f_name", response["s_name"]);
-        controllers.storage.write("mobile", controllers.loginNumber.text.trim());
-        controllers.storage.write("role", response["permission"]);
-        controllers.storage.write("role_name", "Admin");
-        controllers.storage.write("id", response["id"]);
-        controllers.storage.write("cos_id", response["cos_id"]);
+      final Map<String, dynamic> response = json.decode(request.body);
+
+      print(response);
+
+      if (request.statusCode == 200 && response['status'] == 'success') {
+        TokenStorage().writeToken(response['token']);
+        controllers.storage.write("f_name", response['user']['s_name']);
+        controllers.storage.write("mobile", response['user']['s_mobile']);
+        controllers.storage.write("role", response['user']['permission']);
+        controllers.storage.write("id", response['user']['id']);
+        controllers.storage.write("cos_id", response['user']["cos_id"]);
         final prefs = await SharedPreferences.getInstance();
         prefs.setBool("loginScreen$versionNum", true);
         String input = "Admin";
@@ -1368,8 +1409,8 @@ class ApiService {
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -1399,8 +1440,8 @@ class ApiService {
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -1431,8 +1472,8 @@ class ApiService {
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -1464,8 +1505,8 @@ class ApiService {
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -1490,8 +1531,8 @@ class ApiService {
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -1518,8 +1559,8 @@ class ApiService {
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -1580,8 +1621,8 @@ class ApiService {
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
         },
         body: jsonEncode(data),
       );
@@ -1684,8 +1725,8 @@ class ApiService {
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -1758,6 +1799,10 @@ class ApiService {
 
       final request = await http.post(Uri.parse(scriptApi),
         body: jsonEncode(data),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
       );
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"]=="Customer updated successfully."){
@@ -1789,8 +1834,8 @@ class ApiService {
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -1814,8 +1859,8 @@ class ApiService {
         "action": "get_data"};
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -1851,7 +1896,10 @@ class ApiService {
       request.fields['id'] = id;
       request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
       request.fields['action'] = 'mail_receive';
-
+      request.headers.addAll({
+        'X-API-TOKEN': "${TokenStorage().readToken()}",
+        'Content-Type': 'application/json'
+      });
       if (imageController.empFileName.value.isNotEmpty) {
         var picture1 = http.MultipartFile.fromBytes(
           "attachment",
@@ -1903,7 +1951,10 @@ class ApiService {
       request.fields['id'] = id;
       request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
       request.fields['action'] = 'mail_receive';
-
+      request.headers.addAll({
+        'X-API-TOKEN': "${TokenStorage().readToken()}",
+        'Content-Type': 'application/json'
+      });
       if (imageController.empFileName.value.isNotEmpty) {
         var picture1 = http.MultipartFile.fromBytes(
           "attachment",
@@ -2012,6 +2063,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode(
             {"search_type": "product", "cos_id": controllers.storage.read("cos_id"), "action": "get_data"}),
       );
@@ -2042,6 +2097,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "search_type": "customer_comments",
           "id": id,
@@ -2083,6 +2142,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "search_type": "mail_comments",
           "id": id,
@@ -2114,6 +2177,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "search_type": "mail_receive",
           "id": controllers.storage.read("id"),
@@ -2155,6 +2222,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "search_type": "mail_receive",
           "cos_id": controllers.storage.read("cos_id"),
@@ -2190,6 +2261,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "search_type": "leads",
           "cos_id": controllers.storage.read("cos_id"),
@@ -2239,6 +2314,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "search_type": "lead_details",
           "cos_id": controllers.storage.read("cos_id"),
@@ -2272,7 +2351,11 @@ class ApiService {
     try {
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        // headers: {'Content-Type': 'application/json'},
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "cos_id": controllers.storage.read("cos_id"),
           "customer_id": customerId,
@@ -2281,7 +2364,7 @@ class ApiService {
       );
 
       controllers.isLeadLoading.value = false;
-
+      // print(response.body);
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
 
@@ -2314,6 +2397,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "search_type": "leads",
           "cos_id": controllers.storage.read("cos_id"),
@@ -2360,6 +2447,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "search_type": "rating_leads",
           "cos_id": controllers.storage.read("cos_id"),
@@ -2395,6 +2486,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "search_type": "leads",
           "cos_id": controllers.storage.read("cos_id"),
@@ -2443,8 +2538,8 @@ class ApiService {
 
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -2473,8 +2568,8 @@ class ApiService {
 
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -2498,6 +2593,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode(
             {"search_type": "company",
               "cos_id": controllers.storage.read("cos_id"),
@@ -2544,8 +2643,8 @@ class ApiService {
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -2592,8 +2691,8 @@ class ApiService {
       log("main ${data.toString()}");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -2634,8 +2733,8 @@ class ApiService {
       log("main ${data.toString()}");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -2664,8 +2763,8 @@ class ApiService {
       dashController.dayReport.value = [];
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -2831,6 +2930,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "search_type": "leads",
           "cos_id": controllers.storage.read("cos_id"),
@@ -2875,6 +2978,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "search_type": "leads",
           "cos_id": controllers.storage.read("cos_id"),
@@ -2917,6 +3024,10 @@ class ApiService {
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode(
             {"search_type": "employee", "cos_id": controllers.storage.read("cos_id"), "action": "get_data"}),
       );

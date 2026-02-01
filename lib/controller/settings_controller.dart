@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/common/utilities/jwt_storage.dart';
 import 'package:fullcomm_crm/models/office_hours_obj.dart';
 import 'package:fullcomm_crm/models/role_obj.dart';
 import 'package:get/get.dart';
@@ -203,9 +204,13 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
         "officeList": selectedOfficeIds,
       };
       final request = await http.post(Uri.parse(scriptApi),
+          // headers: {
+          //   "Accept": "application/text",
+          //   "Content-Type": "application/x-www-form-urlencoded"
+          // },
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
@@ -241,8 +246,8 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
@@ -276,8 +281,8 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
@@ -316,8 +321,8 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
@@ -394,9 +399,13 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
         "id": id
       };
       final request = await http.post(Uri.parse(scriptApi),
+          // headers: {
+          //   "Accept": "application/text",
+          //   "Content-Type": "application/x-www-form-urlencoded"
+          // },
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
@@ -429,6 +438,10 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "action": "get_data",
           "cos_id": controllers.storage.read("cos_id"),
@@ -464,6 +477,10 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "action": "get_data",
           "cos_id": controllers.storage.read("cos_id"),
@@ -500,6 +517,10 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "action": "get_data",
           "cos_id": controllers.storage.read("cos_id"),
@@ -535,13 +556,19 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
         "roleList": selectedRoleIds,
       };
       final request = await http.post(Uri.parse(scriptApi),
+          // headers: {
+          //   "Accept": "application/text",
+          //   "Content-Type": "application/x-www-form-urlencoded"
+          // },
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
+      print("request.body");
+      print(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"]=="OK"){
          allRoles();

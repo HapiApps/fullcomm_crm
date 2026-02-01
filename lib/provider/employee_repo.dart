@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:http/http.dart' as http;
 
+import '../common/utilities/jwt_storage.dart';
 import '../controller/controller.dart';
 import '../models/common_response.dart';
 import '../models/employee_details.dart';
@@ -13,6 +14,10 @@ class EmployeeRepository {
     try {
       final response = await http.post(
         Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           'search_type': "all_roles",
           'action': "get_data",
@@ -41,7 +46,11 @@ class EmployeeRepository {
               "action" : "p_employee_details",
             "cos_id": controllers.storage.read("cos_id")
             },
-          )
+          ),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
       );
      //log("role: ${response.body}");
 
@@ -79,25 +88,30 @@ class EmployeeRepository {
     try{
       final response =   await  http.post(
           Uri.parse(scriptApi),
-          body: jsonEncode(
-            {
-              "emp_name":empName ,
-              "emp_mobile": empMobile,
-              "emp_whatsapp": empWhatsapp,
-              "emp_email": empEmail,
-              "emp_address": empAddress,
-              "emp_password": empPassword,
-              "emp_role": empRole,
-              "emp_join_date": empJoinDate,
-              "emp_salary": empSalary,
-              "emp_bonus": empBonus,
-              "created_by": controllers.storage.read("id"),
-              "active": active,
-              "action":"p_add_employee_details",
-              "cos_id": controllers.storage.read("cos_id")
-            },
-          )
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+        body: jsonEncode(
+          {
+            "emp_name":empName ,
+            "emp_mobile": empMobile,
+            "emp_whatsapp": empWhatsapp,
+            "emp_email": empEmail,
+            "emp_address": empAddress,
+            "emp_password": empPassword,
+            "emp_role": empRole,
+            "emp_join_date": empJoinDate,
+            "emp_salary": empSalary,
+            "emp_bonus": empBonus,
+            "created_by": controllers.storage.read("id"),
+            "active": active,
+            "action":"p_add_employee_details",
+            "cos_id": controllers.storage.read("cos_id")
+          },
+        ),
       );
+      // print(response.body);
       if(response.statusCode == 200){
         final Map<String,dynamic> data =  jsonDecode(response.body);
         return CommonResponse.fromJson(data);
@@ -129,6 +143,10 @@ class EmployeeRepository {
     try{
       final response =   await  http.post(
           Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
           body: jsonEncode({
               "id":id,
               "emp_name":empName ,
@@ -172,6 +190,10 @@ class EmployeeRepository {
       log("Single Product Id: $employeeId");
       final response =   await  http.post(
           Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
           body: jsonEncode({
               "employee_ids": employeeIds,
               "id": employeeId,

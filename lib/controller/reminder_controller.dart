@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../common/constant/api.dart';
+import '../common/utilities/jwt_storage.dart';
 import '../common/utilities/mobile_snackbar.dart';
 import '../models/all_customers_obj.dart';
 import '../models/customer_activity.dart';
@@ -871,6 +872,10 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     try {
       final response = await http.post(
         url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode({
           "action": "get_data",
           "type": type,
@@ -1009,9 +1014,13 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       };
       print("Reminder data $data");
       final request = await http.post(Uri.parse(scriptApi),
+          // headers: {
+          //   "Accept": "application/text",
+          //   "Content-Type": "application/x-www-form-urlencoded"
+          // },
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
@@ -1069,8 +1078,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
@@ -1103,8 +1112,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
@@ -1135,8 +1144,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
@@ -1169,9 +1178,13 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       print("Request: ${jsonEncode(data)}");
       final response = await http.post(
         Uri.parse(scriptApi), // your endpoint for delete_meeting.php
+        // headers: {
+        //   "Accept": "application/json",
+        //   "Content-Type": "application/json",
+        // },
         headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
         },
         body: jsonEncode(data),
       );
@@ -1211,9 +1224,13 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       print("delete record $data");
       final response = await http.post(
         Uri.parse(scriptApi),
+        // headers: {
+        //   "Accept": "application/json",
+        //   "Content-Type": "application/json",
+        // },
         headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
         },
         body: jsonEncode(data),
       );
@@ -1256,9 +1273,13 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       print("Response bodyjsonEncode(data): ${jsonEncode(data)}");
       final response = await http.post(
         Uri.parse(scriptApi),
+        // headers: {
+        //   "Accept": "application/json",
+        //   "Content-Type": "application/json",
+        // },
         headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
         },
         body: jsonEncode(data),
       );

@@ -16,6 +16,7 @@ import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../controller/image_controller.dart';
 import '../../models/customer_full_obj.dart';
+import '../invoice/invoice.dart';
 
 class ViewLead extends StatefulWidget {
   final String? id;
@@ -207,7 +208,34 @@ class _ViewLeadState extends State<ViewLead> {
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 120,
+                                    width: 100,
+                                    height: 35,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        shadowColor: Colors.transparent,
+                                        backgroundColor: colorsConst.primary,
+                                      ),
+                                      onPressed: () {
+                                        Get.to(InvoiceView(
+                                          cName: displayName,
+                                          address:"${widget.addressLine1.toString()},${widget.addressLine2.toString()},${widget.area.toString()},"
+                                              "${widget.city.toString()},${widget.state.toString()}""${widget.country.toString()},${widget.pinCode.toString()}",
+                                          mail: widget.email.toString(), number:widget.mobileNumber.toString()));
+                                        },
+                                      child: MouseRegion(
+                                        cursor: SystemMouseCursors.click,
+                                        child: Text(
+                                          "Invoice",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  10.width,
+                                  SizedBox(
+                                    width: 100,
                                     height: 35,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
@@ -461,7 +489,7 @@ class _ViewLeadState extends State<ViewLead> {
                                   ),
                                   10.width,
                                   SizedBox(
-                                    width: 120,
+                                    width: 100,
                                     height: 35,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
@@ -573,7 +601,7 @@ class _ViewLeadState extends State<ViewLead> {
                                   ),
                                   10.width,
                                   SizedBox(
-                                    width: 160,
+                                    width: 140,
                                     height: 35,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
@@ -598,7 +626,7 @@ class _ViewLeadState extends State<ViewLead> {
                                   ),
                                   10.width,
                                   SizedBox(
-                                    width: 120,
+                                    width: 100,
                                     height: 35,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(

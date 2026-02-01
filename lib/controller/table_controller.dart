@@ -6,6 +6,7 @@ import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
+import '../common/utilities/jwt_storage.dart';
 import '../common/utilities/utils.dart';
 import '../services/api_services.dart';
 
@@ -147,8 +148,8 @@ class TableController extends GetxController {
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
@@ -179,8 +180,8 @@ class TableController extends GetxController {
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
