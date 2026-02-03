@@ -186,6 +186,7 @@ class TableController extends GetxController {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
+      print(request.body);
       if (request.statusCode == 200 ){
         Navigator.pop(context);
         apiService.getUserHeading();

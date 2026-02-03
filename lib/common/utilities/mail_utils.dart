@@ -48,7 +48,7 @@ class MailUtils {
           "lead_id": data.userId.toString(),
           "user_id": controllers.storage.read("id"),
           "rating": data.rating ?? "Warm",
-          "cos_id": controllers.storage.read("cos_id"),
+          "cos_id": controllers.storage.read("cos_id").toString(),
           "mail_id": data.email!.split("||")[0]
         }),
       );

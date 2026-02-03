@@ -45,6 +45,7 @@ class _NewDashboardState extends State<NewDashboard> {
       _focusNode.requestFocus();
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
       employeeData.staffRoleDetailsData(context: context);
+      controllers.getCallStatus();
     });
 
     Future.delayed(Duration.zero, () async {
@@ -72,6 +73,7 @@ class _NewDashboardState extends State<NewDashboard> {
           "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
           today);
       dashController.getDashboardReport();
+      dashController.getStatusWiseReport();
       dashController.getRatingReport();
     });
   }
@@ -111,6 +113,7 @@ class _NewDashboardState extends State<NewDashboard> {
   //     apiService.getDayReport(DateTime.now().year.toString(),DateTime.now().month.toString());
   //   });
   //   apiService.getDashBoardReport();
+  //   apiService.getStatusWiseReport();
   //   apiService.getRatingReport();
   //   apiService.getMonthReport();
   //
@@ -259,6 +262,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                               break;
                                           }
                                           dashController.getDashboardReport();
+                                          dashController.getStatusWiseReport();
                                           final range = dashController.selectedRange.value;
                                           var today = DateTime.now();
                                           if (dashController.selectedSortBy.value != "Today" &&
@@ -539,6 +543,56 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 .totalReminders.value
                                                 .toString(),
                                             icon: Icons.notifications_active,
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              PageRouteBuilder(
+                                                pageBuilder: (context,
+                                                        animation1,
+                                                        animation2) =>
+                                                    const ReminderPage(),
+                                                transitionDuration:
+                                                    Duration.zero,
+                                                reverseTransitionDuration:
+                                                    Duration.zero,
+                                              ),
+                                            );
+
+                                            controllers.oldIndex.value = controllers.selectedIndex.value;
+                                            controllers.selectedIndex.value = 6;
+                                          },
+                                          child: Container(
+                                            // color: Colors.pinkAccent,
+                                            height: dashController.visitStatusReport.length*35,
+                                            width: (screenWidth - 500),
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              physics: NeverScrollableScrollPhysics(),
+                                              itemCount: dashController.visitStatusReport.length,
+                                                itemBuilder: (context,index){
+                                                  return Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        if(index==0)
+                                                        CustomText(text: "Call Status Report", isCopy: false,isBold: true,size: 17,colors: colorsConst.primary,),
+                                                        if(index==0)
+                                                        5.height,
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            CustomText(text: dashController.visitStatusReport[index]["value"], isCopy: false),
+                                                            CustomText(text: dashController.visitStatusReport[index]["total_count"], isCopy: false,isBold: true,),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }),
                                           ),
                                         ),
                                       ],

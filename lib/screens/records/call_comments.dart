@@ -154,7 +154,7 @@ class _CallCommentsState extends State<CallComments> {
                                 controllers.clearSelectedCustomer();
                                 controllers.cusController.text = "";
                                 controllers.callType = "Outgoing";
-                                controllers.callStatus = "Contacted";
+                                controllers.callStatus = controllers.hCallStatusList[0]["value"];
                               });
                               controllers.callCommentCont.text = "";
                               showDialog(
@@ -366,35 +366,67 @@ class _CallCommentsState extends State<CallComments> {
                                                             )
                                                           ],
                                                         ),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: (controllers.storage.read("cos_id") == "202510" || controllers.storage.read("cos_id") == "202610"
-                                                              ? controllers.hCallStatusList
-                                                              : controllers.callStatusList)
-                                                              .map<Widget>((type) {
-                                                            return Row(
-                                                              mainAxisSize: MainAxisSize.min,
-                                                              children: [
-                                                                Radio<String>(
-                                                                  value: type,
-                                                                  groupValue: controllers.callStatus,
-                                                                  activeColor: colorsConst.primary,
-                                                                  onChanged: (value) {
-                                                                    setState(() {
-                                                                      controllers.callStatus = value!;
-                                                                    });
-                                                                  },
-                                                                ),
-                                                                CustomText(
-                                                                  text: type,
-                                                                  size: 14,
-                                                                  isCopy: false,
-                                                                ),
-                                                                20.width,
-                                                              ],
-                                                            );
-                                                          }).toList(),
-                                                        ),
+                                                        SizedBox(
+                                                          width: 510,
+                                                          height: 50,
+                                                          child: ListView.builder(
+                                                            shrinkWrap: true,
+                                                            // physics: NeverScrollableScrollPhysics(),
+                                                            scrollDirection: Axis.horizontal,
+                                                            itemCount: controllers.hCallStatusList.length,
+                                                              itemBuilder: (context,index){
+                                                              return Row(
+                                                                      mainAxisSize: MainAxisSize.min,
+                                                                      children: [
+                                                                        Radio<String>(
+                                                                          value: controllers.hCallStatusList[index]["value"],
+                                                                          groupValue: controllers.callStatus,
+                                                                          activeColor: colorsConst.primary,
+                                                                          onChanged: (value) {
+                                                                            setState(() {
+                                                                              controllers.callStatus = value!;
+                                                                            });
+                                                                          },
+                                                                        ),
+                                                                        CustomText(
+                                                                          text: controllers.hCallStatusList[index]["value"],
+                                                                          size: 14,
+                                                                          isCopy: false,
+                                                                        ),
+                                                                        20.width,
+                                                                      ],
+                                                                    );
+                                                              }),
+                                                        )
+                                                        // Row(
+                                                        //   mainAxisAlignment: MainAxisAlignment.start,
+                                                        //   children: (controllers.storage.read("cos_id") == "202510" || controllers.storage.read("cos_id") == "202610"
+                                                        //       ? controllers.hCallStatusList
+                                                        //       : controllers.callStatusList)
+                                                        //       .map<Widget>((type) {
+                                                        //     return Row(
+                                                        //       mainAxisSize: MainAxisSize.min,
+                                                        //       children: [
+                                                        //         Radio<String>(
+                                                        //           value: type,
+                                                        //           groupValue: controllers.callStatus,
+                                                        //           activeColor: colorsConst.primary,
+                                                        //           onChanged: (value) {
+                                                        //             setState(() {
+                                                        //               controllers.callStatus = value!;
+                                                        //             });
+                                                        //           },
+                                                        //         ),
+                                                        //         CustomText(
+                                                        //           text: type,
+                                                        //           size: 14,
+                                                        //           isCopy: false,
+                                                        //         ),
+                                                        //         20.width,
+                                                        //       ],
+                                                        //     );
+                                                        //   }).toList(),
+                                                        // ),//SSANTHIYA
                                                       ],
                                                     ),
                                                   ],

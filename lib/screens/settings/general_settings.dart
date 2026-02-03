@@ -138,6 +138,224 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               isCopy: false,
                               size: 14,
                             ),),
+                        ),
+                        10.width,
+                        SizedBox(
+                          height: 40,
+                          child: ElevatedButton.icon(
+                            icon: Icon(Icons.add,color: Colors.white,),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorsConst.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            onPressed: (){
+                              Get.dialog(
+                                Dialog(
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  child: Container(
+                                    width: 300,
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        CustomText(
+                                          text: "Record Status",
+                                          colors: colorsConst.textColor,
+                                          isBold: true,
+                                          size: 18,
+                                          isCopy: true,
+                                        ),
+                                        10.height,
+                                        SizedBox(
+                                          width: 300,
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: controllers.hCallStatusList.length,
+                                            itemBuilder: (context, index) {
+                                              final item = controllers.hCallStatusList[index];
+                                              return Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  CustomText(text: item["value"], isCopy: false),
+                                                  TextButton(
+                                                    onPressed:(){
+                                                      controllers.statusController.text=item["value"];
+                                                        Get.dialog(
+                                                          Dialog(
+                                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                                            child: Container(
+                                                              width: 300,
+                                                              padding: const EdgeInsets.all(16),
+                                                              child: Column(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: [
+                                                                  CustomText(
+                                                                    text: "Update Record Status",
+                                                                    colors: colorsConst.textColor,
+                                                                    isBold: true,
+                                                                    size: 18,
+                                                                    isCopy: true,
+                                                                  ),
+                                                                  10.height,
+                                                                  SizedBox(
+                                                                    width: 500,
+                                                                    child: TextField(
+                                                                      controller: controllers.statusController,
+                                                                      style: TextStyle(
+                                                                          fontSize: 15, color: colorsConst.textColor),
+                                                                      decoration: const InputDecoration(
+                                                                        border: UnderlineInputBorder(),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  20.height,
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                    children: [
+                                                                      ElevatedButton(
+                                                                        onPressed: () {
+                                                                          Navigator.of(context).pop();
+                                                                        },
+                                                                        style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                                                                        child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                                                                      ),
+                                                                      CustomLoadingButton(
+                                                                        callback: (){
+                                                                          if(controllers.statusController.text.trim().isEmpty){
+                                                                            utils.snackBar(context: context, msg: "Please fill status", color: Colors.red);
+                                                                            controllers.productCtr.reset();
+                                                                          }else{
+                                                                            controllers.correctionStatus(context,"update",item["id"].toString());
+                                                                          }
+                                                                        },
+                                                                        height: 35,
+                                                                        isLoading: true,
+                                                                        backgroundColor: colorsConst.primary,
+                                                                        radius: 2,
+                                                                        width: 80,
+                                                                        controller: controllers.productCtr,
+                                                                        isImage: false,
+                                                                        text: "Save",
+                                                                        textColor: Colors.white,
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                    },
+                                                    child: SvgPicture.asset(
+                                                      "assets/images/a_edit.svg",
+                                                      width: 16,
+                                                      height: 16,
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        20.height,
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                                              child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: ()  {
+                                                controllers.statusController.clear();
+                                                Get.dialog(
+                                                  Dialog(
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                                    child: Container(
+                                                      width: 300,
+                                                      padding: const EdgeInsets.all(16),
+                                                      child: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          CustomText(
+                                                            text: "Add Record Status",
+                                                            colors: colorsConst.textColor,
+                                                            isBold: true,
+                                                            size: 18,
+                                                            isCopy: true,
+                                                          ),
+                                                          10.height,
+                                                          SizedBox(
+                                                            width: 500,
+                                                            child: TextField(
+                                                              controller: controllers.statusController,
+                                                              style: TextStyle(
+                                                                  fontSize: 15, color: colorsConst.textColor),
+                                                              decoration: const InputDecoration(
+                                                                border: UnderlineInputBorder(),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          20.height,
+                                                          Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                            children: [
+                                                              ElevatedButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                                                                child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                                                              ),
+                                                          CustomLoadingButton(
+                                                            callback: (){
+                                                                if(controllers.statusController.text.trim().isEmpty){
+                                                                  utils.snackBar(context: context, msg: "Please fill status", color: Colors.red);
+                                                                  controllers.productCtr.reset();
+                                                                }else{
+                                                                  controllers.correctionStatus(context,"add","0");
+                                                                }
+                                                              },
+                                                              height: 35,
+                                                              isLoading: true,
+                                                              backgroundColor: colorsConst.primary,
+                                                              radius: 2,
+                                                              width: 80,
+                                                              controller: controllers.productCtr,
+                                                              isImage: false,
+                                                              text: "Add",
+                                                              textColor: Colors.white,
+                                                              ),
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                                },
+                                              child: const Text("Add Status"),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            label: CustomText(
+                              text: "Record Status",
+                              colors: Colors.white,
+                              isBold :true,
+                              isCopy: false,
+                              size: 14,
+                            ),),
                         )
                       ],
                     ),

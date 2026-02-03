@@ -36,6 +36,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
     });
     dashController.getRatingReport();
     dashController.getDashboardReport();
+    dashController.getStatusWiseReport();
   }
 
 
@@ -112,6 +113,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                                       );
                                       // 🔹 Fetch data for the range
                                       dashController.getDashboardReport();
+                                      dashController.getStatusWiseReport();
                                       dashController.getCustomerReport(
                                         DateFormat('yyyy-MM-dd').format(startDate),
                                         DateFormat('yyyy-MM-dd').format(endDate),
@@ -131,6 +133,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                                   final range = dashController.selectedRange.value;
                                   if (range != null) {
                                     dashController.getDashboardReport();
+                                    dashController.getStatusWiseReport();
                                     dashController.getCustomerReport(
                                       "${range.start.year}-${range.start.month.toString().padLeft(2, '0')}-${range.start.day.toString().padLeft(2, '0')}",
                                       "${range.end.year}-${range.end.month.toString().padLeft(2, '0')}-${range.end.day.toString().padLeft(2, '0')}",
@@ -181,6 +184,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                                 final range = dashController.selectedRange.value;
                                 if (range != null) {
                                   dashController.getDashboardReport();
+                                  dashController.getStatusWiseReport();
                                   dashController.getCustomerReport(
                                     "${range.start.year}-${range.start.month.toString().padLeft(2, '0')}-${range.start.day.toString().padLeft(2, '0')}",
                                     "${range.end.year}-${range.end.month.toString().padLeft(2, '0')}-${range.end.day.toString().padLeft(2, '0')}",
@@ -216,6 +220,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                               final range = dashController.selectedRange.value;
                               if (range != null) {
                                 dashController.getDashboardReport();
+                                dashController.getStatusWiseReport();
                                 dashController.getCustomerReport(
                                   "${range.start.year}-${range.start.month.toString().padLeft(2, '0')}-${range.start.day.toString().padLeft(2, '0')}",
                                   "${range.end.year}-${range.end.month.toString().padLeft(2, '0')}-${range.end.day.toString().padLeft(2, '0')}",

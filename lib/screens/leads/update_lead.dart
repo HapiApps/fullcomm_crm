@@ -560,25 +560,85 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             //sharedPref.setString("leadEmail$index", value.toString().trim());
                                           },
                                         ),
-                                        CustomDropDown(
-                                          saveValue: controllers.visitType,
-                                          valueList: controllers.callNameList,
-                                          text: "Call Visit Type",
+                                        SizedBox(
                                           width: textFieldSize,
-                                          isOptional: true,
-                                          //inputFormatters: constInputFormatters.textInput,
-                                          onChanged: (value) async {
-                                            setState((){
-                                              controllers.visitType = value;
-                                            });
-                                            FocusScope.of(context)
-                                                .requestFocus(
-                                                cName);
-                                            SharedPreferences sharedPref =
-                                            await SharedPreferences.getInstance();
-                                            sharedPref.setString("callVisitType", value.toString().trim());
-                                          },
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  CustomText(
+                                                    text: "Call Visit Type",
+                                                    colors: colorsConst.textColor,
+                                                    size: 13,
+                                                    textAlign: TextAlign.start,
+                                                    isCopy: false,
+                                                  ),
+                                                  const CustomText(
+                                                    text: "*",
+                                                    colors: Colors.red,
+                                                    size: 25,
+                                                    isCopy: false,
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: (controllers.callNameList)
+                                                    .map<Widget>((type) {
+                                                  return Row(
+                                                    // mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Radio<String>(
+                                                        value: type,
+                                                        groupValue: controllers.visitType,
+                                                        activeColor: colorsConst.primary,
+                                                        onChanged: (value) async{
+                                                          setState(() {
+                                                            controllers.visitType = value;
+                                                            FocusScope.of(context)
+                                                                .requestFocus(
+                                                                account);
+                                                          });
+                                                          SharedPreferences sharedPref =
+                                                          await SharedPreferences
+                                                              .getInstance();
+                                                          sharedPref.setString("callVisitType",
+                                                              value.toString().trim());
+                                                        },
+                                                      ),
+                                                      CustomText(
+                                                        text: type,
+                                                        size: 14,
+                                                        isCopy: false,
+                                                      ),
+                                                      20.width,
+                                                    ],
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            ],
+                                          ),
                                         ),
+                                        // CustomDropDown(
+                                        //   saveValue: controllers.visitType,
+                                        //   valueList: controllers.callNameList,
+                                        //   text: "Call Visit Type",
+                                        //   width: textFieldSize,
+                                        //   isOptional: true,
+                                        //   //inputFormatters: constInputFormatters.textInput,
+                                        //   onChanged: (value) async {
+                                        //     setState((){
+                                        //       controllers.visitType = value;
+                                        //     });
+                                        //     FocusScope.of(context)
+                                        //         .requestFocus(
+                                        //         cName);
+                                        //     SharedPreferences sharedPref =
+                                        //     await SharedPreferences.getInstance();
+                                        //     sharedPref.setString("callVisitType", value.toString().trim());
+                                        //   },
+                                        // ),
                                         // 10.height,
                                         // Obx(() => CustomDateBox(
                                         //   text: "Date of Connection",

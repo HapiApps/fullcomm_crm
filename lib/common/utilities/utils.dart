@@ -2105,7 +2105,7 @@ class Utils {
       for (int i = 0; i < systemKeys.length; i++) {
         if (systemKeys[i].isNotEmpty) {
           fieldMappings.add({
-            "cos_id": controllers.storage.read("cos_id"),
+            "cos_id": controllers.storage.read("cos_id").toString(),
             "system_field": systemKeys[i],
             "display_name": (i < displayNames.length && displayNames[i].isNotEmpty)
                 ? displayNames[i]

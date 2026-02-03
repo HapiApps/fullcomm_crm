@@ -159,6 +159,7 @@ class DashboardController extends GetxController {
                           setDateRange(tempRange);
                         }
                         getDashboardReport();
+                        getStatusWiseReport();
                         final range = dashController.selectedRange.value;
                         var today = DateTime.now();
                         getCustomerReport(range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}", range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
@@ -241,6 +242,7 @@ class DashboardController extends GetxController {
     selectedRange.value = DateTimeRange(start: normalizedStart, end: normalizedEnd);
 
     getDashboardReport();
+    getStatusWiseReport();
 
     if (selectedSortBy.value != "Today" && selectedSortBy.value != "Yesterday") {
       getCustomerReport(_fmt(normalizedStart), _fmt(normalizedEnd));
@@ -369,6 +371,46 @@ class DashboardController extends GetxController {
         throw Exception('Failed to load dashboard report');
       }
     } catch (e) {
+      throw Exception('Failed to load dashboard report');
+    }
+  }
+  RxList visitStatusReport=[].obs;
+  Future getStatusWiseReport() async {
+    final range = dashController.selectedRange.value;
+    var today = DateTime.now();
+    var tomorrow = DateTime.now().add(Duration(days: 1));
+    final adjustedEnd = range?.end.add(const Duration(days: 1));
+    try {
+      visitStatusReport.clear();
+      Map data = {
+        "search_type": "visit_status_report",
+        "cos_id": controllers.storage.read("cos_id"),
+        "role": controllers.storage.read("role"),
+        "id": controllers.storage.read("id"),
+        "action": "get_data",
+        "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+        "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
+      };
+
+      log("Dashboard request data: ${data.toString()}");
+      final request = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(data),
+        encoding: Encoding.getByName("utf-8"),
+      );
+      if (request.statusCode == 200) {
+        var response = jsonDecode(request.body) as List;
+        visitStatusReport.value=response;
+      } else {
+        visitStatusReport.clear();
+        throw Exception('Failed to load dashboard report');
+      }
+    } catch (e) {
+      visitStatusReport.clear();
       throw Exception('Failed to load dashboard report');
     }
   }

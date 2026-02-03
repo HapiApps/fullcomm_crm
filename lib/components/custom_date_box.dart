@@ -55,6 +55,7 @@ class CustomDateBox extends StatelessWidget {
             child: Row(
               children: [
                 15.width,
+                Icon(Icons.calendar_month_outlined,color: colorsConst.primary,size: 15,),5.width,
                 CustomText(
                   text: value,
                   colors: colorsConst.textColor,

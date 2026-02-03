@@ -923,8 +923,23 @@ class ApiService {
         filename: excelFileName,
       ));
       var response = await request.send();
+
       var responseData = await http.Response.fromStream(response);
+
+// STATUS CODE
+      print("STATUS CODE: ${responseData.statusCode}");
+
+// FULL RAW RESPONSE
+      print("RAW RESPONSE: ${responseData.body}");
+
+// JSON DECODE
       Map<String, dynamic> res = json.decode(responseData.body);
+
+// PRINT JSON MAP
+      print("JSON RESPONSE: $res");
+
+// PRINT PARTICULAR VALUE
+      print("MESSAGE: ${res['message']}");
 
       if (response.statusCode == 200 && res["message"] == "Customer save process completed.") {
         apiService.allLeadsDetails();

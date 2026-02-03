@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,8 @@ import 'package:group_button/group_button.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import '../common/constant/api.dart';
+import '../common/utilities/jwt_storage.dart';
 import '../models/comments_obj.dart';
 import '../models/customer_activity.dart';
 import '../models/customer_full_obj.dart';
@@ -20,7 +23,9 @@ import '../models/month_report_obj.dart';
 import '../models/new_lead_obj.dart';
 import '../models/product_obj.dart';
 import '../models/user_heading_obj.dart';
+import 'package:http/http.dart'as http;
 
+import '../services/api_services.dart';
 final controllers = Get.put(Controller());
 
 class Controller extends GetxController with GetSingleTickerProviderStateMixin {
@@ -1735,12 +1740,61 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
     "Pending",
     "Missed"
   ];
-  var hCallStatusList = [
-    "Contacted",
-    "Call back",
-    "Demo Scheduled",
-    "Not Interested"
-  ];
+  // var hCallStatusList = [
+  //   "Contacted",
+  //   "Call back",
+  //   "Demo Scheduled",
+  //   "Not Interested"
+  // ];
+  RxList<Map<String, dynamic>> hCallStatusList =
+      <Map<String, dynamic>>[].obs;
+
+  Future<void> getCallStatus() async {
+    try {
+
+      hCallStatusList.clear();
+
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "action": "add_values",
+        }),
+      );
+
+      print("STATUS CODE: ${response.statusCode}");
+      print("RAW RESPONSE: ${response.body}");
+
+      if (response.statusCode != 200) {
+        print("SERVER ERROR");
+        return;
+      }
+
+      final decoded = jsonDecode(response.body);
+
+      // ✅ Safety check
+      if (decoded["status"] == "success" && decoded["data"] != null) {
+
+        List<Map<String, dynamic>> list =
+        List<Map<String, dynamic>>.from(decoded["data"]);
+
+        // ✅ Store into RxList
+        hCallStatusList.assignAll(list);
+
+        print("Loaded Items: ${hCallStatusList.length}");
+
+      } else {
+        print("API Error: ${decoded["message"]}");
+      }
+
+    } catch (e) {
+      print("FLUTTER ERROR => $e");
+    }
+  }
+
   var stateList = [
     "Andhra Pradesh",
     "Arunachal Pradesh",
@@ -1815,7 +1869,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       rating,
       industry,
       callType="Outgoing",
-      callStatus="Contacted",
+      callStatus="",
       upCallType="Incoming",
       upcallStatus="Completed",
       visitType,
@@ -1986,6 +2040,7 @@ var otp = "".obs;
   TextEditingController emailSubjectCtr = TextEditingController();
   TextEditingController emailMessageCtr = TextEditingController();
   TextEditingController emailQuotationCtr = TextEditingController();
+  TextEditingController statusController = TextEditingController();
 
   // TODO: productControllersName
   TextEditingController prodNameController = TextEditingController();
@@ -2176,5 +2231,40 @@ var otp = "".obs;
   var selectPinCodeList = [];
   var selectStateList = [];
   var selectCityList = [];
+  Future correctionStatus(BuildContext context,String ops,String id) async {
+    try{
+      print("statusCrt.text..........${statusCrt.text}");
+      Map data = {
+        "action": "correction_status",
+        "ops": ops,
+        "value": statusController.text,
+        "id": id,
+        "cos_id": controllers.storage.read("cos_id")
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${data}");
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200){
+        Navigator.pop(context);
+        Navigator.pop(context);
+        getCallStatus();
+        controllers.productCtr.reset();
+      } else {
+        apiService.errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      apiService.errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
 
 }
