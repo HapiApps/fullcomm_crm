@@ -37,6 +37,10 @@ class _AddLeadState extends State<AddLead> {
     SharedPreferences sharedPref = await SharedPreferences.getInstance();
     Future.delayed(Duration.zero, () {
       setState(() {
+        controllers.numberList.clear();
+        controllers.infoNumberList.clear();
+        controllers.numberList.add(TextEditingController());
+        controllers.infoNumberList.add(TextEditingController());
         final whatsApp = sharedPref.getString("leadWhatsApp") ?? "";
         final companyName = sharedPref.getString("leadCoName") ?? "";
         final companyPhone = sharedPref.getString("leadCoMobile") ?? "";
@@ -62,7 +66,7 @@ class _AddLeadState extends State<AddLead> {
         final time = sharedPref.getString("leadTime") ?? "";
         final leadDescription = sharedPref.getString("leadDescription") ?? "";
         final leadPersonalCount = sharedPref.getInt("leadCount") ?? 1;
-
+        controllers.visitType="Call";
         controllers.leadPersonalItems.value = leadPersonalCount;
         controllers.isMainPersonList.value = [];
         controllers.isCoMobileNumberList.value = [];
@@ -659,35 +663,7 @@ class _AddLeadState extends State<AddLead> {
                                           sharedPref.setString("leadName$index",
                                               value.toString().trim());
                                         },
-                                        // validator:(value){
-                                        //   if(value.toString().isEmpty){
-                                        //     return "This field is required";
-                                        //   }else if(value.toString().trim().length!=10){
-                                        //     return "Check Your Phone Number";
-                                        //   }else{
-                                        //     return null;
-                                        //   }
-                                        // }
                                       ),
-                                      // Row(
-                                      //   children: [
-                                      //     Obx(() => CustomCheckBox(
-                                      //           text: "Main Calling Person",
-                                      //           onChanged: (value){
-                                      //             if (controllers.isMainPersonList[index] == true){
-                                      //               controllers.isMainPersonList[index] = false;
-                                      //             } else {
-                                      //               controllers.isMainPersonList[index] = true;
-                                      //             }
-                                      //             //controllers.isMainPerson.value=!controllers.isMainPerson.value;
-                                      //           },
-                                      //           saveValue: controllers.isMainPersonList[index]),
-                                      //     ),
-                                      //     SizedBox(
-                                      //       width: textFieldSize - 150,
-                                      //     )
-                                      //   ],
-                                      // ),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -717,6 +693,165 @@ class _AddLeadState extends State<AddLead> {
                                           ),
                                         ],
                                       ),
+                                      // SizedBox(
+                                      //   width: textFieldSize,
+                                      //   child: ListView.builder(
+                                      //     itemCount:controllers.numberList.length,
+                                      //       itemBuilder: (context,index){
+                                      //         return SizedBox(
+                                      //           width: textFieldSize-40,
+                                      //           height: 50,
+                                      //           child: TextFormField(
+                                      //               onEditingComplete: () {
+                                      //                 FocusScope.of(context)
+                                      //                     .requestFocus(
+                                      //                     whatsApp);
+                                      //               },
+                                      //               focusNode: phone,
+                                      //               style: TextStyle(
+                                      //                   color: colorsConst
+                                      //                       .textColor,
+                                      //                   fontSize: 14,
+                                      //                   fontFamily: "Lato"),
+                                      //               cursorColor:
+                                      //               colorsConst.primary,
+                                      //               onChanged: (value) async {
+                                      //                 setState(() {
+                                      //                   if (controllers.isCoMobileNumberList[index] ==true) {
+                                      //                     controllers.leadWhatsCrt[index].text =controllers.leadMobileCrt[index].text;
+                                      //                   }
+                                      //                 });
+                                      //                 SharedPreferences
+                                      //                 sharedPref =
+                                      //                 await SharedPreferences
+                                      //                     .getInstance();
+                                      //                 sharedPref.setString(
+                                      //                     "leadMobileNumber$index",
+                                      //                     value
+                                      //                         .toString()
+                                      //                         .trim());
+                                      //                 sharedPref.setString(
+                                      //                     "leadWhats$index",
+                                      //                     value.toString().trim());
+                                      //               },
+                                      //               onTap: () {},
+                                      //               keyboardType:
+                                      //               TextInputType.number,
+                                      //               inputFormatters:
+                                      //               constInputFormatters
+                                      //                   .mobileNumberInput,
+                                      //               textCapitalization:
+                                      //               TextCapitalization.none,
+                                      //               controller: controllers
+                                      //                   .leadMobileCrt[index],
+                                      //               textInputAction:
+                                      //               TextInputAction.next,
+                                      //               decoration: InputDecoration(
+                                      //                 hoverColor:
+                                      //                 Colors.transparent,
+                                      //                 focusColor:
+                                      //                 Colors.transparent,
+                                      //                 hintText: "Phone No",
+                                      //                 fillColor: Colors.white,
+                                      //                 filled: true,
+                                      //                 hintStyle: TextStyle(
+                                      //                     color: Colors
+                                      //                         .grey.shade400,
+                                      //                     fontSize: 13,
+                                      //                     fontFamily: "Lato"),
+                                      //                 suffixIcon: Obx(
+                                      //                       () => Checkbox(
+                                      //                       shape:
+                                      //                       RoundedRectangleBorder(
+                                      //                         borderRadius:
+                                      //                         BorderRadius
+                                      //                             .circular(
+                                      //                             5.0),
+                                      //                       ),
+                                      //                       side:
+                                      //                       MaterialStateBorderSide
+                                      //                           .resolveWith(
+                                      //                             (states) => BorderSide(
+                                      //                             width: 1.0,
+                                      //                             color: colorsConst
+                                      //                                 .textColor),
+                                      //                       ),
+                                      //                       hoverColor: Colors
+                                      //                           .transparent,
+                                      //                       activeColor:
+                                      //                       colorsConst
+                                      //                           .third,
+                                      //                       value: controllers
+                                      //                           .isCoMobileNumberList[
+                                      //                       index],
+                                      //                       onChanged: (value) {
+                                      //                         setState(() {
+                                      //                           controllers.isCoMobileNumberList[index] =value!;
+                                      //                           if (controllers.isCoMobileNumberList[index] ==true) {
+                                      //                             controllers.leadWhatsCrt[index].text =controllers.leadMobileCrt[index].text;
+                                      //                           } else {
+                                      //                             print("in");
+                                      //                             controllers.leadWhatsCrt[index].text = "";
+                                      //                           }
+                                      //                           FocusScope.of(context)
+                                      //                               .requestFocus(
+                                      //                               whatsApp);
+                                      //                         });
+                                      //                       }),
+                                      //                 ),
+                                      //                 enabledBorder:
+                                      //                 OutlineInputBorder(
+                                      //                     borderSide:
+                                      //                     BorderSide(
+                                      //                         color: Colors
+                                      //                             .grey
+                                      //                             .shade400),
+                                      //                     borderRadius:
+                                      //                     BorderRadius
+                                      //                         .circular(
+                                      //                         5)),
+                                      //                 focusedBorder:
+                                      //                 OutlineInputBorder(
+                                      //                     borderSide:
+                                      //                     BorderSide(
+                                      //                       color: Colors
+                                      //                           .grey
+                                      //                           .shade200,
+                                      //                     ),
+                                      //                     borderRadius:
+                                      //                     BorderRadius
+                                      //                         .circular(
+                                      //                         5)),
+                                      //                 focusedErrorBorder:
+                                      //                 OutlineInputBorder(
+                                      //                     borderSide: BorderSide(
+                                      //                         color: Colors
+                                      //                             .grey
+                                      //                             .shade200),
+                                      //                     borderRadius:
+                                      //                     BorderRadius
+                                      //                         .circular(
+                                      //                         5)),
+                                      //                 // errorStyle: const TextStyle(height:0.05,fontSize: 12),
+                                      //                 contentPadding:
+                                      //                 const EdgeInsets
+                                      //                     .symmetric(
+                                      //                     vertical: 10.0,
+                                      //                     horizontal: 10.0),
+                                      //                 errorBorder:
+                                      //                 OutlineInputBorder(
+                                      //                     borderSide: BorderSide(
+                                      //                         color: Colors
+                                      //                             .grey
+                                      //                             .shade200),
+                                      //                     borderRadius:
+                                      //                     BorderRadius
+                                      //                         .circular(
+                                      //                         5)),
+                                      //               )),
+                                      //         );
+                                      //       }),
+                                      // ),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -879,6 +1014,13 @@ class _AddLeadState extends State<AddLead> {
                                               15.height,
                                             ],
                                           ),
+                                          // IconButton(onPressed: (){
+                                          //   for(var i=0;i<controllers.numberList.length;i++){
+                                          //     if(controllers.numberList[i].text.isNotEmpty){
+                                          //
+                                          //     }
+                                          //   }
+                                          // }, icon: Icon(Icons.add,color: colorsConst.primary,))
                                         ],
                                       ),
                                       CustomTextField(

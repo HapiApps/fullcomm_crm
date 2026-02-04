@@ -123,6 +123,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                     // Filter Section
                     FilterSection(
                       //Santhiya
+                      itemCount: controllers.paginatedCustomerLeads.length,
                       focusNode: _focusNode,
                       title: "Customers",
                       leadFuture: controllers.allCustomerLeadFuture,
@@ -360,34 +361,27 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                   showCheckbox: true,
                                 isAllSelected: apiService.prospectsList.isEmpty?false:controllers.isAllSelected.value,
                                   onSelectAll: (value) {
-                                    setState(() {
+                                    controllers.isAllSelected.value = value ?? false;
+                                    if (value == true) {
                                       apiService.prospectsList.clear();
-                                      controllers.isAllSelected.value = value!;
-                                      if (value == true) {
-                                        for (var item in controllers.isCustomerList) {
-                                          item["isSelect"] = true;
-                                        }
-                                        apiService.prospectsList.clear();
-                                        for (var item in controllers.isCustomerList) {
-                                          apiService.prospectsList.add({
-                                            "lead_id": item["lead_id"].toString(),
-                                            "user_id": controllers.storage.read("id"),
-                                            "rating": item["rating"] ?? "Warm",
-                                            "cos_id": controllers.storage.read("cos_id"),
-                                            "mail_id": item["email_id"].toString()==""
-                                                ?""
-                                                :item["email_id"].toString(),
-                                          });
-                                        }
-                                      } else {
-                                        for (var item in controllers.isCustomerList) {
-                                          item["isSelect"] = false;
-                                        }
-                                        apiService.prospectsList.clear();
+                                      for (var item in controllers.isCustomerList) {
+                                        item["isSelect"] = true;
+                                        apiService.prospectsList.add({
+                                          "lead_id": item["lead_id"].toString(),
+                                          "user_id": controllers.storage.read("id").toString(),
+                                          "rating": item["rating"] ?? "Warm",
+                                          "cos_id": controllers.storage.read("cos_id").toString(),
+                                          "mail_id": (item["email_id"] ?? "").toString(),
+                                        });
                                       }
-                                    });
+                                    } else {
+                                      for (var item in controllers.isCustomerList) {
+                                        item["isSelect"] = false;
+                                      }
+                                      apiService.prospectsList.clear();
+                                    }
+                                    setState(() {});
                                   },
-
                                   onSortDate: () {
                                     controllers.sortField.value = 'date';
                                     controllers.sortOrder.value =
@@ -410,32 +404,33 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                           pageName: "Customers",
                                           showCheckbox: true,
                                           saveValue: controllers.isCustomerList[index]["isSelect"],
-                                          onChanged: (value){
-                                            setState(() {
-                                              controllers.isAllSelected.value = false;
-                                              try{
-                                           if(controllers.isCustomerList[index]["isSelect"]==true){
-                                             controllers.isCustomerList[index]["isSelect"]=false;
-                                             var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                             apiService.prospectsList.removeAt(i);
-                                           }else{
-                                             controllers.isCustomerList[index]["isSelect"]=true;
-                                             apiService.prospectsList.add({
-                                               "lead_id":data.userId==null?"":data.userId.toString(),
-                                               "user_id":controllers.storage.read("id"),
-                                               "rating":data.rating ?? "Warm",
-                                               "cos_id":controllers.storage.read("cos_id"),
-                                               "mail_id":data.email.toString()==""
-                                                   ?""
-                                                   :data.email.toString()
-                                             });
-                                           }
-                                         }catch(e){
-                                           print("Error in customer list selection: $e");
-                                         }
-                                            });
-                                          },
-                                          visitType: data.visitType.toString(),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                controllers.isAllSelected.value = false;
+                                                final isSelected = value ?? false;
+                                                final leadId = data.userId?.toString() ?? "";
+                                                controllers.isCustomerList[index]["isSelect"] = isSelected;
+                                                if (isSelected) {
+                                                  final exists = apiService.prospectsList.any(
+                                                        (e) => e["lead_id"] == leadId,
+                                                  );
+                                                  if (!exists) {
+                                                    apiService.prospectsList.add({
+                                                      "lead_id": leadId,
+                                                      "user_id": controllers.storage.read("id").toString(),
+                                                      "rating": data.rating ?? "Warm",
+                                                      "cos_id": controllers.storage.read("cos_id").toString(),
+                                                      "mail_id": data.email ?? "",
+                                                    });
+                                                  }
+                                                } else {
+                                                  apiService.prospectsList.removeWhere(
+                                                        (e) => e["lead_id"] == leadId,
+                                                  );
+                                                }
+                                              });
+                                            },
+                                            visitType: data.visitType.toString(),
                                           detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
                                           statusUpdate: data.statusUpdate.toString(),
                                           index: index,

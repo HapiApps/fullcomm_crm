@@ -11,13 +11,19 @@ class AllCustomersObj {
 
   factory AllCustomersObj.fromJson(Map<String, dynamic> json) {
     return AllCustomersObj(
-      id: json['id'] ?? '',
-      name: json['name'] == 'null' ? '' : json['name'] ?? '',
-      companyName: json['company_name'] == 'null' ? '' : json['company_name'] ?? '',
-      phoneNo: json['phone_no'] ?? '',
-      email: (json['email'] == 'null' || json['email'] == null) ? '' : json['email'],
+      id: json['id']?.toString() ?? '',
+      name: json['name'] == 'null' ? '' : json['name']?.toString() ?? '',
+      companyName:
+      json['company_name'] == 'null'
+          ? ''
+          : json['company_name']?.toString() ?? '',
+      phoneNo: json['phone_no']?.toString() ?? '',
+      email: (json['email'] == 'null' || json['email'] == null)
+          ? ''
+          : json['email'].toString(),
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -46,12 +52,15 @@ class AllEmployeesObj {
 
   factory AllEmployeesObj.fromJson(Map<String, dynamic> json) {
     return AllEmployeesObj(
-      id: json['id'] ?? '',
-      name: json['s_name'] == 'null' ? '' : json['s_name'] ?? '',
-      phoneNo: json['s_mobile'] ?? '',
-      email: (json['email'] == 'null' || json['email'] == null) ? '' : json['email'],
+      id: json['id']?.toString() ?? '',
+      name: json['s_name'] == 'null' ? '' : json['s_name']?.toString() ?? '',
+      phoneNo: json['s_mobile']?.toString() ?? '',
+      email: (json['email'] == 'null' || json['email'] == null)
+          ? ''
+          : json['email'].toString(),
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {

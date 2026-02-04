@@ -134,6 +134,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                       // Filter Section
                       FilterSection(
                         //Santhiya
+                        itemCount: controllers.paginatedDisqualified.length,
                         focusNode: _focusNode,
                         title: "No Matches",
                         leadFuture: controllers.disqualifiedFuture,

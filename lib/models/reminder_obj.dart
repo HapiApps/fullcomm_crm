@@ -35,21 +35,21 @@ class ReminderModel {
 
   factory ReminderModel.fromJson(Map<String, dynamic> json) {
     return ReminderModel(
-      id: json['id'] ?? '',
-      cosId: json['cos_id'] ?? '',
-      title: json['title'] ?? '',
-      type: json['type'] ?? '',
-      location: json['location'] ?? '',
-      repeatType: json['repeat_type'] ?? '',
-      startDt: json['start_dt'] ?? '',
-      endDt: json['end_dt'] ?? '',
-      details: json['details'] ?? '',
-      updatedBy: json['updated_by'],
-      createdBy: json['created_by'] ?? '',
-      createdTs: json['created_ts'] ?? '',
-      updatedTs: json['updated_ts'] ?? '',
-      employeeName: json['employee_name'] ?? '',
-      customerName: json['customer_name'] ?? '',
+      id: json['id']?.toString() ?? '',
+      cosId: json['cos_id']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      type: json['type']?.toString() ?? '',
+      location: json['location']?.toString() ?? '',
+      repeatType: json['repeat_type']?.toString() ?? '',
+      startDt: json['start_dt']?.toString() ?? '',
+      endDt: json['end_dt']?.toString() ?? '',
+      details: json['details']?.toString() ?? '',
+      updatedBy: json['updated_by']?.toString() ?? '',
+      createdBy: json['created_by']?.toString() ?? '',
+      createdTs: json['created_ts']?.toString() ?? '',
+      updatedTs: json['updated_ts']?.toString() ?? '',
+      employeeName: json['employee_name']?.toString() ?? '',
+      customerName: json['customer_name']?.toString() ?? '',
     );
   }
 

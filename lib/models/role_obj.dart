@@ -17,12 +17,12 @@ class RoleModel {
 
   factory RoleModel.fromJson(Map<String, dynamic> json) {
     return RoleModel(
-      id: json['id'] ?? '',
-      cosId: json['cos_id'] ?? '',
-      uId: json['u_id'] ?? '',
-      roleName: json['role_name'] ?? '',
-      description: json['description'] ?? '',
-      permission: json['permission'] ?? ''
+      id: json['id']?.toString() ?? '',
+      cosId: json['cos_id']?.toString() ?? '',
+      uId: json['u_id']?.toString() ?? '',
+      roleName: json['role_name']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      permission: json['permission']?.toString() ?? '',
     );
   }
 

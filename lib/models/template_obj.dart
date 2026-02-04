@@ -25,16 +25,16 @@ class TemplateModel {
 
   factory TemplateModel.fromJson(Map<String, dynamic> json) {
     return TemplateModel(
-      id: json['id'] ?? '',
-      cosId: json['cos_id'] ?? '',
-      templateName: json['template_name'] ?? '',
-      subject: json['subject'] ?? '',
-      message: json['message'] ?? '',
-      active: json['active'] ?? '',
-      updatedBy: json['updated_by'],
-      createdBy: json['created_by'] ?? '',
-      createdTs: json['created_ts'] ?? '',
-      updatedTs: json['updated_ts'] ?? '',
+      id: json['id']?.toString() ?? '',
+      cosId: json['cos_id']?.toString() ?? '',
+      templateName: json['template_name']?.toString() ?? '',
+      subject: json['subject']?.toString() ?? '',
+      message: json['message']?.toString() ?? '',
+      active: json['active']?.toString() ?? '',
+      updatedBy: json['updated_by']?.toString() ?? '',
+      createdBy: json['created_by']?.toString() ?? '',
+      createdTs: json['created_ts']?.toString() ?? '',
+      updatedTs: json['updated_ts']?.toString() ?? '',
     );
   }
 

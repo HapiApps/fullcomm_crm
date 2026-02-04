@@ -33,20 +33,20 @@ class CustomerActivity {
 
   factory CustomerActivity.fromJson(Map<String, dynamic> json) {
     return CustomerActivity(
-      id: json['id'] ?? '',
-      sentId: json['sent_id'] ?? '',
-      toData: json['to_data'] ?? '',
-      fromData: json['from_data'] ?? '',
-      subject: json['subject'] ?? '',
-      sentDate: json['sent_date'] ?? '',
-      message: json['message'] ?? '',
-      sentCount: json['sent_count'] ?? '',
-      quotationName: json['quotation_name'] ?? '',
-      customerName: json['customer_name'] ?? '',
-      callType: json['call_type'] ?? '',
-      callStatus: json['call_status'] ?? '',
-      leadStatus: json['lead_status'] ?? '',
-      attachment: json['attachment'] ?? '',
+      id: json['id']?.toString() ?? '',
+      sentId: json['sent_id']?.toString() ?? '',
+      toData: json['to_data']?.toString() ?? '',
+      fromData: json['from_data']?.toString() ?? '',
+      subject: json['subject']?.toString() ?? '',
+      sentDate: json['sent_date']?.toString() ?? '',
+      message: json['message']?.toString() ?? '',
+      sentCount: json['sent_count']?.toString() ?? '',
+      quotationName: json['quotation_name']?.toString() ?? '',
+      customerName: json['customer_name']?.toString() ?? '',
+      callType: json['call_type']?.toString() ?? '',
+      callStatus: json['call_status']?.toString() ?? '',
+      leadStatus: json['lead_status']?.toString() ?? '',
+      attachment: json['attachment']?.toString() ?? '',
     );
   }
 

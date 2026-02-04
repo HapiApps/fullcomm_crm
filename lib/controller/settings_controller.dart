@@ -444,12 +444,14 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
         },
         body: jsonEncode({
           "action": "get_data",
-          "cos_id": controllers.storage.read("cos_id"),
+          "cos_id": int.parse(controllers.storage.read("cos_id")),
           "search_type": "settings_roles"
         }),
       );
+    print("setting_roles"); // <-- ADD THIS
 
       if (response.statusCode == 200) {
+        print(response.body); // <-- ADD THIS
         final data = jsonDecode(response.body);
           final List<dynamic> rolesJson = data;
           roleList.value = rolesJson.map((json) => RoleModel.fromJson(json)).toList();
@@ -462,7 +464,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
     } catch (e) {
       roleList.value = [];
       rolesCount.value = 0;
-      print("Error fetching reminders: $e");
+      print("Error fetching reminders11: $e");
     } finally {
       isLoadingRoles.value = false;
     }
@@ -541,7 +543,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
     } catch (e) {
       officeHoursList.value = [];
       officeHoursCount.value = 0;
-      print("Error fetching reminders: $e");
+      print("Error fetching reminders22: $e");
     } finally {
       isLoadingOfficeHours.value = false;
     }

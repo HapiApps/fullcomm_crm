@@ -183,27 +183,25 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   RxList<CustomerActivity> callFilteredList  = <CustomerActivity>[].obs;
   RxList<CustomerActivity> mailFilteredList  = <CustomerActivity>[].obs;
   RxList<MeetingObj> meetingFilteredList     = <MeetingObj>[].obs;
-  RxList<ReminderModel> reminderFilteredList     = <ReminderModel>[].obs;
-  void selectMonth(BuildContext context, RxString sortByKey, Rxn<DateTime> selectedMonthTarget,VoidCallback onMonthSelected,) {
+  RxList<ReminderModel> reminderFilteredList = <ReminderModel>[].obs;
+
+  void selectMonth(BuildContext context, RxString sortByKey, Rxn<DateTime> selectedMonthTarget,VoidCallback onMonthSelected) {
+    final now = DateTime.now();
     showMonthPicker(
       context: context,
       monthStylePredicate: (month) {
-        final now = DateTime.now();
         if (month.month == now.month && month.year == now.year) {
           return ButtonStyle(
             foregroundColor: WidgetStateProperty.all(Colors.white),
-            backgroundColor: WidgetStateProperty.all(Colors.blue.withOpacity(0.2)),
-          );
-        } else {
-          return ButtonStyle(
-            foregroundColor: WidgetStateProperty.all(Colors.black),
-            backgroundColor: WidgetStateProperty.all(Colors.transparent),
+            backgroundColor:
+            WidgetStateProperty.all(Colors.blue.withOpacity(0.2)),
           );
         }
+        return null;
       },
-      initialDate: selectedMonthTarget.value,
+      initialDate: selectedMonthTarget.value ?? now,
       firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
+      lastDate: DateTime(now.year, now.month + 1, 0),
     ).then((selected) {
       if (selected != null) {
         sortByKey.value = 'Custom Month';
@@ -365,10 +363,10 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     final today = DateTime(now.year, now.month, now.day);
     final filtered = allCalls.where((activity) {
       final matchesCallType =
-          callType.isEmpty || callType == "All" || activity.callType == callType;
+          callType.isEmpty || callType == "All" || activity.callStatus == callType;
       final matchesSearch = searchText.isEmpty ||
           activity.customerName.toLowerCase().contains(searchText.toLowerCase()) ||
-          activity.toData.toLowerCase().contains(searchText.toLowerCase());
+          activity.sentDate.toLowerCase().contains(searchText.toLowerCase());
 
       final activityDate = parseDate(activity.sentDate);
       bool matchesDate = true;
@@ -773,7 +771,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       } else {
         result = 0;
       }
-
       return sortOrderCallActivity.value == 'asc' ? result : -result;
     });
     mailFilteredList.assignAll(filteredList);
@@ -1028,23 +1025,24 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200 && response["message"]=="Reminder added successfully"){
-         titleController.clear();
-         location=null;
-         repeat=null;
-         controllers.clearSelectedEmployee();
-         controllers.clearSelectedCustomer();
-         startController.clear();
-         endController.clear();
-         detailsController.clear();
-          reminders.clear();
-          reminders.add(AddReminderModel());
-          stDate.value="";
-          stTime.value="";
-          enDate.value="";
-          enTime.value="";
-          repeatOn=null;
-         final provider = Provider.of<ReminderProvider>(context, listen: false);
-         provider.selectedNotification = "followup";
+        titleController.clear();
+        location=null;
+        repeat=null;
+        controllers.clearSelectedEmployee();
+        controllers.clearSelectedCustomer();
+        startController.clear();
+        endController.clear();
+        detailsController.clear();
+        reminders.clear();
+        reminders.add(AddReminderModel());
+        stDate.value="";
+        stTime.value="";
+        enDate.value="";
+        enTime.value="";
+        repeatOn=null;
+        final provider = Provider.of<ReminderProvider>(context, listen: false);
+        provider.selectedNotification = "followup";
+        apiService.getAllCallActivity("");
         allReminders(type);
         Navigator.pop(context);
         utils.snackBar(context: context, msg: "Reminder added successfully", color: Colors.green);

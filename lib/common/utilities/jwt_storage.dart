@@ -9,6 +9,10 @@ class TokenStorage {
     _box.write('jwt_token', token);
   }
 
+  void writeRefreshToken(String token) {
+    _box.write('jwt_refresh_token', token);
+  }
+
   // Read token
   String? readToken() {
     return _box.read('jwt_token');

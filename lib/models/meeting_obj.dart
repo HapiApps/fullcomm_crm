@@ -27,17 +27,17 @@ class MeetingObj {
 
   factory MeetingObj.fromJson(Map<String, dynamic> json) {
     return MeetingObj(
-      id: json['id'] ?? '',
-      cusId: json['cus_id'] ?? '',
-      cusName: json['cus_name'] ?? '',
-      comName: json['com_name'] ?? '',
-      title: json['title'] ?? '',
-      venue: json['venue'] ?? '',
-      dates: json['dates'] ?? '',
-      time: json['time'] ?? '',
-      notes: json['notes'] ?? '',
-      status: json['status'] ?? '',
-      createdBy: json['created_by'] ?? '',
+      id: json['id']?.toString() ?? '',
+      cusId: json['cus_id']?.toString() ?? '',
+      cusName: json['cus_name']?.toString() ?? '',
+      comName: json['com_name']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      venue: json['venue']?.toString() ?? '',
+      dates: json['dates']?.toString() ?? '',
+      time: json['time']?.toString() ?? '',
+      notes: json['notes']?.toString() ?? '',
+      status: json['status']?.toString() ?? '',
+      createdBy: json['created_by']?.toString() ?? '',
     );
   }
 

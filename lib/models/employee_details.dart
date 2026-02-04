@@ -19,11 +19,13 @@ class StaffData {
 
   factory StaffData.fromJson(Map<String, dynamic> json) => StaffData(
     responseCode: json["responseCode"],
-    result: json["result"],
-    responseMsg: json["responseMsg"],
+    result: json["result"]?.toString() ?? '',
+    responseMsg: json["responseMsg"]?.toString() ?? '',
     employees: json["employees"] == null
-        ? []
-        : List<Staff>.from(json["employees"].map((x) => Staff.fromJson(x))),
+        ? <Staff>[]
+        : List<Staff>.from(
+      json["employees"].map((x) => Staff.fromJson(x)),
+    ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -86,28 +88,28 @@ class Staff {
   });
 
   factory Staff.fromJson(Map<String, dynamic> json) => Staff(
-    id: json["id"],
-    sName: json["s_name"],
-    sMobile: json["s_mobile"],
-    email: json["email"],
-    sAddress: json["s_address"],
-    salary: json["salary"],
-    bonus: json["bonus"],
-    dob: json["dob"],
-    otherRoles: json["other_roles"],
-    whatsapp: json["whatsapp"],
-    role: json["role"],
-    roleTitle: json["role_title"], // <--- Mapped from JSON response
-    password: json["password"],
-    joiningDate: json["joining_date"],
-    platform: json["platform"],
-    upPlatform: json["up_platform"],
-    active: json["active"],
-    updatedTs: json["updated_ts"],
-    createdTs: json["created_ts"],
-    updatedBy: json["updated_by"],
-    createdBy: json["created_by"],
-    cosId: json["cos_id"],
+    id: json["id"]?.toString() ?? '',
+    sName: json["s_name"]?.toString() ?? '',
+    sMobile: json["s_mobile"]?.toString() ?? '',
+    email: json["email"]?.toString() ?? '',
+    sAddress: json["s_address"]?.toString() ?? '',
+    salary: json["salary"]?.toString() ?? '',
+    bonus: json["bonus"]?.toString() ?? '',
+    dob: json["dob"]?.toString() ?? '',
+    otherRoles: json["other_roles"]?.toString() ?? '',
+    whatsapp: json["whatsapp"]?.toString() ?? '',
+    role: json["role"]?.toString() ?? '',
+    roleTitle: json["role_title"]?.toString() ?? '',
+    password: json["password"]?.toString() ?? '',
+    joiningDate: json["joining_date"]?.toString() ?? '',
+    platform: json["platform"]?.toString() ?? '',
+    upPlatform: json["up_platform"]?.toString() ?? '',
+    active: json["active"]?.toString() ?? '',
+    updatedTs: json["updated_ts"]?.toString() ?? '',
+    createdTs: json["created_ts"]?.toString() ?? '',
+    updatedBy: json["updated_by"]?.toString() ?? '',
+    createdBy: json["created_by"]?.toString() ?? '',
+    cosId: json["cos_id"]?.toString() ?? '',
   );
 
   Map<String, dynamic> toJson() => {

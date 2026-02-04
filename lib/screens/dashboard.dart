@@ -545,19 +545,21 @@ class _NewDashboardState extends State<NewDashboard> {
                                             icon: Icons.notifications_active,
                                           ),
                                         ),
+                                        //
+                                        Obx(()=>dashController.visitStatusReport.isNotEmpty?
                                         InkWell(
                                           onTap: () {
                                             Navigator.push(
                                               context,
                                               PageRouteBuilder(
                                                 pageBuilder: (context,
-                                                        animation1,
-                                                        animation2) =>
-                                                    const ReminderPage(),
+                                                    animation1,
+                                                    animation2) =>
+                                                const ReminderPage(),
                                                 transitionDuration:
-                                                    Duration.zero,
+                                                Duration.zero,
                                                 reverseTransitionDuration:
-                                                    Duration.zero,
+                                                Duration.zero,
                                               ),
                                             );
 
@@ -569,9 +571,9 @@ class _NewDashboardState extends State<NewDashboard> {
                                             height: dashController.visitStatusReport.length*35,
                                             width: (screenWidth - 500),
                                             child: ListView.builder(
-                                              shrinkWrap: true,
-                                              physics: NeverScrollableScrollPhysics(),
-                                              itemCount: dashController.visitStatusReport.length,
+                                                shrinkWrap: true,
+                                                physics: NeverScrollableScrollPhysics(),
+                                                itemCount: dashController.visitStatusReport.length,
                                                 itemBuilder: (context,index){
                                                   return Padding(
                                                     padding: const EdgeInsets.all(8.0),
@@ -579,9 +581,9 @@ class _NewDashboardState extends State<NewDashboard> {
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         if(index==0)
-                                                        CustomText(text: "Call Status Report", isCopy: false,isBold: true,size: 17,colors: colorsConst.primary,),
+                                                          CustomText(text: "Call Status Report", isCopy: false,isBold: true,size: 17,colors: colorsConst.primary,),
                                                         if(index==0)
-                                                        5.height,
+                                                          5.height,
                                                         Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
@@ -594,7 +596,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                   );
                                                 }),
                                           ),
-                                        ),
+                                        ):0.height),
                                       ],
                                     ),
                                     10.height,

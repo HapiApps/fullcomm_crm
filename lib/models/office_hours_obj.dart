@@ -21,14 +21,14 @@ class OfficeHoursObj {
 
   factory OfficeHoursObj.fromJson(Map<String, dynamic> json) {
     return OfficeHoursObj(
-      id: json['id'] ?? '',
-      cosId: json['cos_id'] ?? '',
-      updatedTs: json['updated_ts'] ?? '',
-      employeeName: json['employee_name'] ?? '',
-      shiftName: json['shift_name'] ?? '',
-      fromTime: json['from_time'] ?? '',
-      toTime: json['to_time'] ?? '',
-      days: json['days'] ?? '',
+      id: json['id']?.toString() ?? '',
+      cosId: json['cos_id']?.toString() ?? '',
+      updatedTs: json['updated_ts']?.toString() ?? '',
+      employeeName: json['employee_name']?.toString() ?? '',
+      shiftName: json['shift_name']?.toString() ?? '',
+      fromTime: json['from_time']?.toString() ?? '',
+      toTime: json['to_time']?.toString() ?? '',
+      days: json['days']?.toString() ?? '',
     );
   }
 

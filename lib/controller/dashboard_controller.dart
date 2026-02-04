@@ -265,7 +265,7 @@ class DashboardController extends GetxController {
         "stDate":stDate,
         "enDate":endDate
       };
-      log("main day wise ${data.toString()}");
+      // print("main day wise ${data.toString()}");
       dayReport.value = [];
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -274,7 +274,7 @@ class DashboardController extends GetxController {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-
+      // print("main day wise ${request.body.toString()}");
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         dayReport.value = response.map<CustomerDayData>((e) => CustomerDayData.fromJson(e),).toList();
@@ -350,23 +350,48 @@ class DashboardController extends GetxController {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
+      // print("Dashboard request data/// ${request.body}");
       if (request.statusCode == 200) {
-        var response = jsonDecode(request.body) as List;
-        dashController.totalMails.value       = response[0]["total_mails"] ?? "0";
-        dashController.totalReminders.value   = response[0]["total_reminders"] ?? "0";
-        dashController.totalMeetings.value    = response[0]["total_meetings"] ?? "0";
-        dashController.pendingMeetings.value  = response[0]["pending_meetings"] ?? "0";
-        dashController.completedMeetings.value = response[0]["completed_meetings"] ?? "0";
-        dashController.totalCalls.value       = response[0]["total_calls"] ?? "0";
-        dashController.totalEmployees.value   = response[0]["total_employees"] ?? "0";
-        dashController.totalHot.value         = response[0]["hot_total"]?.toString() ?? "0";
-        dashController.totalWarm.value        = response[0]["warm_total"]?.toString() ?? "0";
-        dashController.totalCold.value        = response[0]["cold_total"]?.toString() ?? "0";
-        dashController.totalSuspects.value    = response[0]["total_suspects"]?.toString() ?? "0";
-        dashController.totalProspects.value   = response[0]["total_prospects"]?.toString() ?? "0";
-        dashController.totalQualified.value   = response[0]["total_qualified"]?.toString() ?? "0";
-        dashController.totalUnQualified.value = response[0]["total_disqualified"]?.toString() ?? "0";
-        dashController.totalCustomers.value   = response[0]["total_customers"]?.toString() ?? "0";
+        // var response = jsonDecode(request.body) as List;
+        // dashController.totalMails.value       = response[0]["total_mails"] ?? "0";
+        // dashController.totalReminders.value   = response[0]["total_reminders"] ?? "0";
+        // dashController.totalMeetings.value    = response[0]["total_meetings"] ?? "0";
+        // dashController.pendingMeetings.value  = response[0]["pending_meetings"] ?? "0";
+        // dashController.completedMeetings.value = response[0]["completed_meetings"] ?? "0";
+        // dashController.totalCalls.value       = response[0]["total_calls"] ?? "0";
+        // dashController.totalEmployees.value   = response[0]["total_employees"] ?? "0";
+        // dashController.totalHot.value         = response[0]["hot_total"]?.toString() ?? "0";
+        // dashController.totalWarm.value        = response[0]["warm_total"]?.toString() ?? "0";
+        // dashController.totalCold.value        = response[0]["cold_total"]?.toString() ?? "0";
+        // dashController.totalSuspects.value    = response[0]["total_suspects"]?.toString() ?? "0";
+        // dashController.totalProspects.value   = response[0]["total_prospects"]?.toString() ?? "0";
+        // dashController.totalQualified.value   = response[0]["total_qualified"]?.toString() ?? "0";
+        // dashController.totalUnQualified.value = response[0]["total_disqualified"]?.toString() ?? "0";
+        // dashController.totalCustomers.value   = response[0]["total_customers"]?.toString() ?? "0";
+
+        var responseList = jsonDecode(request.body) as List;
+        if (responseList.isNotEmpty) {
+          var response = responseList[0] as Map<String, dynamic>;
+
+          dashController.totalMails.value        = response["total_mails"]?.toString() ?? "0";
+          dashController.totalReminders.value    = response["total_reminders"]?.toString() ?? "0";
+          dashController.totalMeetings.value     = response["total_meetings"]?.toString() ?? "0";
+          dashController.pendingMeetings.value   = response["pending_meetings"]?.toString() ?? "0";
+          dashController.completedMeetings.value = response["completed_meetings"]?.toString() ?? "0";
+          dashController.totalCalls.value        = response["total_calls"]?.toString() ?? "0";
+          dashController.totalEmployees.value    = response["total_employees"]?.toString() ?? "0";
+          dashController.totalHot.value          = response["hot_total"]?.toString() ?? "0";
+          dashController.totalWarm.value         = response["warm_total"]?.toString() ?? "0";
+          dashController.totalCold.value         = response["cold_total"]?.toString() ?? "0";
+          dashController.totalSuspects.value     = response["total_suspects"]?.toString() ?? "0";
+          dashController.totalProspects.value    = response["total_prospects"]?.toString() ?? "0";
+          dashController.totalQualified.value    = response["total_qualified"]?.toString() ?? "0";
+          dashController.totalUnQualified.value  = response["total_disqualified"]?.toString() ?? "0";
+          dashController.totalCustomers.value    = response["total_customers"]?.toString() ?? "0";
+        } else {
+          // handle empty response gracefully
+          print("Dashboard API returned empty data");
+        }
       } else {
         throw Exception('Failed to load dashboard report');
       }

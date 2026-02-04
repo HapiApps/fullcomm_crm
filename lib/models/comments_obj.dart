@@ -21,16 +21,23 @@ class CommentsObj {
       required this.updateTs});
 
   factory CommentsObj.fromJson(Map<String, dynamic> json) => CommentsObj(
-        comments: json["comments"],
-        date: json["date"],
-        type: json["type"],
-        createdTs: DateTime.parse(json["created_ts"]),
-        updateTs: DateTime.parse(json["updated_ts"]),
-        name: json["name"],
-        phoneNo: json["phone_no"],
-        firstname: json["firstname"] ?? "Amutha",
-        companyName: json["company_name"],
-      );
+    comments: json["comments"]?.toString() ?? '',
+    date: json["date"]?.toString() ?? '',
+    type: json["type"]?.toString() ?? '',
+    createdTs: json["created_ts"] != null
+        ? DateTime.parse(json["created_ts"].toString())
+        : DateTime.now(),
+    updateTs: json["updated_ts"] != null
+        ? DateTime.parse(json["updated_ts"].toString())
+        : DateTime.now(),
+    name: json["name"]?.toString() ?? '',
+    phoneNo: json["phone_no"]?.toString() ?? '',
+    firstname: json["firstname"] == null || json["firstname"] == 'null'
+        ? "Amutha"
+        : json["firstname"].toString(),
+    companyName: json["company_name"]?.toString() ?? '',
+  );
+
 
   Map<String, dynamic> toJson() => {
         "comments": comments,

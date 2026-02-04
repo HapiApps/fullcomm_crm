@@ -1,3 +1,14 @@
+double d(dynamic v) {
+  if (v == null) return 0;
+  if (v is double) return v;
+  if (v is int) return v.toDouble();
+  return double.tryParse(v.toString()) ?? 0;
+}
+String s(dynamic value) {
+  if (value == null || value == 'null') return '';
+  return value.toString();
+}
+
 class CustomerMonthData {
   final String monthName;
   final double totalCustomers;
@@ -9,8 +20,8 @@ class CustomerMonthData {
 
   factory CustomerMonthData.fromJson(Map<String, dynamic> json) {
     return CustomerMonthData(
-      monthName: json['month_name'],
-      totalCustomers: double.tryParse(json['total_customers'].toString()) ?? 0,
+      monthName: s(json['month_name']),
+      totalCustomers: d(json['total_customers']),
     );
   }
 }
@@ -28,16 +39,16 @@ class CustomerDayData {
 
   factory CustomerDayData.fromJson(Map<String, dynamic> json) {
     return CustomerDayData(
-      dayDate: json['day_date'] ?? '',
-      dayName: json['day_name'],
-      totalCustomers: double.tryParse(json['total_customers'].toString()) ?? 0,
+      dayDate: s(json['day_date']),
+      dayName: s(json['day_name']),
+      totalCustomers: d(json['total_customers']),
     );
   }
 
   int get dayNum {
     try {
       return DateTime.parse(dayDate).day;
-    } catch (e) {
+    } catch (_) {
       return 0;
     }
   }

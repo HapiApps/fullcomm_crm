@@ -129,6 +129,8 @@ class _RatingLeadsState extends State<RatingLeads> {
                       // Filter Section
                       FilterSection(
                         //Santhiya
+                        itemCount: controllers.paginatedRatingLeads.length,
+
                         focusNode: _focusNode,
                         isActionEnabled: false,
                         leadFuture: controllers.allNewLeadFuture,

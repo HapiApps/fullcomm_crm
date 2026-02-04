@@ -136,6 +136,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                       // Filter Section
                       FilterSection(
                         //Santhiya
+                        itemCount: controllers.paginatedTargetLead.length,
                         focusNode: _focusNode,
                         leadFuture: controllers.targetLeadsFuture,
                         title: "Target Leads",

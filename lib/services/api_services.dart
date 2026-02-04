@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'package:fullcomm_crm/controller/table_controller.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
@@ -419,8 +420,8 @@ class ApiService {
     try {
       final request = await http.post(Uri.parse(prospectsScript),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(list),
           encoding: Encoding.getByName("utf-8"));
@@ -871,8 +872,8 @@ class ApiService {
       Map data = {"action": "delete_customers", "cusList": list};
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json'
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -1128,7 +1129,7 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      if (request.statusCode == 200 && request.body.toString().contains("Customer saved successfully.")) {
+      if (request.statusCode == 200 && request.body.toString().contains("Customer saved successfully")) {
         apiService.getAllCustomers();
         final prefs = await SharedPreferences.getInstance();
         controllers.leadActions.clear();
@@ -1236,10 +1237,11 @@ class ApiService {
   List<Map<String, String>> qualifiedList = [];
   Future insertQualifiedAPI(BuildContext context,List<Map<String, String>> list) async {
     try {
+      print("insertQualifiedAPI");
       final request = await http.post(Uri.parse(qualifiedScript),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(list),
           encoding: Encoding.getByName("utf-8"));
@@ -1278,8 +1280,8 @@ class ApiService {
       Map data = {"action": "promote_customers", "cusList": list};
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
@@ -1541,7 +1543,7 @@ class ApiService {
     try {
       Map data = {
         "search_type": "allEmployees",
-        "cos_id": controllers.storage.read("cos_id"),
+        "cos_id": "${int.parse(controllers.storage.read("cos_id"))}",
         "action": "get_data"
       };
       final request = await http.post(Uri.parse(scriptApi),
@@ -1551,6 +1553,7 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      print("allEmployees.... ${request.body}");
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         controllers.employees.clear();
@@ -1563,63 +1566,6 @@ class ApiService {
     }
   }
 
-  Future getAllCallActivity(String cusId) async {
-    try {
-      Map data = {
-        "search_type": "records",
-        "cos_id": controllers.storage.read("cos_id"),
-        "action": "get_data",
-        "type": "7",
-        "cus_id": cusId
-      };
-      final request = await http.post(Uri.parse(scriptApi),
-          headers: {
-            'X-API-TOKEN': "${TokenStorage().readToken()}",
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(data),
-          encoding: Encoding.getByName("utf-8"));
-      if (request.statusCode == 200) {
-        List response = json.decode(request.body);
-        controllers.callActivity.clear();
-        controllers.callActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
-        final incoming = controllers.callActivity.where((e) => e.callType.isNotEmpty && e.callType.trim() == "Incoming").toList();
-        final outgoing = controllers.callActivity
-            .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Outgoing")
-            .toList();
-        final missed = controllers.callActivity
-            .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Missed")
-            .toList();
-
-        controllers.allIncomingCalls.value = incoming.length.toString();
-        controllers.allOutgoingCalls.value = outgoing.length.toString();
-        controllers.allMissedCalls.value = missed.length.toString();
-        controllers.allCalls.value = response.length.toString();
-        remController.filterAndSortCalls(
-          allCalls: controllers.callActivity,
-          searchText: controllers.searchText.value.toLowerCase(),
-          callType: controllers.selectCallType.value,
-          sortField: controllers.sortFieldCallActivity.value,
-          sortOrder: controllers.sortOrderCallActivity.value,
-          selectedMonth: remController.selectedCallMonth.value,
-          selectedRange: remController.selectedCallRange.value,
-          selectedDateFilter: remController.selectedCallSortBy.value,
-        );
-      } else {
-        controllers.allIncomingCalls.value = "0";
-        controllers.allOutgoingCalls.value = "0";
-        controllers.allMissedCalls.value = "0";
-        controllers.callActivity.clear();
-        throw Exception('Failed to load album');
-      }
-    } catch (e) {
-      controllers.allIncomingCalls.value = "0";
-      controllers.allOutgoingCalls.value = "0";
-      controllers.allMissedCalls.value = "0";
-      controllers.callActivity.clear();
-      throw Exception('Failed to load album');
-    }
-  }
 
   Future<void> getAllMailActivity() async {
     controllers.isSent.value = true;
@@ -2028,48 +1974,150 @@ class ApiService {
         });
   }
   void cusErrorDialog(BuildContext context, String text) {
+    final parts = text.split('\n\nFailed List:\n');
+    final headerText = parts.first;
+    final failedLines = parts.length > 1
+        ? parts.last
+        .split('\n')
+        .where((line) => line.trim().isNotEmpty)
+        .toList()
+        : <String>[];
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          iconPadding: const EdgeInsets.fromLTRB(0, 0.5, 1, 0),
-          icon: Align(
-            alignment: Alignment.topRight,
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-                controllers.leadCtr.reset();
-              },
-              icon: Icon(
-                Icons.close,
-                color: colorsConst.third,
-              ),
-            ),
+      builder: (_) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          title: const Center(
-            child: Icon(
-              Icons.error,
-              color: Colors.red,
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: Text(
-              text,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: colorsConst.textColor,
+          child: SizedBox(
+            width: 500,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      5.width,
+                      Center(
+                        child: Text(
+                          headerText,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            controllers.leadCtr.reset();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  16.height,
+                  if (failedLines.isNotEmpty)
+                    Container(
+                      width: 450,
+                      height: 40,
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                        ),
+                        color: Colors.grey.shade200,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                        child: const Text(
+                          'Failed List:',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (failedLines.isNotEmpty)
+                    Container(
+                      width: 450,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(12),
+                            bottomRight: Radius.circular(12),
+                          )
+                      ),
+                      child: Column(
+                        children: failedLines.map((line) {
+                          return Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    line.replaceFirst('• ', ''),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  24.height,
+                  Center(
+                    child: SizedBox(
+                      width: 200,
+                      height: 48,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'OK',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-
             ),
           ),
         );
       },
     );
   }
-
 
 
   Future<List<ProductObj>> allProductDetails() async {
@@ -2425,7 +2473,6 @@ class ApiService {
           "action": "get_data"
         }),
       );
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
 
@@ -2456,6 +2503,89 @@ class ApiService {
     }
   }
 
+  Map<String, int> getStatusCountMap() {
+    final Map<String, int> map = {};
+
+    for (var item in controllers.callActivity) {
+      final status = item.callStatus.trim();
+      if (status.isEmpty) continue;
+
+      map[status] = (map[status] ?? 0) + 1;
+    }
+    return map;
+  }
+  void mergeStatusWithCount() {
+    final statusCountMap = getStatusCountMap();
+    controllers.hCallStatusList.value = controllers.hCallStatusList.map((item) {
+      final statusValue = item["value"]?.toString();
+
+      return {
+        ...item,
+        "count": statusCountMap[statusValue] ?? 0,
+      };
+    }).toList();
+    log("Merged Status List: ${controllers.hCallStatusList}");
+  }
+//new
+  Future getAllCallActivity(String cusId) async {
+    await controllers.getCallStatus();
+    try {
+      Map data = {
+        "search_type": "records",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data",
+        "type": "7",
+        "cus_id": cusId
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.callActivity.clear();
+        controllers.callActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+        final incoming = controllers.callActivity.where((e) => e.callType.isNotEmpty && e.callType.trim() == "Incoming").toList();
+        final outgoing = controllers.callActivity
+            .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Outgoing")
+            .toList();
+        final missed = controllers.callActivity
+            .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Missed")
+            .toList();
+
+        controllers.allIncomingCalls.value = incoming.length.toString();
+        controllers.allOutgoingCalls.value = outgoing.length.toString();
+        controllers.allMissedCalls.value = missed.length.toString();
+        controllers.allCalls.value = response.length.toString();
+        mergeStatusWithCount();
+        remController.filterAndSortCalls(
+          allCalls: controllers.callActivity,
+          searchText: controllers.searchText.value.toLowerCase(),
+          callType: controllers.selectCallType.value,
+          sortField: controllers.sortFieldCallActivity.value,
+          sortOrder: controllers.sortOrderCallActivity.value,
+          selectedMonth: remController.selectedCallMonth.value,
+          selectedRange: remController.selectedCallRange.value,
+          selectedDateFilter: remController.selectedCallSortBy.value,
+        );
+      } else {
+        controllers.allIncomingCalls.value = "0";
+        controllers.allOutgoingCalls.value = "0";
+        controllers.allMissedCalls.value = "0";
+        controllers.callActivity.clear();
+        throw Exception('Failed to load album Recordssss');
+      }
+    } catch (e) {
+      controllers.allIncomingCalls.value = "0";
+      controllers.allOutgoingCalls.value = "0";
+      controllers.allMissedCalls.value = "0";
+      controllers.callActivity.clear();
+      throw Exception('Failed to load album Recordssss');
+    }
+  }
   Future<void> allRatingLeadsDetails(String type) async {
     controllers.isLead.value = false;
     final url = Uri.parse(scriptApi);

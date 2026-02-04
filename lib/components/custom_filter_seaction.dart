@@ -13,6 +13,7 @@ import 'keyboard_search.dart';
 class FilterSection extends StatelessWidget {
   final String title;
   final int count;
+  final int itemCount;
   final bool isActionEnabled;
   final List<dynamic> itemList;
   final RxList<NewLeadObj> leadFuture;
@@ -49,7 +50,7 @@ class FilterSection extends StatelessWidget {
     required this.isMenuOpen,
     this.onQualify,
     required this.leadFuture,
-    this.isActionEnabled = true, this.focusNode,
+    this.isActionEnabled = true, this.focusNode, required this.itemCount,
   });
 
   @override
@@ -69,11 +70,16 @@ class FilterSection extends StatelessWidget {
                   isCopy: false,
                 ),
                 10.width,
-                CircleAvatar(
-                  backgroundColor: colorsConst.primary,
-                  radius: 17,
+                Container(
+                  width: 70,
+                  height: 30,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: colorsConst.primary,
+                  ),
                   child: CustomText(
-                    text: count.toString(),
+                    text: "$itemCount/${count.toString()}",
                     colors: Colors.white,
                     size: 13,
                     isCopy: false,
@@ -127,60 +133,60 @@ class FilterSection extends StatelessWidget {
             Row(
               children: [
                 if(itemList.isNotEmpty)
-                CustomText(text: "Selected count: ${itemList.length}", isCopy: false),15.width,
+                  CustomText(text: "Selected count: ${itemList.length}", isCopy: false),15.width,
                 itemList.isEmpty
                     ? 0.height
                     : title == "No Matches" || title == "Target Leads"
+                    ? ActionButton(
+                  width: 100,
+                  image: "assets/images/action_promote.png",
+                  name: "Qualified",
+                  toolTip: "Click here to Qualified the customer details",
+                  callback: onQualify!,
+                )
+                    : Row(
+                  children: [
+                    ActionButton(
+                      width: 100,
+                      image: "assets/images/action_delete.png",
+                      name: "Delete",
+                      toolTip: "Click here to delete the customer details",
+                      callback: onDelete,
+                    ),
+                    10.width,
+                    title == "Customers"
+                        ? 0.height
+                        : ActionButton(
+                      width: 100,
+                      image: "assets/images/action_promote.png",
+                      name: "Promote",
+                      toolTip:
+                      "Click here to promote the customer details",
+                      callback: onPromote,
+                    ),
+                    10.width,
+                    title == "Suspects"
                         ? ActionButton(
-                            width: 100,
-                            image: "assets/images/action_promote.png",
-                            name: "Qualified",
-                            toolTip: "Click here to Qualified the customer details",
-                            callback: onQualify!,
-                          )
-                        : Row(
-                            children: [
-                              ActionButton(
-                                width: 100,
-                                image: "assets/images/action_delete.png",
-                                name: "Delete",
-                                toolTip: "Click here to delete the customer details",
-                                callback: onDelete,
-                              ),
-                              10.width,
-                              title == "Customers"
-                                  ? 0.height
-                                  : ActionButton(
-                                      width: 100,
-                                      image: "assets/images/action_promote.png",
-                                      name: "Promote",
-                                      toolTip:
-                                          "Click here to promote the customer details",
-                                      callback: onPromote,
-                                    ),
-                              10.width,
-                              title == "Suspects"
-                                  ? ActionButton(
-                                      width: 110,
-                                      image:
-                                          "assets/images/action_disqualified.png",
-                                      name: "No Matches",
-                                      toolTip:
-                                          "Click here to No Matches the customer details",
-                                      callback: onDisqualify!,
-                                    )
-                                  : ActionButton(
-                                      width: 100,
-                                      image:
-                                          "assets/images/action_disqualified.png",
-                                      name: "Demote",
-                                      toolTip:
-                                          "Click here to No Matches the customer details",
-                                      callback: onDemote!,
-                                    ),
-                              10.width,
-                            ],
-                          ),
+                      width: 110,
+                      image:
+                      "assets/images/action_disqualified.png",
+                      name: "No Matches",
+                      toolTip:
+                      "Click here to No Matches the customer details",
+                      callback: onDisqualify!,
+                    )
+                        : ActionButton(
+                      width: 100,
+                      image:
+                      "assets/images/action_disqualified.png",
+                      name: "Demote",
+                      toolTip:
+                      "Click here to No Matches the customer details",
+                      callback: onDemote!,
+                    ),
+                    10.width,
+                  ],
+                ),
                 ActionButton(
                   width: 100,
                   image: "assets/images/action_mail.png",
@@ -265,23 +271,23 @@ class FilterSection extends StatelessWidget {
                   10.width,
                   // Select Month
                   SizedBox(
-                    height: 35,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: colorsConst.secondary,
-                        shadowColor: Colors.transparent,
-                      ),
-                      onPressed: onSelectMonth,
-                      child: Obx(() => Text(
-                            selectedMonth.value != null
-                                ? DateFormat('MMMM yyyy').format(selectedMonth.value!)
-                                : 'Select Month',
-                            style: TextStyle(
-                              fontFamily: "Lato",
-                              color: colorsConst.textColor,
-                            ),
-                          )),
-                    ),
+                      height: 35,
+                      child: Obx(()=>ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: selectedMonth.value != null?colorsConst.primary:colorsConst.secondary,
+                          shadowColor: Colors.transparent,
+                        ),
+                        onPressed: onSelectMonth,
+                        child: Obx(() => Text(
+                          selectedMonth.value != null
+                              ? DateFormat('MMMM yyyy').format(selectedMonth.value!)
+                              : 'Select Month',
+                          style: TextStyle(
+                            fontFamily: "Lato",
+                            color: selectedMonth.value != null?Colors.white:colorsConst.textColor,
+                          ),
+                        )),
+                      ),)
                   ),
                   10.width,
                   InkWell(

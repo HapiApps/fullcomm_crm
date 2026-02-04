@@ -124,6 +124,7 @@ class _QualifiedState extends State<Qualified> {
                     // Filter Section
                     FilterSection(
                       //Santhiya
+                      itemCount: controllers.paginatedQualifiedLeads.length,
                       focusNode: _focusNode,
                       leadFuture: controllers.allQualifiedLeadFuture,
                       title: "Qualified",
@@ -362,44 +363,26 @@ class _QualifiedState extends State<Qualified> {
                                   showCheckbox: true,
                                   isAllSelected: controllers.isAllSelected.value,
                                   onSelectAll: (value) {
-                                    setState(() {
+                                    if (controllers.paginatedQualifiedLeads.isEmpty) return;
+                                    controllers.isAllSelected.value = value ?? false;
+                                    if (value == true) {
                                       apiService.customerList.clear();
-                                      if(controllers.paginatedQualifiedLeads.isNotEmpty) {
-                                        if (value == true) {
-                                          controllers.isAllSelected.value = true;
-                                            for (int j = 0; j < controllers.isGoodLeadList
-                                                .length; j++) {
-                                              controllers
-                                                  .isGoodLeadList[j]["isSelect"] =
-                                              true;
-                                              apiService.customerList.add({
-                                                "lead_id": controllers
-                                                    .isGoodLeadList[j]["lead_id"],
-                                                "user_id": controllers.storage.read(
-                                                    "id"),
-                                                "rating": controllers
-                                                    .isGoodLeadList[j]["rating"],
-                                                "cos_id": controllers.storage.read(
-                                                    "cos_id"),
-                                              });
-                                            }
-                                        } else {
-                                          controllers.isAllSelected.value = false;
-                                          for (int j = 0; j < controllers.isGoodLeadList
-                                              .length; j++) {
-                                            controllers
-                                                .isGoodLeadList[j]["isSelect"] =
-                                            false;
-                                              var i = apiService.customerList
-                                                  .indexWhere((
-                                                  element) => element["lead_id"] ==
-                                                  controllers
-                                                      .isGoodLeadList[j]["lead_id"]);
-                                              apiService.customerList.removeAt(i);
-                                          }
-                                        }
+                                      for (var lead in controllers.isGoodLeadList) {
+                                        lead["isSelect"] = true;
+                                        apiService.customerList.add({
+                                          "lead_id": lead["lead_id"].toString(),
+                                          "user_id": controllers.storage.read("id").toString(),
+                                          "rating": lead["rating"].toString(),
+                                          "cos_id": controllers.storage.read("cos_id").toString(),
+                                        });
                                       }
-                                    });
+                                    } else {
+                                      for (var lead in controllers.isGoodLeadList) {
+                                        lead["isSelect"] = false;
+                                      }
+                                      apiService.customerList.clear();
+                                    }
+                                    setState(() {});
                                   },
                                   onSortDate: () {
                                     controllers.sortField.value = 'date';
@@ -422,23 +405,23 @@ class _QualifiedState extends State<Qualified> {
                                         return Obx(()=>LeftLeadTile(
                                           pageName: "Qualified",
                                           saveValue: controllers.isGoodLeadList[index]["isSelect"],
-                                          onChanged: (value){
-                                            setState(() {
-                                              controllers.isAllSelected.value = false;
-                                              if(controllers.isGoodLeadList[index]["isSelect"]==true){
-                                                controllers.isGoodLeadList[index]["isSelect"]=false;
-                                                var i=apiService.customerList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                                apiService.customerList.removeAt(i);
-                                              }else{
-                                                controllers.isGoodLeadList[index]["isSelect"]=true;
-                                                apiService.customerList.add({
-                                                  "lead_id":data.userId.toString(),
-                                                  "user_id":controllers.storage.read("id"),
-                                                  "rating":data.rating ?? "Warm",
-                                                  "cos_id":controllers.storage.read("cos_id"),
-                                                });
-                                              }
-                                            });
+                                          onChanged: (value) {
+                                            controllers.isAllSelected.value = false;
+                                            final lead = controllers.isGoodLeadList[index];
+                                            final leadId = data.userId.toString();
+                                            if (lead["isSelect"] == true) {
+                                              lead["isSelect"] = false;
+                                              apiService.customerList.removeWhere((e) => e["lead_id"] == leadId);
+                                            } else {
+                                              lead["isSelect"] = true;
+                                              apiService.customerList.add({
+                                                "lead_id": leadId,
+                                                "user_id": controllers.storage.read("id").toString(),
+                                                "rating": data.rating ?? "Warm",
+                                                "cos_id": controllers.storage.read("cos_id").toString(),
+                                              });
+                                            }
+                                            setState(() {});
                                           },
                                           visitType: data.visitType.toString(),
                                           detailsOfServiceReq: data.detailsOfServiceRequired.toString(),

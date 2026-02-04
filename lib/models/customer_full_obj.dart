@@ -1,3 +1,21 @@
+String s(dynamic v) {
+  if (v == null || v == 'null') return '';
+  return v.toString();
+}
+
+int? i(dynamic v) {
+  if (v == null) return null;
+  if (v is int) return v;
+  return int.tryParse(v.toString());
+}
+
+List<T> listParser<T>(
+    dynamic raw,
+    T Function(Map<String, dynamic>) builder,
+    ) {
+  if (raw == null || raw is! List) return [];
+  return raw.map((e) => builder(e as Map<String, dynamic>)).toList();
+}
 
 class CustomerFullDetails {
   final Customer? customer;
@@ -21,48 +39,31 @@ class CustomerFullDetails {
   });
 
   factory CustomerFullDetails.fromJson(Map<String, dynamic> json) {
-    final cust = json['customer'] as Map<String, dynamic>?;
-    final addr = json['address'] as Map<String, dynamic>?;
-
-    List<Person> parsePersons(dynamic raw) {
-      if (raw == null) return [];
-      return (raw as List).map((e) => Person.fromJson(e as Map<String, dynamic>)).toList();
-    }
-
-    List<AdditionalInfo> parseAdditional(dynamic raw) {
-      if (raw == null) return [];
-      return (raw as List).map((e) => AdditionalInfo.fromJson(e as Map<String, dynamic>)).toList();
-    }
-
-    List<CallRecord> parseCalls(dynamic raw) {
-      if (raw == null) return [];
-      return (raw as List).map((e) => CallRecord.fromJson(e as Map<String, dynamic>)).toList();
-    }
-
-    List<MailRecord> parseMails(dynamic raw) {
-      if (raw == null) return [];
-      return (raw as List).map((e) => MailRecord.fromJson(e as Map<String, dynamic>)).toList();
-    }
-
-    List<Meeting> parseMeetings(dynamic raw) {
-      if (raw == null) return [];
-      return (raw as List).map((e) => Meeting.fromJson(e as Map<String, dynamic>)).toList();
-    }
-
-    List<Reminder> parseReminders(dynamic raw) {
-      if (raw == null) return [];
-      return (raw as List).map((e) => Reminder.fromJson(e as Map<String, dynamic>)).toList();
-    }
-
     return CustomerFullDetails(
-      customer: cust != null ? Customer.fromJson(cust) : null,
-      address: addr != null ? Address.fromJson(addr) : null,
-      customerPersons: parsePersons(json['customer_persons']),
-      additionalInfo: parseAdditional(json['additional_info']),
-      callRecords: parseCalls(json['call_records']),
-      mailRecords: parseMails(json['mail_records']),
-      meetings: parseMeetings(json['meetings']),
-      reminders: parseReminders(json['reminders']),
+      customer: json['customer'] == null
+          ? null
+          : Customer.fromJson(json['customer']),
+      address: json['address'] == null
+          ? null
+          : Address.fromJson(json['address']),
+
+      customerPersons:
+      listParser(json['customer_persons'], Person.fromJson),
+
+      additionalInfo:
+      listParser(json['additional_info'], AdditionalInfo.fromJson),
+
+      callRecords:
+      listParser(json['call_records'], CallRecord.fromJson),
+
+      mailRecords:
+      listParser(json['mail_records'], MailRecord.fromJson),
+
+      meetings:
+      listParser(json['meetings'], Meeting.fromJson),
+
+      reminders:
+      listParser(json['reminders'], Reminder.fromJson),
     );
   }
 
@@ -143,42 +144,36 @@ class Customer {
   });
 
   factory Customer.fromJson(Map<String, dynamic> json) {
-    int? parseInt(dynamic v) {
-      if (v == null) return null;
-      if (v is int) return v;
-      return int.tryParse(v.toString());
-    }
-
     return Customer(
-      id: parseInt(json['id']),
-      companyName: json['company_name']?.toString(),
-      leadStatus: parseInt(json['lead_status']),
-      rating: json['rating']?.toString(),
-      productDiscussion: json['product_discussion']?.toString(),
-      visitType: json['visit_type']?.toString(),
-      discussionPoint: json['discussion_point']?.toString(),
-      companyWebsite: json['company_website']?.toString(),
-      companyNumber: json['company_number']?.toString(),
-      companyEmail: json['company_email']?.toString(),
-      linkedin: json['linkedin']?.toString(),
-      x: json['x']?.toString(),
-      industry: json['industry']?.toString(),
-      product: json['product']?.toString(),
-      points: json['points']?.toString(),
-      arpuValue: json['arpu_value']?.toString(),
-      updatedTs: json['updated_ts']?.toString(),
-      source: json['source']?.toString(),
-      sourceDetails: json['source_details']?.toString(),
-      status: json['status']?.toString(),
-      owner: json['owner']?.toString(),
-      prospectEnrollmentDate: json['prospect_enrollment_date']?.toString(),
-      expectedConvertionDate: json['expected_convertion_date']?.toString(),
-      statusUpdate: json['status_update']?.toString(),
-      numOfHeadcount: json['num_of_headcount']?.toString(),
-      expectedBillingValue: json['expected_billing_value']?.toString(),
-      detailsOfServiceRequired: json['details_of_service_required']?.toString(),
-      prospectGrading: json['prospect_grading']?.toString(),
-      createdTs: json['created_ts']?.toString(),
+      id: i(json['id']),
+      companyName: s(json['company_name']),
+      leadStatus: i(json['lead_status']),
+      rating: s(json['rating']),
+      productDiscussion: s(json['product_discussion']),
+      visitType: s(json['visit_type']),
+      discussionPoint: s(json['discussion_point']),
+      companyWebsite: s(json['company_website']),
+      companyNumber: s(json['company_number']),
+      companyEmail: s(json['company_email']),
+      linkedin: s(json['linkedin']),
+      x: s(json['x']),
+      industry: s(json['industry']),
+      product: s(json['product']),
+      points: s(json['points']),
+      arpuValue: s(json['arpu_value']),
+      updatedTs: s(json['updated_ts']),
+      source: s(json['source']),
+      sourceDetails: s(json['source_details']),
+      status: s(json['status']),
+      owner: s(json['owner']),
+      prospectEnrollmentDate: s(json['prospect_enrollment_date']),
+      expectedConvertionDate: s(json['expected_convertion_date']),
+      statusUpdate: s(json['status_update']),
+      numOfHeadcount: s(json['num_of_headcount']),
+      expectedBillingValue: s(json['expected_billing_value']),
+      detailsOfServiceRequired: s(json['details_of_service_required']),
+      prospectGrading: s(json['prospect_grading']),
+      createdTs: s(json['created_ts']),
     );
   }
 
@@ -236,13 +231,13 @@ class Address {
   });
 
   factory Address.fromJson(Map<String, dynamic> json) => Address(
-    id: json['id'] is int ? json['id'] : int.tryParse('${json['id']}'),
-    doorNo: json['door_no']?.toString(),
-    area: json['area']?.toString(),
-    city: json['city']?.toString(),
-    country: json['country']?.toString(),
-    state: json['state']?.toString(),
-    pincode: json['pincode']?.toString(),
+    id: i(json['id']),
+    doorNo: s(json['door_no']),
+    area: s(json['area']),
+    city: s(json['city']),
+    country: s(json['country']),
+    state: s(json['state']),
+    pincode: s(json['pincode']),
   );
 
   Map<String, dynamic> toJson() => {
@@ -266,10 +261,10 @@ class Person {
   Person({this.id, this.name, this.phone, this.email});
 
   factory Person.fromJson(Map<String, dynamic> json) => Person(
-    id: json['id'] is int ? json['id'] : int.tryParse('${json['id']}'),
-    name: json['name']?.toString(),
-    phone: json['phone']?.toString(),
-    email: json['email']?.toString(),
+    id: i(json['id']),
+    name: s(json['name']),
+    phone: s(json['phone']),
+    email: s(json['email']),
   );
 
   Map<String, dynamic> toJson() => {
@@ -287,10 +282,12 @@ class AdditionalInfo {
 
   AdditionalInfo({this.fieldName, this.fieldValue});
 
-  factory AdditionalInfo.fromJson(Map<String, dynamic> json) => AdditionalInfo(
-    fieldName: json['field_name']?.toString(),
-    fieldValue: json['field_value']?.toString(),
-  );
+  factory AdditionalInfo.fromJson(Map<String, dynamic> json) =>
+      AdditionalInfo(
+        fieldName: s(json['field_name']),
+        fieldValue: s(json['field_value']),
+      );
+
 
   Map<String, dynamic> toJson() => {
     'field_name': fieldName,
@@ -348,38 +345,30 @@ class CallRecord {
     this.upPlatform,
   });
 
-  factory CallRecord.fromJson(Map<String, dynamic> json) {
-    int? pInt(dynamic v) {
-      if (v == null) return null;
-      if (v is int) return v;
-      return int.tryParse(v.toString());
-    }
-
-    return CallRecord(
-      id: pInt(json['id']),
-      cosId: pInt(json['cos_id']),
-      sentId: pInt(json['sent_id']),
-      callVisitType: json['call_visit_type']?.toString(),
-      customerName: json['customer_name']?.toString(),
-      toData: json['to_data']?.toString(),
-      fromData: json['from_data']?.toString(),
-      subject: json['subject']?.toString(),
-      sentDate: json['sent_date']?.toString(),
-      message: json['message']?.toString(),
-      attachment: json['attachment']?.toString(),
-      sentCount: json['sent_count']?.toString(),
-      quotationName: json['quotation_name']?.toString(),
-      callType: json['call_type']?.toString(),
-      callStatus: json['call_status']?.toString(),
-      createdBy: pInt(json['created_by']),
-      updatedBy: pInt(json['updated_by']),
-      createdTs: json['created_ts']?.toString(),
-      updatedTs: json['updated_ts']?.toString(),
-      active: pInt(json['active']),
-      platform: json['platform']?.toString(),
-      upPlatform: json['up_platform']?.toString(),
-    );
-  }
+  factory CallRecord.fromJson(Map<String, dynamic> json) => CallRecord(
+    id: i(json['id']),
+    cosId: i(json['cos_id']),
+    sentId: i(json['sent_id']),
+    callVisitType: s(json['call_visit_type']),
+    customerName: s(json['customer_name']),
+    toData: s(json['to_data']),
+    fromData: s(json['from_data']),
+    subject: s(json['subject']),
+    sentDate: s(json['sent_date']),
+    message: s(json['message']),
+    attachment: s(json['attachment']),
+    sentCount: s(json['sent_count']),
+    quotationName: s(json['quotation_name']),
+    callType: s(json['call_type']),
+    callStatus: s(json['call_status']),
+    createdBy: i(json['created_by']),
+    updatedBy: i(json['updated_by']),
+    createdTs: s(json['created_ts']),
+    updatedTs: s(json['updated_ts']),
+    active: i(json['active']),
+    platform: s(json['platform']),
+    upPlatform: s(json['up_platform']),
+  );
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -459,28 +448,28 @@ class MailRecord extends CallRecord {
 
   factory MailRecord.fromJson(Map<String, dynamic> json) =>
       MailRecord(
-        id: json['id'] is int ? json['id'] : int.tryParse('${json['id']}'),
-        cosId: json['cos_id'] is int ? json['cos_id'] : int.tryParse('${json['cos_id']}'),
-        sentId: json['sent_id'] is int ? json['sent_id'] : int.tryParse('${json['sent_id']}'),
-        callVisitType: json['call_visit_type']?.toString(),
-        customerName: json['customer_name']?.toString(),
-        toData: json['to_data']?.toString(),
-        fromData: json['from_data']?.toString(),
-        subject: json['subject']?.toString(),
-        sentDate: json['sent_date']?.toString(),
-        message: json['message']?.toString(),
-        attachment: json['attachment']?.toString(),
-        sentCount: json['sent_count']?.toString(),
-        quotationName: json['quotation_name']?.toString(),
-        callType: json['call_type']?.toString(),
-        callStatus: json['call_status']?.toString(),
-        createdBy: json['created_by'] is int ? json['created_by'] : int.tryParse('${json['created_by']}'),
-        updatedBy: json['updated_by'] is int ? json['updated_by'] : int.tryParse('${json['updated_by']}'),
-        createdTs: json['created_ts']?.toString(),
-        updatedTs: json['updated_ts']?.toString(),
-        active: json['active'] is int ? json['active'] : int.tryParse('${json['active']}'),
-        platform: json['platform']?.toString(),
-        upPlatform: json['up_platform']?.toString(),
+        id: i(json['id']),
+        cosId: i(json['cos_id']),
+        sentId: i(json['sent_id']),
+        callVisitType: s(json['call_visit_type']),
+        customerName: s(json['customer_name']),
+        toData: s(json['to_data']),
+        fromData: s(json['from_data']),
+        subject: s(json['subject']),
+        sentDate: s(json['sent_date']),
+        message: s(json['message']),
+        attachment: s(json['attachment']),
+        sentCount: s(json['sent_count']),
+        quotationName: s(json['quotation_name']),
+        callType: s(json['call_type']),
+        callStatus: s(json['call_status']),
+        createdBy: i(json['created_by']),
+        updatedBy: i(json['updated_by']),
+        createdTs: s(json['created_ts']),
+        updatedTs: s(json['updated_ts']),
+        active: i(json['active']),
+        platform: s(json['platform']),
+        upPlatform: s(json['up_platform']),
       );
 }
 
@@ -523,22 +512,22 @@ class Meeting {
   });
 
   factory Meeting.fromJson(Map<String, dynamic> json) => Meeting(
-    id: json['id'] is int ? json['id'] : int.tryParse('${json['id']}'),
-    cosId: json['cos_id'] is int ? json['cos_id'] : int.tryParse('${json['cos_id']}'),
-    cusId: json['cus_id']?.toString(),
-    cusName: json['cus_name']?.toString(),
-    comName: json['com_name']?.toString(),
-    title: json['title']?.toString(),
-    venue: json['venue']?.toString(),
-    dates: json['dates']?.toString(),
-    time: json['time']?.toString(),
-    notes: json['notes']?.toString(),
-    status: json['status']?.toString(),
-    createdTs: json['created_ts']?.toString(),
-    updatedTs: json['updated_ts']?.toString(),
-    createdBy: json['created_by']?.toString(),
-    updatedBy: json['updated_by']?.toString(),
-    active: json['active'] is int ? json['active'] : int.tryParse('${json['active']}'),
+    id: i(json['id']),
+    cosId: i(json['cos_id']),
+    cusId: s(json['cus_id']),
+    cusName: s(json['cus_name']),
+    comName: s(json['com_name']),
+    title: s(json['title']),
+    venue: s(json['venue']),
+    dates: s(json['dates']),
+    time: s(json['time']),
+    notes: s(json['notes']),
+    status: s(json['status']),
+    createdTs: s(json['created_ts']),
+    updatedTs: s(json['updated_ts']),
+    createdBy: s(json['created_by']),
+    updatedBy: s(json['updated_by']),
+    active: i(json['active']),
   );
 
   Map<String, dynamic> toJson() => {
@@ -614,29 +603,29 @@ class Reminder {
   });
 
   factory Reminder.fromJson(Map<String, dynamic> json) => Reminder(
-    id: json['id'] is int ? json['id'] : int.tryParse('${json['id']}'),
-    cosId: json['cos_id'] is int ? json['cos_id'] : int.tryParse('${json['cos_id']}'),
-    title: json['title']?.toString(),
-    type: json['type']?.toString(),
-    location: json['location']?.toString(),
-    repeatType: json['repeat_type']?.toString(),
-    employee: json['employee']?.toString(),
-    customer: json['customer']?.toString(),
-    startDt: json['start_dt']?.toString(),
-    endDt: json['end_dt']?.toString(),
-    details: json['details']?.toString(),
-    setType: json['set_type']?.toString(),
-    setTime: json['set_time']?.toString(),
-    repeatWise: json['repeat_wise']?.toString(),
-    repeatEvery: json['repeat_every']?.toString(),
-    repeatOn: json['repeat_on']?.toString(),
-    updatedBy: json['updated_by']?.toString(),
-    createdBy: json['created_by']?.toString(),
-    createdTs: json['created_ts']?.toString(),
-    updatedTs: json['updated_ts']?.toString(),
-    active: json['active'] is int ? json['active'] : int.tryParse('${json['active']}'),
-    sent5min: json['sent_5min'] is int ? json['sent_5min'] : int.tryParse('${json['sent_5min']}'),
-    sent5minSms: json['sent_5min_sms'] is int ? json['sent_5min_sms'] : int.tryParse('${json['sent_5min_sms']}'),
+    id: i(json['id']),
+    cosId: i(json['cos_id']),
+    title: s(json['title']),
+    type: s(json['type']),
+    location: s(json['location']),
+    repeatType: s(json['repeat_type']),
+    employee: s(json['employee']),
+    customer: s(json['customer']),
+    startDt: s(json['start_dt']),
+    endDt: s(json['end_dt']),
+    details: s(json['details']),
+    setType: s(json['set_type']),
+    setTime: s(json['set_time']),
+    repeatWise: s(json['repeat_wise']),
+    repeatEvery: s(json['repeat_every']),
+    repeatOn: s(json['repeat_on']),
+    updatedBy: s(json['updated_by']),
+    createdBy: s(json['created_by']),
+    createdTs: s(json['created_ts']),
+    updatedTs: s(json['updated_ts']),
+    active: i(json['active']),
+    sent5min: i(json['sent_5min']),
+    sent5minSms: i(json['sent_5min_sms']),
   );
 
   Map<String, dynamic> toJson() => {

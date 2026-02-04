@@ -13,10 +13,10 @@ class CustomerField {
 
   factory CustomerField.fromJson(Map<String, dynamic> json) {
     return CustomerField(
-      id: json['id'] ?? '',
-      systemField: json['system_field'] ?? '',
-      userHeading: json['user_heading'] ?? '',
-      isRequired: json['is_required'] ?? '',
+      id: json['id']?.toString() ?? '',
+      systemField: json['system_field']?.toString() ?? '',
+      userHeading: json['user_heading']?.toString() ?? '',
+      isRequired: json['is_required']?.toString() ?? '',
     );
   }
 

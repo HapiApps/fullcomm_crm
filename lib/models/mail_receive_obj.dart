@@ -9,11 +9,13 @@ class MailReceiveObj {
       {this.id, this.fromData, this.subject, this.sentDate, this.message});
 
   factory MailReceiveObj.fromJson(Map<String, dynamic> json) => MailReceiveObj(
-      message: json["message"],
-      sentDate: json["sent_date"],
-      fromData: json["created_ts"],
-      subject: json["subject"],
-      id: json['id']);
+    message: json["message"]?.toString() ?? '',
+    sentDate: json["sent_date"]?.toString() ?? '',
+    fromData: json["created_ts"]?.toString() ?? '',
+    subject: json["subject"]?.toString() ?? '',
+    id: json['id']?.toString() ?? '',
+  );
+
 
   Map<String, dynamic> toJson() => {
         "id": id,

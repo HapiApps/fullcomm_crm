@@ -16,10 +16,11 @@ class ProductObj {
       this.productPrice});
 
   factory ProductObj.fromJson(Map<String, dynamic> json) => ProductObj(
-      id: json["id"],
-      name: json["name"],
-      brand: json["brand"],
-      comparePrice: json["compare_price"],
-      discount: json["discount"],
-      productPrice: json["product_price"]);
+    id: json["id"]?.toString() ?? '',
+    name: json["name"]?.toString() ?? '',
+    brand: json["brand"]?.toString() ?? '',
+    comparePrice: json["compare_price"]?.toString() ?? '',
+    discount: json["discount"]?.toString() ?? '',
+    productPrice: json["product_price"]?.toString() ?? '',
+  );
 }

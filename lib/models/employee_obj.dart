@@ -38,88 +38,23 @@ class EmployeeObj {
       this.country});
 
   factory EmployeeObj.fromJson(Map<String, dynamic> json) => EmployeeObj(
-      id: json["id"],
-      name: json["name"],
-      email: json["email"] ?? "",
-      empId: json["emp_id"],
-      salary: json["salary"],
-      position: json["position"],
-      phoneNumber: json["phone_number"],
-      managerName: json["manager_name"],
-      department: json["department"],
-      doj: json["doj"],
-      doorNo: json["address_line_1"],
-      streetName: json["address_line_2"],
-      area: json["area"],
-      city: json["city"],
-      state: json["state"],
-      pinCode: json["pincode"],
-      country: json["country"]);
+    id: json["id"]?.toString() ?? '',
+    name: json["name"]?.toString() ?? '',
+    email: json["email"]?.toString() ?? '',
+    empId: json["emp_id"]?.toString() ?? '',
+    salary: json["salary"]?.toString() ?? '',
+    position: json["position"]?.toString() ?? '',
+    phoneNumber: json["phone_number"]?.toString() ?? '',
+    managerName: json["manager_name"]?.toString() ?? '',
+    department: json["department"]?.toString() ?? '',
+    doj: json["doj"]?.toString() ?? '',
+    doorNo: json["address_line_1"]?.toString() ?? '',
+    streetName: json["address_line_2"]?.toString() ?? '',
+    area: json["area"]?.toString() ?? '',
+    city: json["city"]?.toString() ?? '',
+    state: json["state"]?.toString() ?? '',
+    pinCode: json["pincode"]?.toString() ?? '',
+    country: json["country"]?.toString() ?? '',
+  );
 }
 
-//
-// import 'package:flutter/material.dart';
-// import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-// import 'package:fullcomm_crm/components/custom_text.dart';
-//
-// class Employee {
-//   Employee(
-//       this.id, this.name,
-//       this.mobileNumber,
-//       this.email,
-//       this.companyName,
-//       this.rating,
-//       this.status,
-//       this.isCheck
-//       );
-//
-//    int? id;
-//    String? name;
-//    String? mobileNumber;
-//    String? email;
-//    String? companyName;
-//    String? status;
-//    String? rating;
-//    bool? isCheck;
-// }
-//
-//
-// class EmployeeDataSource extends DataGridSource {
-//   EmployeeDataSource({required List<Employee> employeeData}) {
-//     _employeeData = employeeData
-//         .map<DataGridRow>((e) => DataGridRow(
-//
-//         cells: [
-//       DataGridCell<bool>(columnName: 'isCheck', value: e.isCheck),
-//       DataGridCell<String>(columnName: 'name', value: e.name),
-//       DataGridCell<String>(
-//           columnName: 'mobileNumber', value: e.mobileNumber),
-//       DataGridCell<String>(columnName: 'email', value: e.email),
-//       DataGridCell<String>(columnName: 'companyName', value: e.companyName),
-//       DataGridCell<String>(columnName: 'status', value: e.status),
-//       DataGridCell<String>(columnName: 'rating', value: e.rating),
-//     ]
-//     )
-//     )
-//         .toList();
-//   }
-//
-//   List<DataGridRow> _employeeData = [];
-//
-//   @override
-//   List<DataGridRow> get rows => _employeeData;
-//
-//   @override
-//   DataGridRowAdapter buildRow(DataGridRow row) {
-//     return DataGridRowAdapter(
-//      // color: Colors.greenAccent,
-//         cells: row.getCells().map<Widget>((e) {
-//           return CustomText(
-//             text: e.value.toString(),
-//             colors: Colors.black,
-//             size: 15,
-//             textAlign: TextAlign.right,
-//           );
-//         }).toList());
-//   }
-// }

@@ -18,11 +18,13 @@ class CompanyObj {
       this.product});
 
   factory CompanyObj.fromJson(Map<String, dynamic> json) => CompanyObj(
-      id: json["id"],
-      coIndustry: json["co_industry"],
-      phoneMap: json["phone_map"],
-      coName: json["co_name"],
-      emailMap: json["email_map"],
-      product: json["product"],
-      city: json["city"]);
+    id: json["id"]?.toString() ?? '',
+    coIndustry: json["co_industry"]?.toString() ?? '',
+    phoneMap: json["phone_map"]?.toString() ?? '',
+    coName: json["co_name"]?.toString() ?? '',
+    emailMap: json["email_map"]?.toString() ?? '',
+    product: json["product"]?.toString() ?? '',
+    city: json["city"]?.toString() ?? '',
+  );
+
 }

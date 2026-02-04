@@ -34,45 +34,40 @@ class _SuspectsState extends State<Suspects> {
   late FocusNode _focusNode;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
-    });
-    Future.delayed(Duration.zero, () {
-      apiService.currentVersion();
       controllers.selectedIndex.value = 1;
       controllers.groupController.selectIndex(0);
-      setState(() {
-        apiService.prospectsList = [];
-        apiService.prospectsList.clear();
-        controllers.search.clear();
-        //Santhiya
-        controllers.isAllSelected.value = false;
-        for (var item in controllers.isNewLeadList) {
-          item["isSelect"] = false;
-          apiService.prospectsList.removeWhere(
-                (e) => e["lead_id"] == item["lead_id"],
-          );
-        }
-      });
+      apiService.prospectsList.clear();
+      controllers.search.clear();
       controllers.searchQuery.value = "";
-    });
-    _leftController.addListener(() {
-      if (_rightController.hasClients &&
-          (_rightController.offset != _leftController.offset)) {
-        _rightController.jumpTo(_leftController.offset);
+      controllers.cusController.clear();
+      controllers.isAllSelected.value = false;
+      for (var item in controllers.isNewLeadList) {
+        item["isSelect"] = false;
       }
+      apiService.currentVersion();
     });
-    _rightController.addListener(() {
-      if (_leftController.hasClients &&
-          (_leftController.offset != _rightController.offset)) {
-        _leftController.jumpTo(_rightController.offset);
-      }
-    });
+
+    _leftController.addListener(_syncLeftToRight);
+    _rightController.addListener(_syncRightToLeft);
   }
 
+  void _syncLeftToRight() {
+    if (_rightController.hasClients &&
+        _rightController.offset != _leftController.offset) {
+      _rightController.jumpTo(_leftController.offset);
+    }
+  }
+
+  void _syncRightToLeft() {
+    if (_leftController.hasClients &&
+        _leftController.offset != _rightController.offset) {
+      _leftController.jumpTo(_rightController.offset);
+    }
+  }
   @override
   void dispose() {
     _controller.dispose();
@@ -135,6 +130,7 @@ class _SuspectsState extends State<Suspects> {
                       // Filter Section
                       FilterSection(
                         //Santhiya
+                        itemCount: controllers.paginatedLeads.length,
                         focusNode: _focusNode,
                         leadFuture: controllers.allNewLeadFuture,
                         title: "Suspects",
@@ -374,29 +370,22 @@ class _SuspectsState extends State<Suspects> {
                                       onSelectAll: (value) {
                                         setState(() {
                                           apiService.prospectsList.clear();
-                                          if(controllers.paginatedLeads.isNotEmpty){
-                                            if (value == true) {
-                                              controllers.isAllSelected.value = true;
-                                                for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                                  controllers.isNewLeadList[j]["isSelect"] = true;
-                                                  apiService.prospectsList.add({
-                                                    "lead_id": controllers.isNewLeadList[j]["lead_id"],
-                                                    "user_id": controllers.storage.read("id"),
-                                                    "rating": controllers.isNewLeadList[j]["rating"],
-                                                    "cos_id": controllers.storage.read("cos_id"),
-                                                    "mail_id":controllers.isNewLeadList[j]["mail"]
-                                                  });
-                                                }
-                                            } else {
-                                              controllers.isAllSelected.value = false;
-                                              for (int j = 0; j < controllers.isNewLeadList.length; j++) {
-                                                controllers.isNewLeadList[j]["isSelect"] = false;
-                                                  var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==controllers.isNewLeadList[j]["lead_id"]);
-                                                  apiService.prospectsList.removeAt(i);
-                                              }
-                                            }
-                                          }else{
+                                          if (controllers.paginatedLeads.isEmpty) {
                                             controllers.isAllSelected.value = false;
+                                            return;
+                                          }
+                                          controllers.isAllSelected.value = value ?? false;
+                                          for (int j = 0; j < controllers.isNewLeadList.length; j++) {
+                                            controllers.isNewLeadList[j]["isSelect"] = controllers.isAllSelected.value;
+                                            if (controllers.isAllSelected.value) {
+                                              apiService.prospectsList.add({
+                                                "lead_id": controllers.isNewLeadList[j]["lead_id"].toString(),
+                                                "user_id": controllers.storage.read("id").toString(),
+                                                "rating": controllers.isNewLeadList[j]["rating"].toString(),
+                                                "cos_id": controllers.storage.read("cos_id").toString(),
+                                                "mail_id": controllers.isNewLeadList[j]["mail"].toString(),
+                                              });
+                                            }
                                           }
                                         });
                                       },
@@ -423,26 +412,32 @@ class _SuspectsState extends State<Suspects> {
                                                   return Obx(()=>LeftLeadTile(
                                               pageName: "Suspects",
                                               saveValue: controllers.isNewLeadList[index]["isSelect"],
-                                              onChanged: (value){
-                                                setState(() {
-                                                  controllers.isAllSelected.value = false;
-                                                  if(controllers.isNewLeadList[index]["isSelect"]==true){
-                                                    controllers.isNewLeadList[index]["isSelect"]=false;
-                                                    var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                                    apiService.prospectsList.removeAt(i);
-                                                  }else{
-                                                    controllers.isNewLeadList[index]["isSelect"]=true;
-                                                    apiService.prospectsList.add({
-                                                      "lead_id":data.userId.toString(),
-                                                      "user_id":controllers.storage.read("id"),
-                                                      "rating":data.rating ?? "Warm",
-                                                      "cos_id":controllers.storage.read("cos_id"),
-                                                      "mail_id":data.email.toString().split("||")[0]
-                                                    });
-                                                  }
-                                                });
-                                              },
-                                              visitType: data.visitType.toString(),
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        controllers.isAllSelected.value = false;
+                                                        controllers.isNewLeadList[index]["isSelect"] = value ?? false;
+                                                        final leadId = data.userId.toString();
+                                                        if (value == true) {
+                                                          final exists = apiService.prospectsList.any(
+                                                                (e) => e["lead_id"] == leadId,
+                                                          );
+                                                          if (!exists) {
+                                                            apiService.prospectsList.add({
+                                                              "lead_id": leadId.toString(),
+                                                              "user_id": controllers.storage.read("id").toString(),
+                                                              "rating": data.rating ?? "Warm",
+                                                              "cos_id": controllers.storage.read("cos_id").toString(),
+                                                              "mail_id": data.email.toString().split("||")[0].toString(),
+                                                            });
+                                                          }
+                                                        } else {
+                                                          apiService.prospectsList.removeWhere(
+                                                                (e) => e["lead_id"] == leadId,
+                                                          );
+                                                        }
+                                                      });
+                                                    },
+                                                    visitType: data.visitType.toString(),
                                               detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
                                               statusUpdate: data.statusUpdate.toString(),
                                               index: index,

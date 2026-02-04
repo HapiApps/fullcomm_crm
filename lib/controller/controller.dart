@@ -32,7 +32,8 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   late TabController tabController;
   var tabCurrentIndex = 0.obs;
   bool isDialogOpen = false;
-
+RxList<TextEditingController> numberList=<TextEditingController>[].obs;
+RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   final sortFieldCallActivity = ''.obs;
   final sortOrderCallActivity = 'asc'.obs;
   final sortFieldMeetingActivity = ''.obs;
@@ -1765,11 +1766,11 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
         }),
       );
 
-      print("STATUS CODE: ${response.statusCode}");
-      print("RAW RESPONSE: ${response.body}");
+      // print("STATUS CODE: ${response.statusCode}");
+      // print("RAW RESPONSE: ${response.body}");
 
       if (response.statusCode != 200) {
-        print("SERVER ERROR");
+        // print("SERVER ERROR");
         return;
       }
 
@@ -2201,6 +2202,7 @@ var otp = "".obs;
   var inMsg = "".obs, isAdmin = false.obs, isPanel = false.obs;
   RxString selectedCity = 'Chennai'.obs;
   RxString selectedState = 'Tamil Nadu'.obs;
+
 //selectedCity = 'Chennai'.obs,
   //,selectedState = 'State'.obs
   RxString selectedCountry = 'India'.obs;
