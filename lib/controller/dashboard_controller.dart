@@ -417,7 +417,7 @@ class DashboardController extends GetxController {
         "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
       };
 
-      log("Dashboard request data: ${data.toString()}");
+      log("Dashboard request data: visit_status_report ${data.toString()}");
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -427,6 +427,8 @@ class DashboardController extends GetxController {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
+      print("STATUS CODE visit_status_report: ${request.statusCode}");
+      print("RAW RESPONSE: ${request.body}");
       if (request.statusCode == 200) {
         var response = jsonDecode(request.body) as List;
         visitStatusReport.value=response;

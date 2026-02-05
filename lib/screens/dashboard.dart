@@ -588,7 +588,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
                                                             CustomText(text: dashController.visitStatusReport[index]["value"], isCopy: false),
-                                                            CustomText(text: dashController.visitStatusReport[index]["total_count"], isCopy: false,isBold: true,),
+                                                            CustomText(text: dashController.visitStatusReport[index]["total_count"].toString(), isCopy: false,isBold: true,),
                                                           ],
                                                         ),
                                                       ],

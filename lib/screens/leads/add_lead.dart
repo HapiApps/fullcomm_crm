@@ -1,3 +1,4 @@
+import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -664,48 +665,143 @@ class _AddLeadState extends State<AddLead> {
                                               value.toString().trim());
                                         },
                                       ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          CustomText(
-                                            text: "Phone No",
-                                            colors: colorsConst.textColor,
-                                            size: 13,
-                                            textAlign: TextAlign.start,
-                                            isCopy: false,
-                                          ),
-                                          const CustomText(
-                                            text: "*",
-                                            colors: Colors.red,
-                                            size: 25,
-                                            isCopy: false,
-                                          ),
-                                          SizedBox(
-                                            width: textFieldSize - 150,
-                                          ),
-                                          CustomText(
-                                            text: "Whatsapp No",
-                                            colors: colorsConst.textColor,
-                                            size: 13,
-                                            textAlign: TextAlign.end,
-                                            isCopy: false,
-                                          ),
-                                        ],
-                                      ),
-                                      // SizedBox(
-                                      //   width: textFieldSize,
-                                      //   child: ListView.builder(
-                                      //     itemCount:controllers.numberList.length,
-                                      //       itemBuilder: (context,index){
-                                      //         return SizedBox(
-                                      //           width: textFieldSize-40,
+                                      // Row(
+                                      //   mainAxisAlignment:
+                                      //       MainAxisAlignment.spaceBetween,
+                                      //   children: [
+                                      //
+                                      //     SizedBox(
+                                      //       width: textFieldSize - 150,
+                                      //     ),
+                                      //     CustomText(
+                                      //       text: "Whatsapp No",
+                                      //       colors: colorsConst.textColor,
+                                      //       size: 13,
+                                      //       textAlign: TextAlign.end,
+                                      //       isCopy: false,
+                                      //     ),
+                                      //   ],
+                                      // ),
+                                      Obx((){
+                                        return SizedBox(
+                                          width: textFieldSize,
+                                          child: ListView.builder(
+                                              shrinkWrap:true,
+                                              itemCount:controllers.numberList.length,
+                                              itemBuilder: (context,index){
+                                                return Column(
+                                                    children:[
+                                                      Row(
+                                                          children:[
+                                                            SizedBox(
+                                                              width: textFieldSize-40,
+                                                              // height: 80,
+                                                              child: CustomTextField(
+                                                                onEdit: () {
+                                                                  FocusScope.of(context)
+                                                                      .requestFocus(account);
+                                                                },
+                                                                // focusNode: whatsApp,
+                                                                hintText: "Phone No",
+                                                                text: "Phone No",
+                                                                controller:controllers.numberList[index],
+                                                                width: textFieldSize,
+                                                                isOptional: true,
+                                                                keyboardType: TextInputType.number,
+                                                                textInputAction: TextInputAction.next,
+                                                                inputFormatters: constInputFormatters.mobileNumberInput,
+                                                                onChanged: (value) async {
+                                                                //   if (controllers.leadWhatsCrt[index].text !=controllers.leadMobileCrt[index].text) {
+                                                                //     controllers.isCoMobileNumberList[index] =false;
+                                                                //   } else {
+                                                                //     controllers.isCoMobileNumberList[index] =true;
+                                                                //   }
+                                                                //   SharedPreferences sharedPref =
+                                                                //   await SharedPreferences
+                                                                //       .getInstance();
+                                                                //   sharedPref.setString(
+                                                                //       "leadWhats$index",
+                                                                //       value.toString().trim());
+                                                                },
+                                                              ),
+                                                            ),
+                                                            IconButton(
+                                                                onPressed:(){
+                                                                  if (controllers.numberList.length > 1) {
+                                                                    controllers.numberList.removeAt(index);
+                                                                  }else{
+                                                                    utils.snackBar(context: context, msg: "Enter at least one mobile number.", color: Colors.red);
+                                                                  }
+                                                                },
+                                                                icon:SvgPicture.asset("assets/images/delete.svg")
+                                                            )
+                                                          ]
+                                                      ),
+                                                      if(index==controllers.numberList.length-1)
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                          children: [
+                                                            IconButton(
+                                                              onPressed: () {
+                                                                bool isMistake = false;
+                                                                Set<String> uniqueNumbers = {};
+
+                                                                for (var i = 0; i < controllers.numberList.length; i++) {
+                                                                  String number = controllers.numberList[i].text.trim();
+
+                                                                  // Empty or not 10 digits
+                                                                  if (number.isEmpty || number.length != 10) {
+                                                                    isMistake = true;
+                                                                    utils.snackBar(
+                                                                      context: context,
+                                                                      msg: "Enter valid 10 digit mobile number",
+                                                                      color: Colors.red,
+                                                                    );
+                                                                    break;
+                                                                  }
+
+                                                                  // Duplicate check
+                                                                  if (uniqueNumbers.contains(number)) {
+                                                                    isMistake = true;
+                                                                    utils.snackBar(
+                                                                      context: context,
+                                                                      msg: "Same mobile number already added",
+                                                                      color: Colors.red,
+                                                                    );
+                                                                    break;
+                                                                  }
+
+                                                                  uniqueNumbers.add(number);
+                                                                }
+
+                                                                if (!isMistake) {
+                                                                  controllers.numberList.add(TextEditingController());
+                                                                }
+                                                              },
+                                                              icon: Icon(Icons.add),
+                                                            ),
+                                                          ],
+                                                        )
+                                                    ]
+                                                );
+                                              }),
+                                        );
+                                      }),
+                                      // Row(
+                                      //   mainAxisAlignment:
+                                      //       MainAxisAlignment.center,
+                                      //   children: [
+                                      //     20.width,
+                                      //     Column(
+                                      //       children: [
+                                      //         SizedBox(
+                                      //           width: textFieldSize,
                                       //           height: 50,
                                       //           child: TextFormField(
                                       //               onEditingComplete: () {
                                       //                 FocusScope.of(context)
                                       //                     .requestFocus(
-                                      //                     whatsApp);
+                                      //                         whatsApp);
                                       //               },
                                       //               focusNode: phone,
                                       //               style: TextStyle(
@@ -714,7 +810,7 @@ class _AddLeadState extends State<AddLead> {
                                       //                   fontSize: 14,
                                       //                   fontFamily: "Lato"),
                                       //               cursorColor:
-                                      //               colorsConst.primary,
+                                      //                   colorsConst.primary,
                                       //               onChanged: (value) async {
                                       //                 setState(() {
                                       //                   if (controllers.isCoMobileNumberList[index] ==true) {
@@ -722,9 +818,9 @@ class _AddLeadState extends State<AddLead> {
                                       //                   }
                                       //                 });
                                       //                 SharedPreferences
-                                      //                 sharedPref =
-                                      //                 await SharedPreferences
-                                      //                     .getInstance();
+                                      //                     sharedPref =
+                                      //                     await SharedPreferences
+                                      //                         .getInstance();
                                       //                 sharedPref.setString(
                                       //                     "leadMobileNumber$index",
                                       //                     value
@@ -736,21 +832,21 @@ class _AddLeadState extends State<AddLead> {
                                       //               },
                                       //               onTap: () {},
                                       //               keyboardType:
-                                      //               TextInputType.number,
+                                      //                   TextInputType.number,
                                       //               inputFormatters:
-                                      //               constInputFormatters
-                                      //                   .mobileNumberInput,
+                                      //                   constInputFormatters
+                                      //                       .mobileNumberInput,
                                       //               textCapitalization:
-                                      //               TextCapitalization.none,
+                                      //                   TextCapitalization.none,
                                       //               controller: controllers
                                       //                   .leadMobileCrt[index],
                                       //               textInputAction:
-                                      //               TextInputAction.next,
+                                      //                   TextInputAction.next,
                                       //               decoration: InputDecoration(
                                       //                 hoverColor:
-                                      //                 Colors.transparent,
+                                      //                     Colors.transparent,
                                       //                 focusColor:
-                                      //                 Colors.transparent,
+                                      //                     Colors.transparent,
                                       //                 hintText: "Phone No",
                                       //                 fillColor: Colors.white,
                                       //                 filled: true,
@@ -760,18 +856,18 @@ class _AddLeadState extends State<AddLead> {
                                       //                     fontSize: 13,
                                       //                     fontFamily: "Lato"),
                                       //                 suffixIcon: Obx(
-                                      //                       () => Checkbox(
+                                      //                   () => Checkbox(
                                       //                       shape:
-                                      //                       RoundedRectangleBorder(
+                                      //                           RoundedRectangleBorder(
                                       //                         borderRadius:
-                                      //                         BorderRadius
-                                      //                             .circular(
-                                      //                             5.0),
+                                      //                             BorderRadius
+                                      //                                 .circular(
+                                      //                                     5.0),
                                       //                       ),
                                       //                       side:
-                                      //                       MaterialStateBorderSide
-                                      //                           .resolveWith(
-                                      //                             (states) => BorderSide(
+                                      //                           MaterialStateBorderSide
+                                      //                               .resolveWith(
+                                      //                         (states) => BorderSide(
                                       //                             width: 1.0,
                                       //                             color: colorsConst
                                       //                                 .textColor),
@@ -779,11 +875,11 @@ class _AddLeadState extends State<AddLead> {
                                       //                       hoverColor: Colors
                                       //                           .transparent,
                                       //                       activeColor:
-                                      //                       colorsConst
-                                      //                           .third,
+                                      //                           colorsConst
+                                      //                               .third,
                                       //                       value: controllers
-                                      //                           .isCoMobileNumberList[
-                                      //                       index],
+                                      //                               .isCoMobileNumberList[
+                                      //                           index],
                                       //                       onChanged: (value) {
                                       //                         setState(() {
                                       //                           controllers.isCoMobileNumberList[index] =value!;
@@ -800,229 +896,69 @@ class _AddLeadState extends State<AddLead> {
                                       //                       }),
                                       //                 ),
                                       //                 enabledBorder:
-                                      //                 OutlineInputBorder(
-                                      //                     borderSide:
-                                      //                     BorderSide(
-                                      //                         color: Colors
-                                      //                             .grey
-                                      //                             .shade400),
-                                      //                     borderRadius:
-                                      //                     BorderRadius
-                                      //                         .circular(
-                                      //                         5)),
+                                      //                     OutlineInputBorder(
+                                      //                         borderSide:
+                                      //                             BorderSide(
+                                      //                                 color: Colors
+                                      //                                     .grey
+                                      //                                     .shade400),
+                                      //                         borderRadius:
+                                      //                             BorderRadius
+                                      //                                 .circular(
+                                      //                                     5)),
                                       //                 focusedBorder:
-                                      //                 OutlineInputBorder(
-                                      //                     borderSide:
-                                      //                     BorderSide(
-                                      //                       color: Colors
-                                      //                           .grey
-                                      //                           .shade200,
-                                      //                     ),
-                                      //                     borderRadius:
-                                      //                     BorderRadius
-                                      //                         .circular(
-                                      //                         5)),
+                                      //                     OutlineInputBorder(
+                                      //                         borderSide:
+                                      //                             BorderSide(
+                                      //                           color: Colors
+                                      //                               .grey
+                                      //                               .shade200,
+                                      //                         ),
+                                      //                         borderRadius:
+                                      //                             BorderRadius
+                                      //                                 .circular(
+                                      //                                     5)),
                                       //                 focusedErrorBorder:
-                                      //                 OutlineInputBorder(
-                                      //                     borderSide: BorderSide(
-                                      //                         color: Colors
-                                      //                             .grey
-                                      //                             .shade200),
-                                      //                     borderRadius:
-                                      //                     BorderRadius
-                                      //                         .circular(
-                                      //                         5)),
+                                      //                     OutlineInputBorder(
+                                      //                         borderSide: BorderSide(
+                                      //                             color: Colors
+                                      //                                 .grey
+                                      //                                 .shade200),
+                                      //                         borderRadius:
+                                      //                             BorderRadius
+                                      //                                 .circular(
+                                      //                                     5)),
                                       //                 // errorStyle: const TextStyle(height:0.05,fontSize: 12),
                                       //                 contentPadding:
-                                      //                 const EdgeInsets
-                                      //                     .symmetric(
-                                      //                     vertical: 10.0,
-                                      //                     horizontal: 10.0),
+                                      //                     const EdgeInsets
+                                      //                         .symmetric(
+                                      //                         vertical: 10.0,
+                                      //                         horizontal: 10.0),
                                       //                 errorBorder:
-                                      //                 OutlineInputBorder(
-                                      //                     borderSide: BorderSide(
-                                      //                         color: Colors
-                                      //                             .grey
-                                      //                             .shade200),
-                                      //                     borderRadius:
-                                      //                     BorderRadius
-                                      //                         .circular(
-                                      //                         5)),
+                                      //                     OutlineInputBorder(
+                                      //                         borderSide: BorderSide(
+                                      //                             color: Colors
+                                      //                                 .grey
+                                      //                                 .shade200),
+                                      //                         borderRadius:
+                                      //                             BorderRadius
+                                      //                                 .circular(
+                                      //                                     5)),
                                       //               )),
-                                      //         );
-                                      //       }),
+                                      //         ),
+                                      //         15.height,
+                                      //       ],
+                                      //     ),
+                                      //     // IconButton(onPressed: (){
+                                      //     //   for(var i=0;i<controllers.numberList.length;i++){
+                                      //     //     if(controllers.numberList[i].text.isNotEmpty){
+                                      //     //
+                                      //     //     }
+                                      //     //   }
+                                      //     // }, icon: Icon(Icons.add,color: colorsConst.primary,))
+                                      //   ],
                                       // ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          20.width,
-                                          Column(
-                                            children: [
-                                              SizedBox(
-                                                width: textFieldSize,
-                                                height: 50,
-                                                child: TextFormField(
-                                                    onEditingComplete: () {
-                                                      FocusScope.of(context)
-                                                          .requestFocus(
-                                                              whatsApp);
-                                                    },
-                                                    focusNode: phone,
-                                                    style: TextStyle(
-                                                        color: colorsConst
-                                                            .textColor,
-                                                        fontSize: 14,
-                                                        fontFamily: "Lato"),
-                                                    cursorColor:
-                                                        colorsConst.primary,
-                                                    onChanged: (value) async {
-                                                      setState(() {
-                                                        if (controllers.isCoMobileNumberList[index] ==true) {
-                                                          controllers.leadWhatsCrt[index].text =controllers.leadMobileCrt[index].text;
-                                                        }
-                                                      });
-                                                      SharedPreferences
-                                                          sharedPref =
-                                                          await SharedPreferences
-                                                              .getInstance();
-                                                      sharedPref.setString(
-                                                          "leadMobileNumber$index",
-                                                          value
-                                                              .toString()
-                                                              .trim());
-                                                      sharedPref.setString(
-                                                          "leadWhats$index",
-                                                          value.toString().trim());
-                                                    },
-                                                    onTap: () {},
-                                                    keyboardType:
-                                                        TextInputType.number,
-                                                    inputFormatters:
-                                                        constInputFormatters
-                                                            .mobileNumberInput,
-                                                    textCapitalization:
-                                                        TextCapitalization.none,
-                                                    controller: controllers
-                                                        .leadMobileCrt[index],
-                                                    textInputAction:
-                                                        TextInputAction.next,
-                                                    decoration: InputDecoration(
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      focusColor:
-                                                          Colors.transparent,
-                                                      hintText: "Phone No",
-                                                      fillColor: Colors.white,
-                                                      filled: true,
-                                                      hintStyle: TextStyle(
-                                                          color: Colors
-                                                              .grey.shade400,
-                                                          fontSize: 13,
-                                                          fontFamily: "Lato"),
-                                                      suffixIcon: Obx(
-                                                        () => Checkbox(
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5.0),
-                                                            ),
-                                                            side:
-                                                                MaterialStateBorderSide
-                                                                    .resolveWith(
-                                                              (states) => BorderSide(
-                                                                  width: 1.0,
-                                                                  color: colorsConst
-                                                                      .textColor),
-                                                            ),
-                                                            hoverColor: Colors
-                                                                .transparent,
-                                                            activeColor:
-                                                                colorsConst
-                                                                    .third,
-                                                            value: controllers
-                                                                    .isCoMobileNumberList[
-                                                                index],
-                                                            onChanged: (value) {
-                                                              setState(() {
-                                                                controllers.isCoMobileNumberList[index] =value!;
-                                                                if (controllers.isCoMobileNumberList[index] ==true) {
-                                                                  controllers.leadWhatsCrt[index].text =controllers.leadMobileCrt[index].text;
-                                                                } else {
-                                                                  print("in");
-                                                                  controllers.leadWhatsCrt[index].text = "";
-                                                                }
-                                                                FocusScope.of(context)
-                                                                    .requestFocus(
-                                                                    whatsApp);
-                                                              });
-                                                            }),
-                                                      ),
-                                                      enabledBorder:
-                                                          OutlineInputBorder(
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                      color: Colors
-                                                                          .grey
-                                                                          .shade400),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5)),
-                                                      focusedBorder:
-                                                          OutlineInputBorder(
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                color: Colors
-                                                                    .grey
-                                                                    .shade200,
-                                                              ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5)),
-                                                      focusedErrorBorder:
-                                                          OutlineInputBorder(
-                                                              borderSide: BorderSide(
-                                                                  color: Colors
-                                                                      .grey
-                                                                      .shade200),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5)),
-                                                      // errorStyle: const TextStyle(height:0.05,fontSize: 12),
-                                                      contentPadding:
-                                                          const EdgeInsets
-                                                              .symmetric(
-                                                              vertical: 10.0,
-                                                              horizontal: 10.0),
-                                                      errorBorder:
-                                                          OutlineInputBorder(
-                                                              borderSide: BorderSide(
-                                                                  color: Colors
-                                                                      .grey
-                                                                      .shade200),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5)),
-                                                    )),
-                                              ),
-                                              15.height,
-                                            ],
-                                          ),
-                                          // IconButton(onPressed: (){
-                                          //   for(var i=0;i<controllers.numberList.length;i++){
-                                          //     if(controllers.numberList[i].text.isNotEmpty){
-                                          //
-                                          //     }
-                                          //   }
-                                          // }, icon: Icon(Icons.add,color: colorsConst.primary,))
-                                        ],
-                                      ),
+                                      ///
                                       CustomTextField(
                                         onEdit: () {
                                           FocusScope.of(context)
@@ -1040,11 +976,11 @@ class _AddLeadState extends State<AddLead> {
                                         inputFormatters: constInputFormatters
                                             .mobileNumberInput,
                                         onChanged: (value) async {
-                                          if (controllers.leadWhatsCrt[index].text !=controllers.leadMobileCrt[index].text) {
-                                            controllers.isCoMobileNumberList[index] =false;
-                                          } else {
-                                            controllers.isCoMobileNumberList[index] =true;
-                                          }
+                                          // if (controllers.leadWhatsCrt[index].text !=controllers.leadMobileCrt[index].text) {
+                                          //   controllers.isCoMobileNumberList[index] =false;
+                                          // } else {
+                                          //   controllers.isCoMobileNumberList[index] =true;
+                                          // }
                                           SharedPreferences sharedPref =
                                               await SharedPreferences
                                                   .getInstance();
@@ -1364,42 +1300,156 @@ class _AddLeadState extends State<AddLead> {
                                     "leadCoName", value.toString().trim());
                               },
                             ),
-                            CustomTextField(
-                              focusNode: cNo,
-                              onEdit: () {
-                                FocusScope.of(context).requestFocus(linkedin);
-                              },
-                              hintText: "Company Phone No.",
-                              text: "Company Phone No.",
-                              controller: controllers.leadCoMobileCrt,
-                              width: textFieldSize,
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.next,
-                              isOptional: false,
-                              inputFormatters:
-                                  constInputFormatters.mobileNumberInput,
-                              onChanged: (value) async {
-                                if (value.toString().isNotEmpty) {
-                                  String newValue =
-                                      value.toString()[0].toUpperCase() +
-                                          value.toString().substring(1);
-                                  if (newValue != value) {
-                                    controllers.leadCoMobileCrt.value =
-                                        controllers.leadCoMobileCrt.value
-                                            .copyWith(
-                                      text: newValue,
-                                      selection: TextSelection.collapsed(
-                                          offset: newValue.length),
-                                    );
-                                  }
-                                }
-                                SharedPreferences sharedPref =
-                                    await SharedPreferences.getInstance();
-                                sharedPref.setString(
-                                    "leadCoMobile", value.toString().trim());
-                              },
-                              // }
-                            ),
+                            Obx((){
+                              return SizedBox(
+                                width: textFieldSize,
+                                child: ListView.builder(
+                                    shrinkWrap:true,
+                                    itemCount:controllers.infoNumberList.length,
+                                    itemBuilder: (context,index){
+                                      return Column(
+                                          children:[
+                                            Row(
+                                                children:[
+                                                  SizedBox(
+                                                    width: textFieldSize-40,
+                                                    // height: 80,
+                                                    child: CustomTextField(
+                                                      focusNode: cNo,
+                                                      onEdit: () {
+                                                        FocusScope.of(context).requestFocus(linkedin);
+                                                      },
+                                                      hintText: "Company Phone No.",
+                                                      text: "Company Phone No.",
+                                                      controller: controllers.infoNumberList[index],
+                                                      width: textFieldSize,
+                                                      keyboardType: TextInputType.number,
+                                                      textInputAction: TextInputAction.next,
+                                                      isOptional: false,
+                                                      inputFormatters:
+                                                      constInputFormatters.mobileNumberInput,
+                                                      onChanged: (value) async {
+                                                        // if (value.toString().isNotEmpty) {
+                                                        //   String newValue =
+                                                        //       value.toString()[0].toUpperCase() +
+                                                        //           value.toString().substring(1);
+                                                        //   if (newValue != value) {
+                                                        //     controllers.leadCoMobileCrt.value =
+                                                        //         controllers.leadCoMobileCrt.value
+                                                        //             .copyWith(
+                                                        //           text: newValue,
+                                                        //           selection: TextSelection.collapsed(
+                                                        //               offset: newValue.length),
+                                                        //         );
+                                                        //   }
+                                                        // }
+                                                        // SharedPreferences sharedPref =
+                                                        // await SharedPreferences.getInstance();
+                                                        // sharedPref.setString(
+                                                        //     "leadCoMobile", value.toString().trim());
+                                                      },
+                                                      // }
+                                                    ),
+                                                  ),
+                                                  IconButton(
+                                                      onPressed:(){
+                                                        if (controllers.infoNumberList.length > 1) {
+                                                          controllers.infoNumberList.removeAt(index);
+                                                        }else{
+                                                          utils.snackBar(context: context, msg: "Enter at least one mobile number.", color: Colors.red);
+                                                        }
+                                                      },
+                                                      icon:SvgPicture.asset("assets/images/delete.svg")
+                                                  )
+                                                ]
+                                            ),
+                                            if(index==controllers.infoNumberList.length-1)
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  IconButton(
+                                                    onPressed: () {
+                                                      bool isMistake = false;
+                                                      Set<String> uniqueNumbers = {};
+
+                                                      for (var i = 0; i < controllers.infoNumberList.length; i++) {
+                                                        String number = controllers.infoNumberList[i].text.trim();
+
+                                                        // Empty or not 10 digits
+                                                        if (number.isEmpty || number.length != 10) {
+                                                          isMistake = true;
+                                                          utils.snackBar(
+                                                            context: context,
+                                                            msg: "Enter valid 10 digit mobile number",
+                                                            color: Colors.red,
+                                                          );
+                                                          break;
+                                                        }
+
+                                                        // Duplicate check
+                                                        if (uniqueNumbers.contains(number)) {
+                                                          isMistake = true;
+                                                          utils.snackBar(
+                                                            context: context,
+                                                            msg: "Same mobile number already added",
+                                                            color: Colors.red,
+                                                          );
+                                                          break;
+                                                        }
+
+                                                        uniqueNumbers.add(number);
+                                                      }
+
+                                                      if (!isMistake) {
+                                                        controllers.infoNumberList.add(TextEditingController());
+                                                      }
+                                                    },
+                                                    icon: Icon(Icons.add),
+                                                  ),
+                                                ],
+                                              )
+                                          ]
+                                      );
+                                    }),
+                              );
+                            }),
+
+                            // CustomTextField(
+                            //   focusNode: cNo,
+                            //   onEdit: () {
+                            //     FocusScope.of(context).requestFocus(linkedin);
+                            //   },
+                            //   hintText: "Company Phone No.",
+                            //   text: "Company Phone No.",
+                            //   controller: controllers.leadCoMobileCrt,
+                            //   width: textFieldSize,
+                            //   keyboardType: TextInputType.number,
+                            //   textInputAction: TextInputAction.next,
+                            //   isOptional: false,
+                            //   inputFormatters:
+                            //       constInputFormatters.mobileNumberInput,
+                            //   onChanged: (value) async {
+                            //     if (value.toString().isNotEmpty) {
+                            //       String newValue =
+                            //           value.toString()[0].toUpperCase() +
+                            //               value.toString().substring(1);
+                            //       if (newValue != value) {
+                            //         controllers.leadCoMobileCrt.value =
+                            //             controllers.leadCoMobileCrt.value
+                            //                 .copyWith(
+                            //           text: newValue,
+                            //           selection: TextSelection.collapsed(
+                            //               offset: newValue.length),
+                            //         );
+                            //       }
+                            //     }
+                            //     SharedPreferences sharedPref =
+                            //         await SharedPreferences.getInstance();
+                            //     sharedPref.setString(
+                            //         "leadCoMobile", value.toString().trim());
+                            //   },
+                            //   // }
+                            // ),
                             CustomDropDown(
                               saveValue: controllers.industry,
                               valueList: controllers.industryList,
