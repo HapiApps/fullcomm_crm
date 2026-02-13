@@ -73,3 +73,77 @@ class _SearchCustomDropdownState extends State<SearchCustomDropdown> {
     );
   }
 }
+
+// class EmployeeDropdown extends StatelessWidget {
+//   final List employeeList;
+//   final ValueChanged onChanged;
+//   final String? text;
+//   final double size;
+//   final bool? isRequired;
+//   final VoidCallback? callback;
+//   const EmployeeDropdown({super.key, required this.employeeList, required this.onChanged, this.text="", required this.size, this.isRequired, this.callback});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     List<UserModel> sortedList = List.from(employeeList)
+//       ..sort((a, b) => a.firstname!.toLowerCase().compareTo(b.firstname!.toLowerCase()));
+//     return Column(
+//       children: [
+//         if(sortedList.isEmpty)
+//           GestureDetector(
+//               onTap: callback,
+//               child: const Icon(Icons.refresh,color: Colors.red,size: 15,)),
+//         Container(
+//           width: size,
+//           height: 42,
+//           decoration: customDecoration.baseBackgroundDecoration(
+//               color: Colors.white,
+//               radius: 5,
+//               borderColor: Colors.grey.shade200
+//           ),
+//           child: DropdownSearch<UserModel>(
+//             items: sortedList,
+//             itemAsString: (UserModel? employee) => employee?.firstname ?? '',
+//             onChanged: onChanged,
+//             dropdownDecoratorProps: DropDownDecoratorProps(
+//               dropdownSearchDecoration: InputDecoration(
+//                 // labelText: text, // Set the label text dynamically
+//                 //   labelStyle: const TextStyle(
+//                 //     fontSize: 13
+//                 //   ),
+//                   hintText: text,
+//                   hintStyle: TextStyle(
+//                       fontSize: 14
+//                   ),// Set the hint text
+//                   contentPadding: const EdgeInsets.fromLTRB(8, 8, 0, 2),
+//                   border: InputBorder.none,
+//                   suffixIcon: const Icon(Icons.star, color: Colors.red, size: 15)
+//               ),
+//             ),
+//             popupProps: PopupProps.menu(
+//               showSearchBox: true,
+//               fit: FlexFit.loose,
+//               constraints: BoxConstraints(
+//                 maxWidth: MediaQuery.of(context).size.width * 0.9, // Set max width for the dropdown popup
+//               ),
+//               itemBuilder: (context, UserModel? employee, bool isSelected) {
+//                 return Padding(
+//                   padding: const EdgeInsets.fromLTRB(5, 0, 2, 0),
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       CustomText(text:employee?.firstname ?? ''),
+//                       CustomText(text:employee?.mobileNumber ?? '',colors: colorsConst.greyClr),
+//                       CustomText(text:employee?.roleName ?? '',colors: Provider.of<HomeProvider>(context, listen: false).primary),
+//                       const Divider(color: Colors.grey,)
+//                     ],
+//                   ),
+//                 );
+//               },
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }

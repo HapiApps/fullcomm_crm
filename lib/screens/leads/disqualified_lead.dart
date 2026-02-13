@@ -436,6 +436,7 @@ class _DisqualifiedLeadState extends State<DisqualifiedLead> {
                                         itemBuilder: (context, index) {
                                           final data = controllers.paginatedDisqualified[index];
                                           return Obx(()=>LeftLeadTile(
+                                            leadIndex: "0",
                                             pageName: "No Matches",
                                             onChanged: (value){
                                               setState(() {

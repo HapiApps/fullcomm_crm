@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart'as http;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
@@ -10,7 +12,9 @@ import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:fullcomm_crm/screens/records/mail_comments.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
+import '../common/utilities/jwt_storage.dart';
 import '../controller/table_controller.dart';
 import '../screens/records/cus_mail_comments.dart';
 import '../screens/leads/update_lead.dart';
@@ -227,6 +231,8 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
   }
 
   late TextEditingController statusController;
+  late Map<String, TextEditingController> fieldControllers;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -235,6 +241,14 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
         text: widget.statusUpdate.toString() == "null"
             ? ""
             : widget.statusUpdate.toString());
+        final data = toJson();
+
+        fieldControllers = {};
+
+        data.forEach((key, value) {
+          fieldControllers[key] =
+              TextEditingController(text: value?.toString() ?? "");
+        });
   }
 
   @override
@@ -249,6 +263,9 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
 
   @override
   void dispose() {
+    for (final c in fieldControllers.values) {
+      c.dispose();
+    }
     statusController.dispose();
     super.dispose();
   }
@@ -335,18 +352,70 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                           isCopy: false,
                         ),
                       );
-                    } else if (heading.toLowerCase() == "status update") {
+                    }
+                    // else if (heading.toLowerCase() == "status update") {
+                    //   return Tooltip(
+                    //     message: widget.statusUpdate.toString() == "null"
+                    //         ? ""
+                    //         : widget.statusUpdate.toString(),
+                    //     child: Container(
+                    //       height: 45,
+                    //       alignment: Alignment.centerLeft,
+                    //       padding:
+                    //       const EdgeInsets.only(left: 6, right: 5, bottom: 5),
+                    //       child: TextField(
+                    //         controller: statusController,
+                    //         cursorColor: colorsConst.textColor,
+                    //         style: TextStyle(
+                    //           color: colorsConst.textColor,
+                    //           fontSize: 14,
+                    //           fontFamily: "Lato",
+                    //         ),
+                    //         decoration: const InputDecoration(border: InputBorder.none),
+                    //         onSubmitted: (value) async {
+                    //           apiService.updateLeadStatusUpdateAPI(
+                    //             context,
+                    //             widget.id.toString(),
+                    //             widget.mainMobile.toString(),
+                    //             value,
+                    //           );
+                    //         },
+                    //       ),
+                    //     ),
+                    //   );
+                    // }
+                    else {
+                      String normalize(String s) =>
+                          s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
+                      final key = controllers.fields
+                          .firstWhereOrNull((f) => normalize(f.userHeading) == normalize(heading))
+                          ?.systemField;
+                      final column = controllers.fields
+                          .firstWhereOrNull((f) => normalize(f.systemField) == normalize(heading))
+                          ?.systemField;
+                      // print(controllers.fields.first.systemField);
+                      final controller =key != null ? fieldControllers[key] : null;
                       return Tooltip(
-                        message: widget.statusUpdate.toString() == "null"
-                            ? ""
-                            : widget.statusUpdate.toString(),
-                        child: Container(
+                        message: controller?.text ?? "",
+                        // child: Container(
+                        //   height: 45,
+                        //   alignment: Alignment.centerLeft,
+                        //   padding: const EdgeInsets.symmetric(horizontal: 5),
+                        //   child: CustomText(
+                        //     textAlign: TextAlign.left,
+                        //     text: value.toString() == "null" ? "" : value.toString(),
+                        //     size: 14,
+                        //     colors: colorsConst.textColor,
+                        //     isCopy: false,
+                        //   ),
+                        // ),
+                        child:  Container(
                           height: 45,
                           alignment: Alignment.centerLeft,
                           padding:
                           const EdgeInsets.only(left: 6, right: 5, bottom: 5),
                           child: TextField(
-                            controller: statusController,
+                            controller: controller,
                             cursorColor: colorsConst.textColor,
                             style: TextStyle(
                               color: colorsConst.textColor,
@@ -355,35 +424,27 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                             ),
                             decoration: const InputDecoration(border: InputBorder.none),
                             onSubmitted: (value) async {
-                              apiService.updateLeadStatusUpdateAPI(
-                                context,
-                                widget.id.toString(),
-                                widget.mainMobile.toString(),
-                                value,
-                              );
+                              var send="";
+                              for (var i=0;i<controllers.defaultFields.length;i++){
+                                if(column==controllers.defaultFields[i]["system_field"]){
+                                  send=controllers.defaultFields[i]["system_field"].toString();
+                                  break;
+                                }
+                              }
+                                  if(controller!.text.isNotEmpty){
+                                    // apiService.updateInstantChanges(
+                                    //   context,
+                                    //   leadId: widget.id.toString(),
+                                    //   column: column.toString(),
+                                    //   value:
+                                    //   controller.text,
+                                    // );
+                                    updateLeadAPI(context);
+                                  }else{
+                                    utils.snackBar(context: context, msg: "Enter a value", color: Colors.red);
+                                  }
+
                             },
-                          ),
-                        ),
-                      );
-                    } else {
-                      String normalize(String s) =>
-                          s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
-                      final key = controllers.fields
-                          .firstWhereOrNull((f) => normalize(f.userHeading) == normalize(heading))
-                          ?.systemField;
-                      final value = key != null ? toJson()[key] ?? "" : "";
-                      return Tooltip(
-                        message: value.toString() == "null" ? "" : value.toString(),
-                        child: Container(
-                          height: 45,
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: CustomText(
-                            textAlign: TextAlign.left,
-                            text: value.toString() == "null" ? "" : value.toString(),
-                            size: 14,
-                            colors: colorsConst.textColor,
-                            isCopy: false,
                           ),
                         ),
                       );
@@ -396,4 +457,137 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
     }
     );
   }
+  String getVal(String key) {
+    return fieldControllers[key]?.text.trim() ?? "";
+  }
+
+  Future updateLeadAPI(BuildContext context) async {
+    try {
+      // Map data = {
+      //   "cos_id": controllers.storage.read("cos_id"),
+      //   "city": widget.city,
+      //   "source": widget.source,
+      //   "source_details": widget.sourceDetails,
+      //   "product_discussion": widget.productDiscussion,
+      //   "linkedin": widget.linkedin,
+      //   "x": widget.x,
+      //   "door_no": widget.addressLine1,
+      //   "area": widget.area,
+      //   "country": widget.country,
+      //   "state": widget.state,
+      //   "pincode": widget.pinCode,
+      //   "industry": widget.industry,
+      //   "points": widget.points,
+      //   'status_update': widget.statusUpdate,
+      //   'details_of_service_required': widget.detailsOfServiceReq,
+      //   "expected_billing_value": widget.expectedBillingValue,
+      //   "arpu_value": widget.arpuValue,
+      //   "num_of_headcount": widget.numOfHeadcount,
+      //   'prospect_enrollment_date': widget.prospectEnrollmentDate,
+      //   'expected_convertion_date': widget.expectedConvertionDate,
+      //   'owner': widget.owner,
+      //   "status": widget.status,
+      //   'rating': widget.rating,
+      //   "name": widget.mainName,
+      //   "title": widget.title,
+      //   "phone_no": widget.mainMobile,
+      //   "whatsapp_number": widget.whatsappNumber,
+      //   "email": widget.email,
+      //   "action": "update_customer",
+      //
+      //   // "product": controllers.leadProduct.text.trim(),
+      //   "company_name": widget.companyName,
+      //   "co_website": widget.companyWebsite,
+      //   "co_number": widget.companyNumber,
+      //   "co_email": widget.companyEmail,
+      //   "address_id": widget.addressId,
+      //   "lead_id": widget.id,
+      // };
+      Map data = {
+        "cos_id": controllers.storage.read("cos_id"),
+
+        "city": getVal("city"),
+        "source": getVal("source"),
+        "source_details": getVal("source_details"),
+        "product_discussion": getVal("product_discussion"),
+        "linkedin": getVal("linkedin"),
+        "x": getVal("x"),
+
+        "door_no": getVal("addressLine1"),
+        "area": getVal("area"),
+        "country": getVal("country"),
+        "state": getVal("state"),
+        "pincode": getVal("pinCode"),
+
+        "industry": getVal("industry"),
+        "points": getVal("points"),
+        "status_update": getVal("status_update"),
+        "details_of_service_required": getVal("details_of_service_required"),
+
+        "expected_billing_value": getVal("expected_billing_value"),
+        "arpu_value": getVal("arpu_value"),
+        "num_of_headcount": getVal("num_of_headcount"),
+
+        "prospect_enrollment_date": getVal("prospect_enrollment_date"),
+        "expected_convertion_date": getVal("expected_convertion_date"),
+
+        "owner": getVal("owner"),
+        "status": getVal("status"),
+        "rating": getVal("rating"),
+
+        "name": getVal("mainName"),
+        "title": getVal("title"),
+        "phone_no": getVal("mainMobile"),
+        "whatsapp_number": getVal("whatsappNumber"),
+        "email": getVal("email"),
+
+        "company_name": getVal("company_name"),
+        "co_website": getVal("companyWebsite"),
+        "co_number": getVal("companyNumber"),
+        "co_email": getVal("companyEmail"),
+
+        "address_id": widget.addressId,
+        "lead_id": widget.id,
+        "action": "update_customer",
+      };
+      final request = await http.post(
+        Uri.parse(scriptApi),
+        body: jsonEncode(data),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+      );
+      // print("update_customer");
+      // print(request.body);
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return updateLeadAPI(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200 &&
+          response["message"] == "Customer updated successfully") {
+        utils.snackBar(msg: "Your Lead is updated successfully !",
+            color: Colors.green,context:Get.context!);
+        Get.back();
+        apiService.allNewLeadsDetails();
+        apiService.allLeadsDetails();
+        apiService.allGoodLeadsDetails();
+        controllers.leadCtr.reset();
+      } else {
+        Navigator.of(context).pop();
+        utils.snackBar(context:Get.context!,msg:"Failed", color: Colors.red);
+        controllers.leadCtr.reset();
+      }
+    } catch (e) {
+      Navigator.of(context).pop();
+      utils.snackBar(context:Get.context!,msg:"Something went wrong, Please try again later", color: Colors.red);
+      controllers.leadCtr.reset();
+    }
+  }
+
 }

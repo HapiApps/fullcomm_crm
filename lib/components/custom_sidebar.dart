@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
@@ -8,6 +9,7 @@ import '../common/constant/colors_constant.dart';
 import '../common/constant/default_constant.dart';
 import '../common/widgets/log_in.dart';
 import '../controller/controller.dart';
+import '../screens/leads/new_lead_page.dart';
 import '../screens/leads/view_customer.dart';
 import '../screens/dashboard.dart';
 import '../screens/employee/employee_screen.dart';
@@ -77,115 +79,134 @@ class SideBar extends StatelessWidget {
               context: context,
               controllers: controllers,
               colorsConst: colorsConst,
-              index: 0,
+              // index: 0,
+              index: 100,
               icon: Icons.dashboard_outlined,
               selectedImage: "assets/images/s_dash.png",
               unSelectedImage: "assets/images/u_dash.png",
               label: constValue.dashboard,
               page: const NewDashboard(),
             ),
-            SidebarItem(
-              context: context,
-              controllers: controllers,
-              colorsConst: colorsConst,
-              index: 1,
-              icon: Icons.remove_red_eye_outlined,
-              label: controllers.leadCategoryList[0]["value"],
-              selectedImage: "assets/images/s_suspects.png",
-              unSelectedImage: "assets/images/u_suspects.png",
-              onPreTap: () {
-                // controllers.selectedMonth.value = null;
-                // controllers.selectedProspectSortBy.value = "Today";
-                controllers.isLead.value = true;
-              },
-              page: const Suspects(),
-            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: controllers.leadCategoryList.length,
+                itemBuilder: (context,index){
+                  return SidebarItem(
+                    context: context,
+                    controllers: controllers,
+                    colorsConst: colorsConst,
+                    index: int.parse(controllers.leadCategoryList[index]["lead_status"]),
+                    icon: Icons.remove_red_eye_outlined,
+                    label: controllers.leadCategoryList[index]["value"],
+                    selectedImage: controllers.leadCategoryList[index]["icon1"],
+                    unSelectedImage: controllers.leadCategoryList[index]["icon2"],
+                    isNetWrk: true,
+                    onPreTap: () {
+                      controllers.isLead.value = true;
+                    },
+                    page:  NewLeadPage(index: controllers.leadCategoryList[index]["lead_status"] ,name: controllers.leadCategoryList[index]["value"],),
+                  );
+                }),
+
+            // SidebarItem(
+            //   context: context,
+            //   controllers: controllers,
+            //   colorsConst: colorsConst,
+            //   index: 1,
+            //   icon: Icons.remove_red_eye_outlined,
+            //   label: controllers.leadCategoryList[0]["value"],
+            //   selectedImage: "assets/images/s_suspects.png",
+            //   unSelectedImage: "assets/images/u_suspects.png",
+            //   onPreTap: () {
+            //     // controllers.selectedMonth.value = null;
+            //     // controllers.selectedProspectSortBy.value = "Today";
+            //     controllers.isLead.value = true;
+            //   },
+            //   page: const Suspects(),
+            // ),
+            // SidebarItem(
+            //   context: context,
+            //   controllers: controllers,
+            //   colorsConst: colorsConst,
+            //   index: 2,
+            //   icon: Icons.flag_outlined,
+            //   label: controllers.leadCategoryList[1]["value"],
+            //   selectedImage: "assets/images/s_prospects.png",
+            //   unSelectedImage: "assets/images/u_prospects.png",
+            //   onPreTap: () {
+            //     // controllers.selectedPMonth.value = null;
+            //     // controllers.selectedQualifiedSortBy.value = "Today";
+            //   },
+            //   page: const Prospects(),
+            // ),
+            // SidebarItem(
+            //   context: context,
+            //   controllers: controllers,
+            //   colorsConst: colorsConst,
+            //   index: 3,
+            //   icon: Icons.verified_outlined,
+            //   label: controllers.leadCategoryList[2]["value"],
+            //   selectedImage: "assets/images/s_qualified.png",
+            //   unSelectedImage: "assets/images/u_qualified.png",
+            //   onPreTap: () {
+            //     // controllers.selectedPMonth.value = null;
+            //     // controllers.selectedQualifiedSortBy.value = "Today";
+            //     controllers.isEmployee.value = true;
+            //   },
+            //   page: const Qualified(),
+            // ),
+            // SidebarItem(
+            //   context: context,
+            //   controllers: controllers,
+            //   colorsConst: colorsConst,
+            //   index: 4,
+            //   icon: Icons.dashboard_customize,
+            //   label: controllers.leadCategoryList[3]["value"],
+            //   selectedImage: "assets/images/s_customer.png",
+            //   unSelectedImage: "assets/images/u_customers.png",
+            //   onPreTap: () {
+            //     // controllers.selectedMonth.value = null;
+            //     // controllers.selectedProspectSortBy.value = "Today";
+            //   },
+            //   page: const ViewCustomer(),
+            // ),
+            // SidebarItem(
+            //   context: context,
+            //   controllers: controllers,
+            //   colorsConst: colorsConst,
+            //   index: 5,
+            //   icon: Icons.cancel_outlined,
+            //   label: controllers.leadCategoryList[5]["value"],
+            //   selectedImage: "assets/images/s_disqualified.png",
+            //   unSelectedImage: "assets/images/u_disqualified.png",
+            //   onPreTap: () {
+            //     // controllers.selectedMonth.value = null;
+            //     // controllers.selectedProspectSortBy.value = "Today";
+            //   },
+            //   page: const DisqualifiedLead(),
+            // ),
+            // SidebarItem(
+            //   context: context,
+            //   controllers: controllers,
+            //   colorsConst: colorsConst,
+            //   index: 12,
+            //   icon: Icons.dashboard_customize,
+            //   label: controllers.leadCategoryList[4]["value"],
+            //   selectedImage: "assets/images/s_target.png",
+            //   unSelectedImage: "assets/images/u_target.png",
+            //   onPreTap: () {
+            //     // controllers.selectedMonth.value = null;
+            //     // controllers.selectedProspectSortBy.value = "Today";
+            //   },
+            //   page: const TargetLeads(),
+            // ),
 
             SidebarItem(
               context: context,
               controllers: controllers,
               colorsConst: colorsConst,
-              index: 2,
-              icon: Icons.flag_outlined,
-              label: controllers.leadCategoryList[1]["value"],
-              selectedImage: "assets/images/s_prospects.png",
-              unSelectedImage: "assets/images/u_prospects.png",
-              onPreTap: () {
-                // controllers.selectedPMonth.value = null;
-                // controllers.selectedQualifiedSortBy.value = "Today";
-              },
-              page: const Prospects(),
-            ),
-
-            SidebarItem(
-              context: context,
-              controllers: controllers,
-              colorsConst: colorsConst,
-              index: 3,
-              icon: Icons.verified_outlined,
-              label: controllers.leadCategoryList[2]["value"],
-              selectedImage: "assets/images/s_qualified.png",
-              unSelectedImage: "assets/images/u_qualified.png",
-              onPreTap: () {
-                // controllers.selectedPMonth.value = null;
-                // controllers.selectedQualifiedSortBy.value = "Today";
-                controllers.isEmployee.value = true;
-              },
-              page: const Qualified(),
-            ),
-
-            SidebarItem(
-              context: context,
-              controllers: controllers,
-              colorsConst: colorsConst,
-              index: 4,
-              icon: Icons.dashboard_customize,
-              label: controllers.leadCategoryList[3]["value"],
-              selectedImage: "assets/images/s_customer.png",
-              unSelectedImage: "assets/images/u_customers.png",
-              onPreTap: () {
-                // controllers.selectedMonth.value = null;
-                // controllers.selectedProspectSortBy.value = "Today";
-              },
-              page: const ViewCustomer(),
-            ),
-
-            SidebarItem(
-              context: context,
-              controllers: controllers,
-              colorsConst: colorsConst,
-              index: 5,
-              icon: Icons.cancel_outlined,
-              label: controllers.leadCategoryList[5]["value"],
-              selectedImage: "assets/images/s_disqualified.png",
-              unSelectedImage: "assets/images/u_disqualified.png",
-              onPreTap: () {
-                // controllers.selectedMonth.value = null;
-                // controllers.selectedProspectSortBy.value = "Today";
-              },
-              page: const DisqualifiedLead(),
-            ),
-            SidebarItem(
-              context: context,
-              controllers: controllers,
-              colorsConst: colorsConst,
-              index: 12,
-              icon: Icons.dashboard_customize,
-              label: controllers.leadCategoryList[4]["value"],
-              selectedImage: "assets/images/s_target.png",
-              unSelectedImage: "assets/images/u_target.png",
-              onPreTap: () {
-                // controllers.selectedMonth.value = null;
-                // controllers.selectedProspectSortBy.value = "Today";
-              },
-              page: const TargetLeads(),
-            ),
-
-            SidebarItem(
-              context: context,
-              controllers: controllers,
-              colorsConst: colorsConst,
-              index: 6,
+              // index: 6,
+              index: 101,
               icon: Icons.receipt_long,
               label: "Records",
               selectedImage: "assets/images/s_records.png",
@@ -197,7 +218,8 @@ class SideBar extends StatelessWidget {
               context: context,
               controllers: controllers,
               colorsConst: colorsConst,
-              index: 11,
+              // index: 11,
+              index: 102,
               icon: Icons.alarm,
               label: "Reminder",
               selectedImage: "assets/images/s_reminder.png",
@@ -222,7 +244,8 @@ class SideBar extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         controllers.oldIndex.value = controllers.selectedIndex.value;
-                        controllers.selectedIndex.value = 7;
+                        // controllers.selectedIndex.value = 7;
+                        controllers.selectedIndex.value = 103;
                         controllers.isSettingsExpanded.toggle();
                       },
                       child: AnimatedContainer(
@@ -315,7 +338,8 @@ class SideBar extends StatelessWidget {
               colorsConst: colorsConst,
               selectedImage: "assets/images/s_logout.png",
               unSelectedImage: "assets/images/u_logout.png",
-              index: 10,
+              // index: 10,
+              index: 104,
               icon: Icons.logout,
               label: "LogOut",
               onTap: () {
@@ -437,6 +461,7 @@ class SidebarItem extends StatelessWidget {
   final Widget? page;
   final VoidCallback? onTap;
   final VoidCallback? onPreTap;
+  final bool? isNetWrk;
 
   const SidebarItem({
     super.key,
@@ -448,7 +473,7 @@ class SidebarItem extends StatelessWidget {
     required this.label,
     this.page,
     this.onTap,
-    this.onPreTap, required this.selectedImage, required this.unSelectedImage,
+    this.onPreTap, required this.selectedImage, required this.unSelectedImage, this.isNetWrk,
   });
 
   @override
@@ -519,14 +544,22 @@ class SidebarItem extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      // Icon(
-                      //   icon,
-                      //   color: isSelected
-                      //       ? colorsConst.primary
-                      //       : isHovered.value
-                      //       ? colorsConst.primary
-                      //       : Colors.black,
-                      // ),
+                      isNetWrk==true?
+                      CachedNetworkImage(
+                      imageUrl: "$getImage?path=${isSelected?selectedImage:isHovered.value?selectedImage:unSelectedImage}",fit:BoxFit.cover ,
+                          imageBuilder: (context, imageProvider) =>
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                          errorWidget: (context,url,error)=>Icon(Icons.leaderboard_outlined,color: isSelected?colorsConst.primary:Colors.black,),
+                          placeholder: (context,url)=>Icon(Icons.leaderboard_outlined,color: isSelected?colorsConst.primary:Colors.black,)
+                      ):
                       Image.asset(isSelected?selectedImage:isHovered.value?selectedImage:unSelectedImage,
                         width: 18,height: 18,
                       ),

@@ -89,16 +89,33 @@ class LeftTableHeader extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 5),
           child: Row(
             children: [
+              // Expanded(
+              //   child: Text(
+              //     heading,
+              //     style: const TextStyle(
+              //       fontSize: 15,
+              //       color: Colors.white,
+              //       fontFamily: "Lato",
+              //     ),
+              //     maxLines: 2,
+              //     overflow: TextOverflow.ellipsis,
+              //   ),
+              // ),
               Expanded(
-                child: Text(
-                  heading,
+                child: TextField(
+                  controller: TextEditingController(text: heading),
                   style: const TextStyle(
                     fontSize: 15,
                     color: Colors.white,
                     fontFamily: "Lato",
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                  cursorColor: Colors.white,
+                  decoration: const InputDecoration(
+                    fillColor: Colors.red,
+                    isDense: true,
+                    border: InputBorder.none,
+                    hintText: '',
+                  ),
                 ),
               ),
 

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common/constant/colors_constant.dart';
 import '../controller/controller.dart';
@@ -19,7 +22,12 @@ class CustomTableHeader extends StatefulWidget {
   @override
   State<CustomTableHeader> createState() => _CustomTableHeaderState();
 }
-
+void save()async{
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('tableHeadings', jsonEncode(tableController.tableHeadings));
+  print("saved");
+  tableController.setHeadingFields(tableController.tableHeadings);
+}
 class _CustomTableHeaderState extends State<CustomTableHeader> {
   @override
   Widget build(BuildContext context) {
@@ -53,6 +61,7 @@ class _CustomTableHeaderState extends State<CustomTableHeader> {
 
                 tableController.tableHeadings.refresh();
                 tableController.colWidth.refresh();
+                save();
               }
             },
 
@@ -112,6 +121,14 @@ class _CustomTableHeaderState extends State<CustomTableHeader> {
 
   Widget _buildHeaderCell(String h) {
     final lower = h.toLowerCase();
+    final oldValue = lower == "added date" ||
+        lower == "prospect enrollment date" ||
+        lower == "date"
+        ? "Added Date"
+        : h;
+
+    final TextEditingController _controller =
+    TextEditingController(text: oldValue);
     return Stack(
       children: [
         Container(
@@ -121,21 +138,47 @@ class _CustomTableHeaderState extends State<CustomTableHeader> {
           padding: const EdgeInsets.symmetric(horizontal: 5),
           child: Row(
             children: [
+              // Expanded(
+              //   child: Text(
+              //     lower == "added date" ||
+              //         lower == "prospect enrollment date" ||
+              //         lower == "date"
+              //         ? "Added Date"
+              //         : h,
+              //     textAlign: TextAlign.left,
+              //     style: const TextStyle(
+              //       fontSize: 15,
+              //       color: Colors.white,
+              //       fontFamily: "Lato",
+              //     ),
+              //     maxLines: 2,
+              //     overflow: TextOverflow.ellipsis,
+              //   ),
+              // ),
               Expanded(
-                child: Text(
-                  lower == "added date" ||
-                      lower == "prospect enrollment date" ||
-                      lower == "date"
-                      ? "Added Date"
-                      : h,
+                child: TextField(
+                  controller: _controller,
+                  cursorColor: Colors.white,
                   textAlign: TextAlign.left,
                   style: const TextStyle(
                     fontSize: 15,
                     color: Colors.white,
                     fontFamily: "Lato",
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  onEditingComplete: () {
+                    final newValue = _controller.text;
+
+                    tableController.updateColumnAPI(
+                      context,
+                      oldValue,
+                      newValue,
+                    );
+                  },
                 ),
               ),
               const SizedBox(width: 3),

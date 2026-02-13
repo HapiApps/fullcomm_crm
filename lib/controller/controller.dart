@@ -10,9 +10,11 @@ import 'package:get_storage/get_storage.dart';
 import 'package:group_button/group_button.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../common/constant/api.dart';
 import '../common/utilities/jwt_storage.dart';
+import '../common/widgets/log_in.dart';
 import '../models/comments_obj.dart';
 import '../models/customer_activity.dart';
 import '../models/customer_full_obj.dart';
@@ -72,7 +74,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   var selectedChartYear = DateTime.now().year.obs;
   String countryDial = "+91";
   var isEyeOpen = false.obs,isLeftOpen=true.obs,isRightOpen=true.obs;
-  RxInt selectedIndex = 0.obs,oldIndex=0.obs,selectedSettingsIndex = 0.obs;
+  RxInt selectedIndex = 100.obs,oldIndex=100.obs,selectedSettingsIndex = 0.obs;
   var isSettingsExpanded = false.obs;
   bool extended =false;
   RxString searchText = ''.obs;
@@ -844,7 +846,6 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
     int end = start + itemsPerPage;
     end = end > filteredLeads.length ? filteredLeads.length : end;
-
     return filteredLeads.sublist(start, end);
   }
 
@@ -1768,7 +1769,14 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
       // print("STATUS CODE add_values: ${response.statusCode}");
       // print("RAW RESPONSE: ${response.body}");
-
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getCallStatus();
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (response.statusCode != 200) {
         // print("SERVER ERROR");
         return;
@@ -1786,6 +1794,62 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
         hCallStatusList.assignAll(list);
 
         print("Loaded Items: ${hCallStatusList.length}");
+
+      } else {
+        print("API Error: ${decoded["message"]}");
+      }
+
+    } catch (e) {
+      print("FLUTTER ERROR => $e");
+    }
+  }
+
+  RxList<Map<String, dynamic>> industriesList =
+      <Map<String, dynamic>>[].obs;
+
+  Future<void> getIndustries() async {
+    try {
+
+      industriesList.clear();
+
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "action": "add_industry",
+        }),
+      );
+
+      // print("STATUS CODE add_values: ${response.statusCode}");
+      // print("RAW RESPONSE: ${response.body}");
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getIndustries();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode != 200) {
+        // print("SERVER ERROR");
+        return;
+      }
+
+      final decoded = jsonDecode(response.body);
+
+      // ✅ Safety check
+      if (decoded["status"] == "success" && decoded["data"] != null) {
+
+        List<Map<String, dynamic>> list =
+        List<Map<String, dynamic>>.from(decoded["data"]);
+
+        // ✅ Store into RxList
+        industriesList.assignAll(list);
+
+        print("Loaded Items: ${industriesList}");
 
       } else {
         print("API Error: ${decoded["message"]}");
@@ -1858,6 +1922,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       allCompanyLength = 0.obs,
       allCustomerLength = 0.obs,
       allTargetLength=0.obs,
+      newLeadsLength=0.obs,
       allProductLength = 0.obs,
       allEmployeeLength = 0.obs, selectCallType = "All".obs,selectMeetingType = "".obs;
 
@@ -1895,13 +1960,14 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
   String leadCategory = "Suspects";
   RxList<bool> editMode = <bool>[].obs;
-  RxList leadCategoryList = [
-    {"lead_status": "1", "value": "Suspects","id" : "1"},
-    {"lead_status": "2", "value": "Prospects","id" : "2"},
-    {"lead_status": "3", "value": "Qualified","id" : "3"},
-    {"lead_status": "4", "value": "Customers","id" : "4"},
-    {"lead_status": "0", "value": "Target Leads","id" : "5"},
-    {"lead_status": "5", "value": "No Matches","id" : "6"}].obs;
+  RxList leadCategoryList = [].obs;
+  // RxList leadCategoryList = [
+  //   {"lead_status": "1", "value": "Suspects","id" : "1"},
+  //   {"lead_status": "2", "value": "Prospects","id" : "2"},
+  //   {"lead_status": "3", "value": "Qualified","id" : "3"},
+  //   {"lead_status": "4", "value": "Customers","id" : "4"},
+  //   {"lead_status": "0", "value": "Target Leads","id" : "5"},
+  //   {"lead_status": "5", "value": "No Matches","id" : "6"}].obs;
 
   RxList leadCategoryGrList = [].obs;
   List eventImages = [
@@ -1923,7 +1989,7 @@ var otp = "".obs;
 
   var dateList = [].obs,
       isMainPersonList = [].obs,
-      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,
+      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,newLeadList=<NewLeadObj>[].obs,searchNewLeadList=<NewLeadObj>[].obs,
       isLeadsList = [].obs,
       isGoodLeadList = [].obs,
       isCoMobileNumberList = [].obs,
@@ -2031,6 +2097,7 @@ var otp = "".obs;
   TextEditingController cityController = TextEditingController();
   TextEditingController stateController = TextEditingController();
   TextEditingController pinCodeController = TextEditingController();
+  TextEditingController industryValueCtr = TextEditingController();
   TextEditingController countryController =
       TextEditingController(text: "India");
   TextEditingController leadTime = TextEditingController();
@@ -2254,6 +2321,14 @@ var otp = "".obs;
       print("request ${data}");
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return correctionStatus(context,ops,id);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200){
         Navigator.pop(context);
         Navigator.pop(context);
@@ -2266,6 +2341,83 @@ var otp = "".obs;
     }catch(e){
       apiService.errorDialog(Get.context!,e.toString());
       controllers.productCtr.reset();
+    }
+  }
+  Future insertIndustries(BuildContext context) async {
+    try{
+      print("insert_industry..........${industryValueCtr.text.trim()}");
+      Map data = {
+        "action": "insert_industry",
+        "value": industryValueCtr.text.trim(),
+        "created_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id")
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print("request ${data}");
+      print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertIndustries(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200){
+        getIndustries();
+        controllers.productCtr.reset();
+        Navigator.pop(context);
+      } else {
+        apiService.errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+    }catch(e){
+      apiService.errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+  Future<void> setLogOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool("loginScreen$versionNum", false);
+    prefs.setBool("isAdmin", false);
+    Get.offAll(() => LoginPage());
+    controllers.selectedIndex.value = 10;
+  }
+  Future refreshToken() async {
+    try{
+      // print("refreshToken..........");
+      Map data = {
+        "action": "refresh_tokens",
+        "id": controllers.storage.read("id"),
+        "refresh_token": "${TokenStorage().readRefreshToken()}",
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      // print("request ${data}");
+      // print("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 200){
+        TokenStorage().writeToken(response['access_token']);
+        return true;
+      } else {
+        return false;
+      }
+    }catch(e){
+      return false;
     }
   }
 

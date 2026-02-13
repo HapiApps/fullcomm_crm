@@ -18,6 +18,11 @@ class TokenStorage {
     return _box.read('jwt_token');
   }
 
+  // Read token
+  String? readRefreshToken() {
+    return _box.read('jwt_refresh_token');
+  }
+
   // Delete token
   void deleteToken() {
     _box.remove('jwt_token');

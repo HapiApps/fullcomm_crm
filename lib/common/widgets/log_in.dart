@@ -218,7 +218,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                           }
                           else {
                             FocusScope.of(context).unfocus();
-                            apiService.loginCApi();
+                            apiService.loginCApi(context);
                           }
                           controllers.loginCtr.reset();
                         },
@@ -295,7 +295,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                         }
                         else {
                           FocusScope.of(context).unfocus();
-                          apiService.loginCApi();
+                          apiService.loginCApi(context);
                         }
                       },
 
@@ -334,6 +334,14 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       log("res ${request.body}");
 
       Map<String, dynamic> response = json.decode(request.body.trim());
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return checkMobileAPI(mobile: mobile);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response.containsKey("s_name")) {
         // log("res $response");
         if (isRelease) {

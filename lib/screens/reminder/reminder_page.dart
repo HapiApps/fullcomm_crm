@@ -72,7 +72,7 @@ class _ReminderPageState extends State<ReminderPage> {
     // TODO: implement initState
     super.initState();
     // initialize santhiya
-    Future.delayed(const Duration(milliseconds: 10), () {
+    Future.delayed(Duration.zero,() {
       remController.sortReminders();
     });
     apiService.getAllEmployees();

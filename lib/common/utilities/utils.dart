@@ -21,6 +21,7 @@ import '../../components/custom_text.dart';
 import '../../components/dialog_button.dart';
 import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
+import '../../controller/dashboard_controller.dart';
 import '../../controller/image_controller.dart';
 import '../../controller/reminder_controller.dart';
 import '../../main.dart';
@@ -1222,6 +1223,14 @@ class Utils {
       throw Exception('Could not launch $url');
     }
   }
+  bool isValidLinkedInId(String id) {
+    final regex = RegExp(r'^[a-zA-Z0-9-]{3,100}$');
+    return regex.hasMatch(id);
+  }
+  bool isValidXId(String id) {
+    final regex = RegExp(r'^[a-zA-Z0-9_]{4,15}$');
+    return regex.hasMatch(id);
+  }
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar({required BuildContext context,
   required String msg,
@@ -1521,6 +1530,7 @@ class Utils {
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   onTap: (){
+                    controllers.selectedProspectSortBy.value = dashController.selectedSortBy.value;
                     Navigator.push(
                       context,
                       PageRouteBuilder(
@@ -1580,6 +1590,7 @@ class Utils {
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   onTap: (){
+                    controllers.selectedProspectSortBy.value =  "All";
                     Navigator.push(
                       context,
                       PageRouteBuilder(
@@ -1637,6 +1648,7 @@ class Utils {
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   onTap: (){
+                    controllers.selectedQualifiedSortBy.value =  "All";
                     Navigator.push(
                       context,
                       PageRouteBuilder(
@@ -1695,6 +1707,7 @@ class Utils {
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   onTap: (){
+                    controllers.selectedCustomerSortBy.value = "All";
                     Navigator.push(
                       context,
                       PageRouteBuilder(
@@ -2816,6 +2829,75 @@ class Utils {
                     },
                     child: const Text("Save"),
                   ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void addLeadCategoryDialog(BuildContext context) {
+    controllers.emailMessageCtr.clear();
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Container(
+          width: 300,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomText(
+                text: "Add Category",
+                colors: colorsConst.textColor,
+                isBold: true,
+                size: 18,
+                isCopy: true,
+              ),
+              10.height,
+              Container(
+                height: 120,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: TextField(
+                  controller: controllers.emailMessageCtr,
+                  style: TextStyle(fontSize: 14),
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(8),
+                    border: InputBorder.none,
+                    hintText: "Category",
+                  ),
+                ),
+              ),
+
+              20.height,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                    child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                  ),
+                  CustomLoadingButton(callback: (){
+                    if (controllers.emailMessageCtr.text.isEmpty) {
+                      utils.snackBar(
+                        context: context,
+                        msg: "Please enter lead category",
+                        color: Colors.red,
+                      );
+                      controllers.productCtr.reset();
+                      return;
+                    }else{
+                      apiService.addCategories(context);
+                    }
+                  }, isLoading: true, controller: controllers.productCtr,text: "Save",
+                      backgroundColor: colorsConst.primary, radius: 5, width: 100)
                 ],
               )
             ],

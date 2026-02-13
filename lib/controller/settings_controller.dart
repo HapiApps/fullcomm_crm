@@ -7,9 +7,11 @@ import 'package:fullcomm_crm/models/office_hours_obj.dart';
 import 'package:fullcomm_crm/models/role_obj.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
+import '../common/widgets/log_in.dart';
 import '../components/custom_loading_button.dart';
 import '../components/custom_text.dart';
 import '../components/custom_textfield.dart';
@@ -217,6 +219,14 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       );
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return deleteOfficeHoursAPI(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response["message"]=="OK"){
         allOfficeHours();
         Navigator.pop(context);
@@ -254,6 +264,14 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       );
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return updateRoleAPI(context,id);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response["message"]=="Role updated successfully"){
         allRoles();
         Navigator.pop(context);
@@ -289,6 +307,14 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       );
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertRoleAPI(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response["message"]=="Role added successfully"){
         roleController.clear();
         descriptionController.clear();
@@ -329,6 +355,14 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       );
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertOfficeHourAPI(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response["message"]=="Office hour added successfully"){
         controllers.clearSelectedEmployee();
         shiftController.clear();
@@ -369,6 +403,14 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       );
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertTemplateAPI(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response["message"]=="Templates added successfully"){
         addNameController.clear();
         addSubjectController.clear();
@@ -412,6 +454,14 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       );
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return updateTemplateAPI(context,id);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response["message"]=="Template updated successfully"){
         addNameController.clear();
         addSubjectController.clear();
@@ -449,7 +499,14 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
         }),
       );
     print("setting_roles"); // <-- ADD THIS
-
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return allRoles();
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (response.statusCode == 200) {
         print(response.body); // <-- ADD THIS
         final data = jsonDecode(response.body);
@@ -489,7 +546,16 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           "search_type": "templates"
         }),
       );
-
+      print("templates");
+      print(response.body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return allTemplates();
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final List<dynamic> rolesJson = data;
@@ -529,7 +595,14 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           "search_type": "all_office_hours"
         }),
       );
-
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return allOfficeHours();
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final List<dynamic> rolesJson = data;
@@ -572,6 +645,14 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       print("request.body");
       print(request.body);
       Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return deleteRoleAPI(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response["message"]=="OK"){
          allRoles();
         Navigator.pop(context);

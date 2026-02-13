@@ -121,6 +121,12 @@ class _MeetingCommentsState extends State<MeetingComments> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero,(){
+      remController.filterAndSortMeetings(
+        searchText: controllers.searchText.value.toLowerCase(),
+        callType: controllers.selectMeetingType.value,
+        sortField: controllers.sortFieldMeetingActivity.value,
+        sortOrder: controllers.sortOrderMeetingActivity.value,
+      );
       apiService.currentVersion();
     });
   }
@@ -1135,11 +1141,395 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           children: [
                                             IconButton(
                                                 onPressed: (){
-                                                  // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
-                                                  // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
-                                                  // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
-                                                  // remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
-                                                  // remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
+                                                  setState(() {
+                                                    controllers.selectedCustomerId.value = data.cusId.toString();
+                                                    controllers.selectedCustomerName.value = data.cusName.toString();
+                                                    controllers.selectedCompanyName.value = data.comName;
+                                                    controllers.meetingTitleCrt.text = data.title.toString()=="null"?"":data.title.toString();
+                                                    controllers.meetingVenueCrt.text = data.venue.toString()=="null"?"":data.venue.toString();
+                                                    controllers.fDate.value = data.dates.toString().split("||").first;
+                                                    controllers.toDate.value = data.dates.toString().split("||").last;
+                                                    controllers.toTime.value = data.time.toString().split("||").first;
+                                                    controllers.fTime.value = data.time.toString().split("||").last;
+                                                    controllers.dateOfConCtr.text = data.dates.toString()=="null"?"":data.dates.toString();
+                                                    controllers.timeOfConCtr.text = data.time.toString()=="null"?"":data.time.toString();
+                                                    controllers.callCommentCont.text = data.notes.toString()=="null"?"":data.notes.toString();
+                                                  });
+                                                  showDialog(
+                                                      context: context,
+                                                      barrierDismissible: false,
+                                                      builder: (context) {
+                                                        var titleError;
+                                                        var venueError;
+                                                        var stDateError;
+                                                        var enDateError;
+                                                        var stTimeError;
+                                                        var enTimeError;
+                                                        var customerError;
+                                                        return StatefulBuilder(
+                                                            builder: (context,setState){
+                                                              return AlertDialog(
+                                                                title: Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    CustomText(
+                                                                      text: "Update Appointment",
+                                                                      size: 14,
+                                                                      isBold: true,
+                                                                      isCopy: true,
+                                                                      colors: colorsConst.textColor,
+                                                                    ),
+                                                                    IconButton(
+                                                                        onPressed: (){
+                                                                          Navigator.of(context).pop();
+                                                                        },
+                                                                        icon: Icon(Icons.clear,
+                                                                          color: Colors.black,
+                                                                        ))
+                                                                  ],
+                                                                ),
+                                                                content: SizedBox(
+                                                                  width: 500,
+                                                                  height: 460,
+                                                                  child: SingleChildScrollView(
+                                                                    child: Column(
+                                                                      children: [
+                                                                        CustomTextField(
+                                                                          hintText: "Appointment Title",
+                                                                          text: "Appointment Title",
+                                                                          controller: controllers.meetingTitleCrt,
+                                                                          width: 480,
+                                                                          keyboardType: TextInputType.text,
+                                                                          textInputAction: TextInputAction.next,
+                                                                          isOptional: true,
+                                                                          errorText: titleError,
+                                                                          onChanged: (value) {
+                                                                            if (value.toString().isNotEmpty) {
+                                                                              setState(() {
+                                                                                titleError = null;
+                                                                              });
+                                                                            }
+                                                                          },
+                                                                        ),
+                                                                        CustomTextField(
+                                                                          hintText: "Appointment Venue",
+                                                                          text: "Appointment Venue",
+                                                                          controller: controllers.meetingVenueCrt,
+                                                                          width: 480,
+                                                                          keyboardType: TextInputType.text,
+                                                                          textInputAction: TextInputAction.next,
+                                                                          isOptional: true,
+                                                                          errorText: venueError,
+                                                                          onChanged: (value) {
+                                                                            if (value.toString().isNotEmpty) {
+                                                                              setState(() {
+                                                                                venueError = null; // clear error on typing
+                                                                              });
+                                                                            }
+                                                                          },
+                                                                        ),
+                                                                        Row(
+                                                                          //mainAxisAlignment: MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Obx(() => CustomDateBox(
+                                                                              text: "From Date",
+                                                                              value: controllers.fDate.value,
+                                                                              isOptional: true,
+                                                                              errorText: stDateError,
+                                                                              width: 230,
+                                                                              onTap: () {
+                                                                                utils.datePicker(
+                                                                                    context: context,
+                                                                                    textEditingController: controllers.dateOfConCtr,
+                                                                                    pathVal: controllers.fDate);
+                                                                                if (stDateError != null) {
+                                                                                  setState(() {
+                                                                                    stDateError = null; // clear error on typing
+                                                                                  });
+                                                                                }
+                                                                              },
+                                                                            ),
+                                                                            ),
+                                                                            19.width,
+                                                                            Obx(() => CustomDateBox(
+                                                                              text: "From Time",
+                                                                              isOptional: true,
+                                                                              value: controllers.fTime.value,
+                                                                              width: 230,
+                                                                              errorText: stTimeError,
+                                                                              onTap: () {
+                                                                                utils.timePicker(
+                                                                                    context: context,
+                                                                                    textEditingController:
+                                                                                    controllers.timeOfConCtr,
+                                                                                    pathVal: controllers.fTime);
+                                                                                if (stTimeError != null) {
+                                                                                  setState(() {
+                                                                                    stTimeError = null; // clear error on typing
+                                                                                  });
+                                                                                }
+                                                                              },
+                                                                            ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        10.height,
+                                                                        Row(
+                                                                          //mainAxisAlignment: MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Obx(() => CustomDateBox(
+                                                                              text: "To Date",
+                                                                              isOptional: true,
+                                                                              value: controllers.toDate.value,
+                                                                              width: 230,
+                                                                              errorText: enDateError,
+                                                                              onTap: () {
+                                                                                utils.datePicker(
+                                                                                    context: context,
+                                                                                    textEditingController:
+                                                                                    controllers.dateOfConCtr,
+                                                                                    pathVal: controllers.toDate);
+                                                                                if (enDateError != null) {
+                                                                                  setState(() {
+                                                                                    enDateError = null; // clear error on typing
+                                                                                  });
+                                                                                }
+                                                                              },
+                                                                            ),
+                                                                            ),
+                                                                            19.width,
+                                                                            Obx(() => CustomDateBox(
+                                                                              text: "To Time",
+                                                                              isOptional: true,
+                                                                              value: controllers.toTime.value,
+                                                                              errorText: enTimeError,
+                                                                              width: 230,
+                                                                              onTap: () {
+                                                                                utils.timePicker(
+                                                                                    context: context,
+                                                                                    textEditingController:
+                                                                                    controllers.timeOfConCtr,
+                                                                                    pathVal: controllers.toTime);
+                                                                                if (enTimeError != null) {
+                                                                                  setState(() {
+                                                                                    enTimeError = null; // clear error on typing
+                                                                                  });
+                                                                                }
+                                                                              },
+                                                                            ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        10.height,
+                                                                        Column(
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Row(
+                                                                              children: [
+                                                                                CustomText(
+                                                                                  text:"Customer Name",
+                                                                                  colors: colorsConst.textColor,
+                                                                                  size: 13,
+                                                                                  isCopy: false,
+                                                                                ),
+                                                                                const CustomText(
+                                                                                  text: "*",
+                                                                                  colors: Colors.red,
+                                                                                  size: 25,
+                                                                                  isCopy: false,
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width: 480,
+                                                                              height: 50,
+                                                                              child: KeyboardDropdownField<AllCustomersObj>(
+                                                                                items: controllers.customers,
+                                                                                borderRadius: 5,
+                                                                                borderColor: Colors.grey.shade300,
+                                                                                hintText: "",
+                                                                                labelText: controllers.selectedCustomerName.value,
+                                                                                labelBuilder: (customer) =>'${customer.name}${customer.companyName.isEmpty ? "" : " ,${customer.companyName}"} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
+                                                                                itemBuilder: (customer) =>
+                                                                                    Container(
+                                                                                      width: 300,
+                                                                                      alignment: Alignment.topLeft,
+                                                                                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                                                      child: CustomText(
+                                                                                        text: '${customer.name}${customer.companyName.isEmpty ? "" : " ,${customer.companyName}"} ${customer.name.isEmpty?"":"-"} ${customer.companyName}',
+                                                                                        colors: Colors.black,
+                                                                                        size: 14,
+                                                                                        isCopy: false,
+                                                                                        textAlign: TextAlign.start,
+                                                                                      ),
+                                                                                    ),
+                                                                                textEditingController: controllers.cusController,
+                                                                                onSelected: (value) {
+                                                                                  customerError = null;
+                                                                                  controllers.selectCustomer(value);
+                                                                                  print("mail ${value.email}");
+                                                                                },
+                                                                                onClear: () {
+                                                                                  controllers.clearSelectedCustomer();
+                                                                                },
+                                                                              ),
+                                                                            ),
+                                                                            if (customerError != null)
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.only(top: 4.0),
+                                                                                child: Text(
+                                                                                  customerError!,
+                                                                                  style: const TextStyle(
+                                                                                      color: Colors.red,
+                                                                                      fontSize: 13),
+                                                                                ),
+                                                                              ),
+                                                                          ],
+                                                                        ),
+                                                                        10.height,
+                                                                        Column(
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text:"Notes",
+                                                                              colors: colorsConst.textColor,
+                                                                              size: 13,
+                                                                              isCopy: false,
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width: 480,
+                                                                              height: 80,
+                                                                              child: TextField(
+                                                                                controller: controllers.callCommentCont,
+                                                                                maxLines: null,
+                                                                                expands: true,
+                                                                                textAlign: TextAlign.start,
+                                                                                decoration: InputDecoration(
+                                                                                  hintText: "Notes",
+                                                                                  enabledBorder: OutlineInputBorder(
+                                                                                    borderRadius: BorderRadius.circular(5),
+                                                                                    borderSide: BorderSide(
+                                                                                      color: Color(0xffE1E5FA),
+                                                                                    ),
+                                                                                  ),
+                                                                                  focusedBorder: OutlineInputBorder(
+                                                                                    borderRadius: BorderRadius.circular(5),
+                                                                                    borderSide: BorderSide(
+                                                                                      color: Color(0xffE1E5FA),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                actions: [
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                                    children: [
+                                                                      Container(
+                                                                        decoration: BoxDecoration(
+                                                                            border: Border.all(color: colorsConst.primary),
+                                                                            color: Colors.white),
+                                                                        width: 80,
+                                                                        height: 25,
+                                                                        child: ElevatedButton(
+                                                                            style: ElevatedButton.styleFrom(
+                                                                              shape: const RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.zero,
+                                                                              ),
+                                                                              backgroundColor: Colors.white,
+                                                                            ),
+                                                                            onPressed: () {
+                                                                              Navigator.pop(context);
+                                                                            },
+                                                                            child: CustomText(
+                                                                              text: "Cancel",
+                                                                              colors: colorsConst.primary,
+                                                                              size: 14,
+                                                                              isCopy: false,
+                                                                            )),
+                                                                      ),
+                                                                      10.width,
+                                                                      CustomLoadingButton(
+                                                                        callback: (){
+                                                                          if(controllers.meetingTitleCrt.text.isEmpty){
+                                                                            controllers.productCtr.reset();
+                                                                            setState(() {
+                                                                              titleError = "Please Enter Appointment Title";
+                                                                            });
+                                                                            return;
+                                                                          }
+                                                                          if(controllers.meetingVenueCrt.text.isEmpty){
+                                                                            controllers.productCtr.reset();
+                                                                            setState(() {
+                                                                              venueError = "Please Enter Appointment Venue";
+                                                                            });
+                                                                            return;
+                                                                          }
+                                                                          if(controllers.fDate.value.isEmpty){
+                                                                            controllers.productCtr.reset();
+                                                                            setState(() {
+                                                                              stDateError = "Please Enter From Date";
+                                                                            });
+                                                                            return;
+                                                                          }
+                                                                          if(controllers.fTime.value.isEmpty){
+                                                                            controllers.productCtr.reset();
+                                                                            setState(() {
+                                                                              stTimeError = "Please Enter From Time";
+                                                                            });
+                                                                            return;
+                                                                          }
+                                                                          if(controllers.toDate.value.isEmpty){
+                                                                            controllers.productCtr.reset();
+                                                                            setState(() {
+                                                                              enDateError = "Please Enter To Date";
+                                                                            });
+                                                                            return;
+                                                                          }
+                                                                          if(controllers.toTime.value.isEmpty){
+                                                                            controllers.productCtr.reset();
+                                                                            setState(() {
+                                                                              enTimeError = "Please Enter To Time";
+                                                                            });
+                                                                            return;
+                                                                          }
+                                                                          if(controllers.selectedCustomerId.value.isEmpty){
+                                                                            controllers.productCtr.reset();
+                                                                            setState(() {
+                                                                              customerError = "Please Enter Customer";
+                                                                            });
+                                                                            return;
+                                                                          }
+                                                                          apiService.updateMeetingDetailsAPI(context,data.id);
+                                                                        },
+                                                                        height: 35,
+                                                                        isLoading: true,
+                                                                        backgroundColor: colorsConst.primary,
+                                                                        radius: 2,
+                                                                        width: 80,
+                                                                        controller: controllers.productCtr,
+                                                                        isImage: false,
+                                                                        text: "Save",
+                                                                        textColor: Colors.white,
+                                                                      ),
+                                                                      5.width
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            });
+                                                      });
+                                                  // controllers.meetingTitleCrt.text = data.title.toString()=="null"?"":data.title.toString();
+                                                  // remController.updateLocation = data.location.toString()=="null"?"":data.location.toString();
+                                                  // remController.updateDetailsController.text = data.details.toString()=="null"?"":data.details.toString();
+                                                  // remController.updateStartController.text = data.startDt.toString()=="null"?"":data.startDt.toString();
+                                                  // remController.updateEndController.text = data.endDt.toString()=="null"?"":data.endDt.toString();
                                                   // utils.showUpdateRecordDialog("",context);
                                                 },
                                                 icon:  SvgPicture.asset(

@@ -53,7 +53,14 @@ class EmployeeRepository {
         },
       );
      // log("role: ${response.body}");
-
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getStaffRoleData();
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
@@ -112,6 +119,24 @@ class EmployeeRepository {
         ),
       );
       // print(response.body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertEmployee(empName: empName,
+            empMobile: empMobile,
+            empWhatsapp: empWhatsapp,
+            empEmail: empEmail,
+            empAddress: empAddress,
+            empPassword: empPassword,
+            empRole: empRole,
+            empJoinDate: empJoinDate,
+            empSalary: empSalary,
+            empBonus: empBonus,
+            active:  active);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if(response.statusCode == 200){
         final Map<String,dynamic> data =  jsonDecode(response.body);
         return CommonResponse.fromJson(data);
@@ -166,7 +191,25 @@ class EmployeeRepository {
             },
           )
       );
-
+      log("Update Employee Repository if ${response.body}");
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return updateEmployee(id:id,empName: empName,
+              empMobile: empMobile,
+              empWhatsapp: empWhatsapp,
+              empEmail: empEmail,
+              empAddress: empAddress,
+              empPassword: empPassword,
+              empRole: empRole,
+              empJoinDate: empJoinDate,
+              empSalary: empSalary,
+              empBonus: empBonus,
+              active:  active);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if(response.statusCode == 200){
 
         log("Add Employee Repository if ${response.body}");
@@ -203,6 +246,14 @@ class EmployeeRepository {
             },
           )
       );
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return deleteEmployee(employeeIds: employeeIds,employeeId: employeeId);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if(response.statusCode == 200){
         final Map<String,dynamic> data =  jsonDecode(response.body);
         return CommonResponse.fromJson(data);

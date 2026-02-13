@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
+import 'package:fullcomm_crm/screens/leads/prospects.dart';
+import 'package:fullcomm_crm/screens/leads/qualified.dart';
+import 'package:fullcomm_crm/screens/leads/suspects.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../common/constant/colors_constant.dart';
+import '../models/all_customers_obj.dart';
 import '../models/new_lead_obj.dart';
+import '../screens/leads/view_customer.dart';
 import 'action_button.dart';
+import 'custom_loading_button.dart';
 import 'custom_search_textfield.dart';
 import 'custom_text.dart';
 import 'keyboard_search.dart';
@@ -88,14 +94,16 @@ class FilterSection extends StatelessWidget {
                 10.width,
                 SizedBox(
                   width: 350,
-                  child: KeyboardDropdownField<NewLeadObj>(
-                    items: leadFuture,
+                  // child: KeyboardDropdownField<NewLeadObj>(
+                  child: KeyboardDropdownField<AllCustomersObj>(
+                    items: controllers.customers,
                     borderRadius: 5,
                     borderColor: Colors.grey.shade300,
                     hintText: "",
                     labelText: "Search Mobile Number",
                     labelBuilder: (customer) =>
-                    '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
+                    // '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
+                    '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo}',
                     itemBuilder: (customer) {
                       return Container(
                         width: 400,
@@ -103,7 +111,8 @@ class FilterSection extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                         child: CustomText(
                           text:
-                          '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
+                          // '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
+                          '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo}',
                           colors: Colors.black,
                           size: 14,
                           isCopy: false,
@@ -115,10 +124,24 @@ class FilterSection extends StatelessWidget {
                     onSelected: (value) {
                       selectedMonth.value = null;
                       selectedSortBy.value = "";
-                      if(value.mobileNumber.toString().isNotEmpty){
-                        onSearchChanged!(value.mobileNumber.toString());
+                      if(value.phoneNo.toString().isNotEmpty){
+                        onSearchChanged!(value.phoneNo.toString());
                       }
-                      //controllers.selectCustomer(value);
+                      // print(value.leadStatus);
+                      // if(value.leadStatus=="1"){
+                      //   controllers.search.text=value.firstname.toString();
+                      //   Get.to(Suspects());
+                      // }else if(value.leadStatus=="2"){
+                      //   controllers.search.text=value.firstname.toString();
+                      //   Get.to(Prospects());
+                      // }else if(value.leadStatus=="3"){
+                      //   controllers.search.text=value.firstname.toString();
+                      //   Get.to(Qualified());
+                      // }else if(value.leadStatus=="4"){
+                      //   controllers.search.text=value.firstname.toString();
+                      //   Get.to(ViewCustomer());
+                      // }
+                      // controllers.selectCustomer(value);
                     },
                     onClear: () {
                       if (onSearchChanged != null) onSearchChanged!("");

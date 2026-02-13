@@ -82,6 +82,16 @@ class _CallCommentsState extends State<CallComments> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero,(){
+      remController.filterAndSortCalls(
+        allCalls: controllers.callActivity,
+        searchText: controllers.searchText.value.toLowerCase(),
+        callType: controllers.selectCallType.value,
+        sortField: controllers.sortFieldCallActivity.value,
+        sortOrder: controllers.sortOrderCallActivity.value,
+        selectedMonth: remController.selectedCallMonth.value,
+        selectedRange: remController.selectedCallRange.value,
+        selectedDateFilter: remController.selectedCallSortBy.value,
+      );
       apiService.currentVersion();
     });
   }

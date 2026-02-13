@@ -13,6 +13,7 @@ import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
 import '../../services/api_services.dart';
+import 'lead_categories.dart';
 
 class GeneralSettings extends StatefulWidget {
   const GeneralSettings({super.key});
@@ -66,6 +67,28 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     ),
                     Row(
                       children: [
+                        SizedBox(
+                          height: 40,
+                          child: ElevatedButton.icon(
+                            icon: Icon(Icons.add,color: Colors.white,),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorsConst.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (_)=>LeadCategories()));
+                            },
+                            label: CustomText(
+                              text: "Lead Categories",
+                              colors: Colors.white,
+                              isBold :true,
+                              isCopy: false,
+                              size: 14,
+                            ),),
+                        ),
+                        10.width,
                         SizedBox(
                           height: 40,
                           child: ElevatedButton.icon(

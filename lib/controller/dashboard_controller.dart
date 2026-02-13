@@ -275,6 +275,14 @@ class DashboardController extends GetxController {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
       // print("main day wise ${request.body.toString()}");
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getCustomerReport(stDate,endDate);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         dayReport.value = response.map<CustomerDayData>((e) => CustomerDayData.fromJson(e),).toList();
@@ -305,7 +313,14 @@ class DashboardController extends GetxController {
       totalCold.value = "0";
       totalHot.value = "0";
       totalWarm.value = "0";
-
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getRatingReport();
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
         totalCold.value = response[0]["cold_total"].toString()=="null"?"0":response[0]["cold_total"];
@@ -350,7 +365,15 @@ class DashboardController extends GetxController {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      // print("Dashboard request data/// ${request.body}");
+      print("Dashboard request data/// ${request.body}");
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getDashboardReport();
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200) {
         // var response = jsonDecode(request.body) as List;
         // dashController.totalMails.value       = response[0]["total_mails"] ?? "0";
@@ -391,11 +414,56 @@ class DashboardController extends GetxController {
         } else {
           // handle empty response gracefully
           print("Dashboard API returned empty data");
+          dashController.totalMails.value        = "0";
+          dashController.totalReminders.value    = "0";
+          dashController.totalMeetings.value     = "0";
+          dashController.pendingMeetings.value   = "0";
+          dashController.completedMeetings.value = "0";
+          dashController.totalCalls.value        = "0";
+          dashController.totalEmployees.value    = "0";
+          dashController.totalHot.value          = "0";
+          dashController.totalWarm.value         = "0";
+          dashController.totalCold.value         = "0";
+          dashController.totalSuspects.value     = "0";
+          dashController.totalProspects.value    = "0";
+          dashController.totalQualified.value    = "0";
+          dashController.totalUnQualified.value  = "0";
+          dashController.totalCustomers.value    = "0";
         }
       } else {
+        dashController.totalMails.value        = "0";
+        dashController.totalReminders.value    = "0";
+        dashController.totalMeetings.value     = "0";
+        dashController.pendingMeetings.value   = "0";
+        dashController.completedMeetings.value = "0";
+        dashController.totalCalls.value        = "0";
+        dashController.totalEmployees.value    = "0";
+        dashController.totalHot.value          = "0";
+        dashController.totalWarm.value         = "0";
+        dashController.totalCold.value         = "0";
+        dashController.totalSuspects.value     = "0";
+        dashController.totalProspects.value    = "0";
+        dashController.totalQualified.value    = "0";
+        dashController.totalUnQualified.value  = "0";
+        dashController.totalCustomers.value    = "0";
         throw Exception('Failed to load dashboard report');
       }
     } catch (e) {
+      dashController.totalMails.value        = "0";
+      dashController.totalReminders.value    = "0";
+      dashController.totalMeetings.value     = "0";
+      dashController.pendingMeetings.value   = "0";
+      dashController.completedMeetings.value = "0";
+      dashController.totalCalls.value        = "0";
+      dashController.totalEmployees.value    = "0";
+      dashController.totalHot.value          = "0";
+      dashController.totalWarm.value         = "0";
+      dashController.totalCold.value         = "0";
+      dashController.totalSuspects.value     = "0";
+      dashController.totalProspects.value    = "0";
+      dashController.totalQualified.value    = "0";
+      dashController.totalUnQualified.value  = "0";
+      dashController.totalCustomers.value    = "0";
       throw Exception('Failed to load dashboard report');
     }
   }
@@ -429,6 +497,14 @@ class DashboardController extends GetxController {
       );
       print("STATUS CODE visit_status_report: ${request.statusCode}");
       print("RAW RESPONSE: ${request.body}");
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getStatusWiseReport();
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200) {
         var response = jsonDecode(request.body) as List;
         visitStatusReport.value=response;

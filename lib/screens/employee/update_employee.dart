@@ -32,7 +32,11 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
     // TODO: implement initState
     super.initState();
     final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
-   // EmployeeData.clearAllEmployeeControllers();
+    if(employeeData.roleList.isEmpty){
+      employeeData.fetchRoleList();
+    }
+
+    // EmployeeData.clearAllEmployeeControllers();
 
   Future.delayed(Duration.zero,(){
     setState(() {
@@ -135,18 +139,18 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                     textInputAction: TextInputAction.next,
                                     isOptional: true,
                                   ),
-                                  10.height,
-                                  CustomPasswordTextField(
-                                    width: isWebView ? textFieldSize : screenWidth * 0.90,
-                                    text: "Password",
-                                    hintText: "Enter Password",
-                                    controller: employeeProvider.password,
-                                    inputFormatters: constInputFormatters.passwordInput,
-                                    iconData : employeeProvider.isVisible ?
-                                    Icons.visibility_off : Icons.visibility,
-                                    textInputAction: TextInputAction.next,
-                                    isOptional: true,
-                                  ),
+                                  // 10.height,
+                                  // CustomPasswordTextField(
+                                  //   width: isWebView ? textFieldSize : screenWidth * 0.90,
+                                  //   text: "Password",
+                                  //   hintText: "Enter Password",
+                                  //   controller: employeeProvider.password,
+                                  //   inputFormatters: constInputFormatters.passwordInput,
+                                  //   iconData : employeeProvider.isVisible ?
+                                  //   Icons.visibility_off : Icons.visibility,
+                                  //   textInputAction: TextInputAction.next,
+                                  //   isOptional: true,
+                                  // ),
                                   // 10.height,
                                   // SizedBox(
                                   //   width: isWebView ? screenWidth * 0.25 : screenWidth * 0.90,
@@ -169,7 +173,7 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                   //     },
                                   //   ),
                                   // ),
-                                  10.height,
+                                  // 5.height,
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -189,10 +193,10 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                           )
                                         ],
                                       ),
-                                      5.height,
+                                      // 5.height,
                                       Container(
                                         width: textFieldSize,
-                                        height: 50,
+                                        height: 45,
                                         decoration: customDecoration.baseBackgroundDecoration(
                                             radius: 8,
                                             color: Colors.white,
@@ -236,6 +240,16 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                             ),
                                           ),
                                         ),
+                                      ),
+                                      10.height,
+                                      CustomTextField(
+                                        width: isWebView ? textFieldSize : screenWidth * 0.90,
+                                        text: "Bonus",
+                                        isOptional: false,
+                                        hintText: "Enter Bonus",
+                                        controller: employeeProvider.bonus,
+                                        textInputAction: TextInputAction.next,
+                                        inputFormatters: constInputFormatters.numberInput,
                                       ),
                                     ],
                                   ),
@@ -285,16 +299,6 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                     isOptional: false,
                                     hintText: "Enter Salary",
                                     controller: employeeProvider.salary,
-                                    textInputAction: TextInputAction.next,
-                                    inputFormatters: constInputFormatters.numberInput,
-                                  ),
-                                  10.height,
-                                  CustomTextField(
-                                    width: isWebView ? textFieldSize : screenWidth * 0.90,
-                                    text: "Bonus",
-                                    isOptional: false,
-                                    hintText: "Enter Bonus",
-                                    controller: employeeProvider.bonus,
                                     textInputAction: TextInputAction.next,
                                     inputFormatters: constInputFormatters.numberInput,
                                   ),

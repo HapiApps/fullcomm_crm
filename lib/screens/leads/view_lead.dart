@@ -803,8 +803,15 @@ class _ViewLeadState extends State<ViewLead> {
                                                               color: colorsConst.textColor),
                                                           20.height,
                                                           utils.leadText(
-                                                              text: displayMobile,
+                                                              text: (displayMobile)
+                                                                  .toString()
+                                                                  .split("||")
+                                                                  .where((e) => e.isNotEmpty)
+                                                                  .join(", "),
                                                               color: colorsConst.textColor),
+                                                          // utils.leadText(
+                                                          //     text: displayMobile,
+                                                          //     color: colorsConst.textColor),
                                                           20.height,
                                                           utils.leadText(
                                                               text: displayEmail,
@@ -1094,7 +1101,11 @@ class _ViewLeadState extends State<ViewLead> {
                                                               color: colorsConst.textColor),
                                                           20.height,
                                                           utils.leadText(
-                                                              text: (cust?.companyNumber ?? ""),
+                                                              text: (cust?.companyNumber ?? "")
+                                                                  .toString()
+                                                                  .split("||")
+                                                                  .where((e) => e.isNotEmpty)
+                                                                  .join(", "),
                                                               color: colorsConst.textColor),
                                                           20.height,
                                                           utils.leadText(

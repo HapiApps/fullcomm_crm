@@ -452,6 +452,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required String sortField,
     required String sortOrder,
   }) {
+    print("jnjnm ${selectedMeetSortBy.value}");
     var filtered = [...controllers.meetingActivity];
 
     final now = DateTime.now();
@@ -554,6 +555,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           break;
         case 'Today':
           filteredList = filteredList.where((r) {
+            print("r.updatedTs ${r.updatedTs}");
             final date = _parseReminderDate(r.updatedTs, dateFormatter);
             return _isSameDay(date, now);
           }).toList();
@@ -880,7 +882,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           "search_type": "allReminders"
         }),
       );
-
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return allReminders(type);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (response.statusCode == 200) {
 
         final data = jsonDecode(response.body);
@@ -1024,6 +1033,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       );
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertReminderAPI(context,type);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response["message"]=="Reminder added successfully"){
         titleController.clear();
         location=null;
@@ -1084,6 +1101,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       );
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return updateReminderAPI(context,type,id);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response["message"]=="Reminder updated successfully"){
         allReminders(type);
         Navigator.pop(context);
@@ -1118,6 +1143,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       );
       print("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertSettingsReminderAPI(context,time);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response["message"]=="Settings added successfully"){
         Navigator.pop(context);
         utils.snackBar(context: context, msg: "Settings added successfully", color: Colors.green);
@@ -1149,6 +1182,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           encoding: Encoding.getByName("utf-8")
       );
       Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return deleteReminderAPI(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response["message"]=="OK"){
         allReminders("type");
         Navigator.pop(context);
@@ -1189,7 +1230,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
       Map<String, dynamic> result = json.decode(response.body);
       print("Response: ${response.body}");
-
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return deleteMeetingAPI(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (response.statusCode == 200 && result["message"] == "OK") {
         apiService.getAllMeetingActivity("");
         Navigator.pop(context);
@@ -1234,6 +1282,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       );
       print("Response body: ${response.body}");
       Map<String, dynamic> result = json.decode(response.body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return deleteRecordCallAPI(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (response.statusCode == 200 && result["message"] == "OK") {
         Navigator.pop(context);
         apiService.getAllCallActivity("");
@@ -1285,7 +1341,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       print("Response body: ${response.body}");
 
       Map<String, dynamic> result = json.decode(response.body);
-
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return deleteRecordMailAPI(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (response.statusCode == 200 && result["message"] == "OK") {
         Navigator.pop(context);
         utils.snackBar(

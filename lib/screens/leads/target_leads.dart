@@ -386,7 +386,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                         CustomLoadingButton(
                                           callback: (){
                                             _focusNode.requestFocus();
-                                            apiService.insertSuspectsAPI(context);
+                                            apiService.insertSuspectsAPI(context,apiService.qualifiedList);
                                           },
                                           height: 35,
                                           isLoading: true,
@@ -501,6 +501,7 @@ class _TargetLeadsState extends State<TargetLeads> {
                                         itemBuilder: (context, index) {
                                           final data = controllers.paginatedTargetLead[index];
                                           return Obx(()=>LeftLeadTile(
+                                            leadIndex: "0",
                                             pageName: "Target Leads",
                                             saveValue: controllers.isTargetLeadList[index]["isSelect"],
                                             onChanged: (value){

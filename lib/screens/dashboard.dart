@@ -46,16 +46,23 @@ class _NewDashboardState extends State<NewDashboard> {
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
       employeeData.staffRoleDetailsData(context: context);
       controllers.getCallStatus();
+      controllers.getIndustries();
     });
 
     Future.delayed(Duration.zero, () async {
       apiService.currentVersion();
-      controllers.selectedIndex.value = 0;
+      controllers.selectedIndex.value = 100;
       final prefs = await SharedPreferences.getInstance();
       controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
       DateTime now = DateTime.now();
       dashController.selectedSortBy.value = "Today";
-      remController.selectedMeetSortBy.value = "Today";
+      remController.selectedMeetSortBy.value=dashController.selectedSortBy.value;
+      // controllers.selectedProspectSortBy.value = "Today";
+      // controllers.selectedQualifiedSortBy.value = "Today";
+      // controllers.selectedCustomerSortBy.value = "Today";
+      // remController.selectedMeetSortBy.value = "Today";
+      // remController.selectedCallSortBy.value = "Today";
+      // remController.selectedReminderSortBy.value = "Today";
       remController.filterAndSortMeetings(
         searchText: controllers.searchText.value.toLowerCase(),
         callType: controllers.selectMeetingType.value,
@@ -419,6 +426,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                       children: [
                                         InkWell(
                                           onTap: () {
+                                            remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
                                             controllers.changeTab(1);
                                             Navigator.push(
                                               context,
@@ -449,6 +457,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                         ),
                                         InkWell(
                                             onTap: () {
+                                              remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
                                               controllers.changeTab(0);
                                               Navigator.push(
                                                 context,
@@ -475,6 +484,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 icon: Icons.call)),
                                         InkWell(
                                           onTap: () {
+                                            remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
                                             controllers.changeTab(2);
                                             Navigator.push(
                                               context,
@@ -498,6 +508,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                         ),
                                         InkWell(
                                           onTap: () {
+                                            controllers.selectedProspectSortBy.value = dashController.selectedSortBy.value;
                                             Navigator.push(
                                               context,
                                               PageRouteBuilder(
@@ -507,7 +518,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                               ),
                                             );
                                             controllers.oldIndex.value = controllers.selectedIndex.value;
-                                            controllers.selectedIndex.value = 0;
+                                            controllers.selectedIndex.value = 100;
                                           },
                                           child: countShown(
                                             width: 130,
@@ -518,6 +529,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                         ),
                                         InkWell(
                                           onTap: () {
+                                            remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
                                             Navigator.push(
                                               context,
                                               PageRouteBuilder(
@@ -547,55 +559,58 @@ class _NewDashboardState extends State<NewDashboard> {
                                         ),
                                         //
                                         Obx(()=>dashController.visitStatusReport.isNotEmpty?
-                                        InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              PageRouteBuilder(
-                                                pageBuilder: (context,
-                                                    animation1,
-                                                    animation2) =>
-                                                const ReminderPage(),
-                                                transitionDuration:
-                                                Duration.zero,
-                                                reverseTransitionDuration:
-                                                Duration.zero,
-                                              ),
-                                            );
-
-                                            controllers.oldIndex.value = controllers.selectedIndex.value;
-                                            controllers.selectedIndex.value = 6;
-                                          },
-                                          child: Container(
-                                            // color: Colors.pinkAccent,
-                                            height: dashController.visitStatusReport.length*35,
-                                            width: (screenWidth - 500),
-                                            child: ListView.builder(
-                                                shrinkWrap: true,
-                                                physics: NeverScrollableScrollPhysics(),
-                                                itemCount: dashController.visitStatusReport.length,
-                                                itemBuilder: (context,index){
-                                                  return Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        if(index==0)
-                                                          CustomText(text: "Call Status Report", isCopy: false,isBold: true,size: 17,colors: colorsConst.primary,),
-                                                        if(index==0)
-                                                          5.height,
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            CustomText(text: dashController.visitStatusReport[index]["value"], isCopy: false),
-                                                            CustomText(text: dashController.visitStatusReport[index]["total_count"].toString(), isCopy: false,isBold: true,),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                }),
-                                          ),
+                                        Container(
+                                          // color: Colors.pinkAccent,
+                                          height: dashController.visitStatusReport.length*35,
+                                          width: (screenWidth - 500),
+                                          child: ListView.builder(
+                                              shrinkWrap: true,
+                                              physics: NeverScrollableScrollPhysics(),
+                                              itemCount: dashController.visitStatusReport.length,
+                                              itemBuilder: (context,index){
+                                                return Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      if(index==0)
+                                                        CustomText(text: "Call Status Report", isCopy: false,isBold: true,size: 17,colors: colorsConst.primary,),
+                                                      if(index==0)
+                                                        5.height,
+                                                      Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          CustomText(text: dashController.visitStatusReport[index]["value"], isCopy: false),
+                                                          TextButton(
+                                                            onPressed:(){
+                                                              remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+                                                              controllers.selectCallType.value=dashController.visitStatusReport[index]["value"];
+                                                              controllers.changeTab(0);
+                                                              Navigator.push(
+                                                                context,
+                                                                PageRouteBuilder(
+                                                                  pageBuilder: (context,
+                                                                      animation1,
+                                                                      animation2) =>
+                                                                  const Records(
+                                                                    isReload: "true",
+                                                                  ),
+                                                                  transitionDuration:
+                                                                  Duration.zero,
+                                                                  reverseTransitionDuration:
+                                                                  Duration.zero,
+                                                                ),
+                                                              );
+                                                              controllers.oldIndex.value = controllers.selectedIndex.value;
+                                                              controllers.selectedIndex.value = 6;
+                                                            },
+                                                              child: CustomText(text: dashController.visitStatusReport[index]["total_count"].toString(), isCopy: false,isBold: true,)),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
                                         ):0.height),
                                       ],
                                     ),
@@ -646,12 +661,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                               children: [
                                                 InkWell(
                                                   onTap: () async {
-                                                    controllers
-                                                            .selectedProspectSortBy
-                                                            .value =
-                                                        dashController
-                                                            .selectedSortBy
-                                                            .value;
+                                                    controllers.selectedProspectSortBy.value = dashController.selectedSortBy.value;
                                                     apiService
                                                         .allRatingLeadsDetails(
                                                             "Hot");
@@ -675,7 +685,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                             .selectedIndex
                                                             .value;
                                                     controllers.selectedIndex
-                                                        .value = 0;
+                                                        .value = 100;
                                                   },
                                                   child: RatingIndicator(
                                                     color: Colors.red,
@@ -688,12 +698,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 ),
                                                 InkWell(
                                                   onTap: () async {
-                                                    controllers
-                                                            .selectedProspectSortBy
-                                                            .value =
-                                                        dashController
-                                                            .selectedSortBy
-                                                            .value;
+                                                    controllers.selectedProspectSortBy.value = dashController.selectedSortBy.value;
                                                     apiService
                                                         .allRatingLeadsDetails(
                                                             "Warm");
@@ -717,7 +722,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                             .selectedIndex
                                                             .value;
                                                     controllers.selectedIndex
-                                                        .value = 0;
+                                                        .value = 100;
                                                   },
                                                   child: RatingIndicator(
                                                     color: Colors.orange,
@@ -730,12 +735,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                 ),
                                                 InkWell(
                                                   onTap: () async {
-                                                    controllers
-                                                            .selectedProspectSortBy
-                                                            .value =
-                                                        dashController
-                                                            .selectedSortBy
-                                                            .value;
+                                                    controllers.selectedProspectSortBy.value = dashController.selectedSortBy.value;
                                                     apiService.allRatingLeadsDetails("Cold");
                                                     Navigator.push(
                                                       context,
@@ -757,7 +757,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                                             .selectedIndex
                                                             .value;
                                                     controllers.selectedIndex
-                                                        .value = 0;
+                                                        .value = 100;
                                                   },
                                                   child: RatingIndicator(
                                                     color: Colors.blue,

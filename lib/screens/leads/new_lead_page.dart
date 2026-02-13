@@ -18,14 +18,16 @@ import '../../components/left_table_header.dart';
 import '../../controller/controller.dart';
 import '../../services/api_services.dart';
 
-class Prospects extends StatefulWidget {
-  const Prospects({super.key});
+class NewLeadPage extends StatefulWidget {
+  final String index;
+  final String name;
+  const NewLeadPage({super.key, required this.index, required this.name});
 
   @override
-  State<Prospects> createState() => _ProspectsState();
+  State<NewLeadPage> createState() => _NewLeadPageState();
 }
 
-class _ProspectsState extends State<Prospects> {
+class _NewLeadPageState extends State<NewLeadPage> {
   final ScrollController _controller = ScrollController();
   final ScrollController _horizontalController = ScrollController();
   final ScrollController _leftController = ScrollController();
@@ -40,19 +42,20 @@ class _ProspectsState extends State<Prospects> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero, () {
+      apiService.getCustomLeads(widget.index);
       apiService.currentVersion();
-      controllers.selectedIndex.value = 2;
+      // controllers.selectedIndex.value = 2;
       controllers.groupController.selectIndex(0);
       setState(() {
         controllers.search.clear();
-        apiService.qualifiedList = [];
-        apiService.qualifiedList.clear();
+        apiService.newLeadList = [];
+        apiService.newLeadList.clear();
         //Santhiya
         controllers.isAllSelected.value = false;
         for (var item in controllers.isLeadsList) {
           item["isSelect"] = false;
 
-          apiService.qualifiedList.removeWhere(
+          apiService.newLeadList.removeWhere(
                 (e) => e["lead_id"] == item["lead_id"],
           );
         }
@@ -118,20 +121,20 @@ class _ProspectsState extends State<Prospects> {
                     children: [
                       // Header Section
                       HeaderSection(
-                        title: "Leads - ${controllers.leadCategoryList[1]["value"]}",
-                        subtitle: "View all of your ${controllers.leadCategoryList[1]["value"]} Information",
+                        title: "Leads - ${widget.name}",
+                        subtitle: "View all of your ${widget.name} ${widget.index} Information",
                         list: controllers.allLeadFuture,
                       ),
                       20.height,
                       // Filter Section
                       FilterSection(
                         //Santhiya
-                        itemCount: controllers.paginatedProspectsLeads.length,
+                        itemCount: controllers.newLeadList.length,
                         focusNode: _focusNode,
                         leadFuture: controllers.allLeadFuture,
-                        title: "Prospects",
+                        title: widget.name,
                         count: controllers.allLeadsLength.value,
-                        itemList: apiService.qualifiedList,
+                        itemList: apiService.newLeadList,
                         onDelete: () {
                           _focusNode.requestFocus();
                           showDialog(
@@ -177,9 +180,9 @@ class _ProspectsState extends State<Prospects> {
                                         CustomLoadingButton(
                                           callback: ()async{
                                             _focusNode.requestFocus();
-                                            await apiService.deleteCustomersAPI(context, apiService.qualifiedList);
+                                            await apiService.deleteCustomersAPI(context, apiService.newLeadList);
                                             setState(() {
-                                              apiService.qualifiedList.clear();
+                                              apiService.newLeadList.clear();
                                             });
                                           },
                                           height: 35,
@@ -200,18 +203,21 @@ class _ProspectsState extends State<Prospects> {
                               });
                         },
                         onMail: () {
-                          mailUtils.bulkEmailDialog(_focusNode, list: apiService.qualifiedList);
+                          mailUtils.bulkEmailDialog(_focusNode, list: apiService.newLeadList);
                         },
                         onPromote: () {
+                          debugPrint("onTap");
                           showDialog(
                             context: context,
                             builder: (context) {
-                              String selectedStage="Qualified";
+                              String selectedStage="";
+                              for (var i=0;i<controllers.leadCategoryList.length;i++){
+                                if(i==int.parse(widget.index)){
+                                  selectedStage=controllers.leadCategoryList[i]["value"];
+                                }
+                              }
                               bool isEdit=false;
                               TextEditingController reasonController = TextEditingController();
-                              setState(() {
-                                 selectedStage = "Qualified";
-                              });
                               return StatefulBuilder(
                                 builder: (context, setState) {
                                   return AlertDialog(
@@ -244,14 +250,10 @@ class _ProspectsState extends State<Prospects> {
                                             isExpanded: true,
                                             focusColor: Colors.transparent,
                                             underline: SizedBox(),
-                                            items: [
-                                              "Suspects",
-                                              "Qualified",
-                                              "Customers",
-                                            ].map((value) {
-                                              return DropdownMenuItem(
-                                                value: value,
-                                                child: Text(value),
+                                            items: controllers.leadCategoryList.map((item) {
+                                              return DropdownMenuItem<String>(
+                                                value: item["value"],
+                                                child: Text(item["value"]),
                                               );
                                             }).toList(),
                                             onChanged: (value) {
@@ -303,17 +305,17 @@ class _ProspectsState extends State<Prospects> {
                                           CustomLoadingButton(
                                             callback: () async {
                                               if (selectedStage == "Suspects") {
-                                                await apiService.insertLeadPromoteAPI(context, apiService.qualifiedList);
+                                                await apiService.insertLeadPromoteAPI(context, apiService.newLeadList);
                                               } else if (selectedStage == "Qualified") {
-                                                await apiService.insertQualifiedAPI(context, apiService.qualifiedList);
+                                                await apiService.insertQualifiedAPI(context, apiService.newLeadList);
                                               } else if (selectedStage == "Customers") {
-                                                await apiService.insertPromoteCustomerAPI(context, apiService.qualifiedList);
+                                                await apiService.insertPromoteCustomerAPI(context, apiService.newLeadList);
                                               }
                                               // else {
                                               //   await apiService.insertProspectsAPI(context, [deleteData]);
                                               // }
                                               setState(() {
-                                                apiService.qualifiedList.clear();
+                                                apiService.newLeadList.clear();
                                               });
                                             },
                                             height: 35,
@@ -336,134 +338,8 @@ class _ProspectsState extends State<Prospects> {
                               );
                             },
                           );
-                          // showDialog(
-                          //     context: context,
-                          //     barrierDismissible: false,
-                          //     builder: (context) {
-                          //       return AlertDialog(
-                          //         content: CustomText(
-                          //           text: "Are you moving to the next level?",
-                          //           size: 16,
-                          //           isBold: true,
-                          //           isCopy: false,
-                          //           colors: colorsConst.textColor,
-                          //         ),
-                          //         actions: [
-                          //           Row(
-                          //             mainAxisAlignment: MainAxisAlignment.end,
-                          //             children: [
-                          //               Container(
-                          //                 decoration: BoxDecoration(
-                          //                     border: Border.all(color: colorsConst.primary),
-                          //                     color: Colors.white),
-                          //                 width: 80,
-                          //                 height: 25,
-                          //                 child: ElevatedButton(
-                          //                     style: ElevatedButton.styleFrom(
-                          //                       shape: const RoundedRectangleBorder(
-                          //                         borderRadius: BorderRadius.zero,
-                          //                       ),
-                          //                       backgroundColor: Colors.white,
-                          //                     ),
-                          //                     onPressed: () {
-                          //                       Navigator.pop(context);
-                          //                     },
-                          //                     child: CustomText(
-                          //                       text: "Cancel",
-                          //                       colors: colorsConst.primary,
-                          //                       size: 14,
-                          //                       isCopy: false,
-                          //                     )),
-                          //               ),
-                          //               10.width,
-                          //               CustomLoadingButton(
-                          //                 callback: ()async{
-                          //                   _focusNode.requestFocus();
-                          //                   await apiService.insertQualifiedAPI(context,apiService.qualifiedList);
-                          //                   setState(() {
-                          //                     apiService.qualifiedList.clear();
-                          //                   });
-                          //                 },
-                          //                 height: 35,
-                          //                 isLoading: true,
-                          //                 backgroundColor: colorsConst.primary,
-                          //                 radius: 2,
-                          //                 width: 80,
-                          //                 controller: controllers.productCtr,
-                          //                 isImage: false,
-                          //                 text: "Move",
-                          //                 textColor: Colors.white,
-                          //               ),
-                          //               5.width
-                          //             ],
-                          //           ),
-                          //         ],
-                          //       );
-                          //     });
                         },
                         onDemote: () {
-                          // showDialog(
-                          //     context: context,
-                          //     barrierDismissible: true,
-                          //     builder: (context) {
-                          //       return AlertDialog(
-                          //         content: CustomText(
-                          //           text: "Are you sure demote this customers?",
-                          //           size: 16,
-                          //           isCopy: false,
-                          //           isBold: true,
-                          //           colors: colorsConst.textColor,
-                          //         ),
-                          //         actions: [
-                          //           Row(
-                          //             mainAxisAlignment: MainAxisAlignment.end,
-                          //             children: [
-                          //               Container(
-                          //                 decoration: BoxDecoration(
-                          //                     border: Border.all(color: colorsConst.primary),
-                          //                     color: Colors.white),
-                          //                 width: 80,
-                          //                 height: 25,
-                          //                 child: ElevatedButton(
-                          //                     style: ElevatedButton.styleFrom(
-                          //                       shape: const RoundedRectangleBorder(
-                          //                         borderRadius: BorderRadius.zero,
-                          //                       ),
-                          //                       backgroundColor: Colors.white,
-                          //                     ),
-                          //                     onPressed: () {
-                          //                       Navigator.pop(context);
-                          //                     },
-                          //                     child: CustomText(
-                          //                       text: "Cancel",
-                          //                       isCopy: false,
-                          //                       colors: colorsConst.primary,
-                          //                       size: 14,
-                          //                     )),
-                          //               ),
-                          //               10.width,
-                          //               CustomLoadingButton(
-                          //                 callback: (){
-                          //                   _focusNode.requestFocus();
-                          //                   apiService.insertSuspectsAPI(context);
-                          //                 },
-                          //                 height: 35,
-                          //                 isLoading: true,
-                          //                 backgroundColor:
-                          //                 colorsConst.primary,
-                          //                 radius: 2,
-                          //                 width: 100,
-                          //                 controller: controllers.productCtr,
-                          //                 isImage: false,
-                          //                 text: "Demote",
-                          //                 textColor:Colors.white,
-                          //               ),
-                          //               5.width
-                          //             ],
-                          //           ),
-                          //         ],
-                          //       );
-                          //     });
                           showDialog(
                             context: context,
                             builder: (context) {
@@ -571,9 +447,9 @@ class _ProspectsState extends State<Prospects> {
                                               } else if (selectedStage == "Customers") {
                                                 status="4";
                                               }
-                                              await apiService.updateLeadStatus(context, apiService.qualifiedList,status);
+                                              await apiService.updateLeadStatus(context, apiService.newLeadList,status);
                                               setState(() {
-                                                apiService.qualifiedList.clear();
+                                                apiService.newLeadList.clear();
                                               });
                                             },
                                             height: 35,
@@ -600,6 +476,15 @@ class _ProspectsState extends State<Prospects> {
                         searchController: controllers.search,
                         onSearchChanged: (value) {
                           controllers.searchProspects.value = value.toString();
+                          final suggestions = controllers.searchNewLeadList.where(
+                                  (user) {
+                                final phone = user.mobileNumber.toString().toLowerCase();
+                                final name = user.firstname.toString().toLowerCase();
+                                final city = user.companyName.toString().toLowerCase();
+                                final input = value.toString().toLowerCase().trim();
+                                return phone.contains(input) ||name.contains(input) ||city.contains(input);
+                              }).toList();
+                          controllers.newLeadList.value = suggestions;
                         },
                         onSelectMonth: () {
                           controllers.selectMonth(
@@ -629,14 +514,14 @@ class _ProspectsState extends State<Prospects> {
                                     showCheckbox: true,
                                     isAllSelected: controllers.isAllSelected.value,
                                     onSelectAll: (value) async {
-                                      if (controllers.paginatedProspectsLeads.isEmpty) return;
+                                      if (controllers.newLeadList.isEmpty) return;
                                       await Future.microtask(() {
-                                        apiService.qualifiedList.clear();
+                                        apiService.newLeadList.clear();
                                         if (value == true) {
                                           controllers.isAllSelected.value = true;
                                           for (var lead in controllers.isLeadsList) {
                                             lead["isSelect"] = true;
-                                            apiService.qualifiedList.add({
+                                            apiService.newLeadList.add({
                                               "lead_id": lead["lead_id"].toString(),
                                               "user_id": controllers.storage.read("id").toString(),
                                               "rating": lead["rating"].toString(),
@@ -648,7 +533,7 @@ class _ProspectsState extends State<Prospects> {
                                           for (var lead in controllers.isLeadsList) {
                                             lead["isSelect"] = false;
                                           }
-                                          apiService.qualifiedList.clear();
+                                          apiService.newLeadList.clear();
                                         }
                                       });
                                       setState(() {});
@@ -661,18 +546,18 @@ class _ProspectsState extends State<Prospects> {
                                   ),
                                   SizedBox(
                                     height: MediaQuery.of(context).size.height - 345,
-                                    child: Obx(() => controllers.paginatedProspectsLeads.isNotEmpty?
+                                    child: Obx(() => controllers.newLeadList.isNotEmpty?
                                     ScrollConfiguration(
                                       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                                       child: ListView.builder(
                                         controller: _leftController,
                                         shrinkWrap: true,
                                         physics: const ScrollPhysics(),
-                                        itemCount: controllers.paginatedProspectsLeads.length,
+                                        itemCount: controllers.newLeadList.length,
                                         itemBuilder: (context, index) {
-                                          final data = controllers.paginatedProspectsLeads[index];
+                                          final data = controllers.newLeadList[index];
                                           return Obx(()=>LeftLeadTile(
-                                            leadIndex: "0",
+                                            leadIndex: widget.index,
                                             pageName: "Prospects",
                                             saveValue: controllers.isLeadsList[index]["isSelect"],
                                             onChanged: (value) {
@@ -681,10 +566,10 @@ class _ProspectsState extends State<Prospects> {
                                               final leadId = data.userId.toString();
                                               if (lead["isSelect"] == true) {
                                                 lead["isSelect"] = false;
-                                                apiService.qualifiedList.removeWhere((e) => e["lead_id"] == leadId);
+                                                apiService.newLeadList.removeWhere((e) => e["lead_id"] == leadId);
                                               } else {
                                                 lead["isSelect"] = true;
-                                                apiService.qualifiedList.add({
+                                                apiService.newLeadList.add({
                                                   "lead_id": leadId,
                                                   "user_id": controllers.storage.read("id").toString(),
                                                   "rating": data.rating ?? "Warm",
@@ -827,14 +712,14 @@ class _ProspectsState extends State<Prospects> {
                                                     height: MediaQuery.of(context).size.height,
                                                     padding: EdgeInsets.fromLTRB(160, 0, 0, 0),
                                                     child: const Center(child: CircularProgressIndicator()))
-                                                : controllers.paginatedProspectsLeads.isNotEmpty?
+                                                : controllers.newLeadList.isNotEmpty?
                                             ListView.builder(
                                               controller: _rightController,
                                               shrinkWrap: true,
                                               physics: const ScrollPhysics(),
-                                              itemCount: controllers.paginatedProspectsLeads.length,
+                                              itemCount: controllers.newLeadList.length,
                                               itemBuilder: (context, index) {
-                                                final data = controllers.paginatedProspectsLeads[index];
+                                                final data = controllers.newLeadList[index];
                                                 return Obx(()=>CustomLeadTile(
                                                   pageName: "Prospects",
                                                   saveValue: controllers.isLeadsList[index]["isSelect"],
@@ -842,11 +727,11 @@ class _ProspectsState extends State<Prospects> {
                                                     setState(() {
                                                       if(controllers.isLeadsList[index]["isSelect"]==true){
                                                         controllers.isLeadsList[index]["isSelect"]=false;
-                                                        var i=apiService.qualifiedList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                                        apiService.qualifiedList.removeAt(i);
+                                                        var i=apiService.newLeadList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                                        apiService.newLeadList.removeAt(i);
                                                       }else{
                                                         controllers.isLeadsList[index]["isSelect"]=true;
-                                                        apiService.qualifiedList.add({
+                                                        apiService.newLeadList.add({
                                                           "lead_id":data.userId.toString(),
                                                           "user_id":controllers.storage.read("id"),
                                                           "rating":data.rating ?? "Warm",
@@ -924,7 +809,7 @@ class _ProspectsState extends State<Prospects> {
                         ),
                       ),
 
-                      controllers.paginatedProspectsLeads.isNotEmpty? Obx(() {
+                      controllers.newLeadList.isNotEmpty? Obx(() {
                         final totalPages = controllers.totalProspectPages == 0 ? 1 : controllers.totalProspectPages;
                         final currentPage = controllers.currentProspectPage.value;
                         return Row(

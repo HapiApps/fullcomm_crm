@@ -84,6 +84,7 @@ class _MailCommentsState extends State<MailComments> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero,(){
+      remController.sortMails();
       apiService.currentVersion();
     });
   }

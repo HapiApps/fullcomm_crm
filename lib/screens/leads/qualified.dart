@@ -202,134 +202,409 @@ class _QualifiedState extends State<Qualified> {
                       },
                       onPromote: () {
                         showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) {
-                              return AlertDialog(
-                                content: CustomText(
-                                  text: "Are you moving to the next level?",
-                                  size: 16,
-                                  isCopy: false,
-                                  isBold: true,
-                                  colors: colorsConst.textColor,
-                                ),
-                                actions: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                          context: context,
+                          builder: (context) {
+                            String selectedStage="Customers";
+                            bool isEdit=false;
+                            TextEditingController reasonController = TextEditingController();
+                            setState(() {
+                               selectedStage = "Customers";
+                            });
+                            return StatefulBuilder(
+                              builder: (context, setState) {
+                                return AlertDialog(
+                                  title: CustomText(
+                                    text: "Move to Next Level",
+                                    size: 18,
+                                    isBold: true,
+                                    isCopy: false,
+                                    colors: colorsConst.textColor,
+                                  ),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      CustomText(
+                                        text: "Select Stage",
+                                        size: 14,
+                                        isBold: true,
+                                        isCopy: false,
+                                      ),
+                                      8.height,
                                       Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 8),
                                         decoration: BoxDecoration(
-                                            border: Border.all(color: colorsConst.primary),
-                                            color: Colors.white),
-                                        width: 80,
-                                        height: 25,
-                                        child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.zero,
-                                              ),
-                                              backgroundColor: Colors.white,
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: CustomText(
-                                              text: "Cancel",
-                                              isCopy: false,
-                                              colors: colorsConst.primary,
-                                              size: 14,
-                                            )),
+                                          border: Border.all(color: colorsConst.primary),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: DropdownButton<String>(
+                                          value: selectedStage,
+                                          isExpanded: true,
+                                          focusColor: Colors.transparent,
+                                          underline: SizedBox(),
+                                          items: [
+                                            "Suspects",
+                                            "Prospects",
+                                            "Customers",
+                                          ].map((value) {
+                                            return DropdownMenuItem(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          }).toList(),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedStage = value!;
+                                              isEdit=true;
+                                            });
+                                          },
+                                        ),
                                       ),
-                                      10.width,
-                                      CustomLoadingButton(
-                                        callback: ()async{
-                                          _focusNode.requestFocus();
-                                          await apiService.insertPromoteCustomerAPI(context,apiService.customerList);
-                                          setState(() {
-                                            apiService.customerList.clear();
-                                          });
-                                        },
-                                        height: 35,
-                                        isLoading: true,
-                                        backgroundColor: colorsConst.primary,
-                                        radius: 2,
-                                        width: 80,
-                                        controller: controllers.productCtr,
-                                        isImage: false,
-                                        text: "Move",
-                                        textColor: Colors.white,
+                                      15.height,
+                                      TextField(
+                                        controller: reasonController,
+                                        decoration: InputDecoration(
+                                          labelText: "Reason",
+                                          border: OutlineInputBorder(),
+                                        ),
                                       ),
-                                      5.width
                                     ],
                                   ),
-                                ],
-                              );
-                            });
+                                  actions: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(color: colorsConst.primary),
+                                              color: Colors.white),
+                                          width: 80,
+                                          height: 25,
+                                          child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                shape: const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.zero,
+                                                ),
+                                                backgroundColor: Colors.white,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: CustomText(
+                                                text: "Cancel",
+                                                isCopy: false,
+                                                colors: colorsConst.primary,
+                                                size: 14,
+                                              )),
+                                        ),
+                                        10.width,
+                                        CustomLoadingButton(
+                                          callback: () async {
+                                            if (selectedStage == "Suspects") {
+                                              await apiService.insertLeadPromoteAPI(context, apiService.customerList);
+                                            }else if (selectedStage == "Prospects") {
+                                              await apiService.insertProspectsAPI(context, apiService.customerList);
+                                            }else if (selectedStage == "Customers") {
+                                              await apiService.insertPromoteCustomerAPI(context, apiService.customerList);
+                                            }
+                                            // else {
+                                            //   await apiService.insertProspectsAPI(context, [deleteData]);
+                                            // }
+                                            setState(() {
+                                              apiService.customerList.clear();
+                                            });
+                                          },
+                                          height: 35,
+                                          isLoading: true,
+                                          backgroundColor:
+                                          colorsConst.primary,
+                                          radius: 2,
+                                          width: 80,
+                                          controller:
+                                          controllers.productCtr,
+                                          isImage: false,
+                                          text: "Promote",
+                                          textColor: Colors.white,
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        );
+                        // showDialog(
+                        //     context: context,
+                        //     barrierDismissible: false,
+                        //     builder: (context) {
+                        //       return AlertDialog(
+                        //         content: CustomText(
+                        //           text: "Are you moving to the next level?",
+                        //           size: 16,
+                        //           isCopy: false,
+                        //           isBold: true,
+                        //           colors: colorsConst.textColor,
+                        //         ),
+                        //         actions: [
+                        //           Row(
+                        //             mainAxisAlignment: MainAxisAlignment.end,
+                        //             children: [
+                        //               Container(
+                        //                 decoration: BoxDecoration(
+                        //                     border: Border.all(color: colorsConst.primary),
+                        //                     color: Colors.white),
+                        //                 width: 80,
+                        //                 height: 25,
+                        //                 child: ElevatedButton(
+                        //                     style: ElevatedButton.styleFrom(
+                        //                       shape: const RoundedRectangleBorder(
+                        //                         borderRadius: BorderRadius.zero,
+                        //                       ),
+                        //                       backgroundColor: Colors.white,
+                        //                     ),
+                        //                     onPressed: () {
+                        //                       Navigator.pop(context);
+                        //                     },
+                        //                     child: CustomText(
+                        //                       text: "Cancel",
+                        //                       isCopy: false,
+                        //                       colors: colorsConst.primary,
+                        //                       size: 14,
+                        //                     )),
+                        //               ),
+                        //               10.width,
+                        //               CustomLoadingButton(
+                        //                 callback: ()async{
+                        //                   _focusNode.requestFocus();
+                        //                   await apiService.insertPromoteCustomerAPI(context,apiService.customerList);
+                        //                   setState(() {
+                        //                     apiService.customerList.clear();
+                        //                   });
+                        //                 },
+                        //                 height: 35,
+                        //                 isLoading: true,
+                        //                 backgroundColor: colorsConst.primary,
+                        //                 radius: 2,
+                        //                 width: 80,
+                        //                 controller: controllers.productCtr,
+                        //                 isImage: false,
+                        //                 text: "Move",
+                        //                 textColor: Colors.white,
+                        //               ),
+                        //               5.width
+                        //             ],
+                        //           ),
+                        //         ],
+                        //       );
+                        //     });
                       },
                       onDemote: () {
+                        // showDialog(
+                        //     context: context,
+                        //     barrierDismissible: true,
+                        //     builder: (context) {
+                        //       return AlertDialog(
+                        //         content: CustomText(
+                        //           text: "Are you sure demote this customers?",
+                        //           size: 16,
+                        //           isCopy: false,
+                        //           isBold: true,
+                        //           colors: colorsConst.textColor,
+                        //         ),
+                        //         actions: [
+                        //           Row(
+                        //             mainAxisAlignment: MainAxisAlignment.end,
+                        //             children: [
+                        //               Container(
+                        //                 decoration: BoxDecoration(
+                        //                     border: Border.all(color: colorsConst.primary),
+                        //                     color: Colors.white),
+                        //                 width: 80,
+                        //                 height: 25,
+                        //                 child: ElevatedButton(
+                        //                     style: ElevatedButton.styleFrom(
+                        //                       shape: const RoundedRectangleBorder(
+                        //                         borderRadius: BorderRadius.zero,
+                        //                       ),
+                        //                       backgroundColor: Colors.white,
+                        //                     ),
+                        //                     onPressed: () {
+                        //                       Navigator.pop(context);
+                        //                     },
+                        //                     child: CustomText(
+                        //                       text: "Cancel",
+                        //                       isCopy: false,
+                        //                       colors: colorsConst.primary,
+                        //                       size: 14,
+                        //                     )),
+                        //               ),
+                        //               10.width,
+                        //               CustomLoadingButton(
+                        //                 callback: (){
+                        //                   _focusNode.requestFocus();
+                        //                   apiService.insertProspectsAPI(
+                        //                       context, apiService.customerList);
+                        //                 },
+                        //                 height: 35,
+                        //                 isLoading: true,
+                        //                 backgroundColor:
+                        //                 colorsConst.primary,
+                        //                 radius: 2,
+                        //                 width: 100,
+                        //                 controller: controllers.productCtr,
+                        //                 isImage: false,
+                        //                 text: "Demote",
+                        //                 textColor:Colors.white,
+                        //               ),
+                        //               5.width
+                        //             ],
+                        //           ),
+                        //         ],
+                        //       );
+                        //     });
                         showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (context) {
-                              return AlertDialog(
-                                content: CustomText(
-                                  text: "Are you sure demote this customers?",
-                                  size: 16,
-                                  isCopy: false,
-                                  isBold: true,
-                                  colors: colorsConst.textColor,
-                                ),
-                                actions: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                          context: context,
+                          builder: (context) {
+                            String selectedStage="Prospects";
+                            bool isEdit=false;
+                            TextEditingController reasonController = TextEditingController();
+                            // setState(() {
+                            //   selectedStage = "Prospects";
+                            // });
+                            return StatefulBuilder(
+                              builder: (context, setState) {
+                                return AlertDialog(
+                                  title: CustomText(
+                                    text: "Move to Next Level",
+                                    size: 18,
+                                    isBold: true,
+                                    isCopy: false,
+                                    colors: colorsConst.textColor,
+                                  ),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      CustomText(
+                                        text: "Select Stage",
+                                        size: 14,
+                                        isBold: true,
+                                        isCopy: false,
+                                      ),
+                                      8.height,
                                       Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 8),
                                         decoration: BoxDecoration(
-                                            border: Border.all(color: colorsConst.primary),
-                                            color: Colors.white),
-                                        width: 80,
-                                        height: 25,
-                                        child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.zero,
-                                              ),
-                                              backgroundColor: Colors.white,
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: CustomText(
-                                              text: "Cancel",
-                                              isCopy: false,
-                                              colors: colorsConst.primary,
-                                              size: 14,
-                                            )),
+                                          border: Border.all(color: colorsConst.primary),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: DropdownButton<String>(
+                                          value: selectedStage,
+                                          isExpanded: true,
+                                          focusColor: Colors.transparent,
+                                          underline: SizedBox(),
+                                          items: [
+                                            "Suspects",
+                                            "Prospects",
+                                            "Customers",
+                                          ].map((value) {
+                                            return DropdownMenuItem(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          }).toList(),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedStage = value!;
+                                              isEdit=true;
+                                            });
+                                          },
+                                        ),
                                       ),
-                                      10.width,
-                                      CustomLoadingButton(
-                                        callback: (){
-                                          _focusNode.requestFocus();
-                                          apiService.insertProspectsAPI(
-                                              context, apiService.customerList);
-                                        },
-                                        height: 35,
-                                        isLoading: true,
-                                        backgroundColor:
-                                        colorsConst.primary,
-                                        radius: 2,
-                                        width: 100,
-                                        controller: controllers.productCtr,
-                                        isImage: false,
-                                        text: "Demote",
-                                        textColor:Colors.white,
+                                      15.height,
+                                      TextField(
+                                        controller: reasonController,
+                                        decoration: InputDecoration(
+                                          labelText: "Reason",
+                                          border: OutlineInputBorder(),
+                                        ),
                                       ),
-                                      5.width
                                     ],
                                   ),
-                                ],
-                              );
-                            });
+                                  actions: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(color: colorsConst.primary),
+                                              color: Colors.white),
+                                          width: 80,
+                                          height: 25,
+                                          child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                shape: const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.zero,
+                                                ),
+                                                backgroundColor: Colors.white,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: CustomText(
+                                                text: "Cancel",
+                                                isCopy: false,
+                                                colors: colorsConst.primary,
+                                                size: 14,
+                                              )),
+                                        ),
+                                        10.width,
+                                        CustomLoadingButton(
+                                          callback: () async {
+                                            // if (selectedStage == "Suspects") {
+                                            //   await apiService.insertSuspectsAPI(context, apiService.customerList);
+                                            // }else if (selectedStage == "Prospects") {
+                                            //   await apiService.insertProspectsAPI(context, apiService.customerList);
+                                            // }else if (selectedStage == "Customers") {
+                                            //   await apiService.insertPromoteCustomerAPI(context, apiService.customerList);
+                                            // }
+                                            // else {
+                                            //   await apiService.insertProspectsAPI(context, [deleteData]);
+                                            // }
+                                            String status="0";
+                                            if (selectedStage == "Suspects") {
+                                              status="1";
+                                            } else if (selectedStage == "Prospects") {
+                                              status="2";
+                                            } else if (selectedStage == "Customers") {
+                                              status="4";
+                                            }
+                                            await apiService.updateLeadStatus(context, apiService.customerList,status);
+                                            setState(() {
+                                              apiService.customerList.clear();
+                                            });
+                                          },
+                                          height: 35,
+                                          isLoading: true,
+                                          backgroundColor:
+                                          colorsConst.primary,
+                                          radius: 2,
+                                          width: 80,
+                                          controller:
+                                          controllers.productCtr,
+                                          isImage: false,
+                                          text: "Promote",
+                                          textColor: Colors.white,
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        );
                       },
                       searchController: controllers.search,
                       onSearchChanged: (value) {
@@ -403,6 +678,7 @@ class _QualifiedState extends State<Qualified> {
                                       itemBuilder: (context, index) {
                                         final data = controllers.paginatedQualifiedLeads[index];
                                         return Obx(()=>LeftLeadTile(
+                                          leadIndex: "0",
                                           pageName: "Qualified",
                                           saveValue: controllers.isGoodLeadList[index]["isSelect"],
                                           onChanged: (value) {

@@ -49,6 +49,7 @@ class _RatingLeadsState extends State<RatingLeads> {
         apiService.prospectsList = [];
         apiService.prospectsList.clear();
         controllers.search.clear();
+        controllers.paginatedRatingLeads;
       });
       controllers.searchQuery.value = "";
     });
@@ -418,6 +419,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                                         itemBuilder: (context, index) {
                                           final data = controllers.paginatedRatingLeads[index];
                                           return Obx(()=>LeftLeadTile(
+                                            leadIndex: "0",
                                             showCheckbox: false,
                                             pageName: "Rating Leads",
                                             saveValue: controllers.isNewLeadList[index]["isSelect"],

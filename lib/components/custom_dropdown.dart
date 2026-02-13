@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import '../common/constant/colors_constant.dart';
@@ -93,6 +94,124 @@ class _CustomDropDownState extends State<CustomDropDown> {
           ),
         ),
         widget.text.isEmpty ? 10.height : 20.height,
+      ],
+    );
+  }
+}
+
+class IndustryDropdown extends StatelessWidget {
+  final List<Map<String, dynamic>> items;
+  final ValueChanged<Map<String, dynamic>?> onChanged;
+  final String hint;
+  final double width;
+  final VoidCallback onAdd;
+
+  const IndustryDropdown({
+    super.key,
+    required this.items,
+    required this.onChanged,
+    required this.onAdd,
+    this.hint = "Select Industry",
+    required this.width,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // sort by value
+    final sortedList = List<Map<String, dynamic>>.from(items)
+      ..sort((a, b) =>
+          a['value'].toString().toLowerCase().compareTo(
+            b['value'].toString().toLowerCase(),
+          ));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            CustomText(
+              text:"Industry",
+              colors: colorsConst.fieldHead,
+              size: 13,
+              isCopy: false,
+            ),
+          ],
+        ),
+        6.height,
+        Container(
+          width: width,
+          height: 42,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: DropdownSearch<Map<String, dynamic>>(
+            items: sortedList,
+            itemAsString: (item) => item?['value'] ?? '',
+            onChanged: onChanged,
+
+            dropdownDecoratorProps: DropDownDecoratorProps(
+              dropdownSearchDecoration: InputDecoration(
+                hintText: hint,
+                contentPadding: const EdgeInsets.fromLTRB(10, 8, 0, 2),
+                border: InputBorder.none,
+              ),
+            ),
+
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+              fit: FlexFit.loose,
+
+              searchFieldProps: TextFieldProps(
+                decoration: InputDecoration(
+                  hintText: "Industry",
+                  contentPadding: const EdgeInsets.all(10),
+                ),
+              ),
+
+              /// 🔥 custom popup with ADD option
+              containerBuilder: (ctx, popupWidget) {
+                return Column(
+                  children: [
+                    Expanded(child: popupWidget),
+                    const Divider(height: 1),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        onAdd(); // callback to open add dialog
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Icon(Icons.add, color: Colors.blue),
+                            SizedBox(width: 8),
+                            CustomText(
+                              text: "Add New Industry",colors: colorsConst.primary,isCopy: false,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              },
+
+              itemBuilder: (context, item, isSelected) {
+                return Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: CustomText(
+                    textAlign: TextAlign.start,
+                    text:item['value'],isCopy: false,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        20.height
       ],
     );
   }
