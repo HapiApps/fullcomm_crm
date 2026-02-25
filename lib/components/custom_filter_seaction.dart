@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../common/constant/colors_constant.dart';
 import '../models/all_customers_obj.dart';
 import '../models/new_lead_obj.dart';
+import '../screens/leads/new_lead_page.dart';
 import '../screens/leads/view_customer.dart';
 import 'action_button.dart';
 import 'custom_loading_button.dart';
@@ -18,6 +19,9 @@ import 'keyboard_search.dart';
 
 class FilterSection extends StatelessWidget {
   final String title;
+  final String leadIndex;
+  final RxList<NewLeadObj> list;
+  final RxList<NewLeadObj> list2;
   final int count;
   final int itemCount;
   final bool isActionEnabled;
@@ -28,7 +32,7 @@ class FilterSection extends StatelessWidget {
   final VoidCallback onPromote;
   final VoidCallback? onDisqualify;
   final VoidCallback? onDemote;
-  final VoidCallback? onQualify;
+  // final VoidCallback? onQualify;
   final TextEditingController searchController;
   final ValueChanged<Object?>? onSearchChanged;
   final VoidCallback onSelectMonth;
@@ -54,9 +58,9 @@ class FilterSection extends StatelessWidget {
     required this.selectedMonth,
     required this.selectedSortBy,
     required this.isMenuOpen,
-    this.onQualify,
+    // this.onQualify,
     required this.leadFuture,
-    this.isActionEnabled = true, this.focusNode, required this.itemCount,
+    this.isActionEnabled = true, this.focusNode, required this.itemCount, required this.leadIndex, required this.list, required this.list2,
   });
 
   @override
@@ -127,20 +131,22 @@ class FilterSection extends StatelessWidget {
                       if(value.phoneNo.toString().isNotEmpty){
                         onSearchChanged!(value.phoneNo.toString());
                       }
-                      // print(value.leadStatus);
+                      print(value.leadStatus);
                       // if(value.leadStatus=="1"){
                       //   controllers.search.text=value.firstname.toString();
                       //   Get.to(Suspects());
-                      // }else if(value.leadStatus=="2"){
-                      //   controllers.search.text=value.firstname.toString();
-                      //   Get.to(Prospects());
-                      // }else if(value.leadStatus=="3"){
-                      //   controllers.search.text=value.firstname.toString();
-                      //   Get.to(Qualified());
-                      // }else if(value.leadStatus=="4"){
-                      //   controllers.search.text=value.firstname.toString();
-                      //   Get.to(ViewCustomer());
                       // }
+                      if(value.leadStatus==leadIndex){
+                      }else{
+                        for(var i=0;i<controllers.leadCategoryList.length;i++){
+                          if(controllers.leadCategoryList[i].leadStatus==value.leadStatus){
+                            controllers.selectedIndex.value=int.parse(leadIndex);
+                            Get.to(NewLeadPage(index: controllers.leadCategoryList[i].leadStatus ,
+                              name: controllers.leadCategoryList[i].value, list: list, list2: list2,));
+                            break;
+                          }
+                        }
+                      }
                       // controllers.selectCustomer(value);
                     },
                     onClear: () {
@@ -153,21 +159,23 @@ class FilterSection extends StatelessWidget {
             ),
 
             // --- Action Buttons ---
-            Row(
+            if(itemList.isNotEmpty)
+              Row(
               children: [
-                if(itemList.isNotEmpty)
                   CustomText(text: "Selected count: ${itemList.length}", isCopy: false),15.width,
-                itemList.isEmpty
-                    ? 0.height
-                    : title == "No Matches" || title == "Target Leads"
-                    ? ActionButton(
-                  width: 100,
-                  image: "assets/images/action_promote.png",
-                  name: "Qualified",
-                  toolTip: "Click here to Qualified the customer details",
-                  callback: onQualify!,
-                )
-                    : Row(
+                // itemList.isEmpty
+                //     ? 0.height
+                //     : title == "No Matches" || title == "Target Leads"
+                //     ? ActionButton(
+                //   width: 100,
+                //   image: "assets/images/action_promote.png",
+                //   name: "Qualified",
+                //   toolTip: "Click here to Qualified the customer details",
+                //   callback: (){},
+                //   // callback: onQualify!,
+                // )
+                //     :
+                Row(
                   children: [
                     ActionButton(
                       width: 100,
@@ -177,9 +185,10 @@ class FilterSection extends StatelessWidget {
                       callback: onDelete,
                     ),
                     10.width,
-                    title == "Customers"
-                        ? 0.height
-                        : ActionButton(
+                    // title == "Customers"
+                    //     ? 0.height
+                    //     :
+                    ActionButton(
                       width: 100,
                       image: "assets/images/action_promote.png",
                       name: "Promote",
@@ -188,17 +197,19 @@ class FilterSection extends StatelessWidget {
                       callback: onPromote,
                     ),
                     10.width,
-                    title == "Suspects"
-                        ? ActionButton(
-                      width: 110,
-                      image:
-                      "assets/images/action_disqualified.png",
-                      name: "No Matches",
-                      toolTip:
-                      "Click here to No Matches the customer details",
-                      callback: onDisqualify!,
-                    )
-                        : ActionButton(
+                    // title == "Suspects"
+                    //     ?
+                    // ActionButton(
+                    //   width: 110,
+                    //   image:
+                    //   "assets/images/action_disqualified.png",
+                    //   name: "No Matches",
+                    //   toolTip:
+                    //   "Click here to No Matches the customer details",
+                    //   callback: onDisqualify!,
+                    // )
+                    //     :
+                    ActionButton(
                       width: 100,
                       image:
                       "assets/images/action_disqualified.png",
@@ -315,7 +326,7 @@ class FilterSection extends StatelessWidget {
                   10.width,
                   InkWell(
                     onTap: () {
-                      controllers.showDatePickerDialog(context, selectedSortBy);
+                      controllers.showDatePickerDialog(context, selectedSortBy,list,list2);
                     },
                     child: Container(
                       width: 200,

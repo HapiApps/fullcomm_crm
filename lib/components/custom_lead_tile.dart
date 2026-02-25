@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
 import '../common/utilities/jwt_storage.dart';
 import '../controller/table_controller.dart';
+import '../models/new_lead_obj.dart';
 import '../screens/records/cus_mail_comments.dart';
 import '../screens/leads/update_lead.dart';
 import '../screens/records/records.dart';
@@ -82,7 +83,8 @@ class CustomLeadTile extends StatefulWidget {
   final String updatedTs;
   final void Function(bool?) onChanged;
   final bool saveValue;
-
+  final RxList<NewLeadObj> list;
+  final RxList<NewLeadObj> list2;
   const CustomLeadTile(
       {super.key,
       this.showCheckbox = true,
@@ -143,7 +145,7 @@ class CustomLeadTile extends StatefulWidget {
       this.visitType,
       this.points,
       this.detailsOfServiceReq,
-      required this.pageName});
+      required this.pageName, required this.list, required this.list2});
 
   @override
   State<CustomLeadTile> createState() => _CustomLeadTileState();
@@ -297,6 +299,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
         onTap: () {
           Get.to(
               ViewLead(
+                list: widget.list,list2: widget.list2,
                 pageName: widget.pageName,
                 id: widget.id,
                 companyName: widget.companyName,

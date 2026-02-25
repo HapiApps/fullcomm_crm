@@ -16,6 +16,7 @@ import '../../components/custom_date_box.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_textfield.dart';
 import '../../controller/controller.dart';
+import '../../models/new_lead_obj.dart';
 
 
 
@@ -75,6 +76,8 @@ class UpdateLead extends StatefulWidget {
   final String? points;
   final String visitType;
   String updateTs;
+  final RxList<NewLeadObj> list;
+  final RxList<NewLeadObj> list2;
   UpdateLead({super.key,
     this.id,
     this.mainName,
@@ -119,7 +122,7 @@ class UpdateLead extends StatefulWidget {
     this.quotationRequired, this.arpuValue,
     this.prospectEnrollmentDate, this.expectedConvertionDate,
     this.statusUpdate, this.numOfHeadcount, this.expectedBillingValue,
-    required this.notes,required this.sourceDetails,required this.updateTs, this.detailsOfRequired, required this.visitType, required this.type
+    required this.notes,required this.sourceDetails,required this.updateTs, this.detailsOfRequired, required this.visitType, required this.type, required this.list, required this.list2
   });
 
 
@@ -158,16 +161,16 @@ class _UpdateLeadState extends State<UpdateLead> {
         controllers.infoNumberList.add(TextEditingController(text: list2[i]));
       }
 
-      controllers.leadNameCrt.clear();
-      controllers.leadMobileCrt.clear();
-      controllers.leadTitleCrt.clear();
-      controllers.leadEmailCrt.clear();
-      controllers.leadWhatsCrt.clear();
-      controllers.leadNameCrt.add(TextEditingController());
-      controllers.leadMobileCrt.add(TextEditingController());
-      controllers.leadTitleCrt.add(TextEditingController());
-      controllers.leadEmailCrt.add(TextEditingController());
-      controllers.leadWhatsCrt.add(TextEditingController());
+      // controllers.leadNameCrt.clear();
+      // controllers.leadMobileCrt.clear();
+      // controllers.leadTitleCrt.clear();
+      // controllers.leadEmailCrt.clear();
+      // controllers.leadWhatsCrt.clear();
+      // controllers.leadNameCrt.add(TextEditingController());
+      // controllers.leadMobileCrt.add(TextEditingController());
+      // controllers.leadTitleCrt.add(TextEditingController());
+      // controllers.leadEmailCrt.add(TextEditingController());
+      // controllers.leadWhatsCrt.add(TextEditingController());
       controllers.leadNameCrt[0].text  = safeValue(widget.mainName);
       controllers.leadMobileCrt[0].text = safeValue(widget.mainMobile);
       controllers.leadEmailCrt[0].text  = safeValue(widget.mainEmail);
@@ -221,7 +224,15 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.selectPinCodeList = [];
     });
   }
-
+  String _formatHeading(String heading) {
+    String cleaned = heading.replaceAll(",", "").trim();
+    return cleaned
+        .split(" ")
+        .map((word) => word.isNotEmpty
+        ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+        : "")
+        .join(" ");
+  }
   final ScrollController _controller = ScrollController();
   late FocusNode _focusNode;
   final FocusNode name = FocusNode();
@@ -392,8 +403,14 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children:[
                                         CustomTextField(
-                                          hintText:"Name",
-                                          text:"Name",
+                                          hintText:_formatHeading(
+                                              controllers.getUserHeading(
+                                                  "name") ??
+                                                  "Name"),
+                                          text:_formatHeading(
+                                              controllers.getUserHeading(
+                                                  "name") ??
+                                                  "Name"),
                                           focusNode: name,
                                           onEdit: () {
                                             FocusScope.of(context)
@@ -431,8 +448,14 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                         .requestFocus(account);
                                                                   },
                                                                   // focusNode: whatsApp,
-                                                                  hintText: "Phone No",
-                                                                  text: "Phone No",
+                                                                  hintText: _formatHeading(
+                                                                      controllers.getUserHeading(
+                                                                          "mobile_name") ??
+                                                                          "Mobile No"),
+                                                                  text: _formatHeading(
+                                                                      controllers.getUserHeading(
+                                                                          "mobile_name") ??
+                                                                          "Mobile No"),
                                                                   controller:controllers.numberList[index],
                                                                   width: textFieldSize,
                                                                   isOptional: true,
@@ -459,7 +482,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                     if (controllers.numberList.length > 1) {
                                                                       controllers.numberList.removeAt(index);
                                                                     }else{
-                                                                      utils.snackBar(context: context, msg: "Enter at least one mobile number.", color: Colors.red);
+                                                                      utils.snackBar(context: context, msg: "Enter at least one ${_formatHeading(
+                                                                          controllers.getUserHeading(
+                                                                              "mobile_name") ??
+                                                                              "Mobile No")}.", color: Colors.red);
                                                                     }
                                                                   },
                                                                   icon:SvgPicture.asset("assets/images/delete.svg")
@@ -483,7 +509,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                       isMistake = true;
                                                                       utils.snackBar(
                                                                         context: context,
-                                                                        msg: "Enter valid 10 digit mobile number",
+                                                                        msg: "Enter valid 10 digit ${_formatHeading(
+                                                                            controllers.getUserHeading(
+                                                                                "mobile_name") ??
+                                                                                "Mobile No")}",
                                                                         color: Colors.red,
                                                                       );
                                                                       break;
@@ -494,7 +523,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                       isMistake = true;
                                                                       utils.snackBar(
                                                                         context: context,
-                                                                        msg: "Same phone number already added",
+                                                                        msg: "Same ${_formatHeading(
+                                                                            controllers.getUserHeading(
+                                                                                "mobile_name") ??
+                                                                                "Mobile No")} already added",
                                                                         color: Colors.red,
                                                                       );
                                                                       break;
@@ -559,8 +591,14 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 .requestFocus(email);
                                           },
                                           focusNode: account,
-                                          hintText:"Account Manager (Optional)",
-                                          text:"Account Manager (Optional)",
+                                          hintText:_formatHeading(
+                                              controllers.getUserHeading(
+                                                  "owner") ??
+                                                  "Account Manager"),
+                                          text:_formatHeading(
+                                              controllers.getUserHeading(
+                                                  "owner") ??
+                                                  "Account Manager"),
                                           isOptional: false,
                                           controller: controllers.leadTitleCrt[0],
                                           width:textFieldSize,
@@ -576,8 +614,14 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 .requestFocus(
                                                 cName);
                                           },
-                                          hintText:"Email Id (Optional)",
-                                          text:"Email Id",
+                                          hintText:_formatHeading(
+                                              controllers.getUserHeading(
+                                                  "email") ??
+                                                  "Email id"),
+                                          text:_formatHeading(
+                                              controllers.getUserHeading(
+                                                  "email") ??
+                                                  "Email id"),
                                           controller: controllers.leadEmailCrt[0],
                                           width:textFieldSize,
                                           isOptional: false,
@@ -683,8 +727,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             FocusScope.of(context).requestFocus(cNo);
                                           },
                                           focusNode: cName,
-                                          hintText:"Company Name",
-                                          text:"Company Name",
+                                          hintText:_formatHeading(controllers.getUserHeading
+                                            ("company_name") ?? "Company Name"),
+                                          text:_formatHeading(controllers.getUserHeading
+                                            ("company_name") ?? "Company Name"),
                                           controller: controllers.leadCoNameCrt,
                                           width:textFieldSize,
                                           isOptional: false,
@@ -1213,8 +1259,12 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           onEdit: () {
                                             FocusScope.of(context).requestFocus(ob3);
                                           },
-                                          hintText:"Source Of Prospect",
-                                          text:"Source Of Prospect",
+                                          hintText:_formatHeading(controllers
+                                              .getUserHeading("source") ??
+                                              "SOURCE OF PROSPECT"),
+                                          text:_formatHeading(controllers
+                                              .getUserHeading("source") ??
+                                              "SOURCE OF PROSPECT"),
                                           isOptional: false,
                                           controller: controllers.leadDisPointsCrt,
                                           width:textFieldSize,
@@ -1229,8 +1279,14 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           onEdit: () {
                                             FocusScope.of(context).requestFocus(ob4);
                                           },
-                                          hintText:"Product Discussed",
-                                          text:"Product Discussed",
+                                          hintText:_formatHeading(controllers
+                                              .getUserHeading(
+                                              "product_discussion") ??
+                                              "Product Discussed"),
+                                          text:_formatHeading(controllers
+                                              .getUserHeading(
+                                              "product_discussion") ??
+                                              "Product Discussed"),
                                           isOptional: false,
                                           controller: controllers.prodDescriptionController,
                                           width:textFieldSize,
@@ -1245,8 +1301,14 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           onEdit: () {
                                             FocusScope.of(context).requestFocus(ob5);
                                           },
-                                          hintText: "Expected Monthly Billing Value",
-                                          text: "Expected Monthly Billing Value",
+                                          hintText: _formatHeading(controllers
+                                              .getUserHeading(
+                                              "expected_billing_value") ??
+                                              "Expected Monthly Billing Value"),
+                                          text: _formatHeading(controllers
+                                              .getUserHeading(
+                                              "expected_billing_value") ??
+                                              "Expected Monthly Billing Value"),
                                           controller: controllers.exMonthBillingValCrt,
                                           width: textFieldSize,
                                           isOptional: false,
@@ -1263,8 +1325,12 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           onEdit: () {
                                             FocusScope.of(context).requestFocus(ob6);
                                           },
-                                          hintText:"ARPU Value",
-                                          text:"ARPU Value",
+                                          hintText:_formatHeading(controllers
+                                              .getUserHeading("arpu_value") ??
+                                              "ARPU Value"),
+                                          text:_formatHeading(controllers
+                                              .getUserHeading("arpu_value") ??
+                                              "ARPU Value"),
                                           isOptional: false,
                                           controller: controllers.arpuCrt,
                                           width:textFieldSize,
@@ -1279,8 +1345,12 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           onEdit: () {
                                             FocusScope.of(context).requestFocus(ob7);
                                           },
-                                          hintText:"Prospect Grading",
-                                          text:"Prospect Grading",
+                                          hintText:_formatHeading(controllers
+                                              .getUserHeading("rating") ??
+                                              "Prospect Grading"),
+                                          text:_formatHeading(controllers
+                                              .getUserHeading("rating") ??
+                                              "Prospect Grading"),
                                           isOptional: false,
                                           controller: controllers.prospectGradingCrt,
                                           width:textFieldSize,
@@ -1304,8 +1374,14 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 pathVal: controllers.exDate);
                                             FocusScope.of(context).requestFocus(ob8);
                                           },
-                                          hintText:"Total Number Of Head Count",
-                                          text:"Total Number Of Head Count",
+                                          hintText:_formatHeading(controllers
+                                              .getUserHeading(
+                                              "num_of_headcount") ??
+                                              "Total Number Of Head Count"),
+                                          text:_formatHeading(controllers
+                                              .getUserHeading(
+                                              "num_of_headcount") ??
+                                              "Total Number Of Head Count"),
                                           isOptional: false,
                                           inputFormatters: [
                                             FilteringTextInputFormatter.digitsOnly,
@@ -1318,7 +1394,9 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           textInputAction: TextInputAction.next,
                                         ),
                                         Obx(() => CustomDateBox(
-                                          text: "Expected Conversion Date",
+                                          text: _formatHeading(controllers.getUserHeading(
+                                              "expected_convertion_date") ??
+                                              "Expected Conversion Date"),
                                           isOptional: false,
                                           value: controllers.exDate.value,
                                           width: textFieldSize,
@@ -1340,8 +1418,14 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 pathVal: controllers.prospectDate);
                                             FocusScope.of(context).requestFocus(ob9);
                                           },
-                                          hintText:"Details of Service Required",
-                                          text:"Details of Service Required",
+                                          hintText:_formatHeading(controllers
+                                              .getUserHeading(
+                                              "details_of_service_required") ??
+                                              "Details of Service Required"),
+                                          text:_formatHeading(controllers
+                                              .getUserHeading(
+                                              "details_of_service_required") ??
+                                              "Details of Service Required"),
                                           isOptional: false,
                                           controller: controllers.sourceCrt,
                                           width:textFieldSize,
@@ -1354,7 +1438,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           },
                                         ),
                                         Obx(() => CustomDateBox(
-                                          text: "Prospect Enrollment Date",
+                                          text: _formatHeading(controllers
+                                              .getUserHeading(
+                                              "prospect_enrollment_date") ??
+                                              "Prospect Enrollment Date"),
                                           value: controllers.prospectDate.value,
                                           width: textFieldSize,
                                           isOptional: false,
@@ -1399,10 +1486,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                               if(controllers.leadEmailCrt[0].text.isNotEmpty){
                                                 if (controllers.leadEmailCrt[0].text.isEmail) {
                                                   if(controllers.pinCodeController.text.isEmpty){
-                                                    apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
+                                                    apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                                   }else{
                                                     if(controllers.pinCodeController.text.length==6){
-                                                      apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
+                                                      apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                                     }else{
                                                       utils.snackBar(msg: "Please add 6 digits pin code",
                                                           color: colorsConst.primary,context:context);
@@ -1416,10 +1503,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 }
                                               }else{
                                                 if(controllers.pinCodeController.text.isEmpty){
-                                                  apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
+                                                  apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                                 }else{
                                                   if(controllers.pinCodeController.text.length==6){
-                                                    apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
+                                                    apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                                   }else{
                                                     utils.snackBar(msg: "Please add 6 digits pin code",
                                                         color: colorsConst.primary,context:context);
@@ -1428,8 +1515,12 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 }
                                               }}
                                             },
-                                          hintText: "Status Update",
-                                          text: "Status Update",
+                                          hintText: _formatHeading(controllers
+                                              .getUserHeading("status_update") ??
+                                              "Status Update"),
+                                          text: _formatHeading(controllers
+                                              .getUserHeading("status_update") ??
+                                              "Status Update"),
                                           controller: controllers.statusCrt,
                                           width: textFieldSize,
                                           isOptional: false,
@@ -1458,7 +1549,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           isMistake = true;
                                           utils.snackBar(
                                             context: context,
-                                            msg: "Enter valid 10 digit mobile number",
+                                            msg: "Enter valid 10 digit ${_formatHeading(
+                                                controllers.getUserHeading(
+                                                    "mobile_name") ??
+                                                    "Mobile No")}",
                                             color: Colors.red,
                                           );
                                           break;
@@ -1467,7 +1561,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           isMistake = true;
                                           utils.snackBar(
                                             context: context,
-                                            msg: "Same phone number already added",
+                                            msg: "Same ${_formatHeading(
+                                                controllers.getUserHeading(
+                                                    "mobile_name") ??
+                                                    "Mobile No")} already added",
                                             color: Colors.red,
                                           );
                                           break;
@@ -1478,8 +1575,8 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         controllers.leadCtr.reset();
                                         return;
                                       }
-                                      for (var i = 0; i < controllers.numberList.length; i++) {
-                                        String number = controllers.numberList[i].text.trim();
+                                      for (var i = 0; i < controllers.infoNumberList.length; i++) {
+                                        String number = controllers.infoNumberList[i].text.trim();
                                         if (number.isEmpty || number.length != 10) {
                                           isMistake2 = true;
                                           utils.snackBar(
@@ -1524,7 +1621,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       }
                                       if (controllers.leadNameCrt[0].text.isEmpty) {
                                         utils.snackBar(
-                                            msg: "Please add name",
+                                            msg: "Please add ${_formatHeading(
+                                                controllers.getUserHeading(
+                                                    "name") ??
+                                                    "Name")}",
                                             color: Colors.red,
                                             context: context);
                                         controllers.leadCtr.reset();
@@ -1550,10 +1650,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         if(controllers.leadEmailCrt[0].text.isNotEmpty){
                                           if (controllers.leadEmailCrt[0].text.isEmail) {
                                             if(controllers.pinCodeController.text.isEmpty){
-                                              apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
+                                              apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                             }else{
                                               if(controllers.pinCodeController.text.length==6){
-                                                apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
+                                                apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                               }else{
                                                 utils.snackBar(msg: "Please add 6 digits pin code",
                                                     color: colorsConst.primary,context:context);
@@ -1567,10 +1667,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           }
                                         }else{
                                           if(controllers.pinCodeController.text.isEmpty){
-                                            apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
+                                            apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                           }else{
                                             if(controllers.pinCodeController.text.length==6){
-                                              apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString());
+                                              apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                             }else{
                                               utils.snackBar(msg: "Please add 6 digits pin code",
                                                   color: colorsConst.primary,context:context);

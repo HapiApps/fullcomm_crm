@@ -16,10 +16,12 @@ import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../controller/image_controller.dart';
 import '../../models/customer_full_obj.dart';
+import '../../models/new_lead_obj.dart';
 import '../invoice/invoice.dart';
 
 class ViewLead extends StatefulWidget {
   final String? id;
+  final String? leadIndex;
   final String pageName;
   final String? name;
   final String? mobileNumber;
@@ -41,7 +43,8 @@ class ViewLead extends StatefulWidget {
   final String updateTs;
   String notes;
   String sourceDetails;
-
+  final RxList<NewLeadObj> list;
+  final RxList<NewLeadObj> list2;
   ViewLead({
     super.key,
     this.id,
@@ -64,7 +67,7 @@ class ViewLead extends StatefulWidget {
     this.pinCode,
     required this.updateTs,
     required this.notes,
-    required this.sourceDetails, required this.whatsAppNo,
+    required this.sourceDetails, required this.whatsAppNo, this.leadIndex, required this.list, required this.list2,
   });
 
   @override
@@ -242,30 +245,260 @@ class _ViewLeadState extends State<ViewLead> {
                                         shadowColor: Colors.transparent,
                                         backgroundColor: colorsConst.primary,
                                       ),
-                                      onPressed: () {
-                                        // mailUtils.showPromoteDialog(
-                                        //  context: context, pageName: widget.pageName,
-                                        //   onSubmit: () async {
-                                        //     final deleteData = {
-                                        //       "lead_id": widget.id.toString(),
-                                        //       "user_id": controllers.storage.read("id").toString(),
-                                        //       "rating": selectedStage == "Prospects"?"2":selectedStage == "Qualified"?"3": selectedStage == "Customers"?"4":"1",
-                                        //       "cos_id": controllers.storage.read("cos_id").toString(),
-                                        //       "mail_id": widget.email.toString(),
-                                        //       "reason" : reasonController.text.trim(),
-                                        //     };
-                                        //     await apiService.insertLeadPromoteAPI(context, [deleteData]);
-                                        // },
-                                        // );
+                                      // onPressed: () {
+                                      //   // mailUtils.showPromoteDialog(
+                                      //   //  context: context, pageName: widget.pageName,
+                                      //   //   onSubmit: () async {
+                                      //   //     final deleteData = {
+                                      //   //       "lead_id": widget.id.toString(),
+                                      //   //       "user_id": controllers.storage.read("id").toString(),
+                                      //   //       "rating": selectedStage == "Prospects"?"2":selectedStage == "Qualified"?"3": selectedStage == "Customers"?"4":"1",
+                                      //   //       "cos_id": controllers.storage.read("cos_id").toString(),
+                                      //   //       "mail_id": widget.email.toString(),
+                                      //   //       "reason" : reasonController.text.trim(),
+                                      //   //     };
+                                      //   //     await apiService.insertLeadPromoteAPI(context, [deleteData]);
+                                      //   // },
+                                      //   // );
+                                      //   ///
+                                      //   showDialog(
+                                      //     context: context,
+                                      //     builder: (context) {
+                                      //       TextEditingController reasonController = TextEditingController();
+                                      //       String dropValue = widget.pageName == "Prospects"
+                                      //           ? "Qualified"
+                                      //           : widget.pageName == "Qualified"
+                                      //           ? "Customers" : "Prospects";
+                                      //       String selectedStage = dropValue;
+                                      //       return StatefulBuilder(
+                                      //         builder: (context, setState) {
+                                      //           return AlertDialog(
+                                      //             title: CustomText(
+                                      //               text: "Move to Next Level",
+                                      //               size: 18,
+                                      //               isBold: true,
+                                      //               isCopy: false,
+                                      //               colors: colorsConst.textColor,
+                                      //             ),
+                                      //             content: Column(
+                                      //               mainAxisSize: MainAxisSize.min,
+                                      //               crossAxisAlignment: CrossAxisAlignment.start,
+                                      //               children: [
+                                      //                 CustomText(
+                                      //                   text: "Select Stage",
+                                      //                   size: 14,
+                                      //                   isBold: true,
+                                      //                   isCopy: false,
+                                      //                 ),
+                                      //                 8.height,
+                                      //                 Container(
+                                      //                   padding: EdgeInsets.symmetric(horizontal: 8),
+                                      //                   decoration: BoxDecoration(
+                                      //                     border: Border.all(color: colorsConst.primary),
+                                      //                     borderRadius: BorderRadius.circular(4),
+                                      //                   ),
+                                      //                   child: DropdownButton<String>(
+                                      //                     value: selectedStage,
+                                      //                     isExpanded: true,
+                                      //                     focusColor: Colors.transparent,
+                                      //                     underline: SizedBox(),
+                                      //                     items: [//santhiya2
+                                      //                       "Suspects",
+                                      //                       "Prospects",
+                                      //                       "Qualified",
+                                      //                       "Customers",
+                                      //                     ].map((value) {
+                                      //                       return DropdownMenuItem(
+                                      //                         value: value,
+                                      //                         child: Text(value),
+                                      //                       );
+                                      //                     }).toList(),
+                                      //                     onChanged: (value) {
+                                      //                       setState(() {
+                                      //                         selectedStage = value!;
+                                      //                       });
+                                      //                     },
+                                      //                   ),
+                                      //                 ),
+                                      //                 15.height,
+                                      //                 TextField(
+                                      //                   controller: reasonController,
+                                      //                   decoration: InputDecoration(
+                                      //                     labelText: "Reason",
+                                      //                     border: OutlineInputBorder(),
+                                      //                   ),
+                                      //                 ),
+                                      //               ],
+                                      //             ),
+                                      //             actions: [
+                                      //               Row(
+                                      //                 mainAxisAlignment: MainAxisAlignment.end,
+                                      //                 children: [
+                                      //                   Container(
+                                      //                     decoration: BoxDecoration(
+                                      //                         border: Border.all(color: colorsConst.primary),
+                                      //                         color: Colors.white),
+                                      //                     width: 80,
+                                      //                     height: 25,
+                                      //                     child: ElevatedButton(
+                                      //                         style: ElevatedButton.styleFrom(
+                                      //                           shape: const RoundedRectangleBorder(
+                                      //                             borderRadius: BorderRadius.zero,
+                                      //                           ),
+                                      //                           backgroundColor: Colors.white,
+                                      //                         ),
+                                      //                         onPressed: () {
+                                      //                           Navigator.pop(context);
+                                      //                         },
+                                      //                         child: CustomText(
+                                      //                           text: "Cancel",
+                                      //                           isCopy: false,
+                                      //                           colors: colorsConst.primary,
+                                      //                           size: 14,
+                                      //                         )),
+                                      //                   ),
+                                      //                   10.width,
+                                      //                   CustomLoadingButton(
+                                      //                     callback: () async {
+                                      //                       final deleteData = {
+                                      //                         "lead_id": widget.id.toString(),
+                                      //                         "user_id": controllers.storage.read("id").toString(),
+                                      //                         "rating": selectedStage == "Prospects"?"2":selectedStage == "Qualified"?"3": selectedStage == "Customers"?"4":"1",
+                                      //                         "cos_id": controllers.storage.read("cos_id").toString(),
+                                      //                         "mail_id": widget.email.toString(),
+                                      //                         "reason" : reasonController.text.trim(),
+                                      //                       };
+                                      //                       await apiService.insertLeadPromoteAPI(context, [deleteData]);
+                                      //                       // if (selectedStage == "Prospects") {
+                                      //                       //   await apiService.insertQualifiedAPI(context, [deleteData]);
+                                      //                       // } else if (selectedStage == "Qualified") {
+                                      //                       //   await apiService.insertPromoteCustomerAPI(context, [deleteData]);
+                                      //                       // } else if (selectedStage == "No Matches") {
+                                      //                       //   await apiService.qualifiedCustomersAPI(context, [deleteData]);
+                                      //                       // } else {
+                                      //                       //   await apiService.insertProspectsAPI(context, [deleteData]);
+                                      //                       // }
+                                      //                     },
+                                      //                     height: 35,
+                                      //                     isLoading: true,
+                                      //                     backgroundColor:
+                                      //                     colorsConst.primary,
+                                      //                     radius: 2,
+                                      //                     width: 80,
+                                      //                     controller:
+                                      //                     controllers.productCtr,
+                                      //                     isImage: false,
+                                      //                     text: "Promote",
+                                      //                     textColor: Colors.white,
+                                      //                   ),
+                                      //                 ],
+                                      //               )
+                                      //             ],
+                                      //           );
+                                      //         },
+                                      //       );
+                                      //     },
+                                      //   );
+                                      //
+                                      //   // showDialog(
+                                      //   //     context: context,
+                                      //   //     barrierDismissible: false,
+                                      //   //     builder: (context) {
+                                      //   //       return AlertDialog(
+                                      //   //         content: CustomText(
+                                      //   //           text: "Are you moving to the next level?",
+                                      //   //           isCopy: true,
+                                      //   //           size: 16,
+                                      //   //           isBold: true,
+                                      //   //           colors: colorsConst.textColor,
+                                      //   //         ),
+                                      //   //         actions: [
+                                      //   //           Row(
+                                      //   //             mainAxisAlignment: MainAxisAlignment.end,
+                                      //   //             children: [
+                                      //   //               Container(
+                                      //   //                 decoration: BoxDecoration(
+                                      //   //                     border: Border.all(
+                                      //   //                         color: colorsConst.primary),
+                                      //   //                     color: Colors.white),
+                                      //   //                 width: 80,
+                                      //   //                 height: 25,
+                                      //   //                 child: ElevatedButton(
+                                      //   //                     style: ElevatedButton.styleFrom(
+                                      //   //                       shape: const RoundedRectangleBorder(
+                                      //   //                         borderRadius:
+                                      //   //                         BorderRadius.zero,
+                                      //   //                       ),
+                                      //   //                       backgroundColor: Colors.white,
+                                      //   //                     ),
+                                      //   //                     onPressed: () {
+                                      //   //                       Navigator.pop(context);
+                                      //   //                     },
+                                      //   //                     child: CustomText(
+                                      //   //                       text: "Cancel",
+                                      //   //                       colors: colorsConst.primary,
+                                      //   //                       size: 14,
+                                      //   //                       isCopy: false,
+                                      //   //                     )),
+                                      //   //               ),
+                                      //   //               10.width,
+                                      //   //               CustomLoadingButton(
+                                      //   //                 callback: () async {
+                                      //   //                   final deleteData = {
+                                      //   //                     "lead_id": widget.id.toString(),
+                                      //   //                     "user_id": controllers.storage.read("id").toString(),
+                                      //   //                     "rating": (widget.rating ?? "Warm").toString(),
+                                      //   //                     "cos_id": controllers.storage.read("cos_id").toString(),
+                                      //   //                     "mail_id": widget.email.toString(),
+                                      //   //                   };
+                                      //   //                   if (widget.pageName == "Prospects") {
+                                      //   //                     await apiService.insertQualifiedAPI(context, [deleteData]);
+                                      //   //                   } else if (widget.pageName == "Qualified") {
+                                      //   //                     await apiService.insertPromoteCustomerAPI(context, [deleteData]);
+                                      //   //                   } else if (widget.pageName == "No Matches") {
+                                      //   //                     await apiService.qualifiedCustomersAPI(context, [deleteData]);
+                                      //   //                   } else {
+                                      //   //                     await apiService.insertProspectsAPI(context, [deleteData]);
+                                      //   //                   }
+                                      //   //                 },
+                                      //   //                 height: 35,
+                                      //   //                 isLoading: true,
+                                      //   //                 backgroundColor:
+                                      //   //                 colorsConst.primary,
+                                      //   //                 radius: 2,
+                                      //   //                 width: 80,
+                                      //   //                 controller:
+                                      //   //                 controllers.productCtr,
+                                      //   //                 isImage: false,
+                                      //   //                 text: "Promote",
+                                      //   //                 textColor: Colors.white,
+                                      //   //               ),
+                                      //   //               5.width
+                                      //   //             ],
+                                      //   //           ),
+                                      //   //         ],
+                                      //   //       );
+                                      //   //     });
+                                      // },
+                                      onPressed: (){
                                         showDialog(
                                           context: context,
                                           builder: (context) {
+                                            String selectedStage="";
+                                            String stageId="";
+                                            int currentIndex = int.parse(widget.leadIndex.toString());
+                                            int nextIndex = currentIndex + 1;
+
+                                            if (nextIndex < controllers.leadCategoryList.length) {
+                                              selectedStage =controllers.leadCategoryList[nextIndex].value;
+                                              stageId =controllers.leadCategoryList[nextIndex].leadStatus;
+                                            } else {
+                                              selectedStage =controllers.leadCategoryList[0].value;
+                                              stageId =controllers.leadCategoryList[0].leadStatus;
+                                            }
+
+                                            bool isEdit=false;
                                             TextEditingController reasonController = TextEditingController();
-                                            String dropValue = widget.pageName == "Prospects"
-                                                ? "Qualified"
-                                                : widget.pageName == "Qualified"
-                                                ? "Customers" : "Prospects";
-                                            String selectedStage = dropValue;
                                             return StatefulBuilder(
                                               builder: (context, setState) {
                                                 return AlertDialog(
@@ -294,24 +527,20 @@ class _ViewLeadState extends State<ViewLead> {
                                                           borderRadius: BorderRadius.circular(4),
                                                         ),
                                                         child: DropdownButton<String>(
-                                                          value: selectedStage,
+                                                          value: stageId,
                                                           isExpanded: true,
                                                           focusColor: Colors.transparent,
                                                           underline: SizedBox(),
-                                                          items: [//santhiya2
-                                                            "Suspects",
-                                                            "Prospects",
-                                                            "Qualified",
-                                                            "Customers",
-                                                          ].map((value) {
-                                                            return DropdownMenuItem(
-                                                              value: value,
-                                                              child: Text(value),
+                                                          items: controllers.leadCategoryList.map((item) {
+                                                            return DropdownMenuItem<String>(
+                                                              value: item.leadStatus,
+                                                              child: Text(item.value),
                                                             );
                                                           }).toList(),
                                                           onChanged: (value) {
                                                             setState(() {
-                                                              selectedStage = value!;
+                                                              stageId = value!;
+                                                              isEdit=true;
                                                             });
                                                           },
                                                         ),
@@ -356,24 +585,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                         10.width,
                                                         CustomLoadingButton(
                                                           callback: () async {
-                                                            final deleteData = {
-                                                              "lead_id": widget.id.toString(),
-                                                              "user_id": controllers.storage.read("id").toString(),
-                                                              "rating": selectedStage == "Prospects"?"2":selectedStage == "Qualified"?"3": selectedStage == "Customers"?"4":"1",
-                                                              "cos_id": controllers.storage.read("cos_id").toString(),
-                                                              "mail_id": widget.email.toString(),
-                                                              "reason" : reasonController.text.trim(),
-                                                            };
-                                                            await apiService.insertLeadPromoteAPI(context, [deleteData]);
-                                                            // if (selectedStage == "Prospects") {
-                                                            //   await apiService.insertQualifiedAPI(context, [deleteData]);
-                                                            // } else if (selectedStage == "Qualified") {
-                                                            //   await apiService.insertPromoteCustomerAPI(context, [deleteData]);
-                                                            // } else if (selectedStage == "No Matches") {
-                                                            //   await apiService.qualifiedCustomersAPI(context, [deleteData]);
-                                                            // } else {
-                                                            //   await apiService.insertProspectsAPI(context, [deleteData]);
-                                                            // }
+                                                            apiService.insertPromoteAPI(context,widget.id.toString(),stageId,selectedStage,widget.list,widget.list2);
                                                           },
                                                           height: 35,
                                                           isLoading: true,
@@ -395,86 +607,6 @@ class _ViewLeadState extends State<ViewLead> {
                                             );
                                           },
                                         );
-
-                                        // showDialog(
-                                        //     context: context,
-                                        //     barrierDismissible: false,
-                                        //     builder: (context) {
-                                        //       return AlertDialog(
-                                        //         content: CustomText(
-                                        //           text: "Are you moving to the next level?",
-                                        //           isCopy: true,
-                                        //           size: 16,
-                                        //           isBold: true,
-                                        //           colors: colorsConst.textColor,
-                                        //         ),
-                                        //         actions: [
-                                        //           Row(
-                                        //             mainAxisAlignment: MainAxisAlignment.end,
-                                        //             children: [
-                                        //               Container(
-                                        //                 decoration: BoxDecoration(
-                                        //                     border: Border.all(
-                                        //                         color: colorsConst.primary),
-                                        //                     color: Colors.white),
-                                        //                 width: 80,
-                                        //                 height: 25,
-                                        //                 child: ElevatedButton(
-                                        //                     style: ElevatedButton.styleFrom(
-                                        //                       shape: const RoundedRectangleBorder(
-                                        //                         borderRadius:
-                                        //                         BorderRadius.zero,
-                                        //                       ),
-                                        //                       backgroundColor: Colors.white,
-                                        //                     ),
-                                        //                     onPressed: () {
-                                        //                       Navigator.pop(context);
-                                        //                     },
-                                        //                     child: CustomText(
-                                        //                       text: "Cancel",
-                                        //                       colors: colorsConst.primary,
-                                        //                       size: 14,
-                                        //                       isCopy: false,
-                                        //                     )),
-                                        //               ),
-                                        //               10.width,
-                                        //               CustomLoadingButton(
-                                        //                 callback: () async {
-                                        //                   final deleteData = {
-                                        //                     "lead_id": widget.id.toString(),
-                                        //                     "user_id": controllers.storage.read("id").toString(),
-                                        //                     "rating": (widget.rating ?? "Warm").toString(),
-                                        //                     "cos_id": controllers.storage.read("cos_id").toString(),
-                                        //                     "mail_id": widget.email.toString(),
-                                        //                   };
-                                        //                   if (widget.pageName == "Prospects") {
-                                        //                     await apiService.insertQualifiedAPI(context, [deleteData]);
-                                        //                   } else if (widget.pageName == "Qualified") {
-                                        //                     await apiService.insertPromoteCustomerAPI(context, [deleteData]);
-                                        //                   } else if (widget.pageName == "No Matches") {
-                                        //                     await apiService.qualifiedCustomersAPI(context, [deleteData]);
-                                        //                   } else {
-                                        //                     await apiService.insertProspectsAPI(context, [deleteData]);
-                                        //                   }
-                                        //                 },
-                                        //                 height: 35,
-                                        //                 isLoading: true,
-                                        //                 backgroundColor:
-                                        //                 colorsConst.primary,
-                                        //                 radius: 2,
-                                        //                 width: 80,
-                                        //                 controller:
-                                        //                 controllers.productCtr,
-                                        //                 isImage: false,
-                                        //                 text: "Promote",
-                                        //                 textColor: Colors.white,
-                                        //               ),
-                                        //               5.width
-                                        //             ],
-                                        //           ),
-                                        //         ],
-                                        //       );
-                                        //     });
                                       },
                                       child: MouseRegion(
                                         cursor: SystemMouseCursors.click,
@@ -637,6 +769,7 @@ class _ViewLeadState extends State<ViewLead> {
                                         // prepare values for UpdateLead
                                         Get.to(
                                           UpdateLead(
+                                            list: widget.list,list2: widget.list2,
                                             type: "2",
                                             id: widget.id,
                                             mainName: displayName,
@@ -1068,7 +1201,8 @@ class _ViewLeadState extends State<ViewLead> {
                                                           ),
                                                           20.height,
                                                           utils.leadText(
-                                                              text: _formatHeading(controllers.getUserHeading("company_name") ?? "Company Name"),
+                                                              text: _formatHeading(controllers.getUserHeading
+                                                                ("company_name") ?? "Company Name"),
                                                               color: colorsConst.primary),
                                                           20.height,
                                                           utils.leadText(

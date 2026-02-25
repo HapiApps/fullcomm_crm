@@ -1474,318 +1474,318 @@ class Utils {
     );
   }
 
-  Widget funnelContainer(BuildContext context) {
-    return Obx(()=>controllers.isRightOpen.value?SizedBox(
-      width: 250,
-      height: MediaQuery.of(context).size.height,
-      child: Row(
-        children: [
-          VerticalDivider(
-            thickness: 2,
-            color: colorsConst.secondary,
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 150.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Tooltip(
-                      message: "Click to close the side panel.",
-                      child: Obx(() => InkWell(
-                        focusColor: Colors.transparent,
-                        onTap: () {
-                          controllers.isRightOpen.value = !controllers.isRightOpen.value;
-                        },
-                        child: CircleAvatar(
-                          radius: 16,
-                          backgroundColor: colorsConst.secondary,
-                          child: Icon(
-                            controllers.isRightOpen.value
-                                ? Icons.chevron_right
-                                : Icons.chevron_left,
-                            color: Colors.black,
-                            size: 18,
-                          ),
-                        ),
-                      )),
-                    ),
-                    40.width,
-
-                  ],
-                ),
-              ),
-              IgnorePointer(
-                child: CustomText(
-                  text: "Lead Stages",
-                  colors: Colors.black,
-                  size: 16,
-                  isBold: true,
-                  isCopy: true,
-                ),
-              ),
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: (){
-                    controllers.selectedProspectSortBy.value = dashController.selectedSortBy.value;
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Suspects(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                  },
-                  child: Stack(
-                    children: [
-                      Obx(() => Image.asset(
-                          controllers.selectedIndex.value == 1
-                              ? "assets/images/sSuspects.png"
-                              : "assets/images/suspects.png",
-                              width: 220,
-                        ),
-                      ),
-                      Positioned(
-                          left: 85,
-                          bottom: 15,
-                          child: Obx(() => Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IgnorePointer(
-                                child: CustomText(
-                                    text: "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[0]["value"]}",
-                                    colors: controllers.selectedIndex.value == 1
-                                        ? Colors.black
-                                        : colorsConst.textColor,
-                                    size: 15,
-                                  isCopy: false,
-                                    //isBold: true,
-                                  ),
-                              ),
-                              IgnorePointer(
-                                child: CustomText(
-                                  text: "${controllers.allNewLeadsLength.value}",
-                                  colors: controllers.selectedIndex.value == 1
-                                      ? colorsConst.primary
-                                      : colorsConst.primary,
-                                  size: 16,
-                                  isBold: true,
-                                  isCopy: false,
-                                ),
-                              ),
-                            ],
-                          ),
-                          )
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: (){
-                    controllers.selectedProspectSortBy.value =  "All";
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Prospects(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                  },
-                  child: Stack(
-                    children: [
-                      Obx(() => Image.asset(
-                          controllers.selectedIndex.value == 2
-                              ? "assets/images/sProspects.png"
-                              : "assets/images/prospects.png",
-
-                        ),
-                      ),
-                      Positioned(
-                          left: 75,
-                          bottom: 15,
-                          child: Obx(() => Column(
-                            children: [
-                              IgnorePointer(
-                                child: CustomText(
-                                    text: "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[1]["value"]}",
-                                    colors: controllers.selectedIndex.value == 2
-                                        ? Colors.black
-                                        : colorsConst.textColor,
-                                    size: 15,
-                                  isCopy: false,
-                                    //isBold: true,
-                                  ),
-                              ),
-                              IgnorePointer(
-                                child: CustomText(
-                                  text: "${controllers.allLeadsLength.value}",
-                                  colors: controllers.selectedIndex.value == 2
-                                      ? colorsConst.primary
-                                      : colorsConst.primary,
-                                  size: 16,
-                                  isBold: true,
-                                  isCopy: false,
-                                ),
-                              ),
-                            ],
-                          ),
-                          ))
-                    ],
-                  ),
-                ),
-              ),
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: (){
-                    controllers.selectedQualifiedSortBy.value =  "All";
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const Qualified(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                  },
-                  child: Stack(
-                    children: [
-                      Obx(() => Image.asset(
-                          controllers.selectedIndex.value == 3
-                              ? "assets/images/sQualified.png"
-                              : "assets/images/qualified.png",
-                              width: 200,
-                        ),
-                      ),
-                      Positioned(
-                          left: 70,
-                          bottom: 30,
-                          child: Obx(
-                                () => Column(
-                                  children: [
-                                    IgnorePointer(
-                                      child: CustomText(text:
-                                      "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[2]["value"]}",
-                                                                colors: controllers.selectedIndex.value == 3
-                                        ? Colors.black
-                                        : colorsConst.textColor,
-                                                                size: 15,
-                                        isCopy: false,
-                                                                //isBold: true,
-                                                              ),
-                                    ),
-                                    IgnorePointer(
-                                      child: CustomText(text:
-                                      "${controllers.allGoodLeadsLength.value}",
-                                        colors: controllers.selectedIndex.value == 3
-                                            ? colorsConst.primary
-                                            : colorsConst.primary,
-                                        size: 16,
-                                        isBold: true,
-                                        isCopy: false,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                          ))
-                    ],
-                  ),
-                ),
-              ),
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: (){
-                    controllers.selectedCustomerSortBy.value = "All";
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                        const ViewCustomer(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                  },
-                  child: Stack(
-                    children: [
-                      Obx(() => Image.asset(
-                          controllers.selectedIndex.value == 4
-                              ? "assets/images/sCustomer.png"
-                              : "assets/images/customer.png",
-                        ),
-                      ),
-                      Positioned(
-                          left: 20,
-                          bottom: 35,
-                          child: Obx(() => Column(
-                            children: [
-                              IgnorePointer(
-                                child: CustomText(
-                                    text: controllers.leadCategoryList[3]["value"],
-                                    colors: controllers.selectedIndex.value == 4
-                                        ? Colors.black
-                                        : colorsConst.textColor,
-                                    size: 13,
-                                  isCopy: false,
-                                    //isBold: true,
-                                  ),
-                              ),
-                              IgnorePointer(
-                                child: CustomText(
-                                  text: "${controllers.allCustomerLength.value}",
-                                  colors: controllers.selectedIndex.value == 4
-                                      ? colorsConst.primary
-                                      : colorsConst.primary,
-                                  size: 13,
-                                  isBold: true,
-                                  isCopy: false,
-                                ),
-                              ),
-                            ],
-                          ),
-                          ))
-                    ],
-                  ),
-                ),
-              ),
-              15.height
-            ],
-          )
-        ],
-      ),
-    ):Container(
-      width: 60,
-      height: MediaQuery.of(context).size.height,
-      color: colorsConst.backgroundColor,
-      alignment: Alignment.topCenter,
-      padding: const EdgeInsets.fromLTRB(0, 10, 5, 0),
-      child:Tooltip(
-        message: "Click to view the side panel",
-        child: InkWell(
-            focusColor: Colors.transparent,
-            onTap: (){
-              controllers.isRightOpen.value=!controllers.isRightOpen.value;
-            },
-          child: CircleAvatar(
-            backgroundColor: colorsConst.secondary,
-            child: Icon(Icons.chevron_left,color: Colors.black,),
-          ),
-        ),
-      ),
-    ));
-  }
+  // Widget funnelContainer(BuildContext context) {
+  //   return Obx(()=>controllers.isRightOpen.value?SizedBox(
+  //     width: 250,
+  //     height: MediaQuery.of(context).size.height,
+  //     child: Row(
+  //       children: [
+  //         VerticalDivider(
+  //           thickness: 2,
+  //           color: colorsConst.secondary,
+  //         ),
+  //         Column(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Padding(
+  //               padding: const EdgeInsets.only(right: 150.0),
+  //               child: Row(
+  //                 mainAxisAlignment: MainAxisAlignment.start,
+  //                 children: [
+  //                   Tooltip(
+  //                     message: "Click to close the side panel.",
+  //                     child: Obx(() => InkWell(
+  //                       focusColor: Colors.transparent,
+  //                       onTap: () {
+  //                         controllers.isRightOpen.value = !controllers.isRightOpen.value;
+  //                       },
+  //                       child: CircleAvatar(
+  //                         radius: 16,
+  //                         backgroundColor: colorsConst.secondary,
+  //                         child: Icon(
+  //                           controllers.isRightOpen.value
+  //                               ? Icons.chevron_right
+  //                               : Icons.chevron_left,
+  //                           color: Colors.black,
+  //                           size: 18,
+  //                         ),
+  //                       ),
+  //                     )),
+  //                   ),
+  //                   40.width,
+  //
+  //                 ],
+  //               ),
+  //             ),
+  //             IgnorePointer(
+  //               child: CustomText(
+  //                 text: "Lead Stages",
+  //                 colors: Colors.black,
+  //                 size: 16,
+  //                 isBold: true,
+  //                 isCopy: true,
+  //               ),
+  //             ),
+  //             MouseRegion(
+  //               cursor: SystemMouseCursors.click,
+  //               child: GestureDetector(
+  //                 onTap: (){
+  //                   controllers.selectedProspectSortBy.value = dashController.selectedSortBy.value;
+  //                   Navigator.push(
+  //                     context,
+  //                     PageRouteBuilder(
+  //                       pageBuilder: (context, animation1, animation2) =>
+  //                       const Suspects(),
+  //                       transitionDuration: Duration.zero,
+  //                       reverseTransitionDuration: Duration.zero,
+  //                     ),
+  //                   );
+  //                 },
+  //                 child: Stack(
+  //                   children: [
+  //                     Obx(() => Image.asset(
+  //                         controllers.selectedIndex.value == 1
+  //                             ? "assets/images/sSuspects.png"
+  //                             : "assets/images/suspects.png",
+  //                             width: 220,
+  //                       ),
+  //                     ),
+  //                     Positioned(
+  //                         left: 85,
+  //                         bottom: 15,
+  //                         child: Obx(() => Column(
+  //                           mainAxisAlignment: MainAxisAlignment.center,
+  //                           children: [
+  //                             IgnorePointer(
+  //                               child: CustomText(
+  //                                   text: "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[0].value}",
+  //                                   colors: controllers.selectedIndex.value == 1
+  //                                       ? Colors.black
+  //                                       : colorsConst.textColor,
+  //                                   size: 15,
+  //                                 isCopy: false,
+  //                                   //isBold: true,
+  //                                 ),
+  //                             ),
+  //                             IgnorePointer(
+  //                               child: CustomText(
+  //                                 text: "${controllers.allNewLeadsLength.value}",
+  //                                 colors: controllers.selectedIndex.value == 1
+  //                                     ? colorsConst.primary
+  //                                     : colorsConst.primary,
+  //                                 size: 16,
+  //                                 isBold: true,
+  //                                 isCopy: false,
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         )
+  //                     )
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //             MouseRegion(
+  //               cursor: SystemMouseCursors.click,
+  //               child: GestureDetector(
+  //                 onTap: (){
+  //                   controllers.selectedProspectSortBy.value =  "All";
+  //                   Navigator.push(
+  //                     context,
+  //                     PageRouteBuilder(
+  //                       pageBuilder: (context, animation1, animation2) =>
+  //                       const Prospects(),
+  //                       transitionDuration: Duration.zero,
+  //                       reverseTransitionDuration: Duration.zero,
+  //                     ),
+  //                   );
+  //                 },
+  //                 child: Stack(
+  //                   children: [
+  //                     Obx(() => Image.asset(
+  //                         controllers.selectedIndex.value == 2
+  //                             ? "assets/images/sProspects.png"
+  //                             : "assets/images/prospects.png",
+  //
+  //                       ),
+  //                     ),
+  //                     Positioned(
+  //                         left: 75,
+  //                         bottom: 15,
+  //                         child: Obx(() => Column(
+  //                           children: [
+  //                             IgnorePointer(
+  //                               child: CustomText(
+  //                                   text: "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[1]["value"]}",
+  //                                   colors: controllers.selectedIndex.value == 2
+  //                                       ? Colors.black
+  //                                       : colorsConst.textColor,
+  //                                   size: 15,
+  //                                 isCopy: false,
+  //                                   //isBold: true,
+  //                                 ),
+  //                             ),
+  //                             IgnorePointer(
+  //                               child: CustomText(
+  //                                 text: "${controllers.allLeadsLength.value}",
+  //                                 colors: controllers.selectedIndex.value == 2
+  //                                     ? colorsConst.primary
+  //                                     : colorsConst.primary,
+  //                                 size: 16,
+  //                                 isBold: true,
+  //                                 isCopy: false,
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         ))
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //             MouseRegion(
+  //               cursor: SystemMouseCursors.click,
+  //               child: GestureDetector(
+  //                 onTap: (){
+  //                   controllers.selectedQualifiedSortBy.value =  "All";
+  //                   Navigator.push(
+  //                     context,
+  //                     PageRouteBuilder(
+  //                       pageBuilder: (context, animation1, animation2) =>
+  //                       const Qualified(),
+  //                       transitionDuration: Duration.zero,
+  //                       reverseTransitionDuration: Duration.zero,
+  //                     ),
+  //                   );
+  //                 },
+  //                 child: Stack(
+  //                   children: [
+  //                     Obx(() => Image.asset(
+  //                         controllers.selectedIndex.value == 3
+  //                             ? "assets/images/sQualified.png"
+  //                             : "assets/images/qualified.png",
+  //                             width: 200,
+  //                       ),
+  //                     ),
+  //                     Positioned(
+  //                         left: 70,
+  //                         bottom: 30,
+  //                         child: Obx(
+  //                               () => Column(
+  //                                 children: [
+  //                                   IgnorePointer(
+  //                                     child: CustomText(text:
+  //                                     "${controllers.leadCategoryList.isEmpty ? "" : controllers.leadCategoryList[2]["value"]}",
+  //                                                               colors: controllers.selectedIndex.value == 3
+  //                                       ? Colors.black
+  //                                       : colorsConst.textColor,
+  //                                                               size: 15,
+  //                                       isCopy: false,
+  //                                                               //isBold: true,
+  //                                                             ),
+  //                                   ),
+  //                                   IgnorePointer(
+  //                                     child: CustomText(text:
+  //                                     "${controllers.allGoodLeadsLength.value}",
+  //                                       colors: controllers.selectedIndex.value == 3
+  //                                           ? colorsConst.primary
+  //                                           : colorsConst.primary,
+  //                                       size: 16,
+  //                                       isBold: true,
+  //                                       isCopy: false,
+  //                                     ),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                         ))
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //             MouseRegion(
+  //               cursor: SystemMouseCursors.click,
+  //               child: GestureDetector(
+  //                 onTap: (){
+  //                   controllers.selectedCustomerSortBy.value = "All";
+  //                   Navigator.push(
+  //                     context,
+  //                     PageRouteBuilder(
+  //                       pageBuilder: (context, animation1, animation2) =>
+  //                       const ViewCustomer(),
+  //                       transitionDuration: Duration.zero,
+  //                       reverseTransitionDuration: Duration.zero,
+  //                     ),
+  //                   );
+  //                 },
+  //                 child: Stack(
+  //                   children: [
+  //                     Obx(() => Image.asset(
+  //                         controllers.selectedIndex.value == 4
+  //                             ? "assets/images/sCustomer.png"
+  //                             : "assets/images/customer.png",
+  //                       ),
+  //                     ),
+  //                     Positioned(
+  //                         left: 20,
+  //                         bottom: 35,
+  //                         child: Obx(() => Column(
+  //                           children: [
+  //                             IgnorePointer(
+  //                               child: CustomText(
+  //                                   text: controllers.leadCategoryList[3]["value"],
+  //                                   colors: controllers.selectedIndex.value == 4
+  //                                       ? Colors.black
+  //                                       : colorsConst.textColor,
+  //                                   size: 13,
+  //                                 isCopy: false,
+  //                                   //isBold: true,
+  //                                 ),
+  //                             ),
+  //                             IgnorePointer(
+  //                               child: CustomText(
+  //                                 text: "${controllers.allCustomerLength.value}",
+  //                                 colors: controllers.selectedIndex.value == 4
+  //                                     ? colorsConst.primary
+  //                                     : colorsConst.primary,
+  //                                 size: 13,
+  //                                 isBold: true,
+  //                                 isCopy: false,
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         ))
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //             15.height
+  //           ],
+  //         )
+  //       ],
+  //     ),
+  //   ):Container(
+  //     width: 60,
+  //     height: MediaQuery.of(context).size.height,
+  //     color: colorsConst.backgroundColor,
+  //     alignment: Alignment.topCenter,
+  //     padding: const EdgeInsets.fromLTRB(0, 10, 5, 0),
+  //     child:Tooltip(
+  //       message: "Click to view the side panel",
+  //       child: InkWell(
+  //           focusColor: Colors.transparent,
+  //           onTap: (){
+  //             controllers.isRightOpen.value=!controllers.isRightOpen.value;
+  //           },
+  //         child: CircleAvatar(
+  //           backgroundColor: colorsConst.secondary,
+  //           child: Icon(Icons.chevron_left,color: Colors.black,),
+  //         ),
+  //       ),
+  //     ),
+  //   ));
+  // }
 
   Future<void> timePicker({
     BuildContext? context,
@@ -2770,11 +2770,11 @@ class Utils {
                     return ListTile(
                       title: TextField(                         // Editable TextField
                         controller: TextEditingController(
-                          text: item["value"].toString(),
+                          text: item.value.toString(),
                         ),
                         //readOnly: controllers.planType.value=="Business Essential"||controllers.planType.value=="Business Fit"?true:false,
                         onChanged: (val) {
-                          controllers.leadCategoryList[index]["value"] = val;
+                          controllers.leadCategoryList[index].value= val;
                           controllers.editMode[index]=true;
                         },
                         decoration: const InputDecoration(
@@ -2821,7 +2821,7 @@ class Utils {
                         final item = controllers.leadCategoryList[i];
                         if (controllers.editMode[i] == true) {
                           await apiService.updateCategoryAPI(
-                            context, item["id"],item["value"],
+                            context, item.id,item.value,
                           );
                         }
                       }

@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:html' as html;
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/common/utilities/ocr_web_helper.dart';
 import 'package:fullcomm_crm/controller/table_controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +17,7 @@ import '../controller/controller.dart';
 import '../models/new_lead_obj.dart';
 import '../models/user_heading_obj.dart';
 import '../screens/leads/add_lead.dart';
+import '../screens/leads/visitingCard_scan.dart';
 import 'custom_loading_button.dart';
 import 'custom_text.dart';
 
@@ -23,11 +26,12 @@ class HeaderSection extends StatefulWidget {
   final String subtitle;
   final bool isAction;
   final RxList<NewLeadObj> list;
+  final RxList<NewLeadObj> list2;
 
   const HeaderSection({
     super.key,
     required this.title,
-    required this.subtitle, required this.list,this.isAction = true
+    required this.subtitle, required this.list,this.isAction = true, required this.list2
   });
 
   @override
@@ -101,6 +105,21 @@ class _HeaderSectionState extends State<HeaderSection> {
         ),
         widget.isAction?Row(
           children: [
+            CustomLoadingButton(
+              // callback: pickImageAndReadText,
+              callback: (){
+                Get.to(VisitingCardPage(), duration: Duration.zero);
+                // VisitingCardScan
+              },
+              isLoading: false,
+              height: 35,
+              backgroundColor: Colors.white,
+              radius: 2,
+              width: 100,
+              isImage: false,
+              text: "V CARD",
+              textColor: colorsConst.primary,
+            ),
             // ---- Export button ----
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()
@@ -167,7 +186,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                 });
                 focusNode.requestFocus();
                 controllers.empDOB.value = "${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}";
-                Get.to(const AddLead(), duration: Duration.zero);
+                Get.to( AddLead(list: widget.list,list2: widget.list2,), duration: Duration.zero);
               },
               isLoading: false,
               height: 35,
@@ -306,9 +325,15 @@ class _HeaderSectionState extends State<HeaderSection> {
                                 inputFormatters: [
                                   LengthLimitingTextInputFormatter(40),
                                 ],
-                                onFieldSubmitted: (value) {
+                                onFieldSubmitted: (value) async {
                                   tableController.isLoading.value = true;
                                   final id = controllers.fields[i].id;
+                                  tableController.headingFields[i]=value;
+                                  print(tableController.headingFields);
+                                  final prefs = await SharedPreferences.getInstance();
+                                  await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
+                                  print("saved");
+
                                   tableController.updateColumnNameAPI(context, value, id);
                                 },
                                 decoration: InputDecoration(

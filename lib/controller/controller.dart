@@ -27,6 +27,7 @@ import '../models/product_obj.dart';
 import '../models/user_heading_obj.dart';
 import 'package:http/http.dart'as http;
 
+import '../screens/leads/new_lead_page.dart';
 import '../services/api_services.dart';
 final controllers = Get.put(Controller());
 
@@ -34,7 +35,11 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   late TabController tabController;
   var tabCurrentIndex = 0.obs;
   bool isDialogOpen = false;
-RxList<TextEditingController> numberList=<TextEditingController>[].obs;
+  var isUpdateLoading=false.obs;
+  var sharingLocation="".obs;
+  TextEditingController notesController=TextEditingController();
+
+  RxList<TextEditingController> numberList=<TextEditingController>[].obs;
 RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   final sortFieldCallActivity = ''.obs;
   final sortOrderCallActivity = 'asc'.obs;
@@ -155,6 +160,8 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       BuildContext context,
       RxString sortByKey,
       Rxn<DateTime> selectedMonthTarget,
+      RxList<NewLeadObj> list,
+      RxList<NewLeadObj> list2
       ) {
 
     final now = DateTime.now();
@@ -187,9 +194,128 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       if (selected != null) {
         sortByKey.value = 'Custom Month';
         selectedMonthTarget.value = selected;
+          DateTime? filterDate;
+
+          print("Selected Month >>> ${controllers.selectedPMonth}");
+
+          try {
+            filterDate = DateTime.parse(controllers.selectedPMonth.toString());
+
+            print("Filter Month >>> ${filterDate.month}");
+            print("Filter Year >>> ${filterDate.year}");
+
+          } catch (e) {
+            filterDate = null;
+            print("Parse error >>> $e");
+          }
+
+          final suggestions = list2.where((user) {
+
+            DateTime createdDate =
+            DateTime.parse(user.createdTs.toString());
+
+            print("------------");
+            print("User createdTs >>> ${user.createdTs}");
+
+            if (filterDate != null) {
+              bool match =
+                  createdDate.month == filterDate.month &&
+                      createdDate.year == filterDate.year;
+
+              print("Match >>> $match");
+
+              return match;
+            }
+
+            return true;
+          }).toList();
+
+          print("Filtered count >>> ${suggestions.length}");
+
+          list.value = suggestions;
       }
     });
   }
+  // void selectMonth(
+  //     BuildContext context,
+  //     RxString sortByKey,
+  //     Rxn<DateTime> selectedMonthTarget,
+  //     RxList<NewLeadObj> list,
+  //     RxList<NewLeadObj> list2
+  //     ) {
+  //
+  //   final now = DateTime.now();
+  //
+  //   showMonthPicker(
+  //     context: context,
+  //
+  //     // ✅ Highlight current month
+  //     monthStylePredicate: (month) {
+  //       if (month.month == now.month && month.year == now.year) {
+  //         return ButtonStyle(
+  //           foregroundColor: WidgetStateProperty.all(Colors.white),
+  //           backgroundColor:
+  //           WidgetStateProperty.all(Colors.blue.withOpacity(0.2)),
+  //         );
+  //       }
+  //       return null;
+  //     },
+  //
+  //     // ✅ Default open month
+  //     initialDate: selectedMonthTarget.value ?? now,
+  //
+  //     // ✅ Starting limit
+  //     firstDate: DateTime(2020),
+  //
+  //     // ✅ Allow full current month (Important)
+  //     lastDate: DateTime(now.year, now.month + 1, 0),
+  //
+  //   ).then((selected) {
+  //     if (selected != null) {
+  //       sortByKey.value = 'Custom Month';
+  //       selectedMonthTarget.value = selected;
+  //         DateTime? filterDate;
+  //
+  //         print("Selected Month >>> ${controllers.selectedPMonth}");
+  //
+  //         try {
+  //           filterDate = DateTime.parse(controllers.selectedPMonth.toString());
+  //
+  //           print("Filter Month >>> ${filterDate.month}");
+  //           print("Filter Year >>> ${filterDate.year}");
+  //
+  //         } catch (e) {
+  //           filterDate = null;
+  //           print("Parse error >>> $e");
+  //         }
+  //
+  //         final suggestions = controllers.searchNewLeadList.where((user) {
+  //
+  //           DateTime createdDate =
+  //           DateTime.parse(user.createdTs.toString());
+  //
+  //           print("------------");
+  //           print("User createdTs >>> ${user.createdTs}");
+  //
+  //           if (filterDate != null) {
+  //             bool match =
+  //                 createdDate.month == filterDate.month &&
+  //                     createdDate.year == filterDate.year;
+  //
+  //             print("Match >>> $match");
+  //
+  //             return match;
+  //           }
+  //
+  //           return true;
+  //         }).toList();
+  //
+  //         print("Filtered count >>> ${suggestions.length}");
+  //
+  //         controllers.newLeadList.value = suggestions;
+  //     }
+  //   });
+  // }
 
   String formatDateTime(String inputDateTime) {
     DateTime dateTime;
@@ -221,15 +347,41 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       return inputDate;
     }
   }
-  void setDateRange(PickerDateRange range) {
+  void setDateRange(PickerDateRange range,
+  RxList<NewLeadObj> list,
+  RxList<NewLeadObj> list2) {
     if (range.startDate != null && range.endDate != null) {
       selectedRange.value = DateTimeRange(
         start: range.startDate!,
         end: range.endDate!,
       );
+
+      print("Start Date >>> ${range.startDate}");
+      print("End Date >>> ${range.endDate}");
+
+      final suggestions = list2.where((user) {
+
+        DateTime createdDate = DateTime.parse(user.createdTs.toString());
+
+        print("------------");
+        print("User createdTs >>> ${user.createdTs}");
+
+        bool isInRange =
+            createdDate.isAfter(range.startDate!.subtract(Duration(seconds: 1))) &&
+                createdDate.isBefore(range.endDate!.add(Duration(days: 1)));
+
+        print("Range Match >>> $isInRange");
+
+        return isInRange;
+
+      }).toList();
+
+      print("Filtered count >>> ${suggestions.length}");
+      list.value = suggestions;
     }
   }
-  void showDatePickerDialog(BuildContext context,RxString selectedSortBy) {
+  void showDatePickerDialog(BuildContext context,RxString selectedSortBy,
+      RxList<NewLeadObj> list,RxList<NewLeadObj> list2) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -319,7 +471,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
                       onPressed: () {
                         if (tempRange != null) {
                           selectedSortBy.value = "";
-                          setDateRange(tempRange);
+                          setDateRange(tempRange,list,list2);
                         }
                         Navigator.pop(context);
                       },
@@ -1387,6 +1539,343 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
     return filteredLeads.sublist(start, end);
   }
 
+  // void selectRadio(){
+  //   print("radioo");
+  //   final query = searchProspects.value.toLowerCase();
+  //   final ratingFilter = selectedProspectTemperature.value;
+  //   final sortBy = selectedQualifiedSortBy.value;
+  //   final now = DateTime.now();
+  //
+  //   final filteredLeads = newLeadList.where((lead) {
+  //     final matchesQuery =
+  //         (lead.firstname ?? '').toLowerCase().contains(query) ||
+  //             (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+  //             (lead.companyName ?? '').toLowerCase().contains(query) ||
+  //             (lead.email ?? '').toLowerCase().contains(query);
+  //
+  //     final matchesRating = ratingFilter.isEmpty ||
+  //         (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
+  //
+  //     bool matchesSort = true;
+  //     DateTime? updatedDate;
+  //
+  //     if (lead.prospectEnrollmentDate != null) {
+  //       try {
+  //         if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
+  //           updatedDate = DateTime.tryParse(lead.updatedTs!);
+  //         } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
+  //           updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
+  //         }
+  //       } catch (_) {
+  //         updatedDate = null;
+  //         matchesSort = false;
+  //       }
+  //
+  //       if (updatedDate != null) {
+  //         final diff = now.difference(updatedDate).inDays;
+  //
+  //         switch (sortBy) {
+  //           case 'Today':
+  //             matchesSort = isSameDate(updatedDate, now);
+  //             break;
+  //           case 'Yesterday':
+  //             matchesSort = diff <= 1;
+  //             break;
+  //           case 'Last 7 Days':
+  //             matchesSort = diff <= 7;
+  //             break;
+  //           case 'Last 30 Days':
+  //             matchesSort = diff <= 30;
+  //             break;
+  //           case 'Custom Month':
+  //             if (selectedPMonth.value != null) {
+  //               matchesSort = updatedDate.year == selectedPMonth.value!.year &&
+  //                   updatedDate.month == selectedPMonth.value!.month;
+  //             } else {
+  //               matchesSort = true;
+  //             }
+  //             break;
+  //           case 'All':
+  //           default:
+  //             matchesSort = true;
+  //         }
+  //       } else {
+  //         matchesSort = false;
+  //       }
+  //     } else {
+  //       matchesSort = false;
+  //     }
+  //
+  //     // 🔹 Date Range Filter (selectedRange)
+  //     bool matchesDateRange = true;
+  //     if (selectedRange.value != null && updatedDate != null) {
+  //       final start = selectedRange.value!.start;
+  //       final end = selectedRange.value!.end;
+  //       matchesDateRange = updatedDate.isAfter(start.subtract(const Duration(days: 1))) &&
+  //           updatedDate.isBefore(end.add(const Duration(days: 1)));
+  //     }
+  //
+  //     return matchesQuery && matchesRating && matchesSort && matchesDateRange;
+  //   }).toList();
+  //
+  //   if (sortBy == 'Custom Month') {
+  //     DateTime parseDate(String? dateStr, String? fallback) {
+  //       if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+  //         dateStr = fallback;
+  //       }
+  //       DateTime? parsed;
+  //       try {
+  //         parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+  //       } catch (_) {
+  //         parsed = DateTime.tryParse(dateStr!);
+  //       }
+  //       return parsed ?? DateTime(1900);
+  //     }
+  //
+  //     filteredLeads.sort((a, b) {
+  //       final dateA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
+  //       final dateB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+  //       return dateB.compareTo(dateA);
+  //     });
+  //   }
+  //
+  //   if (sortField.isNotEmpty) {
+  //     filteredLeads.sort((a, b) {
+  //       dynamic getFieldValue(NewLeadObj lead, String field) {
+  //         switch (field) {
+  //           case 'name':
+  //             var name = lead.firstname ?? '';
+  //             if (name.contains('||')) name = name.split('||')[0].trim();
+  //             return name.toLowerCase();
+  //           case 'company_name':
+  //             return (lead.companyName ?? '').toLowerCase();
+  //           case 'mobile_number':
+  //             return (lead.mobileNumber ?? '').toLowerCase();
+  //           case 'detailsOfServiceRequired':
+  //             return (lead.detailsOfServiceRequired ?? '').toLowerCase();
+  //           case 'source':
+  //             return (lead.source ?? '').toLowerCase();
+  //           case 'city':
+  //             return (lead.city ?? '').toLowerCase();
+  //           case 'status_update':
+  //             return (lead.statusUpdate ?? '').toLowerCase();
+  //           case 'updatedTs':
+  //           case 'prospect_enrollment_date':
+  //             DateTime parseDate(String? dateStr, String? fallback) {
+  //               if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+  //                 dateStr = fallback;
+  //               }
+  //               if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+  //                 return DateTime(1900);
+  //               }
+  //               DateTime? parsed;
+  //               try {
+  //                 parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+  //               } catch (_) {
+  //                 parsed = DateTime.tryParse(dateStr);
+  //               }
+  //               return parsed ?? DateTime(1900);
+  //             }
+  //             return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
+  //           default:
+  //             final value = lead.asMap()[field];
+  //             return value.toString().toLowerCase();
+  //         }
+  //       }
+  //
+  //       final valA = getFieldValue(a, sortField.value);
+  //       final valB = getFieldValue(b, sortField.value);
+  //
+  //       if (valA is DateTime && valB is DateTime) {
+  //         return sortOrder.value == 'asc'
+  //             ? valA.compareTo(valB)
+  //             : valB.compareTo(valA);
+  //       } else {
+  //         return sortOrderN.value == 'asc'
+  //             ? valA.compareTo(valB)
+  //             : valB.compareTo(valA);
+  //       }
+  //     });
+  //   }
+  //
+  //   int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
+  //   if (start >= filteredLeads.length) ;
+  //
+  //   int end = start + itemsProspectPerPage;
+  //   end = end > filteredLeads.length ? filteredLeads.length : end;
+  //
+  //   controllers.newLeadList.value=filteredLeads.sublist(start, end);
+  // }
+  void selectRadio(
+      RxList<NewLeadObj> list){
+    print("radioo");
+    final query = searchProspects.value.toLowerCase();
+    final ratingFilter = selectedProspectTemperature.value;
+    final sortBy = selectedQualifiedSortBy.value;
+    final now = DateTime.now();
+    print("radioo....${selectedQualifiedSortBy.value}");
+
+    final filteredLeads = list.where((lead) {
+      final matchesQuery =
+          (lead.firstname ?? '').toLowerCase().contains(query) ||
+              (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+              (lead.companyName ?? '').toLowerCase().contains(query) ||
+              (lead.email ?? '').toLowerCase().contains(query);
+
+      final matchesRating = ratingFilter.isEmpty ||
+          (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
+
+      bool matchesSort = true;
+      DateTime? updatedDate;
+
+      if (lead.prospectEnrollmentDate != null) {
+        try {
+          if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
+            updatedDate = DateTime.tryParse(lead.updatedTs!);
+          } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
+            updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
+          }
+        } catch (_) {
+          updatedDate = null;
+          matchesSort = false;
+        }
+
+        if (updatedDate != null) {
+          final diff = now.difference(updatedDate).inDays;
+
+          switch (sortBy) {
+            case 'Today':
+              matchesSort = isSameDate(updatedDate, now);
+              break;
+            case 'Yesterday':
+              matchesSort = diff <= 1;
+              break;
+            case 'Last 7 Days':
+              matchesSort = diff <= 7;
+              break;
+            case 'Last 30 Days':
+              matchesSort = diff <= 30;
+              break;
+            case 'Custom Month':
+              if (selectedPMonth.value != null) {
+                matchesSort = updatedDate.year == selectedPMonth.value!.year &&
+                    updatedDate.month == selectedPMonth.value!.month;
+              } else {
+                matchesSort = true;
+              }
+              break;
+            case 'All':
+            default:
+              matchesSort = true;
+          }
+        } else {
+          matchesSort = false;
+        }
+      } else {
+        matchesSort = false;
+      }
+
+      // 🔹 Date Range Filter (selectedRange)
+      bool matchesDateRange = true;
+      if (selectedRange.value != null && updatedDate != null) {
+        final start = selectedRange.value!.start;
+        final end = selectedRange.value!.end;
+        matchesDateRange = updatedDate.isAfter(start.subtract(const Duration(days: 1))) &&
+            updatedDate.isBefore(end.add(const Duration(days: 1)));
+      }
+
+      return matchesQuery && matchesRating && matchesSort && matchesDateRange;
+    }).toList();
+
+    if (sortBy == 'Custom Month') {
+      DateTime parseDate(String? dateStr, String? fallback) {
+        if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+          dateStr = fallback;
+        }
+        DateTime? parsed;
+        try {
+          parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+        } catch (_) {
+          parsed = DateTime.tryParse(dateStr!);
+        }
+        return parsed ?? DateTime(1900);
+      }
+
+      filteredLeads.sort((a, b) {
+        final dateA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
+        final dateB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+        return dateB.compareTo(dateA);
+      });
+    }
+
+    if (sortField.isNotEmpty) {
+      filteredLeads.sort((a, b) {
+        dynamic getFieldValue(NewLeadObj lead, String field) {
+          switch (field) {
+            case 'name':
+              var name = lead.firstname ?? '';
+              if (name.contains('||')) name = name.split('||')[0].trim();
+              return name.toLowerCase();
+            case 'company_name':
+              return (lead.companyName ?? '').toLowerCase();
+            case 'mobile_number':
+              return (lead.mobileNumber ?? '').toLowerCase();
+            case 'detailsOfServiceRequired':
+              return (lead.detailsOfServiceRequired ?? '').toLowerCase();
+            case 'source':
+              return (lead.source ?? '').toLowerCase();
+            case 'city':
+              return (lead.city ?? '').toLowerCase();
+            case 'status_update':
+              return (lead.statusUpdate ?? '').toLowerCase();
+            case 'updatedTs':
+            case 'prospect_enrollment_date':
+              DateTime parseDate(String? dateStr, String? fallback) {
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  dateStr = fallback;
+                }
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  return DateTime(1900);
+                }
+                DateTime? parsed;
+                try {
+                  parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+                } catch (_) {
+                  parsed = DateTime.tryParse(dateStr);
+                }
+                return parsed ?? DateTime(1900);
+              }
+              return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
+            default:
+              final value = lead.asMap()[field];
+              return value.toString().toLowerCase();
+          }
+        }
+
+        final valA = getFieldValue(a, sortField.value);
+        final valB = getFieldValue(b, sortField.value);
+
+        if (valA is DateTime && valB is DateTime) {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        } else {
+          return sortOrderN.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        }
+      });
+    }
+
+    int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
+    if (start >= filteredLeads.length) ;
+
+    int end = start + itemsProspectPerPage;
+    end = end > filteredLeads.length ? filteredLeads.length : end;
+
+    list.value=filteredLeads.sublist(start, end);
+  }
+
   var targetLeadSortField = ''.obs;
   var targetLeadSortOrder = 'asc'.obs;
   List<NewLeadObj> get paginatedTargetLead {
@@ -1609,13 +2098,31 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
 
 
+  // String? getUserHeading(String systemField) {
+  //   try {
+  //     debugPrint('.....${fields}');
+  //     return fields.firstWhere((f) => f.systemField == systemField).userHeading;
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
+
   String? getUserHeading(String systemField) {
     try {
-      return fields.firstWhere((f) => f.systemField == systemField).userHeading;
+      if (fields.isEmpty) return null;
+
+      for (var f in fields) {
+        if (f.systemField == systemField) {
+          return f.userHeading;
+        }
+      }
+
+      return null;
     } catch (e) {
       return null;
     }
   }
+
 
   List<CustomerActivity> get filteredList {
     if (controllers.selectCallType.value.isEmpty) {
@@ -1793,7 +2300,85 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
         // ✅ Store into RxList
         hCallStatusList.assignAll(list);
 
-        print("Loaded Items: ${hCallStatusList.length}");
+        // print("Loaded Items: ${hCallStatusList.length}");
+
+      } else {
+        // print("API Error: ${decoded["message"]}");
+      }
+
+    } catch (e) {
+      // print("FLUTTER ERROR => $e");
+    }
+  }
+  RxList<Map<String, dynamic>> rangeStatusList =
+      <Map<String, dynamic>>[].obs;
+  List<double> updates=[];
+  List<double> mails=[];
+  List<double> calls=[];
+  List<String> xLabels=[];
+  Future<void> getRangeStatus() async {
+    try {
+
+      rangeStatusList.clear();
+      Map data = {
+        "action": "get_data",
+        "search_type": "range_report",
+        "id": controllers.storage.read("id"),
+        "role": controllers.storage.read("role"),
+        "date": controllers.storage.read("role"),
+        "cos_id": controllers.storage.read("cos_id"),
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+
+      print("STATUS CODE range_report: ${request.statusCode}");
+      print("RAW RESPONSE: ${data}");
+      print("RAW RESPONSE: ${request.body}");
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getRangeStatus();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode != 200) {
+        // print("SERVER ERROR");
+        return;
+      }
+
+      final decoded = jsonDecode(request.body);
+
+      // ✅ Safety check
+      if (request.statusCode==200) {
+        var decoded = json.decode(request.body);
+
+        if (decoded is List) {
+          rangeStatusList.value =
+          List<Map<String, dynamic>>.from(decoded);
+          xLabels =
+          rangeStatusList.value .map((e) => e["report_date"].toString()).toList();
+          calls = rangeStatusList.value
+              .map((e) => double.parse(e["total_calls"].toString()))
+              .toList();
+
+          mails = rangeStatusList.value
+              .map((e) => double.parse(e["total_mails"].toString()))
+              .toList();
+
+           updates = rangeStatusList.value
+              .map((e) => double.parse(e["total_customers"].toString()))
+              .toList();
+        } else {
+          print("Unexpected format");
+        }
+
+        print("rangeStatusList Items: ${rangeStatusList.length}");
 
       } else {
         print("API Error: ${decoded["message"]}");
@@ -1960,7 +2545,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
   String leadCategory = "Suspects";
   RxList<bool> editMode = <bool>[].obs;
-  RxList leadCategoryList = [].obs;
+  RxList<LeadStatusModel> leadCategoryList = <LeadStatusModel>[].obs;
   // RxList leadCategoryList = [
   //   {"lead_status": "1", "value": "Suspects","id" : "1"},
   //   {"lead_status": "2", "value": "Prospects","id" : "2"},
@@ -1987,9 +2572,9 @@ var otp = "".obs;
       isAllSelected = false.obs,
       isLeadLoading = false.obs;
 
-  var dateList = [].obs,
+  var idList = [].obs,dateList = [].obs,
       isMainPersonList = [].obs,
-      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,newLeadList=<NewLeadObj>[].obs,searchNewLeadList=<NewLeadObj>[].obs,
+      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,allLeadList=<NewLeadObj>[].obs,newLeadList=<NewLeadObj>[].obs,searchNewLeadList=<NewLeadObj>[].obs,
       isLeadsList = [].obs,
       isGoodLeadList = [].obs,
       isCoMobileNumberList = [].obs,
@@ -2050,11 +2635,11 @@ var otp = "".obs;
 
   // TODO: leadControllersName
   TextEditingController signupPasswordController = TextEditingController();
-  List<TextEditingController> leadNameCrt = <TextEditingController>[].obs;
-  List<TextEditingController> leadMobileCrt = <TextEditingController>[].obs;
-  List<TextEditingController> leadWhatsCrt = <TextEditingController>[].obs;
-  List<TextEditingController> leadEmailCrt = <TextEditingController>[].obs;
-  List<TextEditingController> leadTitleCrt = <TextEditingController>[].obs;
+  List<TextEditingController> leadNameCrt = <TextEditingController>[TextEditingController()].obs;
+  List<TextEditingController> leadMobileCrt = <TextEditingController>[TextEditingController()].obs;
+  List<TextEditingController> leadWhatsCrt = <TextEditingController>[TextEditingController()].obs;
+  List<TextEditingController> leadEmailCrt = <TextEditingController>[TextEditingController()].obs;
+  List<TextEditingController> leadTitleCrt = <TextEditingController>[TextEditingController()].obs;
   List<TextEditingController> leadFieldName = <TextEditingController>[];
   List<TextEditingController> leadFieldValue = <TextEditingController>[];
   //TextEditingController leadNameCrt = TextEditingController();
@@ -2418,6 +3003,297 @@ var otp = "".obs;
       }
     }catch(e){
       return false;
+    }
+  }
+  Future<bool> saveVisitingCardToServers(
+      String contactType,
+      String nameP,
+      String phoneP,
+      String emailP,
+      String doorNumP,
+      String streetP,
+      String areaP,
+      String cityP,
+      String stateP,
+      String countryP,
+      String pincodeP,
+      String coNameP,
+      String designationP,
+      String jobTitleP) async {
+    try {
+      final phoneD = phoneP.trim();
+
+      if (phoneD.isEmpty) {
+        Get.snackbar(
+          "Error",
+          "Data not clear. Please capture the card again",
+          backgroundColor: Colors.red.shade600,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        controllers.isUpdateLoading.value = false;
+        return false;
+      }
+      Future<http.StreamedResponse> sendRequest(String token) async {
+        final request = http.MultipartRequest(
+          'POST',
+          Uri.parse(scriptApi),
+        );
+
+        request.fields.addAll({
+          "action": "share_visiting_card_crm",
+          "user_id": controllers.storage.read("id").toString(),
+          "fullname_g": nameP,
+          "phone_number_g": phoneD,
+          "whatsapp_number_g": phoneD,
+          "mobile_number_g": phoneD,
+          "phone_map": phoneD,
+          "email": emailP,
+          "email_map": emailP,
+          "co_address": "",
+          "sharing_location": controllers.sharingLocation.value,
+          "notes": controllers.notesController.text,
+          "address": cityP,
+          "door_no": doorNumP,
+          "street_name": streetP,
+          "area": areaP,
+          "city": cityP,
+          "state": stateP,
+          "pincode": pincodeP,
+          "country": countryP,
+          "notes_g": "",
+          "live_data_g": "1",
+          "facebook_id_g":"",
+          "instagram_id_g":"",
+          "twitter_id_g":"",
+          "linkedin_id_g":"",
+          "co_name_g": coNameP,
+          "designation": jobTitleP,
+          "info_g": designationP,
+          "industry_g": "",
+          "sub_industry_g": "",
+          "products_g": "",
+          "data_from": "3",
+          "contact_type": contactType,
+        });
+
+        request.headers.addAll({
+          "Accept": "application/json",
+          "Authorization": "Bearer $token",
+        });
+
+
+        return await request.send();
+      }
+      String token = controllers.storage.read("jwt_token");
+      var streamedResponse = await sendRequest(token);
+
+      if (streamedResponse.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return saveVisitingCardToServers(contactType,nameP,phoneP,emailP,doorNumP,streetP,
+              areaP,cityP,stateP,countryP,pincodeP,coNameP,designationP,jobTitleP);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+
+      final responseBody = await streamedResponse.stream.bytesToString();
+
+      debugPrint("Server response: $responseBody");
+
+      if (responseBody.isEmpty) {
+        Get.snackbar(
+          "Error",
+          "Server returned empty response",
+          backgroundColor: Colors.red.shade600,
+          colorText: Colors.white,
+        );
+        controllers.isUpdateLoading.value = false;
+        controllers.btnController.reset();
+        return false;
+      }
+
+      final dataOutput = jsonDecode(responseBody);
+
+      if (streamedResponse.statusCode != 200 ||
+          dataOutput["status"] == "error") {
+        Get.snackbar(
+          "Error",
+          dataOutput["message"] ?? "Server error",
+          backgroundColor: Colors.red.shade600,
+          colorText: Colors.white,
+        );
+        controllers.isUpdateLoading.value = false;
+        controllers.btnController.reset();
+        return false;
+      }
+
+      Get.snackbar(
+        "Success",
+        "Visiting card saved successfully!",
+        backgroundColor: Colors.green.shade600,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+      );
+      controllers.btnController.reset();
+      // Get.to(NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,name: controllers.leadCategoryList[0].value));
+      return true;
+
+    } catch (e, st) {
+      debugPrint("❌ saveVisitingCard error: $e\n$st");
+
+      Get.snackbar(
+        "Error",
+        "Something went wrong. Please try again.",
+        backgroundColor: Colors.red.shade600,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      controllers.isUpdateLoading.value = false;
+      controllers.btnController.reset();
+      return false;
+    }
+  }
+  Future<void> insertSingleCustomer(BuildContext context,
+      String contactType,
+      String nameP,
+      String phoneP,
+      String emailP,
+      String doorNumP,
+      String streetP,
+      String areaP,
+      String cityP,
+      String stateP,
+      String countryP,
+      String pincodeP,
+      String coNameP,
+      String designationP,
+      String web,
+      String jobTitleP) async {
+    try {
+      // Lead Status
+      String leadId = controllers.leadCategory == "Suspects"
+          ? "1"
+          : controllers.leadCategory == "Prospects"
+          ? "2"
+          : controllers.leadCategory == "Qualified"
+          ? "3"
+          : "4";
+
+      // Visit Type
+      String callListId = "";
+      for (var role in controllers.callList) {
+        if (role['value'] == controllers.visitType) {
+          callListId = role['id'].toString();
+          break;
+        }
+      }
+
+      /// ✅ CUSTOMER LIST (DO NOT use Map<String,String>)
+      List<Map<String, dynamic>> customersList = [
+        {
+          "cos_id": controllers.storage.read("cos_id").toString(),
+          "name": nameP,
+          "email": emailP,
+          "phone_no": phoneP,
+          "whatsapp_no": "",
+          "created_by": controllers.storage.read("id").toString(),
+          "platform": "3",
+          "department": "",
+          "designation": designationP,
+          "main_person": "1"
+        }
+      ];
+
+      /// ✅ MAIN REQUEST BODY
+      Map<String, dynamic> data = {
+        "action": "single_customer",
+        "user_id": controllers.storage.read("id").toString(),
+        "cos_id": controllers.storage.read("cos_id").toString(),
+
+        "company_name": coNameP,
+        "product_discussion": controllers.prodDescriptionController.text.trim(),
+        "source": controllers.leadDisPointsCrt.text.trim(),
+        "points": controllers.leadActions.text.trim(),
+        "quotation_status": "",
+
+        "door_no": "",
+        "area": "",
+        "city": "",
+        "country": "India",
+        "state": "Tamil Nadu",
+        "pincode": 0,
+
+        "co_website": web,
+        "co_number": "",
+        "co_email": "",
+        "linkedin": "",
+        "x": "",
+
+        "industry":"",
+        "product": "",
+        "source_details": "",
+
+        "type": "1",
+        "lat": 0.0,
+        "lng": 0.0,
+        "platform": "3",
+
+        "lead_status": "1",
+        "status": controllers.status,
+        "quotation_required": "1",
+        "visit_type": 0,
+
+        "prospect_enrollment_date": "",
+
+        "expected_convertion_date": "",
+
+        "status_update": "",
+        "num_of_headcount": 0,
+        "expected_billing_value":0.0,
+        "arpu_value":0.0,
+
+        "details_of_service_required":"",
+        "rating":0,
+        "owner": "",
+
+        /// ✅ IMPORTANT: SEND ARRAY, NOT STRING
+        "data": customersList,
+      };
+
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(data),
+      );
+
+      final body = response.body.toString();
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          // return insertSingleCustomer(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200 &&
+          body.contains("Customer saved successfully")) {
+        apiService.getCustomLeads();
+        // Navigator.pushReplacement(
+        //   context,
+          // MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,name: controllers.leadCategoryList[0].value)),
+        // );
+      } else if (body.contains("Phone number")) {
+        apiService.errorDialog(context, "Phone number already exists");
+      } else {
+        apiService.errorDialog(context, body);
+      }
+    } catch (e) {
+      apiService.errorDialog(context, e.toString());
     }
   }
 

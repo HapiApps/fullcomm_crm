@@ -39,6 +39,7 @@ import '../models/employee_obj.dart';
 import '../models/mail_receive_obj.dart';
 import '../models/meeting_obj.dart';
 import '../models/month_report_obj.dart';
+import '../screens/DashboardPage.dart';
 
 final ApiService apiService = ApiService._();
 
@@ -240,7 +241,7 @@ class ApiService {
   //   }
   // }
 
-  Future updateLeadAPI(BuildContext context, String leadId,  String type, String addressId) async {
+  Future updateLeadAPI(BuildContext context, String leadId,  String type, String addressId, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
       Map data = {
         "cos_id": controllers.storage.read("cos_id"),
@@ -301,7 +302,7 @@ class ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return updateLeadAPI(context,leadId,type,addressId);
+          return updateLeadAPI(context,leadId,type,addressId,list,list2);
         } else {
           controllers.setLogOut();
         }
@@ -321,10 +322,11 @@ class ApiService {
         // }
         // apiService.allNewLeadsDetails();
         // apiService.allLeadsDetails();
-        apiService.getCustomLeads(controllers.leadCategoryList[0]["lead_status"]);
+        apiService.getCustomLeads();
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0]["lead_status"] ,name: controllers.leadCategoryList[0]["value"])),
+          MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,
+              name: controllers.leadCategoryList[0].value,list: list,list2: list2,)),
         );
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         controllers.leadCtr.reset();
@@ -568,7 +570,7 @@ class ApiService {
         allQualifiedDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         Navigator.pop(context);
-        Get.to(const Prospects(), duration: Duration.zero);
+        // Get.to(const Prospects(), duration: Duration.zero);
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!, request.body);
@@ -745,7 +747,7 @@ class ApiService {
         allTargetLeadsDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         Navigator.pop(context);
-        Get.to(const Suspects(), duration: Duration.zero);
+        // Get.to(const Suspects(), duration: Duration.zero);
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!, request.body);
@@ -1223,7 +1225,7 @@ class ApiService {
 
         await Future.delayed(const Duration(milliseconds: 100));
         Navigator.pop(Get.context!);
-        Get.off(const Suspects(), duration: Duration.zero);
+        // Get.off(const Suspects(), duration: Duration.zero);
 
         controllers.emailCtr.reset();
       } else {
@@ -1440,7 +1442,7 @@ class ApiService {
   }
 
 
-  Future<void> insertSingleCustomer(BuildContext context) async {
+  Future<void> insertSingleCustomer(BuildContext context,RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
       // Lead Status
       String leadId = controllers.leadCategory == "Suspects"
@@ -1560,17 +1562,18 @@ class ApiService {
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return insertSingleCustomer(context);
+          return insertSingleCustomer(context,list,list2);
         } else {
           controllers.setLogOut();
         }
       }
       if (response.statusCode == 200 &&
         body.contains("Customer saved successfully")) {
-        apiService.getCustomLeads(controllers.leadCategoryList[0]["lead_status"]);
+        apiService.getCustomLeads();
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0]["lead_status"] ,name: controllers.leadCategoryList[0]["value"])),
+          MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,
+              name: controllers.leadCategoryList[0].value,list: list,list2: list2,)),
         );
       } else if (body.contains("Phone number")) {
         errorDialog(context, "Phone number already exists");
@@ -1602,7 +1605,7 @@ class ApiService {
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         Navigator.pop(context);
         qualifiedList.clear();
-        Get.to(const Qualified(), duration: Duration.zero);
+        // Get.to(const Qualified(), duration: Duration.zero);
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!, request.body);
@@ -1621,13 +1624,16 @@ class ApiService {
       controllers.productCtr.reset();
     }
   }
-  Future insertPromoteAPI(BuildContext context,List<Map<String, String>> list,String status) async {
+
+  Future insertPromoteAPI(BuildContext context,String id,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
-      // print("insertQualifiedAPI");
+      print("insertQualifiedAPI");
       Map<String, dynamic> data ={
-        "list":list,
-        "lead_status":status
-        "action":"update_promote"
+        "id": id,
+        "lead_status": status,
+        "created_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "update_promote"
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -1637,8 +1643,99 @@ class ApiService {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
       Map<String, dynamic> response = json.decode(request.body);
+      debugPrint(data.toString());
+      debugPrint(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertPromoteAPI(context,id,status,name,list,list2);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (request.statusCode == 200 && response["message"] == "OK") {
-        Get.to(const NewLeadPage(), duration: Duration.zero);
+        controllers.selectedIndex.value=int.parse(status);
+        Get.back();
+        Get.to( NewLeadPage(index: status, name: name,list: list,list2: list2,), duration: Duration.zero);
+        controllers.productCtr.reset();
+      }
+      else {
+        errorDialog(Get.context!, request.body);
+        controllers.productCtr.reset();
+      }
+    } on SocketException {
+      controllers.productCtr.reset();
+      errorDialog(Get.context!, 'No internet connection');
+      //throw Exception('No internet connection'); // Handle network errors
+    } on HttpException catch (e) {
+      controllers.productCtr.reset();
+      errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
+      //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
+    } catch (e) {
+      errorDialog(Get.context!, e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+  Future insertPromoteListAPI(BuildContext context,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
+    try {
+      print("insertQualifiedAPI");
+      Map<String, dynamic> data ={
+        "id":controllers.idList,
+        "lead_status": status,
+        "created_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "update_promote_list"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      Map<String, dynamic> response = json.decode(request.body);
+      debugPrint(data.toString());
+      debugPrint(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertPromoteListAPI(context,status,name,list,list2);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200 && response["message"] == "OK") {
+        // 1️⃣ Update lead status
+        for (var lead in controllers.allLeadList) {
+          if (controllers.idList.contains(lead.userId)) {
+            lead.leadStatus = status;  // make sure not final
+          }
+        }
+
+// 2️⃣ Create category map
+        final categoryMap = {
+          for (var c in controllers.leadCategoryList)
+            c.leadStatus: c
+        };
+
+// 3️⃣ Clear lists
+        for (var c in categoryMap.values) {
+          c.list.clear();
+          c.list2.clear();
+        }
+
+// 4️⃣ Assign leads
+        for (var lead in controllers.allLeadList) {
+          final category = categoryMap[lead.leadStatus];
+          if (category != null) {
+            category.list.add(lead);
+            category.list2.add(lead);
+          }
+        }
+        controllers.idList.clear();
+        controllers.selectedIndex.value=int.parse(status);
+        Get.back();
+        Get.to( NewLeadPage(index: status, name: name,list: controllers.leadCategoryList[controllers.selectedIndex.value].list,list2: controllers.leadCategoryList[controllers.selectedIndex.value].list2,), duration: Duration.zero);
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!, request.body);
@@ -1690,15 +1787,15 @@ class ApiService {
         qualifiedList.clear();
         customerList.clear();
         prospectsList.clear();
-        if(status=="1"){
-          Get.to(const Suspects(), duration: Duration.zero);
-        }else if(status=="2"){
-          Get.to(const Prospects(), duration: Duration.zero);
-        }else if(status=="3"){
-          Get.to(const Qualified(), duration: Duration.zero);
-        }else{
-          Get.to(const ViewCustomer(), duration: Duration.zero);
-        }
+        // if(status=="1"){
+        //   Get.to(const Suspects(), duration: Duration.zero);
+        // }else if(status=="2"){
+        //   Get.to(const Prospects(), duration: Duration.zero);
+        // }else if(status=="3"){
+        //   Get.to(const Qualified(), duration: Duration.zero);
+        // }else{
+        //   Get.to(const ViewCustomer(), duration: Duration.zero);
+        // }
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!, request.body);
@@ -1746,7 +1843,7 @@ class ApiService {
         controllers.allCustomerFuture = apiService.allCustomerDetails();
         Navigator.pop(context);
         customerList.clear();
-        Get.to(const ViewCustomer(), duration: Duration.zero);
+        // Get.to(const ViewCustomer(), duration: Duration.zero);
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!, request.body);
@@ -1788,14 +1885,14 @@ class ApiService {
         utils.snackBar(context: context, msg: "Invalid mobile number or password", color: Colors.red);
         controllers.loginCtr.reset();
       }
-      if (request.statusCode == 401) {
-        final refreshed = await controllers.refreshToken();
-        if (refreshed) {
-          return loginCApi(context);
-        } else {
-          controllers.setLogOut();
-        }
-      }
+      // if (request.statusCode == 401) {
+      //   final refreshed = await controllers.refreshToken();
+      //   if (refreshed) {
+      //     return loginCApi(context);
+      //   } else {
+      //     controllers.setLogOut();
+      //   }
+      // }
 
       if (request.statusCode == 200 && response['status'] == 'success') {
         TokenStorage().writeToken(response['access_token']);
@@ -1838,7 +1935,7 @@ class ApiService {
           msg: "Login Successfully",
           color: Colors.green,
         );
-        Get.to(const NewDashboard(), duration: Duration.zero);
+        Get.to(const DashboardPage(), duration: Duration.zero);
         controllers.loginCtr.reset();
       } else {
         controllers.loginCtr.reset();
@@ -1961,20 +2058,12 @@ class ApiService {
       }
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
-        final converted = response.map((item) {
-          return {
-            "lead_status": item["lead_status"].toString(),
-            "value": item["value"].toString(),
-            "id": item["id"].toString(),
-            "icon1": item["icon1"].toString(),
-            "icon2": item["icon2"].toString(),
-          };
-        }).toList();
-        converted.sort((a, b) {
-          return int.parse(a["lead_status"].toString())
-              .compareTo(int.parse(b["lead_status"].toString()));
-        });
-        controllers.leadCategoryList.assignAll(converted);
+        for(var i=0;i<=response.length;i++){
+          controllers.leadCategoryList.add(LeadStatusModel(
+              leadStatus: response[i]["lead_status"].toString(), value: response[i]["value"].toString(),
+              id: response[i]["id"].toString(), icon1: response[i]["icon1"].toString(), icon2: response[i]["icon2"].toString()));
+        }
+        // controllers.leadCategoryList.assignAll(converted);
         controllers.editMode.value =List.generate(controllers.leadCategoryList.length, (index) => false);
       } else {
         throw Exception('Failed to load album');
@@ -3804,7 +3893,7 @@ class ApiService {
           msg: "Password Updated Successfully",
           color: Colors.green,
         );
-        Get.to(const NewDashboard(), duration: Duration.zero);
+        Get.to(const DashboardPage(), duration: Duration.zero);
         controllers.loginCtr.reset();
       } else {
         utils.snackBar(
@@ -4014,7 +4103,7 @@ class ApiService {
   /// New Leads -santhiya
   List<Map<String, String>> newLeadList = [];
 
-  Future<void> getCustomLeads(String leadId) async {
+  Future<void> getCustomLeads() async {
     controllers.isLead.value = false;
     final url = Uri.parse(scriptApi);
     controllers.newLeadsLength.value = 0;
@@ -4026,22 +4115,20 @@ class ApiService {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          "search_type": "leads",
+          "search_type": "all_leads",
           "cos_id": controllers.storage.read("cos_id"),
           "role": controllers.storage.read("role"),
           "id": controllers.storage.read("id"),
-          "lead_id": leadId,
+          "lead_id": "",
           "action": "get_data"
         }),
       );
       debugPrint("response.bodyyyy");
-      debugPrint(leadId);
       debugPrint(response.body);
-      controllers.isLead.value=true;
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return getCustomLeads(leadId);
+          return getCustomLeads();
         } else {
           controllers.setLogOut();
         }
@@ -4049,28 +4136,55 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
         controllers.newLeadsLength.value = data.length;
-        newLeadList.clear();
-        controllers.newLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
-        controllers.searchNewLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
-        for (int i = 0; i < controllers.newLeadsLength.value; i++) {
-          controllers.isLeadsList.add({
-            "isSelect": false,
-            "lead_id": data[i]["user_id"].toString(),
-            "rating": data[i]["rating"].toString(),
-            "mail_id": data[i]["email_id"].toString(),
-          });
+        controllers.allLeadList.clear();
+        // newLeadList.clear();
+        controllers.allLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        // controllers.searchNewLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        // for (int i = 0; i < controllers.newLeadsLength.value; i++) {
+        //   controllers.isLeadsList.add({
+        //     "isSelect": false,
+        //     "lead_id": data[i]["user_id"].toString(),
+        //     "rating": data[i]["rating"].toString(),
+        //     "mail_id": data[i]["email_id"].toString(),
+        //   });
+        // }
+        for (int i = 0; i < controllers.leadCategoryList.length; i++) {
+          for (int j = 0; j < controllers.allLeadList.length; j++) {
+            if (controllers.leadCategoryList[i].leadStatus == controllers.allLeadList[j].leadStatus) {
+              controllers.leadCategoryList[i].list.add(controllers.allLeadList[j]);
+              controllers.leadCategoryList[i].list2.add(controllers.allLeadList[j]);
+              print("Added → ${controllers.allLeadList[j].leadStatus} to ${controllers.leadCategoryList[i].leadStatus}");
+            }
+          }
+          print("Final List for ${controllers.leadCategoryList[i].leadStatus} : ${controllers.leadCategoryList[i].list}");
         }
+        log("----------> ${controllers.leadCategoryList}");
+        controllers.isLead.value=true;
       } else {
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
     } on SocketException {
+      controllers.isLead.value=true;
       throw Exception('No internet connection');
     } on HttpException catch (e) {
+      controllers.isLead.value=true;
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
+      controllers.isLead.value=true;
       controllers.newLeadList.clear();
       throw Exception('Unexpected error: ${e.toString()}');
     }
   }
-
+void changeList(String leadId){
+  controllers.isLead.value = false;
+  controllers.newLeadList.value.clear();
+    controllers.searchNewLeadList.value.clear();
+    for(var i=0;i<controllers.allLeadList.length;i++){
+      if(controllers.allLeadList[i].leadStatus==leadId){
+        controllers.newLeadList.value.add(controllers.allLeadList[i]);
+      }
+    }
+    controllers.searchNewLeadList.value=controllers.newLeadList.value;
+  controllers.isLead.value = true;
+}
 }

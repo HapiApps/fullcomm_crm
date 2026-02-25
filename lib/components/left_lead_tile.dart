@@ -14,6 +14,7 @@ import 'package:fullcomm_crm/screens/records/mail_comments.dart';
 import '../common/constant/api.dart';
 import '../controller/reminder_controller.dart';
 import '../controller/table_controller.dart';
+import '../models/new_lead_obj.dart';
 import '../screens/records/cus_mail_comments.dart';
 import '../screens/leads/update_lead.dart';
 import '../screens/records/records.dart';
@@ -82,7 +83,8 @@ class LeftLeadTile extends StatefulWidget {
   final String updatedTs;
   final void Function(bool?) onChanged;
   final bool saveValue;
-
+  final RxList<NewLeadObj> list;
+  final RxList<NewLeadObj> list2;
   const LeftLeadTile(
       {super.key,
         this.showCheckbox = true,
@@ -143,7 +145,7 @@ class LeftLeadTile extends StatefulWidget {
         this.visitType,
         this.points,
         this.detailsOfServiceReq,
-        required this.pageName, required this.leadIndex});
+        required this.pageName, required this.leadIndex, required this.list, required this.list2});
 
   @override
   State<LeftLeadTile> createState() => _LeftLeadTileState();
@@ -250,6 +252,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
           : widget.statusUpdate.toString();
     }
   }
+  bool isEditing = false;
 
   @override
   void dispose() {
@@ -285,6 +288,8 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
       onTap: () {
         Get.to(
             ViewLead(
+              list: widget.list,list2: widget.list2,
+              leadIndex: widget.leadIndex,
               pageName: widget.pageName,
               id: widget.id,
               companyName: widget.companyName,
@@ -346,6 +351,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                         child: InkWell(
                             onTap: () {
                               Get.to(UpdateLead(
+                                list: widget.list,list2: widget.list2,
                                 type:"1",
                                 visitType: widget.visitType.toString(),
                                 id: widget.id,
@@ -1118,24 +1124,161 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                               //   },
                               // );
                               debugPrint("onTap");
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (context) {
+                              //     String selectedStage="";
+                              //     String stageId="";
+                              //     int currentIndex = int.parse(widget.leadIndex.toString());
+                              //     int nextIndex = currentIndex + 1;
+                              //
+                              //     if (nextIndex < controllers.leadCategoryList.length) {
+                              //       selectedStage =controllers.leadCategoryList[nextIndex].value;
+                              //       stageId =controllers.leadCategoryList[nextIndex].leadStatus;
+                              //     } else {
+                              //       selectedStage =controllers.leadCategoryList[0].value;
+                              //       stageId =controllers.leadCategoryList[0].leadStatus;
+                              //     }
+                              //
+                              //     bool isEdit=false;
+                              //     TextEditingController reasonController = TextEditingController();
+                              //     return StatefulBuilder(
+                              //       builder: (context, setState) {
+                              //         return AlertDialog(
+                              //           title: CustomText(
+                              //             text: "Move to Next Level",
+                              //             size: 18,
+                              //             isBold: true,
+                              //             isCopy: false,
+                              //             colors: colorsConst.textColor,
+                              //           ),
+                              //           content: Column(
+                              //             mainAxisSize: MainAxisSize.min,
+                              //             crossAxisAlignment: CrossAxisAlignment.start,
+                              //             children: [
+                              //               CustomText(
+                              //                 text: "Select Stage",
+                              //                 size: 14,
+                              //                 isBold: true,
+                              //                 isCopy: false,
+                              //               ),
+                              //               8.height,
+                              //               Container(
+                              //                 padding: EdgeInsets.symmetric(horizontal: 8),
+                              //                 decoration: BoxDecoration(
+                              //                   border: Border.all(color: colorsConst.primary),
+                              //                   borderRadius: BorderRadius.circular(4),
+                              //                 ),
+                              //                 child: DropdownButton<String>(
+                              //                   value: stageId,
+                              //                   isExpanded: true,
+                              //                   focusColor: Colors.transparent,
+                              //                   underline: SizedBox(),
+                              //                   items: controllers.leadCategoryList.map((item) {
+                              //                     return DropdownMenuItem<String>(
+                              //                       value: item.leadStatus,
+                              //                       child: Text(item.value),
+                              //                     );
+                              //                   }).toList(),
+                              //                   onChanged: (value) {
+                              //                     setState(() {
+                              //                       stageId = value!;
+                              //                       isEdit=true;
+                              //                     });
+                              //                   },
+                              //                 ),
+                              //               ),
+                              //               15.height,
+                              //               TextField(
+                              //                 controller: reasonController,
+                              //                 decoration: InputDecoration(
+                              //                   labelText: "Reason",
+                              //                   border: OutlineInputBorder(),
+                              //                 ),
+                              //               ),
+                              //             ],
+                              //           ),
+                              //           actions: [
+                              //             Row(
+                              //               mainAxisAlignment: MainAxisAlignment.end,
+                              //               children: [
+                              //                 Container(
+                              //                   decoration: BoxDecoration(
+                              //                       border: Border.all(color: colorsConst.primary),
+                              //                       color: Colors.white),
+                              //                   width: 80,
+                              //                   height: 25,
+                              //                   child: ElevatedButton(
+                              //                       style: ElevatedButton.styleFrom(
+                              //                         shape: const RoundedRectangleBorder(
+                              //                           borderRadius: BorderRadius.zero,
+                              //                         ),
+                              //                         backgroundColor: Colors.white,
+                              //                       ),
+                              //                       onPressed: () {
+                              //                         Navigator.pop(context);
+                              //                       },
+                              //                       child: CustomText(
+                              //                         text: "Cancel",
+                              //                         isCopy: false,
+                              //                         colors: colorsConst.primary,
+                              //                         size: 14,
+                              //                       )),
+                              //                 ),
+                              //                 10.width,
+                              //                 CustomLoadingButton(
+                              //                   callback: () async {
+                              //                     apiService.insertPromoteAPI(context,widget.id.toString(),stageId,selectedStage,widget.list,widget.list2);
+                              //                   },
+                              //                   height: 35,
+                              //                   isLoading: true,
+                              //                   backgroundColor:
+                              //                   colorsConst.primary,
+                              //                   radius: 2,
+                              //                   width: 80,
+                              //                   controller:
+                              //                   controllers.productCtr,
+                              //                   isImage: false,
+                              //                   text: "Promote",
+                              //                   textColor: Colors.white,
+                              //                 ),
+                              //               ],
+                              //             )
+                              //           ],
+                              //         );
+                              //       },
+                              //     );
+                              //   },
+                              // );
                               showDialog(
                                 context: context,
                                 builder: (context) {
-                                  String selectedStage="";
-                                  String stageId="";
+                                  String? stageId;
+                                  String selectedStage = "";
+                                  bool isEdit = false;
+
+                                  TextEditingController reasonController =
+                                  TextEditingController();
+
                                   int currentIndex = int.parse(widget.leadIndex.toString());
                                   int nextIndex = currentIndex + 1;
 
-                                  if (nextIndex < controllers.leadCategoryList.length) {
-                                    selectedStage =controllers.leadCategoryList[nextIndex]["value"];
-                                    stageId =controllers.leadCategoryList[nextIndex]["lead_status"];
-                                  } else {
-                                    selectedStage =controllers.leadCategoryList[0]["value"];
-                                    stageId =controllers.leadCategoryList[0]["lead_status"];
+                                  // Safe default selection
+                                  if (controllers.leadCategoryList.isNotEmpty) {
+                                    if (nextIndex <
+                                        controllers.leadCategoryList.length) {
+                                      stageId = controllers
+                                          .leadCategoryList[nextIndex].leadStatus;
+                                      selectedStage = controllers
+                                          .leadCategoryList[nextIndex].value;
+                                    } else {
+                                      stageId =
+                                          controllers.leadCategoryList[0].leadStatus;
+                                      selectedStage =
+                                          controllers.leadCategoryList[0].value;
+                                    }
                                   }
 
-                                  bool isEdit=false;
-                                  TextEditingController reasonController = TextEditingController();
                                   return StatefulBuilder(
                                     builder: (context, setState) {
                                       return AlertDialog(
@@ -1148,7 +1291,8 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                         ),
                                         content: Column(
                                           mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                           children: [
                                             CustomText(
                                               text: "Select Stage",
@@ -1156,92 +1300,134 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                               isBold: true,
                                               isCopy: false,
                                             ),
-                                            8.height,
+                                            const SizedBox(height: 8),
+
+                                            /// DROPDOWN
                                             Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 8),
+                                              padding:
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 8),
                                               decoration: BoxDecoration(
-                                                border: Border.all(color: colorsConst.primary),
-                                                borderRadius: BorderRadius.circular(4),
+                                                border: Border.all(
+                                                    color: colorsConst.primary),
+                                                borderRadius:
+                                                BorderRadius.circular(4),
                                               ),
                                               child: DropdownButton<String>(
-                                                value: stageId,
+                                                value: controllers
+                                                    .leadCategoryList
+                                                    .any((e) =>
+                                                e.leadStatus ==
+                                                    stageId)
+                                                    ? stageId
+                                                    : null,
                                                 isExpanded: true,
-                                                focusColor: Colors.transparent,
-                                                underline: SizedBox(),
-                                                items: controllers.leadCategoryList.map((item) {
+                                                underline: const SizedBox(),
+                                                items: controllers
+                                                    .leadCategoryList
+                                                    .map((item) {
                                                   return DropdownMenuItem<String>(
-                                                    value: item["lead_status"],
-                                                    child: Text(item["value"]),
+                                                    value: item.leadStatus,
+                                                    child: Text(item.value),
                                                   );
                                                 }).toList(),
                                                 onChanged: (value) {
                                                   setState(() {
-                                                    stageId = value!;
-                                                    isEdit=true;
+                                                    stageId = value;
+                                                    selectedStage = controllers
+                                                        .leadCategoryList
+                                                        .firstWhere((e) =>
+                                                    e.leadStatus ==
+                                                        value)
+                                                        .value;
+                                                    isEdit = true;
                                                   });
                                                 },
                                               ),
                                             ),
-                                            15.height,
+
+                                            const SizedBox(height: 15),
+
+                                            /// REASON FIELD
                                             TextField(
                                               controller: reasonController,
-                                              decoration: InputDecoration(
+                                              decoration:
+                                              const InputDecoration(
                                                 labelText: "Reason",
-                                                border: OutlineInputBorder(),
+                                                border:
+                                                OutlineInputBorder(),
                                               ),
                                             ),
                                           ],
                                         ),
+
+                                        /// ACTIONS
                                         actions: [
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                             children: [
+                                              /// CANCEL
                                               Container(
                                                 decoration: BoxDecoration(
-                                                    border: Border.all(color: colorsConst.primary),
-                                                    color: Colors.white),
+                                                  border: Border.all(
+                                                      color:
+                                                      colorsConst.primary),
+                                                  color: Colors.white,
+                                                ),
                                                 width: 80,
-                                                height: 25,
+                                                height: 30,
                                                 child: ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(
-                                                      shape: const RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.zero,
-                                                      ),
-                                                      backgroundColor: Colors.white,
+                                                  style:
+                                                  ElevatedButton.styleFrom(
+                                                    shape:
+                                                    const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.zero,
                                                     ),
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: CustomText(
-                                                      text: "Cancel",
-                                                      isCopy: false,
-                                                      colors: colorsConst.primary,
-                                                      size: 14,
-                                                    )),
+                                                    backgroundColor:
+                                                    Colors.white,
+                                                    elevation: 0,
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                        context);
+                                                  },
+                                                  child: CustomText(
+                                                    text: "Cancel",
+                                                    isCopy: false,
+                                                    colors:
+                                                    colorsConst.primary,
+                                                    size: 14,
+                                                  ),
+                                                ),
                                               ),
-                                              10.width,
+
+                                              const SizedBox(width: 10),
+
+                                              /// PROMOTE BUTTON
                                               CustomLoadingButton(
                                                 callback: () async {
-                                                  if (selectedStage == "Suspects") {
-                                                    await apiService.insertLeadPromoteAPI(context, apiService.newLeadList);
-                                                  } else if (selectedStage == "Qualified") {
-                                                    await apiService.insertQualifiedAPI(context, apiService.newLeadList);
-                                                  } else if (selectedStage == "Customers") {
-                                                    await apiService.insertPromoteCustomerAPI(context, apiService.newLeadList);
-                                                  }
-                                                  // else {
-                                                  //   await apiService.insertProspectsAPI(context, [deleteData]);
-                                                  // }
-                                                  setState(() {
-                                                    apiService.newLeadList.clear();
-                                                  });
+                                                  if (stageId == null) return;
+
+                                                  await apiService
+                                                      .insertPromoteAPI(
+                                                    context,
+                                                    widget.id.toString(),
+                                                    stageId!,
+                                                    selectedStage,
+                                                    widget.list,
+                                                    widget.list2,
+                                                  );
+
+                                                  Navigator.pop(context);
                                                 },
                                                 height: 35,
                                                 isLoading: true,
                                                 backgroundColor:
                                                 colorsConst.primary,
                                                 radius: 2,
-                                                width: 80,
+                                                width: 90,
                                                 controller:
                                                 controllers.productCtr,
                                                 isImage: false,
@@ -1365,11 +1551,11 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                                 child: Text("View email record",
                                     style:
                                     TextStyle(color: colorsConst.textColor))),
-                            PopupMenuItem(
-                                value: "No Matches",
-                                child: Text("No Matches",
-                                    style:
-                                    TextStyle(color: colorsConst.textColor))),
+                            // PopupMenuItem(
+                            //     value: "No Matches",
+                            //     child: Text("No Matches",
+                            //         style:
+                            //         TextStyle(color: colorsConst.textColor))),
                             PopupMenuItem(
                                 value: "Delete",
                                 child: Text("Delete",
@@ -1406,23 +1592,31 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
 
                   return Tooltip(
                     message: value.toString() == "null" ? "" : value.toString(),
-                    child: Container(
-                      height: 45,
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: TextField(
-                        controller: TextEditingController(
-                          text: value.toString() == "null" ? "" : value.toString(),
-                        ),
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: colorsConst.textColor,
-                        ),
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
+                    child: GestureDetector(
+                        onDoubleTap: () {
+                        setState(() {
+                        isEditing = true;
+                        print(isEditing);
+                        });},
+                      child: Container(
+                        height: 45,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: TextField(
+                          readOnly: !isEditing, // 👈 important
+                          controller: TextEditingController(
+                            text: value.toString() == "null" ? "" : value.toString(),
+                          ),
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: colorsConst.textColor,
+                          ),
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                          ),
                         ),
                       ),
                     ),

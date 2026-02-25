@@ -20,9 +20,12 @@ import '../../components/custom_date_box.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_textfield.dart';
 import '../../controller/controller.dart';
+import '../../models/new_lead_obj.dart';
 
 class AddLead extends StatefulWidget {
-  const AddLead({super.key});
+  final RxList<NewLeadObj> list;
+  final RxList<NewLeadObj> list2;
+  const AddLead({super.key, required this.list, required this.list2});
 
   @override
   State<AddLead> createState() => _AddLeadState();
@@ -170,7 +173,15 @@ class _AddLeadState extends State<AddLead> {
       });
     });
   }
-
+  String _formatHeading(String heading) {
+    String cleaned = heading.replaceAll(",", "").trim();
+    return cleaned
+        .split(" ")
+        .map((word) => word.isNotEmpty
+        ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+        : "")
+        .join(" ");
+  }
 //santhiya2
   final FocusNode name = FocusNode();
   final FocusNode phone = FocusNode();
@@ -208,6 +219,11 @@ class _AddLeadState extends State<AddLead> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(name);
+      // controllers.leadNameCrt.add(TextEditingController());
+      // controllers.leadMobileCrt.add(TextEditingController());
+      // controllers.leadTitleCrt.add(TextEditingController());
+      // controllers.leadEmailCrt.add(TextEditingController());
+      // controllers.leadWhatsCrt.add(TextEditingController());
     });
     getStringValue();
   }
@@ -271,7 +287,7 @@ class _AddLeadState extends State<AddLead> {
                   children: [
                     CustomText(
                       text:
-                          "New Leads - ${controllers.leadCategoryList[0]["value"]}",
+                          "New Leads - ${controllers.leadCategoryList[0].value}",
                       colors: colorsConst.textColor,
                       size: 23,
                       isBold: true,
@@ -280,7 +296,7 @@ class _AddLeadState extends State<AddLead> {
                     5.height,
                     CustomText(
                       text:
-                          "Add your ${controllers.leadCategoryList[0]["value"]} Information",
+                          "Add your ${controllers.leadCategoryList[0].value} Information",
                       colors: colorsConst.textColor,
                       size: 12,
                       isCopy: true,
@@ -371,7 +387,10 @@ class _AddLeadState extends State<AddLead> {
                             isMistake = true;
                             utils.snackBar(
                               context: context,
-                              msg: "Enter valid 10 digit mobile number",
+                              msg: "Enter valid 10 digit ${_formatHeading(
+                                  controllers.getUserHeading(
+                                      "mobile_name") ??
+                                      "Mobile No")}",
                               color: Colors.red,
                             );
                             break;
@@ -380,7 +399,10 @@ class _AddLeadState extends State<AddLead> {
                             isMistake = true;
                             utils.snackBar(
                               context: context,
-                              msg: "Same phone number already added",
+                              msg: "Same ${_formatHeading(
+                                  controllers.getUserHeading(
+                                      "mobile_name") ??
+                                      "Mobile No")} already added",
                               color: Colors.red,
                             );
                             break;
@@ -391,31 +413,33 @@ class _AddLeadState extends State<AddLead> {
                           controllers.leadCtr.reset();
                           return;
                         }
-                        for (var i = 0; i < controllers.numberList.length; i++) {
-                          String number = controllers.numberList[i].text.trim();
-                          if (number.isEmpty || number.length != 10) {
-                            isMistake2 = true;
-                            utils.snackBar(
-                              context: context,
-                              msg: "Enter valid 10 digit mobile number",
-                              color: Colors.red,
-                            );
-                            break;
+                        if(controllers.infoNumberList[0].text.isNotEmpty){
+                          for (var i = 0; i < controllers.infoNumberList.length; i++) {
+                            String number = controllers.infoNumberList[i].text.trim();
+                            if (number.isEmpty || number.length != 10) {
+                              isMistake2 = true;
+                              utils.snackBar(
+                                context: context,
+                                msg: "Enter valid 10 digit mobile number",
+                                color: Colors.red,
+                              );
+                              break;
+                            }
+                            if (uniqueNumbers2.contains(number)) {
+                              isMistake2 = true;
+                              utils.snackBar(
+                                context: context,
+                                msg: "Same company phone number already added",
+                                color: Colors.red,
+                              );
+                              break;
+                            }
+                            uniqueNumbers2.add(number);
                           }
-                          if (uniqueNumbers2.contains(number)) {
-                            isMistake2 = true;
-                            utils.snackBar(
-                              context: context,
-                              msg: "Same company phone number already added",
-                              color: Colors.red,
-                            );
-                            break;
+                          if (isMistake2) {
+                            controllers.leadCtr.reset();
+                            return;
                           }
-                          uniqueNumbers2.add(number);
-                        }
-                        if (isMistake2) {
-                          controllers.leadCtr.reset();
-                          return;
                         }
                         if (controllers.leadLinkedinCrt.text.trim().isNotEmpty&&!utils.isValidLinkedInId(controllers.leadLinkedinCrt.text.trim())) {
                           utils.snackBar(
@@ -438,7 +462,10 @@ class _AddLeadState extends State<AddLead> {
 
                         if (controllers.leadNameCrt[0].text.isEmpty) {
                           utils.snackBar(
-                              msg: "Please add name",
+                              msg: "Please add ${_formatHeading(
+                                  controllers.getUserHeading(
+                                      "name") ??
+                                      "Name")}",
                               color: Colors.red,
                               context: context);
                           controllers.leadCtr.reset();
@@ -502,11 +529,11 @@ class _AddLeadState extends State<AddLead> {
                           if (controllers.leadEmailCrt[0].text.isNotEmpty) {
                             if (controllers.leadEmailCrt[0].text.isEmail) {
                               if (controllers.pinCodeController.text.isEmpty) {
-                                apiService.insertSingleCustomer(context);
+                                apiService.insertSingleCustomer(context,widget.list,widget.list2);
                               } else {
                                 if (controllers.pinCodeController.text.length ==
                                     6) {
-                                  apiService.insertSingleCustomer(context);
+                                  apiService.insertSingleCustomer(context,widget.list,widget.list2);
                                 } else {
                                   utils.snackBar(
                                       msg: "Please add 6 digits pin code",
@@ -525,11 +552,11 @@ class _AddLeadState extends State<AddLead> {
                             }
                           } else {
                             if (controllers.pinCodeController.text.isEmpty) {
-                              apiService.insertSingleCustomer(context);
+                              apiService.insertSingleCustomer(context,widget.list,widget.list2);
                             } else {
                               if (controllers.pinCodeController.text.length ==
                                   6) {
-                                apiService.insertSingleCustomer(context);
+                                apiService.insertSingleCustomer(context,widget.list,widget.list2);
                               } else {
                                 utils.snackBar(
                                     msg: "Please add 6 digits pin code",
@@ -568,12 +595,6 @@ class _AddLeadState extends State<AddLead> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: controllers.leadPersonalItems.value,
                         itemBuilder: (context, index) {
-                          controllers.leadNameCrt.add(TextEditingController());
-                          controllers.leadMobileCrt
-                              .add(TextEditingController());
-                          controllers.leadTitleCrt.add(TextEditingController());
-                          controllers.leadEmailCrt.add(TextEditingController());
-                          controllers.leadWhatsCrt.add(TextEditingController());
                           return Column(
                             children: [
                               Row(
@@ -717,13 +738,19 @@ class _AddLeadState extends State<AddLead> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       CustomTextField(
-                                        hintText: "Name",
+                                        hintText: _formatHeading(
+                                            controllers.getUserHeading(
+                                                "name") ??
+                                                "Name"),
                                         focusNode: name,
                                         onEdit: () {
                                           FocusScope.of(context)
                                               .requestFocus(phone);
                                         },
-                                        text: "Name",
+                                        text: _formatHeading(
+                                            controllers.getUserHeading(
+                                                "name") ??
+                                                "Name"),
                                         isOptional: true,
                                         controller:
                                             controllers.leadNameCrt[index],
@@ -782,8 +809,14 @@ class _AddLeadState extends State<AddLead> {
                                                                       .requestFocus(account);
                                                                 },
                                                                 // focusNode: whatsApp,
-                                                                hintText: "Phone No",
-                                                                text: "Phone No",
+                                                                hintText: _formatHeading(
+                                                                    controllers.getUserHeading(
+                                                                        "mobile_name") ??
+                                                                        "Mobile No"),
+                                                                text: _formatHeading(
+                                                                    controllers.getUserHeading(
+                                                                        "mobile_name") ??
+                                                                        "Mobile No"),
                                                                 controller:controllers.numberList[index],
                                                                 width: textFieldSize,
                                                                 isOptional: true,
@@ -810,7 +843,10 @@ class _AddLeadState extends State<AddLead> {
                                                                   if (controllers.numberList.length > 1) {
                                                                     controllers.numberList.removeAt(index);
                                                                   }else{
-                                                                    utils.snackBar(context: context, msg: "Enter at least one mobile number.", color: Colors.red);
+                                                                    utils.snackBar(context: context, msg: "Enter at least one ${_formatHeading(
+                                                                        controllers.getUserHeading(
+                                                                            "mobile_name") ??
+                                                                            "Mobile No")}", color: Colors.red);
                                                                   }
                                                                 },
                                                                 icon:SvgPicture.asset("assets/images/delete.svg")
@@ -834,7 +870,10 @@ class _AddLeadState extends State<AddLead> {
                                                                     isMistake = true;
                                                                     utils.snackBar(
                                                                       context: context,
-                                                                      msg: "Enter valid 10 digit mobile number",
+                                                                      msg: "Enter valid 10 digit ${_formatHeading(
+                                                                          controllers.getUserHeading(
+                                                                              "mobile_name") ??
+                                                                              "Mobile No")}",
                                                                       color: Colors.red,
                                                                     );
                                                                     break;
@@ -845,7 +884,10 @@ class _AddLeadState extends State<AddLead> {
                                                                     isMistake = true;
                                                                     utils.snackBar(
                                                                       context: context,
-                                                                      msg: "Same phone number already added",
+                                                                      msg: "Same ${_formatHeading(
+                                                                          controllers.getUserHeading(
+                                                                              "mobile_name") ??
+                                                                              "Mobile No")} already added",
                                                                       color: Colors.red,
                                                                     );
                                                                     break;
@@ -978,8 +1020,14 @@ class _AddLeadState extends State<AddLead> {
                                               .requestFocus(email);
                                         },
                                         focusNode: account,
-                                        hintText: "Account Manager (Optional)",
-                                        text: "Account Manager (Optional)",
+                                        hintText: _formatHeading(
+                                            controllers.getUserHeading(
+                                                "owner") ??
+                                                "Account Manager"),
+                                        text: _formatHeading(
+                                            controllers.getUserHeading(
+                                                "owner") ??
+                                                "Account Manager"),
                                         controller:
                                             controllers.leadTitleCrt[index],
                                         width: textFieldSize,
@@ -1034,8 +1082,14 @@ class _AddLeadState extends State<AddLead> {
                                                     controllers.dateOfConCtr,
                                                 pathVal: controllers.empDOB);
                                           },
-                                          hintText: "Email Id (Optional)",
-                                          text: "Email Id (Optional)",
+                                          hintText: _formatHeading(
+                                              controllers.getUserHeading(
+                                                  "email") ??
+                                                  "Email id"),
+                                          text: _formatHeading(
+                                              controllers.getUserHeading(
+                                                  "email") ??
+                                                  "Email id"),
                                           controller:
                                               controllers.leadEmailCrt[index],
                                           width: textFieldSize,
@@ -1139,8 +1193,10 @@ class _AddLeadState extends State<AddLead> {
                                 FocusScope.of(context).requestFocus(cNo);
                               },
                               focusNode: cName,
-                              hintText: controllers.headingFields.contains("Company Name")?"Company Name":"",
-                              text: "Company Name",
+                              hintText: _formatHeading(controllers.getUserHeading
+                                ("company_name") ?? "Company Name"),
+                              text: _formatHeading(controllers.getUserHeading
+                                ("company_name") ?? "Company Name"),
                               controller: controllers.leadCoNameCrt,
                               width: textFieldSize,
                               //keyboardType: TextInputType.text,
@@ -1595,8 +1651,12 @@ class _AddLeadState extends State<AddLead> {
                               onEdit: () {
                                 FocusScope.of(context).requestFocus(ob3);
                               },
-                              hintText: "Source Of Prospect",
-                              text: "Source Of Prospect",
+                              hintText: _formatHeading(controllers
+                                  .getUserHeading("source") ??
+                                  "SOURCE OF PROSPECT"),
+                              text: _formatHeading(controllers
+                                  .getUserHeading("source") ??
+                                  "SOURCE OF PROSPECT"),
                               controller: controllers.leadDisPointsCrt,
                               width: textFieldSize,
                               isOptional: false,
@@ -1629,8 +1689,14 @@ class _AddLeadState extends State<AddLead> {
                               onEdit: () {
                                 FocusScope.of(context).requestFocus(ob4);
                               },
-                              hintText: "Product Discussed",
-                              text: "Product Discussed",
+                              hintText: _formatHeading(controllers
+                                  .getUserHeading(
+                                  "product_discussion") ??
+                                  "Product Discussed"),
+                              text: _formatHeading(controllers
+                                  .getUserHeading(
+                                  "product_discussion") ??
+                                  "Product Discussed"),
                               controller: controllers.prodDescriptionController,
                               width: textFieldSize,
                               isOptional: false,
@@ -1665,8 +1731,14 @@ class _AddLeadState extends State<AddLead> {
                               onEdit: () {
                                 FocusScope.of(context).requestFocus(ob5);
                               },
-                              hintText: "Expected Monthly Billing Value",
-                              text: "Expected Monthly Billing Value",
+                              hintText: _formatHeading(controllers
+                                  .getUserHeading(
+                                  "expected_billing_value") ??
+                                  "Expected Monthly Billing Value"),
+                              text: _formatHeading(controllers
+                                  .getUserHeading(
+                                  "expected_billing_value") ??
+                                  "Expected Monthly Billing Value"),
                               controller: controllers.exMonthBillingValCrt,
                               width: textFieldSize,
                               isOptional: false,
@@ -1699,8 +1771,12 @@ class _AddLeadState extends State<AddLead> {
                               onEdit: () {
                                 FocusScope.of(context).requestFocus(ob6);
                               },
-                              hintText: "ARPU Value",
-                              text: "ARPU Value",
+                              hintText: _formatHeading(controllers
+                                  .getUserHeading("arpu_value") ??
+                                  "ARPU Value"),
+                              text: _formatHeading(controllers
+                                  .getUserHeading("arpu_value") ??
+                                  "ARPU Value"),
                               controller: controllers.arpuCrt,
                               width: textFieldSize,
                               isOptional: false,
@@ -1732,8 +1808,12 @@ class _AddLeadState extends State<AddLead> {
                               onEdit: () {
                                 FocusScope.of(context).requestFocus(ob7);
                               },
-                              hintText: "Prospect Grading",
-                              text: "Prospect Grading",
+                              hintText: _formatHeading(controllers
+                                  .getUserHeading("rating") ??
+                                  "Prospect Grading"),
+                              text: _formatHeading(controllers
+                                  .getUserHeading("rating") ??
+                                  "Prospect Grading"),
                               controller: controllers.prospectGradingCrt,
                               width: textFieldSize,
                               isOptional: false,
@@ -1778,8 +1858,14 @@ class _AddLeadState extends State<AddLead> {
                                   pathVal: controllers.exDate);
                               FocusScope.of(context).requestFocus(ob8);
                             },
-                            hintText: "Total Number Of Head Count",
-                            text: "Total Number Of Head Count",
+                            hintText: _formatHeading(controllers
+                                .getUserHeading(
+                                "num_of_headcount") ??
+                                "Total Number Of Head Count"),
+                            text: _formatHeading(controllers
+                                .getUserHeading(
+                                "num_of_headcount") ??
+                                "Total Number Of Head Count"),
                             controller: controllers.noOfHeadCountCrt,
                             width: textFieldSize,
                             isOptional: false,
@@ -1803,7 +1889,9 @@ class _AddLeadState extends State<AddLead> {
                           Obx(
                             () => CustomDateBox(
                               isOptional: false,
-                              text: "Expected Conversion Date",
+                              text: _formatHeading(controllers.getUserHeading(
+                                  "expected_convertion_date") ??
+                                  "Expected Conversion Date"),
                               value: controllers.exDate.value,
                               width: textFieldSize,
                               onTap: () {
@@ -1826,8 +1914,14 @@ class _AddLeadState extends State<AddLead> {
                                   pathVal: controllers.prospectDate);
                               FocusScope.of(context).requestFocus(ob9);
                             },
-                            hintText: "Details of Service Required",
-                            text: "Details of Service Required",
+                            hintText: _formatHeading(controllers
+                                .getUserHeading(
+                                "details_of_service_required") ??
+                                "Details of Service Required"),
+                            text: _formatHeading(controllers
+                                .getUserHeading(
+                                "details_of_service_required") ??
+                                "Details of Service Required"),
                             controller: controllers.sourceCrt,
                             width: textFieldSize,
                             isOptional: false,
@@ -1856,7 +1950,10 @@ class _AddLeadState extends State<AddLead> {
                           ),
                           Obx(
                             () => CustomDateBox(
-                              text: "Prospect Enrollment Date",
+                              text: _formatHeading(controllers
+                                  .getUserHeading(
+                                  "prospect_enrollment_date") ??
+                                  "Prospect Enrollment Date"),
                               isOptional: false,
                               value: controllers.prospectDate.value,
                               width: textFieldSize,
@@ -1875,8 +1972,12 @@ class _AddLeadState extends State<AddLead> {
                             onEdit: () {
                               FocusScope.of(context).requestFocus(door);
                             },
-                            hintText: "Status Update",
-                            text: "Status Update",
+                            hintText: _formatHeading(controllers
+                                .getUserHeading("status_update") ??
+                                "Status Update"),
+                            text: _formatHeading(controllers
+                                .getUserHeading("status_update") ??
+                                "Status Update"),
                             controller: controllers.statusCrt,
                             width: textFieldSize,
                             isOptional: false,
@@ -2141,11 +2242,11 @@ class _AddLeadState extends State<AddLead> {
                                 if (controllers.leadEmailCrt[0].text.isNotEmpty) {
                                   if (controllers.leadEmailCrt[0].text.isEmail) {
                                     if (controllers.pinCodeController.text.isEmpty) {
-                                      apiService.insertSingleCustomer(context);
+                                      apiService.insertSingleCustomer(context,widget.list,widget.list2);
                                     } else {
                                       if (controllers.pinCodeController.text.length ==
                                           6) {
-                                        apiService.insertSingleCustomer(context);
+                                        apiService.insertSingleCustomer(context,widget.list,widget.list2);
                                       } else {
                                         utils.snackBar(
                                             msg: "Please add 6 digits pin code",
@@ -2164,11 +2265,11 @@ class _AddLeadState extends State<AddLead> {
                                   }
                                 } else {
                                   if (controllers.pinCodeController.text.isEmpty) {
-                                    apiService.insertSingleCustomer(context);
+                                    apiService.insertSingleCustomer(context,widget.list,widget.list2);
                                   } else {
                                     if (controllers.pinCodeController.text.length ==
                                         6) {
-                                      apiService.insertSingleCustomer(context);
+                                      apiService.insertSingleCustomer(context,widget.list,widget.list2);
                                     } else {
                                       utils.snackBar(
                                           msg: "Please add 6 digits pin code",
@@ -2463,7 +2564,7 @@ class _AddLeadState extends State<AddLead> {
 //                       children: [
 //                         CustomText(
 //                           text:
-//                           "New Leads - ${controllers.leadCategoryList[0]["value"]}",
+//                           "New Leads - ${controllers.leadCategoryList[0].value}",
 //                           colors: colorsConst.textColor,
 //                           size: 23,
 //                           isBold: true,
@@ -2472,7 +2573,7 @@ class _AddLeadState extends State<AddLead> {
 //                         5.height,
 //                         CustomText(
 //                           text:
-//                           "Add your ${controllers.leadCategoryList[0]["value"]} Information",
+//                           "Add your ${controllers.leadCategoryList[0].value} Information",
 //                           colors: colorsConst.textColor,
 //                           size: 12,
 //                           isCopy: true,

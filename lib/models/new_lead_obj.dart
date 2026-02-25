@@ -27,7 +27,7 @@ class NewLeadObj {
   final String? companyWebsite;
   final String? companyEmail;
   final String? linkedin;
-  final String? leadStatus;
+  String? leadStatus;
   final String? rating;
   final String? quotationUpdate;
   final String? active;
@@ -58,12 +58,13 @@ class NewLeadObj {
   final String? industry;
   final String? product;
   final String? x;
+  bool? select;
 
   NewLeadObj(
       {this.userId,
         this.companyNumber, this.companyWebsite, this.companyEmail, this.linkedin,
-        this.addressId,
-      this.firstname,
+        this.addressId,this.select=false,
+        this.firstname,
       this.lineId,
       this.mobileNumber,
       this.emergencyName,
@@ -116,6 +117,7 @@ class NewLeadObj {
       });
   factory NewLeadObj.fromJson(Map<String, dynamic> json) {
     return NewLeadObj(
+      select: false,
       userId: json["user_id"]?.toString() ?? '',
       addressId: json["address_id"]?.toString() ?? '',
       firstname: json["firstname"]?.toString() ?? '',
@@ -184,6 +186,7 @@ class NewLeadObj {
 
   Map<String, dynamic> asMap() {
     return {
+      "select": select,
       "user_id": userId,
       "address_id": addressId,
       "firstname": firstname,

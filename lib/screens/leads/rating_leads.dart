@@ -17,10 +17,13 @@ import '../../components/custom_sidebar.dart';
 import '../../components/custom_table_header.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
+import '../../models/new_lead_obj.dart';
 
 class RatingLeads extends StatefulWidget {
   final String type;
-  const RatingLeads({super.key,required this.type});
+  final RxList<NewLeadObj> list;
+  final RxList<NewLeadObj> list2;
+  const RatingLeads({super.key,required this.type, required this.list, required this.list2});
 
   @override
   State<RatingLeads> createState() => _RatingLeadsState();
@@ -124,14 +127,15 @@ class _RatingLeadsState extends State<RatingLeads> {
                         title: "Rating - ${widget.type} Leads",
                         subtitle: "View all of your Rating - ${widget.type} Information",
                         list: controllers.allNewLeadFuture,
-                        isAction: false,
+                        isAction: false, list2: controllers.allNewLeadFuture,
                       ),
                       20.height,
                       // Filter Section
                       FilterSection(
+                        list: widget.list,list2: widget.list2,
                         //Santhiya
                         itemCount: controllers.paginatedRatingLeads.length,
-
+                        leadIndex: "0",
                         focusNode: _focusNode,
                         isActionEnabled: false,
                         leadFuture: controllers.allNewLeadFuture,
@@ -344,7 +348,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                         },
                         onSelectMonth: () {
                           controllers.selectMonth(
-                              context, controllers.selectedProspectSortBy, controllers.selectedMonth);
+                              context, controllers.selectedProspectSortBy, controllers.selectedMonth,widget.list,widget.list2);
                         },
                         selectedMonth: controllers.selectedMonth,
                         selectedSortBy: controllers.selectedProspectSortBy,
@@ -419,6 +423,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                                         itemBuilder: (context, index) {
                                           final data = controllers.paginatedRatingLeads[index];
                                           return Obx(()=>LeftLeadTile(
+                                            list: widget.list,list2: widget.list2,
                                             leadIndex: "0",
                                             showCheckbox: false,
                                             pageName: "Rating Leads",
@@ -584,6 +589,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                                           itemBuilder: (context, index) {
                                             final data = controllers.paginatedRatingLeads[index];
                                             return Obx(()=>CustomLeadTile(
+                                              list: widget.list,list2: widget.list2,
                                               pageName: "Suspects",
                                               saveValue: controllers.isNewLeadList[index]["isSelect"],
                                               onChanged: (value){

@@ -125,7 +125,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
 
                   // 🔥 Step 2: Update lead_status = index
                   for (int i = 0; i < controllers.leadCategoryList.length; i++) {
-                    controllers.leadCategoryList[i]["lead_status"] = i.toString();
+                    controllers.leadCategoryList[i].leadStatus = i.toString();
                   }
 
                   controllers.update();
@@ -134,7 +134,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                   var data = controllers.leadCategoryList[index];
 
                   return Padding(
-                    key: ValueKey(data["id"]),
+                    key: ValueKey(data.id),
                     padding: const EdgeInsets.all(10.0),
                     child: Container(
                       width: MediaQuery.of(context).size.width*0.5,
@@ -150,7 +150,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomText(
-                              text: data["value"],
+                              text: data.value,
                               isCopy: false,
                             ),
                             // CustomText(

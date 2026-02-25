@@ -159,6 +159,7 @@ class DashboardController extends GetxController {
                           setDateRange(tempRange);
                         }
                         getDashboardReport();
+                        getLeadReport();
                         getStatusWiseReport();
                         final range = dashController.selectedRange.value;
                         var today = DateTime.now();
@@ -242,6 +243,7 @@ class DashboardController extends GetxController {
     selectedRange.value = DateTimeRange(start: normalizedStart, end: normalizedEnd);
 
     getDashboardReport();
+    getLeadReport();
     getStatusWiseReport();
 
     if (selectedSortBy.value != "Today" && selectedSortBy.value != "Yesterday") {
@@ -355,7 +357,7 @@ class DashboardController extends GetxController {
         "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
       };
 
-      log("Dashboard request data: ${data.toString()}");
+      log("Dashboard report 1:  ${data.toString()}");
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -365,7 +367,7 @@ class DashboardController extends GetxController {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      print("Dashboard request data/// ${request.body}");
+      print("Dashboard report: ${request.body}");
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -464,17 +466,87 @@ class DashboardController extends GetxController {
       dashController.totalQualified.value    = "0";
       dashController.totalUnQualified.value  = "0";
       dashController.totalCustomers.value    = "0";
-      throw Exception('Failed to load dashboard report');
+      throw Exception('Failed to load dashboard report $e');
+    }
+  }
+  RxList leadReport=[].obs;
+  List<Color> generateColors(int count) {
+    return List.generate(count, (index) {
+      final hue = (360 / count) * index;
+      return HSLColor.fromAHSL(
+        1.0,
+        hue,
+        0.65,
+        0.55,
+      ).toColor();
+    });
+  }
+  List<Color> color=[];
+  Future getLeadReport() async {
+    final range = dashController.selectedRange.value;
+    var today = DateTime.now();
+    var tomorrow = DateTime.now().add(Duration(days: 1));
+    final adjustedEnd = range?.end.add(const Duration(days: 1));
+    leadReport.clear();
+    try {
+      Map data = {
+        "search_type": "lead_count_report",
+        "cos_id": controllers.storage.read("cos_id"),
+        "role": controllers.storage.read("role"),
+        "id": controllers.storage.read("id"),
+        "action": "get_data",
+        "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+        "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
+      };
+
+      // log("Dashboard request dataaa: ${data.toString()}");
+      final request = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(data),
+        encoding: Encoding.getByName("utf-8"),
+      );
+      print("Dashboard report:2 ${request.body}");
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getLeadReport();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200) {
+
+        var responseList = jsonDecode(request.body) as List;
+        if (responseList.isNotEmpty) {
+          color = generateColors(responseList.length);
+          leadReport.value=responseList;
+        }
+        else {
+          leadReport.clear();
+        }
+      } else {
+        leadReport.clear();
+        throw Exception('Failed to load dashboard report 2');
+      }
+    } catch (e) {
+      leadReport.clear();
+      throw Exception('Failed to load dashboard report 2');
     }
   }
   RxList visitStatusReport=[].obs;
+  double total = 0;
   Future getStatusWiseReport() async {
     final range = dashController.selectedRange.value;
     var today = DateTime.now();
     var tomorrow = DateTime.now().add(Duration(days: 1));
     final adjustedEnd = range?.end.add(const Duration(days: 1));
-    try {
+    // try {
       visitStatusReport.clear();
+      total=0;
       Map data = {
         "search_type": "visit_status_report",
         "cos_id": controllers.storage.read("cos_id"),
@@ -508,13 +580,18 @@ class DashboardController extends GetxController {
       if (request.statusCode == 200) {
         var response = jsonDecode(request.body) as List;
         visitStatusReport.value=response;
+        for (var item in response) {
+          total += int.parse(item["total_count"].toString());
+        }
+        print("total ${total}");
+        print("visitStatusReport.value ${visitStatusReport.value}");
       } else {
         visitStatusReport.clear();
         throw Exception('Failed to load dashboard report');
       }
-    } catch (e) {
-      visitStatusReport.clear();
-      throw Exception('Failed to load dashboard report');
-    }
+    // } catch (e) {
+    //   visitStatusReport.clear();
+    //   throw Exception('Failed to load dashboard report $e');
+    // }
   }
 }

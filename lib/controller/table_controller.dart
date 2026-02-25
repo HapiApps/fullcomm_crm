@@ -303,6 +303,7 @@ class TableController extends GetxController {
     isTableLoading.value =false;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
+    print("done");
   }
 
   // Cancel changes (restore default)

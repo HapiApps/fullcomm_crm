@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
+import 'package:fullcomm_crm/provider/dashboard_provider.dart';
 import 'package:fullcomm_crm/provider/employee_provider.dart';
 import 'package:fullcomm_crm/provider/reminder_provider.dart';
+import 'package:fullcomm_crm/screens/DashboardPage.dart';
 import 'package:fullcomm_crm/screens/mobile_dashboard.dart';
 import 'package:fullcomm_crm/screens/dashboard.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
@@ -46,6 +48,7 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => EmployeeProvider()),
         ChangeNotifierProvider(create: (_) => ReminderProvider()),
+        ChangeNotifierProvider(create: (_) => DashboardProvider()),
       ],child: MyApp(loginScreen: loginScreen,)));
 }
 
@@ -81,7 +84,6 @@ class _MyAppState extends State<MyApp> {
     settingsController.allTemplates();
     remController.loadSavedFilters();
     if (widget.loginScreen) {
-      apiService.getLeadCategories();
       apiService.allLeadsDetails();
       apiService.allQualifiedDetails();
       apiService.allNewLeadsDetails();
@@ -158,7 +160,7 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
           home: SelectionArea(
-              child:widget.loginScreen == false ? const LoginPage() : kIsWeb?NewDashboard():MobileDashboard()),
+              child:widget.loginScreen == false ? const LoginPage() : kIsWeb?DashboardPage():MobileDashboard()),
         ),
       );
   }

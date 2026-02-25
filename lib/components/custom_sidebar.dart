@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -9,6 +11,7 @@ import '../common/constant/colors_constant.dart';
 import '../common/constant/default_constant.dart';
 import '../common/widgets/log_in.dart';
 import '../controller/controller.dart';
+import '../screens/DashboardPage.dart';
 import '../screens/leads/new_lead_page.dart';
 import '../screens/leads/view_customer.dart';
 import '../screens/dashboard.dart';
@@ -85,7 +88,7 @@ class SideBar extends StatelessWidget {
               selectedImage: "assets/images/s_dash.png",
               unSelectedImage: "assets/images/u_dash.png",
               label: constValue.dashboard,
-              page: const NewDashboard(),
+              page: const DashboardPage(),
             ),
             ListView.builder(
               shrinkWrap: true,
@@ -95,16 +98,45 @@ class SideBar extends StatelessWidget {
                     context: context,
                     controllers: controllers,
                     colorsConst: colorsConst,
-                    index: int.parse(controllers.leadCategoryList[index]["lead_status"]),
+                    index: int.parse(controllers.leadCategoryList[index].leadStatus),
                     icon: Icons.remove_red_eye_outlined,
-                    label: controllers.leadCategoryList[index]["value"],
-                    selectedImage: controllers.leadCategoryList[index]["icon1"],
-                    unSelectedImage: controllers.leadCategoryList[index]["icon2"],
+                    label: controllers.leadCategoryList[index].value,
+                    selectedImage: controllers.leadCategoryList[index].icon1,
+                    unSelectedImage: controllers.leadCategoryList[index].icon2,
                     isNetWrk: true,
                     onPreTap: () {
-                      controllers.isLead.value = true;
+                      // print("Sidebar Clicked Index: $index");
+                      //
+                      // controllers.isLead.value = false;
+                      //
+                      // final selectedStatus =
+                      // controllers.leadCategoryList[index]["lead_status"];
+                      //
+                      // print("Selected Status: $selectedStatus");
+                      // print("Total Leads Count: ${controllers.allLeadList.length}");
+                      //
+                      // final filteredList = controllers.allLeadList
+                      //     .where((lead) => lead.leadStatus == selectedStatus)
+                      //     .toList();
+                      //
+                      // print("Filtered Leads Count: ${filteredList.length}");
+                      //
+                      // controllers.newLeadList.value = filteredList;
+                      //
+                      // controllers.searchNewLeadList.value =
+                      //     List.from(controllers.newLeadList);
+                      //
+                      // controllers.isLead.value = true;
+                      //
+                      // print("New Lead List Length: ${controllers.newLeadList.length}");
+                      log("controllers.leadCategoryList--------------${controllers.leadCategoryList}");
+                      log("controllers.leadCategoryList2--------------${controllers.leadCategoryList[index].list2}");
+                      log("controllers.leadCategoryListleadStatus--------------${controllers.leadCategoryList[index].leadStatus}");
+                      log("controllers.leadCategoryListvalue--------------${controllers.leadCategoryList[index].value}");
                     },
-                    page:  NewLeadPage(index: controllers.leadCategoryList[index]["lead_status"] ,name: controllers.leadCategoryList[index]["value"],),
+                    page:  NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
+                      name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
+                      list2: controllers.leadCategoryList[index].list2,),
                   );
                 }),
 
@@ -114,7 +146,7 @@ class SideBar extends StatelessWidget {
             //   colorsConst: colorsConst,
             //   index: 1,
             //   icon: Icons.remove_red_eye_outlined,
-            //   label: controllers.leadCategoryList[0]["value"],
+            //   label: controllers.leadCategoryList[0].value,
             //   selectedImage: "assets/images/s_suspects.png",
             //   unSelectedImage: "assets/images/u_suspects.png",
             //   onPreTap: () {
