@@ -71,9 +71,14 @@ class LeadStatusModel {
         'value: $value, '
         'id: $id, '
         'icon1: $icon1, '
-        'icon2: $icon2, '
-        'listCount: ${list.length}, '
-        'list2Count: ${list2.length})';
+        'icon2: $icon2, ';
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      "lead_status": leadStatus,
+      "value": value,
+      "id": id,
+    };
   }
 }
 

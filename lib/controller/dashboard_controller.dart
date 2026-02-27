@@ -341,6 +341,8 @@ class DashboardController extends GetxController {
       throw Exception('Failed to load album');
     }
   }
+  var timestamp="".obs;
+
   Future getDashboardReport() async {
     final range = dashController.selectedRange.value;
     var today = DateTime.now();
@@ -408,7 +410,8 @@ class DashboardController extends GetxController {
           dashController.totalHot.value          = response["hot_total"]?.toString() ?? "0";
           dashController.totalWarm.value         = response["warm_total"]?.toString() ?? "0";
           dashController.totalCold.value         = response["cold_total"]?.toString() ?? "0";
-          dashController.totalSuspects.value     = response["total_suspects"]?.toString() ?? "0";
+          // dashController.totalSuspects.value     = response["total_suspects"]?.toString() ?? "0";
+          dashController.totalSuspects.value     = response["new_customers"]?.toString() ?? "0";
           dashController.totalProspects.value    = response["total_prospects"]?.toString() ?? "0";
           dashController.totalQualified.value    = response["total_qualified"]?.toString() ?? "0";
           dashController.totalUnQualified.value  = response["total_disqualified"]?.toString() ?? "0";
@@ -432,6 +435,7 @@ class DashboardController extends GetxController {
           dashController.totalUnQualified.value  = "0";
           dashController.totalCustomers.value    = "0";
         }
+        timestamp.value="${DateTime.now()}";
       } else {
         dashController.totalMails.value        = "0";
         dashController.totalReminders.value    = "0";
@@ -448,6 +452,7 @@ class DashboardController extends GetxController {
         dashController.totalQualified.value    = "0";
         dashController.totalUnQualified.value  = "0";
         dashController.totalCustomers.value    = "0";
+        timestamp.value="${DateTime.now()}";
         throw Exception('Failed to load dashboard report');
       }
     } catch (e) {
@@ -466,6 +471,7 @@ class DashboardController extends GetxController {
       dashController.totalQualified.value    = "0";
       dashController.totalUnQualified.value  = "0";
       dashController.totalCustomers.value    = "0";
+      timestamp.value="${DateTime.now()}";
       throw Exception('Failed to load dashboard report $e');
     }
   }

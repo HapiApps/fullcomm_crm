@@ -1,17 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/colors_constant.dart';
 import '../controller/controller.dart';
 import '../controller/table_controller.dart';
 import '../models/user_heading_obj.dart';
 
-class LeftTableHeader extends StatelessWidget {
+class CustomerNameHeader extends StatefulWidget {
   final bool showCheckbox;
   final bool isAllSelected;
   final Function(bool?) onSelectAll;
   final VoidCallback onSortDate;
 
-  const LeftTableHeader({
+  const CustomerNameHeader({
     super.key,
     required this.showCheckbox,
     required this.isAllSelected,
@@ -20,13 +23,19 @@ class LeftTableHeader extends StatelessWidget {
   });
 
   @override
+  State<CustomerNameHeader> createState() => _CustomerNameHeaderState();
+}
+
+class _CustomerNameHeaderState extends State<CustomerNameHeader> {
+  bool isEditing = false;
+  @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Obx(() {
       final headings = tableController.tableHeadings;
       final headerChildren = <Widget>[
-        if (showCheckbox)
+        if (widget.showCheckbox)
           Container(
             height: 40,
             alignment: Alignment.center,
@@ -37,8 +46,8 @@ class LeftTableHeader extends StatelessWidget {
               side: const BorderSide(width: 1.0, color: Colors.white),
               checkColor: colorsConst.primary,
               activeColor: Colors.white,
-              value: isAllSelected,
-              onChanged: onSelectAll,
+              value: widget.isAllSelected,
+              onChanged: widget.onSelectAll,
             ),
           ),
 
@@ -49,8 +58,8 @@ class LeftTableHeader extends StatelessWidget {
       // Column widths
       final Map<int, TableColumnWidth> columnWidths = {
         //Santhiya
-        0: showCheckbox ? const FlexColumnWidth(0.6) : const FlexColumnWidth(1.5),
-        1: showCheckbox ? const FlexColumnWidth(2) : const FlexColumnWidth(2.3),
+        0: widget.showCheckbox ? const FlexColumnWidth(0.6) : const FlexColumnWidth(1.5),
+        1: widget.showCheckbox ? const FlexColumnWidth(2) : const FlexColumnWidth(2.3),
         2: FixedColumnWidth(tableController.colWidth[headings.first] ?? 150),
       };
 
@@ -77,8 +86,6 @@ class LeftTableHeader extends StatelessWidget {
   }
 
   // -------------------------------------------------------------------------
-  // 🔥 NEW: RESIZABLE HEADER (LIKE YOUR RIGHT SIDE TABLE)
-  // -------------------------------------------------------------------------
   Widget _buildResizableHeader(String heading) {
     return Stack(
       children: [
@@ -102,19 +109,45 @@ class LeftTableHeader extends StatelessWidget {
               //   ),
               // ),
               Expanded(
-                child: TextField(
-                  controller: TextEditingController(text: heading),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: Colors.white,
-                    fontFamily: "Lato",
-                  ),
-                  cursorColor: Colors.white,
-                  decoration: const InputDecoration(
-                    fillColor: Colors.red,
-                    isDense: true,
-                    border: InputBorder.none,
-                    hintText: '',
+                child: GestureDetector(
+                  onDoubleTap: () {
+                    setState(() {
+                      isEditing = true;
+                    });},
+                  onTap: (){
+                    setState(() {
+                      isEditing = false;
+                    });
+                  },
+                  child: Container(
+                    child: TextFormField(
+                      controller: TextEditingController(text: heading),
+                      readOnly: isEditing, // 👈 important
+                      onFieldSubmitted: (value) async {
+                        tableController.isLoading.value = true;
+                        final id = controllers.fields[0].id;
+                        tableController.headingFields[0]=value;
+                        // print("tableController.headingFields");
+                        // print(tableController.headingFields);
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
+                        // print("saved");
+
+                        tableController.updateColumnNameAPI(context, value, id);
+                      },
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        fontFamily: "Lato",
+                      ),
+                      cursorColor: Colors.white,
+                      decoration: const InputDecoration(
+                        fillColor: Colors.red,
+                        isDense: true,
+                        border: InputBorder.none,
+                        hintText: '',
+                      ),
+                    ),
                   ),
                 ),
               ),

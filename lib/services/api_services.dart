@@ -431,7 +431,9 @@ class ApiService {
     try {
       Map data = {
         "action": "update_lead_details",
-        "list": controllers.leadCategoryList,
+        "list": controllers.leadCategoryList
+          .map((e) => e.toJson())
+          .toList(),
         "cos_id": controllers.storage.read("cos_id"),
         "updated_by": controllers.storage.read("id"),
       };
@@ -456,9 +458,10 @@ class ApiService {
           controllers.setLogOut();
         }
       }
-      if (request.statusCode == 200 && response["responseMsg"] == "Order updated successfully") {
+      if (request.statusCode == 200) {
         utils.snackBar(context: context, msg: "Category updated successfully", color: Colors.green);
         getLeadCategories();
+        getCustomLeads();
         controllers.productCtr.reset();
       } else {
         apiService.errorDialog(context, request.body);
@@ -496,7 +499,7 @@ class ApiService {
           controllers.setLogOut();
         }
       }
-      if (request.statusCode == 200 && response["responseMsg"] == "Category added successfully") {
+      if (request.statusCode == 200) {
         utils.snackBar(context: context, msg: "Category added successfully", color: Colors.green);
         getLeadCategories();
         Get.back();
@@ -2034,6 +2037,7 @@ class ApiService {
 
   Future getLeadCategories() async {
     try {
+      controllers.leadCategoryList.clear();
       Map data = {
         "search_type": "lead_categories",
         "cos_id": controllers.storage.read("cos_id"),
@@ -2057,14 +2061,23 @@ class ApiService {
         }
       }
       if (request.statusCode == 200) {
+        controllers.leadCategoryList.clear();
         List response = json.decode(request.body);
-        for(var i=0;i<=response.length;i++){
-          controllers.leadCategoryList.add(LeadStatusModel(
-              leadStatus: response[i]["lead_status"].toString(), value: response[i]["value"].toString(),
-              id: response[i]["id"].toString(), icon1: response[i]["icon1"].toString(), icon2: response[i]["icon2"].toString()));
-        }
+        controllers.leadCategoryList.value = response.map<LeadStatusModel>((item) {
+          return LeadStatusModel(
+            leadStatus: item["lead_status"].toString(),
+            value: item["value"].toString(),
+            id: item["id"].toString(),
+            icon1: item["icon1"].toString(),
+            icon2: item["icon2"].toString(),
+          );
+        }).toList();
         // controllers.leadCategoryList.assignAll(converted);
         controllers.editMode.value =List.generate(controllers.leadCategoryList.length, (index) => false);
+        controllers.leadCategoryList.sort(
+              (a, b) => int.parse(a.leadStatus)
+              .compareTo(int.parse(b.leadStatus)),
+        );
       } else {
         throw Exception('Failed to load album');
       }
@@ -4104,6 +4117,7 @@ class ApiService {
   List<Map<String, String>> newLeadList = [];
 
   Future<void> getCustomLeads() async {
+    debugPrint("getCustomLeads");
     controllers.isLead.value = false;
     final url = Uri.parse(scriptApi);
     controllers.newLeadsLength.value = 0;
@@ -4123,8 +4137,8 @@ class ApiService {
           "action": "get_data"
         }),
       );
-      debugPrint("response.bodyyyy");
-      debugPrint(response.body);
+      // debugPrint("response.bodyyyy");
+      // debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

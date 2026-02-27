@@ -2305,11 +2305,11 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       } else {
         // print("API Error: ${decoded["message"]}");
       }
-
     } catch (e) {
       // print("FLUTTER ERROR => $e");
     }
   }
+
   RxList<Map<String, dynamic>> rangeStatusList =
       <Map<String, dynamic>>[].obs;
   List<double> updates=[];

@@ -344,6 +344,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       }
       if (request.statusCode == 200 && response.containsKey("s_name")) {
         // log("res $response");
+        isLoading.value=false;
         if (isRelease) {
 
           await apiService.sendOtpAPI(

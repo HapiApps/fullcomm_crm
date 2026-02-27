@@ -466,46 +466,6 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
 
   Future updateLeadAPI(BuildContext context) async {
     try {
-      // Map data = {
-      //   "cos_id": controllers.storage.read("cos_id"),
-      //   "city": widget.city,
-      //   "source": widget.source,
-      //   "source_details": widget.sourceDetails,
-      //   "product_discussion": widget.productDiscussion,
-      //   "linkedin": widget.linkedin,
-      //   "x": widget.x,
-      //   "door_no": widget.addressLine1,
-      //   "area": widget.area,
-      //   "country": widget.country,
-      //   "state": widget.state,
-      //   "pincode": widget.pinCode,
-      //   "industry": widget.industry,
-      //   "points": widget.points,
-      //   'status_update': widget.statusUpdate,
-      //   'details_of_service_required': widget.detailsOfServiceReq,
-      //   "expected_billing_value": widget.expectedBillingValue,
-      //   "arpu_value": widget.arpuValue,
-      //   "num_of_headcount": widget.numOfHeadcount,
-      //   'prospect_enrollment_date': widget.prospectEnrollmentDate,
-      //   'expected_convertion_date': widget.expectedConvertionDate,
-      //   'owner': widget.owner,
-      //   "status": widget.status,
-      //   'rating': widget.rating,
-      //   "name": widget.mainName,
-      //   "title": widget.title,
-      //   "phone_no": widget.mainMobile,
-      //   "whatsapp_number": widget.whatsappNumber,
-      //   "email": widget.email,
-      //   "action": "update_customer",
-      //
-      //   // "product": controllers.leadProduct.text.trim(),
-      //   "company_name": widget.companyName,
-      //   "co_website": widget.companyWebsite,
-      //   "co_number": widget.companyNumber,
-      //   "co_email": widget.companyEmail,
-      //   "address_id": widget.addressId,
-      //   "lead_id": widget.id,
-      // };
       Map data = {
         "cos_id": controllers.storage.read("cos_id"),
 
@@ -577,9 +537,10 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
         utils.snackBar(msg: "Your Lead is updated successfully !",
             color: Colors.green,context:Get.context!);
         Get.back();
-        apiService.allNewLeadsDetails();
-        apiService.allLeadsDetails();
-        apiService.allGoodLeadsDetails();
+        // apiService.allNewLeadsDetails();
+        // apiService.allLeadsDetails();
+        // apiService.allGoodLeadsDetails();
+        apiService.getCustomLeads();
         controllers.leadCtr.reset();
       } else {
         Navigator.of(context).pop();

@@ -56,7 +56,7 @@ class CustomerStatusCard extends StatelessWidget {
 
           4.height,
           CustomText(
-            text: "Breakdown by engagement status ${items.length}",
+            text: "Breakdown by engagement status",
             isCopy: false,
             size: 12,
             isBold: false,

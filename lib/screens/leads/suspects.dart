@@ -5,8 +5,8 @@
 // import 'package:fullcomm_crm/common/utilities/utils.dart';
 // import 'package:fullcomm_crm/components/custom_loading_button.dart';
 // import 'package:fullcomm_crm/components/custom_no_data.dart';
-// import 'package:fullcomm_crm/components/left_lead_tile.dart';
-// import 'package:fullcomm_crm/components/left_table_header.dart';
+// import 'package:fullcomm_crm/components/customer_name_tile.dart';
+// import 'package:fullcomm_crm/components/customer_name_header.dart';
 // import 'package:fullcomm_crm/services/api_services.dart';
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
@@ -14,7 +14,7 @@
 // import '../../components/custom_header_seaction.dart';
 // import '../../components/custom_lead_tile.dart';
 // import '../../components/custom_sidebar.dart';
-// import '../../components/custom_table_header.dart';
+// import '../../components/dynamic_table_header.dart';
 // import '../../components/custom_text.dart';
 // import '../../controller/controller.dart';
 //

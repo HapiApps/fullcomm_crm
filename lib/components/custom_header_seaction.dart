@@ -120,6 +120,7 @@ class _HeaderSectionState extends State<HeaderSection> {
               text: "V CARD",
               textColor: colorsConst.primary,
             ),
+            15.width,
             // ---- Export button ----
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()
@@ -337,6 +338,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                                   tableController.updateColumnNameAPI(context, value, id);
                                 },
                                 decoration: InputDecoration(
+                                  fillColor: Colors.purple,
                                   border: InputBorder.none,
                                   contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                                 ),

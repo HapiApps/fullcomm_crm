@@ -36,8 +36,9 @@ class SideBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxBool isSettingsHovered = false.obs;
-    return Obx(() => controllers.isLeftOpen.value
-        ? Container(
+    return
+      Obx(() => controllers.isLeftOpen.value?
+      Container(
       width: 150,
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
@@ -53,30 +54,30 @@ class SideBar extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Tooltip(
-                  message: "Click to close the side panel.",
-                  child: InkWell(
-                    focusColor: Colors.transparent,
-                    onTap: () {
-                      controllers.isLeftOpen.value = !controllers.isLeftOpen.value;
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: colorsConst.secondary,
-                      child: const Icon(Icons.chevron_left, color: Colors.black),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            CustomText(text:  controllers.storage.read("f_name") ?? "",
-              size: 20,
-              isBold: true,
-              isCopy: true,
-            ),
+            // const SizedBox(height: 5),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: [
+            //     Tooltip(
+            //       message: "Click to close the side panel.",
+            //       child: InkWell(
+            //         focusColor: Colors.transparent,
+            //         onTap: () {
+            //           controllers.isLeftOpen.value = !controllers.isLeftOpen.value;
+            //         },
+            //         child: CircleAvatar(
+            //           backgroundColor: colorsConst.secondary,
+            //           child: const Icon(Icons.chevron_left, color: Colors.black),
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            // CustomText(text:  controllers.storage.read("f_name") ?? "",
+            //   size: 20,
+            //   isBold: true,
+            //   isCopy: true,
+            // ),
             Image.asset(logo),
             SidebarItem(
               context: context,
@@ -458,26 +459,27 @@ class SideBar extends StatelessWidget {
         ),
       ),
     )
-        : Container(
-      width: 60,
-      height: MediaQuery.of(context).size.height,
-      padding: const EdgeInsets.fromLTRB(6, 8, 0, 0),
-      alignment: Alignment.topCenter,
-      color: Colors.white,
-      child: Tooltip(
-        message: "Click to view the side panel",
-        child: InkWell(
-          focusColor: Colors.transparent,
-          onTap: () {
-            controllers.isLeftOpen.value = !controllers.isLeftOpen.value;
-          },
-          child: CircleAvatar(
-            backgroundColor: colorsConst.secondary,
-            child: const Icon(Icons.menu, color: Colors.black),
-          ),
-        ),
-      ),
-    ));
+        : 0.height);
+    //     : Container(
+    //   width: 60,
+    //   height: MediaQuery.of(context).size.height,
+    //   padding: const EdgeInsets.fromLTRB(6, 8, 0, 0),
+    //   alignment: Alignment.topCenter,
+    //   color: Colors.white,
+    //   child: Tooltip(
+    //     message: "Click to view the side panel",
+    //     child: InkWell(
+    //       focusColor: Colors.transparent,
+    //       onTap: () {
+    //         controllers.isLeftOpen.value = !controllers.isLeftOpen.value;
+    //       },
+    //       child: CircleAvatar(
+    //         backgroundColor: colorsConst.secondary,
+    //         child: const Icon(Icons.menu, color: Colors.black),
+    //       ),
+    //     ),
+    //   ),
+    // ));
   }
 }
 

@@ -265,117 +265,118 @@ class _LeadPieCardState extends State<LeadPieCard> {
           )
         ],
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomText(
-              text: "Lead Distribution",
-              size: 16,
-              isBold: true,
-              isCopy: false,
-            ),
-            5.height,
-            CustomText(
-              text: "Breakdown by current stage",
-              colors: Colors.grey,
-              isCopy: false,
-            ),
-            const Divider(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+            text: "Lead Distribution",
+            size: 14,
+            isBold: true,
+            isCopy: false,
+          ),
+          5.height,
+          CustomText(
+            text: "Breakdown by current stage",
+            colors: Colors.grey,
+            isCopy: false,size: 12,
+          ),
+          const Divider(),
 
-            /// PIE CHART
-            SizedBox(
-              height: 150,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return Stack(
-                    children: [
-                      PieChart(
-                        PieChartData(
-                          sectionsSpace: 3,
-                          centerSpaceRadius: 45,
-                          pieTouchData: PieTouchData(
-                            touchCallback: (event, response) {
-                              setState(() {
-                                if (!event.isInterestedForInteractions ||
-                                    response == null ||
-                                    response.touchedSection == null) {
-                                  touchedIndex = -1;
-                                  touchPosition = null;
-                                } else {
-                                  touchedIndex = response
-                                      .touchedSection!.touchedSectionIndex;
-                                  touchPosition = event.localPosition;
-                                }
-                              });
-                            },
-                          ),
-                          sections:
-                          List.generate(widget.data.length, (i) {
-                            final isTouched = i == touchedIndex;
+          /// PIE CHART
+          SizedBox(
+            height: 150,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Stack(
+                  children: [
+                    PieChart(
+                      PieChartData(
+                        sectionsSpace: 3,
+                        centerSpaceRadius: 45,
+                        pieTouchData: PieTouchData(
+                          touchCallback: (event, response) {
+                            setState(() {
+                              if (!event.isInterestedForInteractions ||
+                                  response == null ||
+                                  response.touchedSection == null) {
+                                touchedIndex = -1;
+                                touchPosition = null;
+                              } else {
+                                touchedIndex = response
+                                    .touchedSection!.touchedSectionIndex;
+                                touchPosition = event.localPosition;
+                              }
+                            });
+                          },
+                        ),
+                        sections:
+                        List.generate(widget.data.length, (i) {
+                          final isTouched = i == touchedIndex;
 
-                            return PieChartSectionData(
-                              color: widget.data[i].color,
-                              value: widget.data[i].value,
-                              radius: isTouched ? 45 : 30,
-                              showTitle: false,
-                            );
-                          }),
+                          return PieChartSectionData(
+                            color: widget.data[i].color,
+                            value: widget.data[i].value,
+                            radius: isTouched ? 45 : 30,
+                            showTitle: false,
+                          );
+                        }),
+                      ),
+                    ),
+
+                    /// CENTER TEXT
+                    // if (touchedIndex == -1)
+                      Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CustomText(
+                              text: total.toInt().toString(),
+                              size: 20,
+                              isBold: true,
+                              isCopy: false,
+                            ),
+                            CustomText(
+                              text: "Total Leads",
+                              colors: Colors.grey,
+                              isCopy: false,
+                            ),
+                          ],
                         ),
                       ),
 
-                      /// CENTER TEXT
-                      // if (touchedIndex == -1)
-                        Align(
-                          alignment: Alignment.center,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CustomText(
-                                text: total.toInt().toString(),
-                                size: 20,
-                                isBold: true,
-                                isCopy: false,
-                              ),
-                              CustomText(
-                                text: "Total Leads",
-                                colors: Colors.grey,
-                                isCopy: false,
-                              ),
-                            ],
-                          ),
+                    /// FLOATING TOOLTIP
+                    if (touchedIndex != -1 &&
+                        touchPosition != null)
+                      Positioned(
+                        left: touchPosition!.dx,
+                        top: touchPosition!.dy - 50,
+                        child: _buildTooltip(
+                          widget.data[touchedIndex],
                         ),
-
-                      /// FLOATING TOOLTIP
-                      if (touchedIndex != -1 &&
-                          touchPosition != null)
-                        Positioned(
-                          left: touchPosition!.dx,
-                          top: touchPosition!.dy - 50,
-                          child: _buildTooltip(
-                            widget.data[touchedIndex],
-                          ),
-                        ),
-                    ],
-                  );
-                },
-              ),
+                      ),
+                  ],
+                );
+              },
             ),
+          ),
 
-            20.height,
+          20.height,
 
-            /// LEGEND GRID (2 per row)
-            GridView.builder(
+          /// LEGEND GRID (2 per row)
+          SizedBox(
+            // height: 90,
+            child: GridView.builder(
               shrinkWrap: true,
-              physics:
-              const NeverScrollableScrollPhysics(),
+              // physics:
+              // const NeverScrollableScrollPhysics(),
               itemCount: widget.data.length,
               gridDelegate:
               const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                childAspectRatio: 8,
+                crossAxisSpacing: 5,
+                childAspectRatio: 10,
               ),
               itemBuilder: (context, index) {
                 final item = widget.data[index];
@@ -406,8 +407,8 @@ class _LeadPieCardState extends State<LeadPieCard> {
                 );
               },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

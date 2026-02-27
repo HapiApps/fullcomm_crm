@@ -9,18 +9,18 @@ import '../controller/controller.dart';
 import '../controller/table_controller.dart';
 import '../models/user_heading_obj.dart';
 
-class CustomTableHeader extends StatefulWidget {
+class DynamicTableHeader extends StatefulWidget {
   final VoidCallback onSortDate;
   final VoidCallback onSortName;
 
-  const CustomTableHeader({
+  const DynamicTableHeader({
     super.key,
     required this.onSortDate,
     required this.onSortName,
   });
 
   @override
-  State<CustomTableHeader> createState() => _CustomTableHeaderState();
+  State<DynamicTableHeader> createState() => _DynamicTableHeaderState();
 }
 void save()async{
   final prefs = await SharedPreferences.getInstance();
@@ -28,7 +28,7 @@ void save()async{
   print("saved");
   tableController.setHeadingFields(tableController.tableHeadings);
 }
-class _CustomTableHeaderState extends State<CustomTableHeader> {
+class _DynamicTableHeaderState extends State<DynamicTableHeader> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -161,7 +161,7 @@ class _CustomTableHeaderState extends State<CustomTableHeader> {
                   cursorColor: Colors.white,
                   textAlign: TextAlign.left,
                   style: const TextStyle(
-                    fontSize: 15,
+                    fontSize: 14,
                     color: Colors.white,
                     fontFamily: "Lato",
                   ),

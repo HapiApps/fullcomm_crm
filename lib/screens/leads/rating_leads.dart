@@ -5,8 +5,8 @@ import 'package:fullcomm_crm/common/utilities/mail_utils.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:fullcomm_crm/components/custom_no_data.dart';
-import 'package:fullcomm_crm/components/left_lead_tile.dart';
-import 'package:fullcomm_crm/components/left_table_header.dart';
+import 'package:fullcomm_crm/components/customer_name_tile.dart';
+import 'package:fullcomm_crm/components/customer_name_header.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +14,7 @@ import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
 import '../../components/custom_lead_tile.dart';
 import '../../components/custom_sidebar.dart';
-import '../../components/custom_table_header.dart';
+import '../../components/dynamic_table_header.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
 import '../../models/new_lead_obj.dart';
@@ -370,7 +370,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                               width: 300,
                               child: Column(
                                 children: [
-                                  LeftTableHeader(
+                                  CustomerNameHeader(
                                     showCheckbox: false,
                                     isAllSelected: apiService.prospectsList.isEmpty?false:controllers.isAllSelected.value,
                                     onSelectAll: (value) {
@@ -422,7 +422,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                                         itemCount: controllers.paginatedRatingLeads.length,
                                         itemBuilder: (context, index) {
                                           final data = controllers.paginatedRatingLeads[index];
-                                          return Obx(()=>LeftLeadTile(
+                                          return Obx(()=>CustomerNameTile(
                                             list: widget.list,list2: widget.list2,
                                             leadIndex: "0",
                                             showCheckbox: false,
@@ -556,7 +556,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                                       SizedBox(
                                         height: 45,
                                         width: tableWidth,
-                                        child: CustomTableHeader(
+                                        child: DynamicTableHeader(
                                           onSortDate: () {
                                             controllers.sortField.value = 'date';
                                             controllers.sortOrder.value =

@@ -136,159 +136,159 @@
 //     final dashboard = context.watch<DashboardProvider>();
 //     return Scaffold(
 //       backgroundColor: const Color(0xFFF4F6F8),
-//       // appBar: PreferredSize(
-//       //   preferredSize: Size.fromHeight(screenWidth < 900 ? 120 : 100),
-//       //   child: Container(
-//       //     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-//       //     decoration: _topBarDecoration(),
-//       //     child: SafeArea(
-//       //       bottom: false,
-//       //       child: Row(
-//       //         crossAxisAlignment: CrossAxisAlignment.center,
-//       //         children: [
-//       //           /// ---------- LEFT ----------
-//       //           Expanded(
-//       //             flex: 4,
-//       //             child: Row(
-//       //               children: [
-//       //                 Image.asset(DashboardAssets.menu),
-//       //                 12.width,
-//       //                 Expanded(
-//       //                   child: Column(
-//       //                     crossAxisAlignment: CrossAxisAlignment.start,
-//       //                     mainAxisSize: MainAxisSize.min,
-//       //                     children: [
-//       //                       const Text(
-//       //                         "CRM Dashboard",
-//       //                         style: TextStyle(
-//       //                           fontSize: 18,
-//       //                           fontWeight: FontWeight.bold,
-//       //                         ),
-//       //                       ),
-//       //                       4.height,
-//       //                       InkWell(
-//       //                         onTap: () {
-//       //                           context.read<DashboardProvider>().pickDateRange(
-//       //                             context,
-//       //                           );
-//       //                         },
-//       //                         child: Row(
-//       //                           children: [
-//       //                             Image.asset(DashboardAssets.calendar),
-//       //                             6.width,
-//       //                             Expanded(
-//       //                               child: Consumer<DashboardProvider>(
-//       //                                 builder: (_, dashboard, __) {
-//       //                                   final text =
-//       //                                       dashboard.selectedRange == null
-//       //                                       ? "Select Date Range"
-//       //                                       : "${dashboard.format(dashboard.selectedRange!.start)}"
-//       //                                             " → "
-//       //                                             "${dashboard.format(dashboard.selectedRange!.end)}"
-//       //                                             " • ${dashboard.days()} days";
-//       //
-//       //                                   return Text(
-//       //                                     text,
-//       //                                     maxLines: 1,
-//       //                                     overflow: TextOverflow.ellipsis,
-//       //                                     style:  GoogleFonts.inter(
-//       //                                       fontSize: 12,
-//       //                                       fontWeight: FontWeight.bold,
-//       //                                       color: Color(0xff666666),
-//       //                                     ),
-//       //                                   );
-//       //                                 },
-//       //                               ),
-//       //                             ),
-//       //                           ],
-//       //                         ),
-//       //                       ),
-//       //                     ],
-//       //                   ),
-//       //                 ),
-//       //               ],
-//       //             ),
-//       //           ),
-//       //           /// ---------- CENTER ----------
-//       //           Expanded(
-//       //             flex: 3,
-//       //             child: Column(
-//       //               mainAxisSize: MainAxisSize.min,
-//       //               crossAxisAlignment: CrossAxisAlignment.end,
-//       //               children: [
-//       //                 Container(
-//       //                   padding: const EdgeInsets.all(6),
-//       //                   decoration: _filterGroupDecoration(),
-//       //                   child: SingleChildScrollView(
-//       //                     scrollDirection: Axis.horizontal,
-//       //                     child: Row(
-//       //                       children: filters.map(_filterChip).toList(),
-//       //                     ),
-//       //                   ),
-//       //                 ),
-//       //                 4.height,
-//       //                 Text( "version 0.0.7",style: GoogleFonts.inter(
-//       //                     fontSize: 11, color: AppColors.primary,
-//       //                 ),)
-//       //               ],
-//       //             ),
-//       //           ),
-//       //           /// ---------- RIGHT ----------
-//       //           Expanded(
-//       //             flex: 3,
-//       //             child: Row(
-//       //               mainAxisAlignment: MainAxisAlignment.end,
-//       //               children: [
-//       //                 Expanded(
-//       //                   child: Column(
-//       //                     crossAxisAlignment: CrossAxisAlignment.end,
-//       //                     mainAxisSize: MainAxisSize.min,
-//       //                     children: [
-//       //                       Text( "Hi, Gopal", style: GoogleFonts.inter(
-//       //                         fontSize: 13,
-//       //                         fontWeight: FontWeight.bold,
-//       //                       ),),
-//       //                       4.height,
-//       //                       Row(
-//       //                         mainAxisSize: MainAxisSize.min,
-//       //                         children: [
-//       //                           GestureDetector(
-//       //                             onTap: () async {
-//       //                               final pickedDate = await showDatePicker(
-//       //                                 context: context,
-//       //                                 initialDate: selectedDate,
-//       //                                 firstDate: DateTime(2020),
-//       //                                 lastDate: DateTime(2030),
-//       //                               );
-//       //
-//       //                               if (pickedDate != null) {
-//       //                                 setState(() {
-//       //                                   selectedDate = pickedDate;
-//       //                                 });
-//       //                               }
-//       //                             },
-//       //                             child: Text(selectedDate == null
-//       //                                 ? "Last Sync · --"
-//       //                                 : "Last Sync · ${_formatDate(selectedDate!)}",style: GoogleFonts.inter(fontSize: 11,
-//       //                               fontWeight: FontWeight.bold,),)
-//       //                           ),
-//       //                           6.height,
-//       //                           Image.asset(DashboardAssets.sync),
-//       //                         ],
-//       //                       ),
-//       //                     ],
-//       //                   ),
-//       //                 ),
-//       //                 6.width,
-//       //                 Image.asset(DashboardAssets.defaultPerson),
-//       //               ],
-//       //             ),
-//       //           ),
-//       //         ],
-//       //       ),
-//       //     ),
-//       //   ),
-//       // ),
+//       appBar: PreferredSize(
+//         preferredSize: Size.fromHeight(screenWidth < 900 ? 120 : 100),
+//         child: Container(
+//           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+//           decoration: _topBarDecoration(),
+//           child: SafeArea(
+//             bottom: false,
+//             child: Row(
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               children: [
+//                 /// ---------- LEFT ----------
+//                 Expanded(
+//                   flex: 4,
+//                   child: Row(
+//                     children: [
+//                       Image.asset(DashboardAssets.menu),
+//                       12.width,
+//                       Expanded(
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           mainAxisSize: MainAxisSize.min,
+//                           children: [
+//                             const Text(
+//                               "CRM Dashboard",
+//                               style: TextStyle(
+//                                 fontSize: 18,
+//                                 fontWeight: FontWeight.bold,
+//                               ),
+//                             ),
+//                             4.height,
+//                             InkWell(
+//                               onTap: () {
+//                                 context.read<DashboardProvider>().pickDateRange(
+//                                   context,
+//                                 );
+//                               },
+//                               child: Row(
+//                                 children: [
+//                                   Image.asset(DashboardAssets.calendar),
+//                                   6.width,
+//                                   Expanded(
+//                                     child: Consumer<DashboardProvider>(
+//                                       builder: (_, dashboard, __) {
+//                                         final text =
+//                                             dashboard.selectedRange == null
+//                                             ? "Select Date Range"
+//                                             : "${dashboard.format(dashboard.selectedRange!.start)}"
+//                                                   " → "
+//                                                   "${dashboard.format(dashboard.selectedRange!.end)}"
+//                                                   " • ${dashboard.days()} days";
+//
+//                                         return Text(
+//                                           text,
+//                                           maxLines: 1,
+//                                           overflow: TextOverflow.ellipsis,
+//                                           style:  GoogleFonts.inter(
+//                                             fontSize: 12,
+//                                             fontWeight: FontWeight.bold,
+//                                             color: Color(0xff666666),
+//                                           ),
+//                                         );
+//                                       },
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//                 /// ---------- CENTER ----------
+//                 Expanded(
+//                   flex: 3,
+//                   child: Column(
+//                     mainAxisSize: MainAxisSize.min,
+//                     crossAxisAlignment: CrossAxisAlignment.end,
+//                     children: [
+//                       Container(
+//                         padding: const EdgeInsets.all(6),
+//                         decoration: _filterGroupDecoration(),
+//                         child: SingleChildScrollView(
+//                           scrollDirection: Axis.horizontal,
+//                           child: Row(
+//                             children: filters.map(_filterChip).toList(),
+//                           ),
+//                         ),
+//                       ),
+//                       4.height,
+//                       Text( "version 0.0.7",style: GoogleFonts.inter(
+//                           fontSize: 11, color: AppColors.primary,
+//                       ),)
+//                     ],
+//                   ),
+//                 ),
+//                 /// ---------- RIGHT ----------
+//                 Expanded(
+//                   flex: 3,
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.end,
+//                     children: [
+//                       Expanded(
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.end,
+//                           mainAxisSize: MainAxisSize.min,
+//                           children: [
+//                             Text( "Hi, Gopal", style: GoogleFonts.inter(
+//                               fontSize: 13,
+//                               fontWeight: FontWeight.bold,
+//                             ),),
+//                             4.height,
+//                             Row(
+//                               mainAxisSize: MainAxisSize.min,
+//                               children: [
+//                                 GestureDetector(
+//                                   onTap: () async {
+//                                     final pickedDate = await showDatePicker(
+//                                       context: context,
+//                                       initialDate: selectedDate,
+//                                       firstDate: DateTime(2020),
+//                                       lastDate: DateTime(2030),
+//                                     );
+//
+//                                     if (pickedDate != null) {
+//                                       setState(() {
+//                                         selectedDate = pickedDate;
+//                                       });
+//                                     }
+//                                   },
+//                                   child: Text(selectedDate == null
+//                                       ? "Last Sync · --"
+//                                       : "Last Sync · ${_formatDate(selectedDate!)}",style: GoogleFonts.inter(fontSize: 11,
+//                                     fontWeight: FontWeight.bold,),)
+//                                 ),
+//                                 6.height,
+//                                 Image.asset(DashboardAssets.sync),
+//                               ],
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                       6.width,
+//                       Image.asset(DashboardAssets.defaultPerson),
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
 //       body: SelectionArea(
 //         child: Row(
 //           mainAxisAlignment: MainAxisAlignment.spaceBetween,

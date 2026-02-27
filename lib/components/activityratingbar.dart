@@ -62,7 +62,6 @@ class ActivityRatingBarState extends State<ActivityRatingBar> {
   @override
   Widget build(BuildContext context) {
     final total = widget.hot + widget.warm + widget.cold;
-print("...///${widget.totalWidth },${widget.hot },${widget.warm },${widget.cold }");
     final hotWidth = widget.totalWidth * (widget.hot / total);
     final warmWidth = widget.totalWidth * (widget.warm / total);
     final coldWidth = widget.totalWidth * (widget.cold / total);

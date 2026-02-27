@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/reminder_utils.dart';
@@ -11,6 +13,7 @@ import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:fullcomm_crm/screens/records/mail_comments.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
 import '../controller/reminder_controller.dart';
 import '../controller/table_controller.dart';
@@ -22,7 +25,7 @@ import '../services/api_services.dart';
 import 'custom_date_box.dart';
 import 'custom_loading_button.dart';
 
-class LeftLeadTile extends StatefulWidget {
+class CustomerNameTile extends StatefulWidget {
   final bool showCheckbox;
   final String leadIndex;
   final String pageName;
@@ -85,7 +88,7 @@ class LeftLeadTile extends StatefulWidget {
   final bool saveValue;
   final RxList<NewLeadObj> list;
   final RxList<NewLeadObj> list2;
-  const LeftLeadTile(
+  const CustomerNameTile(
       {super.key,
         this.showCheckbox = true,
         this.id,
@@ -148,10 +151,10 @@ class LeftLeadTile extends StatefulWidget {
         required this.pageName, required this.leadIndex, required this.list, required this.list2});
 
   @override
-  State<LeftLeadTile> createState() => _LeftLeadTileState();
+  State<CustomerNameTile> createState() => _CustomerNameTileState();
 }
 
-class _LeftLeadTileState extends State<LeftLeadTile> {
+class _CustomerNameTileState extends State<CustomerNameTile> {
   String formatDate(String inputDate) {
     try {
       DateTime parsedDate = DateFormat("yyyy-MM-dd HH:mm:ss").parse(inputDate);
@@ -244,7 +247,7 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
   }
 
   @override
-  void didUpdateWidget(covariant LeftLeadTile oldWidget) {
+  void didUpdateWidget(covariant CustomerNameTile oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.statusUpdate != widget.statusUpdate) {
       statusController.text = widget.statusUpdate.toString() == "null"
@@ -1596,14 +1599,29 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
                         onDoubleTap: () {
                         setState(() {
                         isEditing = true;
-                        print(isEditing);
                         });},
+                      onTap: (){
+                        setState(() {
+                        isEditing = false;
+                        });
+                      },
                       child: Container(
                         height: 45,
+                        // color: Colors.yellow,
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: TextField(
-                          readOnly: !isEditing, // 👈 important
+                        child: TextFormField(
+                          readOnly: isEditing, // 👈 important
+                          onFieldSubmitted: (value) async {
+                            if(TextEditingController(
+                              text: value.toString() == "null" ? "" : value.toString(),
+                            ).text.isNotEmpty){
+                              // updateLeadAPI(context);
+                            }else{
+                              utils.snackBar(context: context, msg: "Enter a value", color: Colors.red);
+                            }
+
+                          },
                           controller: TextEditingController(
                             text: value.toString() == "null" ? "" : value.toString(),
                           ),
@@ -1627,4 +1645,93 @@ class _LeftLeadTileState extends State<LeftLeadTile> {
       ),
     ));
   }
+  // Future updateLeadAPI(BuildContext context) async {
+  //   try {
+  //     Map data = {
+  //       "cos_id": controllers.storage.read("cos_id"),
+  //
+  //       "city": getVal("city"),
+  //       "source": getVal("source"),
+  //       "source_details": getVal("source_details"),
+  //       "product_discussion": getVal("product_discussion"),
+  //       "linkedin": getVal("linkedin"),
+  //       "x": getVal("x"),
+  //
+  //       "door_no": getVal("addressLine1"),
+  //       "area": getVal("area"),
+  //       "country": getVal("country"),
+  //       "state": getVal("state"),
+  //       "pincode": getVal("pinCode"),
+  //
+  //       "industry": getVal("industry"),
+  //       "points": getVal("points"),
+  //       "status_update": getVal("status_update"),
+  //       "details_of_service_required": getVal("details_of_service_required"),
+  //
+  //       "expected_billing_value": getVal("expected_billing_value"),
+  //       "arpu_value": getVal("arpu_value"),
+  //       "num_of_headcount": getVal("num_of_headcount"),
+  //
+  //       "prospect_enrollment_date": getVal("prospect_enrollment_date"),
+  //       "expected_convertion_date": getVal("expected_convertion_date"),
+  //
+  //       "owner": getVal("owner"),
+  //       "status": getVal("status"),
+  //       "rating": getVal("rating"),
+  //
+  //       "name": getVal("mainName"),
+  //       "title": getVal("title"),
+  //       "phone_no": getVal("mainMobile"),
+  //       "whatsapp_number": getVal("whatsappNumber"),
+  //       "email": getVal("email"),
+  //
+  //       "company_name": getVal("company_name"),
+  //       "co_website": getVal("companyWebsite"),
+  //       "co_number": getVal("companyNumber"),
+  //       "co_email": getVal("companyEmail"),
+  //
+  //       "address_id": widget.addressId,
+  //       "lead_id": widget.id,
+  //       "action": "update_customer",
+  //     };
+  //     final request = await http.post(
+  //       Uri.parse(scriptApi),
+  //       body: jsonEncode(data),
+  //       headers: {
+  //         'X-API-TOKEN': "${TokenStorage().readToken()}",
+  //         'Content-Type': 'application/json',
+  //       },
+  //     );
+  //     // print("update_customer");
+  //     // print(request.body);
+  //     Map<String, dynamic> response = json.decode(request.body);
+  //     if (request.statusCode == 401) {
+  //       final refreshed = await controllers.refreshToken();
+  //       if (refreshed) {
+  //         return updateLeadAPI(context);
+  //       } else {
+  //         controllers.setLogOut();
+  //       }
+  //     }
+  //     if (request.statusCode == 200 &&
+  //         response["message"] == "Customer updated successfully") {
+  //       utils.snackBar(msg: "Your Lead is updated successfully !",
+  //           color: Colors.green,context:Get.context!);
+  //       Get.back();
+  //       apiService.allNewLeadsDetails();
+  //       apiService.allLeadsDetails();
+  //       apiService.allGoodLeadsDetails();
+  //       controllers.leadCtr.reset();
+  //     } else {
+  //       Navigator.of(context).pop();
+  //       utils.snackBar(context:Get.context!,msg:"Failed", color: Colors.red);
+  //       controllers.leadCtr.reset();
+  //     }
+  //   } catch (e) {
+  //     Navigator.of(context).pop();
+  //     utils.snackBar(context:Get.context!,msg:"Something went wrong, Please try again later", color: Colors.red);
+  //     controllers.leadCtr.reset();
+  //   }
+  // }
+
 }

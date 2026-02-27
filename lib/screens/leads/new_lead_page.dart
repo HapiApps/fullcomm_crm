@@ -3,7 +3,7 @@ import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:fullcomm_crm/components/left_lead_tile.dart';
+import 'package:fullcomm_crm/components/customer_name_tile.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../common/utilities/mail_utils.dart';
@@ -13,9 +13,9 @@ import '../../components/custom_lead_tile.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_no_data.dart';
 import '../../components/custom_sidebar.dart';
-import '../../components/custom_table_header.dart';
+import '../../components/dynamic_table_header.dart';
 import '../../components/custom_text.dart';
-import '../../components/left_table_header.dart';
+import '../../components/customer_name_header.dart';
 import '../../controller/controller.dart';
 import '../../models/new_lead_obj.dart';
 import '../../services/api_services.dart';
@@ -59,12 +59,12 @@ class _NewLeadPageState extends State<NewLeadPage> {
         // apiService.newLeadList = [];
         // apiService.newLeadList.clear();
         // //Santhiya
-        // controllers.isAllSelected.value = false;
+        controllers.isAllSelected.value = false;
         // for (var item in controllers.isLeadsList) {
         //   item["isSelect"] = false;
         //
-        //   apiService.newLeadList.removeWhere(
-        //         (e) => e["lead_id"] == item["lead_id"],
+        //   widget.list.removeWhere(
+        //         (e) => e.userId== item["lead_id"],
         //   );
         // }
       });
@@ -131,7 +131,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                       HeaderSection(
                         list: widget.list,list2: widget.list2,
                         title: "Leads - ${widget.name}",
-                        subtitle: "View all of your ${widget.name} ${widget.index} Information",
+                        subtitle: "View all of your ${widget.name} Information",
                         // list: controllers.allLeadFuture,
                       ),
                       20.height,
@@ -140,7 +140,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                         //Santhiya
                         leadIndex: widget.index,
                         itemCount: widget.list.length,
-                        count: controllers.allLeadsLength.value,
+                        count: controllers.newLeadsLength.value,
                         focusNode: _focusNode,
                         leadFuture: controllers.allLeadFuture,
                         title: widget.name,
@@ -840,7 +840,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                               width: 300,
                               child: Column(
                                 children: [
-                                  LeftTableHeader(
+                                  CustomerNameHeader(
                                     showCheckbox: true,
                                     isAllSelected: controllers.isAllSelected.value,
                                     onSelectAll: (value) async {
@@ -881,7 +881,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                         itemCount: widget.list.length,
                                         itemBuilder: (context, index) {
                                           final data = widget.list[index];
-                                          return Obx(()=>LeftLeadTile(
+                                          return Obx(()=>CustomerNameTile(
                                             list: widget.list,list2: widget.list2,
                                             leadIndex: widget.index,
                                             pageName: "Prospects",
@@ -1008,7 +1008,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                       SizedBox(
                                         height: 45,
                                         width: tableWidth,
-                                        child: CustomTableHeader(
+                                        child: DynamicTableHeader(
                                           onSortName: () {
                                             controllers.sortField.value = 'name';
                                             controllers.sortOrderN.value =
@@ -1044,23 +1044,37 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                                 return Obx(()=>CustomLeadTile(
                                                   list: widget.list,list2: widget.list2,
                                                   pageName: "Prospects",
-                                                  saveValue: controllers.isLeadsList[index]["isSelect"],
-                                                  onChanged: (value){
-                                                    setState(() {
-                                                      if(controllers.isLeadsList[index]["isSelect"]==true){
-                                                        controllers.isLeadsList[index]["isSelect"]=false;
-                                                        var i=apiService.newLeadList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                                        apiService.newLeadList.removeAt(i);
-                                                      }else{
-                                                        controllers.isLeadsList[index]["isSelect"]=true;
-                                                        apiService.newLeadList.add({
-                                                          "lead_id":data.userId.toString(),
-                                                          "user_id":controllers.storage.read("id"),
-                                                          "rating":data.rating ?? "Warm",
-                                                          "cos_id":controllers.storage.read("cos_id"),
-                                                        });
-                                                      }
-                                                    });
+                                                  // saveValue: controllers.isLeadsList[index]["isSelect"],
+                                                  // onChanged: (value){
+                                                  //   setState(() {
+                                                  //     if(controllers.isLeadsList[index]["isSelect"]==true){
+                                                  //       controllers.isLeadsList[index]["isSelect"]=false;
+                                                  //       var i=apiService.newLeadList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+                                                  //       apiService.newLeadList.removeAt(i);
+                                                  //     }else{
+                                                  //       controllers.isLeadsList[index]["isSelect"]=true;
+                                                  //       apiService.newLeadList.add({
+                                                  //         "lead_id":data.userId.toString(),
+                                                  //         "user_id":controllers.storage.read("id"),
+                                                  //         "rating":data.rating ?? "Warm",
+                                                  //         "cos_id":controllers.storage.read("cos_id"),
+                                                  //       });
+                                                  //     }
+                                                  //   });
+                                                  // },
+                                                  saveValue: widget.list[index].select==true?true:false,
+                                                  onChanged: (value) {
+                                                    controllers.isAllSelected.value = false;
+                                                    final lead = widget.list[index];
+                                                    if (lead.select == true) {
+                                                      lead.select = false;
+                                                      controllers.idList.remove(lead.userId);
+                                                    } else {
+                                                      lead.select = true;
+                                                      controllers.idList.add(lead.userId);
+                                                    }
+                                                    setState(() {});
+                                                    debugPrint("...${controllers.idList}");
                                                   },
                                                   visitType: data.visitType.toString(),
                                                   detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
