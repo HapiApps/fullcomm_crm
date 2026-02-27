@@ -2070,14 +2070,15 @@ class ApiService {
             id: item["id"].toString(),
             icon1: item["icon1"].toString(),
             icon2: item["icon2"].toString(),
+            displayOrder: item["display_order"],
           );
         }).toList();
         // controllers.leadCategoryList.assignAll(converted);
         controllers.editMode.value =List.generate(controllers.leadCategoryList.length, (index) => false);
-        controllers.leadCategoryList.sort(
-              (a, b) => int.parse(a.leadStatus)
-              .compareTo(int.parse(b.leadStatus)),
-        );
+        // controllers.leadCategoryList.sort(
+        //       (a, b) => int.parse(a.leadStatus)
+        //       .compareTo(int.parse(b.leadStatus)),
+        // );
       } else {
         throw Exception('Failed to load album');
       }

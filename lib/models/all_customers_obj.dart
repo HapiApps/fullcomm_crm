@@ -49,6 +49,7 @@ class LeadStatusModel {
   String id;
   String icon1;
   String icon2;
+  int displayOrder;
   RxList<NewLeadObj> list;
   RxList<NewLeadObj> list2;
 
@@ -58,11 +59,13 @@ class LeadStatusModel {
     required String id,
     required String icon1,
     required String icon2,
+    required int displayOrder,
   })  : leadStatus = leadStatus,
         value = value,
         id = id,
         icon1 = icon1,
         icon2 = icon2,
+        displayOrder = displayOrder,
         list = <NewLeadObj>[].obs,
         list2 = <NewLeadObj>[].obs;
   @override
@@ -78,6 +81,7 @@ class LeadStatusModel {
       "lead_status": leadStatus,
       "value": value,
       "id": id,
+      "display_order": displayOrder,
     };
   }
 }

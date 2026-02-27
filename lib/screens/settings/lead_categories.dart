@@ -111,43 +111,40 @@ class _LeadCategoriesState extends State<LeadCategories> {
                   shrinkWrap: true,
                   itemCount: controllers.leadCategoryList.length,
                   // onReorder: (oldIndex, newIndex) {
-                  //
-                  //   isEdit.value = true;
-                  //
                   //   if (newIndex > oldIndex) {
                   //     newIndex -= 1;
                   //   }
                   //
-                  //   // 🔥 Step 1: Move item (IMPORTANT)
-                  //   final item = controllers.leadCategoryList.removeAt(oldIndex);
+                  //   final item =
+                  //   controllers.leadCategoryList.removeAt(oldIndex);
                   //   controllers.leadCategoryList.insert(newIndex, item);
                   //
-                  //   // 🔥 Step 2: Update lead_status = index
-                  //   for (int i = 0; i < controllers.leadCategoryList.length; i++) {
-                  //     controllers.leadCategoryList[i].leadStatus = i.toString();
+                  //   // index based update
+                  //   for (int i = 0;
+                  //   i < controllers.leadCategoryList.length;
+                  //   i++) {
+                  //     controllers.leadCategoryList[i].id =
+                  //         i.toString();
                   //   }
-                  //
+                  //   isEdit.value = true;
                   //   controllers.update();
                   // },
-                  onReorder: (oldIndex, newIndex) {
-                    if (newIndex > oldIndex) {
-                      newIndex -= 1;
-                    }
+                    onReorder: (oldIndex, newIndex) async {
+                      if (newIndex > oldIndex) {
+                        newIndex -= 1;
+                      }
 
-                    final item =
-                    controllers.leadCategoryList.removeAt(oldIndex);
-                    controllers.leadCategoryList.insert(newIndex, item);
+                      final item =
+                      controllers.leadCategoryList.removeAt(oldIndex);
+                      controllers.leadCategoryList.insert(newIndex, item);
 
-                    // index based update
-                    for (int i = 0;
-                    i < controllers.leadCategoryList.length;
-                    i++) {
-                      controllers.leadCategoryList[i].leadStatus =
-                          i.toString();
-                    }
-                    isEdit.value = true;
-                    controllers.update();
-                  },
+                      // Only update display_order
+                      for (int i = 0; i < controllers.leadCategoryList.length; i++) {
+                        controllers.leadCategoryList[i].displayOrder = i;
+                      }
+
+                      controllers.update();
+                      },
                   itemBuilder: (context, index) {
                     var data = controllers.leadCategoryList[index];
 
@@ -171,12 +168,12 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                 text: data.value,
                                 isCopy: false,
                               ),
-                              // CustomText(
-                              //   text: data.leadStatus.toString(),
-                              //   isCopy: false,
-                              //   size: 25,
-                              //   colors: colorsConst.primary,
-                              // ),
+                              CustomText(
+                                text: data.leadStatus.toString(),
+                                isCopy: false,
+                                size: 25,
+                                colors: colorsConst.primary,
+                              ),
                             ],
                           ),
                         ),

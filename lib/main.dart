@@ -81,9 +81,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     remController.dataSource = _getDataSource();
-    settingsController.allTemplates();
     remController.loadSavedFilters();
     if (widget.loginScreen) {
+      settingsController.allTemplates();
       apiService.allLeadsDetails();
       apiService.allQualifiedDetails();
       apiService.allNewLeadsDetails();
