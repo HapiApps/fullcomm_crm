@@ -23,6 +23,7 @@ import '../../models/new_lead_obj.dart';
 class UpdateLead extends StatefulWidget {
   final String type;
   final String? id;
+  final int index;
   final String? mainName;
   final String? mainMobile;
   final String? mainEmail;
@@ -122,7 +123,7 @@ class UpdateLead extends StatefulWidget {
     this.quotationRequired, this.arpuValue,
     this.prospectEnrollmentDate, this.expectedConvertionDate,
     this.statusUpdate, this.numOfHeadcount, this.expectedBillingValue,
-    required this.notes,required this.sourceDetails,required this.updateTs, this.detailsOfRequired, required this.visitType, required this.type, required this.list, required this.list2
+    required this.notes,required this.sourceDetails,required this.updateTs, this.detailsOfRequired, required this.visitType, required this.type, required this.list, required this.list2, required this.index
   });
 
 
@@ -131,6 +132,9 @@ class UpdateLead extends StatefulWidget {
 }
 
 class _UpdateLeadState extends State<UpdateLead> {
+
+  List<FocusNode> phoneFocusList = [];
+  List<FocusNode> phoneFocusList2 = [];
   String safeValue(dynamic value) {
     if (value == null) return "";
     final v = value.toString().trim();
@@ -151,16 +155,25 @@ class _UpdateLeadState extends State<UpdateLead> {
     setState(() {
       controllers.numberList.clear();
       controllers.infoNumberList.clear();
+      controllers.industry = safeValue(widget.industry).isEmpty ? null : safeValue(widget.industry);
+
+      print(controllers.industry);
       var list=widget.mainMobile.toString().split("||");
       for(var i=0;i<list.length;i++){
         controllers.numberList.add(TextEditingController(text: list[i]));
+        phoneFocusList.add(FocusNode());
       }
 
       var list2=widget.companyNumber.toString().split("||");
       for(var i=0;i<list2.length;i++){
         controllers.infoNumberList.add(TextEditingController(text: list2[i]));
+        phoneFocusList2.add(FocusNode());
       }
-
+      controllers.visitType = widget.visitType.isEmpty
+          ? "Call"
+          : controllers.callNameList.contains(widget.visitType)
+          ? widget.visitType
+          : "Call";
       // controllers.leadNameCrt.clear();
       // controllers.leadMobileCrt.clear();
       // controllers.leadTitleCrt.clear();
@@ -176,11 +189,7 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.leadEmailCrt[0].text  = safeValue(widget.mainEmail);
       controllers.leadWhatsCrt[0].text  = safeValue(widget.mainWhatsApp);
       controllers.leadTitleCrt[0].text  = safeValue(widget.owner);
-      controllers.visitType = widget.visitType.isEmpty
-          ? "Call"
-          : controllers.callNameList.contains(widget.visitType)
-          ? widget.visitType
-          : "Call";
+
       controllers.leadCoNameCrt.text     = safeValue(widget.companyName);
       controllers.leadCoMobileCrt.text   = safeValue(widget.companyNumber);
       controllers.leadWebsite.text       = safeValue(widget.companyWebsite);
@@ -200,7 +209,6 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.prospectEnrollmentDateCrt.text = safeValue(widget.prospectEnrollmentDate);
       controllers.prospectDate.value = safeValue(widget.prospectEnrollmentDate);
       controllers.exDate.value       = safeValue(widget.expectedConvertionDate);
-      controllers.industry = safeValue(widget.industry).isEmpty ? null : safeValue(widget.industry);
       controllers.source   = safeValue(widget.source).isEmpty ? null : safeValue(widget.source);
       controllers.status   = safeValue(widget.status).isEmpty ? null : safeValue(widget.status);
       controllers.rating   = safeValue(widget.rating).isEmpty ? null : safeValue(widget.rating);
@@ -234,6 +242,7 @@ class _UpdateLeadState extends State<UpdateLead> {
         .join(" ");
   }
   final ScrollController _controller = ScrollController();
+
   late FocusNode _focusNode;
   final FocusNode name = FocusNode();
   final FocusNode phone = FocusNode();
@@ -414,7 +423,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           focusNode: name,
                                           onEdit: () {
                                             FocusScope.of(context)
-                                                .requestFocus(phone);
+                                                .requestFocus(phoneFocusList.last);
                                           },
                                           isOptional: true,
                                           controller: controllers.leadNameCrt[0],
@@ -443,6 +452,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                 width: textFieldSize-40,
                                                                 // height: 80,
                                                                 child: CustomTextField(
+                                                                  focusNode: phoneFocusList[index],
                                                                   onEdit: () {
                                                                     FocusScope.of(context)
                                                                         .requestFocus(account);
@@ -481,6 +491,9 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                   onPressed:(){
                                                                     if (controllers.numberList.length > 1) {
                                                                       controllers.numberList.removeAt(index);
+                                                                      phoneFocusList[index].dispose();
+                                                                      phoneFocusList.removeAt(index);
+                                                                      controllers.update();
                                                                     }else{
                                                                       utils.snackBar(context: context, msg: "Enter at least one ${_formatHeading(
                                                                           controllers.getUserHeading(
@@ -537,6 +550,9 @@ class _UpdateLeadState extends State<UpdateLead> {
 
                                                                   if (!isMistake) {
                                                                     controllers.numberList.add(TextEditingController());
+                                                                    phoneFocusList.add(FocusNode());
+                                                                    FocusScope.of(context).requestFocus(phoneFocusList.last);
+                                                                    controllers.update();
                                                                   }
                                                                 },
                                                                 icon: Icon(Icons.add),
@@ -724,7 +740,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       children:[
                                         CustomTextField(
                                           onEdit: () {
-                                            FocusScope.of(context).requestFocus(cNo);
+                                            FocusScope.of(context).requestFocus(phoneFocusList2.last);
                                           },
                                           focusNode: cName,
                                           hintText:_formatHeading(controllers.getUserHeading
@@ -757,7 +773,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                 width: textFieldSize-40,
                                                                 // height: 80,
                                                                 child: CustomTextField(
-                                                                  // focusNode: cNo,
+                                                                  focusNode: phoneFocusList2[index],
                                                                   onEdit: () {
                                                                     FocusScope.of(context).requestFocus(linkedin);
                                                                   },
@@ -797,6 +813,9 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                   onPressed:(){
                                                                     if (controllers.infoNumberList.length > 1) {
                                                                       controllers.infoNumberList.removeAt(index);
+                                                                      phoneFocusList2[index].dispose();
+                                                                      phoneFocusList2.removeAt(index);
+                                                                      controllers.update();
                                                                     }else{
                                                                       utils.snackBar(context: context, msg: "Enter at least one mobile number.", color: Colors.red);
                                                                     }
@@ -844,6 +863,9 @@ class _UpdateLeadState extends State<UpdateLead> {
 
                                                                   if (!isMistake) {
                                                                     controllers.infoNumberList.add(TextEditingController());
+                                                                    phoneFocusList2.add(FocusNode());
+                                                                    FocusScope.of(context).requestFocus(phoneFocusList2.last);
+                                                                    controllers.update();
                                                                   }
                                                                 },
                                                                 icon: Icon(Icons.add),
@@ -1486,10 +1508,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                               if(controllers.leadEmailCrt[0].text.isNotEmpty){
                                                 if (controllers.leadEmailCrt[0].text.isEmail) {
                                                   if(controllers.pinCodeController.text.isEmpty){
-                                                    apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
+                                                    apiService.updateLeadAPI(context,widget.index,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                                   }else{
                                                     if(controllers.pinCodeController.text.length==6){
-                                                      apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
+                                                      apiService.updateLeadAPI(context,widget.index,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                                     }else{
                                                       utils.snackBar(msg: "Please add 6 digits pin code",
                                                           color: colorsConst.primary,context:context);
@@ -1503,10 +1525,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 }
                                               }else{
                                                 if(controllers.pinCodeController.text.isEmpty){
-                                                  apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
+                                                  apiService.updateLeadAPI(context,widget.index,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                                 }else{
                                                   if(controllers.pinCodeController.text.length==6){
-                                                    apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
+                                                    apiService.updateLeadAPI(context,widget.index,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                                   }else{
                                                     utils.snackBar(msg: "Please add 6 digits pin code",
                                                         color: colorsConst.primary,context:context);
@@ -1650,13 +1672,13 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         if(controllers.leadEmailCrt[0].text.isNotEmpty){
                                           if (controllers.leadEmailCrt[0].text.isEmail) {
                                             if(controllers.pinCodeController.text.isEmpty){
-                                              apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
+                                              apiService.updateLeadAPI(context,widget.index,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                             }else{
                                               if(controllers.pinCodeController.text.length==6){
-                                                apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
+                                                apiService.updateLeadAPI(context,widget.index,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                               }else{
                                                 utils.snackBar(msg: "Please add 6 digits pin code",
-                                                    color: colorsConst.primary,context:context);
+                                                    color: Colors.red,context:context);
                                                 controllers.leadCtr.reset();
                                               }
                                             }
@@ -1667,10 +1689,10 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           }
                                         }else{
                                           if(controllers.pinCodeController.text.isEmpty){
-                                            apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
+                                            apiService.updateLeadAPI(context,widget.index,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                           }else{
                                             if(controllers.pinCodeController.text.length==6){
-                                              apiService.updateLeadAPI(context,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
+                                              apiService.updateLeadAPI(context,widget.index,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                             }else{
                                               utils.snackBar(msg: "Please add 6 digits pin code",
                                                   color: colorsConst.primary,context:context);

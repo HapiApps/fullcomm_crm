@@ -26,7 +26,7 @@ class InputFormatters {
   ];
 
   final List<TextInputFormatter> socialInput = [
-    LengthLimitingTextInputFormatter(30),
+    // LengthLimitingTextInputFormatter(30),
     FilteringTextInputFormatter.allow(
         RegExp("[a-zA-Z0-9 _/. !@#%^&*()/?:;+=_-]"))
     //FilteringTextInputFormatter.allow(RegExp(r'[^,]*'))

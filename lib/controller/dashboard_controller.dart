@@ -341,7 +341,7 @@ class DashboardController extends GetxController {
       throw Exception('Failed to load album');
     }
   }
-  var timestamp="".obs;
+  var timestamp="${DateTime.now()}".obs;
 
   Future getDashboardReport() async {
     final range = dashController.selectedRange.value;

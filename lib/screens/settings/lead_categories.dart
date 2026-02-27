@@ -140,9 +140,10 @@ class _LeadCategoriesState extends State<LeadCategories> {
 
                       // Only update display_order
                       for (int i = 0; i < controllers.leadCategoryList.length; i++) {
-                        controllers.leadCategoryList[i].displayOrder = i;
+                        controllers.leadCategoryList[i].displayOrder = i+1;
                       }
-
+                        isEdit.value = true;
+                      // print("${controllers.leadCategoryList}.....");
                       controllers.update();
                       },
                   itemBuilder: (context, index) {
@@ -168,12 +169,12 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                 text: data.value,
                                 isCopy: false,
                               ),
-                              CustomText(
-                                text: data.leadStatus.toString(),
-                                isCopy: false,
-                                size: 25,
-                                colors: colorsConst.primary,
-                              ),
+                              // CustomText(
+                              //   text: data.leadStatus.toString(),
+                              //   isCopy: false,
+                              //   size: 25,
+                              //   colors: colorsConst.primary,
+                              // ),
                             ],
                           ),
                         ),

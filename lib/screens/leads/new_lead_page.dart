@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -51,7 +53,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
       // controllers.selectedIndex.value = 2;
       controllers.groupController.selectIndex(0);
       setState(() {
-        controllers.search.clear();
+        // controllers.search.clear();
         controllers.idList.clear();
         for (var lead in widget.list) {
           lead.select = false;
@@ -95,6 +97,8 @@ class _NewLeadPageState extends State<NewLeadPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("LENTGHHHHH: ${widget.list.length}");
+     log("LENTGHHHHH: ${widget.list}");
     final screenWidth = MediaQuery.of(context).size.width;
     double tableWidth;
     if (screenWidth >= 1600) {
@@ -882,6 +886,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                         itemBuilder: (context, index) {
                                           final data = widget.list[index];
                                           return Obx(()=>CustomerNameTile(
+                                            listIndex: index,
                                             list: widget.list,list2: widget.list2,
                                             leadIndex: widget.index,
                                             pageName: "Prospects",
@@ -912,7 +917,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                             linkedin: data.linkedin,
                                             x: data.x,
                                             name: data.firstname.toString().split("||")[0],
-                                            mobileNumber: data.mobileNumber.toString().split("||")[0],
+                                            mobileNumber: data.mobileNumber.toString(),
                                             email: data.email.toString().split("||")[0],
                                             companyName: data.companyName.toString(),
                                             mainWhatsApp: data.whatsapp.toString().split("||")[0],
@@ -1042,6 +1047,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                               itemBuilder: (context, index) {
                                                 final data = widget.list[index];
                                                 return Obx(()=>CustomLeadTile(
+                                                  listIndex: index,
                                                   list: widget.list,list2: widget.list2,
                                                   pageName: "Prospects",
                                                   // saveValue: controllers.isLeadsList[index]["isSelect"],

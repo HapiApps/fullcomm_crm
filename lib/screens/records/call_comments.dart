@@ -324,34 +324,57 @@ class _CallCommentsState extends State<CallComments> {
                                                             )
                                                           ],
                                                         ),
-                                                        RadioGroup<String>(
-                                                          groupValue: controllers.callType,
-                                                          onChanged: (value) {
-                                                            setState(() {
-                                                              controllers.callType = value!;
-                                                            });
-                                                          },
-                                                          child: Row(
-                                                            children: controllers.callTypeList.map<Widget>((type) {
-                                                              return Row(
-                                                                mainAxisSize: MainAxisSize.min,
-                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                children: [
-                                                                  Radio<String>(
-                                                                    value: type,
-                                                                    activeColor: colorsConst.primary,
-                                                                  ),
-                                                                  CustomText(
-                                                                    text: type,
-                                                                    size: 14,
-                                                                    isCopy: false,
-                                                                  ),
-                                                                  20.width,
-                                                                ],
-                                                              );
-                                                            }).toList(),
-                                                          ),
-                                                        ),
+                                                        Obx(() => Row(
+                                                          children: controllers.callTypeList.map<Widget>((type) {
+                                                            return Row(
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              children: [
+                                                                Radio<String>(
+                                                                  value: type,
+                                                                  groupValue: controllers.callType,
+                                                                  activeColor: colorsConst.primary,
+                                                                  onChanged: (value) {
+                                                                    controllers.callType = value!;
+                                                                  },
+                                                                ),
+                                                                CustomText(
+                                                                  text: type,
+                                                                  size: 14,
+                                                                  isCopy: false,
+                                                                ),
+                                                                20.width,
+                                                              ],
+                                                            );
+                                                          }).toList(),
+                                                        )),
+                                                        // RadioGroup<String>(
+                                                        //   groupValue: controllers.callType,
+                                                        //   onChanged: (value) {
+                                                        //     setState(() {
+                                                        //       controllers.callType = value!;
+                                                        //     });
+                                                        //   },
+                                                        //   child: Row(
+                                                        //     children: controllers.callTypeList.map<Widget>((type) {
+                                                        //       return Row(
+                                                        //         mainAxisSize: MainAxisSize.min,
+                                                        //         mainAxisAlignment: MainAxisAlignment.start,
+                                                        //         children: [
+                                                        //           Radio<String>(
+                                                        //             value: type,
+                                                        //             activeColor: colorsConst.primary,
+                                                        //           ),
+                                                        //           CustomText(
+                                                        //             text: type,
+                                                        //             size: 14,
+                                                        //             isCopy: false,
+                                                        //           ),
+                                                        //           20.width,
+                                                        //         ],
+                                                        //       );
+                                                        //     }).toList(),
+                                                        //   ),
+                                                        // ),
                                                       ],
                                                     ),
                                                   ],
@@ -382,37 +405,69 @@ class _CallCommentsState extends State<CallComments> {
                                                         Obx(() => SizedBox(
                                                           width: 510,
                                                           height: 50,
-                                                          child: RadioGroup<String>(
-                                                            groupValue: controllers.callStatus,
-                                                            onChanged: (value) {
-                                                              setState ((){
-                                                                controllers.callStatus = value!;
-                                                              });
+                                                          child: ListView.builder(
+                                                            scrollDirection: Axis.horizontal,
+                                                            itemCount: controllers.hCallStatusList.length,
+                                                            itemBuilder: (context, index) {
+                                                              final item = controllers.hCallStatusList[index];
+
+                                                              return Row(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: [
+                                                                  Radio<String>(
+                                                                    value: item["value"],
+                                                                    groupValue: controllers.callStatus,
+                                                                    activeColor: colorsConst.primary,
+                                                                    onChanged: (value) {
+                                                                      controllers.callStatus = value!;
+                                                                    },
+                                                                  ),
+                                                                  CustomText(
+                                                                    text: item["value"],
+                                                                    size: 14,
+                                                                    isCopy: false,
+                                                                  ),
+                                                                  20.width,
+                                                                ],
+                                                              );
                                                             },
-                                                            child: ListView.builder(
-                                                              scrollDirection: Axis.horizontal,
-                                                              itemCount: controllers.hCallStatusList.length,
-                                                              itemBuilder: (context, index) {
-                                                                final item = controllers.hCallStatusList[index];
-                                                                return Row(
-                                                                  mainAxisSize: MainAxisSize.min,
-                                                                  children: [
-                                                                    Radio<String>(
-                                                                      value: item["value"],
-                                                                      activeColor: colorsConst.primary,
-                                                                    ),
-                                                                    CustomText(
-                                                                      text: item["value"],
-                                                                      size: 14,
-                                                                      isCopy: false,
-                                                                    ),
-                                                                    20.width,
-                                                                  ],
-                                                                );
-                                                              },
-                                                            ),
                                                           ),
-                                                        ))
+                                                        )),
+                                                        // Obx(() => SizedBox(
+                                                        //   width: 510,
+                                                        //   height: 50,
+                                                        //   child: RadioGroup<String>(
+                                                        //     groupValue: controllers.callStatus,
+                                                        //     onChanged: (value) {
+                                                        //       setState ((){
+                                                        //         controllers.callStatus = value!;
+                                                        //       });
+                                                        //     },
+                                                        //     child: ListView.builder(
+                                                        //       scrollDirection: Axis.horizontal,
+                                                        //       itemCount: controllers.hCallStatusList.length,
+                                                        //       itemBuilder: (context, index) {
+                                                        //         final item = controllers.hCallStatusList[index];
+                                                        //         return Row(
+                                                        //           mainAxisSize: MainAxisSize.min,
+                                                        //           children: [
+                                                        //             Radio<String>(
+                                                        //               value: item["value"],
+                                                        //               activeColor: colorsConst.primary,
+                                                        //             ),
+                                                        //             CustomText(
+                                                        //               text: item["value"],
+                                                        //               size: 14,
+                                                        //               isCopy: false,
+                                                        //             ),
+                                                        //             20.width,
+                                                        //           ],
+                                                        //         );
+                                                        //       },
+                                                        //     ),
+                                                        //   ),
+                                                        // ))
+                                                        ///
                                                         // Row(
                                                         //   mainAxisAlignment: MainAxisAlignment.start,
                                                         //   children: (controllers.storage.read("cos_id") == "202510" || controllers.storage.read("cos_id") == "202610"

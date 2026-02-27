@@ -20,6 +20,7 @@ import '../../models/new_lead_obj.dart';
 import '../invoice/invoice.dart';
 
 class ViewLead extends StatefulWidget {
+  final int listIndex;
   final String? id;
   final String? leadIndex;
   final String pageName;
@@ -67,7 +68,7 @@ class ViewLead extends StatefulWidget {
     this.pinCode,
     required this.updateTs,
     required this.notes,
-    required this.sourceDetails, required this.whatsAppNo, this.leadIndex, required this.list, required this.list2,
+    required this.sourceDetails, required this.whatsAppNo, this.leadIndex, required this.list, required this.list2, required this.listIndex,
   });
 
   @override
@@ -769,6 +770,7 @@ class _ViewLeadState extends State<ViewLead> {
                                         // prepare values for UpdateLead
                                         Get.to(
                                           UpdateLead(
+                                            index: widget.listIndex,
                                             list: widget.list,list2: widget.list2,
                                             type: "2",
                                             id: widget.id,

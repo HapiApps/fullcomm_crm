@@ -54,8 +54,10 @@ class _DashboardPageState extends State<DashboardPage>
     super.initState();
     _focusNode = FocusNode();
     dashController.getToken();
-    apiService.getLeadCategories();
-    apiService.getCustomLeads();
+    if(controllers.leadCategoryList.isEmpty){
+      apiService.getLeadCategories();
+      apiService.getCustomLeads();
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);

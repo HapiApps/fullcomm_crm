@@ -32,7 +32,8 @@ class AddLead extends StatefulWidget {
 }
 
 class _AddLeadState extends State<AddLead> {
-
+  List<FocusNode> phoneFocusList = [];
+  List<FocusNode> phoneFocusList2 = [];
   void getStringValue()  {
     Future.delayed(Duration.zero, () {
       // setState(() {
@@ -118,6 +119,8 @@ class _AddLeadState extends State<AddLead> {
         controllers.numberList.clear();
         controllers.infoNumberList.clear();
         controllers.numberList.add(TextEditingController());
+        phoneFocusList.add(FocusNode());
+        phoneFocusList2.add(FocusNode());
         controllers.infoNumberList.add(TextEditingController());
         controllers.leadCoNameCrt.text = "";
         controllers.leadCoMobileCrt.text = "";
@@ -130,7 +133,6 @@ class _AddLeadState extends State<AddLead> {
         controllers.status = null;
         controllers.rating = null;
         controllers.service = null;
-        controllers.visitType = null;
         controllers.stateController.text = "";
         controllers.doorNumberController.text = "";
         controllers.leadDescription.text = "";
@@ -182,7 +184,7 @@ class _AddLeadState extends State<AddLead> {
         : "")
         .join(" ");
   }
-//santhiya2
+  //santhiya2
   final FocusNode name = FocusNode();
   final FocusNode phone = FocusNode();
   final FocusNode whatsApp = FocusNode();
@@ -310,9 +312,13 @@ class _AddLeadState extends State<AddLead> {
                           setState(() {
                             controllers.visitType="Call";
                             controllers.numberList.clear();
+                            phoneFocusList.clear();
+                            phoneFocusList2.clear();
                             controllers.infoNumberList.clear();
                             controllers.numberList.add(TextEditingController());
                             controllers.infoNumberList.add(TextEditingController());
+                            phoneFocusList.add(FocusNode());
+                            phoneFocusList2.add(FocusNode());
                             controllers.leadCoNameCrt.text = "";
                             controllers.leadCoMobileCrt.text = "";
                             controllers.leadWebsite.text = "";
@@ -324,7 +330,7 @@ class _AddLeadState extends State<AddLead> {
                             controllers.status = null;
                             controllers.rating = null;
                             controllers.service = null;
-                            controllers.visitType = null;
+                            controllers.visitType = "Call";
                             controllers.stateController.text = "";
                             controllers.doorNumberController.text = "";
                             controllers.leadDescription.text = "";
@@ -744,8 +750,7 @@ class _AddLeadState extends State<AddLead> {
                                                 "Name"),
                                         focusNode: name,
                                         onEdit: () {
-                                          FocusScope.of(context)
-                                              .requestFocus(phone);
+                                          FocusScope.of(context).requestFocus(phoneFocusList.last);
                                         },
                                         text: _formatHeading(
                                             controllers.getUserHeading(
@@ -803,7 +808,7 @@ class _AddLeadState extends State<AddLead> {
                                                               width: textFieldSize-40,
                                                               // height: 80,
                                                               child: CustomTextField(
-                                                                focusNode: phone,
+                                                                focusNode: phoneFocusList[index],
                                                                 onEdit: () {
                                                                   FocusScope.of(context)
                                                                       .requestFocus(account);
@@ -842,6 +847,9 @@ class _AddLeadState extends State<AddLead> {
                                                                 onPressed:(){
                                                                   if (controllers.numberList.length > 1) {
                                                                     controllers.numberList.removeAt(index);
+                                                                    phoneFocusList[index].dispose();
+                                                                    phoneFocusList.removeAt(index);
+                                                                    controllers.update();
                                                                   }else{
                                                                     utils.snackBar(context: context, msg: "Enter at least one ${_formatHeading(
                                                                         controllers.getUserHeading(
@@ -898,6 +906,9 @@ class _AddLeadState extends State<AddLead> {
 
                                                                 if (!isMistake) {
                                                                   controllers.numberList.add(TextEditingController());
+                                                                  phoneFocusList.add(FocusNode());
+                                                                  FocusScope.of(context).requestFocus(phoneFocusList.last);
+                                                                  controllers.update();
                                                                 }
                                                               },
                                                               icon: Icon(Icons.add),
@@ -1075,13 +1086,13 @@ class _AddLeadState extends State<AddLead> {
                                       ),
                                       CustomTextField(
                                           focusNode: email,
-                                          onEdit: () {
-                                            utils.datePicker(
-                                                context: context,
-                                                textEditingController:
-                                                    controllers.dateOfConCtr,
-                                                pathVal: controllers.empDOB);
-                                          },
+                                          // onEdit: () {
+                                          //   utils.datePicker(
+                                          //       context: context,
+                                          //       textEditingController:
+                                          //           controllers.dateOfConCtr,
+                                          //       pathVal: controllers.empDOB);
+                                          // },
                                           hintText: _formatHeading(
                                               controllers.getUserHeading(
                                                   "email") ??
@@ -1190,7 +1201,7 @@ class _AddLeadState extends State<AddLead> {
                           children: [
                             CustomTextField(
                               onEdit: () {
-                                FocusScope.of(context).requestFocus(cNo);
+                                FocusScope.of(context).requestFocus(phoneFocusList2.last);
                               },
                               focusNode: cName,
                               hintText: _formatHeading(controllers.getUserHeading
@@ -1239,7 +1250,7 @@ class _AddLeadState extends State<AddLead> {
                                                     width: textFieldSize-40,
                                                     // height: 80,
                                                     child: CustomTextField(
-                                                      // focusNode: cNo,
+                                                      focusNode: phoneFocusList2[index],
                                                       onEdit: () {
                                                         FocusScope.of(context).requestFocus(linkedin);
                                                       },
@@ -1279,6 +1290,9 @@ class _AddLeadState extends State<AddLead> {
                                                       onPressed:(){
                                                         if (controllers.infoNumberList.length > 1) {
                                                           controllers.infoNumberList.removeAt(index);
+                                                          phoneFocusList2[index].dispose();
+                                                          phoneFocusList2.removeAt(index);
+                                                          controllers.update();
                                                         }else{
                                                           utils.snackBar(context: context, msg: "Enter at least one mobile number.", color: Colors.red);
                                                         }
@@ -1326,6 +1340,9 @@ class _AddLeadState extends State<AddLead> {
 
                                                       if (!isMistake) {
                                                         controllers.infoNumberList.add(TextEditingController());
+                                                        phoneFocusList2.add(FocusNode());
+                                                        FocusScope.of(context).requestFocus(phoneFocusList2.last);
+                                                        controllers.update();
                                                       }
                                                     },
                                                     icon: Icon(Icons.add),
@@ -1782,6 +1799,7 @@ class _AddLeadState extends State<AddLead> {
                               isOptional: false,
                               // keyboardType: TextInputType.text,
                               textInputAction: TextInputAction.next,
+                              inputFormatters: constInputFormatters.numberInput,
                               onChanged: (value) async {
                                 if (value.toString().isNotEmpty) {
                                   String newValue =

@@ -2391,10 +2391,10 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
   RxList<Map<String, dynamic>> industriesList =
       <Map<String, dynamic>>[].obs;
-
+var refreshValue=true.obs;
   Future<void> getIndustries() async {
     try {
-
+      refreshValue.value=false;
       industriesList.clear();
 
       final response = await http.post(
@@ -2433,14 +2433,16 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
         // ✅ Store into RxList
         industriesList.assignAll(list);
-
+        refreshValue.value=true;
         print("Loaded Items: ${industriesList}");
 
       } else {
+        refreshValue.value=true;
         print("API Error: ${decoded["message"]}");
       }
 
     } catch (e) {
+      refreshValue.value=true;
       print("FLUTTER ERROR => $e");
     }
   }
@@ -3282,7 +3284,7 @@ var otp = "".obs;
       }
       if (response.statusCode == 200 &&
           body.contains("Customer saved successfully")) {
-        apiService.getCustomLeads();
+        // apiService.getCustomLeads();
         // Navigator.pushReplacement(
         //   context,
           // MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,name: controllers.leadCategoryList[0].value)),

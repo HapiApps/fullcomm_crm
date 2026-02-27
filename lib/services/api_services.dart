@@ -241,8 +241,15 @@ class ApiService {
   //   }
   // }
 
-  Future updateLeadAPI(BuildContext context, String leadId,  String type, String addressId, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
+  Future updateLeadAPI(BuildContext context, int index,String leadId,  String type, String addressId, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
+      String callListId = "";
+      for (var role in controllers.callList) {
+        if (role['value'] == controllers.visitType) {
+          callListId = role['id'].toString();
+          break;
+        }
+      }
       Map data = {
         "cos_id": controllers.storage.read("cos_id"),
         "city": controllers.cityController.text,
@@ -302,7 +309,7 @@ class ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return updateLeadAPI(context,leadId,type,addressId,list,list2);
+          return updateLeadAPI(context,index,leadId,type,addressId,list,list2);
         } else {
           controllers.setLogOut();
         }
@@ -313,16 +320,147 @@ class ApiService {
             msg: "Your Lead is updated successfully !",
             color: Colors.green,
             context: Get.context!);
-        // controllers.leadFuture = apiService.leadsDetailsForCustomer(leadId);
-        // if(type=="1"){
-        //   Get.back();
-        // }else{
-        //   Get.back();
-        //   Get.back();
-        // }
-        // apiService.allNewLeadsDetails();
-        // apiService.allLeadsDetails();
-        apiService.getCustomLeads();
+        list[index]=NewLeadObj(
+          select: false,
+          firstname: controllers.leadNameCrt[0].text.trim(),
+          email: controllers.leadEmailCrt[0].text.trim(),
+          mobileNumber: controllers.numberList
+              .map((e) => e.text.trim())
+              .where((e) => e.isNotEmpty)
+              .join("||"),
+
+          userId: controllers.storage.read("id").toString(),
+          companyName: controllers.leadCoNameCrt.text.trim(),
+          productDiscussion: controllers.prodDescriptionController.text.trim(),
+          source: controllers.leadDisPointsCrt.text.trim(),
+          notes: controllers.leadActions.text.trim(),
+
+          quotationStatus: "",
+          quotationRequired: "1",
+
+          doorNo: controllers.doorNumberController.text.trim(),
+          area: controllers.areaController.text.trim(),
+          city: controllers.cityController.text.trim(),
+          country: controllers.selectedCountry.value,
+          state: controllers.stateController.text.trim(),
+          pincode: controllers.pinCodeController.text.trim(),
+
+          companyWebsite: controllers.leadWebsite.text.trim(),
+          companyNumber: controllers.infoNumberList
+              .map((e) => e.text.trim())
+              .where((e) => e.isNotEmpty)
+              .join("||"),
+          companyEmail: controllers.leadCoEmailCrt.text.trim(),
+          linkedin: controllers.leadLinkedinCrt.text.trim(),
+          x: controllers.leadXCrt.text.trim(),
+
+          industry: controllers.industry.toString(),
+          product: controllers.leadProduct.text.trim(),
+          sourceDetails: controllers.leadProduct.text.trim(),
+
+          type: "1",
+          lat: "0.0",
+          lng: "0.0",
+
+          leadStatus: leadId.toString(),
+          status: controllers.status.toString(),
+          visitType: callListId.toString(),
+
+          prospectEnrollmentDate:
+          controllers.prospectDate.value.isEmpty
+              ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+              : controllers.prospectDate.value,
+
+          expectedConvertionDate:
+          controllers.exDate.value.isEmpty
+              ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+              : controllers.exDate.value,
+
+          statusUpdate: controllers.statusCrt.text.trim(),
+          numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
+          expectedBillingValue:
+          controllers.exMonthBillingValCrt.text.trim(),
+          arpuValue: controllers.arpuCrt.text.trim(),
+
+          detailsOfServiceRequired:
+          controllers.sourceCrt.text.trim(),
+          rating: controllers.prospectGradingCrt.text.trim(),
+          owner: controllers.leadTitleCrt[0].text.trim(),
+
+          createdTs: DateTime.now().toString(),
+          updatedTs: DateTime.now().toString(),
+        );
+        list2[index]=NewLeadObj(
+          select: false,
+          firstname: controllers.leadNameCrt[0].text.trim(),
+          email: controllers.leadEmailCrt[0].text.trim(),
+          mobileNumber: controllers.numberList
+              .map((e) => e.text.trim())
+              .where((e) => e.isNotEmpty)
+              .join("||"),
+
+          userId: controllers.storage.read("id").toString(),
+          companyName: controllers.leadCoNameCrt.text.trim(),
+          productDiscussion: controllers.prodDescriptionController.text.trim(),
+          source: controllers.leadDisPointsCrt.text.trim(),
+          notes: controllers.leadActions.text.trim(),
+
+          quotationStatus: "",
+          quotationRequired: "1",
+
+          doorNo: controllers.doorNumberController.text.trim(),
+          area: controllers.areaController.text.trim(),
+          city: controllers.cityController.text.trim(),
+          country: controllers.selectedCountry.value,
+          state: controllers.stateController.text.trim(),
+          pincode: controllers.pinCodeController.text.trim(),
+
+          companyWebsite: controllers.leadWebsite.text.trim(),
+          companyNumber: controllers.infoNumberList
+              .map((e) => e.text.trim())
+              .where((e) => e.isNotEmpty)
+              .join("||"),
+          companyEmail: controllers.leadCoEmailCrt.text.trim(),
+          linkedin: controllers.leadLinkedinCrt.text.trim(),
+          x: controllers.leadXCrt.text.trim(),
+
+          industry: controllers.industry.toString(),
+          product: controllers.leadProduct.text.trim(),
+          sourceDetails: controllers.leadProduct.text.trim(),
+
+          type: "1",
+          lat: "0.0",
+          lng: "0.0",
+
+          leadStatus: leadId.toString(),
+          status: controllers.status.toString(),
+          visitType: callListId.toString(),
+
+          prospectEnrollmentDate:
+          controllers.prospectDate.value.isEmpty
+              ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+              : controllers.prospectDate.value,
+
+          expectedConvertionDate:
+          controllers.exDate.value.isEmpty
+              ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+              : controllers.exDate.value,
+
+          statusUpdate: controllers.statusCrt.text.trim(),
+          numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
+          expectedBillingValue:
+          controllers.exMonthBillingValCrt.text.trim(),
+          arpuValue: controllers.arpuCrt.text.trim(),
+
+          detailsOfServiceRequired:
+          controllers.sourceCrt.text.trim(),
+          rating: controllers.prospectGradingCrt.text.trim(),
+          owner: controllers.leadTitleCrt[0].text.trim(),
+
+          createdTs: DateTime.now().toString(),
+          updatedTs: DateTime.now().toString(),
+        );
+        // apiService.getCustomLeads();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,
@@ -460,8 +598,6 @@ class ApiService {
       }
       if (request.statusCode == 200) {
         utils.snackBar(context: context, msg: "Category updated successfully", color: Colors.green);
-        getLeadCategories();
-        getCustomLeads();
         controllers.productCtr.reset();
       } else {
         apiService.errorDialog(context, request.body);
@@ -500,8 +636,16 @@ class ApiService {
         }
       }
       if (request.statusCode == 200) {
+        final responseData = jsonDecode(request.body);
         utils.snackBar(context: context, msg: "Category added successfully", color: Colors.green);
-        getLeadCategories();
+        controllers.leadCategoryList.add(LeadStatusModel(
+          leadStatus: (responseData['data']['lead_status']).toString(),
+          value: controllers.emailMessageCtr.text.trim(),
+          id: (responseData['data']['id']).toString(),
+          icon1: "",
+          icon2: "",
+          displayOrder: int.parse(responseData['data']['display_order'].toString()),
+        ));
         Get.back();
         controllers.productCtr.reset();
       } else {
@@ -1448,6 +1592,7 @@ class ApiService {
   Future<void> insertSingleCustomer(BuildContext context,RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
       // Lead Status
+      print("Before nav: ${list.length}");
       String leadId = controllers.leadCategory == "Suspects"
           ? "1"
           : controllers.leadCategory == "Prospects"
@@ -1562,6 +1707,7 @@ class ApiService {
       );
 
       final body = response.body.toString();
+      print(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1572,7 +1718,148 @@ class ApiService {
       }
       if (response.statusCode == 200 &&
         body.contains("Customer saved successfully")) {
-        apiService.getCustomLeads();
+        list.add(NewLeadObj(
+          select: false,
+          firstname: controllers.leadNameCrt[0].text.trim(),
+          email: controllers.leadEmailCrt[0].text.trim(),
+          mobileNumber: controllers.numberList
+              .map((e) => e.text.trim())
+              .where((e) => e.isNotEmpty)
+              .join("||"),
+          whatsapp: controllers.leadWhatsCrt[0].text.trim(),
+          userId: controllers.storage.read("id").toString(),
+          companyName: controllers.leadCoNameCrt.text.trim(),
+          productDiscussion: controllers.prodDescriptionController.text.trim(),
+          source: controllers.leadDisPointsCrt.text.trim(),
+          notes: controllers.leadActions.text.trim(),
+
+          quotationStatus: "",
+          quotationRequired: "1",
+
+          doorNo: controllers.doorNumberController.text.trim(),
+          area: controllers.areaController.text.trim(),
+          city: controllers.cityController.text.trim(),
+          country: controllers.selectedCountry.value,
+          state: controllers.stateController.text.trim(),
+          pincode: controllers.pinCodeController.text.trim(),
+
+          companyWebsite: controllers.leadWebsite.text.trim(),
+          companyNumber: controllers.infoNumberList
+              .map((e) => e.text.trim())
+              .where((e) => e.isNotEmpty)
+              .join("||"),
+          companyEmail: controllers.leadCoEmailCrt.text.trim(),
+          linkedin: controllers.leadLinkedinCrt.text.trim(),
+          x: controllers.leadXCrt.text.trim(),
+
+          industry: controllers.industry.toString(),
+          product: controllers.leadProduct.text.trim(),
+          sourceDetails: controllers.leadProduct.text.trim(),
+
+          type: "1",
+          lat: "0.0",
+          lng: "0.0",
+
+          leadStatus: leadId.toString(),
+          status: controllers.status.toString(),
+          visitType: callListId.toString(),
+
+          prospectEnrollmentDate:
+          controllers.prospectDate.value.isEmpty
+              ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+              : controllers.prospectDate.value,
+
+          expectedConvertionDate:
+          controllers.exDate.value.isEmpty
+              ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+              : controllers.exDate.value,
+
+          statusUpdate: controllers.statusCrt.text.trim(),
+          numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
+          expectedBillingValue:
+          controllers.exMonthBillingValCrt.text.trim(),
+          arpuValue: controllers.arpuCrt.text.trim(),
+
+          detailsOfServiceRequired:
+          controllers.sourceCrt.text.trim(),
+          rating: controllers.prospectGradingCrt.text.trim(),
+          owner: controllers.leadTitleCrt[0].text.trim(),
+
+          createdTs: DateTime.now().toString(),
+          updatedTs: DateTime.now().toString(),
+        ));        // apiService.getCustomLeads();
+        list2.add(NewLeadObj(
+          select: false,
+          firstname: controllers.leadNameCrt[0].text.trim(),
+          email: controllers.leadEmailCrt[0].text.trim(),
+          mobileNumber: controllers.numberList
+              .map((e) => e.text.trim())
+              .where((e) => e.isNotEmpty)
+              .join("||"),
+          whatsapp: controllers.leadWhatsCrt[0].text.trim(),
+          userId: controllers.storage.read("id").toString(),
+          companyName: controllers.leadCoNameCrt.text.trim(),
+          productDiscussion: controllers.prodDescriptionController.text.trim(),
+          source: controllers.leadDisPointsCrt.text.trim(),
+          notes: controllers.leadActions.text.trim(),
+
+          quotationStatus: "",
+          quotationRequired: "1",
+
+          doorNo: controllers.doorNumberController.text.trim(),
+          area: controllers.areaController.text.trim(),
+          city: controllers.cityController.text.trim(),
+          country: controllers.selectedCountry.value,
+          state: controllers.stateController.text.trim(),
+          pincode: controllers.pinCodeController.text.trim(),
+
+          companyWebsite: controllers.leadWebsite.text.trim(),
+          companyNumber: controllers.infoNumberList
+              .map((e) => e.text.trim())
+              .where((e) => e.isNotEmpty)
+              .join("||"),
+          companyEmail: controllers.leadCoEmailCrt.text.trim(),
+          linkedin: controllers.leadLinkedinCrt.text.trim(),
+          x: controllers.leadXCrt.text.trim(),
+
+          industry: controllers.industry.toString(),
+          product: controllers.leadProduct.text.trim(),
+          sourceDetails: controllers.leadProduct.text.trim(),
+
+          type: "1",
+          lat: "0.0",
+          lng: "0.0",
+
+          leadStatus: leadId.toString(),
+          status: controllers.status.toString(),
+          visitType: callListId.toString(),
+
+          prospectEnrollmentDate:
+          controllers.prospectDate.value.isEmpty
+              ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+              : controllers.prospectDate.value,
+
+          expectedConvertionDate:
+          controllers.exDate.value.isEmpty
+              ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+              : controllers.exDate.value,
+
+          statusUpdate: controllers.statusCrt.text.trim(),
+          numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
+          expectedBillingValue:
+          controllers.exMonthBillingValCrt.text.trim(),
+          arpuValue: controllers.arpuCrt.text.trim(),
+
+          detailsOfServiceRequired:
+          controllers.sourceCrt.text.trim(),
+          rating: controllers.prospectGradingCrt.text.trim(),
+          owner: controllers.leadTitleCrt[0].text.trim(),
+
+          createdTs: DateTime.now().toString(),
+          updatedTs: DateTime.now().toString(),
+        ));        // apiService.getCustomLeads();
+        print("After nav: ${list.last}");
+        print("After nav: ${list.length}");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,
@@ -1912,7 +2199,6 @@ class ApiService {
         prefs.setBool("isAdmin", controllers.isAdmin.value);
         prefs.remove("loginNumber");
         prefs.remove("loginPassword");
-        getLeadCategories();
         getAllCallActivity("");
         getAllMailActivity();
         getAllMeetingActivity("");
@@ -2037,7 +2323,7 @@ class ApiService {
 
   Future getLeadCategories() async {
     try {
-      controllers.leadCategoryList.clear();
+      // controllers.leadCategoryList.clear();
       Map data = {
         "search_type": "lead_categories",
         "cos_id": controllers.storage.read("cos_id"),
@@ -2061,7 +2347,7 @@ class ApiService {
         }
       }
       if (request.statusCode == 200) {
-        controllers.leadCategoryList.clear();
+        // controllers.leadCategoryList.clear();
         List response = json.decode(request.body);
         controllers.leadCategoryList.value = response.map<LeadStatusModel>((item) {
           return LeadStatusModel(
@@ -3881,7 +4167,6 @@ class ApiService {
         prefs.setBool("isAdmin", controllers.isAdmin.value);
         prefs.remove("loginNumber");
         prefs.remove("loginPassword");
-        getLeadCategories();
         getAllCallActivity("");
         getAllMailActivity();
         getAllMeetingActivity("");

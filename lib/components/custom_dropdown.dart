@@ -1,6 +1,9 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/controller/controller.dart';
+import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/styles/decoration.dart';
 import 'custom_text.dart';
@@ -146,9 +149,10 @@ class IndustryDropdown extends StatelessWidget {
             borderRadius: BorderRadius.circular(5),
             border: Border.all(color: Colors.grey.shade300),
           ),
-          child: DropdownSearch<Map<String, dynamic>>(
+          child: Obx(()=>controllers.refreshValue.value?
+          DropdownSearch<Map<String, dynamic>>(
             items: sortedList,
-            itemAsString: (item) => item?['value'] ?? '',
+            itemAsString: (item) => item['value'] ?? '',
             onChanged: onChanged,
 
             dropdownDecoratorProps: DropDownDecoratorProps(
@@ -209,7 +213,7 @@ class IndustryDropdown extends StatelessWidget {
                 );
               },
             ),
-          ),
+          ): const SizedBox.shrink()),
         ),
         20.height
       ],

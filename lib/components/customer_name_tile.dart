@@ -29,6 +29,7 @@ class CustomerNameTile extends StatefulWidget {
   final bool showCheckbox;
   final String leadIndex;
   final String pageName;
+  final int listIndex;
   final String? id;
   final String? mainName;
   final String? mainMobile;
@@ -148,7 +149,7 @@ class CustomerNameTile extends StatefulWidget {
         this.visitType,
         this.points,
         this.detailsOfServiceReq,
-        required this.pageName, required this.leadIndex, required this.list, required this.list2});
+        required this.pageName, required this.leadIndex, required this.list, required this.list2, required this.listIndex});
 
   @override
   State<CustomerNameTile> createState() => _CustomerNameTileState();
@@ -291,6 +292,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
       onTap: () {
         Get.to(
             ViewLead(
+              listIndex: widget.listIndex,
               list: widget.list,list2: widget.list2,
               leadIndex: widget.leadIndex,
               pageName: widget.pageName,
@@ -354,6 +356,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                         child: InkWell(
                             onTap: () {
                               Get.to(UpdateLead(
+                                index: widget.listIndex,
                                 list: widget.list,list2: widget.list2,
                                 type:"1",
                                 visitType: widget.visitType.toString(),
@@ -1611,7 +1614,8 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: TextFormField(
-                          readOnly: isEditing, // 👈 important
+                          readOnly:true,
+                          // readOnly: isEditing, // 👈 important
                           onFieldSubmitted: (value) async {
                             if(TextEditingController(
                               text: value.toString() == "null" ? "" : value.toString(),

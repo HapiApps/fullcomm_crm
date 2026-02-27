@@ -423,6 +423,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                                         itemBuilder: (context, index) {
                                           final data = controllers.paginatedRatingLeads[index];
                                           return Obx(()=>CustomerNameTile(
+                                            listIndex: index,
                                             list: widget.list,list2: widget.list2,
                                             leadIndex: "0",
                                             showCheckbox: false,
@@ -589,6 +590,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                                           itemBuilder: (context, index) {
                                             final data = controllers.paginatedRatingLeads[index];
                                             return Obx(()=>CustomLeadTile(
+                                              listIndex: index,
                                               list: widget.list,list2: widget.list2,
                                               pageName: "Suspects",
                                               saveValue: controllers.isNewLeadList[index]["isSelect"],

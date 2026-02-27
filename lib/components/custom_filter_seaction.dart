@@ -126,23 +126,34 @@ class FilterSection extends StatelessWidget {
                     },
                     textEditingController: controllers.cusController,
                     onSelected: (value) {
-                      selectedMonth.value = null;
-                      selectedSortBy.value = "";
-                      if(value.phoneNo.toString().isNotEmpty){
-                        onSearchChanged!(value.phoneNo.toString());
-                      }
-                      print(value.leadStatus);
-                      // if(value.leadStatus=="1"){
-                      //   controllers.search.text=value.firstname.toString();
-                      //   Get.to(Suspects());
+                      // selectedMonth.value = null;
+                      // selectedSortBy.value = "";
+                      // if(value.phoneNo.toString().isNotEmpty){
                       // }
+                      // print(value.leadStatus);
+                      // if(value.leadStatus=="1"){
+                        controllers.search.text=value.name.toString();
+                        // onSearchChanged!(value.name.toString());
+                        //   Get.to(Suspects());
+                      // }
+                      print("value.leadStatus ${value.leadStatus}");
+                      print("leadIndex ${leadIndex}");
                       if(value.leadStatus==leadIndex){
+                        print("one");
                       }else{
+                        print("two");
                         for(var i=0;i<controllers.leadCategoryList.length;i++){
                           if(controllers.leadCategoryList[i].leadStatus==value.leadStatus){
-                            controllers.selectedIndex.value=int.parse(leadIndex);
-                            Get.to(NewLeadPage(index: controllers.leadCategoryList[i].leadStatus ,
-                              name: controllers.leadCategoryList[i].value, list: list, list2: list2,));
+                            controllers.selectedIndex.value=int.parse(value.leadStatus);
+                            // controllers.search=value;
+                            Get.off(
+                              NewLeadPage(
+                                index: controllers.leadCategoryList[i].leadStatus,
+                                name: controllers.leadCategoryList[i].value,
+                                list: controllers.leadCategoryList[i].list,
+                                list2: controllers.leadCategoryList[i].list2,
+                              ),
+                            );
                             break;
                           }
                         }

@@ -312,4 +312,8 @@ class NewLeadObj {
       "date": updatedTs,
     };
   }
+  @override
+  String toString() {
+    return 'NewLeadObj(userId: $userId, firstname: $firstname, mobile: $mobileNumber, company: $companyName)';
+  }
 }
