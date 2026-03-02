@@ -154,22 +154,26 @@ class _CustomerNameHeaderState extends State<CustomerNameHeader> {
 
               // SORT BUTTON
               GestureDetector(
-                onTap: () {
-                  final selected = controllers.fields.firstWhere(
-                        (f) => f.userHeading == heading,
-                    orElse: () => CustomerField(
-                        userHeading: heading,
-                        systemField: heading.toLowerCase(),
-                        id: '',
-                        isRequired: ''),
-                  );
-
-                  controllers.sortField.value = selected.systemField;
-                  controllers.sortOrderN.value =
-                  controllers.sortOrderN.value == 'asc'
-                      ? 'desc'
-                      : 'asc';
-                },
+                // onTap: () {
+                //   final selected = controllers.fields.firstWhere(
+                //         (f) => f.userHeading == heading,
+                //     orElse: () => CustomerField(
+                //         userHeading: heading,
+                //         systemField: heading.toLowerCase(),
+                //         id: '',
+                //         isRequired: ''),
+                //   );
+                //
+                //   controllers.sortField.value = selected.systemField;
+                //   controllers.sortOrderN.value =
+                //   controllers.sortOrderN.value == 'asc'
+                //       ? 'desc'
+                //       : 'asc';
+                //   widget.onSortDate;
+                //   // print("controllers.sortOrderN.value");
+                //   // print(controllers.sortOrderN.value);
+                // },
+                onTap: widget.onSortDate,
                 child: Obx(() => Image.asset(
                   controllers.sortField.value.isEmpty
                       ? "assets/images/arrow.png"

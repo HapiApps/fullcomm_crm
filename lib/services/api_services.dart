@@ -460,6 +460,8 @@ class ApiService {
           createdTs: DateTime.now().toString(),
           updatedTs: DateTime.now().toString(),
         );
+        controllers.selectedQualifiedSortBy.value="All";
+        controllers.selectRadio(list);
         // apiService.getCustomLeads();
         Navigator.pushReplacement(
           context,
@@ -766,7 +768,6 @@ class ApiService {
         apiService.allQualifiedDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         prospectsList.clear();
-        qualifiedList.clear();
         customerList.clear();
         Navigator.pop(context);
         controllers.productCtr.reset();
@@ -811,7 +812,6 @@ class ApiService {
         apiService.allGoodLeadsDetails();
         apiService.allCustomerDetails();
         prospectsList.clear();
-        qualifiedList.clear();
         customerList.clear();
         Navigator.pop(context);
         controllers.productCtr.reset();
@@ -855,7 +855,6 @@ class ApiService {
         apiService.allGoodLeadsDetails();
         apiService.allCustomerDetails();
         prospectsList.clear();
-        qualifiedList.clear();
         customerList.clear();
         Navigator.pop(context);
         controllers.productCtr.reset();
@@ -1389,9 +1388,10 @@ class ApiService {
     }
   }
 
-  Future deleteCustomersAPI(BuildContext context, List<Map<String, String>> list) async {
+  Future deleteCustomersAPI(BuildContext context, List sendList,RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
-      Map data = {"action": "delete_customers", "cusList": list};
+      Map data = {"action": "delete_customers", "cusList": sendList,
+        "cos_id":controllers.storage.read("cos_id").toString(),"user_id":controllers.storage.read("id").toString()};
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             'X-API-TOKEN': "${TokenStorage().readToken()}",
@@ -1403,20 +1403,27 @@ class ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return deleteCustomersAPI(context,list);
+          return deleteCustomersAPI(context,sendList,list,list2);
         } else {
           controllers.setLogOut();
         }
       }
       if (request.statusCode == 200 && response["message"] == "OK") {
-        allLeadsDetails();
-        allNewLeadsDetails();
-        allGoodLeadsDetails();
-        allCustomerDetails();
-        allTargetLeadsDetails();
-        prospectsList.clear();
-        qualifiedList.clear();
-        customerList.clear();
+        // allLeadsDetails();
+        // allNewLeadsDetails();
+        // allGoodLeadsDetails();
+        // allCustomerDetails();
+        // allTargetLeadsDetails();
+        // prospectsList.clear();
+        // qualifiedList.clear();
+        // customerList.clear();
+        list.removeWhere((item) =>
+        item.userId != null && sendList.contains(item.userId));
+        list2=list;
+        controllers.allLeadList.removeWhere((item) =>
+        item.userId != null && sendList.contains(item.userId));
+        dashController.getDashboardReport();
+        controllers.idList.clear();
         Navigator.pop(context);
         controllers.productCtr.reset();
       } else {
@@ -1483,18 +1490,20 @@ class ApiService {
         }
       }
       if (response.statusCode == 200 && res["message"] == "Customer save process completed.") {
-        apiService.allLeadsDetails();
-        apiService.allNewLeadsDetails();
-        apiService.allGoodLeadsDetails();
-        apiService.allTargetLeadsDetails();
+        // apiService.allLeadsDetails();
+        // apiService.allNewLeadsDetails();
+        // apiService.allGoodLeadsDetails();
+        // apiService.allTargetLeadsDetails();
+        // apiService.getCustomLeads();
         getUserHeading();
+        apiService.getLeadCategories();
+        apiService.getCustomLeads();
+        Get.to(DashboardPage());
         prospectsList.clear();
-        qualifiedList.clear();
         customerList.clear();
 
         int success = res["success"];
         int failed = res["failed"];
-        Navigator.pop(context);
         controllers.customerCtr.reset();
 
         if (failed == 0) {
@@ -1562,7 +1571,6 @@ class ApiService {
         apiService.allGoodLeadsDetails();
         apiService.allTargetLeadsDetails();
         prospectsList.clear();
-        qualifiedList.clear();
         customerList.clear();
         int success = response["success"];
         int failed = response["failed"];
@@ -1732,7 +1740,6 @@ class ApiService {
           productDiscussion: controllers.prodDescriptionController.text.trim(),
           source: controllers.leadDisPointsCrt.text.trim(),
           notes: controllers.leadActions.text.trim(),
-
           quotationStatus: "",
           quotationRequired: "1",
 
@@ -1860,6 +1867,9 @@ class ApiService {
         ));        // apiService.getCustomLeads();
         print("After nav: ${list.last}");
         print("After nav: ${list.length}");
+        controllers.selectedQualifiedSortBy.value="All";
+        controllers.selectRadio(list);
+        dashController.getDashboardReport();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,
@@ -1876,96 +1886,96 @@ class ApiService {
   }
 
 
-  List<Map<String, String>> qualifiedList = [];
-  Future insertQualifiedAPI(BuildContext context,List<Map<String, String>> list) async {
-    try {
-      print("insertQualifiedAPI");
-      final request = await http.post(Uri.parse(qualifiedScript),
-          headers: {
-            'X-API-TOKEN': "${TokenStorage().readToken()}",
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(list),
-          encoding: Encoding.getByName("utf-8"));
-      Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200 && response["message"] == "OK") {
-        apiService.allLeadsDetails();
-        apiService.allNewLeadsDetails();
-        allCustomerDetails();
-        controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
-        Navigator.pop(context);
-        qualifiedList.clear();
-        // Get.to(const Qualified(), duration: Duration.zero);
-        controllers.productCtr.reset();
-      } else {
-        errorDialog(Get.context!, request.body);
-        controllers.productCtr.reset();
-      }
-    } on SocketException {
-      controllers.productCtr.reset();
-      errorDialog(Get.context!, 'No internet connection');
-      //throw Exception('No internet connection'); // Handle network errors
-    } on HttpException catch (e) {
-      controllers.productCtr.reset();
-      errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
-      //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
-    } catch (e) {
-      errorDialog(Get.context!, e.toString());
-      controllers.productCtr.reset();
-    }
-  }
+  // List<Map<String, String>> qualifiedList = [];
+  // Future insertQualifiedAPI(BuildContext context,List<Map<String, String>> list) async {
+  //   try {
+  //     print("insertQualifiedAPI");
+  //     final request = await http.post(Uri.parse(qualifiedScript),
+  //         headers: {
+  //           'X-API-TOKEN': "${TokenStorage().readToken()}",
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: jsonEncode(list),
+  //         encoding: Encoding.getByName("utf-8"));
+  //     Map<String, dynamic> response = json.decode(request.body);
+  //     if (request.statusCode == 200 && response["message"] == "OK") {
+  //       apiService.allLeadsDetails();
+  //       apiService.allNewLeadsDetails();
+  //       allCustomerDetails();
+  //       controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
+  //       Navigator.pop(context);
+  //       qualifiedList.clear();
+  //       // Get.to(const Qualified(), duration: Duration.zero);
+  //       controllers.productCtr.reset();
+  //     } else {
+  //       errorDialog(Get.context!, request.body);
+  //       controllers.productCtr.reset();
+  //     }
+  //   } on SocketException {
+  //     controllers.productCtr.reset();
+  //     errorDialog(Get.context!, 'No internet connection');
+  //     //throw Exception('No internet connection'); // Handle network errors
+  //   } on HttpException catch (e) {
+  //     controllers.productCtr.reset();
+  //     errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
+  //     //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
+  //   } catch (e) {
+  //     errorDialog(Get.context!, e.toString());
+  //     controllers.productCtr.reset();
+  //   }
+  // }
 
-  Future insertPromoteAPI(BuildContext context,String id,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
-    try {
-      print("insertQualifiedAPI");
-      Map<String, dynamic> data ={
-        "id": id,
-        "lead_status": status,
-        "created_by": controllers.storage.read("id"),
-        "cos_id": controllers.storage.read("cos_id"),
-        "action": "update_promote"
-      };
-      final request = await http.post(Uri.parse(scriptApi),
-          headers: {
-            'X-API-TOKEN': "${TokenStorage().readToken()}",
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(data),
-          encoding: Encoding.getByName("utf-8"));
-      Map<String, dynamic> response = json.decode(request.body);
-      debugPrint(data.toString());
-      debugPrint(request.body);
-      if (request.statusCode == 401) {
-        final refreshed = await controllers.refreshToken();
-        if (refreshed) {
-          return insertPromoteAPI(context,id,status,name,list,list2);
-        } else {
-          controllers.setLogOut();
-        }
-      }
-      if (request.statusCode == 200 && response["message"] == "OK") {
-        controllers.selectedIndex.value=int.parse(status);
-        Get.back();
-        Get.to( NewLeadPage(index: status, name: name,list: list,list2: list2,), duration: Duration.zero);
-        controllers.productCtr.reset();
-      }
-      else {
-        errorDialog(Get.context!, request.body);
-        controllers.productCtr.reset();
-      }
-    } on SocketException {
-      controllers.productCtr.reset();
-      errorDialog(Get.context!, 'No internet connection');
-      //throw Exception('No internet connection'); // Handle network errors
-    } on HttpException catch (e) {
-      controllers.productCtr.reset();
-      errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
-      //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
-    } catch (e) {
-      errorDialog(Get.context!, e.toString());
-      controllers.productCtr.reset();
-    }
-  }
+  // Future insertPromoteAPI(BuildContext context,String id,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
+  //   try {
+  //     print("insertQualifiedAPI");
+  //     Map<String, dynamic> data ={
+  //       "id": id,
+  //       "lead_status": status,
+  //       "created_by": controllers.storage.read("id"),
+  //       "cos_id": controllers.storage.read("cos_id"),
+  //       "action": "update_promote"
+  //     };
+  //     final request = await http.post(Uri.parse(scriptApi),
+  //         headers: {
+  //           'X-API-TOKEN': "${TokenStorage().readToken()}",
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: jsonEncode(data),
+  //         encoding: Encoding.getByName("utf-8"));
+  //     Map<String, dynamic> response = json.decode(request.body);
+  //     debugPrint(data.toString());
+  //     debugPrint(request.body);
+  //     if (request.statusCode == 401) {
+  //       final refreshed = await controllers.refreshToken();
+  //       if (refreshed) {
+  //         return insertPromoteAPI(context,id,status,name,list,list2);
+  //       } else {
+  //         controllers.setLogOut();
+  //       }
+  //     }
+  //     if (request.statusCode == 200 && response["message"] == "OK") {
+  //       controllers.selectedIndex.value=int.parse(status);
+  //       Get.back();
+  //       Get.to( NewLeadPage(index: status, name: name,list: list,list2: list2,), duration: Duration.zero);
+  //       controllers.productCtr.reset();
+  //     }
+  //     else {
+  //       errorDialog(Get.context!, request.body);
+  //       controllers.productCtr.reset();
+  //     }
+  //   } on SocketException {
+  //     controllers.productCtr.reset();
+  //     errorDialog(Get.context!, 'No internet connection');
+  //     //throw Exception('No internet connection'); // Handle network errors
+  //   } on HttpException catch (e) {
+  //     controllers.productCtr.reset();
+  //     errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
+  //     //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
+  //   } catch (e) {
+  //     errorDialog(Get.context!, e.toString());
+  //     controllers.productCtr.reset();
+  //   }
+  // }
   Future insertPromoteListAPI(BuildContext context,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
       print("insertQualifiedAPI");
@@ -1995,37 +2005,59 @@ class ApiService {
         }
       }
       if (request.statusCode == 200 && response["message"] == "OK") {
-        // 1️⃣ Update lead status
-        for (var lead in controllers.allLeadList) {
-          if (controllers.idList.contains(lead.userId)) {
-            lead.leadStatus = status;  // make sure not final
+        controllers.selectedIndex.value = int.parse(status);
+        print("status: ${status}");
+        print("Selected Index: ${controllers.selectedIndex.value}");
+
+        for (var i = 0; i < controllers.idList.length; i++) {
+          print("Checking idList[$i]: ${controllers.idList[i]}");
+
+          for (var j = 0; j < list.length; j++) {
+            print("Comparing list[$j].userId: ${list[j].userId}");
+
+            if (list[j].userId == controllers.idList[i]) {
+              print("MATCH FOUND -> userId: ${list[j].userId}");
+
+              list[j].leadStatus = status;
+
+              controllers.leadCategoryList[int.parse(status)].list.add(list[j]);
+              controllers.leadCategoryList[int.parse(status)].list2.add(list[j]);
+
+              print("Removing from main list index: $j");
+
+              list.removeAt(j);
+              list2.removeAt(j);
+
+            }
           }
         }
 
-// 2️⃣ Create category map
-        final categoryMap = {
-          for (var c in controllers.leadCategoryList)
-            c.leadStatus: c
-        };
+        log("list2: ${list}");
+        log("list2: ${list2}");
+        log("controllers.leadCategoryList[int.parse(status)].list: ${controllers.leadCategoryList[int.parse(status)].list}");
+        log("controllers.leadCategoryList[int.parse(status)].list2: ${controllers.leadCategoryList[int.parse(status)].list2}");
 
-// 3️⃣ Clear lists
-        for (var c in categoryMap.values) {
-          c.list.clear();
-          c.list2.clear();
-        }
 
-// 4️⃣ Assign leads
-        for (var lead in controllers.allLeadList) {
-          final category = categoryMap[lead.leadStatus];
-          if (category != null) {
-            category.list.add(lead);
-            category.list2.add(lead);
-          }
-        }
+        print("Category List : ${controllers.leadCategoryList[int.parse(status)].leadStatus}");
+        print("Category List : ${controllers.leadCategoryList[int.parse(status)].value}");
+        print("Category List : ${controllers.leadCategoryList[int.parse(status)].list}");
+        print("Category List : ${controllers.leadCategoryList[int.parse(status)].list2}");
         controllers.idList.clear();
-        controllers.selectedIndex.value=int.parse(status);
-        Get.back();
-        Get.to( NewLeadPage(index: status, name: name,list: controllers.leadCategoryList[controllers.selectedIndex.value].list,list2: controllers.leadCategoryList[controllers.selectedIndex.value].list2,), duration: Duration.zero);
+        // dashController.getDashboardReport();
+        controllers.selectedIndex.value = int.parse(status);
+        // Navigator.pop(context); // dialog close only
+
+        Future.delayed(Duration(milliseconds: 10), () {
+          Get.to(
+                () => NewLeadPage(
+              key: UniqueKey(),
+              index: controllers.leadCategoryList[int.parse(status)].leadStatus,
+              name: controllers.leadCategoryList[int.parse(status)].value,
+              list: controllers.leadCategoryList[int.parse(status)].list,
+              list2: controllers.leadCategoryList[int.parse(status)].list2,
+            ),
+          );
+        });
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!, request.body);
@@ -2074,7 +2106,7 @@ class ApiService {
         allCustomerDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         Navigator.pop(context);
-        qualifiedList.clear();
+        // qualifiedList.clear();
         customerList.clear();
         prospectsList.clear();
         // if(status=="1"){
@@ -4406,7 +4438,6 @@ class ApiService {
     debugPrint("getCustomLeads");
     controllers.isLead.value = false;
     final url = Uri.parse(scriptApi);
-    controllers.newLeadsLength.value = 0;
     try {
       final response = await http.post(
         url,
@@ -4435,7 +4466,6 @@ class ApiService {
       }
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
-        controllers.newLeadsLength.value = data.length;
         controllers.allLeadList.clear();
         // newLeadList.clear();
         controllers.allLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();

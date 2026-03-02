@@ -871,7 +871,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                                   widget.mainEmail.toString(),
                                                 };
 
-                                                await apiService.deleteCustomersAPI(context, [deleteData]);
+                                                await apiService.deleteCustomersAPI(context, [deleteData],widget.list,widget.list2);
                                               },
                                               height: 35,
                                               isLoading: true,
@@ -1260,30 +1260,10 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                 context: context,
                                 builder: (context) {
                                   String? stageId;
-                                  String selectedStage = "";
+                                  String? selectedStage;
                                   bool isEdit = false;
 
-                                  TextEditingController reasonController =
-                                  TextEditingController();
-
-                                  int currentIndex = int.parse(widget.leadIndex.toString());
-                                  int nextIndex = currentIndex + 1;
-
-                                  // Safe default selection
-                                  if (controllers.leadCategoryList.isNotEmpty) {
-                                    if (nextIndex <
-                                        controllers.leadCategoryList.length) {
-                                      stageId = controllers
-                                          .leadCategoryList[nextIndex].leadStatus;
-                                      selectedStage = controllers
-                                          .leadCategoryList[nextIndex].value;
-                                    } else {
-                                      stageId =
-                                          controllers.leadCategoryList[0].leadStatus;
-                                      selectedStage =
-                                          controllers.leadCategoryList[0].value;
-                                    }
-                                  }
+                                  TextEditingController reasonController = TextEditingController();
 
                                   return StatefulBuilder(
                                     builder: (context, setState) {
@@ -1297,8 +1277,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                         ),
                                         content: Column(
                                           mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             CustomText(
                                               text: "Select Stage",
@@ -1310,28 +1289,17 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
 
                                             /// DROPDOWN
                                             Container(
-                                              padding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 8),
+                                              padding: const EdgeInsets.symmetric(horizontal: 8),
                                               decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: colorsConst.primary),
-                                                borderRadius:
-                                                BorderRadius.circular(4),
+                                                border: Border.all(color: colorsConst.primary),
+                                                borderRadius: BorderRadius.circular(4),
                                               ),
                                               child: DropdownButton<String>(
-                                                value: controllers
-                                                    .leadCategoryList
-                                                    .any((e) =>
-                                                e.leadStatus ==
-                                                    stageId)
-                                                    ? stageId
-                                                    : null,
+                                                value: stageId,
+                                                hint: const Text("Select Stage"),
                                                 isExpanded: true,
                                                 underline: const SizedBox(),
-                                                items: controllers
-                                                    .leadCategoryList
-                                                    .map((item) {
+                                                items: controllers.leadCategoryList.map((item) {
                                                   return DropdownMenuItem<String>(
                                                     value: item.leadStatus,
                                                     child: Text(item.value),
@@ -1340,12 +1308,13 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                                 onChanged: (value) {
                                                   setState(() {
                                                     stageId = value;
-                                                    selectedStage = controllers
-                                                        .leadCategoryList
-                                                        .firstWhere((e) =>
-                                                    e.leadStatus ==
-                                                        value)
+                                                    selectedStage = controllers.leadCategoryList
+                                                        .firstWhere((e) => e.leadStatus == value)
                                                         .value;
+
+                                                    print("stageId: $stageId");
+                                                    print("selectedStage: $selectedStage");
+
                                                     isEdit = true;
                                                   });
                                                 },
@@ -1357,11 +1326,9 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                             /// REASON FIELD
                                             TextField(
                                               controller: reasonController,
-                                              decoration:
-                                              const InputDecoration(
+                                              decoration: const InputDecoration(
                                                 labelText: "Reason",
-                                                border:
-                                                OutlineInputBorder(),
+                                                border: OutlineInputBorder(),
                                               ),
                                             ),
                                           ],
@@ -1370,40 +1337,31 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                         /// ACTIONS
                                         actions: [
                                           Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.end,
+                                            mainAxisAlignment: MainAxisAlignment.end,
                                             children: [
                                               /// CANCEL
                                               Container(
                                                 decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color:
-                                                      colorsConst.primary),
+                                                  border: Border.all(color: colorsConst.primary),
                                                   color: Colors.white,
                                                 ),
                                                 width: 80,
                                                 height: 30,
                                                 child: ElevatedButton(
-                                                  style:
-                                                  ElevatedButton.styleFrom(
-                                                    shape:
-                                                    const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                      BorderRadius.zero,
+                                                  style: ElevatedButton.styleFrom(
+                                                    shape: const RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.zero,
                                                     ),
-                                                    backgroundColor:
-                                                    Colors.white,
+                                                    backgroundColor: Colors.white,
                                                     elevation: 0,
                                                   ),
                                                   onPressed: () {
-                                                    Navigator.pop(
-                                                        context);
+                                                    Navigator.pop(context);
                                                   },
                                                   child: CustomText(
                                                     text: "Cancel",
                                                     isCopy: false,
-                                                    colors:
-                                                    colorsConst.primary,
+                                                    colors: colorsConst.primary,
                                                     size: 14,
                                                   ),
                                                 ),
@@ -1416,12 +1374,12 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                                 callback: () async {
                                                   if (stageId == null) return;
 
-                                                  await apiService
-                                                      .insertPromoteAPI(
+                                                  controllers.idList.add(widget.id.toString());
+
+                                                  await apiService.insertPromoteListAPI(
                                                     context,
-                                                    widget.id.toString(),
                                                     stageId!,
-                                                    selectedStage,
+                                                    selectedStage ?? "",
                                                     widget.list,
                                                     widget.list2,
                                                   );
@@ -1430,12 +1388,10 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                                 },
                                                 height: 35,
                                                 isLoading: true,
-                                                backgroundColor:
-                                                colorsConst.primary,
+                                                backgroundColor: colorsConst.primary,
                                                 radius: 2,
                                                 width: 90,
-                                                controller:
-                                                controllers.productCtr,
+                                                controller: controllers.productCtr,
                                                 isImage: false,
                                                 text: "Promote",
                                                 textColor: Colors.white,

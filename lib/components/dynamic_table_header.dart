@@ -183,29 +183,30 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
               ),
               const SizedBox(width: 3),
               GestureDetector(
-                onTap: () {
-                  if (lower == "added date" ||
-                      lower == "prospect enrollment date" ||
-                      lower == "date") {
-                    widget.onSortDate();
-                  } else {
-                    final selected = controllers.fields.firstWhere(
-                          (f) => f.userHeading == h,
-                      orElse: () => CustomerField(
-                          userHeading: h,
-                          systemField: h.toLowerCase(),
-                          id: '',
-                          isRequired: ''),
-                    );
-
-                    controllers.sortField.value = selected.systemField;
-
-                    controllers.sortOrderN.value =
-                    controllers.sortOrderN.value == 'asc'
-                        ? 'desc'
-                        : 'asc';
-                  }
-                },
+                // onTap: () {
+                //   if (lower == "added date" ||
+                //       lower == "prospect enrollment date" ||
+                //       lower == "date") {
+                //     widget.onSortDate();
+                //   } else {
+                //     final selected = controllers.fields.firstWhere(
+                //           (f) => f.userHeading == h,
+                //       orElse: () => CustomerField(
+                //           userHeading: h,
+                //           systemField: h.toLowerCase(),
+                //           id: '',
+                //           isRequired: ''),
+                //     );
+                //
+                //     controllers.sortField.value = selected.systemField;
+                //
+                //     controllers.sortOrderN.value =
+                //     controllers.sortOrderN.value == 'asc'
+                //         ? 'desc'
+                //         : 'asc';
+                //   }
+                // },
+                onTap: widget.onSortDate,
                 child: Obx(() => Image.asset(
                   controllers.sortField.value.isEmpty
                       ? "assets/images/arrow.png"

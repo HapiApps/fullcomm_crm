@@ -1708,6 +1708,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   // }
   void selectRadio(
       RxList<NewLeadObj> list){
+    isLead.value=false;
     print("radioo");
     final query = searchProspects.value.toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;
@@ -1874,6 +1875,12 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
     end = end > filteredLeads.length ? filteredLeads.length : end;
 
     list.value=filteredLeads.sublist(start, end);
+    list.sort((a, b) {
+      DateTime dateA = DateTime.tryParse(a.createdTs ?? '') ?? DateTime(1970);
+      DateTime dateB = DateTime.tryParse(b.createdTs ?? '') ?? DateTime(1970);
+      return dateB.compareTo(dateA);
+    });
+    isLead.value=true;
   }
 
   var targetLeadSortField = ''.obs;
@@ -2509,7 +2516,6 @@ var refreshValue=true.obs;
       allCompanyLength = 0.obs,
       allCustomerLength = 0.obs,
       allTargetLength=0.obs,
-      newLeadsLength=0.obs,
       allProductLength = 0.obs,
       allEmployeeLength = 0.obs, selectCallType = "All".obs,selectMeetingType = "".obs;
 

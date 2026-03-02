@@ -187,7 +187,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                                         CustomLoadingButton(
                                           callback: ()async{
                                             _focusNode.requestFocus();
-                                            await apiService.deleteCustomersAPI(context, apiService.prospectsList);
+                                            await apiService.deleteCustomersAPI(context, apiService.prospectsList,widget.list,widget.list2);
                                             setState(() {
                                               apiService.prospectsList.clear();
                                             });

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
@@ -111,7 +113,13 @@ class _MyAppState extends State<MyApp> {
     return MyInheritedWidget(
         data: 42,
         child: GetMaterialApp(
-          scrollBehavior: MyCustomScrollBehavior(),
+          scrollBehavior: const MaterialScrollBehavior().copyWith(
+            dragDevices: {
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.touch,
+            },
+          ),
+          // scrollBehavior: MyCustomScrollBehavior(),
           scaffoldMessengerKey: rootScaffoldMessengerKey,
           debugShowCheckedModeBanner: false,
           title: appName,

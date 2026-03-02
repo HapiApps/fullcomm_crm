@@ -158,6 +158,7 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.industry = safeValue(widget.industry).isEmpty ? null : safeValue(widget.industry);
 
       print(controllers.industry);
+      print(widget.points.toString());
       var list=widget.mainMobile.toString().split("||");
       for(var i=0;i<list.length;i++){
         controllers.numberList.add(TextEditingController(text: list[i]));
@@ -880,6 +881,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         IndustryDropdown(
                                           width: textFieldSize,
                                           items: controllers.industriesList,
+                                          hint: controllers.industry,
                                           onChanged: (val) {
                                             setState(() {
                                               controllers.industry = val?['value'];
