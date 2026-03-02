@@ -135,11 +135,14 @@ class _UpdateLeadState extends State<UpdateLead> {
 
   List<FocusNode> phoneFocusList = [];
   List<FocusNode> phoneFocusList2 = [];
+  // String safeValue(dynamic value) {
+  //   if (value == null) return "";
+  //   final v = value.toString().trim();
+  //   if (v.toLowerCase() == "null") return "";
+  //   return v;
+  // }
   String safeValue(dynamic value) {
-    if (value == null) return "";
-    final v = value.toString().trim();
-    if (v.toLowerCase() == "null") return "";
-    return v;
+    return value.toString()=="null"?"":value;
   }
 
   Future<void> setDefaults() async {
@@ -153,86 +156,203 @@ class _UpdateLeadState extends State<UpdateLead> {
   }
   Future<void> getStringValue() async {
     setState(() {
+      print("controllers.industry");
+      // print(controllers.industry);
+      print(widget.points.toString());
       controllers.numberList.clear();
       controllers.infoNumberList.clear();
-      controllers.industry = safeValue(widget.industry).isEmpty ? null : safeValue(widget.industry);
 
-      print(controllers.industry);
-      print(widget.points.toString());
-      var list=widget.mainMobile.toString().split("||");
-      for(var i=0;i<list.length;i++){
+      controllers.industry =
+      safeValue(widget.industry).isEmpty ? null : safeValue(widget.industry);
+
+
+
+      /// Main Mobile Numbers
+      var list = (widget.mainMobile ?? "").split("||");
+      for (var i = 0; i < list.length; i++) {
         controllers.numberList.add(TextEditingController(text: list[i]));
         phoneFocusList.add(FocusNode());
       }
 
-      var list2=widget.companyNumber.toString().split("||");
-      for(var i=0;i<list2.length;i++){
+      /// Company Numbers
+      var list2 = (widget.companyNumber ?? "").split("||");
+      for (var i = 0; i < list2.length; i++) {
         controllers.infoNumberList.add(TextEditingController(text: list2[i]));
         phoneFocusList2.add(FocusNode());
       }
-      controllers.visitType = widget.visitType.isEmpty
+
+      /// Visit Type
+      controllers.visitType = (widget.visitType ?? "").isEmpty
           ? "Call"
           : controllers.callNameList.contains(widget.visitType)
           ? widget.visitType
           : "Call";
-      // controllers.leadNameCrt.clear();
-      // controllers.leadMobileCrt.clear();
-      // controllers.leadTitleCrt.clear();
-      // controllers.leadEmailCrt.clear();
-      // controllers.leadWhatsCrt.clear();
-      // controllers.leadNameCrt.add(TextEditingController());
-      // controllers.leadMobileCrt.add(TextEditingController());
-      // controllers.leadTitleCrt.add(TextEditingController());
-      // controllers.leadEmailCrt.add(TextEditingController());
-      // controllers.leadWhatsCrt.add(TextEditingController());
-      controllers.leadNameCrt[0].text  = safeValue(widget.mainName);
-      controllers.leadMobileCrt[0].text = safeValue(widget.mainMobile);
-      controllers.leadEmailCrt[0].text  = safeValue(widget.mainEmail);
-      controllers.leadWhatsCrt[0].text  = safeValue(widget.mainWhatsApp);
-      controllers.leadTitleCrt[0].text  = safeValue(widget.owner);
 
-      controllers.leadCoNameCrt.text     = safeValue(widget.companyName);
-      controllers.leadCoMobileCrt.text   = safeValue(widget.companyNumber);
-      controllers.leadWebsite.text       = safeValue(widget.companyWebsite);
-      controllers.leadCoEmailCrt.text    = safeValue(widget.companyEmail);
-      controllers.leadProduct.text       = safeValue(widget.productServices);
-      controllers.leadOwnerNameCrt.text  = safeValue(widget.owner);
-      controllers.prodDescriptionController.text = safeValue(widget.productDiscussion);
-      controllers.statusCrt.text           = safeValue(widget.statusUpdate);
-      controllers.leadDisPointsCrt.text    = safeValue(widget.source);
-      controllers.prospectGradingCrt.text  = safeValue(widget.rating);
-      controllers.exMonthBillingValCrt.text     = safeValue(widget.expectedBillingValue);
-      controllers.noOfHeadCountCrt.text         = safeValue(widget.numOfHeadcount);
-      controllers.sourceCrt.text                = safeValue(widget.detailsOfRequired);
-      controllers.additionalNotesCrt.text       = safeValue(widget.notes);
-      controllers.arpuCrt.text                  = safeValue(widget.arpuValue);
-      controllers.expectedConversionDateCrt.text = safeValue(widget.expectedConvertionDate);
-      controllers.prospectEnrollmentDateCrt.text = safeValue(widget.prospectEnrollmentDate);
+      /// Lead Details
+      controllers.leadNameCrt[0].text = safeValue(widget.mainName);
+      controllers.leadMobileCrt[0].text = safeValue(widget.mainMobile);
+      controllers.leadEmailCrt[0].text = safeValue(widget.mainEmail);
+      controllers.leadWhatsCrt[0].text = safeValue(widget.mainWhatsApp);
+      controllers.leadTitleCrt[0].text = safeValue(widget.owner);
+
+      /// Company Details
+      controllers.leadCoNameCrt.text = safeValue(widget.companyName);
+      controllers.leadCoMobileCrt.text = safeValue(widget.companyNumber);
+      controllers.leadWebsite.text = safeValue(widget.companyWebsite);
+      controllers.leadCoEmailCrt.text = safeValue(widget.companyEmail);
+      controllers.leadProduct.text = safeValue(widget.productServices);
+      controllers.leadOwnerNameCrt.text = safeValue(widget.owner);
+
+      /// Discussion
+      controllers.prodDescriptionController.text =
+          safeValue(widget.productDiscussion);
+
+      controllers.statusCrt.text = safeValue(widget.statusUpdate);
+      controllers.leadDisPointsCrt.text = safeValue(widget.source);
+      controllers.prospectGradingCrt.text = safeValue(widget.rating);
+      controllers.exMonthBillingValCrt.text =
+          safeValue(widget.expectedBillingValue);
+      controllers.noOfHeadCountCrt.text = safeValue(widget.numOfHeadcount);
+      controllers.sourceCrt.text = safeValue(widget.detailsOfRequired);
+      controllers.additionalNotesCrt.text = safeValue(widget.notes);
+      controllers.arpuCrt.text = safeValue(widget.arpuValue);
+
+      controllers.expectedConversionDateCrt.text =
+          safeValue(widget.expectedConvertionDate);
+
+      controllers.prospectEnrollmentDateCrt.text =
+          safeValue(widget.prospectEnrollmentDate);
+
       controllers.prospectDate.value = safeValue(widget.prospectEnrollmentDate);
-      controllers.exDate.value       = safeValue(widget.expectedConvertionDate);
-      controllers.source   = safeValue(widget.source).isEmpty ? null : safeValue(widget.source);
-      controllers.status   = safeValue(widget.status).isEmpty ? null : safeValue(widget.status);
-      controllers.rating   = safeValue(widget.rating).isEmpty ? null : safeValue(widget.rating);
-      controllers.service  = safeValue(widget.serviceInterest).isEmpty ? null : safeValue(widget.serviceInterest);
+      controllers.exDate.value = safeValue(widget.expectedConvertionDate);
+
+      /// Dropdown Values
+      controllers.source =
+      safeValue(widget.source).isEmpty ? null : safeValue(widget.source);
+
+      controllers.status =
+      safeValue(widget.status).isEmpty ? null : safeValue(widget.status);
+
+      controllers.rating =
+      safeValue(widget.rating).isEmpty ? null : safeValue(widget.rating);
+
+      controllers.service = safeValue(widget.serviceInterest).isEmpty
+          ? null
+          : safeValue(widget.serviceInterest);
+
+      /// Address
       controllers.doorNumberController.text = safeValue(widget.addressLine1);
       controllers.streetNameController.text = safeValue(widget.addressLine2);
-      controllers.areaController.text       = safeValue(widget.area);
-      controllers.cityController.text       = safeValue(widget.city);
-      controllers.selectedCity.value        = safeValue(widget.city);
-      controllers.pinCodeController.text    = safeValue(widget.pinCode);
-      controllers.pinCode                   = safeValue(widget.pinCode);
-      controllers.stateController.text      = safeValue(widget.state.toString().isEmpty ? "Tamil Nadu" : widget.state);
-      controllers.selectedState.value       = safeValue(widget.state.toString().isEmpty ? "Tamil Nadu" : widget.state);
-      controllers.countryController.text    = safeValue(widget.country.toString().isEmpty ? "India" : widget.country);
-      controllers.leadXCrt.text        = safeValue(widget.x);
+      controllers.areaController.text = safeValue(widget.area);
+      controllers.cityController.text = safeValue(widget.city);
+
+      controllers.selectedCity.value = safeValue(widget.city);
+
+      controllers.pinCodeController.text = safeValue(widget.pinCode);
+      controllers.pinCode = safeValue(widget.pinCode);
+
+      /// State
+      String state =
+      (widget.state == null || widget.state.toString().isEmpty)
+          ? "Tamil Nadu"
+          : widget.state.toString();
+
+      controllers.stateController.text = state;
+      controllers.selectedState.value = state;
+
+      /// Country
+      String country =
+      (widget.country == null || widget.country.toString().isEmpty)
+          ? "India"
+          : widget.country.toString();
+
+      controllers.countryController.text = country;
+
+      /// Social
+      controllers.leadXCrt.text = safeValue(widget.x);
       controllers.leadLinkedinCrt.text = safeValue(widget.linkedin);
+
+      /// Others
       controllers.leadDescription.text = safeValue(widget.description);
-      controllers.leadTime.text        = safeValue(widget.timelineDecision);
-      controllers.budgetCrt.text       = safeValue(widget.budget);
-      controllers.leadActions.text     = safeValue(widget.points);
+      controllers.leadTime.text = safeValue(widget.timelineDecision);
+      controllers.budgetCrt.text = safeValue(widget.budget);
+      controllers.leadActions.text = safeValue(widget.points);
+
       controllers.selectPinCodeList = [];
     });
   }
+  // Future<void> getStringValue() async {
+  //   setState(() {
+  //     controllers.numberList.clear();
+  //     controllers.infoNumberList.clear();
+  //     controllers.industry = safeValue(widget.industry).isEmpty ? null : safeValue(widget.industry);
+  //
+  //     print(controllers.industry);
+  //     print(widget.points.toString());
+  //     var list = (widget.mainMobile ?? "").split("||");
+  //     for(var i=0;i<list.length;i++){
+  //       controllers.numberList.add(TextEditingController(text: list[i]));
+  //       phoneFocusList.add(FocusNode());
+  //     }
+  //
+  //     var list2 = (widget.companyNumber ?? "").split("||");
+  //     for(var i=0;i<list2.length;i++){
+  //       controllers.infoNumberList.add(TextEditingController(text: list2[i]));
+  //       phoneFocusList2.add(FocusNode());
+  //     }
+  //     controllers.visitType = (widget.visitType ?? "").isEmpty
+  //         ? "Call"
+  //         : controllers.callNameList.contains(widget.visitType)
+  //         ? widget.visitType
+  //         : "Call";
+  //     controllers.leadNameCrt[0].text  = safeValue(widget.mainName);
+  //     controllers.leadMobileCrt[0].text = safeValue(widget.mainMobile);
+  //     controllers.leadEmailCrt[0].text  = safeValue(widget.mainEmail);
+  //     controllers.leadWhatsCrt[0].text  = safeValue(widget.mainWhatsApp);
+  //     controllers.leadTitleCrt[0].text  = safeValue(widget.owner);
+  //
+  //     controllers.leadCoNameCrt.text     = safeValue(widget.companyName);
+  //     controllers.leadCoMobileCrt.text   = safeValue(widget.companyNumber);
+  //     controllers.leadWebsite.text       = safeValue(widget.companyWebsite);
+  //     controllers.leadCoEmailCrt.text    = safeValue(widget.companyEmail);
+  //     controllers.leadProduct.text       = safeValue(widget.productServices);
+  //     controllers.leadOwnerNameCrt.text  = safeValue(widget.owner);
+  //     controllers.prodDescriptionController.text = safeValue(widget.productDiscussion);
+  //     controllers.statusCrt.text           = safeValue(widget.statusUpdate);
+  //     controllers.leadDisPointsCrt.text    = safeValue(widget.source);
+  //     controllers.prospectGradingCrt.text  = safeValue(widget.rating);
+  //     controllers.exMonthBillingValCrt.text     = safeValue(widget.expectedBillingValue);
+  //     controllers.noOfHeadCountCrt.text         = safeValue(widget.numOfHeadcount);
+  //     controllers.sourceCrt.text                = safeValue(widget.detailsOfRequired);
+  //     controllers.additionalNotesCrt.text       = safeValue(widget.notes);
+  //     controllers.arpuCrt.text                  = safeValue(widget.arpuValue);
+  //     controllers.expectedConversionDateCrt.text = safeValue(widget.expectedConvertionDate);
+  //     controllers.prospectEnrollmentDateCrt.text = safeValue(widget.prospectEnrollmentDate);
+  //     controllers.prospectDate.value = safeValue(widget.prospectEnrollmentDate);
+  //     controllers.exDate.value       = safeValue(widget.expectedConvertionDate);
+  //     controllers.source   = safeValue(widget.source).isEmpty ? null : safeValue(widget.source);
+  //     controllers.status   = safeValue(widget.status).isEmpty ? null : safeValue(widget.status);
+  //     controllers.rating   = safeValue(widget.rating).isEmpty ? null : safeValue(widget.rating);
+  //     controllers.service  = safeValue(widget.serviceInterest).isEmpty ? null : safeValue(widget.serviceInterest);
+  //     controllers.doorNumberController.text = safeValue(widget.addressLine1);
+  //     controllers.streetNameController.text = safeValue(widget.addressLine2);
+  //     controllers.areaController.text       = safeValue(widget.area);
+  //     controllers.cityController.text       = safeValue(widget.city);
+  //     controllers.selectedCity.value        = safeValue(widget.city);
+  //     controllers.pinCodeController.text    = safeValue(widget.pinCode);
+  //     controllers.pinCode                   = safeValue(widget.pinCode);
+  //     controllers.stateController.text      = safeValue(widget.state.toString().isEmpty ? "Tamil Nadu" : widget.state);
+  //     controllers.selectedState.value       = safeValue(widget.state.toString().isEmpty ? "Tamil Nadu" : widget.state);
+  //     controllers.countryController.text    = safeValue(widget.country.toString().isEmpty ? "India" : widget.country);
+  //     controllers.leadXCrt.text        = safeValue(widget.x);
+  //     controllers.leadLinkedinCrt.text = safeValue(widget.linkedin);
+  //     controllers.leadDescription.text = safeValue(widget.description);
+  //     controllers.leadTime.text        = safeValue(widget.timelineDecision);
+  //     controllers.budgetCrt.text       = safeValue(widget.budget);
+  //     controllers.leadActions.text     = safeValue(widget.points);
+  //     controllers.selectPinCodeList = [];
+  //   });
+  // }
   String _formatHeading(String heading) {
     String cleaned = heading.replaceAll(",", "").trim();
     return cleaned
@@ -279,13 +399,17 @@ class _UpdateLeadState extends State<UpdateLead> {
   void initState(){
     // TODO: implement initState
     super.initState();
-    getStringValue();
     _focusNode = FocusNode();
+
+    getStringValue();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
-      FocusScope.of(context)
-          .requestFocus(
-          name);
+      if (mounted) {
+        _focusNode.requestFocus();
+        FocusScope.of(context)
+            .requestFocus(
+            name);
+      }
     });
     //setDefaults();
   }
@@ -519,7 +643,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                     String number = controllers.numberList[i].text.trim();
 
                                                                     // Empty or not 10 digits
-                                                                    if (number.isEmpty || number.length != 10) {
+                                                                    if (number.isEmpty&&number.length != 10) {
                                                                       isMistake = true;
                                                                       utils.snackBar(
                                                                         context: context,
@@ -838,7 +962,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                     String number = controllers.infoNumberList[i].text.trim();
 
                                                                     // Empty or not 10 digits
-                                                                    if (number.isEmpty || number.length != 10) {
+                                                                    if (number.isEmpty&&number.length != 10) {
                                                                       isMistake = true;
                                                                       utils.snackBar(
                                                                         context: context,
@@ -1569,7 +1693,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       Set<String> uniqueNumbers2 = {};
                                       for (var i = 0; i < controllers.numberList.length; i++) {
                                         String number = controllers.numberList[i].text.trim();
-                                        if (number.isEmpty || number.length != 10) {
+                                        if (number.isEmpty&&number.length != 10) {
                                           isMistake = true;
                                           utils.snackBar(
                                             context: context,
@@ -1601,7 +1725,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       }
                                       for (var i = 0; i < controllers.infoNumberList.length; i++) {
                                         String number = controllers.infoNumberList[i].text.trim();
-                                        if (number.isEmpty || number.length != 10) {
+                                        if (number.isEmpty&&number.length != 10) {
                                           isMistake2 = true;
                                           utils.snackBar(
                                             context: context,

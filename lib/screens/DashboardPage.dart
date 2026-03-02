@@ -54,10 +54,8 @@ class _DashboardPageState extends State<DashboardPage>
     super.initState();
     _focusNode = FocusNode();
     dashController.getToken();
-    if(controllers.leadCategoryList.isEmpty){
-      apiService.getLeadCategories();
-      apiService.getCustomLeads();
-    }
+    apiService.getLeadCategories();
+    apiService.getCustomLeads();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
@@ -215,10 +213,10 @@ class _DashboardPageState extends State<DashboardPage>
               controllers.isRightOpen.value == false
               ? screenWidth - 100
               : screenWidth - 150,
-          height: 80,
+          height: 90,
           alignment: Alignment.topLeft,
           // color: Colors.pinkAccent,
-          padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+          padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
           decoration: _topBarDecoration(),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -285,129 +283,167 @@ class _DashboardPageState extends State<DashboardPage>
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Obx(() {
-                    return Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: _filterGroupDecoration(),
-                          child: Row(
-                            spacing: 20,
-                            children:
-                            dashController.filters.map((filter) {
-                              final bool isSelected = dashController.selectedSortBy.value == filter;
-                              return MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () {
-                                    dashController.selectedSortBy.value = filter;
-                                    DateTime now = DateTime.now();
-                                    switch (filter) {
-                                      case "Today":
-                                        dashController.selectedRange
-                                            .value = DateTimeRange(
-                                          start: DateTime(now.year,
-                                              now.month, now.day),
-                                          end: DateTime(now.year,
-                                              now.month, now.day),
-                                        );
-                                        break;
-                                      case "Yesterday":
-                                        DateTime yesterday = now
-                                            .subtract(Duration(days: 1));
-                                        dashController.selectedRange
-                                            .value = DateTimeRange(
-                                          start: DateTime(
-                                              yesterday.year,
-                                              yesterday.month,
-                                              yesterday.day),
-                                          end: DateTime(now.year,
-                                              now.month, now.day),
-                                        );
-                                        break;
-                                      case "Last 7 Days":
-                                        dashController.selectedRange
-                                            .value = DateTimeRange(
-                                          start: now.subtract(
-                                              Duration(days: 6)),
-                                          end: now,
-                                        );
-                                        break;
-                                      case "Last 30 Days":
-                                        dashController.selectedRange
-                                            .value = DateTimeRange(
-                                          start: now.subtract(
-                                              Duration(days: 30)),
-                                          end: now,
-                                        );
-                                        break;
-                                    }
-                                    dashController.getDashboardReport();
-                                    dashController.getStatusWiseReport();
-                                    final range = dashController.selectedRange.value;
-                                    var today = DateTime.now();
-                                    if (dashController.selectedSortBy.value != "Today" &&
-                                        dashController.selectedSortBy.value != "Yesterday") {
-                                      dashController.getCustomerReport(
-                                          range == null
-                                              ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
-                                              : "${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
-                                          range == null
-                                              ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
-                                              : "${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
-                                    } else {
-                                      var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
-                                      var last7days = DateTime.now().subtract(Duration(days: 7));
-                                      dashController.getCustomerReport(
-                                          "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
-                                          today);
-                                    }
-                                    remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
-                                    remController.filterAndSortMeetings(
-                                      searchText: controllers.searchText.value.toLowerCase(),
-                                      callType: controllers.selectMeetingType.value,
-                                      sortField: controllers.sortFieldMeetingActivity.value,
-                                      sortOrder: controllers.sortOrderMeetingActivity.value,
-                                    );
-                                  },
-                                  child: Container(
-                                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      color: isSelected ? Colors.white : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: isSelected
-                                          ? [
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          blurRadius: 6,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ]
-                                          : null,
-                                    ),
-                                    child: IgnorePointer(
-                                      child: CustomText(
-                                        text: filter,
-                                        isCopy: false,
-                                        size: 12,
-                                        isBold: true,
-                                        colors: isSelected ? Color(0xff0078D7) : Color(0xff666666),
+                    return Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: _filterGroupDecoration(),
+                      child: Row(
+                        children: dashController.filters.map((filter) {
+                          final bool isSelected =
+                              dashController.selectedSortBy.value == filter;
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  dashController.selectedSortBy.value = filter;
+                                  DateTime now = DateTime.now();
+                                  switch (filter) {
+                                    // case "Today":
+                                    //   dashController.selectedRange
+                                    //       .value = DateTimeRange(
+                                    //     start: DateTime(now.year,
+                                    //         now.month, now.day),
+                                    //     end: DateTime(now.year,
+                                    //         now.month, now.day),
+                                    //   );
+                                    //   break;
+                                    // case "Yesterday":
+                                    //   DateTime yesterday = now
+                                    //       .subtract(Duration(days: 1));
+                                    //   dashController.selectedRange
+                                    //       .value = DateTimeRange(
+                                    //     start: DateTime(
+                                    //         yesterday.year,
+                                    //         yesterday.month,
+                                    //         yesterday.day),
+                                    //     end: DateTime(now.year,
+                                    //         now.month, now.day),
+                                    //   );
+                                    //   break;
+                                    // case "Last 7 Days":
+                                    //   dashController.selectedRange
+                                    //       .value = DateTimeRange(
+                                    //     start: now.subtract(
+                                    //         Duration(days: 6)),
+                                    //     end: now,
+                                    //   );
+                                    //   break;
+                                    // case "Last 30 Days":
+                                    //   dashController.selectedRange
+                                    //       .value = DateTimeRange(
+                                    //     start: now.subtract(
+                                    //         Duration(days: 30)),
+                                    //     end: now,
+                                    //   );
+                                    //   break;
+                                    case "Today":
+                                      dashController.date1.value =
+                                      "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+                                      dashController.date2.value = dashController.date1.value;
+                                      break;
+
+                                    case "Yesterday":
+                                      DateTime yesterday = now.subtract(const Duration(days: 1));
+
+                                      dashController.date1.value =
+                                      "${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}";
+                                      dashController.date2.value = dashController.date1.value;
+                                      break;
+
+                                    case "Last 7 Days":
+                                      DateTime start7 = now.subtract(const Duration(days: 6));
+
+                                      dashController.date1.value =
+                                      "${start7.year}-${start7.month.toString().padLeft(2, '0')}-${start7.day.toString().padLeft(2, '0')}";
+                                      dashController.date2.value =
+                                      "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+                                      break;
+
+                                    case "Last 30 Days":
+                                      DateTime start30 = now.subtract(const Duration(days: 29));
+
+                                      dashController.date1.value =
+                                      "${start30.year}-${start30.month.toString().padLeft(2, '0')}-${start30.day.toString().padLeft(2, '0')}";
+                                      dashController.date2.value =
+                                      "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+                                      break;
+                                  }
+                                  dashController.getDashboardReport();
+                                  dashController.getStatusWiseReport();
+                                  final range = dashController.selectedRange.value;
+                                  var today = DateTime.now();
+                                  if (dashController.selectedSortBy.value != "Today" &&
+                                      dashController.selectedSortBy.value != "Yesterday") {
+                                    dashController.getCustomerReport(
+                                        range == null
+                                            ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
+                                            : "${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+                                        range == null
+                                            ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
+                                            : "${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
+                                  } else {
+                                    var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
+                                    var last7days = DateTime.now().subtract(Duration(days: 7));
+                                    dashController.getCustomerReport(
+                                        "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
+                                        today);
+                                  }
+                                  remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
+                                  remController.filterAndSortMeetings(
+                                    searchText: controllers.searchText.value.toLowerCase(),
+                                    callType: controllers.selectMeetingType.value,
+                                    sortField: controllers.sortFieldMeetingActivity.value,
+                                    sortOrder: controllers.sortOrderMeetingActivity.value,
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: isSelected
+                                        ? const [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 6,
+                                        offset: Offset(0, 2),
                                       ),
-                                    ),
+                                    ]
+                                        : null,
+                                  ),
+                                  child: CustomText(
+                                    text: filter,
+                                    isCopy: false,
+                                    size: 12,
+                                    isBold: true,
+                                    colors: isSelected
+                                        ? const Color(0xff0078D7)
+                                        : const Color(0xff666666),
                                   ),
                                 ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     );
                   }),
-                  CustomText(text:"version 0.0.7",size:11,isCopy:false)
+                  5.width,
+                  CustomText(
+                    text: "version 0.0.7",
+                    size: 11,
+                    isCopy: false,
+                    colors: Colors.black,
+                    isBold: true,
+                  ),
                 ],
               ),
-
               /// ---------- RIGHT ----------
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -454,7 +490,8 @@ class _DashboardPageState extends State<DashboardPage>
         ),
       ),
       body: SelectionArea(
-        child: Row(
+        child:
+      Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SideBar(),
@@ -464,12 +501,12 @@ class _DashboardPageState extends State<DashboardPage>
                   Container(
                     width: controllers.isLeftOpen.value == false &&
                         controllers.isRightOpen.value == false
-                        ? screenWidth - 100
+                        ? screenWidth - 150
                         : screenWidth - 150,
                     height: MediaQuery.of(context).size.height,
                     alignment: Alignment.topLeft,
                     // color: Colors.pinkAccent,
-                    padding: EdgeInsets.fromLTRB(40, 0, 0, 0),
+                    padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
                     child: Stack(
                       children: [
                         SingleChildScrollView(
@@ -612,7 +649,7 @@ class _DashboardPageState extends State<DashboardPage>
                                     iconPath: DashboardAssets.alarm,
                                     valueColor: const Color(0xffBB271A),
                                   ),
-                                  100.width,
+                                  150.width,
                                 ],
                               ),
                               20.height,
@@ -642,29 +679,94 @@ class _DashboardPageState extends State<DashboardPage>
                                         ),
                                       ),
                                       20.height,
-                                      // -------- Customer Status --------
+                                      // Quotations Sent
                                       SizedBox(
-                                        width: screenWidth / 4,
-                                        child: CustomerStatusCard(
-                                          items: [
-                                            for (var i = 0;
-                                            i < dashController.visitStatusReport.length;
-                                            i++)
-                                              CustomerStatusItem(
-                                                label: dashController.visitStatusReport[i]["value"].toString(),
-                                                value: int.parse(
-                                                    dashController.visitStatusReport[i]["total_count"].toString()),
-                                                percentage: dashController.total == 0
-                                                    ? 0
-                                                    : double.parse(
-                                                    dashController.visitStatusReport[i]["total_count"].toString()) /
-                                                    dashController.total,
+                                        width: screenWidth/4,
+                                        child: Container(
+                                          height: 250,
+                                          padding: const EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(12),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                color: Color(0x14000000),
+                                                blurRadius: 10,
+                                                offset: Offset(0, 4),
                                               ),
-                                          ],
+                                            ],
+                                          ),
+                                          child: Stack(
+                                            clipBehavior: Clip.none,
+                                            alignment: Alignment.center,
+                                            children: [
+                                              // -------- MAIN CONTENT --------
+                                              Column(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                                children: [
+                                                  Stack(
+                                                    clipBehavior: Clip.none,
+                                                    alignment: Alignment.center,
+                                                    children: [
+                                                      // Main outlined circle
+                                                      Container(
+                                                        width: 110,
+                                                        height: 110,
+                                                        alignment: Alignment.center,
+                                                        decoration: BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          border: Border.all(
+                                                            color: Colors.black,
+                                                            width: 2,
+                                                          ),
+                                                        ),
+
+                                                        child:const CustomText(
+                                                          text: "42",
+                                                          isCopy: false,
+                                                          size: 26,
+                                                          isBold: true,
+                                                        ),
+                                                      ),
+
+                                                      // Small top dot
+                                                      const Positioned(
+                                                        top: -6,
+                                                        child: CircleAvatar(
+                                                          radius: 5,
+                                                          backgroundColor:
+                                                          Colors.black,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+
+                                                  16.height,
+                                                  const CustomText(
+                                                    text:"Quotations Sent",
+                                                    isCopy: false,
+                                                    size: 13,
+                                                    isBold: true,
+                                                    colors: Colors.black,
+                                                  ),
+                                                ],
+                                              ),
+                                              // -------- FILE ICON (OVERLAP) --------
+                                              Positioned(
+                                                top: 10,
+                                                left: 10,
+                                                child: Image.asset(
+                                                  DashboardAssets.file,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
+
                                   16.width,
                                   // ================= RIGHT COLUMN =================
                                   Column(
@@ -673,8 +775,8 @@ class _DashboardPageState extends State<DashboardPage>
                                         children: [
                                           // Activity Rating
                                           Container(
-                                            height: 250,
-                                            width: screenWidth/3.7,
+                                            height: 300,
+                                            width: screenWidth /3.5,
                                             padding: const EdgeInsets.all(16),
                                             decoration: _whiteCard(),
                                             child: Column(
@@ -688,9 +790,7 @@ class _DashboardPageState extends State<DashboardPage>
                                                   size: 14,
                                                   isBold: true,
                                                 ),
-                  
                                                 4.height,
-                  
                                                 // -------- SUBTITLE --------
                                                 CustomText(
                                                   text: "Customer Engagement Levels",
@@ -699,18 +799,16 @@ class _DashboardPageState extends State<DashboardPage>
                                                   isBold: false,
                                                   colors: Color(0xff6B7280),
                                                 ),
-                  
                                                 10.height,
-                  
                                                 // -------- DIVIDER --------
                                                 const Divider(
                                                   height: 1,
                                                   thickness: 1,
                                                   color: Color(0xffD1D5DB),
                                                 ),
-                  
+
                                                 18.height,
-                  
+
                                                 // -------- RATING BAR () --------
                                                 Expanded(
                                                   child: LayoutBuilder(
@@ -728,7 +826,7 @@ class _DashboardPageState extends State<DashboardPage>
                                                               .totalCold.value) ??
                                                           0;
                                                       final total = hot + warm + cold;
-                  
+
                                                       return ActivityRatingBar(
                                                         hot: hot,
                                                         warm: warm,
@@ -769,7 +867,7 @@ class _DashboardPageState extends State<DashboardPage>
                                                         ),
                                                       ],
                                                     ),
-                  
+
                                                     Row(
                                                       mainAxisSize: MainAxisSize.min,
                                                       children: [
@@ -827,90 +925,25 @@ class _DashboardPageState extends State<DashboardPage>
                                             ),
                                           ),
                                           16.width,
-                                          // Quotations Sent
+                                          // -------- Customer Status --------
                                           SizedBox(
-                                            width: screenWidth/3.7,
-                                            child: Container(
-                                              height: 250,
-                                              padding: const EdgeInsets.all(16),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(12),
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                    color: Color(0x14000000),
-                                                    blurRadius: 10,
-                                                    offset: Offset(0, 4),
+                                            width: screenWidth/4,
+                                            child: CustomerStatusCard(
+                                              items: [
+                                                for (var i = 0;
+                                                i < dashController.visitStatusReport.length;
+                                                i++)
+                                                  CustomerStatusItem(
+                                                    label: dashController.visitStatusReport[i]["value"].toString(),
+                                                    value: int.parse(
+                                                        dashController.visitStatusReport[i]["total_count"].toString()),
+                                                    percentage: dashController.total == 0
+                                                        ? 0
+                                                        : double.parse(
+                                                        dashController.visitStatusReport[i]["total_count"].toString()) /
+                                                        dashController.total,
                                                   ),
-                                                ],
-                                              ),
-                                              child: Stack(
-                                                clipBehavior: Clip.none,
-                                                alignment: Alignment.center,
-                                                children: [
-                                                  // -------- MAIN CONTENT --------
-                                                  Column(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                    children: [
-                                                      Stack(
-                                                        clipBehavior: Clip.none,
-                                                        alignment: Alignment.center,
-                                                        children: [
-                                                          // Main outlined circle
-                                                          Container(
-                                                            width: 110,
-                                                            height: 110,
-                                                            alignment: Alignment.center,
-                                                            decoration: BoxDecoration(
-                                                              shape: BoxShape.circle,
-                                                              border: Border.all(
-                                                                color: Colors.black,
-                                                                width: 2,
-                                                              ),
-                                                            ),
-                  
-                                                            child:const CustomText(
-                                                              text: "42",
-                                                              isCopy: false,
-                                                              size: 26,
-                                                              isBold: true,
-                                                            ),
-                                                          ),
-                  
-                                                          // Small top dot
-                                                          const Positioned(
-                                                            top: -6,
-                                                            child: CircleAvatar(
-                                                              radius: 5,
-                                                              backgroundColor:
-                                                              Colors.black,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                  
-                                                      16.height,
-                                                      const CustomText(
-                                                        text:"Quotations Sent",
-                                                        isCopy: false,
-                                                        size: 13,
-                                                        isBold: true,
-                                                        colors: Colors.black,
-                                                      ),
-                                                    ],
-                                                  ),
-                  
-                                                  // -------- FILE ICON (OVERLAP) --------
-                                                  Positioned(
-                                                    top: 10,
-                                                    left: 10,
-                                                    child: Image.asset(
-                                                      DashboardAssets.file,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                              ],
                                             ),
                                           ),
                                         ],
@@ -974,6 +1007,538 @@ class _DashboardPageState extends State<DashboardPage>
           ],
         ),
       ),
+      // body: Stack(
+      //   children: [
+      //     /// ================= MAIN AREA =================
+      //     Row(
+      //       children: [
+      //
+      //         /// -------- SIDEBAR --------
+      //         SideBar(),
+      //
+      //         /// -------- CENTER CONTENT --------
+      //         Expanded(
+      //           child: Center(
+      //             child: ConstrainedBox(
+      //               constraints: BoxConstraints(
+      //                 maxWidth: screenWidth > 1400
+      //                     ? 1280
+      //                     : screenWidth * 0.95,
+      //               ),
+      //               child: SelectionArea(
+      //                 child: SingleChildScrollView(
+      //                   padding: const EdgeInsets.all(16),
+      //                   child: Obx(() => Column(
+      //                     crossAxisAlignment:
+      //                     CrossAxisAlignment.stretch,
+      //                     children: [
+      //
+      //                       20.height,
+      //
+      //                       /// ================= STAT CARDS =================
+      //                       Row(
+      //                         children: [
+      //                           Expanded(child: WaveStatCard(
+      //                               title: "Mails",
+      //                               numericValue: int.parse(dashController
+      //                                   .totalMails.value
+      //                                   .toString()),
+      //                               maxValue: maxValue,
+      //                               iconPath: DashboardAssets.mail,
+      //                               valueColor: const Color(0xff2457C5),
+      //                               callback:(){
+      //                                 remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
+      //                                 controllers.changeTab(1);
+      //                                 Navigator.push(
+      //                                   context,
+      //                                   PageRouteBuilder(
+      //                                     pageBuilder: (context,
+      //                                         animation1,
+      //                                         animation2) =>
+      //                                     const Records(
+      //                                       isReload: "true",
+      //                                     ),
+      //                                     transitionDuration:
+      //                                     Duration.zero,
+      //                                     reverseTransitionDuration:
+      //                                     Duration.zero,
+      //                                   ),
+      //                                 );
+      //                                 controllers.oldIndex.value =
+      //                                     controllers.selectedIndex.value;
+      //                                 controllers.selectedIndex.value = 6;
+      //                               }
+      //                           ),),
+      //                           20.width,
+      //                           Expanded(child: WaveStatCard(
+      //                               title: "Calls",
+      //                               numericValue: int.parse(dashController.totalCalls.value.toString()),
+      //                               maxValue: maxValue,
+      //                               iconPath: DashboardAssets.phone,
+      //                               valueColor: const Color(0xff53922A),
+      //                               callback:(){
+      //                                 remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+      //                                 controllers.changeTab(0);
+      //                                 Navigator.push(
+      //                                   context,
+      //                                   PageRouteBuilder(
+      //                                     pageBuilder: (context,
+      //                                         animation1,
+      //                                         animation2) =>
+      //                                     const Records(
+      //                                       isReload: "true",
+      //                                     ),
+      //                                     transitionDuration:
+      //                                     Duration.zero,
+      //                                     reverseTransitionDuration:
+      //                                     Duration.zero,
+      //                                   ),
+      //                                 );
+      //                                 controllers.oldIndex.value = controllers.selectedIndex.value;
+      //                                 controllers.selectedIndex.value = 6;
+      //                               }
+      //                           )),
+      //                           20.width,
+      //                           Expanded(child: WaveStatCard(
+      //                             callback: () {
+      //                               remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
+      //                               controllers.changeTab(2);
+      //                               Navigator.push(
+      //                                 context,
+      //                                 PageRouteBuilder(
+      //                                   pageBuilder: (context, animation1, animation2) =>
+      //                                   const Records(
+      //                                     isReload: "true",
+      //                                   ),
+      //                                   transitionDuration: Duration.zero,
+      //                                   reverseTransitionDuration: Duration.zero,
+      //                                 ),
+      //                               );
+      //                               controllers.oldIndex.value = controllers.selectedIndex.value;
+      //                               controllers.selectedIndex.value = 6;
+      //                             },
+      //                             title: "Appointments",
+      //                             numericValue: int.parse(dashController.totalMeetings.value.toString()),
+      //                             maxValue: maxValue,
+      //                             iconPath: DashboardAssets.date,
+      //                             valueColor: const Color(0xff8B2CF5),
+      //                           )),
+      //                           20.width,
+      //                           Expanded(child: WaveStatCard(
+      //                             callback: () {
+      //                               controllers.selectedProspectSortBy.value = dashController.selectedSortBy.value;
+      //                               // Navigator.push(
+      //                               //   context,
+      //                               //   PageRouteBuilder(
+      //                               //     pageBuilder: (context, animation1, animation2) => const Suspects(),
+      //                               //     transitionDuration: Duration.zero,
+      //                               //     reverseTransitionDuration: Duration.zero,
+      //                               //   ),
+      //                               // );
+      //                               controllers.oldIndex.value = controllers.selectedIndex.value;
+      //                               controllers.selectedIndex.value = 100;
+      //                             },
+      //                             title: "New Customers",
+      //                             numericValue: int.parse(dashController.totalSuspects.value.toString()),
+      //                             maxValue: maxValue,
+      //                             iconPath: DashboardAssets.people,
+      //                             valueColor: const Color(0xffF29D38),
+      //                           )),
+      //                           20.width,
+      //                           Expanded(child: WaveStatCard(
+      //                             callback: () {
+      //                               remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
+      //                               Navigator.push(
+      //                                 context,
+      //                                 PageRouteBuilder(
+      //                                   pageBuilder: (context,
+      //                                       animation1,
+      //                                       animation2) =>
+      //                                   const ReminderPage(),
+      //                                   transitionDuration:
+      //                                   Duration.zero,
+      //                                   reverseTransitionDuration:
+      //                                   Duration.zero,
+      //                                 ),
+      //                               );
+      //                               controllers.oldIndex.value =
+      //                                   controllers.selectedIndex.value;
+      //                               controllers.selectedIndex.value =
+      //                               11;
+      //                             },
+      //                             title: "Reminders",
+      //                             numericValue: int.parse(dashController
+      //                                 .totalReminders.value
+      //                                 .toString()),
+      //                             maxValue: maxValue,
+      //                             iconPath: DashboardAssets.alarm,
+      //                             valueColor: const Color(0xffBB271A),
+      //                           ),),
+      //                         ],
+      //                       ),
+      //
+      //                       20.height,
+      //
+      //                       /// ================= SECOND ROW =================
+      //                       Row(
+      //                         crossAxisAlignment: CrossAxisAlignment.start,
+      //                         children: [
+      //                           Column(
+      //                             children: [
+      //                               // -------- Lead Distribution --------
+      //                               SizedBox(
+      //                                 width: screenWidth / 4,
+      //                                 // height: 350,
+      //                                 child: LeadPieCard(
+      //                                   // title: "Lead Distribution",
+      //                                   // subtitle: "Breakdown by current stage",
+      //                                   // total: controllers.allLeadList.length,
+      //                                   data: [
+      //                                     for (int i = 0; i < dashController.leadReport.length; i++)
+      //                                       PieData(
+      //                                         label: dashController.leadReport[i]["category"] ?? "",
+      //                                         value: double.tryParse(
+      //                                             dashController.leadReport[i]["customer_count"].toString()) ??
+      //                                             0,
+      //                                         color: dashController.color[i],
+      //                                       ),
+      //                                   ],
+      //                                 ),
+      //                               ),
+      //                               20.height,
+      //                               // Quotations Sent
+      //                               SizedBox(
+      //                                 width: screenWidth/4,
+      //                                 child: Container(
+      //                                   height: 250,
+      //                                   padding: const EdgeInsets.all(16),
+      //                                   decoration: BoxDecoration(
+      //                                     color: Colors.white,
+      //                                     borderRadius: BorderRadius.circular(12),
+      //                                     boxShadow: const [
+      //                                       BoxShadow(
+      //                                         color: Color(0x14000000),
+      //                                         blurRadius: 10,
+      //                                         offset: Offset(0, 4),
+      //                                       ),
+      //                                     ],
+      //                                   ),
+      //                                   child: Stack(
+      //                                     clipBehavior: Clip.none,
+      //                                     alignment: Alignment.center,
+      //                                     children: [
+      //                                       // -------- MAIN CONTENT --------
+      //                                       Column(
+      //                                         mainAxisAlignment:
+      //                                         MainAxisAlignment.center,
+      //                                         children: [
+      //                                           Stack(
+      //                                             clipBehavior: Clip.none,
+      //                                             alignment: Alignment.center,
+      //                                             children: [
+      //                                               // Main outlined circle
+      //                                               Container(
+      //                                                 width: 110,
+      //                                                 height: 110,
+      //                                                 alignment: Alignment.center,
+      //                                                 decoration: BoxDecoration(
+      //                                                   shape: BoxShape.circle,
+      //                                                   border: Border.all(
+      //                                                     color: Colors.black,
+      //                                                     width: 2,
+      //                                                   ),
+      //                                                 ),
+      //
+      //                                                 child:const CustomText(
+      //                                                   text: "42",
+      //                                                   isCopy: false,
+      //                                                   size: 26,
+      //                                                   isBold: true,
+      //                                                 ),
+      //                                               ),
+      //
+      //                                               // Small top dot
+      //                                               const Positioned(
+      //                                                 top: -6,
+      //                                                 child: CircleAvatar(
+      //                                                   radius: 5,
+      //                                                   backgroundColor:
+      //                                                   Colors.black,
+      //                                                 ),
+      //                                               ),
+      //                                             ],
+      //                                           ),
+      //
+      //                                           16.height,
+      //                                           const CustomText(
+      //                                             text:"Quotations Sent",
+      //                                             isCopy: false,
+      //                                             size: 13,
+      //                                             isBold: true,
+      //                                             colors: Colors.black,
+      //                                           ),
+      //                                         ],
+      //                                       ),
+      //                                       // -------- FILE ICON (OVERLAP) --------
+      //                                       Positioned(
+      //                                         top: 10,
+      //                                         left: 10,
+      //                                         child: Image.asset(
+      //                                           DashboardAssets.file,
+      //                                         ),
+      //                                       ),
+      //                                     ],
+      //                                   ),
+      //                                 ),
+      //                               ),
+      //                             ],
+      //                           ),
+      //
+      //                           16.width,
+      //                           // ================= RIGHT COLUMN =================
+      //                           Column(
+      //                             children: [
+      //                               Row(
+      //                                 children: [
+      //                                   // Activity Rating
+      //                                   Container(
+      //                                     height: 300,
+      //                                     width: screenWidth /3.5,
+      //                                     padding: const EdgeInsets.all(16),
+      //                                     decoration: _whiteCard(),
+      //                                     child: Column(
+      //                                       crossAxisAlignment:
+      //                                       CrossAxisAlignment.start,
+      //                                       children: [
+      //                                         // -------- TITLE --------
+      //                                         CustomText(
+      //                                           text: "Activity Rating",
+      //                                           isCopy: false,
+      //                                           size: 14,
+      //                                           isBold: true,
+      //                                         ),
+      //                                         4.height,
+      //                                         // -------- SUBTITLE --------
+      //                                         CustomText(
+      //                                           text: "Customer Engagement Levels",
+      //                                           isCopy: false,
+      //                                           size: 12,
+      //                                           isBold: false,
+      //                                           colors: Color(0xff6B7280),
+      //                                         ),
+      //                                         10.height,
+      //                                         // -------- DIVIDER --------
+      //                                         const Divider(
+      //                                           height: 1,
+      //                                           thickness: 1,
+      //                                           color: Color(0xffD1D5DB),
+      //                                         ),
+      //
+      //                                         18.height,
+      //
+      //                                         // -------- RATING BAR () --------
+      //                                         Expanded(
+      //                                           child: LayoutBuilder(
+      //                                             builder: (context, constraints) {
+      //                                               final hot = int.tryParse(
+      //                                                   dashController
+      //                                                       .totalHot.value) ??
+      //                                                   0;
+      //                                               final warm = int.tryParse(
+      //                                                   dashController
+      //                                                       .totalWarm.value) ??
+      //                                                   0;
+      //                                               final cold = int.tryParse(
+      //                                                   dashController
+      //                                                       .totalCold.value) ??
+      //                                                   0;
+      //                                               final total = hot + warm + cold;
+      //
+      //                                               return ActivityRatingBar(
+      //                                                 hot: hot,
+      //                                                 warm: warm,
+      //                                                 cold: cold,
+      //                                                 totalWidth:
+      //                                                 constraints.maxWidth,
+      //                                               );
+      //                                             },
+      //                                           ),
+      //                                         ),
+      //                                         12.height,
+      //                                         Wrap(
+      //                                           spacing: 16,
+      //                                           runSpacing: 8,
+      //                                           children: [
+      //                                             Row(
+      //                                               mainAxisSize: MainAxisSize.min,
+      //                                               children: [
+      //                                                 const SizedBox(
+      //                                                   width: 8,
+      //                                                   height: 8,
+      //                                                   child: DecoratedBox(
+      //                                                     decoration: BoxDecoration(
+      //                                                       color: Color(
+      //                                                         0xffEF4444,
+      //                                                       ),
+      //                                                       shape: BoxShape.circle,
+      //                                                     ),
+      //                                                   ),
+      //                                                 ),
+      //                                                 const SizedBox(width: 6),
+      //                                                 CustomText(
+      //                                                   text: "Hot (0-${int.tryParse(dashController.totalHot.value) ??0}d)",
+      //                                                   isCopy: false,
+      //                                                   size: 11,
+      //                                                   isBold: true,
+      //                                                   colors: const Color(0xffEF4444),
+      //                                                 ),
+      //                                               ],
+      //                                             ),
+      //
+      //                                             Row(
+      //                                               mainAxisSize: MainAxisSize.min,
+      //                                               children: [
+      //                                                 SizedBox(
+      //                                                   width: 8,
+      //                                                   height: 8,
+      //                                                   child: DecoratedBox(
+      //                                                     decoration: BoxDecoration(
+      //                                                       color: Color(
+      //                                                         0xffF59E0B,
+      //                                                       ),
+      //                                                       shape: BoxShape.circle,
+      //                                                     ),
+      //                                                   ),
+      //                                                 ),
+      //                                                 SizedBox(width: 6),
+      //                                                 CustomText(
+      //                                                   text:  "Warm (${(int.tryParse(dashController.totalHot.value) ??0)+1}-${int.tryParse(
+      //                                                       dashController.totalWarm.value) ??0}d)",
+      //                                                   isCopy: false,
+      //                                                   size: 11,
+      //                                                   isBold: true,
+      //                                                   colors: Color(0xffF59E0B),
+      //                                                 ),
+      //                                               ],
+      //                                             ),
+      //                                             Row(
+      //                                               mainAxisSize: MainAxisSize.min,
+      //                                               children: [
+      //                                                 SizedBox(
+      //                                                   width: 8,
+      //                                                   height: 8,
+      //                                                   child: DecoratedBox(
+      //                                                     decoration: BoxDecoration(
+      //                                                       color: Color(
+      //                                                         0xff3B82F6,
+      //                                                       ),
+      //                                                       shape: BoxShape.circle,
+      //                                                     ),
+      //                                                   ),
+      //                                                 ),
+      //                                                 SizedBox(width: 6),
+      //                                                 CustomText(
+      //                                                   text:  "Cold (${(int.tryParse(dashController.totalWarm.value) ??0)+1}+d)",
+      //                                                   isCopy: false,
+      //                                                   size: 11,
+      //                                                   isBold: true,
+      //                                                   colors: Color(0xff3B82F6),
+      //                                                 ),
+      //                                               ],
+      //                                             ),
+      //                                           ],
+      //                                         ),
+      //                                       ],
+      //                                     ),
+      //                                   ),
+      //                                   16.width,
+      //                                   // -------- Customer Status --------
+      //                                   SizedBox(
+      //                                     width: screenWidth/4,
+      //                                     child: CustomerStatusCard(
+      //                                       items: [
+      //                                         for (var i = 0;
+      //                                         i < dashController.visitStatusReport.length;
+      //                                         i++)
+      //                                           CustomerStatusItem(
+      //                                             label: dashController.visitStatusReport[i]["value"].toString(),
+      //                                             value: int.parse(
+      //                                                 dashController.visitStatusReport[i]["total_count"].toString()),
+      //                                             percentage: dashController.total == 0
+      //                                                 ? 0
+      //                                                 : double.parse(
+      //                                                 dashController.visitStatusReport[i]["total_count"].toString()) /
+      //                                                 dashController.total,
+      //                                           ),
+      //                                       ],
+      //                                     ),
+      //                                   )
+      //                                 ],
+      //                               ),
+      //                               20.height,
+      //                               // -------- Activity Over Time () --------
+      //                               ActivityOverTimeChart(
+      //                                 maxY: 80,
+      //                                 xLabels: controllers.xLabels,
+      //                                 lines: [
+      //                                   ActivityLineData(
+      //                                     label: "Calls",
+      //                                     color: Color(0xff3B82F6),
+      //                                     values: controllers.calls,
+      //                                   ),
+      //                                   ActivityLineData(
+      //                                     label: "Mails",
+      //                                     color: Color(0xff10B981),
+      //                                     values: controllers.mails,
+      //                                   ),
+      //                                   ActivityLineData(
+      //                                     label: "Updates",
+      //                                     color: Color(0xffEF4444),
+      //                                     values: controllers.updates,
+      //                                   ),
+      //                                 ],
+      //                               ),
+      //                             ],
+      //                           ),
+      //                         ],
+      //                       ),
+      //                       20.height,
+      //                     ],
+      //                   )),
+      //                 ),
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //
+      //     /// ================= RIGHT PANEL =================
+      //     AnimatedPositioned(
+      //       duration: const Duration(milliseconds: 420),
+      //       curve: Curves.easeOutCubic,
+      //       top: 0,
+      //       bottom: 0,
+      //       right: isLeadPanelOpen ? 0 : -240,
+      //       child: SizedBox(
+      //         width: 240,
+      //         child: _leadStagesPanel(),
+      //       ),
+      //     ),
+      //
+      //     AnimatedPositioned(
+      //       duration: const Duration(milliseconds: 300),
+      //       top: 0,
+      //       bottom: 0,
+      //       right: isLeadPanelOpen ? -64 : 0,
+      //       child: AnimatedOpacity(
+      //         duration: const Duration(milliseconds: 200),
+      //         opacity: isLeadPanelOpen ? 0 : 1,
+      //         child: _leadStagesRail(context),
+      //       ),
+      //     ),
+      //   ],
+      // ),
     );
   }
 

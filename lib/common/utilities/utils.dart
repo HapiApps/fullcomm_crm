@@ -1223,9 +1223,14 @@ class Utils {
       throw Exception('Could not launch $url');
     }
   }
-  bool isValidLinkedInId(String id) {
-    final regex = RegExp(r'^[a-zA-Z0-9-]{3,100}$');
-    return regex.hasMatch(id);
+  bool isValidLinkedInId(String input) {
+
+    final usernameRegex = RegExp(r'^[a-zA-Z0-9_-]{3,100}$');
+
+    final urlRegex = RegExp(
+        r'^(https?:\/\/)?(www\.)?linkedin\.com\/in\/[a-zA-Z0-9_-]{3,100}\/?$');
+
+    return usernameRegex.hasMatch(input) || urlRegex.hasMatch(input);
   }
   bool isValidXId(String id) {
     final regex = RegExp(r'^[a-zA-Z0-9_]{4,15}$');

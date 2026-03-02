@@ -24,10 +24,11 @@ import '../../services/api_services.dart';
 
 class NewLeadPage extends StatefulWidget {
   final String index;
+  final int listIndex;
   final String name;
   final RxList<NewLeadObj> list;
   final RxList<NewLeadObj> list2;
-  const NewLeadPage({super.key, required this.index, required this.name, required this.list, required this.list2});
+  const NewLeadPage({super.key, required this.index, required this.name, required this.list, required this.list2, required this.listIndex});
 
   @override
   State<NewLeadPage> createState() => _NewLeadPageState();
@@ -187,9 +188,6 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                         callback: ()async{
                                           _focusNode.requestFocus();
                                           await apiService.deleteCustomersAPI(context, controllers.idList.value,widget.list,widget.list2);
-                                          setState(() {
-                                            apiService.newLeadList.clear();
-                                          });
                                         },
                                         height: 35,
                                         isLoading: true,
@@ -210,7 +208,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                       },
                       onMail: () {
                         // mailUtils.bulkEmailDialog(_focusNode, list: widget.list);
-                        mailUtils.bulkEmailDialog(_focusNode, list: apiService.newLeadList);
+                        mailUtils.bulkEmailDialog(_focusNode, list: controllers.allLeadList);
                       },
                       onPromote: () {
                         debugPrint("onTapppp");

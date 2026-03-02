@@ -456,7 +456,7 @@ class _AddLeadState extends State<AddLead> {
                           controllers.leadCtr.reset();
                           return;
                         }
-                        if (controllers.leadLinkedinCrt.text.trim().isNotEmpty&&!utils.isValidXId(controllers.leadXCrt.text.trim())) {
+                        if (controllers.leadXCrt.text.trim().isNotEmpty&&!utils.isValidXId(controllers.leadXCrt.text.trim())) {
                           utils.snackBar(
                             context: context,
                             msg: "Enter valid X ID",

@@ -152,8 +152,13 @@ class _WaveStatCardState extends State<WaveStatCard>
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    final raw = widget.numericValue / widget.maxValue;
-    final percentage = math.sqrt(raw).clamp(0.0, 1.0);
+    double percentage = 0.0;
+
+    if (widget.numericValue > 0) {
+
+      percentage = 0.19 + (math.log(widget.numericValue + 1) / math.log(widget.maxValue + 1)) * 0.80;
+    }
+    percentage = percentage.clamp(0.0, 1.0);
     return InkWell(
       onTap:widget.callback,
       child: Container(

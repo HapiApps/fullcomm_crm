@@ -75,7 +75,8 @@ class _ActivityOverTimeChartState
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Container(
-      height: 360, width: screenWidth/1.8,
+      // height: 360, width: screenWidth/1.8,
+      height: 400, width: screenWidth/1.85,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),

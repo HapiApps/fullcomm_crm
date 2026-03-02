@@ -466,7 +466,7 @@ class ApiService {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,
-              name: controllers.leadCategoryList[0].value,list: list,list2: list2,)),
+              name: controllers.leadCategoryList[0].value,list: list,list2: list2, listIndex: 0,)),
         );
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         controllers.leadCtr.reset();
@@ -1408,7 +1408,10 @@ class ApiService {
           controllers.setLogOut();
         }
       }
-      if (request.statusCode == 200 && response["message"] == "OK") {
+      print(sendList);
+      print("request.body");
+      print(request.body);
+      if (request.statusCode == 200) {
         // allLeadsDetails();
         // allNewLeadsDetails();
         // allGoodLeadsDetails();
@@ -1417,11 +1420,31 @@ class ApiService {
         // prospectsList.clear();
         // qualifiedList.clear();
         // customerList.clear();
-        list.removeWhere((item) =>
-        item.userId != null && sendList.contains(item.userId));
-        list2=list;
-        controllers.allLeadList.removeWhere((item) =>
-        item.userId != null && sendList.contains(item.userId));
+        print("Before remove list length: ${list.length}");
+        print("Before remove list2 length: ${list2.length}");
+        print("Before remove allLeadList length: ${controllers.allLeadList.length}");
+
+        list.removeWhere((item) {
+          bool condition = item.userId != null && sendList.contains(item.userId);
+          if (condition) {
+            print("Removing from list userId: ${item.userId}");
+          }
+          return condition;
+        });
+
+        list2 = list;
+
+        controllers.allLeadList.removeWhere((item) {
+          bool condition = item.userId != null && sendList.contains(item.userId);
+          if (condition) {
+            print("Removing from allLeadList userId: ${item.userId}");
+          }
+          return condition;
+        });
+
+        print("After remove list length: ${list.length}");
+        print("After remove list2 length: ${list2.length}");
+        print("After remove allLeadList length: ${controllers.allLeadList.length}");
         dashController.getDashboardReport();
         controllers.idList.clear();
         Navigator.pop(context);
@@ -1600,7 +1623,6 @@ class ApiService {
   Future<void> insertSingleCustomer(BuildContext context,RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
       // Lead Status
-      print("Before nav: ${list.length}");
       String leadId = controllers.leadCategory == "Suspects"
           ? "1"
           : controllers.leadCategory == "Prospects"
@@ -1726,155 +1748,316 @@ class ApiService {
       }
       if (response.statusCode == 200 &&
         body.contains("Customer saved successfully")) {
-        list.add(NewLeadObj(
-          select: false,
-          firstname: controllers.leadNameCrt[0].text.trim(),
-          email: controllers.leadEmailCrt[0].text.trim(),
-          mobileNumber: controllers.numberList
-              .map((e) => e.text.trim())
-              .where((e) => e.isNotEmpty)
-              .join("||"),
-          whatsapp: controllers.leadWhatsCrt[0].text.trim(),
-          userId: controllers.storage.read("id").toString(),
-          companyName: controllers.leadCoNameCrt.text.trim(),
-          productDiscussion: controllers.prodDescriptionController.text.trim(),
-          source: controllers.leadDisPointsCrt.text.trim(),
-          notes: controllers.leadActions.text.trim(),
-          quotationStatus: "",
-          quotationRequired: "1",
+        // list.add(NewLeadObj(
+        //   select: false,
+        //   firstname: controllers.leadNameCrt[0].text.trim(),
+        //   email: controllers.leadEmailCrt[0].text.trim(),
+        //   mobileNumber: controllers.numberList
+        //       .map((e) => e.text.trim())
+        //       .where((e) => e.isNotEmpty)
+        //       .join("||"),
+        //   whatsapp: controllers.leadWhatsCrt[0].text.trim(),
+        //   userId: controllers.storage.read("id").toString(),
+        //   companyName: controllers.leadCoNameCrt.text.trim(),
+        //   productDiscussion: controllers.prodDescriptionController.text.trim(),
+        //   source: controllers.leadDisPointsCrt.text.trim(),
+        //   notes: controllers.leadActions.text.trim(),
+        //   quotationStatus: "",
+        //   quotationRequired: "1",
+        //
+        //   doorNo: controllers.doorNumberController.text.trim(),
+        //   area: controllers.areaController.text.trim(),
+        //   city: controllers.cityController.text.trim(),
+        //   country: controllers.selectedCountry.value,
+        //   state: controllers.stateController.text.trim(),
+        //   pincode: controllers.pinCodeController.text.trim(),
+        //
+        //   companyWebsite: controllers.leadWebsite.text.trim(),
+        //   companyNumber: controllers.infoNumberList
+        //       .map((e) => e.text.trim())
+        //       .where((e) => e.isNotEmpty)
+        //       .join("||"),
+        //   companyEmail: controllers.leadCoEmailCrt.text.trim(),
+        //   linkedin: controllers.leadLinkedinCrt.text.trim(),
+        //   x: controllers.leadXCrt.text.trim(),
+        //
+        //   industry: controllers.industry.toString(),
+        //   product: controllers.leadProduct.text.trim(),
+        //   sourceDetails: controllers.leadProduct.text.trim(),
+        //
+        //   type: "1",
+        //   lat: "0.0",
+        //   lng: "0.0",
+        //
+        //   leadStatus: leadId.toString(),
+        //   status: controllers.status.toString(),
+        //   visitType: callListId.toString(),
+        //
+        //   prospectEnrollmentDate:
+        //   controllers.prospectDate.value.isEmpty
+        //       ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+        //       : controllers.prospectDate.value,
+        //
+        //   expectedConvertionDate:
+        //   controllers.exDate.value.isEmpty
+        //       ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+        //       : controllers.exDate.value,
+        //
+        //   statusUpdate: controllers.statusCrt.text.trim(),
+        //   numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
+        //   expectedBillingValue:
+        //   controllers.exMonthBillingValCrt.text.trim(),
+        //   arpuValue: controllers.arpuCrt.text.trim(),
+        //
+        //   detailsOfServiceRequired:
+        //   controllers.sourceCrt.text.trim(),
+        //   rating: controllers.prospectGradingCrt.text.trim(),
+        //   owner: controllers.leadTitleCrt[0].text.trim(),
+        //
+        //   createdTs: DateTime.now().toString(),
+        //   updatedTs: DateTime.now().toString(),
+        // ));        // apiService.getCustomLeads();
+        // list2.add(NewLeadObj(
+        //   select: false,
+        //   firstname: controllers.leadNameCrt[0].text.trim(),
+        //   email: controllers.leadEmailCrt[0].text.trim(),
+        //   mobileNumber: controllers.numberList
+        //       .map((e) => e.text.trim())
+        //       .where((e) => e.isNotEmpty)
+        //       .join("||"),
+        //   whatsapp: controllers.leadWhatsCrt[0].text.trim(),
+        //   userId: controllers.storage.read("id").toString(),
+        //   companyName: controllers.leadCoNameCrt.text.trim(),
+        //   productDiscussion: controllers.prodDescriptionController.text.trim(),
+        //   source: controllers.leadDisPointsCrt.text.trim(),
+        //   notes: controllers.leadActions.text.trim(),
+        //
+        //   quotationStatus: "",
+        //   quotationRequired: "1",
+        //
+        //   doorNo: controllers.doorNumberController.text.trim(),
+        //   area: controllers.areaController.text.trim(),
+        //   city: controllers.cityController.text.trim(),
+        //   country: controllers.selectedCountry.value,
+        //   state: controllers.stateController.text.trim(),
+        //   pincode: controllers.pinCodeController.text.trim(),
+        //
+        //   companyWebsite: controllers.leadWebsite.text.trim(),
+        //   companyNumber: controllers.infoNumberList
+        //       .map((e) => e.text.trim())
+        //       .where((e) => e.isNotEmpty)
+        //       .join("||"),
+        //   companyEmail: controllers.leadCoEmailCrt.text.trim(),
+        //   linkedin: controllers.leadLinkedinCrt.text.trim(),
+        //   x: controllers.leadXCrt.text.trim(),
+        //
+        //   industry: controllers.industry.toString(),
+        //   product: controllers.leadProduct.text.trim(),
+        //   sourceDetails: controllers.leadProduct.text.trim(),
+        //
+        //   type: "1",
+        //   lat: "0.0",
+        //   lng: "0.0",
+        //
+        //   leadStatus: leadId.toString(),
+        //   status: controllers.status.toString(),
+        //   visitType: callListId.toString(),
+        //
+        //   prospectEnrollmentDate:
+        //   controllers.prospectDate.value.isEmpty
+        //       ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+        //       : controllers.prospectDate.value,
+        //
+        //   expectedConvertionDate:
+        //   controllers.exDate.value.isEmpty
+        //       ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+        //       : controllers.exDate.value,
+        //
+        //   statusUpdate: controllers.statusCrt.text.trim(),
+        //   numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
+        //   expectedBillingValue:
+        //   controllers.exMonthBillingValCrt.text.trim(),
+        //   arpuValue: controllers.arpuCrt.text.trim(),
+        //
+        //   detailsOfServiceRequired:
+        //   controllers.sourceCrt.text.trim(),
+        //   rating: controllers.prospectGradingCrt.text.trim(),
+        //   owner: controllers.leadTitleCrt[0].text.trim(),
+        //
+        //   createdTs: DateTime.now().toString(),
+        //   updatedTs: DateTime.now().toString(),
+        // ));        // apiService.getCustomLeads();
+        // print("After nav: ${list.last}");
+        // print("After nav: ${list.length}");
+        var res = jsonDecode(response.body);
 
-          doorNo: controllers.doorNumberController.text.trim(),
-          area: controllers.areaController.text.trim(),
-          city: controllers.cityController.text.trim(),
-          country: controllers.selectedCountry.value,
-          state: controllers.stateController.text.trim(),
-          pincode: controllers.pinCodeController.text.trim(),
+        int customerId = int.parse(res["cus_id"].toString());
+        int addressId = 0;
+        LeadStatusModel? data;
+        int index=0;
+        for(var i=0;i<controllers.leadCategoryList.length;i++){
+          if(controllers.leadCategoryList[i].leadStatus=="1"){
+            log("dataaaa: ${controllers.leadCategoryList[i]}");
+            log("dataaaa: ${controllers.leadCategoryList[i].list.length}");
+            log("dataaaa: ${controllers.leadCategoryList[i].list2.length}");
+            controllers.leadCategoryList[i].list.add(NewLeadObj(
+              select: false,
+              userId:customerId.toString(),
+              addressId: addressId.toString(),
+              firstname: controllers.leadNameCrt[0].text.trim(),
+              email: controllers.leadEmailCrt[0].text.trim(),
+              mobileNumber: controllers.numberList
+                  .map((e) => e.text.trim())
+                  .where((e) => e.isNotEmpty)
+                  .join("||"),
+              whatsapp: controllers.leadWhatsCrt[0].text.trim(),
+              // userId: controllers.storage.read("id").toString(),
+              companyName: controllers.leadCoNameCrt.text.trim(),
+              productDiscussion: controllers.prodDescriptionController.text.trim(),
+              source: controllers.leadDisPointsCrt.text.trim(),
+              notes: controllers.leadActions.text.trim(),
+              quotationStatus: "",
+              quotationRequired: "1",
 
-          companyWebsite: controllers.leadWebsite.text.trim(),
-          companyNumber: controllers.infoNumberList
-              .map((e) => e.text.trim())
-              .where((e) => e.isNotEmpty)
-              .join("||"),
-          companyEmail: controllers.leadCoEmailCrt.text.trim(),
-          linkedin: controllers.leadLinkedinCrt.text.trim(),
-          x: controllers.leadXCrt.text.trim(),
+              doorNo: controllers.doorNumberController.text.trim(),
+              area: controllers.areaController.text.trim(),
+              city: controllers.cityController.text.trim(),
+              country: controllers.selectedCountry.value,
+              state: controllers.stateController.text.trim(),
+              pincode: controllers.pinCodeController.text.trim(),
 
-          industry: controllers.industry.toString(),
-          product: controllers.leadProduct.text.trim(),
-          sourceDetails: controllers.leadProduct.text.trim(),
+              companyWebsite: controllers.leadWebsite.text.trim(),
+              companyNumber: controllers.infoNumberList
+                  .map((e) => e.text.trim())
+                  .where((e) => e.isNotEmpty)
+                  .join("||"),
+              companyEmail: controllers.leadCoEmailCrt.text.trim(),
+              linkedin: controllers.leadLinkedinCrt.text.trim(),
+              x: controllers.leadXCrt.text.trim(),
 
-          type: "1",
-          lat: "0.0",
-          lng: "0.0",
+              industry: controllers.industry.toString(),
+              product: controllers.leadProduct.text.trim(),
+              sourceDetails: controllers.leadProduct.text.trim(),
 
-          leadStatus: leadId.toString(),
-          status: controllers.status.toString(),
-          visitType: callListId.toString(),
+              type: "1",
+              lat: "0.0",
+              lng: "0.0",
 
-          prospectEnrollmentDate:
-          controllers.prospectDate.value.isEmpty
-              ? DateFormat("dd.MM.yyyy").format(DateTime.now())
-              : controllers.prospectDate.value,
+              leadStatus: leadId.toString(),
+              status: controllers.status.toString(),
+              visitType: callListId.toString(),
 
-          expectedConvertionDate:
-          controllers.exDate.value.isEmpty
-              ? DateFormat("dd.MM.yyyy").format(DateTime.now())
-              : controllers.exDate.value,
+              prospectEnrollmentDate:
+              controllers.prospectDate.value.isEmpty
+                  ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+                  : controllers.prospectDate.value,
 
-          statusUpdate: controllers.statusCrt.text.trim(),
-          numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
-          expectedBillingValue:
-          controllers.exMonthBillingValCrt.text.trim(),
-          arpuValue: controllers.arpuCrt.text.trim(),
+              expectedConvertionDate:
+              controllers.exDate.value.isEmpty
+                  ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+                  : controllers.exDate.value,
 
-          detailsOfServiceRequired:
-          controllers.sourceCrt.text.trim(),
-          rating: controllers.prospectGradingCrt.text.trim(),
-          owner: controllers.leadTitleCrt[0].text.trim(),
+              statusUpdate: controllers.statusCrt.text.trim(),
+              numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
+              expectedBillingValue:
+              controllers.exMonthBillingValCrt.text.trim(),
+              arpuValue: controllers.arpuCrt.text.trim(),
 
-          createdTs: DateTime.now().toString(),
-          updatedTs: DateTime.now().toString(),
-        ));        // apiService.getCustomLeads();
-        list2.add(NewLeadObj(
-          select: false,
-          firstname: controllers.leadNameCrt[0].text.trim(),
-          email: controllers.leadEmailCrt[0].text.trim(),
-          mobileNumber: controllers.numberList
-              .map((e) => e.text.trim())
-              .where((e) => e.isNotEmpty)
-              .join("||"),
-          whatsapp: controllers.leadWhatsCrt[0].text.trim(),
-          userId: controllers.storage.read("id").toString(),
-          companyName: controllers.leadCoNameCrt.text.trim(),
-          productDiscussion: controllers.prodDescriptionController.text.trim(),
-          source: controllers.leadDisPointsCrt.text.trim(),
-          notes: controllers.leadActions.text.trim(),
+              detailsOfServiceRequired:
+              controllers.sourceCrt.text.trim(),
+              rating: controllers.prospectGradingCrt.text.trim(),
+              owner: controllers.leadTitleCrt[0].text.trim(),
 
-          quotationStatus: "",
-          quotationRequired: "1",
+              createdTs: DateTime.now().toString(),
+              updatedTs: DateTime.now().toString(),
+            ));
+            controllers.leadCategoryList[i].list2.add(NewLeadObj(
+              select: false,
+              userId:customerId.toString(),
+              addressId: addressId.toString(),
+              firstname: controllers.leadNameCrt[0].text.trim(),
+              email: controllers.leadEmailCrt[0].text.trim(),
+              mobileNumber: controllers.numberList
+                  .map((e) => e.text.trim())
+                  .where((e) => e.isNotEmpty)
+                  .join("||"),
+              whatsapp: controllers.leadWhatsCrt[0].text.trim(),
+              // userId: controllers.storage.read("id").toString(),
+              companyName: controllers.leadCoNameCrt.text.trim(),
+              productDiscussion: controllers.prodDescriptionController.text.trim(),
+              source: controllers.leadDisPointsCrt.text.trim(),
+              notes: controllers.leadActions.text.trim(),
+              quotationStatus: "",
+              quotationRequired: "1",
 
-          doorNo: controllers.doorNumberController.text.trim(),
-          area: controllers.areaController.text.trim(),
-          city: controllers.cityController.text.trim(),
-          country: controllers.selectedCountry.value,
-          state: controllers.stateController.text.trim(),
-          pincode: controllers.pinCodeController.text.trim(),
+              doorNo: controllers.doorNumberController.text.trim(),
+              area: controllers.areaController.text.trim(),
+              city: controllers.cityController.text.trim(),
+              country: controllers.selectedCountry.value,
+              state: controllers.stateController.text.trim(),
+              pincode: controllers.pinCodeController.text.trim(),
 
-          companyWebsite: controllers.leadWebsite.text.trim(),
-          companyNumber: controllers.infoNumberList
-              .map((e) => e.text.trim())
-              .where((e) => e.isNotEmpty)
-              .join("||"),
-          companyEmail: controllers.leadCoEmailCrt.text.trim(),
-          linkedin: controllers.leadLinkedinCrt.text.trim(),
-          x: controllers.leadXCrt.text.trim(),
+              companyWebsite: controllers.leadWebsite.text.trim(),
+              companyNumber: controllers.infoNumberList
+                  .map((e) => e.text.trim())
+                  .where((e) => e.isNotEmpty)
+                  .join("||"),
+              companyEmail: controllers.leadCoEmailCrt.text.trim(),
+              linkedin: controllers.leadLinkedinCrt.text.trim(),
+              x: controllers.leadXCrt.text.trim(),
 
-          industry: controllers.industry.toString(),
-          product: controllers.leadProduct.text.trim(),
-          sourceDetails: controllers.leadProduct.text.trim(),
+              industry: controllers.industry.toString(),
+              product: controllers.leadProduct.text.trim(),
+              sourceDetails: controllers.leadProduct.text.trim(),
 
-          type: "1",
-          lat: "0.0",
-          lng: "0.0",
+              type: "1",
+              lat: "0.0",
+              lng: "0.0",
 
-          leadStatus: leadId.toString(),
-          status: controllers.status.toString(),
-          visitType: callListId.toString(),
+              leadStatus: leadId.toString(),
+              status: controllers.status.toString(),
+              visitType: callListId.toString(),
 
-          prospectEnrollmentDate:
-          controllers.prospectDate.value.isEmpty
-              ? DateFormat("dd.MM.yyyy").format(DateTime.now())
-              : controllers.prospectDate.value,
+              prospectEnrollmentDate:
+              controllers.prospectDate.value.isEmpty
+                  ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+                  : controllers.prospectDate.value,
 
-          expectedConvertionDate:
-          controllers.exDate.value.isEmpty
-              ? DateFormat("dd.MM.yyyy").format(DateTime.now())
-              : controllers.exDate.value,
+              expectedConvertionDate:
+              controllers.exDate.value.isEmpty
+                  ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+                  : controllers.exDate.value,
 
-          statusUpdate: controllers.statusCrt.text.trim(),
-          numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
-          expectedBillingValue:
-          controllers.exMonthBillingValCrt.text.trim(),
-          arpuValue: controllers.arpuCrt.text.trim(),
+              statusUpdate: controllers.statusCrt.text.trim(),
+              numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
+              expectedBillingValue:
+              controllers.exMonthBillingValCrt.text.trim(),
+              arpuValue: controllers.arpuCrt.text.trim(),
 
-          detailsOfServiceRequired:
-          controllers.sourceCrt.text.trim(),
-          rating: controllers.prospectGradingCrt.text.trim(),
-          owner: controllers.leadTitleCrt[0].text.trim(),
+              detailsOfServiceRequired:
+              controllers.sourceCrt.text.trim(),
+              rating: controllers.prospectGradingCrt.text.trim(),
+              owner: controllers.leadTitleCrt[0].text.trim(),
 
-          createdTs: DateTime.now().toString(),
-          updatedTs: DateTime.now().toString(),
-        ));        // apiService.getCustomLeads();
-        print("After nav: ${list.last}");
-        print("After nav: ${list.length}");
+              createdTs: DateTime.now().toString(),
+              updatedTs: DateTime.now().toString(),
+            ));
+            index=i;
+            controllers.leadCategoryList.refresh();
+            data=controllers.leadCategoryList[i];
+            break;
+          }
+        }
+        log("dataaaa: ${data}");
+        log("dataaaa: ${data!.list.length}");
+        log("dataaaa: ${data.list2.length}");
+        controllers.selectedIndex.value=int.parse(data.leadStatus.toString());
         controllers.selectedQualifiedSortBy.value="All";
         controllers.selectRadio(list);
         dashController.getDashboardReport();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,
-              name: controllers.leadCategoryList[0].value,list: list,list2: list2,)),
-        );
+        controllers.leadCategoryList.refresh();
+        Get.to(NewLeadPage(index: data.leadStatus ,
+          name: data.value,list: data.list,list2: data.list2, listIndex: index,));
       } else if (body.contains("Phone number")) {
         errorDialog(context, "Phone number already exists");
       } else {
@@ -1978,7 +2161,7 @@ class ApiService {
   // }
   Future insertPromoteListAPI(BuildContext context,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
-      print("insertQualifiedAPI");
+      print("#####");
       Map<String, dynamic> data ={
         "id":controllers.idList,
         "lead_status": status,
@@ -2004,8 +2187,65 @@ class ApiService {
           controllers.setLogOut();
         }
       }
+      // if (request.statusCode == 200 && response["message"] == "OK") {
+      //   controllers.selectedIndex.value = int.parse(status);
+      //   RxList<NewLeadObj> tempList=<NewLeadObj>[].obs;
+      //   print("status: ${status}");
+      //   print("Selected Index: ${controllers.selectedIndex.value}");
+      //
+      //   for (var i = 0; i < controllers.idList.length; i++) {
+      //     print("Checking idList[$i]: ${controllers.idList[i]}");
+      //
+      //     for (var j = 0; j < list.length; j++) {
+      //       print("Comparing list[$j].userId: ${list[j].userId}");
+      //
+      //       if (list[j].userId == controllers.idList[i]) {
+      //         print("MATCH FOUND -> userId: ${list[j].userId}");
+      //
+      //         list[j].leadStatus = status;
+      //
+      //         tempList.add(list[j]);
+      //
+      //         print("Removing from main list index: $j");
+      //
+      //         list.removeAt(j);
+      //         list2.removeAt(j);
+      //
+      //       }
+      //     }
+      //   }
+      //
+      //   log("list2: ${list}");
+      //   log("list2: ${list2}");
+      //   log("controllers.leadCategoryList[int.parse(status)].list: ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
+      //   log("controllers.leadCategoryList[int.parse(status)].list2: ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
+      //
+      //
+      //   print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].leadStatus}");
+      //   print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].value}");
+      //   print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
+      //   print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
+      //   controllers.idList.clear();
+      //   // dashController.getDashboardReport();
+      //   // controllers.selectedIndex.value = int.parse(status);
+      //   // Navigator.pop(context); // dialog close only
+      //
+      //   Future.delayed(Duration(milliseconds: 10), () {
+      //     Get.to(
+      //           () => NewLeadPage(
+      //         key: UniqueKey(),
+      //         index: controllers.leadCategoryList[controllers.selectedIndex.value].leadStatus,
+      //         name: controllers.leadCategoryList[controllers.selectedIndex.value].value,
+      //         list: controllers.leadCategoryList[controllers.selectedIndex.value].list,
+      //         list2: controllers.leadCategoryList[controllers.selectedIndex.value].list2, listIndex: int.parse(status),
+      //       ),
+      //     );
+      //   });
+      //   controllers.productCtr.reset();
+      // }
       if (request.statusCode == 200 && response["message"] == "OK") {
         controllers.selectedIndex.value = int.parse(status);
+        RxList<NewLeadObj> tempList=<NewLeadObj>[].obs;
         print("status: ${status}");
         print("Selected Index: ${controllers.selectedIndex.value}");
 
@@ -2020,8 +2260,7 @@ class ApiService {
 
               list[j].leadStatus = status;
 
-              controllers.leadCategoryList[int.parse(status)].list.add(list[j]);
-              controllers.leadCategoryList[int.parse(status)].list2.add(list[j]);
+              tempList.add(list[j]);
 
               print("Removing from main list index: $j");
 
@@ -2031,35 +2270,42 @@ class ApiService {
             }
           }
         }
-
-        log("list2: ${list}");
-        log("list2: ${list2}");
-        log("controllers.leadCategoryList[int.parse(status)].list: ${controllers.leadCategoryList[int.parse(status)].list}");
-        log("controllers.leadCategoryList[int.parse(status)].list2: ${controllers.leadCategoryList[int.parse(status)].list2}");
-
-
-        print("Category List : ${controllers.leadCategoryList[int.parse(status)].leadStatus}");
-        print("Category List : ${controllers.leadCategoryList[int.parse(status)].value}");
-        print("Category List : ${controllers.leadCategoryList[int.parse(status)].list}");
-        print("Category List : ${controllers.leadCategoryList[int.parse(status)].list2}");
+        LeadStatusModel? data;
+        for(var i=0;i<controllers.leadCategoryList.length;i++){
+          if(controllers.leadCategoryList[i].leadStatus==status){
+            controllers.leadCategoryList[i].list.addAll(tempList);
+            controllers.leadCategoryList[i].list2.addAll(tempList);
+            data=controllers.leadCategoryList[i];
+            break;
+          }
+        }
+        // log("controllers.leadCategoryList[int.parse(status)].list: ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
+        // log("controllers.leadCategoryList[int.parse(status)].list2: ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
+        //
+        //
+        // print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].leadStatus}");
+        // print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].value}");
+        // print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
+        // print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
         controllers.idList.clear();
         // dashController.getDashboardReport();
-        controllers.selectedIndex.value = int.parse(status);
+        // controllers.selectedIndex.value = int.parse(status);
         // Navigator.pop(context); // dialog close only
 
         Future.delayed(Duration(milliseconds: 10), () {
           Get.to(
                 () => NewLeadPage(
               key: UniqueKey(),
-              index: controllers.leadCategoryList[int.parse(status)].leadStatus,
-              name: controllers.leadCategoryList[int.parse(status)].value,
-              list: controllers.leadCategoryList[int.parse(status)].list,
-              list2: controllers.leadCategoryList[int.parse(status)].list2,
+              index: data!.leadStatus,
+              name: data.value,
+              list: data.list,
+              list2: data.list2, listIndex: int.parse(status),
             ),
           );
         });
         controllers.productCtr.reset();
-      } else {
+      }
+      else {
         errorDialog(Get.context!, request.body);
         controllers.productCtr.reset();
       }

@@ -151,7 +151,7 @@ class FilterSection extends StatelessWidget {
                                 index: controllers.leadCategoryList[i].leadStatus,
                                 name: controllers.leadCategoryList[i].value,
                                 list: controllers.leadCategoryList[i].list,
-                                list2: controllers.leadCategoryList[i].list2,
+                                list2: controllers.leadCategoryList[i].list2, listIndex: i,
                               ),
                             );
                             break;
@@ -170,10 +170,10 @@ class FilterSection extends StatelessWidget {
             ),
 
             // --- Action Buttons ---
-            if(itemList.isNotEmpty)
               Row(
               children: [
-                  CustomText(text: "Selected count: ${itemList.length}", isCopy: false),15.width,
+                if(itemList.isNotEmpty)
+                CustomText(text: "Selected count: ${itemList.length}", isCopy: false),15.width,
                 // itemList.isEmpty
                 //     ? 0.height
                 //     : title == "No Matches" || title == "Target Leads"
@@ -186,6 +186,7 @@ class FilterSection extends StatelessWidget {
                 //   // callback: onQualify!,
                 // )
                 //     :
+                if(itemList.isNotEmpty)
                 Row(
                   children: [
                     ActionButton(
@@ -220,6 +221,7 @@ class FilterSection extends StatelessWidget {
                     //   callback: onDisqualify!,
                     // )
                     //     :
+                    if(leadIndex!="1")
                     ActionButton(
                       width: 100,
                       image:

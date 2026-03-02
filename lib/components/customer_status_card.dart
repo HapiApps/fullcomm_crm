@@ -7,10 +7,13 @@ import 'Customtext.dart';
 const Color colorA = Color(0xff6366F1);
 const Color colorB = Color(0xff3B82F6);
 
+
+const Color lightPurple = Color(0xffDED3FD);
+const Color lightBlue   = Color(0xffD3E3FD);
 class CustomerStatusItem {
   final String label;
   final int value;
-  final double percentage; // 0.0 - 1.0
+  final double percentage;
 
   CustomerStatusItem({
     required this.label,
@@ -76,15 +79,14 @@ class CustomerStatusCard extends StatelessWidget {
                 final index = entry.key;
                 final item = entry.value;
 
-                /// Alternate color logic
-                final dynamicColor =
-                index.isEven ? colorA : colorB;
+                final bool isPurple = index % 2 == 0;
 
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: _StatusRow(
                     item: item,
-                    color: dynamicColor,
+                    fillColor: isPurple ? colorA : colorB,
+                    bgColor: isPurple ? lightPurple : lightBlue,
                   ),
                 );
               }).toList(),
@@ -95,63 +97,72 @@ class CustomerStatusCard extends StatelessWidget {
     );
   }
 }
-
 class _StatusRow extends StatelessWidget {
   final CustomerStatusItem item;
-  final Color color;
+  final Color fillColor;
+  final Color bgColor;
 
   const _StatusRow({
     required this.item,
-    required this.color,
+    required this.fillColor,
+    required this.bgColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+
+        /// Label
         SizedBox(
-          width: 95,
-          child:  CustomText(
+          width: 110,
+          child: CustomText(
             text: item.label,
             isCopy: false,
-            size: 12,
+            size: 13,
             isBold: true,
-            colors: Color(0xff888888),
+            colors: const Color(0xff8A8A8A),
           ),
-
         ),
-       5.width,
+
+        10.width,
+
+        /// Bar Section
         Expanded(
           child: Stack(
             alignment: Alignment.centerLeft,
             children: [
-              /// Background grid lines
-              Row(
-                children: List.generate(
-                  5,
-                      (_) => Expanded(
-                    child: Container(
-                      height: 20,
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          left: BorderSide(
-                            color: Color(0xffE5E7EB),
-                            width: 1,
-                          ),
-                        ),
-                      ),
-                    ),
+              /// FULL LIGHT BACKGROUND
+              Container(
+                height: 15,
+                decoration: BoxDecoration(
+                  color: bgColor,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(0),
+                    bottomLeft: Radius.circular(0),
+                    topRight: Radius.circular(5),
+                    bottomRight: Radius.circular(5),
                   ),
                 ),
               ),
+              /// Dotted Grid
+              // Positioned.fill(
+              //   child: CustomPaint(
+              //     painter: _DottedVerticalPainter(),
+              //   ),
+              // ),
 
-              /// Animated hover bar
-              _HoverBar(
-                label: item.label,
-                value: item.value,
-                percentage: item.percentage,
-                color: color,
+              /// DARK FILL
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return _HoverBar(
+                    label: item.label,
+                    value: item.value,
+                    percentage: item.percentage,
+                    color: fillColor,
+                    maxWidth: constraints.maxWidth,
+                  );
+                },
               ),
             ],
           ),
@@ -160,18 +171,47 @@ class _StatusRow extends StatelessWidget {
     );
   }
 }
+class _DottedVerticalPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xffD1D5DB)
+      ..strokeWidth = 1;
 
+    const int divisions = 4;
+    final spacing = size.width / divisions;
+
+    for (int i = 1; i < divisions; i++) {
+      final x = spacing * i;
+
+      double y = 0;
+      while (y < size.height) {
+        canvas.drawLine(
+          Offset(x, y),
+          Offset(x, y + 3),
+          paint,
+        );
+        y += 6;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
 class _HoverBar extends StatefulWidget {
   final String label;
   final int value;
   final double percentage;
   final Color color;
+  final double maxWidth;
 
   const _HoverBar({
     required this.label,
     required this.value,
     required this.percentage,
     required this.color,
+    required this.maxWidth,
   });
 
   @override
@@ -246,12 +286,16 @@ class _HoverBarState extends State<_HoverBar> {
           return AnimatedContainer(
             duration: const Duration(milliseconds: 400),
             curve: Curves.easeInOut,
-            width:
-            constraints.maxWidth * widget.percentage,
-            height: 14,
+            width: widget.maxWidth * widget.percentage,
+            height: 15,
             decoration: BoxDecoration(
               color: widget.color,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(0),
+                bottomLeft: Radius.circular(0),
+                topRight: Radius.circular(5),
+                bottomRight: Radius.circular(5),
+              ),
             ),
           );
         },

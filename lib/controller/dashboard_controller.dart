@@ -51,7 +51,8 @@ class DashboardController extends GetxController {
   var selectedSortBy = 'Today'.obs;
   var selectedRange = Rxn<DateTimeRange>(); // null-safe observable
   var isDateRangeSet = false.obs;
-
+var date1="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}".obs;
+var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}".obs;
   void setDateRange(PickerDateRange range) {
     if (range.startDate != null && range.endDate != null) {
       selectedRange.value = DateTimeRange(
@@ -355,11 +356,13 @@ class DashboardController extends GetxController {
         "role": controllers.storage.read("role"),
         "id": controllers.storage.read("id"),
         "action": "get_data",
-        "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
-        "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
+        // "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+        // "enDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+        "stDate": dashController.date1.value,
+        "enDate": dashController.date2.value,
       };
 
-      log("Dashboard report 1:  ${data.toString()}");
+      log("Dashboard report 1:    ${data.toString()}");
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {

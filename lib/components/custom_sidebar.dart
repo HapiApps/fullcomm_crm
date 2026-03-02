@@ -130,14 +130,11 @@ class SideBar extends StatelessWidget {
                       // controllers.isLead.value = true;
                       //
                       // print("New Lead List Length: ${controllers.newLeadList.length}");
-                      log("controllers.leadCategoryList--------------${controllers.leadCategoryList}");
-                      log("controllers.leadCategoryList2--------------${controllers.leadCategoryList[index].list2}");
-                      log("controllers.leadCategoryListleadStatus--------------${controllers.leadCategoryList[index].leadStatus}");
-                      log("controllers.leadCategoryListvalue--------------${controllers.leadCategoryList[index].value}");
+
                     },
                     page:  NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
                       name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
-                      list2: controllers.leadCategoryList[index].list2,),
+                      list2: controllers.leadCategoryList[index].list2, listIndex: index,),
                   );
                 }),
 

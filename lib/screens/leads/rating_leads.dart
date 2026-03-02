@@ -210,7 +210,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                               });
                         },
                         onMail: () {
-                          mailUtils.bulkEmailDialog(_focusNode, list: apiService.prospectsList);
+                          // mailUtils.bulkEmailDialog(_focusNode, list: apiService.prospectsList);
                         },
                         onPromote: () {
                           showDialog(
