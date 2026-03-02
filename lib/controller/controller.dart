@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:intl/intl.dart';
@@ -29,6 +30,7 @@ import 'package:http/http.dart'as http;
 
 import '../screens/leads/new_lead_page.dart';
 import '../services/api_services.dart';
+import 'dashboard_controller.dart';
 final controllers = Get.put(Controller());
 
 class Controller extends GetxController with GetSingleTickerProviderStateMixin {
@@ -1875,11 +1877,11 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
     end = end > filteredLeads.length ? filteredLeads.length : end;
 
     list.value=filteredLeads.sublist(start, end);
-    list.sort((a, b) {
-      DateTime dateA = DateTime.tryParse(a.createdTs ?? '') ?? DateTime(1970);
-      DateTime dateB = DateTime.tryParse(b.createdTs ?? '') ?? DateTime(1970);
-      return dateB.compareTo(dateA);
-    });
+    // list.sort((a, b) {
+    //   DateTime dateA = DateTime.tryParse(a.createdTs ?? '') ?? DateTime(1970);
+    //   DateTime dateB = DateTime.tryParse(b.createdTs ?? '') ?? DateTime(1970);
+    //   return dateB.compareTo(dateA);
+    // });
     isLead.value=true;
   }
 
@@ -3221,9 +3223,9 @@ var otp = "".obs;
         "cos_id": controllers.storage.read("cos_id").toString(),
 
         "company_name": coNameP,
-        "product_discussion": controllers.prodDescriptionController.text.trim(),
-        "source": controllers.leadDisPointsCrt.text.trim(),
-        "points": controllers.leadActions.text.trim(),
+        "product_discussion": "",
+        "source": "",
+        "points": "",
         "quotation_status": "",
 
         "door_no": "",
@@ -3283,24 +3285,165 @@ var otp = "".obs;
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          // return insertSingleCustomer(context);
+          return insertSingleCustomer(context,contactType,nameP,phoneP,emailP,doorNumP,streetP,areaP,cityP,stateP,countryP,pincodeP,coNameP,designationP, web,jobTitleP);
         } else {
           controllers.setLogOut();
         }
       }
-      if (response.statusCode == 200 &&
-          body.contains("Customer saved successfully")) {
+      print(response.body);
+      if (response.statusCode == 200 &&body.contains("Customer saved successfully")) {
+        var res = jsonDecode(response.body);
+
+        int customerId = int.parse(res["cus_id"].toString());
+        int addressId = 0;
+        LeadStatusModel? data;
+        int index=0;
+        for(var i=0;i<controllers.leadCategoryList.length;i++){
+          if(controllers.leadCategoryList[i].leadStatus=="1"){
+            log("dataaaa: ${controllers.leadCategoryList[i]}");
+            log("dataaaa: ${controllers.leadCategoryList[i].list.length}");
+            log("dataaaa: ${controllers.leadCategoryList[i].list2.length}");
+            controllers.leadCategoryList[i].list.add(NewLeadObj(
+              select: false,
+              userId:customerId.toString(),
+              addressId: addressId.toString(),
+              firstname: nameP,
+              email: emailP,
+              mobileNumber: phoneP,
+              whatsapp: "",
+              companyName: coNameP,
+              productDiscussion: "",
+              source: "",
+              notes: "",
+              quotationStatus: "",
+              quotationRequired: "1",
+
+              doorNo: "",
+              area: "",
+              city: "",
+              country: "India",
+              state: "Tamil Nadu",
+              pincode: "",
+
+              companyWebsite: web,
+              companyNumber: "",
+              companyEmail: "",
+              linkedin: "",
+              x: "",
+
+              industry: "",
+              product: "",
+              sourceDetails:"",
+
+              type: "1",
+              lat: "0.0",
+              lng: "0.0",
+
+              leadStatus: "1",
+              status: "",
+              visitType: "",
+
+              prospectEnrollmentDate:DateFormat("dd.MM.yyyy").format(DateTime.now()),
+
+              expectedConvertionDate:DateFormat("dd.MM.yyyy").format(DateTime.now()),
+
+              statusUpdate: "",
+              numOfHeadcount: "",
+              expectedBillingValue:"",
+              arpuValue: "",
+
+              detailsOfServiceRequired:"",
+              rating: "",
+              owner: "",
+              createdTs: DateTime.now().toString(),
+              updatedTs: DateTime.now().toString(),
+            ));
+            controllers.leadCategoryList[i].list2.add(NewLeadObj(
+              select: false,
+              userId:customerId.toString(),
+              addressId: addressId.toString(),
+              firstname: nameP,
+              email: emailP,
+              mobileNumber: phoneP,
+              whatsapp: "",
+              companyName: coNameP,
+              productDiscussion: "",
+              source: "",
+              notes: "",
+              quotationStatus: "",
+              quotationRequired: "1",
+
+              doorNo: "",
+              area: "",
+              city: "",
+              country: "India",
+              state: "Tamil Nadu",
+              pincode: "",
+
+              companyWebsite: web,
+              companyNumber: "",
+              companyEmail: "",
+              linkedin: "",
+              x: "",
+
+              industry: "",
+              product: "",
+              sourceDetails:"",
+
+              type: "1",
+              lat: "0.0",
+              lng: "0.0",
+
+              leadStatus: "1",
+              status: "",
+              visitType: "",
+
+              prospectEnrollmentDate:DateFormat("dd.MM.yyyy").format(DateTime.now()),
+
+              expectedConvertionDate:DateFormat("dd.MM.yyyy").format(DateTime.now()),
+
+              statusUpdate: "",
+              numOfHeadcount: "",
+              expectedBillingValue:"",
+              arpuValue: "",
+
+              detailsOfServiceRequired:"",
+              rating: "",
+              owner: "",
+              createdTs: DateTime.now().toString(),
+              updatedTs: DateTime.now().toString(),
+            ));
+            index=i;
+            controllers.leadCategoryList.refresh();
+            data=controllers.leadCategoryList[i];
+            break;
+          }
+        }
+        log("dataaaa: ${data}");
+        log("dataaaa: ${data!.list.length}");
+        log("dataaaa: ${data.list2.length}");
+        controllers.selectedIndex.value=int.parse(data.leadStatus.toString());
+        controllers.selectedQualifiedSortBy.value="All";
+        dashController.getDashboardReport();
+        controllers.leadCategoryList.refresh();
+        controllers.btnController.reset();
+        Get.to(NewLeadPage(index: data.leadStatus ,
+          name: data.value,list: data.list,list2: data.list2, listIndex: index,));
         // apiService.getCustomLeads();
         // Navigator.pushReplacement(
         //   context,
           // MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,name: controllers.leadCategoryList[0].value)),
         // );
-      } else if (body.contains("Phone number")) {
+      }
+      else if (body.contains("Phone number")) {
+        controllers.btnController.reset();
         apiService.errorDialog(context, "Phone number already exists");
       } else {
+        controllers.btnController.reset();
         apiService.errorDialog(context, body);
       }
     } catch (e) {
+      controllers.btnController.reset();
       apiService.errorDialog(context, e.toString());
     }
   }

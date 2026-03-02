@@ -7,6 +7,7 @@ import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 
+import '../../common/constant/key_constant.dart';
 import '../../common/utilities/ocr_web_helper.dart';
 import '../../components/custom_sidebar.dart';
 
@@ -79,6 +80,7 @@ class _VisitingCardPageState extends State<VisitingCardPage> {
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
         controller: controller,
+        inputFormatters: controller==phoneController?constInputFormatters.mobileNumberInput:[],
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(
@@ -151,6 +153,35 @@ class _VisitingCardPageState extends State<VisitingCardPage> {
                     SizedBox(height: 20),
 
                     CustomLoadingButton(callback: (){
+                      String name = nameController.text.trim();
+                      String phone = phoneController.text.trim();
+                      String email = emailController.text.trim();
+
+                      if (name.isEmpty) {
+                        Get.snackbar("Error", "Name is required");
+                        controllers.btnController.reset();
+                        return;
+                      }
+
+                      if (phone.isEmpty) {
+                        Get.snackbar("Error", "Mobile number is required");
+                        controllers.btnController.reset();
+                        return;
+                      }
+
+                      if (!RegExp(r'^[0-9]{10}$').hasMatch(phone)) {
+                        Get.snackbar("Error", "Mobile number must be 10 digits");
+                        controllers.btnController.reset();
+                        return;
+                      }
+
+                      if (email.isNotEmpty &&
+                          !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+                        Get.snackbar("Error", "Enter valid email");
+                        controllers.btnController.reset();
+                        return;
+                      }
+
                       controllers.insertSingleCustomer(context,"",nameController.text,phoneController.text,
                           emailController.text,"","",
                           "","","","India","",companyController.text,locationController.text,websiteController.text,jobController.text);

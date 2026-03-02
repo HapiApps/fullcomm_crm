@@ -643,7 +643,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                     String number = controllers.numberList[i].text.trim();
 
                                                                     // Empty or not 10 digits
-                                                                    if (number.isEmpty&&number.length != 10) {
+                                                                    if (number.isEmpty||number.length != 10) {
                                                                       isMistake = true;
                                                                       utils.snackBar(
                                                                         context: context,
@@ -962,7 +962,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                     String number = controllers.infoNumberList[i].text.trim();
 
                                                                     // Empty or not 10 digits
-                                                                    if (number.isEmpty&&number.length != 10) {
+                                                                    if (number.isEmpty || number.length != 10) {
                                                                       isMistake = true;
                                                                       utils.snackBar(
                                                                         context: context,
@@ -1693,7 +1693,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       Set<String> uniqueNumbers2 = {};
                                       for (var i = 0; i < controllers.numberList.length; i++) {
                                         String number = controllers.numberList[i].text.trim();
-                                        if (number.isEmpty&&number.length != 10) {
+                                        if (number.isNotEmpty&&number.length != 10) {
                                           isMistake = true;
                                           utils.snackBar(
                                             context: context,
@@ -1725,7 +1725,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       }
                                       for (var i = 0; i < controllers.infoNumberList.length; i++) {
                                         String number = controllers.infoNumberList[i].text.trim();
-                                        if (number.isEmpty&&number.length != 10) {
+                                        if (number.isNotEmpty&&number.length != 10) {
                                           isMistake2 = true;
                                           utils.snackBar(
                                             context: context,
@@ -1814,14 +1814,14 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             controllers.leadCtr.reset();
                                           }
                                         }else{
-                                          if(controllers.pinCodeController.text.isEmpty){
+                                          if(controllers.pinCodeController.text.isEmpty||controllers.pinCodeController.text=="0"){
                                             apiService.updateLeadAPI(context,widget.index,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                           }else{
                                             if(controllers.pinCodeController.text.length==6){
                                               apiService.updateLeadAPI(context,widget.index,widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                             }else{
                                               utils.snackBar(msg: "Please add 6 digits pin code",
-                                                  color: colorsConst.primary,context:context);
+                                                  color: Colors.red,context:context);
                                               controllers.leadCtr.reset();
                                             }
                                           }

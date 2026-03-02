@@ -1423,24 +1423,22 @@ class ApiService {
         print("Before remove list length: ${list.length}");
         print("Before remove list2 length: ${list2.length}");
         print("Before remove allLeadList length: ${controllers.allLeadList.length}");
-
-        list.removeWhere((item) {
-          bool condition = item.userId != null && sendList.contains(item.userId);
-          if (condition) {
-            print("Removing from list userId: ${item.userId}");
+        for(var i=0;i<sendList.length;i++){
+          for(var j=0;j<list.length;j++){
+            if(list[j].userId==sendList[i]["lead_id"]){
+              list.removeAt(j);
+            }
           }
-          return condition;
-        });
-
+        }
         list2 = list;
 
-        controllers.allLeadList.removeWhere((item) {
-          bool condition = item.userId != null && sendList.contains(item.userId);
-          if (condition) {
-            print("Removing from allLeadList userId: ${item.userId}");
+        for(var i=0;i<sendList.length;i++){
+          for(var j=0;j<controllers.allLeadList.length;j++){
+            if(controllers.allLeadList[j].userId==sendList[i]["lead_id"]){
+              controllers.allLeadList.removeAt(j);
+            }
           }
-          return condition;
-        });
+        }
 
         print("After remove list length: ${list.length}");
         print("After remove list2 length: ${list2.length}");

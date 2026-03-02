@@ -29,6 +29,7 @@ import '../components/pie_stat_card.dart';
 import '../components/wave_stat_card.dart';
 import '../controller/controller.dart';
 import '../controller/reminder_controller.dart';
+import '../controller/table_controller.dart';
 import '../provider/dashboard_provider.dart';
 import '../provider/employee_provider.dart';
 import '../services/api_services.dart';
@@ -56,6 +57,9 @@ class _DashboardPageState extends State<DashboardPage>
     dashController.getToken();
     apiService.getLeadCategories();
     apiService.getCustomLeads();
+    if(tableController.headingFields.isEmpty){
+      apiService.getUserHeading();
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
