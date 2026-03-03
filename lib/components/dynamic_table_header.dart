@@ -8,6 +8,7 @@ import '../common/constant/colors_constant.dart';
 import '../controller/controller.dart';
 import '../controller/table_controller.dart';
 import '../models/user_heading_obj.dart';
+import '../services/api_services.dart';
 
 class DynamicTableHeader extends StatefulWidget {
   final VoidCallback onSortDate;
@@ -28,7 +29,16 @@ void save()async{
   print("saved");
   tableController.setHeadingFields(tableController.tableHeadings);
 }
+
 class _DynamicTableHeaderState extends State<DynamicTableHeader> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    if(tableController.tableHeadings.isEmpty){
+      apiService.getUserHeading();
+    }
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Obx(() {

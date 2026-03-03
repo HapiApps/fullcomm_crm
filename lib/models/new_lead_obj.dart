@@ -58,6 +58,8 @@ class NewLeadObj {
   final String? industry;
   final String? product;
   final String? x;
+  final String? designation;
+  final String? department;
   bool? select;
 
   NewLeadObj(
@@ -65,6 +67,8 @@ class NewLeadObj {
         this.companyNumber, this.companyWebsite, this.companyEmail, this.linkedin,
         this.addressId,this.select=false,
         this.firstname,
+        this.department,
+        this.designation,
       this.lineId,
       this.mobileNumber,
       this.emergencyName,
@@ -118,6 +122,8 @@ class NewLeadObj {
   factory NewLeadObj.fromJson(Map<String, dynamic> json) {
     return NewLeadObj(
       select: false,
+      designation: json["designation"]?.toString() ?? '',
+      department: json["department"]?.toString() ?? '',
       userId: json["user_id"]?.toString() ?? '',
       addressId: json["address_id"]?.toString() ?? '',
       firstname: json["firstname"]?.toString() ?? '',

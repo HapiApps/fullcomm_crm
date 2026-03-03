@@ -125,40 +125,72 @@ class FilterSection extends StatelessWidget {
                       );
                     },
                     textEditingController: controllers.cusController,
+                    // onSelected: (value) {
+                    //  controllers.search.text=value.name.toString();
+                    //   print("value.leadStatus ${value.leadStatus}");
+                    //   print("leadIndex ${leadIndex}");
+                    //   if(value.leadStatus==leadIndex){
+                    //     print("one");
+                    //   }else{
+                    //     print("two");
+                    //     for(var i=0;i<controllers.leadCategoryList.length;i++){
+                    //       if(controllers.leadCategoryList[i].leadStatus==value.leadStatus){
+                    //         controllers.selectedIndex.value=int.parse(value.leadStatus);
+                    //         // controllers.search=value;
+                    //         Get.off(
+                    //           NewLeadPage(
+                    //             index: controllers.leadCategoryList[i].leadStatus,
+                    //             name: controllers.leadCategoryList[i].value,
+                    //             list: controllers.leadCategoryList[i].list,
+                    //             list2: controllers.leadCategoryList[i].list2, listIndex: i,
+                    //           ),
+                    //         );
+                    //         break;
+                    //       }
+                    //     }
+                    //   }
+                    //   // controllers.selectCustomer(value);
+                    // },
                     onSelected: (value) {
-                      // selectedMonth.value = null;
-                      // selectedSortBy.value = "";
-                      // if(value.phoneNo.toString().isNotEmpty){
-                      // }
-                      // print(value.leadStatus);
-                      // if(value.leadStatus=="1"){
-                        controllers.search.text=value.name.toString();
-                        // onSearchChanged!(value.name.toString());
-                        //   Get.to(Suspects());
-                      // }
-                      print("value.leadStatus ${value.leadStatus}");
-                      print("leadIndex ${leadIndex}");
-                      if(value.leadStatus==leadIndex){
-                        print("one");
-                      }else{
-                        print("two");
-                        for(var i=0;i<controllers.leadCategoryList.length;i++){
-                          if(controllers.leadCategoryList[i].leadStatus==value.leadStatus){
-                            controllers.selectedIndex.value=int.parse(value.leadStatus);
-                            // controllers.search=value;
-                            Get.off(
-                              NewLeadPage(
-                                index: controllers.leadCategoryList[i].leadStatus,
-                                name: controllers.leadCategoryList[i].value,
-                                list: controllers.leadCategoryList[i].list,
-                                list2: controllers.leadCategoryList[i].list2, listIndex: i,
-                              ),
-                            );
-                            break;
-                          }
-                        }
+
+                    controllers.search.text = value.name.toString();
+
+                    print("value.leadStatus ${value.leadStatus}");
+                    print("leadIndex $leadIndex");
+
+                    // same page select pannina navigation thevai illa
+                    if (value.leadStatus == leadIndex) {
+                    print("one");
+                    return;
+                    }
+
+                    print("two");
+
+                    for (var i = 0; i < controllers.leadCategoryList.length; i++) {
+
+                      var item = controllers.leadCategoryList[i];
+
+                      if (item.leadStatus == value.leadStatus) {
+
+                      controllers.selectedIndex.value =
+                      int.tryParse(value.leadStatus.toString()) ?? 0;
+
+                      Get.off(
+                            () => NewLeadPage(
+                          index: item.leadStatus,
+                          name: item.value,
+                          list: item.list,
+                          list2: item.list2,
+                          listIndex: i,
+                        ),
+                        preventDuplicates: false,
+                      );
+                      break;
                       }
-                      // controllers.selectCustomer(value);
+                    }
+
+                      // optional: search clear panna next select smooth ah work aagum
+                      controllers.search.clear();
                     },
                     onClear: () {
                       if (onSearchChanged != null) onSearchChanged!("");

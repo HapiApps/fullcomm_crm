@@ -184,7 +184,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
       "emailUpdate": widget.emailUpdate,
       "name": widget.mainName,
       "title": widget.title,
-      "mobile_number": widget.mainMobile,
+      "phone_no": widget.mainMobile,
       "whatsappNumber": widget.whatsappNumber,
       "email": widget.email,
       "mainTitle": widget.mainTitle,
@@ -871,7 +871,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                                   widget.mainEmail.toString(),
                                                 };
 
-                                                await apiService.deleteCustomersAPI(context, [deleteData],widget.list,widget.list2);
+                                                await apiService.deleteCustomersAPI(context, [widget.id],widget.list,widget.list2);
                                               },
                                               height: 35,
                                               isLoading: true,

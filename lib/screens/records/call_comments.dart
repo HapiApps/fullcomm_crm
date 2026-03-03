@@ -324,7 +324,7 @@ class _CallCommentsState extends State<CallComments> {
                                                             )
                                                           ],
                                                         ),
-                                                        Obx(() => Row(
+                                                        Row(
                                                           children: controllers.callTypeList.map<Widget>((type) {
                                                             return Row(
                                                               mainAxisSize: MainAxisSize.min,
@@ -346,7 +346,7 @@ class _CallCommentsState extends State<CallComments> {
                                                               ],
                                                             );
                                                           }).toList(),
-                                                        )),
+                                                        ),
                                                         // RadioGroup<String>(
                                                         //   groupValue: controllers.callType,
                                                         //   onChanged: (value) {

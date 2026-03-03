@@ -461,7 +461,7 @@ class ApiService {
           updatedTs: DateTime.now().toString(),
         );
         controllers.selectedQualifiedSortBy.value="All";
-        controllers.selectRadio(list);
+        controllers.selectRadio(list,list2);
         // apiService.getCustomLeads();
         Navigator.pushReplacement(
           context,
@@ -1399,6 +1399,9 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      print(sendList);
+      print("request.body");
+      print(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -1408,9 +1411,7 @@ class ApiService {
           controllers.setLogOut();
         }
       }
-      print(sendList);
-      print("request.body");
-      print(request.body);
+
       if (request.statusCode == 200) {
         // allLeadsDetails();
         // allNewLeadsDetails();
@@ -1423,18 +1424,19 @@ class ApiService {
         print("Before remove list length: ${list.length}");
         print("Before remove list2 length: ${list2.length}");
         print("Before remove allLeadList length: ${controllers.allLeadList.length}");
-        for(var i=0;i<sendList.length;i++){
-          for(var j=0;j<list.length;j++){
-            if(list[j].userId==sendList[i]["lead_id"]){
-              list.removeAt(j);
-            }
-          }
-        }
-        list2 = list;
+        print("Initial list length: ${list.length}");
+        print("Initial list2 length: ${list2.length}");
+        print("SendList: $sendList");
+
+        list.removeWhere((item) => sendList.contains(item.userId));
+        list2.removeWhere((item) => sendList.contains(item.userId));
+
+        print("Final list length: ${list.length}");
+        print("Final list2 length: ${list2.length}");
 
         for(var i=0;i<sendList.length;i++){
           for(var j=0;j<controllers.allLeadList.length;j++){
-            if(controllers.allLeadList[j].userId==sendList[i]["lead_id"]){
+            if(controllers.allLeadList[j].userId==sendList[i]){
               controllers.allLeadList.removeAt(j);
             }
           }
@@ -1510,13 +1512,13 @@ class ApiService {
           controllers.setLogOut();
         }
       }
-      if (response.statusCode == 200 && res["message"] == "Customer save process completed.") {
+      if (response.statusCode == 200) {
         // apiService.allLeadsDetails();
         // apiService.allNewLeadsDetails();
         // apiService.allGoodLeadsDetails();
         // apiService.allTargetLeadsDetails();
         // apiService.getCustomLeads();
-        getUserHeading();
+        getHeading();
         apiService.getLeadCategories();
         apiService.getCustomLeads();
         Get.to(DashboardPage());
@@ -2040,6 +2042,77 @@ class ApiService {
               createdTs: DateTime.now().toString(),
               updatedTs: DateTime.now().toString(),
             ));
+            controllers.allLeadList.add(NewLeadObj(
+              select: false,
+              userId:customerId.toString(),
+              addressId: addressId.toString(),
+              firstname: controllers.leadNameCrt[0].text.trim(),
+              email: controllers.leadEmailCrt[0].text.trim(),
+              mobileNumber: controllers.numberList
+                  .map((e) => e.text.trim())
+                  .where((e) => e.isNotEmpty)
+                  .join("||"),
+              whatsapp: controllers.leadWhatsCrt[0].text.trim(),
+              // userId: controllers.storage.read("id").toString(),
+              companyName: controllers.leadCoNameCrt.text.trim(),
+              productDiscussion: controllers.prodDescriptionController.text.trim(),
+              source: controllers.leadDisPointsCrt.text.trim(),
+              notes: controllers.leadActions.text.trim(),
+              quotationStatus: "",
+              quotationRequired: "1",
+
+              doorNo: controllers.doorNumberController.text.trim(),
+              area: controllers.areaController.text.trim(),
+              city: controllers.cityController.text.trim(),
+              country: controllers.selectedCountry.value,
+              state: controllers.stateController.text.trim(),
+              pincode: controllers.pinCodeController.text.trim(),
+
+              companyWebsite: controllers.leadWebsite.text.trim(),
+              companyNumber: controllers.infoNumberList
+                  .map((e) => e.text.trim())
+                  .where((e) => e.isNotEmpty)
+                  .join("||"),
+              companyEmail: controllers.leadCoEmailCrt.text.trim(),
+              linkedin: controllers.leadLinkedinCrt.text.trim(),
+              x: controllers.leadXCrt.text.trim(),
+
+              industry: controllers.industry.toString(),
+              product: controllers.leadProduct.text.trim(),
+              sourceDetails: controllers.leadProduct.text.trim(),
+
+              type: "1",
+              lat: "0.0",
+              lng: "0.0",
+
+              leadStatus: leadId.toString(),
+              status: controllers.status.toString(),
+              visitType: callListId.toString(),
+
+              prospectEnrollmentDate:
+              controllers.prospectDate.value.isEmpty
+                  ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+                  : controllers.prospectDate.value,
+
+              expectedConvertionDate:
+              controllers.exDate.value.isEmpty
+                  ? DateFormat("dd.MM.yyyy").format(DateTime.now())
+                  : controllers.exDate.value,
+
+              statusUpdate: controllers.statusCrt.text.trim(),
+              numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
+              expectedBillingValue:
+              controllers.exMonthBillingValCrt.text.trim(),
+              arpuValue: controllers.arpuCrt.text.trim(),
+
+              detailsOfServiceRequired:
+              controllers.sourceCrt.text.trim(),
+              rating: controllers.prospectGradingCrt.text.trim(),
+              owner: controllers.leadTitleCrt[0].text.trim(),
+
+              createdTs: DateTime.now().toString(),
+              updatedTs: DateTime.now().toString(),
+            ));
             index=i;
             controllers.leadCategoryList.refresh();
             data=controllers.leadCategoryList[i];
@@ -2051,9 +2124,19 @@ class ApiService {
         log("dataaaa: ${data.list2.length}");
         controllers.selectedIndex.value=int.parse(data.leadStatus.toString());
         controllers.selectedQualifiedSortBy.value="All";
-        controllers.selectRadio(list);
+        controllers.selectRadio(list,list2);
         dashController.getDashboardReport();
         controllers.leadCategoryList.refresh();
+        data.list.sort((a, b) {
+          DateTime dateA = DateTime.parse(a.updatedTs.toString());
+          DateTime dateB = DateTime.parse(b.updatedTs.toString());
+          return dateB.compareTo(dateA); // Desc order
+        });
+        data.list2.sort((a, b) {
+          DateTime dateA = DateTime.parse(a.updatedTs.toString());
+          DateTime dateB = DateTime.parse(b.updatedTs.toString());
+          return dateB.compareTo(dateA); // Desc order
+        });
         Get.to(NewLeadPage(index: data.leadStatus ,
           name: data.value,list: data.list,list2: data.list2, listIndex: index,));
       } else if (body.contains("Phone number")) {
@@ -3058,6 +3141,43 @@ class ApiService {
     }
   }
 
+  Future getHeading() async {
+    try {
+      Map data = {
+        "search_type": "user_field_head",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data"};
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getUserHeading();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.fields.clear();
+        controllers.fields.value = response.map((e) => CustomerField.fromJson(e)).toList();
+        tableController.setHeading(response);
+      } else {
+        controllers.fields.value = controllers.defaultFields.map((e) => CustomerField.fromJson(e)).toList();
+        tableController.setHeading(controllers.defaultFields);
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+        controllers.fields.value = controllers.defaultFields.map((e) => CustomerField.fromJson(e)).toList();
+        tableController.setHeading(controllers.defaultFields);
+        throw Exception('Failed to load album');
+    }
+  }
   Future getUserHeading() async {
     try {
       Map data = {
@@ -3071,6 +3191,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      print("Api headings");
+      print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3120,15 +3242,15 @@ class ApiService {
         List response = json.decode(request.body);
         controllers.fields.clear();
         controllers.fields.value = response.map((e) => CustomerField.fromJson(e)).toList();
-        tableController.setHeadingFields2(response);
+        tableController.setHeadingFields(response);
       } else {
         controllers.fields.value = controllers.defaultFields.map((e) => CustomerField.fromJson(e)).toList();
-        tableController.setHeadingFields2(controllers.defaultFields);
+        tableController.setHeadingFields(controllers.defaultFields);
         throw Exception('Failed to load album');
       }
     } catch (e) {
         controllers.fields.value = controllers.defaultFields.map((e) => CustomerField.fromJson(e)).toList();
-        tableController.setHeadingFields2(controllers.defaultFields);
+        tableController.setHeadingFields(controllers.defaultFields);
         throw Exception('Failed to load album');
     }
   }

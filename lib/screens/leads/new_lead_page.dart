@@ -45,13 +45,17 @@ class _NewLeadPageState extends State<NewLeadPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    debugPrint("widget.list: ${widget.list}");
+    debugPrint("widget.list2: ${widget.list}");
+    debugPrint("widget.list: ${widget.list.length}");
+    debugPrint("widget.list2: ${widget.list2.length}");
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero, () {
       apiService.changeList(widget.index);
-      controllers.selectRadio(widget.list);
+      controllers.selectRadio(widget.list,widget.list2);
       apiService.currentVersion();
       controllers.groupController.selectIndex(0);
       setState(() {
@@ -99,7 +103,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
 
   @override
   Widget build(BuildContext context) {
-     log("controllers.selectedIndex.value: ${controllers.selectedIndex.value}");
+
     final screenWidth = MediaQuery.of(context).size.width;
     double tableWidth;
     if (screenWidth >= 1600) {
@@ -742,7 +746,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                               return phone.contains(input) ||name.contains(input) ||city.contains(input);
                             }).toList();
                         widget.list.value = suggestions;
-                        controllers.selectRadio(widget.list);
+                        controllers.selectRadio(widget.list,widget.list2);
                       },
                       onSelectMonth: () {
                         controllers.selectMonth(
@@ -796,13 +800,13 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                       controllers.sortField.value = 'date';
                                       controllers.sortOrder.value =
                                       controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
-                                      if(controllers.sortOrder.value=="asc"){
-                                        widget.list.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
-                                        widget.list2.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
-                                      }else{
-                                        widget.list.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
-                                        widget.list2.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
-                                      }
+                                      // if(controllers.sortOrder.value=="asc"){
+                                      //   widget.list.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
+                                      //   widget.list2.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
+                                      // }else{
+                                      //   widget.list.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
+                                      //   widget.list2.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
+                                      // }
                                     });
                                   },
                                 ),
@@ -812,23 +816,23 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                     if(widget.list.isEmpty){
                                       return 0.height;
                                     }
-                                    final sortedList = List.from(widget.list);
 
-                                    sortedList.sort((a, b) {
-                                      DateTime dateA = DateTime.tryParse(a.createdTs ?? '') ?? DateTime(1970);
-                                      DateTime dateB = DateTime.tryParse(b.createdTs ?? '') ?? DateTime(1970);
-                                      return dateB.compareTo(dateA);
-                                    });
+                                    // sortedList.sort((a, b) {
+                                    //   DateTime dateA = DateTime.tryParse(a.createdTs ?? '') ?? DateTime(1970);
+                                    //   DateTime dateB = DateTime.tryParse(b.createdTs ?? '') ?? DateTime(1970);
+                                    //   return dateB.compareTo(dateA);
+                                    // });
                                     return ScrollConfiguration(
                                       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                                       child: ListView.builder(
                                         controller: _leftController,
                                         shrinkWrap: true,
                                         physics: const ScrollPhysics(),
-                                        itemCount: sortedList.length,
+                                        itemCount: widget.list.length,
                                         itemBuilder: (context, index) {
-                                          final data = sortedList[index];
+                                          NewLeadObj data = widget.list[index];
                                           return CustomerNameTile(
+                                            key: ValueKey(data.userId),
                                             listIndex: index,
                                             list: widget.list,list2: widget.list2,
                                             leadIndex: widget.index,
@@ -968,13 +972,13 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                             controllers.sortField.value = 'date';
                                             controllers.sortOrder.value =
                                             controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
-                                            if(controllers.sortOrder.value=="asc"){
-                                              widget.list.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
-                                              widget.list2.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
-                                            }else{
-                                              widget.list.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
-                                              widget.list2.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
-                                            }
+                                            // if(controllers.sortOrder.value=="asc"){
+                                            //   widget.list.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
+                                            //   widget.list2.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
+                                            // }else{
+                                            //   widget.list.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
+                                            //   widget.list2.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
+                                            // }
                                           });
                                         },
                                       ),
@@ -997,42 +1001,23 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                           return CustomNoData();
                                         }
 
-                                        final sortedList = List.from(widget.list);
-
-                                        sortedList.sort((a, b) {
-                                          DateTime dateA = DateTime.tryParse(a.createdTs ?? '') ?? DateTime(1970);
-                                          DateTime dateB = DateTime.tryParse(b.createdTs ?? '') ?? DateTime(1970);
-                                          return dateB.compareTo(dateA);
-                                        });
+                                        // sortedList.sort((a, b) {
+                                        //   DateTime dateA = DateTime.tryParse(a.createdTs ?? '') ?? DateTime(1970);
+                                        //   DateTime dateB = DateTime.tryParse(b.createdTs ?? '') ?? DateTime(1970);
+                                        //   return dateB.compareTo(dateA);
+                                        // });
                                         return ListView.builder(
                                           controller: _rightController,
                                           shrinkWrap: true,
                                           physics: const ScrollPhysics(),
-                                          itemCount: sortedList.length,
+                                          itemCount: widget.list.length,
                                           itemBuilder: (context, index) {
-                                            final data = sortedList[index];
+                                            NewLeadObj data = widget.list[index];
                                             return CustomLeadTile(
+                                              key: ValueKey(data.userId),
                                               listIndex: index,
                                               list: widget.list,list2: widget.list2,
                                               pageName: "Prospects",
-                                              // saveValue: controllers.isLeadsList[index]["isSelect"],
-                                              // onChanged: (value){
-                                              //   setState(() {
-                                              //     if(controllers.isLeadsList[index]["isSelect"]==true){
-                                              //       controllers.isLeadsList[index]["isSelect"]=false;
-                                              //       var i=apiService.newLeadList.indexWhere((element) => element["lead_id"]==data.userId.toString());
-                                              //       apiService.newLeadList.removeAt(i);
-                                              //     }else{
-                                              //       controllers.isLeadsList[index]["isSelect"]=true;
-                                              //       apiService.newLeadList.add({
-                                              //         "lead_id":data.userId.toString(),
-                                              //         "user_id":controllers.storage.read("id"),
-                                              //         "rating":data.rating ?? "Warm",
-                                              //         "cos_id":controllers.storage.read("cos_id"),
-                                              //       });
-                                              //     }
-                                              //   });
-                                              // },
                                               saveValue: data.select==true?true:false,
                                               onChanged: (value) {
                                                 controllers.isAllSelected.value = false;
@@ -1050,6 +1035,8 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                               visitType: data.visitType.toString(),
                                               detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
                                               statusUpdate: data.statusUpdate.toString(),
+                                              department: data.department.toString(),
+                                              designation: data.designation.toString(),
                                               index: index,
                                               points: data.points.toString(),
                                               quotationStatus: data.quotationStatus.toString(),

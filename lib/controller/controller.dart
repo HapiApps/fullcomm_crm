@@ -349,10 +349,44 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       return inputDate;
     }
   }
-  void setDateRange(PickerDateRange range,
-  RxList<NewLeadObj> list,
-  RxList<NewLeadObj> list2) {
+  // void setDateRange(PickerDateRange range,RxList<NewLeadObj> list,RxList<NewLeadObj> list2) {
+  //   if (range.startDate != null && range.endDate != null) {
+  //     selectedRange.value = DateTimeRange(
+  //       start: range.startDate!,
+  //       end: range.endDate!,
+  //     );
+  //
+  //     print("Start Date >>> ${range.startDate}");
+  //     print("End Date >>> ${range.endDate}");
+  //
+  //     final suggestions = list2.where((user) {
+  //
+  //       DateTime createdDate = DateTime.parse(user.createdTs.toString());
+  //
+  //       print("------------");
+  //       print("User createdTs >>> ${user.createdTs}");
+  //
+  //       bool isInRange =
+  //           createdDate.isAfter(range.startDate!.subtract(Duration(seconds: 1))) &&
+  //               createdDate.isBefore(range.endDate!.add(Duration(days: 1)));
+  //
+  //       print("Range Match >>> $isInRange");
+  //
+  //       return isInRange;
+  //
+  //     }).toList();
+  //
+  //     print("Filtered count >>> ${suggestions.length}");
+  //     list.value = suggestions;
+  //   }
+  // }
+  void setDateRange(
+      PickerDateRange range,
+      RxList<NewLeadObj> list,
+      RxList<NewLeadObj> list2) {
+
     if (range.startDate != null && range.endDate != null) {
+
       selectedRange.value = DateTimeRange(
         start: range.startDate!,
         end: range.endDate!,
@@ -363,14 +397,22 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
       final suggestions = list2.where((user) {
 
-        DateTime createdDate = DateTime.parse(user.createdTs.toString());
+        if (user.createdTs == null ||
+            user.createdTs!.isEmpty ||
+            user.createdTs == "null") {
+          return false;
+        }
+
+        DateTime? createdDate = DateTime.tryParse(user.createdTs!);
+
+        if (createdDate == null) return false;
 
         print("------------");
         print("User createdTs >>> ${user.createdTs}");
 
         bool isInRange =
-            createdDate.isAfter(range.startDate!.subtract(Duration(seconds: 1))) &&
-                createdDate.isBefore(range.endDate!.add(Duration(days: 1)));
+            createdDate.isAfter(range.startDate!.subtract(const Duration(days: 1))) &&
+                createdDate.isBefore(range.endDate!.add(const Duration(days: 1)));
 
         print("Range Match >>> $isInRange");
 
@@ -379,6 +421,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       }).toList();
 
       print("Filtered count >>> ${suggestions.length}");
+
       list.value = suggestions;
     }
   }
@@ -406,7 +449,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
                   backgroundColor: const Color(0xffFFFCF9),
                   minDate: DateTime(2023),
                   maxDate: DateTime.now(),
-                  selectionMode: DateRangePickerSelectionMode.range,
+                  selectionMode: DateRangePickerSelectionMode.extendableRange,
                   selectionShape: DateRangePickerSelectionShape.circle,
                   selectionRadius: 18,
                   selectionColor: const Color(0xFF004AAD),
@@ -438,7 +481,11 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
                   ),
                   onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
                     setState(() {
-                      tempRange = args.value;
+                      if (args.value is PickerDateRange) {
+                        tempRange = args.value;
+                      } else if (args.value is DateTime) {
+                        tempRange = PickerDateRange(args.value, args.value);
+                      }
                     });
                   },
                 ),
@@ -472,8 +519,13 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
                     TextButton(
                       onPressed: () {
                         if (tempRange != null) {
+                          print("Selected Start Date >>> ${tempRange.startDate}");
+                          print("Selected End Date >>> ${tempRange.endDate}");
+                          DateTime start = tempRange.startDate;
+                          DateTime end = tempRange.endDate ?? tempRange.startDate;
+
                           selectedSortBy.value = "";
-                          setDateRange(tempRange,list,list2);
+                          setDateRange(PickerDateRange(start, end),list,list2);
                         }
                         Navigator.pop(context);
                       },
@@ -1708,17 +1760,201 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   //
   //   controllers.newLeadList.value=filteredLeads.sublist(start, end);
   // }
-  void selectRadio(
-      RxList<NewLeadObj> list){
-    isLead.value=false;
-    print("radioo");
+  // void selectRadio(RxList<NewLeadObj> list,RxList<NewLeadObj> list2){
+  //   isLead.value=false;
+  //   print("radioo");
+  //   final query = searchProspects.value.toLowerCase();
+  //   final ratingFilter = selectedProspectTemperature.value;
+  //   final sortBy = selectedQualifiedSortBy.value;
+  //   final now = DateTime.now();
+  //   print("radioo....${selectedQualifiedSortBy.value}");
+  //
+  //   final filteredLeads = list2.where((lead) {
+  //     final matchesQuery =
+  //         (lead.firstname ?? '').toLowerCase().contains(query) ||
+  //             (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+  //             (lead.companyName ?? '').toLowerCase().contains(query) ||
+  //             (lead.email ?? '').toLowerCase().contains(query);
+  //
+  //     final matchesRating = ratingFilter.isEmpty ||
+  //         (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
+  //
+  //     bool matchesSort = true;
+  //     DateTime? updatedDate;
+  //
+  //     if (lead.prospectEnrollmentDate != null) {
+  //       try {
+  //         if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
+  //           updatedDate = DateTime.tryParse(lead.updatedTs!);
+  //         } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
+  //           updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
+  //         }
+  //       } catch (_) {
+  //         updatedDate = null;
+  //         matchesSort = false;
+  //       }
+  //
+  //       if (updatedDate != null) {
+  //         final diff = now.difference(updatedDate).inDays;
+  //
+  //         switch (sortBy) {
+  //           case 'Today':
+  //             matchesSort = isSameDate(updatedDate, now);
+  //             break;
+  //           case 'Yesterday':
+  //             matchesSort = diff <= 1;
+  //             break;
+  //           case 'Last 7 Days':
+  //             matchesSort = diff <= 7;
+  //             break;
+  //           case 'Last 30 Days':
+  //             matchesSort = diff <= 30;
+  //             break;
+  //           case 'Custom Month':
+  //             if (selectedPMonth.value != null) {
+  //               matchesSort = updatedDate.year == selectedPMonth.value!.year &&
+  //                   updatedDate.month == selectedPMonth.value!.month;
+  //             } else {
+  //               matchesSort = true;
+  //             }
+  //             break;
+  //           case 'All':
+  //           default:
+  //             matchesSort = true;
+  //         }
+  //       } else {
+  //         matchesSort = false;
+  //       }
+  //     } else {
+  //       matchesSort = false;
+  //     }
+  //
+  //     // 🔹 Date Range Filter (selectedRange)
+  //     bool matchesDateRange = true;
+  //     if (selectedRange.value != null && updatedDate != null) {
+  //       final start = selectedRange.value!.start;
+  //       final end = selectedRange.value!.end;
+  //       matchesDateRange = updatedDate.isAfter(start.subtract(const Duration(days: 1))) &&
+  //           updatedDate.isBefore(end.add(const Duration(days: 1)));
+  //     }
+  //
+  //     return matchesQuery && matchesRating && matchesSort && matchesDateRange;
+  //   }).toList();
+  //
+  //   if (sortBy == 'Custom Month') {
+  //     DateTime parseDate(String? dateStr, String? fallback) {
+  //       if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+  //         dateStr = fallback;
+  //       }
+  //       DateTime? parsed;
+  //       try {
+  //         parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+  //       } catch (_) {
+  //         parsed = DateTime.tryParse(dateStr!);
+  //       }
+  //       return parsed ?? DateTime(1900);
+  //     }
+  //
+  //     filteredLeads.sort((a, b) {
+  //       final dateA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
+  //       final dateB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+  //       return dateB.compareTo(dateA);
+  //     });
+  //   }
+  //
+  //   if (sortField.isNotEmpty) {
+  //     filteredLeads.sort((a, b) {
+  //       dynamic getFieldValue(NewLeadObj lead, String field) {
+  //         switch (field) {
+  //           case 'name':
+  //             var name = lead.firstname ?? '';
+  //             if (name.contains('||')) name = name.split('||')[0].trim();
+  //             return name.toLowerCase();
+  //           case 'company_name':
+  //             return (lead.companyName ?? '').toLowerCase();
+  //           case 'mobile_number':
+  //             return (lead.mobileNumber ?? '').toLowerCase();
+  //           case 'detailsOfServiceRequired':
+  //             return (lead.detailsOfServiceRequired ?? '').toLowerCase();
+  //           case 'source':
+  //             return (lead.source ?? '').toLowerCase();
+  //           case 'city':
+  //             return (lead.city ?? '').toLowerCase();
+  //           case 'status_update':
+  //             return (lead.statusUpdate ?? '').toLowerCase();
+  //           case 'updatedTs':
+  //           case 'prospect_enrollment_date':
+  //             DateTime parseDate(String? dateStr, String? fallback) {
+  //               if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+  //                 dateStr = fallback;
+  //               }
+  //               if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+  //                 return DateTime(1900);
+  //               }
+  //               DateTime? parsed;
+  //               try {
+  //                 parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+  //               } catch (_) {
+  //                 parsed = DateTime.tryParse(dateStr);
+  //               }
+  //               return parsed ?? DateTime(1900);
+  //             }
+  //             return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
+  //           default:
+  //             final value = lead.asMap()[field];
+  //             return value.toString().toLowerCase();
+  //         }
+  //       }
+  //
+  //       final valA = getFieldValue(a, sortField.value);
+  //       final valB = getFieldValue(b, sortField.value);
+  //
+  //       if (valA is DateTime && valB is DateTime) {
+  //         return sortOrder.value == 'asc'
+  //             ? valA.compareTo(valB)
+  //             : valB.compareTo(valA);
+  //       } else {
+  //         return sortOrderN.value == 'asc'
+  //             ? valA.compareTo(valB)
+  //             : valB.compareTo(valA);
+  //       }
+  //     });
+  //   }
+  //
+  //   int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
+  //   if (start >= filteredLeads.length) ;
+  //
+  //   int end = start + itemsProspectPerPage;
+  //   end = end > filteredLeads.length ? filteredLeads.length : end;
+  //
+  //   list.value=filteredLeads.sublist(start, end);
+  //   // list.sort((a, b) {
+  //   //   DateTime dateA = DateTime.tryParse(a.createdTs ?? '') ?? DateTime(1970);
+  //   //   DateTime dateB = DateTime.tryParse(b.createdTs ?? '') ?? DateTime(1970);
+  //   //   return dateB.compareTo(dateA);
+  //   // });
+  //   isLead.value=true;
+  // }
+  void selectRadio(RxList<NewLeadObj> list, RxList<NewLeadObj> list2) {
+    isLead.value = false;
+
     final query = searchProspects.value.toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;
     final sortBy = selectedQualifiedSortBy.value;
     final now = DateTime.now();
-    print("radioo....${selectedQualifiedSortBy.value}");
 
-    final filteredLeads = list.where((lead) {
+    DateTime? parseDate(String? updated, String? fallback) {
+      try {
+        if (updated != null && updated.isNotEmpty && updated != "null") {
+          return DateTime.tryParse(updated);
+        } else if (fallback != null && fallback.isNotEmpty) {
+          return DateFormat('dd.MM.yyyy').tryParse(fallback);
+        }
+      } catch (_) {}
+      return null;
+    }
+
+    final filteredLeads = list2.where((lead) {
       final matchesQuery =
           (lead.firstname ?? '').toLowerCase().contains(query) ||
               (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
@@ -1728,127 +1964,106 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       final matchesRating = ratingFilter.isEmpty ||
           (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
 
+      DateTime? updatedDate =
+      parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
+
       bool matchesSort = true;
-      DateTime? updatedDate;
 
-      if (lead.prospectEnrollmentDate != null) {
-        try {
-          if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
-            updatedDate = DateTime.tryParse(lead.updatedTs!);
-          } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
-            updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
-          }
-        } catch (_) {
-          updatedDate = null;
-          matchesSort = false;
+      if (updatedDate != null) {
+        final diff = now.difference(updatedDate).inDays;
+
+        switch (sortBy) {
+          case 'Today':
+            matchesSort = updatedDate.year == now.year &&
+                updatedDate.month == now.month &&
+                updatedDate.day == now.day;
+            break;
+
+          case 'Yesterday':
+            matchesSort = diff == 1;
+            break;
+
+          case 'Last 7 Days':
+            matchesSort = diff <= 7;
+            break;
+
+          case 'Last 30 Days':
+            matchesSort = diff <= 30;
+            break;
+
+          case 'Custom Month':
+            if (selectedPMonth.value != null) {
+              matchesSort = updatedDate.year == selectedPMonth.value!.year &&
+                  updatedDate.month == selectedPMonth.value!.month;
+            }
+            break;
+
+          case 'All':
+          default:
+            matchesSort = true;
         }
-
-        if (updatedDate != null) {
-          final diff = now.difference(updatedDate).inDays;
-
-          switch (sortBy) {
-            case 'Today':
-              matchesSort = isSameDate(updatedDate, now);
-              break;
-            case 'Yesterday':
-              matchesSort = diff <= 1;
-              break;
-            case 'Last 7 Days':
-              matchesSort = diff <= 7;
-              break;
-            case 'Last 30 Days':
-              matchesSort = diff <= 30;
-              break;
-            case 'Custom Month':
-              if (selectedPMonth.value != null) {
-                matchesSort = updatedDate.year == selectedPMonth.value!.year &&
-                    updatedDate.month == selectedPMonth.value!.month;
-              } else {
-                matchesSort = true;
-              }
-              break;
-            case 'All':
-            default:
-              matchesSort = true;
-          }
-        } else {
-          matchesSort = false;
-        }
-      } else {
-        matchesSort = false;
       }
 
-      // 🔹 Date Range Filter (selectedRange)
       bool matchesDateRange = true;
+
       if (selectedRange.value != null && updatedDate != null) {
         final start = selectedRange.value!.start;
         final end = selectedRange.value!.end;
-        matchesDateRange = updatedDate.isAfter(start.subtract(const Duration(days: 1))) &&
+
+        matchesDateRange = updatedDate
+            .isAfter(start.subtract(const Duration(days: 1))) &&
             updatedDate.isBefore(end.add(const Duration(days: 1)));
       }
 
       return matchesQuery && matchesRating && matchesSort && matchesDateRange;
     }).toList();
 
-    if (sortBy == 'Custom Month') {
-      DateTime parseDate(String? dateStr, String? fallback) {
-        if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-          dateStr = fallback;
-        }
-        DateTime? parsed;
-        try {
-          parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
-        } catch (_) {
-          parsed = DateTime.tryParse(dateStr!);
-        }
-        return parsed ?? DateTime(1900);
-      }
+    /// 🔹 Default Date Sort (Latest First)
+    filteredLeads.sort((a, b) {
+      DateTime dateA =
+          parseDate(a.updatedTs, a.prospectEnrollmentDate) ?? DateTime(1900);
+      DateTime dateB =
+          parseDate(b.updatedTs, b.prospectEnrollmentDate) ?? DateTime(1900);
 
-      filteredLeads.sort((a, b) {
-        final dateA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
-        final dateB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
-        return dateB.compareTo(dateA);
-      });
-    }
+      return dateB.compareTo(dateA);
+    });
 
+    /// 🔹 Column Sorting
     if (sortField.isNotEmpty) {
       filteredLeads.sort((a, b) {
         dynamic getFieldValue(NewLeadObj lead, String field) {
           switch (field) {
             case 'name':
               var name = lead.firstname ?? '';
-              if (name.contains('||')) name = name.split('||')[0].trim();
+              if (name.contains('||')) {
+                name = name.split('||')[0].trim();
+              }
               return name.toLowerCase();
+
             case 'company_name':
               return (lead.companyName ?? '').toLowerCase();
+
             case 'mobile_number':
               return (lead.mobileNumber ?? '').toLowerCase();
+
             case 'detailsOfServiceRequired':
               return (lead.detailsOfServiceRequired ?? '').toLowerCase();
+
             case 'source':
               return (lead.source ?? '').toLowerCase();
+
             case 'city':
               return (lead.city ?? '').toLowerCase();
+
             case 'status_update':
               return (lead.statusUpdate ?? '').toLowerCase();
+
             case 'updatedTs':
             case 'prospect_enrollment_date':
-              DateTime parseDate(String? dateStr, String? fallback) {
-                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-                  dateStr = fallback;
-                }
-                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
-                  return DateTime(1900);
-                }
-                DateTime? parsed;
-                try {
-                  parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
-                } catch (_) {
-                  parsed = DateTime.tryParse(dateStr);
-                }
-                return parsed ?? DateTime(1900);
-              }
-              return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
+              return parseDate(
+                  lead.updatedTs, lead.prospectEnrollmentDate) ??
+                  DateTime(1900);
+
             default:
               final value = lead.asMap()[field];
               return value.toString().toLowerCase();
@@ -1870,21 +2085,23 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       });
     }
 
+    /// 🔹 Pagination
     int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
-    if (start >= filteredLeads.length) ;
+
+    if (start >= filteredLeads.length) {
+      start = 0;
+    }
 
     int end = start + itemsProspectPerPage;
-    end = end > filteredLeads.length ? filteredLeads.length : end;
 
-    list.value=filteredLeads.sublist(start, end);
-    // list.sort((a, b) {
-    //   DateTime dateA = DateTime.tryParse(a.createdTs ?? '') ?? DateTime(1970);
-    //   DateTime dateB = DateTime.tryParse(b.createdTs ?? '') ?? DateTime(1970);
-    //   return dateB.compareTo(dateA);
-    // });
-    isLead.value=true;
+    if (end > filteredLeads.length) {
+      end = filteredLeads.length;
+    }
+
+    list.value = filteredLeads.sublist(start, end);
+
+    isLead.value = true;
   }
-
   var targetLeadSortField = ''.obs;
   var targetLeadSortOrder = 'asc'.obs;
   List<NewLeadObj> get paginatedTargetLead {

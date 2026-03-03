@@ -81,6 +81,8 @@ class CustomLeadTile extends StatefulWidget {
   final String? visitType;
   final String? points;
   final String? detailsOfServiceReq;
+  final String? department;
+  final String? designation;
   final String updatedTs;
   final void Function(bool?) onChanged;
   final bool saveValue;
@@ -140,6 +142,8 @@ class CustomLeadTile extends StatefulWidget {
       this.prospectEnrollmentDate,
       this.sourceDetails,
       this.statusUpdate,
+      this.department,
+      this.designation,
       required this.onChanged,
       required this.saveValue,
       required this.updatedTs,
@@ -171,6 +175,8 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
   Map<String, dynamic> toJson() {
     return {
       "id": widget.id,
+      "designation": widget.designation,
+      "department": widget.department,
       "mainName": widget.mainName,
       "mainMobile": widget.mainMobile,
       "mainEmail": widget.mainEmail,
@@ -181,7 +187,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
       "emailUpdate": widget.emailUpdate,
       "name": widget.mainName,
       "title": widget.title,
-      "mobile_number": widget.mainMobile,
+      "phone_no": widget.mainMobile,
       "whatsappNumber": widget.whatsappNumber,
       "email": widget.email,
       "mainTitle": widget.mainTitle,
@@ -240,6 +246,9 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    if(tableController.tableHeadings.isEmpty){
+      apiService.getUserHeading();
+    }
     statusController = TextEditingController(
         text: widget.statusUpdate.toString() == "null"
             ? ""
@@ -400,20 +409,9 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                           ?.systemField;
                       // print(controllers.fields.first.systemField);
                       final controller =key != null ? fieldControllers[key] : null;
+                      print(key);
                       return Tooltip(
-                        message: controller?.text ?? "",
-                        // child: Container(
-                        //   height: 45,
-                        //   alignment: Alignment.centerLeft,
-                        //   padding: const EdgeInsets.symmetric(horizontal: 5),
-                        //   child: CustomText(
-                        //     textAlign: TextAlign.left,
-                        //     text: value.toString() == "null" ? "" : value.toString(),
-                        //     size: 14,
-                        //     colors: colorsConst.textColor,
-                        //     isCopy: false,
-                        //   ),
-                        // ),
+                        message: (controller?.text == "null") ? "" : controller?.text ?? "",
                         child:  Container(
                           height: 45,
                           alignment: Alignment.centerLeft,
