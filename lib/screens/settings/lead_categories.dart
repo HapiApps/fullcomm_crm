@@ -168,13 +168,12 @@ class _LeadCategoriesState extends State<LeadCategories> {
                               CustomText(
                                 text: data.value,
                                 isCopy: false,
+                              ),20.width,
+                              CustomText(
+                                text: data.displayOrder.toString(),
+                                isCopy: false,isBold: true,
+                                colors: colorsConst.primary,
                               ),
-                              // CustomText(
-                              //   text: data.leadStatus.toString(),
-                              //   isCopy: false,
-                              //   size: 25,
-                              //   colors: colorsConst.primary,
-                              // ),
                             ],
                           ),
                         ),

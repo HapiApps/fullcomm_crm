@@ -21,6 +21,7 @@ import '../../models/new_lead_obj.dart';
 
 
 class UpdateLead extends StatefulWidget {
+  final String pageName;
   final String type;
   final String? id;
   final int index;
@@ -123,7 +124,7 @@ class UpdateLead extends StatefulWidget {
     this.quotationRequired, this.arpuValue,
     this.prospectEnrollmentDate, this.expectedConvertionDate,
     this.statusUpdate, this.numOfHeadcount, this.expectedBillingValue,
-    required this.notes,required this.sourceDetails,required this.updateTs, this.detailsOfRequired, required this.visitType, required this.type, required this.list, required this.list2, required this.index
+    required this.notes,required this.sourceDetails,required this.updateTs, this.detailsOfRequired, required this.visitType, required this.type, required this.list, required this.list2, required this.index, required this.pageName
   });
 
 
@@ -477,7 +478,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                             },
                             icon: Icon(Icons.arrow_back,color: colorsConst.third,)),
                         CustomText(
-                          text: "Leads",
+                          text: widget.pageName,
                           colors: colorsConst.textColor,
                           size:23,
                           isCopy: true,
@@ -489,7 +490,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                     Row(
                       children: [
                         CustomText(
-                          text: "Update your Lead Information",
+                          text: "Update your ${widget.pageName} Information",
                           colors: colorsConst.textColor,
                           isCopy: true,
                           size:18,
@@ -782,7 +783,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                               Row(
                                                 children: [
                                                   CustomText(
-                                                    text: "Call Visit Type",
+                                                    text: "Incoming Source",
                                                     colors: colorsConst.textColor,
                                                     size: 13,
                                                     textAlign: TextAlign.start,
@@ -1626,7 +1627,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                               controllers.leadCtr.reset();
                                             } else if (controllers.visitType == null || controllers.visitType.toString().isEmpty) {
                                               utils.snackBar(
-                                                  msg: "Please Select Call Visit Type",
+                                                  msg: "Please Select Incoming Source",
                                                   color: Colors.red,
                                                   context: context);
                                               controllers.leadCtr.reset();
@@ -1790,7 +1791,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         controllers.leadCtr.reset();
                                       } else if (controllers.visitType == null || controllers.visitType.toString().isEmpty) {
                                         utils.snackBar(
-                                            msg: "Please Select Call Visit Type",
+                                            msg: "Please Select Incoming Source",
                                             color: Colors.red,
                                             context: context);
                                         controllers.leadCtr.reset();
@@ -1890,7 +1891,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                       // }
 
                                     },
-                                    text: "Save Lead",
+                                    text: "Save ${widget.pageName}",
                                     height: 60,
                                     controller: controllers.leadCtr,
                                     isLoading:true,

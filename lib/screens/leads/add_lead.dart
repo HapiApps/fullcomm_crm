@@ -502,7 +502,7 @@ class _AddLeadState extends State<AddLead> {
                         } else if (controllers.visitType == null ||
                             controllers.visitType.toString().isEmpty) {
                           utils.snackBar(
-                              msg: "Please Select Call Visit Type",
+                              msg: "Please Select Incoming Source",
                               color: Colors.red,
                               context: context);
                           controllers.leadCtr.reset();
@@ -967,7 +967,7 @@ class _AddLeadState extends State<AddLead> {
                                             Row(
                                               children: [
                                                 CustomText(
-                                                  text: "Call Visit Type",
+                                                  text: "Incoming Source",
                                                   colors: colorsConst.textColor,
                                                   size: 13,
                                                   textAlign: TextAlign.start,
@@ -2229,7 +2229,7 @@ class _AddLeadState extends State<AddLead> {
                               } else if (controllers.visitType == null ||
                                   controllers.visitType.toString().isEmpty) {
                                 utils.snackBar(
-                                    msg: "Please Select Call Visit Type",
+                                    msg: "Please Select Incoming Source",
                                     color: Colors.red,
                                     context: context);
                                 controllers.leadCtr.reset();

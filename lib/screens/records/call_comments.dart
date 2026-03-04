@@ -334,7 +334,9 @@ class _CallCommentsState extends State<CallComments> {
                                                                   groupValue: controllers.callType,
                                                                   activeColor: colorsConst.primary,
                                                                   onChanged: (value) {
-                                                                    controllers.callType = value!;
+                                                                    setState((){
+                                                                      controllers.callType = value!;
+                                                                    });
                                                                   },
                                                                 ),
                                                                 CustomText(
@@ -419,7 +421,9 @@ class _CallCommentsState extends State<CallComments> {
                                                                     groupValue: controllers.callStatus,
                                                                     activeColor: colorsConst.primary,
                                                                     onChanged: (value) {
-                                                                      controllers.callStatus = value!;
+                                                                      setState((){
+                                                                        controllers.callStatus = value!;
+                                                                      });
                                                                     },
                                                                   ),
                                                                   CustomText(

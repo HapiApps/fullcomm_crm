@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'new_lead_obj.dart';
 
 class AllCustomersObj {
-  final String id, name, companyName, phoneNo, email,leadStatus;
+  final String id, name, companyName, phoneNo, email, leadStatus, category;
 
   AllCustomersObj({
     required this.id,
@@ -12,12 +12,14 @@ class AllCustomersObj {
     required this.phoneNo,
     required this.email,
     required this.leadStatus,
+    required this.category,
   });
 
   factory AllCustomersObj.fromJson(Map<String, dynamic> json) {
     return AllCustomersObj(
       id: json['id']?.toString() ?? '',
       name: json['name'] == 'null' ? '' : json['name']?.toString() ?? '',
+      category: json['category'] == 'null' ? '' : json['category']?.toString() ?? '',
       companyName:
       json['company_name'] == 'null'
           ? ''
@@ -39,6 +41,7 @@ class AllCustomersObj {
       'phone_no': phoneNo,
       'email': email,
       'lead_status': leadStatus,
+      'category': category,
     };
   }
 }

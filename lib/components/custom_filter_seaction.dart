@@ -62,7 +62,15 @@ class FilterSection extends StatelessWidget {
     required this.leadFuture,
     this.isActionEnabled = true, this.focusNode, required this.itemCount, required this.leadIndex, required this.list, required this.list2,
   });
-
+  String _formatHeading(String heading) {
+    String cleaned = heading.replaceAll(",", "").trim();
+    return cleaned
+        .split(" ")
+        .map((word) => word.isNotEmpty
+        ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+        : "")
+        .join(" ");
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -107,7 +115,7 @@ class FilterSection extends StatelessWidget {
                     labelText: "Search Mobile Number",
                     labelBuilder: (customer) =>
                     // '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
-                    '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo}',
+                    '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
                     itemBuilder: (customer) {
                       return Container(
                         width: 400,
@@ -116,7 +124,7 @@ class FilterSection extends StatelessWidget {
                         child: CustomText(
                           text:
                           // '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
-                          '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo}',
+                          '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
                           colors: Colors.black,
                           size: 14,
                           isCopy: false,
@@ -289,7 +297,9 @@ class FilterSection extends StatelessWidget {
               flex: 3,
               child: CustomSearchTextField(
                 focusNode:focusNode,
-                hintText: "Search Name, Company",
+                hintText: "Search ${_formatHeading(controllers.getUserHeading("name") ??"Name")}"
+                    ", ${_formatHeading(controllers.getUserHeading("company_name") ?? "Company Name")}"
+                    ", ${_formatHeading(controllers.getUserHeading("mobile_name") ??"Mobile No")}",
                 controller: searchController,
                 onChanged: (value) {
                   if (onSearchChanged != null) onSearchChanged!(value);

@@ -96,7 +96,7 @@ class _ActivityOverTimeChartState
             const CustomText(
               text: "Activity over time",
               isCopy: false,
-              size: 14,
+              size: 15,
               isBold: true,
               colors: Colors.black,
             ),
@@ -104,7 +104,7 @@ class _ActivityOverTimeChartState
             CustomText(
               text:  "Calls, mails, and customer updates",
               isCopy: false,
-              size: 12,
+              size: 13,
               isBold: false,
               colors:  Color(0xff666666),
             ),

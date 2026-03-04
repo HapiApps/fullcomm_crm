@@ -142,7 +142,8 @@ class _NewLeadPageState extends State<NewLeadPage> {
                       //Santhiya
                       leadIndex: widget.index,
                       itemCount: widget.list.length,
-                      count: controllers.allLeadList.length,
+                      count: widget.list2.length,
+                      // count: controllers.allLeadList.length,
                       focusNode: _focusNode,
                       leadFuture: controllers.allLeadFuture,
                       title: widget.name,
@@ -393,7 +394,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                     CrossAxisAlignment.start,
                                     children: [
                                       CustomText(
-                                        text: "Select Stage",
+                                        text: "New Stage",
                                         size: 14,
                                         isBold: true,
                                         isCopy: false,
@@ -586,7 +587,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                     CrossAxisAlignment.start,
                                     children: [
                                       CustomText(
-                                        text: "Select Stage",
+                                        text: "New Stage",
                                         size: 14,
                                         isBold: true,
                                         isCopy: false,
@@ -836,7 +837,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                             listIndex: index,
                                             list: widget.list,list2: widget.list2,
                                             leadIndex: widget.index,
-                                            pageName: "Prospects",
+                                            pageName: widget.name,
                                             saveValue: data.select==true?true:false,
                                             onChanged: (value) {
                                               controllers.isAllSelected.value = false;

@@ -111,8 +111,8 @@ class _AddReminderState extends State<AddReminder> {
                           SizedBox(
                             width: textFieldSize,
                             child: CustomTextField(
-                              hintText: "Enter Event Name",
-                              text: "Event Name",
+                              hintText: "Set reminder for the event",
+                              text: "Set reminder for the event",
                               controller: remController.titleController,
                               width: textFieldSize,
                               keyboardType: TextInputType.text,

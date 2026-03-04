@@ -3285,6 +3285,8 @@ class ApiService {
       }
       var response = await request.send();
       var body = await response.stream.bytesToString();
+      print("body");
+      print(body);
       if (response.statusCode == 200 && body == "Message has been sent") {
         utils.snackBar(
             msg: "Mail has been sent",
@@ -3891,7 +3893,7 @@ class ApiService {
       );
 
       controllers.isLeadLoading.value = false;
-      // print(response.body);
+      print(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

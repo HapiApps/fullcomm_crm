@@ -50,9 +50,9 @@ class CustomerStatusCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomText(
-            text: "Customer Status",
+            text: "Call Status",
             isCopy: false,
-            size: 14,
+            size: 15,
             isBold: true,
             colors: Colors.black,
           ),
@@ -61,7 +61,7 @@ class CustomerStatusCard extends StatelessWidget {
           CustomText(
             text: "Breakdown by engagement status",
             isCopy: false,
-            size: 12,
+            size: 13,
             isBold: false,
             colors: const Color(0xff666666),
           ),

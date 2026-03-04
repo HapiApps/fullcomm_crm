@@ -270,7 +270,7 @@ class _LeadPieCardState extends State<LeadPieCard> {
         children: [
           CustomText(
             text: "Lead Distribution",
-            size: 14,
+            size: 15,
             isBold: true,
             isCopy: false,
           ),
@@ -278,9 +278,15 @@ class _LeadPieCardState extends State<LeadPieCard> {
           CustomText(
             text: "Breakdown by current stage",
             colors: Colors.grey,
-            isCopy: false,size: 12,
+            isCopy: false,size: 13,
           ),
-          const Divider(),
+          12.height,
+          const Divider(
+            height: 1,
+            thickness: 1,
+            color: Color(0xffE5E7EB),
+          ),
+          16.height,
 
           /// PIE CHART
           SizedBox(
@@ -375,7 +381,7 @@ class _LeadPieCardState extends State<LeadPieCard> {
               const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 8,
-                crossAxisSpacing: 5,
+                crossAxisSpacing: 55,
                 childAspectRatio: 10,
               ),
               itemBuilder: (context, index) {

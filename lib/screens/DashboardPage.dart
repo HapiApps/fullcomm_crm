@@ -475,7 +475,7 @@ class _DashboardPageState extends State<DashboardPage>
                                   });
                                 }
                               },
-                              child: Obx(()=>CustomText(text:"Last Sync · ${DateTime.now().difference(DateTime.parse(dashController.timestamp.value)).inMinutes}",size: 12.5,
+                              child: Obx(()=>CustomText(text:"Last Sync · ${DateTime.now().difference(DateTime.parse(dashController.timestamp.value)).inMinutes} Mins",size: 12.5,
                                   isBold:true,isCopy:true,colors:Colors.white))
                           ),
                           6.height,
@@ -498,66 +498,439 @@ class _DashboardPageState extends State<DashboardPage>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SideBar(),
-            SingleChildScrollView(
-              child: Column(
+            Container(
+              width: controllers.isLeftOpen.value == false &&
+                  controllers.isRightOpen.value == false
+                  ? screenWidth - 150
+                  : screenWidth - 150,
+              height: MediaQuery.of(context).size.height,
+              alignment: Alignment.topLeft,
+              // color: Colors.pinkAccent,
+              padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
+              child: Stack(
                 children: [
-                  Container(
-                    width: controllers.isLeftOpen.value == false &&
-                        controllers.isRightOpen.value == false
-                        ? screenWidth - 150
-                        : screenWidth - 150,
-                    height: MediaQuery.of(context).size.height,
-                    alignment: Alignment.topLeft,
-                    // color: Colors.pinkAccent,
-                    padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                    child: Stack(
+                  SingleChildScrollView(
+                    child: Obx(()=>Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SingleChildScrollView(
-                          child: Obx(()=>Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              20.height,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [1.width,
-                                  WaveStatCard(
-                                      title: "Mails",
-                                      numericValue: int.parse(dashController
-                                          .totalMails.value
-                                          .toString()),
-                                      maxValue: maxValue,
-                                      iconPath: DashboardAssets.mail,
-                                      valueColor: const Color(0xff2457C5),
-                                      callback:(){
-                                        remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
-                                        controllers.changeTab(1);
-                                        Navigator.push(
-                                          context,
-                                          PageRouteBuilder(
-                                            pageBuilder: (context,
-                                                animation1,
-                                                animation2) =>
-                                            const Records(
-                                              isReload: "true",
+                        20.height,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [1.width,
+                            WaveStatCard(
+                                title: "Mails",
+                                numericValue: int.parse(dashController
+                                    .totalMails.value
+                                    .toString()),
+                                maxValue: maxValue,
+                                iconPath: DashboardAssets.mail,
+                                valueColor: const Color(0xff2457C5),
+                                callback:(){
+                                  remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
+                                  controllers.changeTab(1);
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context,
+                                          animation1,
+                                          animation2) =>
+                                      const Records(
+                                        isReload: "true",
+                                      ),
+                                      transitionDuration:
+                                      Duration.zero,
+                                      reverseTransitionDuration:
+                                      Duration.zero,
+                                    ),
+                                  );
+                                  controllers.oldIndex.value =
+                                      controllers.selectedIndex.value;
+                                  controllers.selectedIndex.value = 6;
+                                }
+                            ),SizedBox(width: screenWidth/30,),
+                            WaveStatCard(
+                                title: "Calls",
+                                numericValue: int.parse(dashController.totalCalls.value.toString()),
+                                maxValue: maxValue,
+                                iconPath: DashboardAssets.phone,
+                                valueColor: const Color(0xff53922A),
+                                callback:(){
+                                  remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+                                  controllers.changeTab(0);
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context,
+                                          animation1,
+                                          animation2) =>
+                                      const Records(
+                                        isReload: "true",
+                                      ),
+                                      transitionDuration:
+                                      Duration.zero,
+                                      reverseTransitionDuration:
+                                      Duration.zero,
+                                    ),
+                                  );
+                                  controllers.oldIndex.value = controllers.selectedIndex.value;
+                                  controllers.selectedIndex.value = 6;
+                                }
+                            ),SizedBox(width: screenWidth/30,),
+                            WaveStatCard(
+                              callback: () {
+                                remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
+                                controllers.changeTab(2);
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation1, animation2) =>
+                                    const Records(
+                                      isReload: "true",
+                                    ),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
+                                  ),
+                                );
+                                controllers.oldIndex.value = controllers.selectedIndex.value;
+                                controllers.selectedIndex.value = 6;
+                              },
+                              title: "Appointments",
+                              numericValue: int.parse(dashController.totalMeetings.value.toString()),
+                              maxValue: maxValue,
+                              iconPath: DashboardAssets.date,
+                              valueColor: const Color(0xff8B2CF5),
+                            ),SizedBox(width: screenWidth/30,),
+                            WaveStatCard(
+                              callback: () {
+                                controllers.selectedProspectSortBy.value = dashController.selectedSortBy.value;
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder: (context, animation1, animation2) => const Suspects(),
+                                //     transitionDuration: Duration.zero,
+                                //     reverseTransitionDuration: Duration.zero,
+                                //   ),
+                                // );
+                                controllers.oldIndex.value = controllers.selectedIndex.value;
+                                controllers.selectedIndex.value = 100;
+                              },
+                              title: "New Customers",
+                              numericValue: int.parse(dashController.totalSuspects.value.toString()),
+                              maxValue: maxValue,
+                              iconPath: DashboardAssets.people,
+                              valueColor: const Color(0xffF29D38),
+                            ),SizedBox(width: screenWidth/30,),
+                            WaveStatCard(
+                              callback: () {
+                                remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context,
+                                        animation1,
+                                        animation2) =>
+                                    const ReminderPage(),
+                                    transitionDuration:
+                                    Duration.zero,
+                                    reverseTransitionDuration:
+                                    Duration.zero,
+                                  ),
+                                );
+                                controllers.oldIndex.value =
+                                    controllers.selectedIndex.value;
+                                controllers.selectedIndex.value =
+                                11;
+                              },
+                              title: "Reminders",
+                              numericValue: int.parse(dashController
+                                  .totalReminders.value
+                                  .toString()),
+                              maxValue: maxValue,
+                              iconPath: DashboardAssets.alarm,
+                              valueColor: const Color(0xffBB271A),
+                            ),
+                            SizedBox(
+                              width: screenWidth/10,
+                            )
+                            // 200.width,
+                          ],
+                        ),
+                        20.height,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              children: [
+                                // -------- Lead Distribution --------
+                                SizedBox(
+                                  width: screenWidth / 4,
+                                  // height: 350,
+                                  child: LeadPieCard(
+                                    // title: "Lead Distribution",
+                                    // subtitle: "Breakdown by current stage",
+                                    // total: controllers.allLeadList.length,
+                                    data: [
+                                      for (int i = 0; i < dashController.leadReport.length; i++)
+                                        PieData(
+                                          label: dashController.leadReport[i]["category"] ?? "",
+                                          value: double.tryParse(
+                                              dashController.leadReport[i]["customer_count"].toString()) ??
+                                              0,
+                                          color: dashController.color[i],
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                20.height,
+                                // Quotations Sent
+                                SizedBox(
+                                  width: screenWidth/4,
+                                  child: Container(
+                                    height: 250,
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Color(0x14000000),
+                                          blurRadius: 10,
+                                          offset: Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      alignment: Alignment.center,
+                                      children: [
+                                        // -------- MAIN CONTENT --------
+                                        Column(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: [
+                                            Stack(
+                                              clipBehavior: Clip.none,
+                                              alignment: Alignment.center,
+                                              children: [
+                                                // Main outlined circle
+                                                Container(
+                                                  width: 110,
+                                                  height: 110,
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                      color: Colors.black,
+                                                      width: 2,
+                                                    ),
+                                                  ),
+
+                                                  child:const CustomText(
+                                                    text: "42",
+                                                    isCopy: false,
+                                                    size: 26,
+                                                    isBold: true,
+                                                  ),
+                                                ),
+
+                                                // Small top dot
+                                                const Positioned(
+                                                  top: -6,
+                                                  child: CircleAvatar(
+                                                    radius: 5,
+                                                    backgroundColor:
+                                                    Colors.black,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            transitionDuration:
-                                            Duration.zero,
-                                            reverseTransitionDuration:
-                                            Duration.zero,
+
+                                            16.height,
+                                            const CustomText(
+                                              text:"Quotations Sent",
+                                              isCopy: false,
+                                              size: 13,
+                                              isBold: true,
+                                              colors: Colors.black,
+                                            ),
+                                          ],
+                                        ),
+                                        // -------- FILE ICON (OVERLAP) --------
+                                        Positioned(
+                                          top: 10,
+                                          left: 10,
+                                          child: Image.asset(
+                                            DashboardAssets.file,
                                           ),
-                                        );
-                                        controllers.oldIndex.value =
-                                            controllers.selectedIndex.value;
-                                        controllers.selectedIndex.value = 6;
-                                      }
-                                  ),30.width,
-                                  WaveStatCard(
-                                      title: "Calls",
-                                      numericValue: int.parse(dashController.totalCalls.value.toString()),
-                                      maxValue: maxValue,
-                                      iconPath: DashboardAssets.phone,
-                                      valueColor: const Color(0xff53922A),
-                                      callback:(){
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            16.width,
+                            // ================= RIGHT COLUMN =================
+                            Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    // Activity Rating
+                                    Container(
+                                      height: 300,
+                                      width: screenWidth /3.5,
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: _whiteCard(),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          // -------- TITLE --------
+                                          CustomText(
+                                            text: "Active Status",
+                                            isCopy: false,
+                                            size: 15,
+                                            isBold: true,
+                                          ),
+                                          4.height,
+                                          // -------- SUBTITLE --------
+                                          CustomText(
+                                            text: "Customer Engagement Levels",
+                                            isCopy: false,
+                                            size: 13,
+                                            isBold: false,
+                                            colors: Color(0xff6B7280),
+                                          ),
+                                          10.height,
+                                          // -------- DIVIDER --------
+                                          const Divider(
+                                            height: 1,
+                                            thickness: 1,
+                                            color: Color(0xffD1D5DB),
+                                          ),
+
+                                          18.height,
+
+                                          // -------- RATING BAR () --------
+                                          Expanded(
+                                            child: LayoutBuilder(
+                                              builder: (context, constraints) {
+                                                final hot = int.tryParse(
+                                                    dashController
+                                                        .totalHot.value) ??
+                                                    0;
+                                                final warm = int.tryParse(
+                                                    dashController
+                                                        .totalWarm.value) ??
+                                                    0;
+                                                final cold = int.tryParse(
+                                                    dashController
+                                                        .totalCold.value) ??
+                                                    0;
+                                                final total = hot + warm + cold;
+
+                                                return ActivityRatingBar(
+                                                  hot: hot,
+                                                  warm: warm,
+                                                  cold: cold,
+                                                  totalWidth:
+                                                  constraints.maxWidth,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          12.height,
+                                          Wrap(
+                                            spacing: 16,
+                                            runSpacing: 8,
+                                            children: [
+                                              Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const SizedBox(
+                                                    width: 8,
+                                                    height: 8,
+                                                    child: DecoratedBox(
+                                                      decoration: BoxDecoration(
+                                                        color: Color(
+                                                          0xffEF4444,
+                                                        ),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 6),
+                                                  CustomText(
+                                                    text: "Hot (0-${int.tryParse(dashController.totalHot.value) ??0}d)",
+                                                    isCopy: false,
+                                                    size: 11,
+                                                    isBold: true,
+                                                    colors: const Color(0xffEF4444),
+                                                  ),
+                                                ],
+                                              ),
+
+                                              Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  SizedBox(
+                                                    width: 8,
+                                                    height: 8,
+                                                    child: DecoratedBox(
+                                                      decoration: BoxDecoration(
+                                                        color: Color(
+                                                          0xffF59E0B,
+                                                        ),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 6),
+                                                  CustomText(
+                                                    text:  "Warm (${(int.tryParse(dashController.totalHot.value) ??0)+1}-${int.tryParse(
+                                                        dashController.totalWarm.value) ??0}d)",
+                                                    isCopy: false,
+                                                    size: 11,
+                                                    isBold: true,
+                                                    colors: Color(0xffF59E0B),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  SizedBox(
+                                                    width: 8,
+                                                    height: 8,
+                                                    child: DecoratedBox(
+                                                      decoration: BoxDecoration(
+                                                        color: Color(
+                                                          0xff3B82F6,
+                                                        ),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 6),
+                                                  CustomText(
+                                                    text:  "Cold (${(int.tryParse(dashController.totalWarm.value) ??0)+1}+d)",
+                                                    isCopy: false,
+                                                    size: 11,
+                                                    isBold: true,
+                                                    colors: Color(0xff3B82F6),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    16.width,
+                                    // -------- Call Status --------
+                                    InkWell(
+                                      onTap: (){
                                         remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
                                         controllers.changeTab(0);
                                         Navigator.push(
@@ -577,434 +950,81 @@ class _DashboardPageState extends State<DashboardPage>
                                         );
                                         controllers.oldIndex.value = controllers.selectedIndex.value;
                                         controllers.selectedIndex.value = 6;
-                                      }
-                                  ),30.width,
-                                  WaveStatCard(
-                                    callback: () {
-                                      remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
-                                      controllers.changeTab(2);
-                                      Navigator.push(
-                                        context,
-                                        PageRouteBuilder(
-                                          pageBuilder: (context, animation1, animation2) =>
-                                          const Records(
-                                            isReload: "true",
-                                          ),
-                                          transitionDuration: Duration.zero,
-                                          reverseTransitionDuration: Duration.zero,
-                                        ),
-                                      );
-                                      controllers.oldIndex.value = controllers.selectedIndex.value;
-                                      controllers.selectedIndex.value = 6;
-                                    },
-                                    title: "Appointments",
-                                    numericValue: int.parse(dashController.totalMeetings.value.toString()),
-                                    maxValue: maxValue,
-                                    iconPath: DashboardAssets.date,
-                                    valueColor: const Color(0xff8B2CF5),
-                                  ),30.width,
-                                  WaveStatCard(
-                                    callback: () {
-                                      controllers.selectedProspectSortBy.value = dashController.selectedSortBy.value;
-                                      // Navigator.push(
-                                      //   context,
-                                      //   PageRouteBuilder(
-                                      //     pageBuilder: (context, animation1, animation2) => const Suspects(),
-                                      //     transitionDuration: Duration.zero,
-                                      //     reverseTransitionDuration: Duration.zero,
-                                      //   ),
-                                      // );
-                                      controllers.oldIndex.value = controllers.selectedIndex.value;
-                                      controllers.selectedIndex.value = 100;
-                                    },
-                                    title: "New Customers",
-                                    numericValue: int.parse(dashController.totalSuspects.value.toString()),
-                                    maxValue: maxValue,
-                                    iconPath: DashboardAssets.people,
-                                    valueColor: const Color(0xffF29D38),
-                                  ),30.width,
-                                  WaveStatCard(
-                                    callback: () {
-                                      remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
-                                      Navigator.push(
-                                        context,
-                                        PageRouteBuilder(
-                                          pageBuilder: (context,
-                                              animation1,
-                                              animation2) =>
-                                          const ReminderPage(),
-                                          transitionDuration:
-                                          Duration.zero,
-                                          reverseTransitionDuration:
-                                          Duration.zero,
-                                        ),
-                                      );
-                                      controllers.oldIndex.value =
-                                          controllers.selectedIndex.value;
-                                      controllers.selectedIndex.value =
-                                      11;
-                                    },
-                                    title: "Reminders",
-                                    numericValue: int.parse(dashController
-                                        .totalReminders.value
-                                        .toString()),
-                                    maxValue: maxValue,
-                                    iconPath: DashboardAssets.alarm,
-                                    valueColor: const Color(0xffBB271A),
-                                  ),
-                                  150.width,
-                                ],
-                              ),
-                              20.height,
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    children: [
-                                      // -------- Lead Distribution --------
-                                      SizedBox(
-                                        width: screenWidth / 4,
-                                        // height: 350,
-                                        child: LeadPieCard(
-                                          // title: "Lead Distribution",
-                                          // subtitle: "Breakdown by current stage",
-                                          // total: controllers.allLeadList.length,
-                                          data: [
-                                            for (int i = 0; i < dashController.leadReport.length; i++)
-                                              PieData(
-                                                label: dashController.leadReport[i]["category"] ?? "",
-                                                value: double.tryParse(
-                                                    dashController.leadReport[i]["customer_count"].toString()) ??
-                                                    0,
-                                                color: dashController.color[i],
+                                      },
+                                      child: SizedBox(
+                                        width: screenWidth/4,
+                                        child: CustomerStatusCard(
+                                          items: [
+                                            for (var i = 0;
+                                            i < dashController.visitStatusReport.length;
+                                            i++)
+                                              CustomerStatusItem(
+                                                label: dashController.visitStatusReport[i]["value"].toString(),
+                                                value: int.parse(
+                                                    dashController.visitStatusReport[i]["total_count"].toString()),
+                                                percentage: dashController.total == 0
+                                                    ? 0
+                                                    : double.parse(
+                                                    dashController.visitStatusReport[i]["total_count"].toString()) /
+                                                    dashController.total,
                                               ),
                                           ],
                                         ),
                                       ),
-                                      20.height,
-                                      // Quotations Sent
-                                      SizedBox(
-                                        width: screenWidth/4,
-                                        child: Container(
-                                          height: 250,
-                                          padding: const EdgeInsets.all(16),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(12),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: Color(0x14000000),
-                                                blurRadius: 10,
-                                                offset: Offset(0, 4),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Stack(
-                                            clipBehavior: Clip.none,
-                                            alignment: Alignment.center,
-                                            children: [
-                                              // -------- MAIN CONTENT --------
-                                              Column(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                                children: [
-                                                  Stack(
-                                                    clipBehavior: Clip.none,
-                                                    alignment: Alignment.center,
-                                                    children: [
-                                                      // Main outlined circle
-                                                      Container(
-                                                        width: 110,
-                                                        height: 110,
-                                                        alignment: Alignment.center,
-                                                        decoration: BoxDecoration(
-                                                          shape: BoxShape.circle,
-                                                          border: Border.all(
-                                                            color: Colors.black,
-                                                            width: 2,
-                                                          ),
-                                                        ),
-
-                                                        child:const CustomText(
-                                                          text: "42",
-                                                          isCopy: false,
-                                                          size: 26,
-                                                          isBold: true,
-                                                        ),
-                                                      ),
-
-                                                      // Small top dot
-                                                      const Positioned(
-                                                        top: -6,
-                                                        child: CircleAvatar(
-                                                          radius: 5,
-                                                          backgroundColor:
-                                                          Colors.black,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-
-                                                  16.height,
-                                                  const CustomText(
-                                                    text:"Quotations Sent",
-                                                    isCopy: false,
-                                                    size: 13,
-                                                    isBold: true,
-                                                    colors: Colors.black,
-                                                  ),
-                                                ],
-                                              ),
-                                              // -------- FILE ICON (OVERLAP) --------
-                                              Positioned(
-                                                top: 10,
-                                                left: 10,
-                                                child: Image.asset(
-                                                  DashboardAssets.file,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  16.width,
-                                  // ================= RIGHT COLUMN =================
-                                  Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          // Activity Rating
-                                          Container(
-                                            height: 300,
-                                            width: screenWidth /3.5,
-                                            padding: const EdgeInsets.all(16),
-                                            decoration: _whiteCard(),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                // -------- TITLE --------
-                                                CustomText(
-                                                  text: "Activity Rating",
-                                                  isCopy: false,
-                                                  size: 14,
-                                                  isBold: true,
-                                                ),
-                                                4.height,
-                                                // -------- SUBTITLE --------
-                                                CustomText(
-                                                  text: "Customer Engagement Levels",
-                                                  isCopy: false,
-                                                  size: 12,
-                                                  isBold: false,
-                                                  colors: Color(0xff6B7280),
-                                                ),
-                                                10.height,
-                                                // -------- DIVIDER --------
-                                                const Divider(
-                                                  height: 1,
-                                                  thickness: 1,
-                                                  color: Color(0xffD1D5DB),
-                                                ),
-
-                                                18.height,
-
-                                                // -------- RATING BAR () --------
-                                                Expanded(
-                                                  child: LayoutBuilder(
-                                                    builder: (context, constraints) {
-                                                      final hot = int.tryParse(
-                                                          dashController
-                                                              .totalHot.value) ??
-                                                          0;
-                                                      final warm = int.tryParse(
-                                                          dashController
-                                                              .totalWarm.value) ??
-                                                          0;
-                                                      final cold = int.tryParse(
-                                                          dashController
-                                                              .totalCold.value) ??
-                                                          0;
-                                                      final total = hot + warm + cold;
-
-                                                      return ActivityRatingBar(
-                                                        hot: hot,
-                                                        warm: warm,
-                                                        cold: cold,
-                                                        totalWidth:
-                                                        constraints.maxWidth,
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                                12.height,
-                                                Wrap(
-                                                  spacing: 16,
-                                                  runSpacing: 8,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        const SizedBox(
-                                                          width: 8,
-                                                          height: 8,
-                                                          child: DecoratedBox(
-                                                            decoration: BoxDecoration(
-                                                              color: Color(
-                                                                0xffEF4444,
-                                                              ),
-                                                              shape: BoxShape.circle,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        const SizedBox(width: 6),
-                                                        CustomText(
-                                                          text: "Hot (0-${int.tryParse(dashController.totalHot.value) ??0}d)",
-                                                          isCopy: false,
-                                                          size: 11,
-                                                          isBold: true,
-                                                          colors: const Color(0xffEF4444),
-                                                        ),
-                                                      ],
-                                                    ),
-
-                                                    Row(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        SizedBox(
-                                                          width: 8,
-                                                          height: 8,
-                                                          child: DecoratedBox(
-                                                            decoration: BoxDecoration(
-                                                              color: Color(
-                                                                0xffF59E0B,
-                                                              ),
-                                                              shape: BoxShape.circle,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 6),
-                                                        CustomText(
-                                                          text:  "Warm (${(int.tryParse(dashController.totalHot.value) ??0)+1}-${int.tryParse(
-                                                              dashController.totalWarm.value) ??0}d)",
-                                                          isCopy: false,
-                                                          size: 11,
-                                                          isBold: true,
-                                                          colors: Color(0xffF59E0B),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        SizedBox(
-                                                          width: 8,
-                                                          height: 8,
-                                                          child: DecoratedBox(
-                                                            decoration: BoxDecoration(
-                                                              color: Color(
-                                                                0xff3B82F6,
-                                                              ),
-                                                              shape: BoxShape.circle,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 6),
-                                                        CustomText(
-                                                          text:  "Cold (${(int.tryParse(dashController.totalWarm.value) ??0)+1}+d)",
-                                                          isCopy: false,
-                                                          size: 11,
-                                                          isBold: true,
-                                                          colors: Color(0xff3B82F6),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          16.width,
-                                          // -------- Customer Status --------
-                                          SizedBox(
-                                            width: screenWidth/4,
-                                            child: CustomerStatusCard(
-                                              items: [
-                                                for (var i = 0;
-                                                i < dashController.visitStatusReport.length;
-                                                i++)
-                                                  CustomerStatusItem(
-                                                    label: dashController.visitStatusReport[i]["value"].toString(),
-                                                    value: int.parse(
-                                                        dashController.visitStatusReport[i]["total_count"].toString()),
-                                                    percentage: dashController.total == 0
-                                                        ? 0
-                                                        : double.parse(
-                                                        dashController.visitStatusReport[i]["total_count"].toString()) /
-                                                        dashController.total,
-                                                  ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      20.height,
-                                      // -------- Activity Over Time () --------
-                                      ActivityOverTimeChart(
-                                        maxY: 80,
-                                        xLabels: controllers.xLabels,
-                                        lines: [
-                                          ActivityLineData(
-                                            label: "Calls",
-                                            color: Color(0xff3B82F6),
-                                            values: controllers.calls,
-                                          ),
-                                          ActivityLineData(
-                                            label: "Mails",
-                                            color: Color(0xff10B981),
-                                            values: controllers.mails,
-                                          ),
-                                          ActivityLineData(
-                                            label: "Updates",
-                                            color: Color(0xffEF4444),
-                                            values: controllers.updates,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              20.height,
-                            ],
-                          )),
+                                    ),
+                                  ],
+                                ),
+                                20.height,
+                                // -------- Activity Over Time () --------
+                                ActivityOverTimeChart(
+                                  maxY: 80,
+                                  xLabels: controllers.xLabels,
+                                  lines: [
+                                    ActivityLineData(
+                                      label: "Calls",
+                                      color: Color(0xff3B82F6),
+                                      values: controllers.calls,
+                                    ),
+                                    ActivityLineData(
+                                      label: "Mails",
+                                      color: Color(0xff10B981),
+                                      values: controllers.mails,
+                                    ),
+                                    ActivityLineData(
+                                      label: "Updates",
+                                      color: Color(0xffEF4444),
+                                      values: controllers.updates,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 420),
-                          curve: Curves.easeOutCubic,
-                          top: 0,
-                          bottom: 0,
-                          right: isLeadPanelOpen ? 0 : -240,
-                          child: _leadStagesPanel(),
-                        ),
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 300),
-                          top: 0,
-                          bottom: 0,
-                          right: isLeadPanelOpen ? -64 : 0,
-                          child: AnimatedOpacity(
-                            duration: const Duration(milliseconds: 200),
-                            opacity: isLeadPanelOpen ? 0 : 1,
-                            child: _leadStagesRail(context),
-                          ),
-                        ),
-                      ]
+                        20.height,
+                      ],
+                    )),
+                  ),
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 420),
+                    curve: Curves.easeOutCubic,
+                    top: 0,
+                    bottom: 0,
+                    right: isLeadPanelOpen ? 0 : -240,
+                    child: _leadStagesPanel(),
+                  ),
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 300),
+                    top: 0,
+                    bottom: 0,
+                    right: isLeadPanelOpen ? -64 : 0,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 200),
+                      opacity: isLeadPanelOpen ? 0 : 1,
+                      child: _leadStagesRail(context),
                     ),
                   ),
-                ],
+                ]
               ),
             ),
           ],

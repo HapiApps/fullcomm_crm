@@ -506,7 +506,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       CustomText(
-                                                        text: "Select Stage",
+                                                        text: "New Stage",
                                                         size: 14,
                                                         isBold: true,
                                                         isCopy: false,
@@ -522,7 +522,7 @@ class _ViewLeadState extends State<ViewLead> {
                                                         ),
                                                         child: DropdownButton<String>(
                                                           value: stageId,
-                                                          hint: const Text("Select Stage"),
+                                                          hint: const Text("New Stage"),
                                                           isExpanded: true,
                                                           underline: const SizedBox(),
                                                           items: controllers.leadCategoryList.map((item) {
@@ -792,6 +792,7 @@ class _ViewLeadState extends State<ViewLead> {
                                         // prepare values for UpdateLead
                                         Get.to(
                                           UpdateLead(
+                                            pageName: widget.pageName,
                                             index: widget.listIndex,
                                             list: widget.list,list2: widget.list2,
                                             type: "2",

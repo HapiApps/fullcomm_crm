@@ -1095,8 +1095,9 @@ class ReminderUtils {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomTextField(
-                              hintText: "Enter Event Name",
-                              text: "Event Name",
+                              hintText: "Set reminder for the event",
+                              // hintText: "Enter Event Name",
+                              text: "Set reminder for the event",
                               controller: remController.titleController,
                               width: textFieldSize,
                               keyboardType: TextInputType.text,

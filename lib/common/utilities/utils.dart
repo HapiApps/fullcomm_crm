@@ -593,6 +593,30 @@ class Utils {
                       Obx(
                         () => CustomLoadingButton(
                           callback: () {
+                            if(controllers.emailToCtr.text.trim().isEmpty){
+                              snackBar(context: context, msg: "To is empty!", color: Colors.red);
+                              controllers.emailCtr.reset();
+                              return;
+                            }
+                            if(!controllers.emailToCtr.text.trim().isEmail){
+                              snackBar(
+                                context: context,
+                                msg: "Invalid mail!",
+                                color: Colors.red,
+                              );
+                              controllers.emailCtr.reset();
+                              return;
+                            }
+                            if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                              snackBar(context: context, msg: "Subject is empty!", color: Colors.red);
+                              controllers.emailCtr.reset();
+                              return;
+                            }
+                            if(controllers.emailMessageCtr.text.trim().isEmpty){
+                              snackBar(context: context, msg: "Message is empty!", color: Colors.red);
+                              controllers.emailCtr.reset();
+                              return;
+                            }
                             apiService.insertEmailAPI(context, id.toString(),
                                 imageController.photo1.value);
                           },
@@ -918,6 +942,7 @@ class Utils {
 
   void showComposeMail(BuildContext context) {
     controllers.emailSubjectCtr.clear();
+    imageController.photo1.value="";
     final formatProvider = Provider.of<ReminderProvider>(context, listen: false);
     formatProvider.resetFormatting();
     showDialog(
@@ -1032,6 +1057,9 @@ class Utils {
                                     readOnly: formatProvider.isLink,
                                     style: formatProvider.subjectTextStyle,
                                     decoration: const InputDecoration(
+                                      fillColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
                                       isDense: true,
                                       border: InputBorder.none,
                                       hintText: "",
@@ -1179,12 +1207,28 @@ class Utils {
                             8.width,
                             CustomLoadingButton(
                               callback: () {
+                                if(controllers.emailToCtr.text.trim().isEmpty){
+                                  snackBar(context: context, msg: "To is empty!", color: Colors.red);
+                                  controllers.emailCtr.reset();
+                                  return;
+                                }
+                                if(!controllers.emailToCtr.text.trim().isEmail){
+                                  snackBar(
+                                    context: context,
+                                    msg: "Invalid mail!",
+                                    color: Colors.red,
+                                  );
+                                  controllers.emailCtr.reset();
+                                  return;
+                                }
                                 if(controllers.emailSubjectCtr.text.trim().isEmpty){
                                   snackBar(context: context, msg: "Subject is empty!", color: Colors.red);
+                                  controllers.emailCtr.reset();
                                   return;
                                 }
                                 if(controllers.emailMessageCtr.text.trim().isEmpty){
                                   snackBar(context: context, msg: "Message is empty!", color: Colors.red);
+                                  controllers.emailCtr.reset();
                                   return;
                                 }
                                 apiService.insertEmailAPI(context, "1",
@@ -2926,7 +2970,7 @@ class Utils {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Select Date Range"),
+          title: const Text("Select Default Date Range"),
           content: Obx(() => SizedBox(
             width: 300,
             child: Column(

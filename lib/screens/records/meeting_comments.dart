@@ -1154,6 +1154,8 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                     controllers.dateOfConCtr.text = data.dates.toString()=="null"?"":data.dates.toString();
                                                     controllers.timeOfConCtr.text = data.time.toString()=="null"?"":data.time.toString();
                                                     controllers.callCommentCont.text = data.notes.toString()=="null"?"":data.notes.toString();
+                                                    // controllers.text =
+                                                    // '${data.cusName}${data.comName.isEmpty ? "" : " ,${data.comName}"} ${data.cusName.isEmpty ? "" : "-"}';
                                                   });
                                                   showDialog(
                                                       context: context,
@@ -1348,7 +1350,8 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                                                 borderRadius: 5,
                                                                                 borderColor: Colors.grey.shade300,
                                                                                 hintText: "",
-                                                                                labelText: controllers.selectedCustomerName.value,
+                                                                                // labelText: controllers.cusController.text,
+                                                                                // labelText: controllers.selectedCustomerName.value,
                                                                                 labelBuilder: (customer) =>'${customer.name}${customer.companyName.isEmpty ? "" : " ,${customer.companyName}"} ${customer.name.isEmpty?"":"-"} ${customer.phoneNo}',
                                                                                 itemBuilder: (customer) =>
                                                                                     Container(

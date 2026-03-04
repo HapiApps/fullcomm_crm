@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:get/get.dart';
@@ -36,6 +37,7 @@ class SideBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxBool isSettingsHovered = false.obs;
+    RxBool isLeadHovered = false.obs;
     return
       Obx(() => controllers.isLeftOpen.value?
       Container(
@@ -91,146 +93,141 @@ class SideBar extends StatelessWidget {
               label: constValue.dashboard,
               page: const DashboardPage(),
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: controllers.leadCategoryList.length,
-                itemBuilder: (context,index){
-                  return SidebarItem(
-                    context: context,
-                    controllers: controllers,
-                    colorsConst: colorsConst,
-                    index: int.parse(controllers.leadCategoryList[index].leadStatus),
-                    icon: Icons.remove_red_eye_outlined,
-                    label: controllers.leadCategoryList[index].value,
-                    selectedImage: controllers.leadCategoryList[index].icon1,
-                    unSelectedImage: controllers.leadCategoryList[index].icon2,
-                    isNetWrk: true,
-                    onPreTap: () {
-                      // print("Sidebar Clicked Index: $index");
-                      //
-                      // controllers.isLead.value = false;
-                      //
-                      // final selectedStatus =
-                      // controllers.leadCategoryList[index]["lead_status"];
-                      //
-                      // print("Selected Status: $selectedStatus");
-                      // print("Total Leads Count: ${controllers.allLeadList.length}");
-                      //
-                      // final filteredList = controllers.allLeadList
-                      //     .where((lead) => lead.leadStatus == selectedStatus)
-                      //     .toList();
-                      //
-                      // print("Filtered Leads Count: ${filteredList.length}");
-                      //
-                      // controllers.newLeadList.value = filteredList;
-                      //
-                      // controllers.searchNewLeadList.value =
-                      //     List.from(controllers.newLeadList);
-                      //
-                      // controllers.isLead.value = true;
-                      //
-                      // print("New Lead List Length: ${controllers.newLeadList.length}");
+            // ListView.builder(
+            //   shrinkWrap: true,
+            //   itemCount: controllers.leadCategoryList.length,
+            //     itemBuilder: (context,index){
+            //       return SidebarItem(
+            //         context: context,
+            //         controllers: controllers,
+            //         colorsConst: colorsConst,
+            //         index: int.parse(controllers.leadCategoryList[index].leadStatus),
+            //         icon: Icons.remove_red_eye_outlined,
+            //         label: controllers.leadCategoryList[index].value,
+            //         selectedImage: controllers.leadCategoryList[index].icon1,
+            //         unSelectedImage: controllers.leadCategoryList[index].icon2,
+            //         isNetWrk: true,
+            //         onPreTap: () {},
+            //         page:  NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
+            //           name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
+            //           list2: controllers.leadCategoryList[index].list2, listIndex: index,),
+            //       );
+            //     }),
 
-                    },
-                    page:  NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
-                      name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
-                      list2: controllers.leadCategoryList[index].list2, listIndex: index,),
-                  );
-                }),
-
-            // SidebarItem(
-            //   context: context,
-            //   controllers: controllers,
-            //   colorsConst: colorsConst,
-            //   index: 1,
-            //   icon: Icons.remove_red_eye_outlined,
-            //   label: controllers.leadCategoryList[0].value,
-            //   selectedImage: "assets/images/s_suspects.png",
-            //   unSelectedImage: "assets/images/u_suspects.png",
-            //   onPreTap: () {
-            //     // controllers.selectedMonth.value = null;
-            //     // controllers.selectedProspectSortBy.value = "Today";
-            //     controllers.isLead.value = true;
-            //   },
-            //   page: const Suspects(),
-            // ),
-            // SidebarItem(
-            //   context: context,
-            //   controllers: controllers,
-            //   colorsConst: colorsConst,
-            //   index: 2,
-            //   icon: Icons.flag_outlined,
-            //   label: controllers.leadCategoryList[1]["value"],
-            //   selectedImage: "assets/images/s_prospects.png",
-            //   unSelectedImage: "assets/images/u_prospects.png",
-            //   onPreTap: () {
-            //     // controllers.selectedPMonth.value = null;
-            //     // controllers.selectedQualifiedSortBy.value = "Today";
-            //   },
-            //   page: const Prospects(),
-            // ),
-            // SidebarItem(
-            //   context: context,
-            //   controllers: controllers,
-            //   colorsConst: colorsConst,
-            //   index: 3,
-            //   icon: Icons.verified_outlined,
-            //   label: controllers.leadCategoryList[2]["value"],
-            //   selectedImage: "assets/images/s_qualified.png",
-            //   unSelectedImage: "assets/images/u_qualified.png",
-            //   onPreTap: () {
-            //     // controllers.selectedPMonth.value = null;
-            //     // controllers.selectedQualifiedSortBy.value = "Today";
-            //     controllers.isEmployee.value = true;
-            //   },
-            //   page: const Qualified(),
-            // ),
-            // SidebarItem(
-            //   context: context,
-            //   controllers: controllers,
-            //   colorsConst: colorsConst,
-            //   index: 4,
-            //   icon: Icons.dashboard_customize,
-            //   label: controllers.leadCategoryList[3]["value"],
-            //   selectedImage: "assets/images/s_customer.png",
-            //   unSelectedImage: "assets/images/u_customers.png",
-            //   onPreTap: () {
-            //     // controllers.selectedMonth.value = null;
-            //     // controllers.selectedProspectSortBy.value = "Today";
-            //   },
-            //   page: const ViewCustomer(),
-            // ),
-            // SidebarItem(
-            //   context: context,
-            //   controllers: controllers,
-            //   colorsConst: colorsConst,
-            //   index: 5,
-            //   icon: Icons.cancel_outlined,
-            //   label: controllers.leadCategoryList[5]["value"],
-            //   selectedImage: "assets/images/s_disqualified.png",
-            //   unSelectedImage: "assets/images/u_disqualified.png",
-            //   onPreTap: () {
-            //     // controllers.selectedMonth.value = null;
-            //     // controllers.selectedProspectSortBy.value = "Today";
-            //   },
-            //   page: const DisqualifiedLead(),
-            // ),
-            // SidebarItem(
-            //   context: context,
-            //   controllers: controllers,
-            //   colorsConst: colorsConst,
-            //   index: 12,
-            //   icon: Icons.dashboard_customize,
-            //   label: controllers.leadCategoryList[4]["value"],
-            //   selectedImage: "assets/images/s_target.png",
-            //   unSelectedImage: "assets/images/u_target.png",
-            //   onPreTap: () {
-            //     // controllers.selectedMonth.value = null;
-            //     // controllers.selectedProspectSortBy.value = "Today";
-            //   },
-            //   page: const TargetLeads(),
-            // ),
-
+            Obx(() {
+              bool isExpanded = controllers.isLeadsExpanded.value;
+              bool isSelected = controllers.selectedIndex.value == 500 ||
+                  (controllers.selectedIndex.value >= 0 &&
+                      controllers.selectedIndex.value <= controllers.leadCategoryList.length-1);
+              // bool isSelected = controllers.selectedIndex.value == 500;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 5),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    onEnter: (_) => isLeadHovered.value = true,
+                    onExit: (_) => isLeadHovered.value = false,
+                    child: GestureDetector(
+                      onTap: () {
+                        controllers.oldIndex.value = controllers.selectedIndex.value;
+                        // controllers.selectedIndex.value = 7;
+                        controllers.selectedIndex.value = 500;
+                        controllers.isLeadsExpanded.toggle();
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        curve: Curves.easeInOut,
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? const Color(0xffF3F8FD)
+                              : isLeadHovered.value
+                              ? const Color(0xffF8FAFF)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: isSelected
+                              ? Border(
+                            left: BorderSide(
+                              color: colorsConst.primary,
+                              width: 4,
+                            ),
+                          )
+                              : null,
+                        ),
+                        child: Row(
+                          children: [
+                            Image.asset(isSelected?"assets/images/s_customer.png":"assets/images/u_customers.png",width: 20,height: 20,),
+                            // Icon(
+                            //   Icons.settings,
+                            //   size: 20,
+                            //   color: isSelected
+                            //       ? colorsConst.primary
+                            //       : isLeadHovered.value
+                            //       ? colorsConst.primary.withOpacity(0.7)
+                            //       : Colors.black,
+                            // ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: IgnorePointer(
+                                child: Text(
+                                  "Leads",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: isSelected
+                                        ? colorsConst.primary
+                                        : isLeadHovered.value
+                                        ? colorsConst.primary
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            AnimatedRotation(
+                              duration: const Duration(milliseconds: 250),
+                              turns: isExpanded ? 0.5 : 0,
+                              child: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 22,
+                                color: isSelected ? colorsConst.primary : Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: controllers.leadCategoryList.length,
+                      itemBuilder: (context,index){
+                        return AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: isExpanded?
+                          subItem(context, controllers.isLeadsExpanded,controllers.isSettingsExpanded,controllers.leadCategoryList[index].value, int.parse(controllers.leadCategoryList[index].leadStatus),
+                            NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
+                            name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
+                            list2: controllers.leadCategoryList[index].list2, listIndex: index,),
+                          ):0.height,
+                        );
+                      }),
+                ],
+              );
+            }),
+            SidebarItem(
+              context: context,
+              controllers: controllers,
+              colorsConst: colorsConst,
+              // index: 6,
+              index: int.parse(controllers.leadCategoryList.last.leadStatus),
+              icon: Icons.receipt_long,
+              label: controllers.leadCategoryList.last.value,
+              selectedImage: "assets/images/s_target.png",
+              unSelectedImage: "assets/images/u_target.png",
+              page: NewLeadPage(index: controllers.leadCategoryList.last.leadStatus,
+                name: controllers.leadCategoryList.last.value,list: controllers.leadCategoryList.last.list,
+                list2: controllers.leadCategoryList.last.list2, listIndex: controllers.leadCategoryList.length-1,),
+            ),
             SidebarItem(
               context: context,
               controllers: controllers,
@@ -260,7 +257,7 @@ class SideBar extends StatelessWidget {
                 ? const SizedBox.shrink()
                 : Obx(() {
               bool isExpanded = controllers.isSettingsExpanded.value;
-              bool isSelected = controllers.selectedIndex.value == 7 ||
+              bool isSelected = controllers.selectedIndex.value == 103 ||
                   (controllers.selectedIndex.value >= 701 &&
                       controllers.selectedIndex.value <= 705);
               return Column(
@@ -347,11 +344,11 @@ class SideBar extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          subItem(context, "General Settings", 701, const GeneralSettings()),
-                          subItem(context, "Role Management", 702, const RoleManagement()),
-                          //subItem(context, "User Plan & Access", 703, const UserPlan()),
-                          subItem(context, "User Management", 704, const EmployeeScreen()),
-                          subItem(context, "Reminder Settings", 705, const ReminderSettings()),
+                          subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "General Settings", 701, const GeneralSettings()),
+                          subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "Role Management", 702, const RoleManagement()),
+                          //subItem(context,controllers.isSettingsExpanded, "User Plan & Access", 703, const UserPlan()),
+                          subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "User Management", 704, const EmployeeScreen()),
+                          subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "Reminder Settings", 705, const ReminderSettings()),
                         ],
                       ),
                     )
@@ -531,6 +528,7 @@ class SidebarItem extends StatelessWidget {
           controllers.oldIndex.value = controllers.selectedIndex.value;
           controllers.selectedIndex.value = index;
           controllers.isSettingsExpanded.value = false;
+          controllers.isLeadsExpanded.value = false;
         },
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
@@ -619,7 +617,7 @@ class SidebarItem extends StatelessWidget {
   }
 }
 
-Widget subItem(BuildContext context, String title, int index, Widget page) {
+Widget subItem(BuildContext context, RxBool select, RxBool unSelect, String title, int index, Widget page) {
   RxBool isHovered = false.obs;
 
   return Obx(() {
@@ -646,8 +644,8 @@ Widget subItem(BuildContext context, String title, int index, Widget page) {
           onTap: () {
             controllers.oldIndex.value = controllers.selectedIndex.value;
             controllers.selectedIndex.value = index;
-            controllers.isSettingsExpanded.value = true;
-
+            select.value = true;
+            unSelect.value = false;
             Navigator.push(
               context,
               PageRouteBuilder(

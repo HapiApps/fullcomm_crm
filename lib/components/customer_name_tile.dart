@@ -356,6 +356,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                         child: InkWell(
                             onTap: () {
                               Get.to(UpdateLead(
+                                pageName: widget.pageName,
                                 index: widget.listIndex,
                                 list: widget.list,list2: widget.list2,
                                 type:"1",
@@ -890,11 +891,13 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                       ],
                                     );
                                   });
-                            }else if(value=="Set a Reminder"){
+                            }
+                            else if(value=="Set a Reminder"){
                               controllers.selectNCustomer(widget.id.toString(), widget.mainName.toString(), widget.mainEmail.toString(),
                                   widget.mainMobile.toString());
                               reminderUtils.showAddReminderDialog(context);
                             }else if(value=="View appointment"){
+                              controllers.selectedIndex.value = 101;
                               apiService.getAllMeetingActivity(widget.id.toString());
                               controllers.changeTab(2);
                               Navigator.push(
@@ -907,10 +910,10 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                 ),
                               );
                               controllers.oldIndex.value = controllers.selectedIndex.value;
-                              controllers.selectedIndex.value = 6;
                             }else if(value=="View call records") {
                               apiService.getAllCallActivity(widget.id.toString());
                               controllers.changeTab(0);
+                              controllers.selectedIndex.value = 101;
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
@@ -922,11 +925,11 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                               );
                               controllers.oldIndex.value =
                                   controllers.selectedIndex.value;
-                              controllers.selectedIndex.value = 6;
                             }else if(value=="View email record") {
                               controllers.customMailFuture =
                                   apiService.mailCommentDetails(
                                       widget.id.toString());
+                              controllers.selectedIndex.value = 101;
                               Get.to(CusMailComments(
                                 mainEmail: widget.mainEmail,
                                 mainMobile: widget.mainMobile,
@@ -1280,7 +1283,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             CustomText(
-                                              text: "Select Stage",
+                                              text: "New Stage",
                                               size: 14,
                                               isBold: true,
                                               isCopy: false,
@@ -1296,7 +1299,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                               ),
                                               child: DropdownButton<String>(
                                                 value: stageId,
-                                                hint: const Text("Select Stage"),
+                                                hint: const Text("New Stage"),
                                                 isExpanded: true,
                                                 underline: const SizedBox(),
                                                 items: controllers.leadCategoryList.map((item) {
@@ -1404,7 +1407,73 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                   );
                                 },
                               );
-                            }else if(value=="No Matches"){
+                            }else if(value=="edit"){
+                              Get.to(UpdateLead(
+                                pageName: widget.pageName,
+                                index: widget.listIndex,
+                                list: widget.list,list2: widget.list2,
+                                type:"1",
+                                visitType: widget.visitType.toString(),
+                                id: widget.id,
+                                detailsOfRequired: widget.detailsOfServiceReq,
+                                linkedin: widget.linkedin,
+                                x: widget.x,
+                                mainName: widget.mainName,
+                                mainMobile: widget.mobileNumber,
+                                mainEmail: widget.email,
+                                mainWhatsApp: widget.whatsappNumber,
+                                companyName: widget.companyName,
+                                status: widget.status,
+                                rating: widget.rating,
+                                emailUpdate: widget.quotationRequired,
+                                name: widget.mainName,
+                                title: widget.title,
+                                mobileNumber: widget.mobileNumber,
+                                whatsappNumber: widget.mobileNumber,
+                                email: widget.email,
+                                mainTitle: widget.title,
+                                addressId: widget.addressId,
+                                companyWebsite: widget.companyWebsite,
+                                companyNumber: widget.companyNumber,
+                                companyEmail: widget.companyEmail,
+                                industry: widget.industry,
+                                productServices: widget.productServices,
+                                source: widget.source,
+                                owner: widget.owner,
+                                budget: widget.budget,
+                                points: widget.points,
+                                timelineDecision: widget.timelineDecision,
+                                serviceInterest: widget.serviceInterest,
+                                description: widget.description,
+                                leadStatus: widget.leadStatus,
+                                active: widget.active,
+                                addressLine1: widget.addressLine1,
+                                addressLine2: widget.addressLine2,
+                                area: widget.area,
+                                city: widget.city,
+                                state: widget.state,
+                                country: widget.country,
+                                pinCode: widget.pinCode,
+                                quotationStatus: widget.quotationStatus,
+                                productDiscussion: widget.productDiscussion,
+                                discussionPoint: widget.discussionPoint,
+
+                                notes: widget.notes.toString(),
+                                statusUpdate: widget.statusUpdate,
+                                prospectEnrollmentDate: widget.prospectEnrollmentDate ?? "",
+                                expectedConvertionDate: widget.expectedConvertionDate ?? "",
+                                numOfHeadcount: widget.numOfHeadcount ?? "",
+                                expectedBillingValue: widget.expectedBillingValue ?? "",
+                                arpuValue: widget.arpuValue ?? "",
+                                updateTs: widget.updatedTs.toString(),
+                                sourceDetails: widget.sourceDetails.toString(),
+                              ));
+                            }else if(value=="call log"){
+                              controllers.selectNCustomer(widget.id.toString(), widget.mainName.toString(), widget.mainEmail.toString(),
+                                  widget.mainMobile.toString());
+                              reminderUtils.showAddReminderDialog(context);
+                            }
+                            else if(value=="No Matches"){
                               showDialog(
                                   context: context,
                                   barrierDismissible: false,
@@ -1494,6 +1563,14 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                 child: Text("Promote",
                                     style:
                                     TextStyle(color: colorsConst.textColor))),
+                            PopupMenuItem(
+                                value: "edit",
+                                child: Text("Edit ${widget.pageName}",
+                                    style: TextStyle(color: colorsConst.textColor))),
+                            PopupMenuItem(
+                                value: "call log",
+                                child: Text("Add Call Log",
+                                    style: TextStyle(color: colorsConst.textColor))),
                             PopupMenuItem(
                                 value: "Set a Reminder",
                                 child: Text("Set a Reminder",

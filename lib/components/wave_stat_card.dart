@@ -106,6 +106,7 @@ import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 
 import '../common/utilities/animated_wave_painter.dart';
+import 'Customtext.dart';
 
 class WaveStatCard extends StatefulWidget {
   final String title;
@@ -214,7 +215,7 @@ class _WaveStatCardState extends State<WaveStatCard>
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            fontSize: 13,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -228,13 +229,8 @@ class _WaveStatCardState extends State<WaveStatCard>
                     ],
                   ),
                   5.height,
-                  Text(
-                    widget.numericValue.toString(),
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: widget.valueColor,
-                    ),
+                  CustomText(
+                    text:widget.numericValue.toString(),size: 20,colors: widget.valueColor,isCopy: false,isBold: true,
                   ),
                 ],
               ),
