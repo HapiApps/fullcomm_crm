@@ -71,8 +71,16 @@ class FilterSection extends StatelessWidget {
         : "")
         .join(" ");
   }
+
   @override
   Widget build(BuildContext context) {
+    var type;
+    for (var i=0;i<controllers.leadCategoryList.length;i++){
+      if(controllers.leadCategoryList[i].leadStatus==leadIndex){
+        type=controllers.leadCategoryList[i].displayOrder;
+        break;
+      }
+    }
     return Column(
       children: [
         isActionEnabled?Row(
@@ -196,9 +204,6 @@ class FilterSection extends StatelessWidget {
                       break;
                       }
                     }
-
-                      // optional: search clear panna next select smooth ah work aagum
-                      controllers.search.clear();
                     },
                     onClear: () {
                       if (onSearchChanged != null) onSearchChanged!("");
@@ -240,38 +245,36 @@ class FilterSection extends StatelessWidget {
                     // title == "Customers"
                     //     ? 0.height
                     //     :
-                    ActionButton(
-                      width: 100,
-                      image: "assets/images/action_promote.png",
-                      name: "Promote",
-                      toolTip:
-                      "Click here to promote the customer details",
-                      callback: onPromote,
+                    // if()
+                    if(type!=controllers.leadCategoryList.length)
+                    Row(
+                      children: [
+                        ActionButton(
+                          width: 100,
+                          image: "assets/images/action_promote.png",
+                          name: "Promote",
+                          toolTip:
+                          "Click here to promote the customer details",
+                          callback: onPromote,
+                        ),
+                        10.width,
+                      ],
                     ),
-                    10.width,
-                    // title == "Suspects"
-                    //     ?
-                    // ActionButton(
-                    //   width: 110,
-                    //   image:
-                    //   "assets/images/action_disqualified.png",
-                    //   name: "No Matches",
-                    //   toolTip:
-                    //   "Click here to No Matches the customer details",
-                    //   callback: onDisqualify!,
-                    // )
-                    //     :
                     if(leadIndex!="1")
-                    ActionButton(
-                      width: 100,
-                      image:
-                      "assets/images/action_disqualified.png",
-                      name: "Demote",
-                      toolTip:
-                      "Click here to No Matches the customer details",
-                      callback: onDemote!,
+                    Row(
+                      children: [
+                        ActionButton(
+                          width: 100,
+                          image:
+                          "assets/images/action_disqualified.png",
+                          name: "Demote",
+                          toolTip:
+                          "Click here to No Matches the customer details",
+                          callback: onDemote!,
+                        ),
+                        10.width,
+                      ],
                     ),
-                    10.width,
                   ],
                 ),
                 ActionButton(

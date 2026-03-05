@@ -116,10 +116,18 @@ class SideBar extends StatelessWidget {
 
             Obx(() {
               bool isExpanded = controllers.isLeadsExpanded.value;
-              bool isSelected = controllers.selectedIndex.value == 500 ||
-                  (controllers.selectedIndex.value >= 0 &&
-                      controllers.selectedIndex.value <= controllers.leadCategoryList.length-1);
-              // bool isSelected = controllers.selectedIndex.value == 500;
+              // bool isSelected = controllers.selectedIndex.value == 500 ||
+              //     (controllers.selectedIndex.value >= 0 &&
+              //         controllers.selectedIndex.value <= controllers.leadCategoryList.length-2);
+              bool isSelected = false;
+              isSelected = controllers.selectedIndex.value == 500;
+              for (var i = 0; i < controllers.leadCategoryList.length - 1; i++) {
+                if (controllers.selectedIndex.value ==
+                    int.parse(controllers.leadCategoryList[i].leadStatus)) {
+                  isSelected = true;
+                  break;
+                }
+              }
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -157,7 +165,7 @@ class SideBar extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            Image.asset(isSelected?"assets/images/s_customer.png":"assets/images/u_customers.png",width: 20,height: 20,),
+                            Image.asset(isSelected?"assets/images/s_customer.png":isLeadHovered.value?"assets/images/s_customer.png":"assets/images/u_customers.png",width: 20,height: 20,),
                             // Icon(
                             //   Icons.settings,
                             //   size: 20,
@@ -199,7 +207,7 @@ class SideBar extends StatelessWidget {
                   ),
                   ListView.builder(
                       shrinkWrap: true,
-                      itemCount: controllers.leadCategoryList.length,
+                      itemCount: controllers.leadCategoryList.length - 1,
                       itemBuilder: (context,index){
                         return AnimatedSwitcher(
                           duration: const Duration(milliseconds: 300),
@@ -214,6 +222,7 @@ class SideBar extends StatelessWidget {
                 ],
               );
             }),
+            if(controllers.leadCategoryList.isNotEmpty)
             SidebarItem(
               context: context,
               controllers: controllers,
@@ -516,6 +525,7 @@ class SidebarItem extends StatelessWidget {
           if (onTap != null) {
             onTap!();
           } else if (page != null) {
+            controllers.search.clear();
             Navigator.push(
               context,
               PageRouteBuilder(
@@ -642,6 +652,7 @@ Widget subItem(BuildContext context, RxBool select, RxBool unSelect, String titl
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () {
+            controllers.search.clear();
             controllers.oldIndex.value = controllers.selectedIndex.value;
             controllers.selectedIndex.value = index;
             select.value = true;

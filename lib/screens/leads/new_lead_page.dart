@@ -41,17 +41,58 @@ class _NewLeadPageState extends State<NewLeadPage> {
   final ScrollController _leftController = ScrollController();
   final ScrollController _rightController = ScrollController();
   late FocusNode _focusNode;
+  void searchBy(){
+    // controllers.searchProspects.value = controllers.search.text.toString();
+    // final suggestions = widget.list2.where(
+    //         (user) {
+    //       final phone = user.mobileNumber.toString().toLowerCase();
+    //       final name = user.firstname.toString().toLowerCase();
+    //       final city = user.companyName.toString().toLowerCase();
+    //       final input = controllers.search.text.toString().toLowerCase().trim();
+    //       return phone.contains(input) ||name.contains(input) ||city.contains(input);
+    //     }).toList();
+    // widget.list.value = suggestions;
+    // controllers.selectRadio(widget.list,widget.list2);
+    controllers.searchProspects.value = controllers.search.text;
+
+    final input = controllers.search.text.toLowerCase().trim();
+    final inputNoSpace = input.replaceAll(" ", "");
+
+    final suggestions = widget.list2.where((user) {
+
+      final phone = user.mobileNumber.toString().toLowerCase();
+      final name = user.firstname.toString().toLowerCase();
+      final company = user.companyName.toString().toLowerCase();
+
+      final phoneNoSpace = phone.replaceAll(" ", "");
+      final nameNoSpace = name.replaceAll(" ", "");
+      final companyNoSpace = company.replaceAll(" ", "");
+
+      return phone.contains(input) ||
+          name.contains(input) ||
+          company.contains(input) ||
+          phoneNoSpace.contains(inputNoSpace) ||
+          nameNoSpace.contains(inputNoSpace) ||
+          companyNoSpace.contains(inputNoSpace);
+
+    }).toList();
+
+    widget.list.value = suggestions;
+
+    controllers.selectRadio(widget.list, widget.list2);
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    debugPrint("widget.list: ${widget.list}");
-    debugPrint("widget.list2: ${widget.list}");
-    debugPrint("widget.list: ${widget.list.length}");
-    debugPrint("widget.list2: ${widget.list2.length}");
+    // debugPrint("widget.list: ${widget.list}");
+    // debugPrint("widget.list2: ${widget.list}");
+    // debugPrint("widget.list: ${widget.list.length}");
+    // debugPrint("widget.list2: ${widget.list2.length}");
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
+      searchBy();
     });
     Future.delayed(Duration.zero, () {
       apiService.changeList(widget.index);
@@ -737,17 +778,36 @@ class _NewLeadPageState extends State<NewLeadPage> {
 
                       searchController: controllers.search,
                       onSearchChanged: (value) {
-                        controllers.searchProspects.value = value.toString();
-                        final suggestions = widget.list2.where(
-                                (user) {
-                              final phone = user.mobileNumber.toString().toLowerCase();
-                              final name = user.firstname.toString().toLowerCase();
-                              final city = user.companyName.toString().toLowerCase();
-                              final input = value.toString().toLowerCase().trim();
-                              return phone.contains(input) ||name.contains(input) ||city.contains(input);
-                            }).toList();
+                        controllers.searchProspects.value = controllers.search.text;
+
+                        final input = controllers.search.text.toLowerCase().trim();
+                        final inputNoSpace = input.replaceAll(" ", "");
+
+                        final suggestions = widget.list2.where((user) {
+
+                          final company = user.companyName.toString().toLowerCase();
+                          final name = user.firstname.toString().toLowerCase();
+                          final phone = user.mobileNumber.toString().toLowerCase();
+
+                          final companyNoSpace = company.replaceAll(" ", "");
+                          final nameNoSpace = name.replaceAll(" ", "");
+
+                          // initial letters
+                          final companyInitial = company.split(" ").map((e) => e[0]).join();
+                          final nameInitial = name.split(" ").map((e) => e[0]).join();
+
+                          return company.contains(input) ||
+                              name.contains(input) ||
+                              phone.contains(input) ||
+                              companyNoSpace.contains(inputNoSpace) ||
+                              nameNoSpace.contains(inputNoSpace) ||
+                              companyInitial.contains(inputNoSpace) ||
+                              nameInitial.contains(inputNoSpace);
+
+                        }).toList();
+
                         widget.list.value = suggestions;
-                        controllers.selectRadio(widget.list,widget.list2);
+                        controllers.selectRadio(widget.list, widget.list2);
                       },
                       onSelectMonth: () {
                         controllers.selectMonth(
@@ -1015,10 +1075,11 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                           itemBuilder: (context, index) {
                                             NewLeadObj data = widget.list[index];
                                             return CustomLeadTile(
+                                              leadIndex: widget.index,
                                               key: ValueKey(data.userId),
                                               listIndex: index,
                                               list: widget.list,list2: widget.list2,
-                                              pageName: "Prospects",
+                                              pageName: widget.name,
                                               saveValue: data.select==true?true:false,
                                               onChanged: (value) {
                                                 controllers.isAllSelected.value = false;

@@ -22,7 +22,7 @@ import '../invoice/invoice.dart';
 class ViewLead extends StatefulWidget {
   final int listIndex;
   final String? id;
-  final String? leadIndex;
+  final String leadIndex;
   final String pageName;
   final String? name;
   final String? mobileNumber;
@@ -68,7 +68,7 @@ class ViewLead extends StatefulWidget {
     this.pinCode,
     required this.updateTs,
     required this.notes,
-    required this.sourceDetails, required this.whatsAppNo, this.leadIndex, required this.list, required this.list2, required this.listIndex,
+    required this.sourceDetails, required this.whatsAppNo, required this.leadIndex, required this.list, required this.list2, required this.listIndex,
   });
 
   @override
@@ -76,6 +76,8 @@ class ViewLead extends StatefulWidget {
 }
 
 class _ViewLeadState extends State<ViewLead> {
+  var type;
+
   late FocusNode _focusNode;
   late ScrollController _controller;
   String _formatHeading(String heading) {
@@ -98,10 +100,23 @@ class _ViewLeadState extends State<ViewLead> {
       return input;
     }
   }
-
+void checkType(){
+  print("type... $type");
+  for (var i=0;i<controllers.leadCategoryList.length;i++){
+    print("widget.leadIndex... ${widget.leadIndex}");
+    print("controllers.leadCategoryList[i].leadStatus... ${controllers.leadCategoryList[i].leadStatus}");
+    print("controllers.leadCategoryList[i].leadStatus... ${controllers.leadCategoryList[i].displayOrder}");
+    if(controllers.leadCategoryList[i].leadStatus==widget.leadIndex){
+      type=controllers.leadCategoryList[i].displayOrder;
+      print("type... $type");
+      break;
+    }
+  }
+}
   @override
   void initState() {
     super.initState();
+    checkType();
     _controller = ScrollController();
     _focusNode = FocusNode();
     _focusNode.requestFocus();
@@ -212,658 +227,552 @@ class _ViewLeadState extends State<ViewLead> {
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 100,
-                                    height: 35,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        shadowColor: Colors.transparent,
-                                        backgroundColor: colorsConst.primary,
-                                      ),
-                                      onPressed: () {
-                                        Get.to(InvoiceView(
-                                          cName: displayName,
-                                          address:"${widget.addressLine1.toString()},${widget.addressLine2.toString()},${widget.area.toString()},"
-                                              "${widget.city.toString()},${widget.state.toString()}""${widget.country.toString()},${widget.pinCode.toString()}",
-                                          mail: widget.email.toString(), number:widget.mobileNumber.toString()));
-                                        },
-                                      child: MouseRegion(
-                                        cursor: SystemMouseCursors.click,
-                                        child: Text(
-                                          "Invoice",
-                                          style: TextStyle(
-                                            color: Colors.white,
+                                    width: screenWidth / 2.5,
+                                    // color: Colors.pink,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        SizedBox(
+                                          width: 100,
+                                          height: 35,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              shadowColor: Colors.transparent,
+                                              backgroundColor: colorsConst.primary,
+                                            ),
+                                            onPressed: () {
+                                              Get.to(InvoiceView(
+                                                  cName: displayName,
+                                                  address:"${widget.addressLine1.toString()},${widget.addressLine2.toString()},${widget.area.toString()},"
+                                                      "${widget.city.toString()},${widget.state.toString()}""${widget.country.toString()},${widget.pinCode.toString()}",
+                                                  mail: widget.email.toString(), number:widget.mobileNumber.toString()));
+                                            },
+                                            child: MouseRegion(
+                                              cursor: SystemMouseCursors.click,
+                                              child: Text(
+                                                "Invoice",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                  10.width,
-                                  SizedBox(
-                                    width: 100,
-                                    height: 35,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        shadowColor: Colors.transparent,
-                                        backgroundColor: colorsConst.primary,
-                                      ),
-                                      // onPressed: () {
-                                      //   // mailUtils.showPromoteDialog(
-                                      //   //  context: context, pageName: widget.pageName,
-                                      //   //   onSubmit: () async {
-                                      //   //     final deleteData = {
-                                      //   //       "lead_id": widget.id.toString(),
-                                      //   //       "user_id": controllers.storage.read("id").toString(),
-                                      //   //       "rating": selectedStage == "Prospects"?"2":selectedStage == "Qualified"?"3": selectedStage == "Customers"?"4":"1",
-                                      //   //       "cos_id": controllers.storage.read("cos_id").toString(),
-                                      //   //       "mail_id": widget.email.toString(),
-                                      //   //       "reason" : reasonController.text.trim(),
-                                      //   //     };
-                                      //   //     await apiService.insertLeadPromoteAPI(context, [deleteData]);
-                                      //   // },
-                                      //   // );
-                                      //   ///
-                                      //   showDialog(
-                                      //     context: context,
-                                      //     builder: (context) {
-                                      //       TextEditingController reasonController = TextEditingController();
-                                      //       String dropValue = widget.pageName == "Prospects"
-                                      //           ? "Qualified"
-                                      //           : widget.pageName == "Qualified"
-                                      //           ? "Customers" : "Prospects";
-                                      //       String selectedStage = dropValue;
-                                      //       return StatefulBuilder(
-                                      //         builder: (context, setState) {
-                                      //           return AlertDialog(
-                                      //             title: CustomText(
-                                      //               text: "Move to Next Level",
-                                      //               size: 18,
-                                      //               isBold: true,
-                                      //               isCopy: false,
-                                      //               colors: colorsConst.textColor,
-                                      //             ),
-                                      //             content: Column(
-                                      //               mainAxisSize: MainAxisSize.min,
-                                      //               crossAxisAlignment: CrossAxisAlignment.start,
-                                      //               children: [
-                                      //                 CustomText(
-                                      //                   text: "Select Stage",
-                                      //                   size: 14,
-                                      //                   isBold: true,
-                                      //                   isCopy: false,
-                                      //                 ),
-                                      //                 8.height,
-                                      //                 Container(
-                                      //                   padding: EdgeInsets.symmetric(horizontal: 8),
-                                      //                   decoration: BoxDecoration(
-                                      //                     border: Border.all(color: colorsConst.primary),
-                                      //                     borderRadius: BorderRadius.circular(4),
-                                      //                   ),
-                                      //                   child: DropdownButton<String>(
-                                      //                     value: selectedStage,
-                                      //                     isExpanded: true,
-                                      //                     focusColor: Colors.transparent,
-                                      //                     underline: SizedBox(),
-                                      //                     items: [//santhiya2
-                                      //                       "Suspects",
-                                      //                       "Prospects",
-                                      //                       "Qualified",
-                                      //                       "Customers",
-                                      //                     ].map((value) {
-                                      //                       return DropdownMenuItem(
-                                      //                         value: value,
-                                      //                         child: Text(value),
-                                      //                       );
-                                      //                     }).toList(),
-                                      //                     onChanged: (value) {
-                                      //                       setState(() {
-                                      //                         selectedStage = value!;
-                                      //                       });
-                                      //                     },
-                                      //                   ),
-                                      //                 ),
-                                      //                 15.height,
-                                      //                 TextField(
-                                      //                   controller: reasonController,
-                                      //                   decoration: InputDecoration(
-                                      //                     labelText: "Reason",
-                                      //                     border: OutlineInputBorder(),
-                                      //                   ),
-                                      //                 ),
-                                      //               ],
-                                      //             ),
-                                      //             actions: [
-                                      //               Row(
-                                      //                 mainAxisAlignment: MainAxisAlignment.end,
-                                      //                 children: [
-                                      //                   Container(
-                                      //                     decoration: BoxDecoration(
-                                      //                         border: Border.all(color: colorsConst.primary),
-                                      //                         color: Colors.white),
-                                      //                     width: 80,
-                                      //                     height: 25,
-                                      //                     child: ElevatedButton(
-                                      //                         style: ElevatedButton.styleFrom(
-                                      //                           shape: const RoundedRectangleBorder(
-                                      //                             borderRadius: BorderRadius.zero,
-                                      //                           ),
-                                      //                           backgroundColor: Colors.white,
-                                      //                         ),
-                                      //                         onPressed: () {
-                                      //                           Navigator.pop(context);
-                                      //                         },
-                                      //                         child: CustomText(
-                                      //                           text: "Cancel",
-                                      //                           isCopy: false,
-                                      //                           colors: colorsConst.primary,
-                                      //                           size: 14,
-                                      //                         )),
-                                      //                   ),
-                                      //                   10.width,
-                                      //                   CustomLoadingButton(
-                                      //                     callback: () async {
-                                      //                       final deleteData = {
-                                      //                         "lead_id": widget.id.toString(),
-                                      //                         "user_id": controllers.storage.read("id").toString(),
-                                      //                         "rating": selectedStage == "Prospects"?"2":selectedStage == "Qualified"?"3": selectedStage == "Customers"?"4":"1",
-                                      //                         "cos_id": controllers.storage.read("cos_id").toString(),
-                                      //                         "mail_id": widget.email.toString(),
-                                      //                         "reason" : reasonController.text.trim(),
-                                      //                       };
-                                      //                       await apiService.insertLeadPromoteAPI(context, [deleteData]);
-                                      //                       // if (selectedStage == "Prospects") {
-                                      //                       //   await apiService.insertQualifiedAPI(context, [deleteData]);
-                                      //                       // } else if (selectedStage == "Qualified") {
-                                      //                       //   await apiService.insertPromoteCustomerAPI(context, [deleteData]);
-                                      //                       // } else if (selectedStage == "No Matches") {
-                                      //                       //   await apiService.qualifiedCustomersAPI(context, [deleteData]);
-                                      //                       // } else {
-                                      //                       //   await apiService.insertProspectsAPI(context, [deleteData]);
-                                      //                       // }
-                                      //                     },
-                                      //                     height: 35,
-                                      //                     isLoading: true,
-                                      //                     backgroundColor:
-                                      //                     colorsConst.primary,
-                                      //                     radius: 2,
-                                      //                     width: 80,
-                                      //                     controller:
-                                      //                     controllers.productCtr,
-                                      //                     isImage: false,
-                                      //                     text: "Promote",
-                                      //                     textColor: Colors.white,
-                                      //                   ),
-                                      //                 ],
-                                      //               )
-                                      //             ],
-                                      //           );
-                                      //         },
-                                      //       );
-                                      //     },
-                                      //   );
-                                      //
-                                      //   // showDialog(
-                                      //   //     context: context,
-                                      //   //     barrierDismissible: false,
-                                      //   //     builder: (context) {
-                                      //   //       return AlertDialog(
-                                      //   //         content: CustomText(
-                                      //   //           text: "Are you moving to the next level?",
-                                      //   //           isCopy: true,
-                                      //   //           size: 16,
-                                      //   //           isBold: true,
-                                      //   //           colors: colorsConst.textColor,
-                                      //   //         ),
-                                      //   //         actions: [
-                                      //   //           Row(
-                                      //   //             mainAxisAlignment: MainAxisAlignment.end,
-                                      //   //             children: [
-                                      //   //               Container(
-                                      //   //                 decoration: BoxDecoration(
-                                      //   //                     border: Border.all(
-                                      //   //                         color: colorsConst.primary),
-                                      //   //                     color: Colors.white),
-                                      //   //                 width: 80,
-                                      //   //                 height: 25,
-                                      //   //                 child: ElevatedButton(
-                                      //   //                     style: ElevatedButton.styleFrom(
-                                      //   //                       shape: const RoundedRectangleBorder(
-                                      //   //                         borderRadius:
-                                      //   //                         BorderRadius.zero,
-                                      //   //                       ),
-                                      //   //                       backgroundColor: Colors.white,
-                                      //   //                     ),
-                                      //   //                     onPressed: () {
-                                      //   //                       Navigator.pop(context);
-                                      //   //                     },
-                                      //   //                     child: CustomText(
-                                      //   //                       text: "Cancel",
-                                      //   //                       colors: colorsConst.primary,
-                                      //   //                       size: 14,
-                                      //   //                       isCopy: false,
-                                      //   //                     )),
-                                      //   //               ),
-                                      //   //               10.width,
-                                      //   //               CustomLoadingButton(
-                                      //   //                 callback: () async {
-                                      //   //                   final deleteData = {
-                                      //   //                     "lead_id": widget.id.toString(),
-                                      //   //                     "user_id": controllers.storage.read("id").toString(),
-                                      //   //                     "rating": (widget.rating ?? "Warm").toString(),
-                                      //   //                     "cos_id": controllers.storage.read("cos_id").toString(),
-                                      //   //                     "mail_id": widget.email.toString(),
-                                      //   //                   };
-                                      //   //                   if (widget.pageName == "Prospects") {
-                                      //   //                     await apiService.insertQualifiedAPI(context, [deleteData]);
-                                      //   //                   } else if (widget.pageName == "Qualified") {
-                                      //   //                     await apiService.insertPromoteCustomerAPI(context, [deleteData]);
-                                      //   //                   } else if (widget.pageName == "No Matches") {
-                                      //   //                     await apiService.qualifiedCustomersAPI(context, [deleteData]);
-                                      //   //                   } else {
-                                      //   //                     await apiService.insertProspectsAPI(context, [deleteData]);
-                                      //   //                   }
-                                      //   //                 },
-                                      //   //                 height: 35,
-                                      //   //                 isLoading: true,
-                                      //   //                 backgroundColor:
-                                      //   //                 colorsConst.primary,
-                                      //   //                 radius: 2,
-                                      //   //                 width: 80,
-                                      //   //                 controller:
-                                      //   //                 controllers.productCtr,
-                                      //   //                 isImage: false,
-                                      //   //                 text: "Promote",
-                                      //   //                 textColor: Colors.white,
-                                      //   //               ),
-                                      //   //               5.width
-                                      //   //             ],
-                                      //   //           ),
-                                      //   //         ],
-                                      //   //       );
-                                      //   //     });
-                                      // },
-                                      onPressed: (){
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            String? stageId;
-                                            String? selectedStage;
-                                            bool isEdit = false;
+                                        if(type!=controllers.leadCategoryList.length)
+                                        SizedBox(
+                                            width: 100,
+                                            height: 35,
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                shadowColor: Colors.transparent,
+                                                backgroundColor: colorsConst.primary,
+                                              ),
+                                              // onPressed: () {
+                                              //   // mailUtils.showPromoteDialog(
+                                              //   //  context: context, pageName: widget.pageName,
+                                              //   //   onSubmit: () async {
+                                              //   //     final deleteData = {
+                                              //   //       "lead_id": widget.id.toString(),
+                                              //   //       "user_id": controllers.storage.read("id").toString(),
+                                              //   //       "rating": selectedStage == "Prospects"?"2":selectedStage == "Qualified"?"3": selectedStage == "Customers"?"4":"1",
+                                              //   //       "cos_id": controllers.storage.read("cos_id").toString(),
+                                              //   //       "mail_id": widget.email.toString(),
+                                              //   //       "reason" : reasonController.text.trim(),
+                                              //   //     };
+                                              //   //     await apiService.insertLeadPromoteAPI(context, [deleteData]);
+                                              //   // },
+                                              //   // );
+                                              //   ///
+                                              //   showDialog(
+                                              //     context: context,
+                                              //     builder: (context) {
+                                              //       TextEditingController reasonController = TextEditingController();
+                                              //       String dropValue = widget.pageName == "Prospects"
+                                              //           ? "Qualified"
+                                              //           : widget.pageName == "Qualified"
+                                              //           ? "Customers" : "Prospects";
+                                              //       String selectedStage = dropValue;
+                                              //       return StatefulBuilder(
+                                              //         builder: (context, setState) {
+                                              //           return AlertDialog(
+                                              //             title: CustomText(
+                                              //               text: "Move to Next Level",
+                                              //               size: 18,
+                                              //               isBold: true,
+                                              //               isCopy: false,
+                                              //               colors: colorsConst.textColor,
+                                              //             ),
+                                              //             content: Column(
+                                              //               mainAxisSize: MainAxisSize.min,
+                                              //               crossAxisAlignment: CrossAxisAlignment.start,
+                                              //               children: [
+                                              //                 CustomText(
+                                              //                   text: "Select Stage",
+                                              //                   size: 14,
+                                              //                   isBold: true,
+                                              //                   isCopy: false,
+                                              //                 ),
+                                              //                 8.height,
+                                              //                 Container(
+                                              //                   padding: EdgeInsets.symmetric(horizontal: 8),
+                                              //                   decoration: BoxDecoration(
+                                              //                     border: Border.all(color: colorsConst.primary),
+                                              //                     borderRadius: BorderRadius.circular(4),
+                                              //                   ),
+                                              //                   child: DropdownButton<String>(
+                                              //                     value: selectedStage,
+                                              //                     isExpanded: true,
+                                              //                     focusColor: Colors.transparent,
+                                              //                     underline: SizedBox(),
+                                              //                     items: [//santhiya2
+                                              //                       "Suspects",
+                                              //                       "Prospects",
+                                              //                       "Qualified",
+                                              //                       "Customers",
+                                              //                     ].map((value) {
+                                              //                       return DropdownMenuItem(
+                                              //                         value: value,
+                                              //                         child: Text(value),
+                                              //                       );
+                                              //                     }).toList(),
+                                              //                     onChanged: (value) {
+                                              //                       setState(() {
+                                              //                         selectedStage = value!;
+                                              //                       });
+                                              //                     },
+                                              //                   ),
+                                              //                 ),
+                                              //                 15.height,
+                                              //                 TextField(
+                                              //                   controller: reasonController,
+                                              //                   decoration: InputDecoration(
+                                              //                     labelText: "Reason",
+                                              //                     border: OutlineInputBorder(),
+                                              //                   ),
+                                              //                 ),
+                                              //               ],
+                                              //             ),
+                                              //             actions: [
+                                              //               Row(
+                                              //                 mainAxisAlignment: MainAxisAlignment.end,
+                                              //                 children: [
+                                              //                   Container(
+                                              //                     decoration: BoxDecoration(
+                                              //                         border: Border.all(color: colorsConst.primary),
+                                              //                         color: Colors.white),
+                                              //                     width: 80,
+                                              //                     height: 25,
+                                              //                     child: ElevatedButton(
+                                              //                         style: ElevatedButton.styleFrom(
+                                              //                           shape: const RoundedRectangleBorder(
+                                              //                             borderRadius: BorderRadius.zero,
+                                              //                           ),
+                                              //                           backgroundColor: Colors.white,
+                                              //                         ),
+                                              //                         onPressed: () {
+                                              //                           Navigator.pop(context);
+                                              //                         },
+                                              //                         child: CustomText(
+                                              //                           text: "Cancel",
+                                              //                           isCopy: false,
+                                              //                           colors: colorsConst.primary,
+                                              //                           size: 14,
+                                              //                         )),
+                                              //                   ),
+                                              //                   10.width,
+                                              //                   CustomLoadingButton(
+                                              //                     callback: () async {
+                                              //                       final deleteData = {
+                                              //                         "lead_id": widget.id.toString(),
+                                              //                         "user_id": controllers.storage.read("id").toString(),
+                                              //                         "rating": selectedStage == "Prospects"?"2":selectedStage == "Qualified"?"3": selectedStage == "Customers"?"4":"1",
+                                              //                         "cos_id": controllers.storage.read("cos_id").toString(),
+                                              //                         "mail_id": widget.email.toString(),
+                                              //                         "reason" : reasonController.text.trim(),
+                                              //                       };
+                                              //                       await apiService.insertLeadPromoteAPI(context, [deleteData]);
+                                              //                       // if (selectedStage == "Prospects") {
+                                              //                       //   await apiService.insertQualifiedAPI(context, [deleteData]);
+                                              //                       // } else if (selectedStage == "Qualified") {
+                                              //                       //   await apiService.insertPromoteCustomerAPI(context, [deleteData]);
+                                              //                       // } else if (selectedStage == "No Matches") {
+                                              //                       //   await apiService.qualifiedCustomersAPI(context, [deleteData]);
+                                              //                       // } else {
+                                              //                       //   await apiService.insertProspectsAPI(context, [deleteData]);
+                                              //                       // }
+                                              //                     },
+                                              //                     height: 35,
+                                              //                     isLoading: true,
+                                              //                     backgroundColor:
+                                              //                     colorsConst.primary,
+                                              //                     radius: 2,
+                                              //                     width: 80,
+                                              //                     controller:
+                                              //                     controllers.productCtr,
+                                              //                     isImage: false,
+                                              //                     text: "Promote",
+                                              //                     textColor: Colors.white,
+                                              //                   ),
+                                              //                 ],
+                                              //               )
+                                              //             ],
+                                              //           );
+                                              //         },
+                                              //       );
+                                              //     },
+                                              //   );
+                                              //
+                                              //   // showDialog(
+                                              //   //     context: context,
+                                              //   //     barrierDismissible: false,
+                                              //   //     builder: (context) {
+                                              //   //       return AlertDialog(
+                                              //   //         content: CustomText(
+                                              //   //           text: "Are you moving to the next level?",
+                                              //   //           isCopy: true,
+                                              //   //           size: 16,
+                                              //   //           isBold: true,
+                                              //   //           colors: colorsConst.textColor,
+                                              //   //         ),
+                                              //   //         actions: [
+                                              //   //           Row(
+                                              //   //             mainAxisAlignment: MainAxisAlignment.end,
+                                              //   //             children: [
+                                              //   //               Container(
+                                              //   //                 decoration: BoxDecoration(
+                                              //   //                     border: Border.all(
+                                              //   //                         color: colorsConst.primary),
+                                              //   //                     color: Colors.white),
+                                              //   //                 width: 80,
+                                              //   //                 height: 25,
+                                              //   //                 child: ElevatedButton(
+                                              //   //                     style: ElevatedButton.styleFrom(
+                                              //   //                       shape: const RoundedRectangleBorder(
+                                              //   //                         borderRadius:
+                                              //   //                         BorderRadius.zero,
+                                              //   //                       ),
+                                              //   //                       backgroundColor: Colors.white,
+                                              //   //                     ),
+                                              //   //                     onPressed: () {
+                                              //   //                       Navigator.pop(context);
+                                              //   //                     },
+                                              //   //                     child: CustomText(
+                                              //   //                       text: "Cancel",
+                                              //   //                       colors: colorsConst.primary,
+                                              //   //                       size: 14,
+                                              //   //                       isCopy: false,
+                                              //   //                     )),
+                                              //   //               ),
+                                              //   //               10.width,
+                                              //   //               CustomLoadingButton(
+                                              //   //                 callback: () async {
+                                              //   //                   final deleteData = {
+                                              //   //                     "lead_id": widget.id.toString(),
+                                              //   //                     "user_id": controllers.storage.read("id").toString(),
+                                              //   //                     "rating": (widget.rating ?? "Warm").toString(),
+                                              //   //                     "cos_id": controllers.storage.read("cos_id").toString(),
+                                              //   //                     "mail_id": widget.email.toString(),
+                                              //   //                   };
+                                              //   //                   if (widget.pageName == "Prospects") {
+                                              //   //                     await apiService.insertQualifiedAPI(context, [deleteData]);
+                                              //   //                   } else if (widget.pageName == "Qualified") {
+                                              //   //                     await apiService.insertPromoteCustomerAPI(context, [deleteData]);
+                                              //   //                   } else if (widget.pageName == "No Matches") {
+                                              //   //                     await apiService.qualifiedCustomersAPI(context, [deleteData]);
+                                              //   //                   } else {
+                                              //   //                     await apiService.insertProspectsAPI(context, [deleteData]);
+                                              //   //                   }
+                                              //   //                 },
+                                              //   //                 height: 35,
+                                              //   //                 isLoading: true,
+                                              //   //                 backgroundColor:
+                                              //   //                 colorsConst.primary,
+                                              //   //                 radius: 2,
+                                              //   //                 width: 80,
+                                              //   //                 controller:
+                                              //   //                 controllers.productCtr,
+                                              //   //                 isImage: false,
+                                              //   //                 text: "Promote",
+                                              //   //                 textColor: Colors.white,
+                                              //   //               ),
+                                              //   //               5.width
+                                              //   //             ],
+                                              //   //           ),
+                                              //   //         ],
+                                              //   //       );
+                                              //   //     });
+                                              // },
+                                              onPressed: (){
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    String? stageId;
+                                                    String? selectedStage;
+                                                    bool isEdit = false;
 
-                                            TextEditingController reasonController = TextEditingController();
+                                                    TextEditingController reasonController = TextEditingController();
 
-                                            return StatefulBuilder(
-                                              builder: (context, setState) {
-                                                return AlertDialog(
-                                                  title: CustomText(
-                                                    text: "Move to Next Level",
-                                                    size: 18,
-                                                    isBold: true,
-                                                    isCopy: false,
-                                                    colors: colorsConst.textColor,
-                                                  ),
-                                                  content: Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      CustomText(
-                                                        text: "New Stage",
-                                                        size: 14,
-                                                        isBold: true,
-                                                        isCopy: false,
-                                                      ),
-                                                      const SizedBox(height: 8),
-
-                                                      /// DROPDOWN
-                                                      Container(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                                                        decoration: BoxDecoration(
-                                                          border: Border.all(color: colorsConst.primary),
-                                                          borderRadius: BorderRadius.circular(4),
-                                                        ),
-                                                        child: DropdownButton<String>(
-                                                          value: stageId,
-                                                          hint: const Text("New Stage"),
-                                                          isExpanded: true,
-                                                          underline: const SizedBox(),
-                                                          items: controllers.leadCategoryList.map((item) {
-                                                            return DropdownMenuItem<String>(
-                                                              value: item.leadStatus,
-                                                              child: Text(item.value),
-                                                            );
-                                                          }).toList(),
-                                                          onChanged: (value) {
-                                                            setState(() {
-                                                              stageId = value;
-                                                              selectedStage = controllers.leadCategoryList
-                                                                  .firstWhere((e) => e.leadStatus == value)
-                                                                  .value;
-
-                                                              print("stageId: $stageId");
-                                                              print("selectedStage: $selectedStage");
-
-                                                              isEdit = true;
-                                                            });
-                                                          },
-                                                        ),
-                                                      ),
-
-                                                      const SizedBox(height: 15),
-
-                                                      /// REASON FIELD
-                                                      TextField(
-                                                        controller: reasonController,
-                                                        decoration: const InputDecoration(
-                                                          labelText: "Reason",
-                                                          border: OutlineInputBorder(),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-
-                                                  /// ACTIONS
-                                                  actions: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                      children: [
-                                                        /// CANCEL
-                                                        Container(
-                                                          decoration: BoxDecoration(
-                                                            border: Border.all(color: colorsConst.primary),
-                                                            color: Colors.white,
+                                                    return StatefulBuilder(
+                                                      builder: (context, setState) {
+                                                        return AlertDialog(
+                                                          title: CustomText(
+                                                            text: "Move to Next Level",
+                                                            size: 18,
+                                                            isBold: true,
+                                                            isCopy: false,
+                                                            colors: colorsConst.textColor,
                                                           ),
-                                                          width: 80,
-                                                          height: 30,
-                                                          child: ElevatedButton(
-                                                            style: ElevatedButton.styleFrom(
-                                                              shape: const RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.zero,
+                                                          content: Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              CustomText(
+                                                                text: "New Stage",
+                                                                size: 14,
+                                                                isBold: true,
+                                                                isCopy: false,
                                                               ),
-                                                              backgroundColor: Colors.white,
-                                                              elevation: 0,
-                                                            ),
-                                                            onPressed: () {
-                                                              Navigator.pop(context);
-                                                            },
-                                                            child: CustomText(
-                                                              text: "Cancel",
-                                                              isCopy: false,
-                                                              colors: colorsConst.primary,
-                                                              size: 14,
-                                                            ),
+                                                              const SizedBox(height: 8),
+
+                                                              /// DROPDOWN
+                                                              Container(
+                                                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                                decoration: BoxDecoration(
+                                                                  border: Border.all(color: colorsConst.primary),
+                                                                  borderRadius: BorderRadius.circular(4),
+                                                                ),
+                                                                child: DropdownButton<String>(
+                                                                  value: stageId,
+                                                                  hint: const Text("New Stage"),
+                                                                  isExpanded: true,
+                                                                  underline: const SizedBox(),
+                                                                  items: controllers.leadCategoryList.map((item) {
+                                                                    return DropdownMenuItem<String>(
+                                                                      value: item.leadStatus,
+                                                                      child: Text(item.value),
+                                                                    );
+                                                                  }).toList(),
+                                                                  onChanged: (value) {
+                                                                    setState(() {
+                                                                      stageId = value;
+                                                                      selectedStage = controllers.leadCategoryList
+                                                                          .firstWhere((e) => e.leadStatus == value)
+                                                                          .value;
+
+                                                                      print("stageId: $stageId");
+                                                                      print("selectedStage: $selectedStage");
+
+                                                                      isEdit = true;
+                                                                    });
+                                                                  },
+                                                                ),
+                                                              ),
+
+                                                              const SizedBox(height: 15),
+
+                                                              /// REASON FIELD
+                                                              TextField(
+                                                                controller: reasonController,
+                                                                decoration: const InputDecoration(
+                                                                  labelText: "Reason",
+                                                                  border: OutlineInputBorder(),
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
-                                                        ),
 
-                                                        const SizedBox(width: 10),
+                                                          /// ACTIONS
+                                                          actions: [
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                              children: [
+                                                                /// CANCEL
+                                                                Container(
+                                                                  decoration: BoxDecoration(
+                                                                    border: Border.all(color: colorsConst.primary),
+                                                                    color: Colors.white,
+                                                                  ),
+                                                                  width: 80,
+                                                                  height: 30,
+                                                                  child: ElevatedButton(
+                                                                    style: ElevatedButton.styleFrom(
+                                                                      shape: const RoundedRectangleBorder(
+                                                                        borderRadius: BorderRadius.zero,
+                                                                      ),
+                                                                      backgroundColor: Colors.white,
+                                                                      elevation: 0,
+                                                                    ),
+                                                                    onPressed: () {
+                                                                      Navigator.pop(context);
+                                                                    },
+                                                                    child: CustomText(
+                                                                      text: "Cancel",
+                                                                      isCopy: false,
+                                                                      colors: colorsConst.primary,
+                                                                      size: 14,
+                                                                    ),
+                                                                  ),
+                                                                ),
 
-                                                        /// PROMOTE BUTTON
-                                                        CustomLoadingButton(
-                                                          callback: () async {
-                                                            if (stageId == null) return;
+                                                                const SizedBox(width: 10),
 
-                                                            controllers.idList.add(widget.id.toString());
+                                                                /// PROMOTE BUTTON
+                                                                CustomLoadingButton(
+                                                                  callback: () async {
+                                                                    if (stageId == null) return;
 
-                                                            await apiService.insertPromoteListAPI(
-                                                              context,
-                                                              stageId!,
-                                                              selectedStage ?? "",
-                                                              widget.list,
-                                                              widget.list2,
-                                                            );
+                                                                    controllers.idList.add(widget.id.toString());
 
-                                                            Navigator.pop(context);
-                                                          },
-                                                          height: 35,
-                                                          isLoading: true,
-                                                          backgroundColor: colorsConst.primary,
-                                                          radius: 2,
-                                                          width: 90,
-                                                          controller: controllers.productCtr,
-                                                          isImage: false,
-                                                          text: "Promote",
-                                                          textColor: Colors.white,
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
+                                                                    await apiService.insertPromoteListAPI(
+                                                                      context,
+                                                                      stageId!,
+                                                                      selectedStage ?? "",
+                                                                      widget.list,
+                                                                      widget.list2,
+                                                                    );
+
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  height: 35,
+                                                                  isLoading: true,
+                                                                  backgroundColor: colorsConst.primary,
+                                                                  radius: 2,
+                                                                  width: 90,
+                                                                  controller: controllers.productCtr,
+                                                                  isImage: false,
+                                                                  text: "Promote",
+                                                                  textColor: Colors.white,
+                                                                ),
+                                                              ],
+                                                            )
+                                                          ],
+                                                        );
+                                                      },
+                                                    );
+                                                  },
                                                 );
                                               },
+                                              child: MouseRegion(
+                                                cursor: SystemMouseCursors.click,
+                                                child: Text(
+                                                  "Promote",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 35,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              shadowColor: Colors.transparent,
+                                              backgroundColor: colorsConst.primary,
+                                            ),
+                                            onPressed: () {
+                                              controllers.selectNCustomer(widget.id.toString(), widget.name.toString(), widget.email.toString(),
+                                                  widget.mobileNumber.toString());
+                                              reminderUtils.showAddReminderDialog(context);
+                                            },
+                                            child: MouseRegion(
+                                              cursor: SystemMouseCursors.click,
+                                              child: Text(
+                                                "Set a reminder",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 100,
+                                          height: 35,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              shadowColor: Colors.transparent,
+                                              backgroundColor: colorsConst.primary,
+                                            ),
+                                            onPressed: () {
+                                              // prepare values for UpdateLead
+                                              Get.to(
+                                                UpdateLead(
+                                                  pageName: widget.pageName,
+                                                  index: widget.listIndex,
+                                                  list: widget.list,list2: widget.list2,
+                                                  type: "2",
+                                                  id: widget.id,
+                                                  mainName: displayName,
+                                                  mainMobile: displayMobile,
+                                                  mainEmail: displayEmail,
+                                                  mainWhatsApp: widget.whatsAppNo,
+                                                  companyName: cust?.companyName ?? widget.companyName,
+                                                  status: cust?.status?.toString(),
+                                                  rating: cust?.rating,
+                                                  detailsOfRequired: cust?.detailsOfServiceRequired,
+                                                  visitType: cust?.visitType ?? "",
+                                                  owner: cust?.owner,
+                                                  addressId: addr?.id?.toString(),
+                                                  addressLine1: addr?.doorNo ?? widget.addressLine1 ?? "",
+                                                  area: addr?.area ?? widget.area ?? "",
+                                                  city: addr?.city ?? widget.city ?? "",
+                                                  state: addr?.state ?? widget.state ?? "",
+                                                  country: addr?.country ?? widget.country ?? "",
+                                                  pinCode: addr?.pincode ?? widget.pinCode ?? "",
+                                                  statusUpdate: cust?.statusUpdate,
+                                                  prospectEnrollmentDate: cust?.prospectEnrollmentDate,
+                                                  expectedConvertionDate: cust?.expectedConvertionDate,
+                                                  numOfHeadcount: cust?.numOfHeadcount,
+                                                  expectedBillingValue: cust?.expectedBillingValue,
+                                                  arpuValue: cust?.arpuValue,
+                                                  productDiscussion: cust?.product,
+                                                  discussionPoint: cust?.discussionPoint,
+                                                  notes: widget.notes,
+                                                  sourceDetails: widget.sourceDetails,
+                                                  updateTs: cust?.updatedTs ?? widget.updateTs,
+                                                ),
+                                                duration: Duration.zero,
+                                              );
+                                            },
+                                            child: MouseRegion(
+                                              cursor: SystemMouseCursors.click,
+                                              child: Text(
+                                                "Edit",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        CustomLoadingButton(
+                                          callback: () {
+                                            controllers.emailSubjectCtr.clear();
+                                            controllers.emailMessageCtr.clear();
+                                            imageController.photo1.value = "";
+                                            controllers.emailToCtr.text =
+                                            displayEmail.isEmpty ? "" : displayEmail;
+                                            utils.sendEmailDialog(
+                                              id: widget.id.toString(),
+                                              name: displayName,
+                                              mobile: displayMobile,
+                                              coName: cust?.companyName ?? widget.companyName ?? "",
                                             );
                                           },
-                                        );
-                                      },
-                                      child: MouseRegion(
-                                        cursor: SystemMouseCursors.click,
-                                        child: Text(
-                                          "Promote",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
+                                          height: 35,
+                                          isLoading: false,
+                                          backgroundColor: colorsConst.third,
+                                          radius: 2,
+                                          width: 120,
+                                          isImage: false,
+                                          text: "Send Email",
+                                          textColor: Colors.white,
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                  ),
-                                  // 10.width,
-                                  // SizedBox(
-                                  //   width: 100,
-                                  //   height: 35,
-                                  //   child: ElevatedButton(
-                                  //     style: ElevatedButton.styleFrom(
-                                  //       shadowColor: Colors.transparent,
-                                  //       backgroundColor: colorsConst.primary,
-                                  //     ),
-                                  //     onPressed: () {
-                                  //       TextEditingController reasonController = TextEditingController();
-                                  //       showDialog(
-                                  //           context: context,
-                                  //           barrierDismissible: false,
-                                  //           builder: (context) {
-                                  //             return AlertDialog(
-                                  //               content: Column(
-                                  //                 mainAxisSize: MainAxisSize.min,
-                                  //                 crossAxisAlignment: CrossAxisAlignment.start,
-                                  //                 children: [
-                                  //                   CustomText(
-                                  //                     text:
-                                  //                     "Are you sure to disqualify this lead?",
-                                  //                     size: 16,
-                                  //                     isCopy: true,
-                                  //                     isBold: true,
-                                  //                     colors: colorsConst.textColor,
-                                  //                   ),
-                                  //                   15.height,
-                                  //                   TextField(
-                                  //                     controller: reasonController,
-                                  //                     decoration: InputDecoration(
-                                  //                       labelText: "Reason",
-                                  //                       border: OutlineInputBorder(),
-                                  //                     ),
-                                  //                   ),
-                                  //                 ],
-                                  //               ),
-                                  //               actions: [
-                                  //                 Row(
-                                  //                   mainAxisAlignment:
-                                  //                   MainAxisAlignment.end,
-                                  //                   children: [
-                                  //                     Container(
-                                  //                       decoration: BoxDecoration(
-                                  //                           border: Border.all(
-                                  //                               color: colorsConst
-                                  //                                   .primary),
-                                  //                           color: Colors.white),
-                                  //                       width: 80,
-                                  //                       height: 25,
-                                  //                       child: ElevatedButton(
-                                  //                           style: ElevatedButton.styleFrom(
-                                  //                             shape: const RoundedRectangleBorder(
-                                  //                               borderRadius:
-                                  //                               BorderRadius.zero,
-                                  //                             ),
-                                  //                             backgroundColor: Colors.white,
-                                  //                           ),
-                                  //                           onPressed: () {
-                                  //                             Navigator.pop(context);
-                                  //                           },
-                                  //                           child: CustomText(
-                                  //                             text: "Cancel",
-                                  //                             colors: colorsConst.primary,
-                                  //                             size: 14,
-                                  //                             isCopy: false,
-                                  //                           )),
-                                  //                     ),
-                                  //                     10.width,
-                                  //                     CustomLoadingButton(
-                                  //                       callback: () async {
-                                  //                         final deleteData = {
-                                  //                           "lead_id": widget.id.toString(),
-                                  //                           "user_id": controllers.storage.read("id").toString(),
-                                  //                           "rating": 5.toString(),
-                                  //                           "cos_id": controllers.storage.read("cos_id").toString(),
-                                  //                           "mail_id": widget.email.toString(),
-                                  //                           "reason" : reasonController.text.trim(),
-                                  //                         };
-                                  //                         await apiService.insertLeadPromoteAPI(context, [deleteData]);
-                                  //                       },
-                                  //                       height: 35,
-                                  //                       isLoading: true,
-                                  //                       backgroundColor:
-                                  //                       colorsConst.primary,
-                                  //                       radius: 2,
-                                  //                       width: 80,
-                                  //                       controller:
-                                  //                       controllers.productCtr,
-                                  //                       isImage: false,
-                                  //                       text: "Disqualify",
-                                  //                       textColor: Colors.white,
-                                  //                     ),
-                                  //                     5.width
-                                  //                   ],
-                                  //                 ),
-                                  //               ],
-                                  //             );
-                                  //           });
-                                  //     },
-                                  //     child: MouseRegion(
-                                  //       cursor: SystemMouseCursors.click,
-                                  //       child: Text(
-                                  //         "Disqualify",
-                                  //         style: TextStyle(
-                                  //           color: Colors.white,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // ),
-                                  10.width,
-                                  SizedBox(
-                                    width: 140,
-                                    height: 35,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        shadowColor: Colors.transparent,
-                                        backgroundColor: colorsConst.primary,
-                                      ),
-                                      onPressed: () {
-                                        controllers.selectNCustomer(widget.id.toString(), widget.name.toString(), widget.email.toString(),
-                                            widget.mobileNumber.toString());
-                                        reminderUtils.showAddReminderDialog(context);
-                                      },
-                                      child: MouseRegion(
-                                        cursor: SystemMouseCursors.click,
-                                        child: Text(
-                                          "Set a reminder",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  10.width,
-                                  SizedBox(
-                                    width: 100,
-                                    height: 35,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        shadowColor: Colors.transparent,
-                                        backgroundColor: colorsConst.primary,
-                                      ),
-                                      onPressed: () {
-                                        // prepare values for UpdateLead
-                                        Get.to(
-                                          UpdateLead(
-                                            pageName: widget.pageName,
-                                            index: widget.listIndex,
-                                            list: widget.list,list2: widget.list2,
-                                            type: "2",
-                                            id: widget.id,
-                                            mainName: displayName,
-                                            mainMobile: displayMobile,
-                                            mainEmail: displayEmail,
-                                            mainWhatsApp: widget.whatsAppNo,
-                                            companyName: cust?.companyName ?? widget.companyName,
-                                            status: cust?.status?.toString(),
-                                            rating: cust?.rating,
-                                            detailsOfRequired: cust?.detailsOfServiceRequired,
-                                            visitType: cust?.visitType ?? "",
-                                            owner: cust?.owner,
-                                            addressId: addr?.id?.toString(),
-                                            addressLine1: addr?.doorNo ?? widget.addressLine1 ?? "",
-                                            area: addr?.area ?? widget.area ?? "",
-                                            city: addr?.city ?? widget.city ?? "",
-                                            state: addr?.state ?? widget.state ?? "",
-                                            country: addr?.country ?? widget.country ?? "",
-                                            pinCode: addr?.pincode ?? widget.pinCode ?? "",
-                                            statusUpdate: cust?.statusUpdate,
-                                            prospectEnrollmentDate: cust?.prospectEnrollmentDate,
-                                            expectedConvertionDate: cust?.expectedConvertionDate,
-                                            numOfHeadcount: cust?.numOfHeadcount,
-                                            expectedBillingValue: cust?.expectedBillingValue,
-                                            arpuValue: cust?.arpuValue,
-                                            productDiscussion: cust?.product,
-                                            discussionPoint: cust?.discussionPoint,
-                                            notes: widget.notes,
-                                            sourceDetails: widget.sourceDetails,
-                                            updateTs: cust?.updatedTs ?? widget.updateTs,
-                                          ),
-                                          duration: Duration.zero,
-                                        );
-                                      },
-                                      child: MouseRegion(
-                                        cursor: SystemMouseCursors.click,
-                                        child: Text(
-                                          "Edit",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  10.width,
-                                  CustomLoadingButton(
-                                    callback: () {
-                                      controllers.emailSubjectCtr.clear();
-                                      controllers.emailMessageCtr.clear();
-                                      imageController.photo1.value = "";
-                                      controllers.emailToCtr.text =
-                                      displayEmail.isEmpty ? "" : displayEmail;
-                                      utils.sendEmailDialog(
-                                        id: widget.id.toString(),
-                                        name: displayName,
-                                        mobile: displayMobile,
-                                        coName: cust?.companyName ?? widget.companyName ?? "",
-                                      );
-                                    },
-                                    height: 35,
-                                    isLoading: false,
-                                    backgroundColor: colorsConst.third,
-                                    radius: 2,
-                                    width: 120,
-                                    isImage: false,
-                                    text: "Send Email",
-                                    textColor: Colors.white,
-                                  ),
+                                  )
                                 ],
                               ),
                               10.height,

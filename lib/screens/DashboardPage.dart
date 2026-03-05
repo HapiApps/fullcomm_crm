@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/screens/settings/lead_categories.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -25,16 +26,19 @@ import '../components/custom_rating.dart';
 import '../components/custom_sidebar.dart';
 import '../components/custom_text.dart';
 import '../components/customer_status_card.dart';
+import '../components/keyboard_search.dart';
 import '../components/pie_stat_card.dart';
 import '../components/wave_stat_card.dart';
 import '../controller/controller.dart';
 import '../controller/reminder_controller.dart';
 import '../controller/table_controller.dart';
+import '../models/all_customers_obj.dart';
 import '../provider/dashboard_provider.dart';
 import '../provider/employee_provider.dart';
 import '../services/api_services.dart';
 import 'dart:html' as html;
 import 'employee/employee_screen.dart';
+import 'leads/new_lead_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -57,6 +61,7 @@ class _DashboardPageState extends State<DashboardPage>
     dashController.getToken();
     apiService.getLeadCategories();
     apiService.getCustomLeads();
+    apiService.getAllLeadCategories();
     apiService.getUserHeading();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -279,6 +284,61 @@ class _DashboardPageState extends State<DashboardPage>
                     ],
                   ),
                 ],
+              ),
+              SizedBox(
+                width: screenWidth/2.5,
+                child: KeyboardDropdownField<AllCustomersObj>(
+                  items: controllers.customers,
+                  borderRadius: 5,
+                  borderColor: Colors.grey.shade300,
+                  hintText: "Global Search By Mobile Number",
+                  // labelText: "",
+                  labelBuilder: (customer) =>
+                  // '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
+                  '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+                  itemBuilder: (customer) {
+                    return Container(
+                      width: screenWidth/2.5,
+                      alignment: Alignment.topLeft,
+                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      child: CustomText(
+                        text:
+                        '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+                        colors: Colors.black,
+                        size: 14,
+                        isCopy: false,
+                        textAlign: TextAlign.start,
+                      ),
+                    );
+                  },
+                  textEditingController: controllers.cusController,
+                  onSelected: (value) {
+                    controllers.search.text = value.name.toString();
+                    print("value.leadStatus ${value.leadStatus}");
+                    for (var i = 0; i < controllers.leadCategoryList.length; i++) {
+                      var item = controllers.leadCategoryList[i];
+                      if (item.leadStatus == value.leadStatus) {
+                        controllers.selectedIndex.value =
+                            int.tryParse(value.leadStatus.toString()) ?? 0;
+                        Get.off(
+                              () => NewLeadPage(
+                            index: item.leadStatus,
+                            name: item.value,
+                            list: item.list,
+                            list2: item.list2,
+                            listIndex: i,
+                          ),
+                          preventDuplicates: false,
+                        );
+                        break;
+                      }
+                    }
+                  },
+                  onClear: () {
+                    // if (onSearchChanged != null) onSearchChanged!("");
+                    controllers.clearSelectedCustomer();
+                  },
+                ),
               ),
               /// ---------- CENTER ----------
               Row(
@@ -683,87 +743,92 @@ class _DashboardPageState extends State<DashboardPage>
                                 ),
                                 20.height,
                                 // Quotations Sent
-                                SizedBox(
-                                  width: screenWidth/4,
-                                  child: Container(
-                                    height: 250,
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Color(0x14000000),
-                                          blurRadius: 10,
-                                          offset: Offset(0, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      alignment: Alignment.center,
-                                      children: [
-                                        // -------- MAIN CONTENT --------
-                                        Column(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: [
-                                            Stack(
-                                              clipBehavior: Clip.none,
-                                              alignment: Alignment.center,
-                                              children: [
-                                                // Main outlined circle
-                                                Container(
-                                                  width: 110,
-                                                  height: 110,
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    border: Border.all(
-                                                      color: Colors.black,
-                                                      width: 2,
+                                InkWell(
+                                  onTap:(){
+                                    Navigator.push(context, MaterialPageRoute(builder: (_)=>LeadCategories()));
+                                  },
+                                  child: SizedBox(
+                                    width: screenWidth/4,
+                                    child: Container(
+                                      height: 250,
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Color(0x14000000),
+                                            blurRadius: 10,
+                                            offset: Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        alignment: Alignment.center,
+                                        children: [
+                                          // -------- MAIN CONTENT --------
+                                          Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                            children: [
+                                              Stack(
+                                                clipBehavior: Clip.none,
+                                                alignment: Alignment.center,
+                                                children: [
+                                                  // Main outlined circle
+                                                  Container(
+                                                    width: 110,
+                                                    height: 110,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        color: Colors.black,
+                                                        width: 2,
+                                                      ),
+                                                    ),
+
+                                                    child:const CustomText(
+                                                      text: "42",
+                                                      isCopy: false,
+                                                      size: 26,
+                                                      isBold: true,
                                                     ),
                                                   ),
 
-                                                  child:const CustomText(
-                                                    text: "42",
-                                                    isCopy: false,
-                                                    size: 26,
-                                                    isBold: true,
+                                                  // Small top dot
+                                                  const Positioned(
+                                                    top: -6,
+                                                    child: CircleAvatar(
+                                                      radius: 5,
+                                                      backgroundColor:
+                                                      Colors.black,
+                                                    ),
                                                   ),
-                                                ),
+                                                ],
+                                              ),
 
-                                                // Small top dot
-                                                const Positioned(
-                                                  top: -6,
-                                                  child: CircleAvatar(
-                                                    radius: 5,
-                                                    backgroundColor:
-                                                    Colors.black,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-
-                                            16.height,
-                                            const CustomText(
-                                              text:"Quotations Sent",
-                                              isCopy: false,
-                                              size: 13,
-                                              isBold: true,
-                                              colors: Colors.black,
-                                            ),
-                                          ],
-                                        ),
-                                        // -------- FILE ICON (OVERLAP) --------
-                                        Positioned(
-                                          top: 10,
-                                          left: 10,
-                                          child: Image.asset(
-                                            DashboardAssets.file,
+                                              16.height,
+                                              const CustomText(
+                                                text:"Quotations Sent",
+                                                isCopy: false,
+                                                size: 13,
+                                                isBold: true,
+                                                colors: Colors.black,
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                      ],
+                                          // -------- FILE ICON (OVERLAP) --------
+                                          Positioned(
+                                            top: 10,
+                                            left: 10,
+                                            child: Image.asset(
+                                              DashboardAssets.file,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

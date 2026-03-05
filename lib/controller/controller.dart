@@ -2774,6 +2774,7 @@ var refreshValue=true.obs;
   String leadCategory = "Suspects";
   RxList<bool> editMode = <bool>[].obs;
   RxList<LeadStatusModel> leadCategoryList = <LeadStatusModel>[].obs;
+  RxList<LeadStatusModel> allLeadCategoryList = <LeadStatusModel>[].obs;
   // RxList leadCategoryList = [
   //   {"lead_status": "1", "value": "Suspects","id" : "1"},
   //   {"lead_status": "2", "value": "Prospects","id" : "2"},
@@ -2877,6 +2878,7 @@ var otp = "".obs;
   TextEditingController leadGstLocationCrt = TextEditingController();
   TextEditingController leadGstDORCrt = TextEditingController();
   TextEditingController leadDisPointsCrt = TextEditingController();
+  TextEditingController throughBy = TextEditingController();
   TextEditingController leadPointsCrt = TextEditingController();
   // TextEditingController leadWhatsCrt = TextEditingController();
   TextEditingController leadCoNameCrt = TextEditingController();

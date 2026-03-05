@@ -241,7 +241,7 @@ class ApiService {
   //   }
   // }
 
-  Future updateLeadAPI(BuildContext context, int index,String leadId,  String type, String addressId, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
+  Future updateLeadAPI(BuildContext context, int index, String name,String leadId,  String type, String addressId, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
       String callListId = "";
       for (var role in controllers.callList) {
@@ -309,7 +309,7 @@ class ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return updateLeadAPI(context,index,leadId,type,addressId,list,list2);
+          return updateLeadAPI(context,index,name,leadId,type,addressId,list,list2);
         } else {
           controllers.setLogOut();
         }
@@ -387,7 +387,6 @@ class ApiService {
           rating: controllers.prospectGradingCrt.text.trim(),
           owner: controllers.leadTitleCrt[0].text.trim(),
 
-          createdTs: DateTime.now().toString(),
           updatedTs: DateTime.now().toString(),
         );
         list2[index]=NewLeadObj(
@@ -457,16 +456,31 @@ class ApiService {
           rating: controllers.prospectGradingCrt.text.trim(),
           owner: controllers.leadTitleCrt[0].text.trim(),
 
-          createdTs: DateTime.now().toString(),
           updatedTs: DateTime.now().toString(),
         );
         controllers.selectedQualifiedSortBy.value="All";
         controllers.selectRadio(list,list2);
         // apiService.getCustomLeads();
+
+        list.sort((a, b) {
+          DateTime dateA = DateTime.parse(a.updatedTs.toString());
+          DateTime dateB = DateTime.parse(b.updatedTs.toString());
+          return dateB.compareTo(dateA); // Desc order
+        });
+        list2.sort((a, b) {
+          DateTime dateA = DateTime.parse(a.updatedTs.toString());
+          DateTime dateB = DateTime.parse(b.updatedTs.toString());
+          return dateB.compareTo(dateA); // Desc order
+        });
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,
+        //       name: controllers.leadCategoryList[0].value,list: list,list2: list2, listIndex: 0,)),
+        // );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,
-              name: controllers.leadCategoryList[0].value,list: list,list2: list2, listIndex: 0,)),
+          MaterialPageRoute(builder: (_) =>  NewLeadPage(index: index.toString() ,
+              name: name,list: list,list2: list2, listIndex: 0,)),
         );
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         controllers.leadCtr.reset();
@@ -2720,6 +2734,56 @@ class ApiService {
         }).toList();
         // controllers.leadCategoryList.assignAll(converted);
         controllers.editMode.value =List.generate(controllers.leadCategoryList.length, (index) => false);
+        // controllers.leadCategoryList.sort(
+        //       (a, b) => int.parse(a.leadStatus)
+        //       .compareTo(int.parse(b.leadStatus)),
+        // );
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+  Future getAllLeadCategories() async {
+    try {
+      controllers.allLeadCategoryList.clear();
+      Map data = {
+        "search_type": "all_lead_categories",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      debugPrint("leadddddd");
+      debugPrint(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getLeadCategories();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200) {
+        // controllers.leadCategoryList.clear();
+        List response = json.decode(request.body);
+        controllers.allLeadCategoryList.value = response.map<LeadStatusModel>((item) {
+          return LeadStatusModel(
+            leadStatus: item["lead_status"].toString(),
+            value: item["value"].toString(),
+            id: item["id"].toString(),
+            icon1: item["icon1"].toString(),
+            icon2: item["icon2"].toString(),
+            displayOrder: item["display_order"],
+          );
+        }).toList();
+        // controllers.leadCategoryList.assignAll(converted);
         // controllers.leadCategoryList.sort(
         //       (a, b) => int.parse(a.leadStatus)
         //       .compareTo(int.parse(b.leadStatus)),

@@ -25,6 +25,7 @@ import 'custom_loading_button.dart';
 
 class CustomLeadTile extends StatefulWidget {
   final bool showCheckbox;
+  final String leadIndex;
   final String pageName;
   final int listIndex;
   final String? id;
@@ -150,7 +151,7 @@ class CustomLeadTile extends StatefulWidget {
       this.visitType,
       this.points,
       this.detailsOfServiceReq,
-      required this.pageName, required this.list, required this.list2, required this.listIndex});
+      required this.pageName, required this.list, required this.list2, required this.listIndex, required this.leadIndex});
 
   @override
   State<CustomLeadTile> createState() => _CustomLeadTileState();
@@ -309,6 +310,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
         onTap: () {
           Get.to(
               ViewLead(
+                leadIndex: widget.leadIndex,
                 listIndex: widget.listIndex,
                 list: widget.list,list2: widget.list2,
                 pageName: widget.pageName,
@@ -409,7 +411,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                           ?.systemField;
                       // print(controllers.fields.first.systemField);
                       final controller =key != null ? fieldControllers[key] : null;
-                      print(key);
+                      // print(key);
                       return Tooltip(
                         message: (controller?.text == "null") ? "" : controller?.text ?? "",
                         child:  Container(

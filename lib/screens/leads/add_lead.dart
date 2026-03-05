@@ -116,6 +116,7 @@ class _AddLeadState extends State<AddLead> {
       // });
       setState(() {
         controllers.visitType="Call";
+        controllers.throughBy.clear();
         controllers.numberList.clear();
         controllers.infoNumberList.clear();
         controllers.numberList.add(TextEditingController());
@@ -215,6 +216,7 @@ class _AddLeadState extends State<AddLead> {
   final FocusNode city = FocusNode();
   final FocusNode state = FocusNode();
   final FocusNode pincode = FocusNode();
+  final FocusNode throughByF = FocusNode();
   @override
   void initState() {
     // TODO: implement initState
@@ -232,6 +234,7 @@ class _AddLeadState extends State<AddLead> {
   @override
   void dispose() {
     name.dispose();
+    throughByF.dispose();
     phone.dispose();
     whatsApp.dispose();
     account.dispose();
@@ -1988,7 +1991,7 @@ class _AddLeadState extends State<AddLead> {
                           CustomTextField(
                             focusNode: ob9,
                             onEdit: () {
-                              FocusScope.of(context).requestFocus(door);
+                              FocusScope.of(context).requestFocus(throughByF);
                             },
                             hintText: _formatHeading(controllers
                                 .getUserHeading("status_update") ??
@@ -2019,6 +2022,35 @@ class _AddLeadState extends State<AddLead> {
                                   await SharedPreferences.getInstance();
                               sharedPref.setString(
                                   "statusUpdate", value.toString().trim());
+                            },
+                            // }
+                          ),
+                          CustomTextField(
+                            focusNode: throughByF,
+                            onEdit: () {
+                              FocusScope.of(context).requestFocus(door);
+                            },
+                            hintText: "Added through person",
+                            text: "Added through person",
+                            controller: controllers.throughBy,
+                            width: textFieldSize,
+                            isOptional: false,
+                            textInputAction: TextInputAction.next,
+                            onChanged: (value) async {
+                              if (value.toString().isNotEmpty) {
+                                String newValue =
+                                    value.toString()[0].toUpperCase() +
+                                        value.toString().substring(1);
+                                if (newValue != value) {
+                                  controllers.throughBy.value =
+                                      controllers.throughBy.value
+                                          .copyWith(
+                                        text: newValue,
+                                        selection: TextSelection.collapsed(
+                                            offset: newValue.length),
+                                      );
+                                }
+                              }
                             },
                             // }
                           ),
