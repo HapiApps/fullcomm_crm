@@ -52,23 +52,29 @@ class LeadStatusModel {
   String id;
   String icon1;
   String icon2;
+  String totalLead;
+  String active;
   int displayOrder;
   RxList<NewLeadObj> list;
   RxList<NewLeadObj> list2;
 
   LeadStatusModel({
-    required String leadStatus,
-    required String value,
-    required String id,
-    required String icon1,
-    required String icon2,
-    required int displayOrder,
-  })  : leadStatus = leadStatus,
-        value = value,
-        id = id,
-        icon1 = icon1,
-        icon2 = icon2,
-        displayOrder = displayOrder,
+     String? leadStatus,
+     String? value,
+     String? id,
+     String? icon1,
+     String? icon2,
+     String? totalLead,
+     String? active,
+     int? displayOrder,
+  })  : leadStatus = leadStatus!,
+        totalLead = totalLead!,
+        active = active!,
+        value = value!,
+        id = id!,
+        icon1 = icon1!,
+        icon2 = icon2!,
+        displayOrder = displayOrder!,
         list = <NewLeadObj>[].obs,
         list2 = <NewLeadObj>[].obs;
   @override
@@ -77,7 +83,9 @@ class LeadStatusModel {
         'value: $value, '
         'id: $id, '
         'icon1: $icon1, '
-        'icon2: $icon2, ';
+        'icon2: $icon2, '
+        'active: $active, '
+        'total_lead: $totalLead, ';
   }
   Map<String, dynamic> toJson() {
     return {
@@ -85,6 +93,8 @@ class LeadStatusModel {
       "value": value,
       "id": id,
       "display_order": displayOrder,
+      "total_lead": totalLead,
+      "active": active,
     };
   }
 }

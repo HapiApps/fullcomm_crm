@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
@@ -626,7 +627,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required String sortField,
     required String sortOrder,
   }) {
-    print("jnjnm ${selectedMeetSortBy.value}");
     var filtered = [...controllers.meetingActivity];
 
     final now = DateTime.now();
@@ -953,11 +953,151 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //   print("selectedMailMonth.value");
   //   print(selectedMailMonth.value);
   // }
+  ///
+  // void sortMails() {
+  //
+  //   var filteredList = [...controllers.mailActivity];
+  //
+  //   final dateFormatter = DateFormat("dd-MM-yyyy HH:mm"); // FIXED
+  //
+  //   final now = DateTime.now();
+  //
+  //   if (selectedMailSortBy.value.isNotEmpty) {
+  //
+  //     switch (selectedMailSortBy.value) {
+  //
+  //       case 'Today':
+  //         filteredList = filteredList.where((mail) {
+  //           final date = _parseMailDate(mail.sentDate, dateFormatter);
+  //           return _isSameDay(date, now);
+  //         }).toList();
+  //         break;
+  //
+  //       case 'Yesterday':
+  //         final yesterday = now.subtract(const Duration(days: 1));
+  //         filteredList = filteredList.where((mail) {
+  //           final date = _parseMailDate(mail.sentDate, dateFormatter);
+  //           return _isSameDay(date, yesterday);
+  //         }).toList();
+  //         break;
+  //
+  //       case 'Last 7 Days':
+  //         final last7 = now.subtract(const Duration(days: 7));
+  //         filteredList = filteredList.where((mail) {
+  //           final date = _parseMailDate(mail.sentDate, dateFormatter);
+  //           return date.isAfter(last7);
+  //         }).toList();
+  //         break;
+  //
+  //       case 'Last 30 Days':
+  //         final last30 = now.subtract(const Duration(days: 30));
+  //         filteredList = filteredList.where((mail) {
+  //           final date = _parseMailDate(mail.sentDate, dateFormatter);
+  //           return date.isAfter(last30);
+  //         }).toList();
+  //         break;
+  //
+  //       case 'Custom Month':
+  //
+  //         if (selectedMailMonth.value != null) {
+  //
+  //           final selected = selectedMailMonth.value!;
+  //
+  //           filteredList = filteredList.where((mail) {
+  //
+  //             final date = _parseMailDate(mail.sentDate, dateFormatter);
+  //
+  //             return date.year == selected.year &&
+  //                 date.month == selected.month;
+  //
+  //           }).toList();
+  //
+  //         }
+  //
+  //         break;
+  //
+  //       case 'Custom Range':
+  //
+  //         if (selectedMailRange.value != null) {
+  //
+  //           final range = selectedMailRange.value!;
+  //
+  //           filteredList = filteredList.where((mail) {
+  //
+  //             final date = _parseMailDate(mail.sentDate, dateFormatter);
+  //
+  //             return date.isAfter(range.start.subtract(const Duration(days: 1))) &&
+  //                 date.isBefore(range.end.add(const Duration(days: 1)));
+  //
+  //           }).toList();
+  //
+  //         }
+  //
+  //         break;
+  //     }
+  //   }
+  //
+  //   filteredList.sort((a, b) {
+  //
+  //     dynamic aValue;
+  //     dynamic bValue;
+  //
+  //     switch (sortFieldCallActivity.value) {
+  //
+  //       case 'customerName':
+  //         aValue = (a.customerName ?? '').toLowerCase();
+  //         bValue = (b.customerName ?? '').toLowerCase();
+  //         break;
+  //
+  //       case 'mail':
+  //         aValue = (a.toData ?? '').toLowerCase();
+  //         bValue = (b.toData ?? '').toLowerCase();
+  //         break;
+  //
+  //       case 'subject':
+  //         aValue = (a.subject ?? '').toLowerCase();
+  //         bValue = (b.subject ?? '').toLowerCase();
+  //         break;
+  //
+  //       case 'msg':
+  //         aValue = (a.message ?? '').toLowerCase();
+  //         bValue = (b.message ?? '').toLowerCase();
+  //         break;
+  //
+  //       case 'date':
+  //         aValue = _parseMailDate(a.sentDate, dateFormatter);
+  //         bValue = _parseMailDate(b.sentDate, dateFormatter);
+  //         break;
+  //
+  //       default:
+  //         aValue = '';
+  //         bValue = '';
+  //     }
+  //
+  //     int result;
+  //
+  //     if (aValue is String && bValue is String) {
+  //       result = aValue.compareTo(bValue);
+  //     }
+  //     else if (aValue is DateTime && bValue is DateTime) {
+  //       result = aValue.compareTo(bValue);
+  //     }
+  //     else {
+  //       result = 0;
+  //     }
+  //
+  //     return sortOrderCallActivity.value == 'asc' ? result : -result;
+  //
+  //   });
+  //
+  //   mailFilteredList.assignAll(filteredList);
+  //
+  // }
   void sortMails() {
 
     var filteredList = [...controllers.mailActivity];
 
-    final dateFormatter = DateFormat("dd-MM-yyyy HH:mm"); // FIXED
+    final dateFormatter = DateFormat("dd-MM-yyyy hh:mm a");
 
     final now = DateTime.now();
 
@@ -997,26 +1137,18 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           break;
 
         case 'Custom Month':
-
           if (selectedMailMonth.value != null) {
-
             final selected = selectedMailMonth.value!;
 
             filteredList = filteredList.where((mail) {
-
               final date = _parseMailDate(mail.sentDate, dateFormatter);
-
               return date.year == selected.year &&
                   date.month == selected.month;
-
             }).toList();
-
           }
-
           break;
 
         case 'Custom Range':
-
           if (selectedMailRange.value != null) {
 
             final range = selectedMailRange.value!;
@@ -1029,9 +1161,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
                   date.isBefore(range.end.add(const Duration(days: 1)));
 
             }).toList();
-
           }
-
           break;
       }
     }
@@ -1092,20 +1222,35 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     mailFilteredList.assignAll(filteredList);
 
   }
-  DateTime _parseMailDate(String? dateStr, DateFormat formatter) {
-    if (dateStr == null || dateStr.trim().isEmpty) return DateTime(1900);
+
+  DateTime _parseMailDate(String? date, DateFormat formatter) {
     try {
-      final clean = dateStr.trim().replaceAll(RegExp(r'\s+'), ' ').toUpperCase();
-      return formatter.parseStrict(clean);
+      return formatter.parse(date ?? '');
     } catch (e) {
-      print("Date parse failed for: $dateStr -> $e");
-      return DateTime(1900);
+      log("Date parse failed for: $date -> $e");
+      return DateTime(2000);
     }
   }
 
   bool _isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
+    return a.year == b.year &&
+        a.month == b.month &&
+        a.day == b.day;
   }
+  // DateTime _parseMailDate(String? dateStr, DateFormat formatter) {
+  //   if (dateStr == null || dateStr.trim().isEmpty) return DateTime(1900);
+  //   try {
+  //     final clean = dateStr.trim().replaceAll(RegExp(r'\s+'), ' ').toUpperCase();
+  //     return formatter.parseStrict(clean);
+  //   } catch (e) {
+  //     print("Date parse failed for: $dateStr -> $e");
+  //     return DateTime(1900);
+  //   }
+  // }
+  //
+  // bool _isSameDay(DateTime a, DateTime b) {
+  //   return a.year == b.year && a.month == b.month && a.day == b.day;
+  // }
 
 
 
@@ -1134,11 +1279,18 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   void selectAllCalls() {
     selectedRecordCallIds.assignAll(callFilteredList.map((e) => e.id.toString()).toList());
   }
+  void selectAllAppointments() {
+    selectedMeetingIds.assignAll(meetingFilteredList.map((e) => e.id.toString()).toList());
+  }
+void unSelectAllAppointments() {
+    selectedMeetingIds.clear();
+  }
 
   void unselectAllCalls() {
     selectedRecordCallIds.clear();
   }
   void toggleMeetingSelection(String id) {
+    print("selectedMeetingIds....${selectedMeetingIds}");
     if (selectedMeetingIds.contains(id)) {
       selectedMeetingIds.remove(id);
     } else {

@@ -813,12 +813,12 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               side: WidgetStateBorderSide.resolveWith(
                                     (states) => const BorderSide(width: 1.0, color: Colors.white),
                               ),
-                              value: remController.selectedRecordCallIds.length == remController.callFilteredList.length && remController.callFilteredList.isNotEmpty,
+                              value: remController.selectedMeetingIds.length == remController.meetingFilteredList.length && remController.meetingFilteredList.isNotEmpty,
                               onChanged: (value) {
                                 if (value == true) {
-                                  remController.selectAllCalls();
+                                  remController.selectAllAppointments();
                                 } else {
-                                  remController.unselectAllCalls();
+                                  remController.unSelectAllAppointments();
                                 }
                               },
                               activeColor: Colors.white,

@@ -792,9 +792,11 @@ class _NewLeadPageState extends State<NewLeadPage> {
                           final companyNoSpace = company.replaceAll(" ", "");
                           final nameNoSpace = name.replaceAll(" ", "");
 
-                          // initial letters
-                          final companyInitial = company.split(" ").map((e) => e[0]).join();
-                          final nameInitial = name.split(" ").map((e) => e[0]).join();
+                          // initials
+                          final companyInitial =
+                          company.split(" ").where((e) => e.isNotEmpty).map((e) => e[0]).join();
+                          final nameInitial =
+                          name.split(" ").where((e) => e.isNotEmpty).map((e) => e[0]).join();
 
                           return company.contains(input) ||
                               name.contains(input) ||
@@ -803,10 +805,27 @@ class _NewLeadPageState extends State<NewLeadPage> {
                               nameNoSpace.contains(inputNoSpace) ||
                               companyInitial.contains(inputNoSpace) ||
                               nameInitial.contains(inputNoSpace);
-
                         }).toList();
 
                         widget.list.value = suggestions;
+
+
+                        // final input = textEditingValue.text.trim().toLowerCase();
+                        // final inputNoSpace = input.replaceAll(RegExp(r'\s+'), '');
+                        //
+                        // if (input.isEmpty) return widget.items;
+                        //
+                        // return widget.items.where((item) {
+                        //   final label = widget.labelBuilder(item).toLowerCase();
+                        //   final labelNoSpace = label.replaceAll(RegExp(r'\s+'), '');
+                        //
+                        //   if (widget.filterFn != null) {
+                        //     return widget.filterFn!(input, item);
+                        //   }
+                        //
+                        //   return label.contains(input) || labelNoSpace.contains(inputNoSpace);
+                        // });
+
                         controllers.selectRadio(widget.list, widget.list2);
                       },
                       onSelectMonth: () {
@@ -1115,7 +1134,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                               mainWhatsApp: data.whatsapp.toString().split("||")[0],
                                               emailUpdate: data.quotationUpdate.toString(),
                                               id: data.userId.toString(),
-                                              status: data.leadStatus ?? "UnQualified",
+                                              status: data.status,
                                               rating: data.rating ?? "Warm",
                                               mainName: data.firstname.toString().split("||")[0],
                                               mainMobile: data.mobileNumber.toString().split("||")[0],

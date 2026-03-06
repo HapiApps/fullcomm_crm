@@ -101,7 +101,7 @@ class _MyAppState extends State<MyApp> {
       apiService.getAllMailActivity();
       apiService.getAllMeetingActivity("");
       apiService.getAllNoteActivity();
-      apiService.getUserHeading();
+      apiService.getHeading();
       remController.allReminders("2");
       settingsController.allRoles();
       settingsController.allOfficeHours();

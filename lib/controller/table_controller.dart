@@ -41,64 +41,20 @@ class TableController extends GetxController {
   var isLoading = false.obs;
   var headingFields = <String>[].obs;
 
-  void setHeading(List<dynamic> data) async {
-    try {
-      headingFields.value = data
-          .map((e) => controllers.formatHeading(e['user_heading'].toString()))
-          .toList();
-
-      final prefs = await SharedPreferences.getInstance();
-      final saved = prefs.getString('tableHeadings');
-      if (saved != null) {
-        final List<dynamic> decoded = jsonDecode(saved);
-        final savedHeadings = decoded.cast<String>();
-
-        final combined = List<String>.from(savedHeadings);
-        for (var i = 0; i < headingFields.length; i++) {
-          if (i < combined.length) {
-            combined[i] = headingFields[i];
-          } else {
-            combined.add(headingFields[i]);
-          }
-        }
-        tableHeadings.value = combined;
-      } else {
-        tableHeadings.value = List<String>.from(headingFields);
-      }
-      for (var h in tableHeadings) {
-        colWidth[h] = 150;
-      }
-      await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
-    } catch (e) {
-      log("Set Heading fields error: $e");
-    }
-  }
-  ///TWO
-  // void setHeadingFields(List<dynamic> data) async {
+  // void setHeading(List<dynamic> data) async {
+  //   log("Set Heading 1");
   //   try {
-  //     // 1️⃣ API / incoming data
-  //     log("Incoming data: $data");
-  //
   //     headingFields.value = data
   //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
   //         .toList();
   //
-  //     log("Formatted headingFields: ${headingFields.value}");
-  //
   //     final prefs = await SharedPreferences.getInstance();
-  //
-  //     // 2️⃣ Local stored value
   //     final saved = prefs.getString('tableHeadings');
-  //     log("Saved tableHeadings (raw): $saved");
-  //
   //     if (saved != null) {
   //       final List<dynamic> decoded = jsonDecode(saved);
   //       final savedHeadings = decoded.cast<String>();
   //
-  //       log("Saved headings (decoded): $savedHeadings");
-  //
   //       final combined = List<String>.from(savedHeadings);
-  //
   //       for (var i = 0; i < headingFields.length; i++) {
   //         if (i < combined.length) {
   //           combined[i] = headingFields[i];
@@ -106,258 +62,63 @@ class TableController extends GetxController {
   //           combined.add(headingFields[i]);
   //         }
   //       }
-  //
   //       tableHeadings.value = combined;
   //     } else {
   //       tableHeadings.value = List<String>.from(headingFields);
   //     }
-  //
-  //     // 3️⃣ Final headings used
-  //     log("Final tableHeadings: ${tableHeadings.value}");
-  //
   //     for (var h in tableHeadings) {
   //       colWidth[h] = 150;
   //     }
-  //
-  //     // 4️⃣ Saving back to local
-  //     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.value));
-  //     log("Saved tableHeadings to local successfully");
-  //
-  //   } catch (e, s) {
-  //     log(
-  //       "Set Heading fields error",
-  //       error: e,
-  //       stackTrace: s,
-  //     );
+  //     await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
+  //   } catch (e) {
+  //     log("Set Heading fields error: $e");
   //   }
   // }
-  ///
-  // void setHeadingFields(List<dynamic> data) async {
-  //   try {
-  //     log("Incoming data: $data");
-  //
-  //     final apiHeadings = data
-  //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
-  //         .toList();
-  //
-  //     log("API headings: $apiHeadings");
-  //
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final saved = prefs.getString('tableHeadings');
-  //
-  //     List<String> finalHeadings;
-  //     bool isChanged = false;
-  //
-  //     if (saved != null) {
-  //       final List<dynamic> decoded = jsonDecode(saved);
-  //       final savedHeadings = decoded.cast<String>();
-  //
-  //       log("Saved headings (order preserved): $savedHeadings");
-  //
-  //       finalHeadings = List<String>.from(savedHeadings);
-  //       // 🔥 only add NEW headings, keep order
-  //       for (final h in apiHeadings) {
-  //         if (!finalHeadings.contains(h)) {
-  //           finalHeadings.add(h);
-  //           isChanged = true;
-  //           log("New heading added: $h");
-  //         }
-  //       }
-  //     } else {
-  //       // First time save
-  //       finalHeadings = apiHeadings;
-  //       isChanged = true;
-  //     }
-  //
-  //     tableHeadings.value = finalHeadings;
-  //     log("Final tableHeadings (order kept): $finalHeadings");
-  //     headingFields.value=finalHeadings;
-  //     for (var h in tableHeadings) {
-  //       colWidth[h] = 150;
-  //     }
-  //
-  //     // save ONLY if something changed
-  //     if (isChanged) {
-  //       await prefs.setString('tableHeadings', jsonEncode(finalHeadings));
-  //       log("tableHeadings saved to local");
-  //     } else {
-  //       log("No change in headings, skip save");
-  //     }
-  //     log("FINAL HEADING ${headingFields}");
-  //   } catch (e, s) {
-  //     log(
-  //       "Set Heading fields error",
-  //       error: e,
-  //       stackTrace: s,
-  //     );
-  //   }
-  // }
-  ///
-  // void setHeadingFields(List<dynamic> data) async {
-  //   try {
-  //     log("Incoming data: $data");
-  //
-  //     final apiHeadings = data
-  //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
-  //         .toList();
-  //
-  //     log("API headings: $apiHeadings");
-  //
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final saved = prefs.getString('tableHeadings');
-  //
-  //     List<String> finalHeadings = [];
-  //     bool isChanged = false;
-  //
-  //     if (saved != null) {
-  //       final List<dynamic> decoded = jsonDecode(saved);
-  //       final savedHeadings = decoded.cast<String>();
-  //
-  //       log("Saved headings: $savedHeadings");
-  //
-  //       /// 🔥 முக்கிய fix
-  //       if (savedHeadings.isEmpty) {
-  //         log("Saved headings empty → use API headings");
-  //
-  //         finalHeadings = apiHeadings;
-  //         isChanged = true;
-  //       } else {
-  //         finalHeadings = List<String>.from(savedHeadings);
-  //
-  //         /// add only new headings
-  //         for (final h in apiHeadings) {
-  //           if (!finalHeadings.contains(h)) {
-  //             finalHeadings.add(h);
-  //             isChanged = true;
-  //             log("New heading added: $h");
-  //           }
-  //         }
-  //       }
-  //     } else {
-  //       /// first time
-  //       finalHeadings = apiHeadings;
-  //       isChanged = true;
-  //     }
-  //
-  //     tableHeadings.value = finalHeadings;
-  //     headingFields.value = finalHeadings;
-  //
-  //     log("Final tableHeadings: $finalHeadings");
-  //
-  //     /// column width set
-  //     for (var h in tableHeadings) {
-  //       colWidth[h] = 150;
-  //     }
-  //
-  //     /// save only if changed
-  //     if (isChanged) {
-  //       await prefs.setString('tableHeadings', jsonEncode(finalHeadings));
-  //       log("tableHeadings saved to local");
-  //     } else {
-  //       log("No change in headings");
-  //     }
-  //
-  //     log("FINAL HEADING ${headingFields}");
-  //
-  //   } catch (e, s) {
-  //     log(
-  //       "Set Heading fields error",
-  //       error: e,
-  //       stackTrace: s,
-  //     );
-  //   }
-  // }
-  /// final
-  // void setHeadingFields(List<dynamic> data) async {
-  //   try {
-  //     log("Incoming data: $data");
-  //
-  //     /// API headings
-  //     final apiHeadings = data
-  //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
-  //         .toList();
-  //
-  //     log("API headings: $apiHeadings");
-  //
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final saved = prefs.getString('tableHeadings');
-  //
-  //     List<String> finalHeadings = [];
-  //     bool isChanged = false;
-  //
-  //     if (saved != null) {
-  //       dynamic decoded;
-  //
-  //       try {
-  //         decoded = jsonDecode(saved);
-  //       } catch (e) {
-  //         decoded = null;
-  //       }
-  //
-  //       List<String> savedHeadings = [];
-  //
-  //       /// handle List or Map safely
-  //       if (decoded is List) {
-  //         savedHeadings = decoded.map((e) => e.toString()).toList();
-  //       } else if (decoded is Map) {
-  //         savedHeadings = decoded.values.map((e) => e.toString()).toList();
-  //       }
-  //
-  //       log("Saved headings: $savedHeadings");
-  //
-  //       /// saved empty → use API
-  //       if (savedHeadings.isEmpty) {
-  //         finalHeadings = apiHeadings;
-  //         isChanged = true;
-  //         log("Saved headings empty → use API headings");
-  //       } else {
-  //         finalHeadings = List<String>.from(savedHeadings);
-  //
-  //         /// add new headings only
-  //         for (final h in apiHeadings) {
-  //           if (!finalHeadings.contains(h)) {
-  //             finalHeadings.add(h);
-  //             isChanged = true;
-  //             log("New heading added: $h");
-  //           }
-  //         }
-  //       }
-  //     } else {
-  //       /// first time
-  //       finalHeadings = apiHeadings;
-  //       isChanged = true;
-  //     }
-  //
-  //     /// update reactive lists
-  //     tableHeadings.value = finalHeadings;
-  //     headingFields.value = finalHeadings;
-  //
-  //     log("Final tableHeadings: $finalHeadings");
-  //
-  //     /// set column width
-  //     for (var h in tableHeadings) {
-  //       colWidth[h] = 150;
-  //     }
-  //
-  //     /// save only if changed
-  //     if (isChanged) {
-  //       await prefs.setString('tableHeadings', jsonEncode(finalHeadings));
-  //       log("tableHeadings saved to local");
-  //     } else {
-  //       log("No change in headings");
-  //     }
-  //
-  //     log("FINAL HEADING ${headingFields.value}");
-  //
-  //   } catch (e, s) {
-  //     log(
-  //       "Set Heading fields error",
-  //       error: e,
-  //       stackTrace: s,
-  //     );
-  //   }
-  // }
-///
+  void setHeading(List<dynamic> data) async {
+    log("Set Heading 1");
+    try {
+      headingFields.value = data
+          .map((e) => controllers.formatHeading(e['user_heading'].toString()))
+          .toList();
+
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getString('tableHeadings');
+
+      if (saved != null) {
+        final decoded = jsonDecode(saved);
+
+        List<String> savedHeadings = [];
+
+        if (decoded is List) {
+          savedHeadings = decoded.cast<String>();
+        } else if (decoded is Map) {
+          savedHeadings = decoded.values.map((e) => e.toString()).toList();
+        }
+
+        final combined = List<String>.from(savedHeadings);
+
+        for (var i = 0; i < headingFields.length; i++) {
+          if (i < combined.length) {
+            combined[i] = headingFields[i];
+          } else {
+            combined.add(headingFields[i]);
+          }
+        }
+
+        tableHeadings.value = combined;
+      } else {
+        tableHeadings.value = List<String>.from(headingFields);
+      }
+
+      for (var h in tableHeadings) {
+        colWidth[h] = 150;
+      }
+
+      await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
+    } catch (e) {
+      log("Set Heading fields error: $e");
+    }
+  }
   void setHeadingFields(List<dynamic> data) async {
     try {
       log("Incoming data: $data");
@@ -440,106 +201,6 @@ class TableController extends GetxController {
       );
     }
   }
-  // void setHeadingFields2(List<dynamic> data) async {
-  //   try {
-  //     log("Incoming data: $data");
-  //
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final saved = prefs.getString('tableHeadings');
-  //
-  //     /// ---------- API MAP (system_field -> formatted heading)
-  //     final Map<String, String> apiMap = {
-  //       for (final e in data)
-  //         e['system_field'].toString():
-  //         controllers.formatHeading(e['user_heading'].toString())
-  //     };
-  //
-  //     log("API Map: $apiMap");
-  //
-  //     Map<String, String> finalMap = {};
-  //     bool isChanged = false;
-  //
-  //     /// ---------- HANDLE STORAGE
-  //     if (saved != null) {
-  //       final decoded = jsonDecode(saved);
-  //
-  //       if (decoded is Map && decoded.isNotEmpty) {
-  //         /// ✅ NEW FORMAT (MAP)
-  //         finalMap = decoded.map(
-  //               (k, v) => MapEntry(k.toString(), v.toString()),
-  //         );
-  //
-  //         log("Loaded Map storage");
-  //
-  //       } else if (decoded is List && decoded.isNotEmpty) {
-  //         /// 🔁 OLD FORMAT (LIST) → migrate
-  //         log("Old List storage detected, migrating...");
-  //
-  //         for (int i = 0; i < decoded.length && i < apiMap.length; i++) {
-  //           finalMap[apiMap.keys.elementAt(i)] = decoded[i].toString();
-  //         }
-  //
-  //         isChanged = true;
-  //
-  //       } else {
-  //         /// 🔥 EMPTY STORAGE → USE API
-  //         log("Saved headings empty → using API headings");
-  //
-  //         finalMap = Map.from(apiMap);
-  //         isChanged = true;
-  //       }
-  //     } else {
-  //       /// FIRST TIME
-  //       finalMap = Map.from(apiMap);
-  //       isChanged = true;
-  //     }
-  //
-  //     /// ---------- ADD / REPLACE LOGIC
-  //     apiMap.forEach((key, value) {
-  //
-  //       if (!finalMap.containsKey(key)) {
-  //         finalMap[key] = value;
-  //         isChanged = true;
-  //         log("New heading added: $key -> $value");
-  //
-  //       } else if (finalMap[key] != value) {
-  //         finalMap[key] = value;
-  //         isChanged = true;
-  //         log("Heading replaced: $key -> $value");
-  //       }
-  //     });
-  //
-  //     /// ---------- FINAL UI ORDER (API ORDER)
-  //     final List<String> finalHeadings =
-  //     apiMap.keys.map((k) => finalMap[k] ?? "").toList();
-  //
-  //     tableHeadings.value = finalHeadings;
-  //     headingFields.value = finalHeadings;
-  //
-  //     /// ---------- COLUMN WIDTH
-  //     colWidth.clear();
-  //     for (final h in finalHeadings) {
-  //       colWidth[h] = 150;
-  //     }
-  //
-  //     /// ---------- SAVE IF CHANGED
-  //     if (isChanged) {
-  //       await prefs.setString('tableHeadings', jsonEncode(finalMap));
-  //       log("tableHeadings saved (map format)");
-  //     } else {
-  //       log("No change in headings");
-  //     }
-  //
-  //     log("FINAL HEADINGS: $finalHeadings");
-  //
-  //   } catch (e, s) {
-  //     log(
-  //       "Set Heading fields error",
-  //       error: e,
-  //       stackTrace: s,
-  //     );
-  //   }
-  // }
 
   RxBool isTableLoading = false.obs;
   RxList<String> tableHeadings = <String>[].obs;
@@ -630,8 +291,7 @@ class TableController extends GetxController {
         }
       }
       if (request.statusCode == 200 && response["message"]=="Heading updated successfully"){
-        apiService.getUserHeading();
-        Navigator.pop(context);
+        apiService.getHeading();
         utils.snackBar(context: context, msg: "Heading updated successfully", color: Colors.green);
         controllers.productCtr.reset();
       } else {
@@ -674,7 +334,7 @@ class TableController extends GetxController {
         }
       }
       if (request.statusCode == 200 && response["message"]=="Heading updated successfully"){
-        apiService.getUserHeading2();
+        apiService.getHeading();
         // Navigator.pop(context);
         utils.snackBar(context: context, msg: "Heading updated successfully", color: Colors.green);
         controllers.productCtr.reset();
@@ -715,7 +375,7 @@ class TableController extends GetxController {
       }
       if (request.statusCode == 200 ){
         Navigator.pop(context);
-        apiService.getUserHeading();
+        apiService.getHeading();
         utils.snackBar(context: context, msg: "Heading added successfully", color: Colors.green);
         controllers.productCtr.reset();
       } else {

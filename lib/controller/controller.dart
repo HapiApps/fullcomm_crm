@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../common/constant/api.dart';
 import '../common/utilities/jwt_storage.dart';
+import '../common/utilities/utils.dart';
 import '../common/widgets/log_in.dart';
 import '../models/comments_obj.dart';
 import '../models/customer_activity.dart';
@@ -40,6 +41,49 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   var isUpdateLoading=false.obs;
   var sharingLocation="".obs;
   TextEditingController notesController=TextEditingController();
+  Future<void> manageLead(BuildContext context,String id,int active) async {
+    try {
+      Map<String, dynamic> data = {
+        "user_id": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id"),
+        "id": id,
+        "action": "manage_lead",
+        "active": active,
+      };
+      print("Request: ${jsonEncode(data)}");
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(data),
+      );
+
+      Map<String, dynamic> result = json.decode(response.body);
+      print("Response: ${response.body}");
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return manageLead(context,id,active);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200 && result["message"] == "OK") {
+        apiService.getAllMeetingActivity("");
+        Navigator.pop(context);
+        utils.snackBar(context: context,msg: "Category ${active==1?'active':"in active"} successfully.",color: Colors.green);
+        controllers.productCtr.reset();
+      } else {
+        apiService.errorDialog(Get.context!, result["message"] ?? "Failed to Category ${active==1?'active':"in active"}.");
+        controllers.productCtr.reset();
+      }
+    } catch (e) {
+      apiService.errorDialog(Get.context!, e.toString());
+      controllers.productCtr.reset();
+    }
+  }
 
   RxList<TextEditingController> numberList=<TextEditingController>[].obs;
 RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;

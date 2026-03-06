@@ -584,7 +584,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                   focusNode: phoneFocusList[index],
                                                                   onEdit: () {
                                                                     FocusScope.of(context)
-                                                                        .requestFocus(account);
+                                                                        .requestFocus(whatsApp);
                                                                   },
                                                                   // focusNode: whatsApp,
                                                                   hintText: _formatHeading(

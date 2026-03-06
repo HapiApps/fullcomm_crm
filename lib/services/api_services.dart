@@ -622,55 +622,6 @@ class ApiService {
       apiService.errorDialog(context, e.toString());
     }
   }
-  Future addCategories(BuildContext context) async {
-    try {
-      Map data = {
-        "action": "insert_category",
-        "value": controllers.emailMessageCtr.text.trim(),
-        "cos_id": controllers.storage.read("cos_id"),
-        "created_by": controllers.storage.read("id"),
-      };
-
-      final request = await http.post(
-        Uri.parse(scriptApi),
-        headers: {
-          'X-API-TOKEN': "${TokenStorage().readToken()}",
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(data),
-        encoding: Encoding.getByName("utf-8"),
-      );
-      debugPrint(data.toString());
-      debugPrint(request.body);
-      Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 401) {
-        final refreshed = await controllers.refreshToken();
-        if (refreshed) {
-          return addCategories(context);
-        } else {
-          controllers.setLogOut();
-        }
-      }
-      if (request.statusCode == 200) {
-        final responseData = jsonDecode(request.body);
-        utils.snackBar(context: context, msg: "Category added successfully", color: Colors.green);
-        controllers.leadCategoryList.add(LeadStatusModel(
-          leadStatus: (responseData['data']['lead_status']).toString(),
-          value: controllers.emailMessageCtr.text.trim(),
-          id: (responseData['data']['id']).toString(),
-          icon1: "",
-          icon2: "",
-          displayOrder: int.parse(responseData['data']['display_order'].toString()),
-        ));
-        Get.back();
-        controllers.productCtr.reset();
-      } else {
-        apiService.errorDialog(context, request.body);
-      }
-    } catch (e) {
-      apiService.errorDialog(context, e.toString());
-    }
-  }
 
   Future updateTokenAPI(String token) async {
     try {
@@ -2730,6 +2681,8 @@ class ApiService {
             icon1: item["icon1"].toString(),
             icon2: item["icon2"].toString(),
             displayOrder: item["display_order"],
+            active: item['active'].toString(),
+            totalLead: item['total_lead'].toString(),
           );
         }).toList();
         // controllers.leadCategoryList.assignAll(converted);
@@ -2760,7 +2713,7 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint("leadddddd");
+      debugPrint("allleadddddd");
       debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -2781,8 +2734,11 @@ class ApiService {
             icon1: item["icon1"].toString(),
             icon2: item["icon2"].toString(),
             displayOrder: item["display_order"],
+            active: item['active'].toString(),
+            totalLead: item['total_lead'].toString(),
           );
         }).toList();
+
         // controllers.leadCategoryList.assignAll(converted);
         // controllers.leadCategoryList.sort(
         //       (a, b) => int.parse(a.leadStatus)
@@ -3281,43 +3237,44 @@ class ApiService {
         throw Exception('Failed to load album');
     }
   }
-  Future getUserHeading2() async {
-    try {
-      Map data = {
-        "search_type": "user_field_head",
-        "cos_id": controllers.storage.read("cos_id"),
-        "action": "get_data"};
-      final request = await http.post(Uri.parse(scriptApi),
-          headers: {
-            'X-API-TOKEN': "${TokenStorage().readToken()}",
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(data),
-          encoding: Encoding.getByName("utf-8"));
-      if (request.statusCode == 401) {
-        final refreshed = await controllers.refreshToken();
-        if (refreshed) {
-          return getUserHeading2();
-        } else {
-          controllers.setLogOut();
-        }
-      }
-      if (request.statusCode == 200) {
-        List response = json.decode(request.body);
-        controllers.fields.clear();
-        controllers.fields.value = response.map((e) => CustomerField.fromJson(e)).toList();
-        tableController.setHeadingFields(response);
-      } else {
-        controllers.fields.value = controllers.defaultFields.map((e) => CustomerField.fromJson(e)).toList();
-        tableController.setHeadingFields(controllers.defaultFields);
-        throw Exception('Failed to load album');
-      }
-    } catch (e) {
-        controllers.fields.value = controllers.defaultFields.map((e) => CustomerField.fromJson(e)).toList();
-        tableController.setHeadingFields(controllers.defaultFields);
-        throw Exception('Failed to load album');
-    }
-  }
+  ///
+  // Future getUserHeading2() async {
+  //   try {
+  //     Map data = {
+  //       "search_type": "user_field_head",
+  //       "cos_id": controllers.storage.read("cos_id"),
+  //       "action": "get_data"};
+  //     final request = await http.post(Uri.parse(scriptApi),
+  //         headers: {
+  //           'X-API-TOKEN': "${TokenStorage().readToken()}",
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: jsonEncode(data),
+  //         encoding: Encoding.getByName("utf-8"));
+  //     if (request.statusCode == 401) {
+  //       final refreshed = await controllers.refreshToken();
+  //       if (refreshed) {
+  //         return getUserHeading2();
+  //       } else {
+  //         controllers.setLogOut();
+  //       }
+  //     }
+  //     if (request.statusCode == 200) {
+  //       List response = json.decode(request.body);
+  //       controllers.fields.clear();
+  //       controllers.fields.value = response.map((e) => CustomerField.fromJson(e)).toList();
+  //       tableController.setHeadingFields(response);
+  //     } else {
+  //       controllers.fields.value = controllers.defaultFields.map((e) => CustomerField.fromJson(e)).toList();
+  //       tableController.setHeadingFields(controllers.defaultFields);
+  //       throw Exception('Failed to load album');
+  //     }
+  //   } catch (e) {
+  //       controllers.fields.value = controllers.defaultFields.map((e) => CustomerField.fromJson(e)).toList();
+  //       tableController.setHeadingFields(controllers.defaultFields);
+  //       throw Exception('Failed to load album');
+  //   }
+  // }
 
   Future insertEmailAPI(BuildContext context, String id, String image) async {
     try {

@@ -2943,7 +2943,7 @@ class Utils {
                       controllers.productCtr.reset();
                       return;
                     }else{
-                      apiService.addCategories(context);
+                      // apiService.addCategories(context);
                     }
                   }, isLoading: true, controller: controllers.productCtr,text: "Save",
                       backgroundColor: colorsConst.primary, radius: 5, width: 100)

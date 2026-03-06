@@ -248,7 +248,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
     // TODO: implement initState
     super.initState();
     if(tableController.tableHeadings.isEmpty){
-      apiService.getUserHeading();
+      apiService.getHeading();
     }
     statusController = TextEditingController(
         text: widget.statusUpdate.toString() == "null"
@@ -403,17 +403,33 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                     else {
                       String normalize(String s) =>
                           s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
+                      // final key = controllers.fields
+                      //     .firstWhereOrNull((f) => normalize(f.userHeading) == normalize(heading))
+                      //     ?.systemField;
+                      // final column = controllers.fields
+                      //     .firstWhereOrNull((f) => normalize(f.systemField) == normalize(heading))
+                      //     ?.systemField;
+                      // // print(controllers.fields.first.systemField);
+                      // final controller =key != null ? fieldControllers[key] : null;
+                      // // print(key);
+                      // return Tooltip(
+                      //   message: (controller?.text == "null") ? "" : controller?.text ?? "",
                       final key = controllers.fields
                           .firstWhereOrNull((f) => normalize(f.userHeading) == normalize(heading))
                           ?.systemField;
+
                       final column = controllers.fields
                           .firstWhereOrNull((f) => normalize(f.systemField) == normalize(heading))
                           ?.systemField;
-                      // print(controllers.fields.first.systemField);
-                      final controller =key != null ? fieldControllers[key] : null;
-                      // print(key);
+
+                      final controller = key != null ? fieldControllers[key] : null;
+
+                      if (controller != null && controller.text == "null") {
+                        controller.text = "";
+                      }
+
                       return Tooltip(
-                        message: (controller?.text == "null") ? "" : controller?.text ?? "",
+                        message: controller?.text ?? "",
                         child:  Container(
                           height: 45,
                           alignment: Alignment.centerLeft,

@@ -35,7 +35,7 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
   void initState() {
     // TODO: implement initState
     if(tableController.tableHeadings.isEmpty){
-      apiService.getUserHeading();
+      apiService.getHeading();
     }
     super.initState();
   }

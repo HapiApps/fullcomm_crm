@@ -62,7 +62,7 @@ class _DashboardPageState extends State<DashboardPage>
     apiService.getLeadCategories();
     apiService.getCustomLeads();
     apiService.getAllLeadCategories();
-    apiService.getUserHeading();
+    apiService.getHeading();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
@@ -745,7 +745,7 @@ class _DashboardPageState extends State<DashboardPage>
                                 // Quotations Sent
                                 InkWell(
                                   onTap:(){
-                                    Navigator.push(context, MaterialPageRoute(builder: (_)=>LeadCategories()));
+                                    // Navigator.push(context, MaterialPageRoute(builder: (_)=>LeadCategories()));
                                   },
                                   child: SizedBox(
                                     width: screenWidth/4,
