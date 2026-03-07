@@ -71,12 +71,16 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
         }
       }
       if (response.statusCode == 200 && result["message"] == "OK") {
-        apiService.getAllMeetingActivity("");
-        Navigator.pop(context);
-        utils.snackBar(context: context,msg: "Category ${active==1?'active':"in active"} successfully.",color: Colors.green);
+        utils.snackBar(context: context,msg: "Category ${active==1?'Active':"InActive"} successfully.",color: Colors.green);
+        apiService.getAllLeadCategories();
+        int index = controllers.leadCategoryList.indexWhere((e) => e.id == id);
+
+        if (index != -1) {
+          controllers.leadCategoryList.removeAt(index);
+        }
         controllers.productCtr.reset();
       } else {
-        apiService.errorDialog(Get.context!, result["message"] ?? "Failed to Category ${active==1?'active':"in active"}.");
+        apiService.errorDialog(Get.context!, result["message"] ?? "Failed to Category ${active==1?'Active':"InActive"}.");
         controllers.productCtr.reset();
       }
     } catch (e) {

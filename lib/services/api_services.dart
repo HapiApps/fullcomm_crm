@@ -613,7 +613,7 @@ class ApiService {
         }
       }
       if (request.statusCode == 200) {
-        utils.snackBar(context: context, msg: "Category updated successfully", color: Colors.green);
+        utils.snackBar(context: context, msg: "Reorder successfully", color: Colors.green);
         controllers.productCtr.reset();
       } else {
         apiService.errorDialog(context, request.body);
@@ -4009,7 +4009,7 @@ class ApiService {
   Map<String, int> getStatusCountMap() {
     final Map<String, int> map = {};
 
-    for (var item in controllers.callActivity) {
+    for (var item in remController.callFilteredList) {
       final status = item.callStatus.trim();
       if (status.isEmpty) continue;
 
@@ -4017,6 +4017,17 @@ class ApiService {
     }
     return map;
   }
+  // Map<String, int> getStatusCountMap() {
+  //   final Map<String, int> map = {};
+  //
+  //   for (var item in controllers.callActivity) {
+  //     final status = item.callStatus.trim();
+  //     if (status.isEmpty) continue;
+  //
+  //     map[status] = (map[status] ?? 0) + 1;
+  //   }
+  //   return map;
+  // }
   void mergeStatusWithCount() {
     final statusCountMap = getStatusCountMap();
     controllers.hCallStatusList.value = controllers.hCallStatusList.map((item) {
@@ -4031,7 +4042,6 @@ class ApiService {
   }
 //new
   Future getAllCallActivity(String cusId) async {
-    await controllers.getCallStatus();
     try {
       Map data = {
         "search_type": "records",
@@ -4059,17 +4069,17 @@ class ApiService {
         List response = json.decode(request.body);
         controllers.callActivity.clear();
         controllers.callActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
-        final incoming = controllers.callActivity.where((e) => e.callType.isNotEmpty && e.callType.trim() == "Incoming").toList();
-        final outgoing = controllers.callActivity
-            .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Outgoing")
-            .toList();
-        final missed = controllers.callActivity
-            .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Missed")
-            .toList();
-
-        controllers.allIncomingCalls.value = incoming.length.toString();
-        controllers.allOutgoingCalls.value = outgoing.length.toString();
-        controllers.allMissedCalls.value = missed.length.toString();
+        // final incoming = controllers.callActivity.where((e) => e.callType.isNotEmpty && e.callType.trim() == "Incoming").toList();
+        // final outgoing = controllers.callActivity
+        //     .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Outgoing")
+        //     .toList();
+        // final missed = controllers.callActivity
+        //     .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Missed")
+        //     .toList();
+        //
+        // controllers.allIncomingCalls.value = incoming.length.toString();
+        // controllers.allOutgoingCalls.value = outgoing.length.toString();
+        // controllers.allMissedCalls.value = missed.length.toString();
         controllers.allCalls.value = response.length.toString();
         mergeStatusWithCount();
         remController.filterAndSortCalls(

@@ -619,6 +619,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     }
 
     callFilteredList.assignAll(filtered);
+    apiService.mergeStatusWithCount();
   }
 
   void filterAndSortMeetings({
@@ -1280,7 +1281,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     selectedRecordCallIds.assignAll(callFilteredList.map((e) => e.id.toString()).toList());
   }
   void selectAllAppointments() {
+    print("selectedMeetingIds....${selectedMeetingIds}");
     selectedMeetingIds.assignAll(meetingFilteredList.map((e) => e.id.toString()).toList());
+    print("selectedMeetingIds....${selectedMeetingIds}");
   }
 void unSelectAllAppointments() {
     selectedMeetingIds.clear();
@@ -1290,7 +1293,6 @@ void unSelectAllAppointments() {
     selectedRecordCallIds.clear();
   }
   void toggleMeetingSelection(String id) {
-    print("selectedMeetingIds....${selectedMeetingIds}");
     if (selectedMeetingIds.contains(id)) {
       selectedMeetingIds.remove(id);
     } else {

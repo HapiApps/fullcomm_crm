@@ -2970,12 +2970,27 @@ class Utils {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Select Default Date Range"),
+          // title: const Text("Select Default Date Range"),
           content: Obx(() => SizedBox(
             width: 300,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 30,height: 30,color: colorsConst.primary,
+                      child: Icon(Icons.calendar_today_outlined,color: Colors.white,size: 15,),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                          CustomText(text: "Default Date Range", isCopy: false,isBold: true,),
+                          CustomText(text: "Set the default time filter for dashboard records", isCopy: false),
+                      ],
+                    ),
+                  ],
+                ),
                 ...items.map((value) {
                   return RadioListTile<String>(
                     title: Text(value),
