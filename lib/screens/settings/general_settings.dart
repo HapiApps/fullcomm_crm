@@ -29,6 +29,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
     // TODO: implement initState
     super.initState();
     apiService.getAllEmployees();
+    controllers.selectedSortBy.value = controllers.storage.read("selectedSortBy") ?? "All";
   }
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(
-                          text: "General Settings",
+                          text: "\nGeneral Settings",
                           colors: colorsConst.textColor,
                           size: 20,
                           isBold: true,
@@ -62,7 +63,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         ),
                         10.height,
                         CustomText(
-                          text: "Manage global settings across the application.  ",
+                          text: "Manage global settings across the application.  \n",
                           colors: colorsConst.textColor,
                           isCopy: true,
                           size: 14,
@@ -399,7 +400,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         child: Container(
                           width:screenWidth/5,
                           decoration: customDecoration.baseBackgroundDecoration(
-                              color: Colors.white,borderColor: Colors.grey.shade100,radius: 15,shadowColor: Colors.grey.shade300
+                              color: Colors.white,borderColor: Colors.grey.shade200,radius: 15,shadowColor: Colors.grey.shade300
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
@@ -466,7 +467,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         child: Container(
                           width:screenWidth/5,
                           decoration: customDecoration.baseBackgroundDecoration(
-                              color: Colors.white,borderColor: Colors.grey.shade100,radius: 15,shadowColor: Colors.grey.shade300
+                              color: Colors.white,borderColor: Colors.grey.shade200,radius: 15,shadowColor: Colors.grey.shade300
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
@@ -504,10 +505,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     Row(
                                       children: [
                                         Image.asset("assets/images/setting3.png",width: 15,height: 15,),5.width,
-                                        CustomText(
-                                          text: controllers.storage.read("selectedSortBy") ?? "All",
+                                        Obx(()=>CustomText(
+                                          text: controllers.selectedSortBy.value,
                                           isCopy: true,
-                                        ),
+                                        )),
                                       ],
                                     ),
                                     Container(
@@ -527,208 +528,453 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       ),
                       InkWell(
                         onTap: (){
-                          Get.dialog(
-                            Dialog(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              child: Container(
-                                width: 300,
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    CustomText(
-                                      text: "Record Status",
-                                      colors: colorsConst.textColor,
-                                      isBold: true,
-                                      size: 18,
-                                      isCopy: true,
-                                    ),
-                                    10.height,
-                                    SizedBox(
-                                      width: 300,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: controllers.hCallStatusList.length,
-                                        itemBuilder: (context, index) {
-                                          final item = controllers.hCallStatusList[index];
-                                          return Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              CustomText(text: item["value"], isCopy: false),
-                                              TextButton(
-                                                onPressed:(){
-                                                  controllers.statusController.text=item["value"];
-                                                  Get.dialog(
-                                                    Dialog(
-                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                                      child: Container(
-                                                        width: 300,
-                                                        padding: const EdgeInsets.all(16),
-                                                        child: Column(
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          children: [
-                                                            CustomText(
-                                                              text: "Update Record Status",
-                                                              colors: colorsConst.textColor,
-                                                              isBold: true,
-                                                              size: 18,
-                                                              isCopy: true,
-                                                            ),
-                                                            10.height,
-                                                            SizedBox(
-                                                              width: 500,
-                                                              child: TextField(
-                                                                controller: controllers.statusController,
-                                                                style: TextStyle(
-                                                                    fontSize: 15, color: colorsConst.textColor),
-                                                                decoration: const InputDecoration(
-                                                                  border: UnderlineInputBorder(),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            20.height,
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                              children: [
-                                                                ElevatedButton(
-                                                                  onPressed: () {
-                                                                    Navigator.of(context).pop();
-                                                                  },
-                                                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                                                                  child: const Text("Cancel", style: TextStyle(color: Colors.black)),
-                                                                ),
-                                                                CustomLoadingButton(
-                                                                  callback: (){
-                                                                    if(controllers.statusController.text.trim().isEmpty){
-                                                                      utils.snackBar(context: context, msg: "Please fill status", color: Colors.red);
-                                                                      controllers.productCtr.reset();
-                                                                    }else{
-                                                                      controllers.correctionStatus(context,"update",item["id"].toString());
-                                                                    }
-                                                                  },
-                                                                  height: 35,
-                                                                  isLoading: true,
-                                                                  backgroundColor: colorsConst.primary,
-                                                                  radius: 2,
-                                                                  width: 80,
-                                                                  controller: controllers.productCtr,
-                                                                  isImage: false,
-                                                                  text: "Save",
-                                                                  textColor: Colors.white,
-                                                                ),
-                                                              ],
-                                                            )
-                                                          ],
-                                                        ),
+                          var isAdd = false.obs;
+                          var editIndex = 100.obs;
+                          TextEditingController addCtr = TextEditingController();
+                          FocusNode addFocus = FocusNode();
+
+                          List<FocusNode> focusList =
+                          List.generate(controllers.statusList.length, (index) => FocusNode());
+
+                          List<TextEditingController> ctrList =
+                          List.generate(controllers.statusList.length, (index) =>
+                              TextEditingController(text: controllers.statusList[index]));
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: Color(0xFFF1F5F9),
+                                titlePadding: EdgeInsets.zero,
+                                contentPadding: EdgeInsets.zero,
+                                content: SizedBox(
+                                  width: 420,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+
+                                      /// HEADER
+                                      Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xFFE5E7EB),
+                                          borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              width: 32,
+                                              height: 32,
+                                              decoration: customDecoration.baseBackgroundDecoration(
+                                                color: colorsConst.primary,
+                                                radius: 6,
+                                              ),
+                                              child: const Icon(Icons.folder_outlined,
+                                                  color: Colors.white, size: 18),
+                                            ),
+                                            10.width,
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  CustomText(
+                                                    text: "Record Status",
+                                                    isCopy: false,
+                                                    isBold: true,
+                                                    size: 15,
+                                                  ),
+                                                  CustomText(
+                                                    text:
+                                                    "Manage customer engagement status types",
+                                                    isCopy: false,
+                                                    size: 12,
+                                                    colors: Colors.grey.shade600,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            InkWell(
+                                              onTap: (){
+                                                Navigator.pop(context);
+                                              },
+                                              child: Container(
+                                                width: 26,
+                                                height: 26,
+                                                decoration: customDecoration.baseBackgroundDecoration(
+                                                  color: Colors.transparent,
+                                                  radius: 5,
+                                                  borderColor: Colors.grey.shade400,
+                                                ),
+                                                child:  Center(
+                                                  child: Icon(Icons.clear,color: Colors.grey,size: 15,)
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+
+                                      /// STATUS LIST
+                                      Column(
+                                        children: List.generate(controllers.statusList.length, (index) {
+                                          return Container(
+                                            margin: const EdgeInsets.only(bottom: 10),
+                                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                                            decoration: customDecoration.baseBackgroundDecoration(
+                                              color: Colors.white,
+                                              borderColor: Colors.grey.shade300,
+                                              radius: 8,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                editIndex.value==index?
+                                                SizedBox(
+                                                  width:140,
+                                                  child: TextField(
+                                                    focusNode: focusList[editIndex.value],
+                                                    controller: ctrList[editIndex.value],
+                                                    decoration: InputDecoration(
+                                                      border: UnderlineInputBorder(),
+                                                      contentPadding: const EdgeInsets.symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 14,
                                                       ),
                                                     ),
-                                                  );
-                                                },
-                                                child: SvgPicture.asset(
-                                                  "assets/images/a_edit.svg",
-                                                  width: 16,
-                                                  height: 16,
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    20.height,
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                                          child: const Text("Cancel", style: TextStyle(color: Colors.black)),
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: ()  {
-                                            controllers.statusController.clear();
-                                            Get.dialog(
-                                              Dialog(
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                                child: Container(
-                                                  width: 300,
-                                                  padding: const EdgeInsets.all(16),
-                                                  child: Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      CustomText(
-                                                        text: "Add Record Status",
-                                                        colors: colorsConst.textColor,
-                                                        isBold: true,
-                                                        size: 18,
-                                                        isCopy: true,
-                                                      ),
-                                                      10.height,
-                                                      SizedBox(
-                                                        width: 500,
-                                                        child: TextField(
-                                                          controller: controllers.statusController,
-                                                          style: TextStyle(
-                                                              fontSize: 15, color: colorsConst.textColor),
-                                                          decoration: const InputDecoration(
-                                                            border: UnderlineInputBorder(),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      20.height,
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                        children: [
-                                                          ElevatedButton(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                            style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                                                            child: const Text("Cancel", style: TextStyle(color: Colors.black)),
-                                                          ),
-                                                          CustomLoadingButton(
-                                                            callback: (){
-                                                              if(controllers.statusController.text.trim().isEmpty){
-                                                                utils.snackBar(context: context, msg: "Please fill status", color: Colors.red);
-                                                                controllers.productCtr.reset();
-                                                              }else{
-                                                                controllers.correctionStatus(context,"add","0");
-                                                              }
-                                                            },
-                                                            height: 35,
-                                                            isLoading: true,
-                                                            backgroundColor: colorsConst.primary,
-                                                            radius: 2,
-                                                            width: 80,
-                                                            controller: controllers.productCtr,
-                                                            isImage: false,
-                                                            text: "Add",
-                                                            textColor: Colors.white,
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
+                                                    onEditingComplete: (){
+                                                      if (controllers.emailMessageCtr.text.trim().isEmpty) {
+                                                        utils.snackBar(
+                                                          context: context,
+                                                          msg: "Please enter lead category",
+                                                          color: Colors.red,
+                                                        );
+                                                        controllers.productCtr.reset();
+                                                        return;
+                                                      }else{
+                                                        // addCategories(context,"update",data.id,index);
+                                                      }
+                                                    },
                                                   ),
+                                                ):
+                                                CustomText(
+                                                  text: controllers.statusList[index],
+                                                  isCopy: false,
+                                                  size: 14,
+                                                ),
+                                                InkWell(
+                                                  onTap: (){
+                                                    editIndex.value=index;
+                                                    FocusScope.of(context).requestFocus(focusList[index]);
+                                                  },
+                                                  child: Icon(Icons.edit_outlined,
+                                                      size: 18, color: Colors.grey.shade600),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        }),
+                                      ),
+
+                                      /// ADD STATUS
+                                      Obx(() => isAdd.value
+                                          ? Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                height: 38,
+                                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                decoration: customDecoration.baseBackgroundDecoration(
+                                                    color: Colors.white,
+                                                    borderColor: Colors.blue.shade400,
+                                                    radius: 6),
+                                                child: TextField(
+                                                  controller: addCtr,
+                                                  focusNode: addFocus,
+                                                  decoration:
+                                                  const InputDecoration(border: InputBorder.none),
                                                 ),
                                               ),
-                                            );
-                                          },
-                                          child: const Text("Add Status"),
+                                            ),
+                                            8.width,
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor: colorsConst.primary),
+                                              onPressed: () {
+
+                                                if (addCtr.text.trim().isEmpty) return;
+
+                                                /// add new status
+                                                controllers.statusList.add(addCtr.text);
+
+                                                /// create new controller & focus
+                                                ctrList.add(TextEditingController(text: addCtr.text));
+                                                focusList.add(FocusNode());
+
+                                                addCtr.clear();
+                                              },
+                                              child: const CustomText(
+                                                text: "Add",
+                                                isCopy: false,
+                                                colors: Colors.white,
+                                              ),
+                                            )
+                                          ],
                                         ),
-                                      ],
-                                    )
-                                  ],
+                                      )
+                                          : const SizedBox()),
+
+                                      const SizedBox(height: 10),
+
+                                      /// FOOTER BUTTONS
+                                      Container(
+                                        padding:
+                                        const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xFFE5E7EB),
+                                          borderRadius:
+                                          BorderRadius.vertical(bottom: Radius.circular(12)),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            OutlinedButton(
+                                              onPressed: () {
+                                                isAdd.value = true;
+
+                                                Future.delayed(const Duration(milliseconds: 200), () {
+                                                  addFocus.requestFocus();
+                                                });
+                                              },
+                                              style: OutlinedButton.styleFrom(
+                                                backgroundColor: Colors.white
+                                              ),
+                                              child: const CustomText(
+                                                text: "+ Add Status",
+                                                isCopy: false,
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor: colorsConst.primary),
+                                              onPressed: () {},
+                                              child: const CustomText(
+                                                text: "Save Changes",
+                                                isCopy: false,
+                                                colors: Colors.white,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           );
+                          // Get.dialog(
+                          //   Dialog(
+                          //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          //     child: Container(
+                          //       width: 300,
+                          //       padding: const EdgeInsets.all(16),
+                          //       child: Column(
+                          //         mainAxisSize: MainAxisSize.min,
+                          //         children: [
+                          //           CustomText(
+                          //             text: "Record Status",
+                          //             colors: colorsConst.textColor,
+                          //             isBold: true,
+                          //             size: 18,
+                          //             isCopy: true,
+                          //           ),
+                          //           10.height,
+                          //           SizedBox(
+                          //             width: 300,
+                          //             child: ListView.builder(
+                          //               shrinkWrap: true,
+                          //               itemCount: controllers.hCallStatusList.length,
+                          //               itemBuilder: (context, index) {
+                          //                 final item = controllers.hCallStatusList[index];
+                          //                 return Row(
+                          //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //                   children: [
+                          //                     CustomText(text: item["value"], isCopy: false),
+                          //                     TextButton(
+                          //                       onPressed:(){
+                          //                         controllers.statusController.text=item["value"];
+                          //                         Get.dialog(
+                          //                           Dialog(
+                          //                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          //                             child: Container(
+                          //                               width: 300,
+                          //                               padding: const EdgeInsets.all(16),
+                          //                               child: Column(
+                          //                                 mainAxisSize: MainAxisSize.min,
+                          //                                 children: [
+                          //                                   CustomText(
+                          //                                     text: "Update Record Status",
+                          //                                     colors: colorsConst.textColor,
+                          //                                     isBold: true,
+                          //                                     size: 18,
+                          //                                     isCopy: true,
+                          //                                   ),
+                          //                                   10.height,
+                          //                                   SizedBox(
+                          //                                     width: 500,
+                          //                                     child: TextField(
+                          //                                       controller: controllers.statusController,
+                          //                                       style: TextStyle(
+                          //                                           fontSize: 15, color: colorsConst.textColor),
+                          //                                       decoration: const InputDecoration(
+                          //                                         border: UnderlineInputBorder(),
+                          //                                       ),
+                          //                                     ),
+                          //                                   ),
+                          //                                   20.height,
+                          //                                   Row(
+                          //                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //                                     children: [
+                          //                                       ElevatedButton(
+                          //                                         onPressed: () {
+                          //                                           Navigator.of(context).pop();
+                          //                                         },
+                          //                                         style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                          //                                         child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                          //                                       ),
+                          //                                       CustomLoadingButton(
+                          //                                         callback: (){
+                          //                                           if(controllers.statusController.text.trim().isEmpty){
+                          //                                             utils.snackBar(context: context, msg: "Please fill status", color: Colors.red);
+                          //                                             controllers.productCtr.reset();
+                          //                                           }else{
+                          //                                             controllers.correctionStatus(context,"update",item["id"].toString());
+                          //                                           }
+                          //                                         },
+                          //                                         height: 35,
+                          //                                         isLoading: true,
+                          //                                         backgroundColor: colorsConst.primary,
+                          //                                         radius: 2,
+                          //                                         width: 80,
+                          //                                         controller: controllers.productCtr,
+                          //                                         isImage: false,
+                          //                                         text: "Save",
+                          //                                         textColor: Colors.white,
+                          //                                       ),
+                          //                                     ],
+                          //                                   )
+                          //                                 ],
+                          //                               ),
+                          //                             ),
+                          //                           ),
+                          //                         );
+                          //                       },
+                          //                       child: SvgPicture.asset(
+                          //                         "assets/images/a_edit.svg",
+                          //                         width: 16,
+                          //                         height: 16,
+                          //                       ),
+                          //                     ),
+                          //                   ],
+                          //                 );
+                          //               },
+                          //             ),
+                          //           ),
+                          //           20.height,
+                          //           Row(
+                          //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //             children: [
+                          //               ElevatedButton(
+                          //                 onPressed: () {
+                          //                   Navigator.of(context).pop();
+                          //                 },
+                          //                 style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                          //                 child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                          //               ),
+                          //               ElevatedButton(
+                          //                 onPressed: ()  {
+                          //                   controllers.statusController.clear();
+                          //                   Get.dialog(
+                          //                     Dialog(
+                          //                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          //                       child: Container(
+                          //                         width: 300,
+                          //                         padding: const EdgeInsets.all(16),
+                          //                         child: Column(
+                          //                           mainAxisSize: MainAxisSize.min,
+                          //                           children: [
+                          //                             CustomText(
+                          //                               text: "Add Record Status",
+                          //                               colors: colorsConst.textColor,
+                          //                               isBold: true,
+                          //                               size: 18,
+                          //                               isCopy: true,
+                          //                             ),
+                          //                             10.height,
+                          //                             SizedBox(
+                          //                               width: 500,
+                          //                               child: TextField(
+                          //                                 controller: controllers.statusController,
+                          //                                 style: TextStyle(
+                          //                                     fontSize: 15, color: colorsConst.textColor),
+                          //                                 decoration: const InputDecoration(
+                          //                                   border: UnderlineInputBorder(),
+                          //                                 ),
+                          //                               ),
+                          //                             ),
+                          //                             20.height,
+                          //                             Row(
+                          //                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //                               children: [
+                          //                                 ElevatedButton(
+                          //                                   onPressed: () {
+                          //                                     Navigator.of(context).pop();
+                          //                                   },
+                          //                                   style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                          //                                   child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                          //                                 ),
+                          //                                 CustomLoadingButton(
+                          //                                   callback: (){
+                          //                                     if(controllers.statusController.text.trim().isEmpty){
+                          //                                       utils.snackBar(context: context, msg: "Please fill status", color: Colors.red);
+                          //                                       controllers.productCtr.reset();
+                          //                                     }else{
+                          //                                       controllers.correctionStatus(context,"add","0");
+                          //                                     }
+                          //                                   },
+                          //                                   height: 35,
+                          //                                   isLoading: true,
+                          //                                   backgroundColor: colorsConst.primary,
+                          //                                   radius: 2,
+                          //                                   width: 80,
+                          //                                   controller: controllers.productCtr,
+                          //                                   isImage: false,
+                          //                                   text: "Add",
+                          //                                   textColor: Colors.white,
+                          //                                 ),
+                          //                               ],
+                          //                             )
+                          //                           ],
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                   );
+                          //                 },
+                          //                 child: const Text("Add Status"),
+                          //               ),
+                          //             ],
+                          //           )
+                          //         ],
+                          //       ),
+                          //     ),
+                          //   ),
+                          // );
                         },
                         child: Container(
                           width:screenWidth/5,
                           decoration: customDecoration.baseBackgroundDecoration(
-                            color: Colors.white,borderColor: Colors.grey.shade100,radius: 15,shadowColor: Colors.grey.shade300
+                            color: Colors.white,borderColor: Colors.grey.shade200,radius: 15,shadowColor: Colors.grey.shade300
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
@@ -791,8 +1037,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                   ],
                 ),
                 Divider(color: Colors.grey.shade200,),
-                CustomText(text: "Employee Shifts", isCopy: false,size: 20,isBold: true,),5.height,
-                CustomText(text: "Manage working hours and shift schedules for your team.", isCopy: false,colors: Colors.grey,),
+                CustomText(text: "\nEmployee Shifts", isCopy: false,size: 20,isBold: true,),5.height,
+                CustomText(text: "Manage working hours and shift schedules for your team.\n", isCopy: false,colors: Colors.grey,),
                 // 10.height,
                 // Row(
                 //   children: [
@@ -832,119 +1078,132 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         settingsController.searchOfficeText.value = value.toString().trim();
                       },
                     ),
-                    settingsController.selectedOfficeIds.isNotEmpty?
-                    InkWell(
-                      focusColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      onTap: (){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              content: CustomText(
-                                text: "Are you sure delete this Office Hours?",
-                                size: 16,
-                                isCopy: true,
-                                isBold: true,
-                                colors: colorsConst.textColor,
-                              ),
-                              actions: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(color: colorsConst.primary),
-                                          color: Colors.white),
-                                      width: 80,
-                                      height: 25,
-                                      child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.zero,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if(settingsController.selectedOfficeIds.isNotEmpty)
+                        Row(
+                          children: [
+                            CustomText(text: "Selected Count : ${settingsController.selectedOfficeIds.length.toString()}", isCopy: false),5.width,
+                            InkWell(
+                              focusColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              onTap: (){
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: CustomText(
+                                        text: "Are you sure delete this Office Hours?",
+                                        size: 16,
+                                        isCopy: true,
+                                        isBold: true,
+                                        colors: colorsConst.textColor,
+                                      ),
+                                      actions: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(color: colorsConst.primary),
+                                                  color: Colors.white),
+                                              width: 80,
+                                              height: 25,
+                                              child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    shape: const RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.zero,
+                                                    ),
+                                                    backgroundColor: Colors.white,
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: CustomText(
+                                                    text: "Cancel",
+                                                    colors: colorsConst.primary,
+                                                    isCopy: false,
+                                                    size: 14,
+                                                  )),
                                             ),
-                                            backgroundColor: Colors.white,
-                                          ),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: CustomText(
-                                            text: "Cancel",
-                                            colors: colorsConst.primary,
-                                            isCopy: false,
-                                            size: 14,
-                                          )),
-                                    ),
-                                    10.width,
-                                    CustomLoadingButton(
-                                      callback: ()async{
-                                        settingsController.deleteOfficeHoursAPI(context);
-                                      },
-                                      height: 35,
-                                      isLoading: true,
-                                      backgroundColor: colorsConst.primary,
-                                      radius: 2,
-                                      width: 80,
-                                      controller: controllers.productCtr,
-                                      isImage: false,
-                                      text: "Delete",
-                                      textColor: Colors.white,
+                                            10.width,
+                                            CustomLoadingButton(
+                                              callback: ()async{
+                                                settingsController.deleteOfficeHoursAPI(context);
+                                              },
+                                              height: 35,
+                                              isLoading: true,
+                                              backgroundColor: colorsConst.primary,
+                                              radius: 2,
+                                              width: 80,
+                                              controller: controllers.productCtr,
+                                              isImage: false,
+                                              text: "Delete",
+                                              textColor: Colors.white,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  color: colorsConst.secondary,
+                                  borderRadius: BorderRadius.circular(4),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      spreadRadius: 1,
+                                      blurRadius: 5,
                                     ),
                                   ],
                                 ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      child: Container(
-                        height: 40,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          color: colorsConst.secondary,
-                          borderRadius: BorderRadius.circular(4),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              spreadRadius: 1,
-                              blurRadius: 5,
+                                child:  Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset("assets/images/action_delete.png"),
+                                    10.width,
+                                    CustomText(
+                                      text: "Delete",
+                                      colors: colorsConst.textColor,
+                                      size: 14,
+                                      isCopy: false,
+                                      isBold: true,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
-                        ),
-                        child:  Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset("assets/images/action_delete.png"),
-                            10.width,
-                            CustomText(
-                              text: "Delete",
-                              colors: colorsConst.textColor,
-                              size: 14,
-                              isCopy: false,
-                              isBold: true,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ):1.width,
-                    ElevatedButton(
-                        onPressed: (){
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) =>
-                              const AddOfficeHours(),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero,
-                            ),
-                          );
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.add,color: Colors.white,),10.width,
-                            CustomText(text: "Add Shift", isCopy: false)
-                          ],
-                        ))
+                        ),20.width,
+                        SizedBox(
+                          height: 40,
+                          child: ElevatedButton(
+                              onPressed: (){
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation1, animation2) =>
+                                    const AddOfficeHours(),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(Icons.add,color: Colors.white,),10.width,
+                                  CustomText(text: "Add Shift", isCopy: false)
+                                ],
+                              )),
+                        )
+                      ],
+                    ),
                   ],
                 ),
                 10.height,
@@ -1237,7 +1496,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (filteredList.isEmpty) {
-                      return const Center(child: Text("No reminders found"));
+                      return const Center(child: Text("No shifts found"));
                     }
                     return ListView.builder(
                       itemCount: filteredList.length,

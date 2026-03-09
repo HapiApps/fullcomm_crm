@@ -333,8 +333,6 @@ class _HeaderSectionState extends State<HeaderSection> {
                                   print(tableController.headingFields);
                                   final prefs = await SharedPreferences.getInstance();
                                   await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
-                                  print("saved");
-
                                   tableController.updateColumnNameAPI(context, value, id);
                                 },
                                 decoration: InputDecoration(

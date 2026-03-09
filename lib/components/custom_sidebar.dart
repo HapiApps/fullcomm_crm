@@ -212,10 +212,13 @@ class SideBar extends StatelessWidget {
                         return AnimatedSwitcher(
                           duration: const Duration(milliseconds: 300),
                           child: isExpanded?
-                          subItem(context, controllers.isLeadsExpanded,controllers.isSettingsExpanded,controllers.leadCategoryList[index].value, int.parse(controllers.leadCategoryList[index].leadStatus),
-                            NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
-                            name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
-                            list2: controllers.leadCategoryList[index].list2, listIndex: index,),
+                          Container(
+                            width: 110,alignment: Alignment.centerLeft,
+                            child: subItem(context, controllers.isLeadsExpanded,controllers.isSettingsExpanded,controllers.leadCategoryList[index].value, int.parse(controllers.leadCategoryList[index].leadStatus),
+                              NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
+                              name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
+                              list2: controllers.leadCategoryList[index].list2, listIndex: index,),
+                            ),
                           ):0.height,
                         );
                       }),
@@ -680,6 +683,7 @@ Widget subItem(BuildContext context, RxBool select, RxBool unSelect, String titl
                 padding: const EdgeInsets.only(left: 12),
                 child: Text(
                   title,
+                  textAlign: TextAlign.start,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,

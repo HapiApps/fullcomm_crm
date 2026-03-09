@@ -189,6 +189,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
       "name": widget.mainName,
       "title": widget.title,
       "phone_no": widget.mainMobile,
+      "mobile_number": widget.mainMobile,
       "whatsappNumber": widget.whatsappNumber,
       "email": widget.email,
       "mainTitle": widget.mainTitle,
@@ -411,7 +412,6 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                       //     ?.systemField;
                       // // print(controllers.fields.first.systemField);
                       // final controller =key != null ? fieldControllers[key] : null;
-                      // // print(key);
                       // return Tooltip(
                       //   message: (controller?.text == "null") ? "" : controller?.text ?? "",
                       final key = controllers.fields
@@ -427,7 +427,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                       if (controller != null && controller.text == "null") {
                         controller.text = "";
                       }
-
+                      // print(key);
                       return Tooltip(
                         message: controller?.text ?? "",
                         child:  Container(
@@ -559,7 +559,6 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
         // apiService.allNewLeadsDetails();
         // apiService.allLeadsDetails();
         // apiService.allGoodLeadsDetails();
-        // apiService.getCustomLeads();
         controllers.leadCtr.reset();
       } else {
         Navigator.of(context).pop();

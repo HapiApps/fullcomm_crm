@@ -92,10 +92,14 @@ class _DashboardPageState extends State<DashboardPage>
     super.initState();
     _focusNode = FocusNode();
     dashController.getToken();
-    apiService.getLeadCategories();
-    apiService.getCustomLeads();
-    apiService.getAllLeadCategories();
     apiService.getHeading();
+    if(controllers.leadCategoryList.isEmpty){
+      apiService.getLeadCategories();
+    }
+    if(controllers.allLeadList.isEmpty){
+      apiService.getCustomLeads();
+    }
+    apiService.getAllLeadCategories();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
@@ -592,6 +596,7 @@ class _DashboardPageState extends State<DashboardPage>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SideBar(),
+            Obx(()=>controllers.isCrmData.value==false?Center(child: CircularProgressIndicator()):
             Container(
               width: controllers.isLeftOpen.value == false &&
                   controllers.isRightOpen.value == false
@@ -602,35 +607,134 @@ class _DashboardPageState extends State<DashboardPage>
               // color: Colors.pinkAccent,
               padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
               child: Stack(
-                children: [
-                  SingleChildScrollView(
-                    child: Obx(()=>Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        20.height,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [1.width,
-                            WaveStatCard(
-                                title: "Mails",
-                                numericValue: int.parse(dashController
-                                    .totalMails.value
-                                    .toString()),
+                  children: [
+                    SingleChildScrollView(
+                      child: Obx(()=>Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          20.height,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [1.width,
+                              WaveStatCard(
+                                  title: "Mails",
+                                  numericValue: int.parse(dashController
+                                      .totalMails.value
+                                      .toString()),
+                                  maxValue: maxValue,
+                                  iconPath: DashboardAssets.mail,
+                                  valueColor: const Color(0xff2457C5),
+                                  callback:(){
+                                    remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
+                                    controllers.changeTab(1);
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context,
+                                            animation1,
+                                            animation2) =>
+                                        const Records(
+                                          isReload: "true",
+                                        ),
+                                        transitionDuration:
+                                        Duration.zero,
+                                        reverseTransitionDuration:
+                                        Duration.zero,
+                                      ),
+                                    );
+                                    controllers.oldIndex.value =
+                                        controllers.selectedIndex.value;
+                                    controllers.selectedIndex.value = 6;
+                                  }
+                              ),SizedBox(width: screenWidth/50,),
+                              WaveStatCard(
+                                  title: "Calls",
+                                  numericValue: int.parse(dashController.totalCalls.value.toString()),
+                                  maxValue: maxValue,
+                                  iconPath: DashboardAssets.phone,
+                                  valueColor: const Color(0xff53922A),
+                                  callback:(){
+                                    remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+                                    controllers.changeTab(0);
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context,
+                                            animation1,
+                                            animation2) =>
+                                        const Records(
+                                          isReload: "true",
+                                        ),
+                                        transitionDuration:
+                                        Duration.zero,
+                                        reverseTransitionDuration:
+                                        Duration.zero,
+                                      ),
+                                    );
+                                    controllers.oldIndex.value = controllers.selectedIndex.value;
+                                    controllers.selectedIndex.value = 6;
+                                  }
+                              ),SizedBox(width: screenWidth/50,),
+                              WaveStatCard(
+                                callback: () {
+                                  remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
+                                  controllers.changeTab(2);
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation1, animation2) =>
+                                      const Records(
+                                        isReload: "true",
+                                      ),
+                                      transitionDuration: Duration.zero,
+                                      reverseTransitionDuration: Duration.zero,
+                                    ),
+                                  );
+                                  controllers.oldIndex.value = controllers.selectedIndex.value;
+                                  controllers.selectedIndex.value = 6;
+                                },
+                                title: "Appointments",
+                                numericValue: int.parse(dashController.totalMeetings.value.toString()),
                                 maxValue: maxValue,
-                                iconPath: DashboardAssets.mail,
-                                valueColor: const Color(0xff2457C5),
-                                callback:(){
-                                  remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
-                                  controllers.changeTab(1);
+                                iconPath: DashboardAssets.date,
+                                valueColor: const Color(0xff8B2CF5),
+                              ),SizedBox(width: screenWidth/50,),
+                              WaveStatCard(
+                                callback: () {
+                                  controllers.isLeadsExpanded.value=true;
+                                  setState(() {
+                                    controllers.selectedIndex.value =int.parse(controllers.leadCategoryList[0].leadStatus);
+                                  });
+                                  print(controllers.selectedIndex.value);
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation1, animation2) => NewLeadPage(index: controllers.leadCategoryList[0].leadStatus,
+                                        name: controllers.leadCategoryList[0].value,list: controllers.leadCategoryList[0].list,
+                                        list2: controllers.leadCategoryList[0].list2, listIndex: 0,),
+                                      transitionDuration: Duration.zero,
+                                      reverseTransitionDuration: Duration.zero,
+                                    ),
+                                  );
+                                  controllers.oldIndex.value = controllers.selectedIndex.value;
+                                  controllers.selectedIndex.value = 100;
+                                },
+                                title: "New Customers",
+                                numericValue: int.parse(dashController.totalSuspects.value.toString()),
+                                maxValue: maxValue,
+                                iconPath: DashboardAssets.people,
+                                valueColor: const Color(0xffF29D38),
+                              ),SizedBox(width: screenWidth/50,),
+                              WaveStatCard(
+                                callback: () {
+                                  remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
                                   Navigator.push(
                                     context,
                                     PageRouteBuilder(
                                       pageBuilder: (context,
                                           animation1,
                                           animation2) =>
-                                      const Records(
-                                        isReload: "true",
-                                      ),
+                                      const ReminderPage(),
                                       transitionDuration:
                                       Duration.zero,
                                       reverseTransitionDuration:
@@ -639,16 +743,207 @@ class _DashboardPageState extends State<DashboardPage>
                                   );
                                   controllers.oldIndex.value =
                                       controllers.selectedIndex.value;
-                                  controllers.selectedIndex.value = 6;
-                                }
-                            ),SizedBox(width: screenWidth/50,),
-                            WaveStatCard(
-                                title: "Calls",
-                                numericValue: int.parse(dashController.totalCalls.value.toString()),
+                                  controllers.selectedIndex.value =
+                                  11;
+                                },
+                                title: "Reminders",
+                                numericValue: int.parse(dashController
+                                    .totalReminders.value
+                                    .toString()),
                                 maxValue: maxValue,
-                                iconPath: DashboardAssets.phone,
-                                valueColor: const Color(0xff53922A),
-                                callback:(){
+                                iconPath: DashboardAssets.alarm,
+                                valueColor: const Color(0xffBB271A),
+                              ),
+                              SizedBox(
+                                width: screenWidth/8,
+                              )
+                            ],
+                          ),
+                          20.height,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: screenWidth / 4,
+                                // height: 350,
+                                child: LeadPieCard(
+                                  // title: "Lead Distribution",
+                                  // subtitle: "Breakdown by current stage",
+                                  // total: controllers.allLeadList.length,
+                                    data: [
+                                      for (int i = 0; i < dashController.leadReport.length; i++)
+                                        if ((double.tryParse(
+                                            dashController.leadReport[i]["customer_count"].toString()) ??
+                                            0) >
+                                            0)
+                                          PieData(
+                                            label: dashController.leadReport[i]["category"] ?? "",
+                                            value: double.tryParse(
+                                                dashController.leadReport[i]["customer_count"].toString()) ??
+                                                0,
+                                            color: dashController.color[i],
+                                          ),
+                                    ]
+                                ),
+                              ),
+
+                              // 10.width,
+                              // ================= RIGHT COLUMN =================
+                              Container(
+                                height: 300,
+                                width: screenWidth /5,
+                                padding: const EdgeInsets.all(16),
+                                decoration: _whiteCard(),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    // -------- TITLE --------
+                                    CustomText(
+                                      text: "Active Status",
+                                      isCopy: false,
+                                      size: 15,
+                                      isBold: true,
+                                    ),
+                                    4.height,
+                                    // -------- SUBTITLE --------
+                                    CustomText(
+                                      text: "Customer Engagement Levels",
+                                      isCopy: false,
+                                      size: 13,
+                                      isBold: false,
+                                      colors: Color(0xff6B7280),
+                                    ),
+                                    10.height,
+                                    // -------- DIVIDER --------
+                                    const Divider(
+                                      height: 1,
+                                      thickness: 1,
+                                      color: Color(0xffD1D5DB),
+                                    ),
+
+                                    18.height,
+
+                                    // -------- RATING BAR () --------
+                                    Expanded(
+                                      child: LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          final hot = int.tryParse(
+                                              dashController
+                                                  .totalHot.value) ??
+                                              0;
+                                          final warm = int.tryParse(
+                                              dashController
+                                                  .totalWarm.value) ??
+                                              0;
+                                          final cold = int.tryParse(
+                                              dashController
+                                                  .totalCold.value) ??
+                                              0;
+                                          final total = hot + warm + cold;
+
+                                          return ActivityRatingBar(
+                                            hot: hot,
+                                            warm: warm,
+                                            cold: cold,
+                                            totalWidth:
+                                            constraints.maxWidth,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    12.height,
+                                    Wrap(
+                                      spacing: 16,
+                                      runSpacing: 8,
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const SizedBox(
+                                              width: 8,
+                                              height: 8,
+                                              child: DecoratedBox(
+                                                decoration: BoxDecoration(
+                                                  color: Color(
+                                                    0xffEF4444,
+                                                  ),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 6),
+                                            CustomText(
+                                              text: "Hot (0-${int.tryParse(dashController.totalHot.value) ??0}d)",
+                                              isCopy: false,
+                                              size: 11,
+                                              isBold: true,
+                                              colors: const Color(0xffEF4444),
+                                            ),
+                                          ],
+                                        ),
+
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            SizedBox(
+                                              width: 8,
+                                              height: 8,
+                                              child: DecoratedBox(
+                                                decoration: BoxDecoration(
+                                                  color: Color(
+                                                    0xffF59E0B,
+                                                  ),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 6),
+                                            CustomText(
+                                              text:  "Warm (${(int.tryParse(dashController.totalHot.value) ??0)+1}-${int.tryParse(
+                                                  dashController.totalWarm.value) ??0}d)",
+                                              isCopy: false,
+                                              size: 11,
+                                              isBold: true,
+                                              colors: Color(0xffF59E0B),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            SizedBox(
+                                              width: 8,
+                                              height: 8,
+                                              child: DecoratedBox(
+                                                decoration: BoxDecoration(
+                                                  color: Color(
+                                                    0xff3B82F6,
+                                                  ),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 6),
+                                            CustomText(
+                                              text:  "Cold (${(int.tryParse(dashController.totalWarm.value) ??0)+1}+d)",
+                                              isCopy: false,
+                                              size: 11,
+                                              isBold: true,
+                                              colors: Color(0xff3B82F6),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              // 15.width,
+                              // -------- Call Status --------
+                              InkWell(
+                                onTap: (){
                                   remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
                                   controllers.changeTab(0);
                                   Navigator.push(
@@ -668,598 +963,314 @@ class _DashboardPageState extends State<DashboardPage>
                                   );
                                   controllers.oldIndex.value = controllers.selectedIndex.value;
                                   controllers.selectedIndex.value = 6;
-                                }
-                            ),SizedBox(width: screenWidth/50,),
-                            WaveStatCard(
-                              callback: () {
-                                remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
-                                controllers.changeTab(2);
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation1, animation2) =>
-                                    const Records(
-                                      isReload: "true",
-                                    ),
-                                    transitionDuration: Duration.zero,
-                                    reverseTransitionDuration: Duration.zero,
-                                  ),
-                                );
-                                controllers.oldIndex.value = controllers.selectedIndex.value;
-                                controllers.selectedIndex.value = 6;
-                              },
-                              title: "Appointments",
-                              numericValue: int.parse(dashController.totalMeetings.value.toString()),
-                              maxValue: maxValue,
-                              iconPath: DashboardAssets.date,
-                              valueColor: const Color(0xff8B2CF5),
-                            ),SizedBox(width: screenWidth/50,),
-                            WaveStatCard(
-                              callback: () {
-                                controllers.selectedProspectSortBy.value = dashController.selectedSortBy.value;
-                                // Navigator.push(
-                                //   context,
-                                //   PageRouteBuilder(
-                                //     pageBuilder: (context, animation1, animation2) => const Suspects(),
-                                //     transitionDuration: Duration.zero,
-                                //     reverseTransitionDuration: Duration.zero,
-                                //   ),
-                                // );
-                                controllers.oldIndex.value = controllers.selectedIndex.value;
-                                controllers.selectedIndex.value = 100;
-                              },
-                              title: "New Customers",
-                              numericValue: int.parse(dashController.totalSuspects.value.toString()),
-                              maxValue: maxValue,
-                              iconPath: DashboardAssets.people,
-                              valueColor: const Color(0xffF29D38),
-                            ),SizedBox(width: screenWidth/50,),
-                            WaveStatCard(
-                              callback: () {
-                                remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (context,
-                                        animation1,
-                                        animation2) =>
-                                    const ReminderPage(),
-                                    transitionDuration:
-                                    Duration.zero,
-                                    reverseTransitionDuration:
-                                    Duration.zero,
-                                  ),
-                                );
-                                controllers.oldIndex.value =
-                                    controllers.selectedIndex.value;
-                                controllers.selectedIndex.value =
-                                11;
-                              },
-                              title: "Reminders",
-                              numericValue: int.parse(dashController
-                                  .totalReminders.value
-                                  .toString()),
-                              maxValue: maxValue,
-                              iconPath: DashboardAssets.alarm,
-                              valueColor: const Color(0xffBB271A),
-                            ),
-                            SizedBox(
-                              width: screenWidth/8,
-                            )
-                          ],
-                        ),
-                        20.height,
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: screenWidth / 4,
-                              // height: 350,
-                              child: LeadPieCard(
-                                // title: "Lead Distribution",
-                                // subtitle: "Breakdown by current stage",
-                                // total: controllers.allLeadList.length,
-                                  data: [
-                                    for (int i = 0; i < dashController.leadReport.length; i++)
-                                      if ((double.tryParse(
-                                          dashController.leadReport[i]["customer_count"].toString()) ??
-                                          0) >
-                                          0)
-                                        PieData(
-                                          label: dashController.leadReport[i]["category"] ?? "",
-                                          value: double.tryParse(
-                                              dashController.leadReport[i]["customer_count"].toString()) ??
-                                              0,
-                                          color: dashController.color[i],
+                                },
+                                child: SizedBox(
+                                  width: screenWidth/3.5,
+                                  child: CustomerStatusCard(
+                                    items: [
+                                      for (var i = 0;
+                                      i < dashController.visitStatusReport.length;
+                                      i++)
+                                        CustomerStatusItem(
+                                          label: dashController.visitStatusReport[i]["value"].toString(),
+                                          value: int.parse(
+                                              dashController.visitStatusReport[i]["total_count"].toString()),
+                                          percentage: dashController.total == 0
+                                              ? 0
+                                              : double.parse(
+                                              dashController.visitStatusReport[i]["total_count"].toString()) /
+                                              dashController.total,
                                         ),
-                                  ]
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-
-                            // 10.width,
-                            // ================= RIGHT COLUMN =================
-                            Container(
-                              height: 300,
-                              width: screenWidth /5,
-                              padding: const EdgeInsets.all(16),
-                              decoration: _whiteCard(),
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                              SizedBox(
+                                width: screenWidth/9,
+                              )
+                            ],
+                          ),
+                          20.height,
+                          // -------- Activity Over Time () --------
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
                                 children: [
-                                  // -------- TITLE --------
-                                  CustomText(
-                                    text: "Active Status",
-                                    isCopy: false,
-                                    size: 15,
-                                    isBold: true,
-                                  ),
-                                  4.height,
-                                  // -------- SUBTITLE --------
-                                  CustomText(
-                                    text: "Customer Engagement Levels",
-                                    isCopy: false,
-                                    size: 13,
-                                    isBold: false,
-                                    colors: Color(0xff6B7280),
-                                  ),
-                                  10.height,
-                                  // -------- DIVIDER --------
-                                  const Divider(
-                                    height: 1,
-                                    thickness: 1,
-                                    color: Color(0xffD1D5DB),
-                                  ),
-
-                                  18.height,
-
-                                  // -------- RATING BAR () --------
-                                  Expanded(
-                                    child: LayoutBuilder(
-                                      builder: (context, constraints) {
-                                        final hot = int.tryParse(
-                                            dashController
-                                                .totalHot.value) ??
-                                            0;
-                                        final warm = int.tryParse(
-                                            dashController
-                                                .totalWarm.value) ??
-                                            0;
-                                        final cold = int.tryParse(
-                                            dashController
-                                                .totalCold.value) ??
-                                            0;
-                                        final total = hot + warm + cold;
-
-                                        return ActivityRatingBar(
-                                          hot: hot,
-                                          warm: warm,
-                                          cold: cold,
-                                          totalWidth:
-                                          constraints.maxWidth,
-                                        );
+                                  SizedBox(
+                                    width: screenWidth/4,
+                                    child: Table(
+                                      columnWidths: {
+                                        0: FixedColumnWidth(150),
+                                        1: FixedColumnWidth(150),
+                                        2: FixedColumnWidth(130),
                                       },
+                                      border: TableBorder(
+                                        horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                        verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                      ),
+                                      children: [
+                                        TableRow(
+                                            decoration: BoxDecoration(
+                                                color: colorsConst.primary,
+                                                borderRadius: const BorderRadius.only(
+                                                    topLeft: Radius.circular(5),
+                                                    topRight: Radius.circular(5))),
+                                            children: [
+                                              headerCell(2, Row(
+                                                children: [
+                                                  CustomText(//1
+                                                    textAlign: TextAlign.left,
+                                                    text: "Customer Name",
+                                                    size: 15,
+                                                    isBold: true,
+                                                    isCopy: true,
+                                                    colors: Colors.white,
+                                                  ),
+                                                  const SizedBox(width: 3),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldMeetingActivity.value=='customerName' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                                        controllers.sortOrderMeetingActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderMeetingActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldMeetingActivity.value='customerName';
+                                                      remController.filterAndSortMeetings(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        callType: controllers.selectMeetingType.value,
+                                                        sortField: controllers.sortFieldMeetingActivity.value,
+                                                        sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldMeetingActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderMeetingActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(3, Row(
+                                                children: [
+                                                  CustomText(//2
+                                                    textAlign: TextAlign.left,
+                                                    text: "Company name",
+                                                    isCopy: true,
+                                                    size: 15,
+                                                    isBold: true,
+                                                    colors: Colors.white,
+                                                  ),
+                                                  const SizedBox(width: 3),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldMeetingActivity.value=='companyName' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                                        controllers.sortOrderMeetingActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderMeetingActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldMeetingActivity.value='companyName';
+                                                      remController.filterAndSortMeetings(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        callType: controllers.selectMeetingType.value,
+                                                        sortField: controllers.sortFieldMeetingActivity.value,
+                                                        sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldMeetingActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderMeetingActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(7, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.center,
+                                                    text: "Date",
+                                                    isCopy: true,
+                                                    size: 15,
+                                                    isBold: true,
+                                                    colors: Colors.white,
+                                                  ),
+                                                  const SizedBox(width: 3),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldMeetingActivity.value=='date' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                                        controllers.sortOrderMeetingActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderMeetingActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldMeetingActivity.value='date';
+                                                      remController.filterAndSortMeetings(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        callType: controllers.selectMeetingType.value,
+                                                        sortField: controllers.sortFieldMeetingActivity.value,
+                                                        sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldMeetingActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderMeetingActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),)
+                                            ]),
+                                      ],
                                     ),
                                   ),
-                                  12.height,
-                                  Wrap(
-                                    spacing: 16,
-                                    runSpacing: 8,
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const SizedBox(
-                                            width: 8,
-                                            height: 8,
-                                            child: DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                color: Color(
-                                                  0xffEF4444,
-                                                ),
-                                                shape: BoxShape.circle,
-                                              ),
+                                  SizedBox(
+                                    // color: Colors.yellowAccent,
+                                    width: screenWidth/4,
+                                    child: remController.meetingFilteredList.isEmpty?
+                                    CustomText(
+                                      text: "\n\n\nNo Appointments",
+                                      isCopy: true,
+                                      colors: colorsConst.textColor,
+                                      size: 16,)
+                                        :RawKeyboardListener(
+                                      focusNode: _focusNode,
+                                      autofocus: true,
+                                      child: ListView.builder(
+                                        controller: _controller,
+                                        shrinkWrap: true,
+                                        physics: const ScrollPhysics(),
+                                        itemCount: remController.meetingFilteredList.length,
+                                        itemBuilder: (context, index) {
+                                          final data = remController.meetingFilteredList[index];
+                                          return Table(
+                                            columnWidths: {
+                                              0: FixedColumnWidth(150),
+                                              1: FixedColumnWidth(150),
+                                              2: FixedColumnWidth(130),
+                                            },
+                                            border: TableBorder(
+                                              horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                              verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                              // bottom:  BorderSide(width: 0.2, color: Colors.green.shade400),
                                             ),
-                                          ),
-                                          const SizedBox(width: 6),
-                                          CustomText(
-                                            text: "Hot (0-${int.tryParse(dashController.totalHot.value) ??0}d)",
-                                            isCopy: false,
-                                            size: 11,
-                                            isBold: true,
-                                            colors: const Color(0xffEF4444),
-                                          ),
-                                        ],
-                                      ),
-
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          SizedBox(
-                                            width: 8,
-                                            height: 8,
-                                            child: DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                color: Color(
-                                                  0xffF59E0B,
-                                                ),
-                                                shape: BoxShape.circle,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(width: 6),
-                                          CustomText(
-                                            text:  "Warm (${(int.tryParse(dashController.totalHot.value) ??0)+1}-${int.tryParse(
-                                                dashController.totalWarm.value) ??0}d)",
-                                            isCopy: false,
-                                            size: 11,
-                                            isBold: true,
-                                            colors: Color(0xffF59E0B),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          SizedBox(
-                                            width: 8,
-                                            height: 8,
-                                            child: DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                color: Color(
-                                                  0xff3B82F6,
-                                                ),
-                                                shape: BoxShape.circle,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(width: 6),
-                                          CustomText(
-                                            text:  "Cold (${(int.tryParse(dashController.totalWarm.value) ??0)+1}+d)",
-                                            isCopy: false,
-                                            size: 11,
-                                            isBold: true,
-                                            colors: Color(0xff3B82F6),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // 15.width,
-                            // -------- Call Status --------
-                            InkWell(
-                              onTap: (){
-                                remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
-                                controllers.changeTab(0);
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (context,
-                                        animation1,
-                                        animation2) =>
-                                    const Records(
-                                      isReload: "true",
-                                    ),
-                                    transitionDuration:
-                                    Duration.zero,
-                                    reverseTransitionDuration:
-                                    Duration.zero,
-                                  ),
-                                );
-                                controllers.oldIndex.value = controllers.selectedIndex.value;
-                                controllers.selectedIndex.value = 6;
-                              },
-                              child: SizedBox(
-                                width: screenWidth/3.5,
-                                child: CustomerStatusCard(
-                                  items: [
-                                    for (var i = 0;
-                                    i < dashController.visitStatusReport.length;
-                                    i++)
-                                      CustomerStatusItem(
-                                        label: dashController.visitStatusReport[i]["value"].toString(),
-                                        value: int.parse(
-                                            dashController.visitStatusReport[i]["total_count"].toString()),
-                                        percentage: dashController.total == 0
-                                            ? 0
-                                            : double.parse(
-                                            dashController.visitStatusReport[i]["total_count"].toString()) /
-                                            dashController.total,
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: screenWidth/9,
-                            )
-                          ],
-                        ),
-                        20.height,
-                        // -------- Activity Over Time () --------
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              children: [
-                                SizedBox(
-                                  width: screenWidth/4,
-                                  child: Table(
-                                    columnWidths: {
-                                      0: FixedColumnWidth(150),
-                                      1: FixedColumnWidth(150),
-                                      2: FixedColumnWidth(130),
-                                    },
-                                    border: TableBorder(
-                                      horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                      verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                    ),
-                                    children: [
-                                      TableRow(
-                                          decoration: BoxDecoration(
-                                              color: colorsConst.primary,
-                                              borderRadius: const BorderRadius.only(
-                                                  topLeft: Radius.circular(5),
-                                                  topRight: Radius.circular(5))),
-                                          children: [
-                                            headerCell(2, Row(
-                                              children: [
-                                                CustomText(//1
-                                                  textAlign: TextAlign.left,
-                                                  text: "Customer Name",
-                                                  size: 15,
-                                                  isBold: true,
-                                                  isCopy: true,
-                                                  colors: Colors.white,
-                                                ),
-                                                const SizedBox(width: 3),
-                                                GestureDetector(
-                                                  onTap: (){
-                                                    if(controllers.sortFieldMeetingActivity.value=='customerName' && controllers.sortOrderMeetingActivity.value=='asc'){
-                                                      controllers.sortOrderMeetingActivity.value='desc';
-                                                    }else{
-                                                      controllers.sortOrderMeetingActivity.value='asc';
-                                                    }
-                                                    controllers.sortFieldMeetingActivity.value='customerName';
-                                                    remController.filterAndSortMeetings(
-                                                      searchText: controllers.searchText.value.toLowerCase(),
-                                                      callType: controllers.selectMeetingType.value,
-                                                      sortField: controllers.sortFieldMeetingActivity.value,
-                                                      sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                    );
-                                                  },
-                                                  child: Obx(() => Image.asset(
-                                                    controllers.sortFieldMeetingActivity.value.isEmpty
-                                                        ? "assets/images/arrow.png"
-                                                        : controllers.sortOrderMeetingActivity.value == 'asc'
-                                                        ? "assets/images/arrow_up.png"
-                                                        : "assets/images/arrow_down.png",
-                                                    width: 15,
-                                                    height: 15,
+                                            children:[
+                                              TableRow(
+                                                  decoration: BoxDecoration(
+                                                    color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                                   ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),),
-                                            headerCell(3, Row(
-                                              children: [
-                                                CustomText(//2
-                                                  textAlign: TextAlign.left,
-                                                  text: "Company name",
-                                                  isCopy: true,
-                                                  size: 15,
-                                                  isBold: true,
-                                                  colors: Colors.white,
-                                                ),
-                                                const SizedBox(width: 3),
-                                                GestureDetector(
-                                                  onTap: (){
-                                                    if(controllers.sortFieldMeetingActivity.value=='companyName' && controllers.sortOrderMeetingActivity.value=='asc'){
-                                                      controllers.sortOrderMeetingActivity.value='desc';
-                                                    }else{
-                                                      controllers.sortOrderMeetingActivity.value='asc';
-                                                    }
-                                                    controllers.sortFieldMeetingActivity.value='companyName';
-                                                    remController.filterAndSortMeetings(
-                                                      searchText: controllers.searchText.value.toLowerCase(),
-                                                      callType: controllers.selectMeetingType.value,
-                                                      sortField: controllers.sortFieldMeetingActivity.value,
-                                                      sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                    );
-                                                  },
-                                                  child: Obx(() => Image.asset(
-                                                    controllers.sortFieldMeetingActivity.value.isEmpty
-                                                        ? "assets/images/arrow.png"
-                                                        : controllers.sortOrderMeetingActivity.value == 'asc'
-                                                        ? "assets/images/arrow_up.png"
-                                                        : "assets/images/arrow_down.png",
-                                                    width: 15,
-                                                    height: 15,
-                                                  ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),),
-                                            headerCell(7, Row(
-                                              children: [
-                                                CustomText(
-                                                  textAlign: TextAlign.center,
-                                                  text: "Date",
-                                                  isCopy: true,
-                                                  size: 15,
-                                                  isBold: true,
-                                                  colors: Colors.white,
-                                                ),
-                                                const SizedBox(width: 3),
-                                                GestureDetector(
-                                                  onTap: (){
-                                                    if(controllers.sortFieldMeetingActivity.value=='date' && controllers.sortOrderMeetingActivity.value=='asc'){
-                                                      controllers.sortOrderMeetingActivity.value='desc';
-                                                    }else{
-                                                      controllers.sortOrderMeetingActivity.value='asc';
-                                                    }
-                                                    controllers.sortFieldMeetingActivity.value='date';
-                                                    remController.filterAndSortMeetings(
-                                                      searchText: controllers.searchText.value.toLowerCase(),
-                                                      callType: controllers.selectMeetingType.value,
-                                                      sortField: controllers.sortFieldMeetingActivity.value,
-                                                      sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                    );
-                                                  },
-                                                  child: Obx(() => Image.asset(
-                                                    controllers.sortFieldMeetingActivity.value.isEmpty
-                                                        ? "assets/images/arrow.png"
-                                                        : controllers.sortOrderMeetingActivity.value == 'asc'
-                                                        ? "assets/images/arrow_up.png"
-                                                        : "assets/images/arrow_down.png",
-                                                    width: 15,
-                                                    height: 15,
-                                                  ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),)
-                                          ]),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  // color: Colors.yellowAccent,
-                                  width: screenWidth/4,
-                                  child: remController.meetingFilteredList.isEmpty?
-                                  CustomText(
-                                    text: "No Appointments",
-                                    isCopy: true,
-                                    colors: colorsConst.textColor,
-                                    size: 16,)
-                                      :RawKeyboardListener(
-                                    focusNode: _focusNode,
-                                    autofocus: true,
-                                    child: ListView.builder(
-                                      controller: _controller,
-                                      shrinkWrap: true,
-                                      physics: const ScrollPhysics(),
-                                      itemCount: remController.meetingFilteredList.length,
-                                      itemBuilder: (context, index) {
-                                        final data = remController.meetingFilteredList[index];
-                                        return Table(
-                                          columnWidths: {
-                                            0: FixedColumnWidth(150),
-                                            1: FixedColumnWidth(150),
-                                            2: FixedColumnWidth(130),
-                                          },
-                                          border: TableBorder(
-                                            horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                            verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                            // bottom:  BorderSide(width: 0.2, color: Colors.green.shade400),
-                                          ),
-                                          children:[
-                                            TableRow(
-                                                decoration: BoxDecoration(
-                                                  color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                                ),
-                                                children:[
-                                                  Tooltip(
-                                                    message: data.cusName.toString()=="null"?"":data.cusName.toString(),
-                                                    child: Padding(
+                                                  children:[
+                                                    Tooltip(
+                                                      message: data.cusName.toString()=="null"?"":data.cusName.toString(),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text: data.cusName.toString()=="null"?"":data.cusName.toString(),
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors:colorsConst.textColor,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Padding(
                                                       padding: const EdgeInsets.all(10.0),
                                                       child: CustomText(
                                                         textAlign: TextAlign.left,
-                                                        text: data.cusName.toString()=="null"?"":data.cusName.toString(),
+                                                        text:data.comName.toString()=="null"?"":data.comName.toString(),
                                                         size: 14,
                                                         isCopy: true,
-                                                        colors:colorsConst.textColor,
+                                                        colors: colorsConst.textColor,
                                                       ),
                                                     ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.all(10.0),
-                                                    child: CustomText(
-                                                      textAlign: TextAlign.left,
-                                                      text:data.comName.toString()=="null"?"":data.comName.toString(),
-                                                      size: 14,
-                                                      isCopy: true,
-                                                      colors: colorsConst.textColor,
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(10.0),
+                                                      child: CustomText(
+                                                        textAlign: TextAlign.left,
+                                                        text: formatFirstDate("${data.dates} ${data.time}"),
+                                                        size: 14,
+                                                        isCopy: true,
+                                                        colors: colorsConst.textColor,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.all(10.0),
-                                                    child: CustomText(
-                                                      textAlign: TextAlign.left,
-                                                      text: formatFirstDate("${data.dates} ${data.time}"),
-                                                      size: 14,
-                                                      isCopy: true,
-                                                      colors: colorsConst.textColor,
-                                                    ),
-                                                  ),
-                                                ]
-                                            ),
-                                          ],
-                                        );
-                                      },
+                                                  ]
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            ActivityOverTimeChart(
-                              maxY: 80,
-                              xLabels: controllers.xLabels,
-                              lines: [
-                                ActivityLineData(
-                                  label: "Calls",
-                                  color: Color(0xff3B82F6),
-                                  values: controllers.calls,
-                                ),
-                                ActivityLineData(
-                                  label: "Mails",
-                                  color: Color(0xff10B981),
-                                  values: controllers.mails,
-                                ),
-                                ActivityLineData(
-                                  label: "Updates",
-                                  color: Color(0xffEF4444),
-                                  values: controllers.updates,
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              width: screenWidth/9,
-                            )
-                          ],
-                        ),
+                                ],
+                              ),
+                              ActivityOverTimeChart(
+                                maxY: 80,
+                                xLabels: controllers.xLabels,
+                                lines: [
+                                  ActivityLineData(
+                                    label: "Calls",
+                                    color: Color(0xff3B82F6),
+                                    values: controllers.calls,
+                                  ),
+                                  ActivityLineData(
+                                    label: "Mails",
+                                    color: Color(0xff10B981),
+                                    values: controllers.mails,
+                                  ),
+                                  ActivityLineData(
+                                    label: "Updates",
+                                    color: Color(0xffEF4444),
+                                    values: controllers.updates,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                width: screenWidth/9,
+                              )
+                            ],
+                          ),
 
-                        20.height,
-                      ],
-                    )),
-                  ),
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 420),
-                    curve: Curves.easeOutCubic,
-                    top: 0,
-                    bottom: 0,
-                    right: isLeadPanelOpen ? 0 : -240,
-                    child: _leadStagesPanel(),
-                  ),
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 300),
-                    top: 0,
-                    bottom: 0,
-                    right: isLeadPanelOpen ? -64 : 0,
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 200),
-                      opacity: isLeadPanelOpen ? 0 : 1,
-                      child: _leadStagesRail(context),
+                          20.height,
+                        ],
+                      )),
                     ),
-                  ),
-                ]
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 420),
+                      curve: Curves.easeOutCubic,
+                      top: 0,
+                      bottom: 0,
+                      right: isLeadPanelOpen ? 0 : -240,
+                      child: _leadStagesPanel(),
+                    ),
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 300),
+                      top: 0,
+                      bottom: 0,
+                      right: isLeadPanelOpen ? -64 : 0,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 200),
+                        opacity: isLeadPanelOpen ? 0 : 1,
+                        child: _leadStagesRail(context),
+                      ),
+                    ),
+                  ]
               ),
-            ),
+            )),
           ],
         ),
       ),

@@ -406,39 +406,81 @@ class _CallCommentsState extends State<CallComments> {
                                                             )
                                                           ],
                                                         ),
-                                                        Obx(() => SizedBox(
-                                                          width: 510,
-                                                          height: 50,
-                                                          child: ListView.builder(
-                                                            scrollDirection: Axis.horizontal,
-                                                            itemCount: controllers.hCallStatusList.length,
-                                                            itemBuilder: (context, index) {
-                                                              final item = controllers.hCallStatusList[index];
+                                                      Obx(() => SizedBox(
+                                                        width: 510,
+                                                        height: 120, // height konjam increase pannunga
+                                                        child: GridView.builder(
+                                                          shrinkWrap: true,
+                                                          physics: const NeverScrollableScrollPhysics(),
+                                                          itemCount: controllers.hCallStatusList.length,
+                                                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisCount: 4, // row ku 4 items
+                                                            childAspectRatio: 3,
+                                                            mainAxisSpacing: 5,
+                                                            crossAxisSpacing: 5,
+                                                          ),
+                                                          itemBuilder: (context, index) {
+                                                            final item = controllers.hCallStatusList[index];
 
-                                                              return Row(
-                                                                mainAxisSize: MainAxisSize.min,
-                                                                children: [
-                                                                  Radio<String>(
-                                                                    value: item["value"],
-                                                                    groupValue: controllers.callStatus,
-                                                                    activeColor: colorsConst.primary,
-                                                                    onChanged: (value) {
-                                                                      setState((){
-                                                                        controllers.callStatus = value!;
-                                                                      });
-                                                                    },
-                                                                  ),
-                                                                  CustomText(
+                                                            return Row(
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              children: [
+                                                                Radio<String>(
+                                                                  value: item["value"],
+                                                                  groupValue: controllers.callStatus,
+                                                                  activeColor: colorsConst.primary,
+                                                                  onChanged: (value) {
+                                                                    setState(() {
+                                                                      controllers.callStatus = value!;
+                                                                    });
+                                                                  },
+                                                                ),
+                                                                Expanded(
+                                                                  child: CustomText(
                                                                     text: item["value"],
                                                                     size: 14,
                                                                     isCopy: false,
                                                                   ),
-                                                                  20.width,
-                                                                ],
-                                                              );
-                                                            },
-                                                          ),
-                                                        )),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        ),
+                                                      )),
+                                                        // Obx(() => SizedBox(
+                                                        //   width: 510,
+                                                        //   height: 50,
+                                                        //   child: ListView.builder(
+                                                        //     scrollDirection: Axis.horizontal,
+                                                        //     itemCount: controllers.hCallStatusList.length,
+                                                        //     itemBuilder: (context, index) {
+                                                        //       final item = controllers.hCallStatusList[index];
+                                                        //
+                                                        //       return Row(
+                                                        //         mainAxisSize: MainAxisSize.min,
+                                                        //         children: [
+                                                        //           Radio<String>(
+                                                        //             value: item["value"],
+                                                        //             groupValue: controllers.callStatus,
+                                                        //             activeColor: colorsConst.primary,
+                                                        //             onChanged: (value) {
+                                                        //               setState((){
+                                                        //                 controllers.callStatus = value!;
+                                                        //               });
+                                                        //             },
+                                                        //           ),
+                                                        //           CustomText(
+                                                        //             text: item["value"],
+                                                        //             size: 14,
+                                                        //             isCopy: false,
+                                                        //           ),
+                                                        //           20.width,
+                                                        //         ],
+                                                        //       );
+                                                        //     },
+                                                        //   ),
+                                                        // )),
+                                                        ///
                                                         // Obx(() => SizedBox(
                                                         //   width: 510,
                                                         //   height: 50,

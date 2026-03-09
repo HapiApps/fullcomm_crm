@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:excel/excel.dart' as excel;
+import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/screens/leads/prospects.dart';
 import 'package:fullcomm_crm/screens/leads/qualified.dart';
@@ -2964,72 +2965,189 @@ class Utils {
       "Last 30 Days",
       "All"
     ];
-
-    RxString selectedValue = items.last.obs;
+    final storage = controllers.storage.read("selectedSortBy");
+    RxString selectedValue = "".obs;
+    selectedValue.value=storage ?? "All";
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          // title: const Text("Select Default Date Range"),
-          content: Obx(() => SizedBox(
-            width: 300,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 30,height: 30,color: colorsConst.primary,
-                      child: Icon(Icons.calendar_today_outlined,color: Colors.white,size: 15,),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                          CustomText(text: "Default Date Range", isCopy: false,isBold: true,),
-                          CustomText(text: "Set the default time filter for dashboard records", isCopy: false),
-                      ],
-                    ),
-                  ],
+          backgroundColor: Color(0xFFF1F5F9),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: 30,height: 30,decoration: customDecoration.baseBackgroundDecoration(
+                  color: colorsConst.primary,radius: 5
+              ),
+                child: Icon(Icons.calendar_today_outlined,color: Colors.white,size: 15,),
+              ),10.width,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(text: "Default Date Range", isCopy: false,isBold: true,),
+                  CustomText(text: "Set the default time filter for dashboard records", isCopy: false),
+                ],
+              ),10.width,
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  width: 25,height: 25,decoration: customDecoration.baseBackgroundDecoration(
+                    color: Colors.transparent,radius: 5,borderColor: Colors.grey.shade500
                 ),
-                ...items.map((value) {
-                  return RadioListTile<String>(
-                    title: Text(value),
-                    value: value,
-                    groupValue: selectedValue.value,
-                    onChanged: (newValue) {
-                      selectedValue.value = newValue!;
-                    },
-                  );
-                }).toList(),
+                  child: Center(child: Icon(Icons.clear,color: Colors.grey.shade500,size: 15,)),
+                ),
+              ),
+            ],
+          ),
+          content: Obx(() => SizedBox(
+            height: 350,
+            child: Column(
+              // mainAxisSize: MainAxisSize.min,
+              children: [
+                Column(
+                  children: items.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    String value = entry.value;
+
+                    Color iconColor;
+                    Color iconBg;
+                    IconData icon;
+
+                    if (index == 0) {
+                      iconColor = Colors.orange;
+                      iconBg = Colors.orange.shade50;
+                      icon = Icons.sunny;
+                    } else if (index == 1) {
+                      iconColor = Colors.purple;
+                      iconBg = Colors.purple.shade50;
+                      icon = Icons.refresh;
+                    } else if (index == 2) {
+                      iconColor = Colors.blue;
+                      iconBg = Colors.blue.shade50;
+                      icon = Icons.calendar_today_outlined;
+                    } else if (index == 3) {
+                      iconColor = Colors.green;
+                      iconBg = Colors.green.shade50;
+                      icon = Icons.calendar_today_outlined;
+                    } else {
+                      iconColor = Colors.pink;
+                      iconBg = Colors.pink.shade50;
+                      icon = Icons.calendar_today_outlined;
+                    }
+
+                    bool isSelected = selectedValue.value == value;
+
+                    return InkWell(
+                      onTap: () {
+                        selectedValue.value = value;
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.blue.shade50 : Colors.white,
+                          border: Border.all(
+                            color: isSelected ? Colors.blue : Colors.grey.shade300,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          children: [
+
+                            /// ICON
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: iconBg,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Icon(icon, color: iconColor, size: 18),
+                            ),
+
+                            const SizedBox(width: 12),
+
+                            /// TEXTS
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomText(
+                                    text:value,size: 14,isBold: true,isCopy: false,
+                                  ),
+                                  const SizedBox(height: 2),
+                              CustomText(
+                                text:
+                                    _getDescription(index),
+                                    size: 12,
+                                      colors: Colors.grey.shade600,isCopy: false,
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            /// CHECK ICON
+                              Icon(
+                                Icons.check_circle,
+                                color: isSelected?Colors.blue:Colors.grey,
+                                size: 15,
+                              )
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                )
               ],
             ),
           )),
           actions: [
-            TextButton(
+            OutlinedButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text("Cancel"),
+              child: const CustomText(text: "Cancel", isCopy: false,colors: Colors.black,),
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colorsConst.primary
+              ),
               onPressed: () {
                 controllers.storage.write("selectedSortBy", selectedValue.value);
+                controllers.selectedSortBy.value = selectedValue.value;
                 remController.loadSavedFilters();
                 Navigator.pop(context, selectedValue.value);
               },
-              child: const Text("Apply"),
+              child: CustomText(text:"Apply",colors: Colors.white,isCopy: false,),
             ),
           ],
         );
       },
-    ).then((selected) {
+    )
+        .then((selected) {
       if (selected != null) {
         print("Selected filter: $selected");
         // Use the selected filter here
       }
     });
   }
-
+  String _getDescription(int index) {
+    switch (index) {
+      case 0:
+        return "Records from the current calendar day only";
+      case 1:
+        return "Records from the previous calendar day";
+      case 2:
+        return "Records from the past week including today";
+      case 3:
+        return "Records from the past month";
+      default:
+        return "Show all records";
+    }
+  }
 
   void expiredDateDialog(String date){
     showDialog(

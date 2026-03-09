@@ -32,6 +32,7 @@ class LeadCategories extends StatefulWidget {
 }
 
 class _LeadCategoriesState extends State<LeadCategories> {
+  final FocusNode name = FocusNode();
   var isEdit=false.obs;
   var total=0.obs;
   var add=false.obs;
@@ -39,6 +40,8 @@ class _LeadCategoriesState extends State<LeadCategories> {
   var editIndex=100.obs;
   RxList<LeadStatusModel> allLead=<LeadStatusModel>[].obs;
   RxList<LeadStatusModel> lead=<LeadStatusModel>[].obs;
+  List<FocusNode> nameFocusList = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -46,6 +49,10 @@ class _LeadCategoriesState extends State<LeadCategories> {
     if(controllers.allLeadCategoryList.isEmpty){
       apiService.getAllLeadCategories();
     }
+    nameFocusList = List.generate(
+      controllers.allLeadCategoryList.length,
+          (index) => FocusNode(),
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       allLead.value=controllers.allLeadCategoryList;
       lead.value=controllers.leadCategoryList;
@@ -57,6 +64,11 @@ class _LeadCategoriesState extends State<LeadCategories> {
     for(var i=0;i<controllers.allLeadCategoryList.length;i++){
       total.value+=int.parse(controllers.allLeadCategoryList[i].totalLead.toString());
     }
+  }
+  @override
+  void dispose() {
+    name.dispose();
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -125,6 +137,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                     edit.value=false;
                                     editIndex.value=100;
                                     controllers.emailMessageCtr.clear();
+                                    FocusScope.of(context).requestFocus(name);
                                   }else{
                                     utils.snackBar(context: context, msg: "Maximum 10 lead categories allowed.", color: Colors.red);
                                   }
@@ -353,6 +366,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                       edit.value=false;
                                       editIndex.value=100;
                                       controllers.emailMessageCtr.clear();
+                                      FocusScope.of(context).requestFocus(name);
                                     }else{
                                       utils.snackBar(context: context, msg: "Maximum 10 lead categories allowed.", color: Colors.red);
                                     }
@@ -482,14 +496,14 @@ class _LeadCategoriesState extends State<LeadCategories> {
                               // update display_order in allLeadCategoryList
                               for (int i = 0; i < controllers.allLeadCategoryList.length; i++) {
                                 controllers.allLeadCategoryList[i].displayOrder = i + 1;
-
-                                // update same id in leadCategoryList
-                                int index = controllers.leadCategoryList.indexWhere(
-                                        (e) => e.id == controllers.allLeadCategoryList[i].id);
-
-                                if (index != -1) {
-                                  controllers.leadCategoryList[index].displayOrder = i + 1;
-                                }
+                                //
+                                // // update same id in leadCategoryList
+                                // int index = controllers.leadCategoryList.indexWhere(
+                                //         (e) => e.id == controllers.allLeadCategoryList[i].id);
+                                //
+                                // if (index != -1) {
+                                //   controllers.leadCategoryList[index].displayOrder = i + 1;
+                                // }
                               }
 
                               isEdit.value = true;
@@ -522,8 +536,9 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                               width:140,
                                               child: Obx(()=>editIndex.value==index?
                                               SizedBox(
-                                                height: 30,
+                                                width:140,
                                                 child: TextField(
+                                                  focusNode: nameFocusList[editIndex.value],
                                                   controller: controllers.emailMessageCtr,
                                                   decoration: InputDecoration(
                                                     border: UnderlineInputBorder(),
@@ -568,9 +583,9 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                         ),
                                       ),
                                       InkWell(
-                                        onTap: (){
-                                          controllers.manageLead(context,data.id,data.active=="1"?2:1);
-                                        },
+                                        // onTap: (){
+                                        //   controllers.manageLead(context,data.id,data.active=="1"?2:1);
+                                        // },
                                         child: Container(
                                           decoration: customDecoration.baseBackgroundDecoration(
                                               color: data.active.toString()=="1"?Colors.green.shade100:Colors.orangeAccent.shade100,radius: 10
@@ -607,6 +622,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                                 edit.value=true;
                                                 editIndex.value=index;
                                                 controllers.emailMessageCtr.text=data.value;
+                                                FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
                                               },
                                               child: Image.asset("assets/images/lead5.png"),
                                             ),10.width,
@@ -623,6 +639,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                                   edit.value=true;
                                                   editIndex.value=index;
                                                   controllers.emailMessageCtr.text=data.value;
+                                                  FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
                                                 }else if (value == "status") {
                                                 }
                                               },
@@ -673,6 +690,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               CustomTextField(
+                                focusNode: name,
                                 width: MediaQuery.of(context).size.width*0.4,
                                 text: "",isOptional:false,
                                 hintText: "Category Name",
@@ -811,9 +829,9 @@ class _LeadCategoriesState extends State<LeadCategories> {
               displayOrder: int.parse(responseData['data']['display_order'].toString()));
           }
         }
-        controllers.leadCategoryList
-            .sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
-        controllers.productCtr.reset();
+        // controllers.leadCategoryList
+        //     .sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+        // controllers.productCtr.reset();
       } else {
         apiService.errorDialog(context, request.body);
       }

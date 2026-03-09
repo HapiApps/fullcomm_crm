@@ -74,12 +74,77 @@ class TableController extends GetxController {
   //     log("Set Heading fields error: $e");
   //   }
   // }
+  /// changed 9 mar
+  // void setHeading(List<dynamic> data) async {
+  //   print("Set Heading 1");
+  //
+  //   try {
+  //     headingFields.value = data
+  //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
+  //         .toList();
+  //
+  //     print("Heading Fields: $headingFields");
+  //
+  //     final prefs = await SharedPreferences.getInstance();
+  //     print("SharedPreferences loaded");
+  //
+  //     final saved = prefs.getString('tableHeadings');
+  //     print("Saved value: $saved");
+  //
+  //     if (saved != null) {
+  //       final decoded = jsonDecode(saved);
+  //       print("Decoded: $decoded");
+  //
+  //       List<String> savedHeadings = [];
+  //
+  //       if (decoded is List) {
+  //         savedHeadings = decoded.cast<String>();
+  //         print("Decoded is List");
+  //       } else if (decoded is Map) {
+  //         savedHeadings = decoded.values.map((e) => e.toString()).toList();
+  //         print("Decoded is Map");
+  //       }
+  //
+  //       final combined = List<String>.from(savedHeadings);
+  //
+  //       for (var i = 0; i < headingFields.length; i++) {
+  //         print("Loop index: $i");
+  //
+  //         if (i < combined.length) {
+  //           combined[i] = headingFields[i];
+  //         } else {
+  //           combined.add(headingFields[i]);
+  //         }
+  //       }
+  //
+  //       tableHeadings.value = combined;
+  //       print("Table Headings: $tableHeadings");
+  //
+  //     } else {
+  //       print("No saved data");
+  //       tableHeadings.value = List<String>.from(headingFields);
+  //     }
+  //
+  //     for (var h in tableHeadings) {
+  //       colWidth[h] = 150;
+  //     }
+  //
+  //     await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
+  //     print("Saved to SharedPreferences");
+  //
+  //   } catch (e) {
+  //     print("Set Heading fields error: $e");
+  //   }
+  // }
   void setHeading(List<dynamic> data) async {
-    log("Set Heading 1");
+    print("Set Heading 1");
+
     try {
       headingFields.value = data
           .map((e) => controllers.formatHeading(e['user_heading'].toString()))
           .toList();
+
+      print("Heading Fields: $headingFields");
 
       final prefs = await SharedPreferences.getInstance();
       final saved = prefs.getString('tableHeadings');
@@ -91,32 +156,35 @@ class TableController extends GetxController {
 
         if (decoded is List) {
           savedHeadings = decoded.cast<String>();
-        } else if (decoded is Map) {
-          savedHeadings = decoded.values.map((e) => e.toString()).toList();
         }
 
+        print("Saved Headings: $savedHeadings");
+
+        // saved list base
         final combined = List<String>.from(savedHeadings);
 
-        for (var i = 0; i < headingFields.length; i++) {
-          if (i < combined.length) {
-            combined[i] = headingFields[i];
-          } else {
-            combined.add(headingFields[i]);
+        // new headings மட்டும் add
+        for (var h in headingFields) {
+          if (!combined.contains(h)) {
+            combined.add(h);
           }
         }
-
+        for (var h in tableHeadings) {
+          colWidth[h] = 150;
+        }
         tableHeadings.value = combined;
+
       } else {
         tableHeadings.value = List<String>.from(headingFields);
       }
 
-      for (var h in tableHeadings) {
-        colWidth[h] = 150;
-      }
+      print("Final Headings: ${tableHeadings.value}");
 
-      await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
+      await prefs.setString(
+          'tableHeadings', jsonEncode(tableHeadings.value));
+
     } catch (e) {
-      log("Set Heading fields error: $e");
+      print("Set Heading fields error: $e");
     }
   }
   void setHeadingFields(List<dynamic> data) async {
@@ -228,6 +296,9 @@ class TableController extends GetxController {
     isTableLoading.value =false;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
+    print("Heading List: ${tableController.headingFields.toList()}");
+
+    print("savedpp");
     print("done");
   }
 

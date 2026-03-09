@@ -460,7 +460,6 @@ class ApiService {
         );
         controllers.selectedQualifiedSortBy.value="All";
         controllers.selectRadio(list,list2);
-        // apiService.getCustomLeads();
 
         list.sort((a, b) {
           DateTime dateA = DateTime.parse(a.updatedTs.toString());
@@ -583,6 +582,16 @@ class ApiService {
   }
   Future updateCategories(BuildContext context) async {
     try {
+      for (int i = 0; i < controllers.allLeadCategoryList.length; i++) {
+        controllers.allLeadCategoryList[i].displayOrder = i + 1;
+        int index = controllers.leadCategoryList.indexWhere(
+                (e) => e.id == controllers.allLeadCategoryList[i].id);
+
+        if (index != -1) {
+          controllers.leadCategoryList[index].displayOrder = i + 1;
+        }
+      }
+      controllers.leadCategoryList.sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
       Map data = {
         "action": "update_lead_details",
         "list": controllers.leadCategoryList
@@ -1482,7 +1491,6 @@ class ApiService {
         // apiService.allNewLeadsDetails();
         // apiService.allGoodLeadsDetails();
         // apiService.allTargetLeadsDetails();
-        // apiService.getCustomLeads();
         getHeading();
         apiService.getLeadCategories();
         apiService.getCustomLeads();
@@ -2346,7 +2354,7 @@ class ApiService {
               name: data.value,
               list: data.list,
               list2: data.list2, listIndex: int.parse(status),
-            ),
+            ), preventDuplicates: false,
           );
         });
         controllers.productCtr.reset();
@@ -4835,7 +4843,8 @@ class ApiService {
 
   Future<void> getCustomLeads() async {
     debugPrint("getCustomLeads");
-    controllers.isLead.value = false;
+    controllers.isCrmData.value = false;
+    controllers.allLeadList.clear();
     final url = Uri.parse(scriptApi);
     try {
       final response = await http.post(
@@ -4865,7 +4874,6 @@ class ApiService {
       }
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
-        controllers.allLeadList.clear();
         // newLeadList.clear();
         controllers.allLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         // controllers.searchNewLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
@@ -4888,18 +4896,22 @@ class ApiService {
           print("Final List for ${controllers.leadCategoryList[i].leadStatus} : ${controllers.leadCategoryList[i].list}");
         }
         log("----------> ${controllers.leadCategoryList}");
-        controllers.isLead.value=true;
+        controllers.isCrmData.value=true;
       } else {
+        controllers.allLeadList.clear();
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
     } on SocketException {
-      controllers.isLead.value=true;
+      controllers.allLeadList.clear();
+      controllers.isCrmData.value=true;
       throw Exception('No internet connection');
     } on HttpException catch (e) {
-      controllers.isLead.value=true;
+      controllers.allLeadList.clear();
+      controllers.isCrmData.value=true;
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
-      controllers.isLead.value=true;
+      controllers.allLeadList.clear();
+      controllers.isCrmData.value=true;
       controllers.newLeadList.clear();
       throw Exception('Unexpected error: ${e.toString()}');
     }

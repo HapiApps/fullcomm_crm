@@ -171,16 +171,17 @@ class FilterSection extends StatelessWidget {
 
                     controllers.search.text = value.name.toString();
 
-                    print("value.leadStatus ${value.leadStatus}");
-                    print("leadIndex $leadIndex");
+                    // print("value.leadStatus ${value.leadStatus}");
+                    // print("leadIndex $leadIndex");
 
                     // same page select pannina navigation thevai illa
                     if (value.leadStatus == leadIndex) {
-                    print("one");
+                    // print("one");
+                    onSearchChanged!(value);
                     return;
                     }
 
-                    print("two");
+                    // print("two");
 
                     for (var i = 0; i < controllers.leadCategoryList.length; i++) {
 
