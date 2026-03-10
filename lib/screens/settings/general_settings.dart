@@ -7,12 +7,16 @@ import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/screens/settings/add_office_hours.dart';
 import 'package:get/get.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/constant/key_constant.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
+import '../../components/custom_textfield.dart';
+import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
+import '../../models/all_customers_obj.dart';
 import '../../services/api_services.dart';
 import 'lead_categories.dart';
 
@@ -532,13 +536,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                           var editIndex = 100.obs;
                           TextEditingController addCtr = TextEditingController();
                           FocusNode addFocus = FocusNode();
-
+                          addCtr.clear();
                           List<FocusNode> focusList =
-                          List.generate(controllers.statusList.length, (index) => FocusNode());
+                          List.generate(controllers.hCallStatusList.length, (index) => FocusNode());
 
                           List<TextEditingController> ctrList =
-                          List.generate(controllers.statusList.length, (index) =>
-                              TextEditingController(text: controllers.statusList[index]));
+                          List.generate(controllers.hCallStatusList.length, (index) =>
+                              TextEditingController(text: controllers.hCallStatusList[index]["value"]));
                           showDialog(
                             context: context,
                             builder: (context) {
@@ -548,10 +552,9 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                 contentPadding: EdgeInsets.zero,
                                 content: SizedBox(
                                   width: 420,
-                                  child: Column(
+                                  child: Obx(()=>Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-
                                       /// HEADER
                                       Container(
                                         padding: const EdgeInsets.all(16),
@@ -605,17 +608,16 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                   borderColor: Colors.grey.shade400,
                                                 ),
                                                 child:  Center(
-                                                  child: Icon(Icons.clear,color: Colors.grey,size: 15,)
+                                                    child: Icon(Icons.clear,color: Colors.grey,size: 15,)
                                                 ),
                                               ),
                                             )
                                           ],
                                         ),
                                       ),
-
                                       /// STATUS LIST
                                       Column(
-                                        children: List.generate(controllers.statusList.length, (index) {
+                                        children: List.generate(controllers.hCallStatusList.length, (index) {
                                           return Container(
                                             margin: const EdgeInsets.only(bottom: 10),
                                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -631,8 +633,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                 SizedBox(
                                                   width:140,
                                                   child: TextField(
-                                                    focusNode: focusList[editIndex.value],
-                                                    controller: ctrList[editIndex.value],
+                                                    focusNode: focusList[index],
+                                                    controller: ctrList[index],
                                                     decoration: InputDecoration(
                                                       border: UnderlineInputBorder(),
                                                       contentPadding: const EdgeInsets.symmetric(
@@ -641,29 +643,32 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                       ),
                                                     ),
                                                     onEditingComplete: (){
-                                                      if (controllers.emailMessageCtr.text.trim().isEmpty) {
+                                                      if (ctrList[index].text.trim().isEmpty) {
                                                         utils.snackBar(
                                                           context: context,
-                                                          msg: "Please enter lead category",
+                                                          msg: "Please enter status type",
                                                           color: Colors.red,
                                                         );
                                                         controllers.productCtr.reset();
                                                         return;
                                                       }else{
-                                                        // addCategories(context,"update",data.id,index);
+                                                        controllers.correctionStatus(context,"update",controllers.hCallStatusList[index]["id"].toString(),ctrList[index].text.trim());
                                                       }
                                                     },
                                                   ),
                                                 ):
                                                 CustomText(
-                                                  text: controllers.statusList[index],
+                                                  text: controllers.hCallStatusList[index]["value"],
                                                   isCopy: false,
                                                   size: 14,
                                                 ),
                                                 InkWell(
                                                   onTap: (){
+                                                    isAdd.value = false;
                                                     editIndex.value=index;
-                                                    FocusScope.of(context).requestFocus(focusList[index]);
+                                                    Future.delayed(const Duration(milliseconds: 100), () {
+                                                      focusList[index].requestFocus();
+                                                    });
                                                   },
                                                   child: Icon(Icons.edit_outlined,
                                                       size: 18, color: Colors.grey.shade600),
@@ -672,10 +677,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                             ),
                                           );
                                         }),
-                                      ),
-
-                                      /// ADD STATUS
-                                      Obx(() => isAdd.value
+                                      ),                                      /// ADD STATUS
+                                      isAdd.value
                                           ? Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 16),
                                         child: Row(
@@ -697,35 +700,28 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                               ),
                                             ),
                                             8.width,
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  backgroundColor: colorsConst.primary),
-                                              onPressed: () {
-
-                                                if (addCtr.text.trim().isEmpty) return;
-
-                                                /// add new status
-                                                controllers.statusList.add(addCtr.text);
-
-                                                /// create new controller & focus
-                                                ctrList.add(TextEditingController(text: addCtr.text));
-                                                focusList.add(FocusNode());
-
-                                                addCtr.clear();
-                                              },
-                                              child: const CustomText(
-                                                text: "Add",
-                                                isCopy: false,
-                                                colors: Colors.white,
-                                              ),
+                                            SizedBox(height: 35,
+                                              child: CustomLoadingButton(
+                                                callback: (){
+                                                  if (addCtr.text.trim().isEmpty) {
+                                                    utils.snackBar(
+                                                      context: context,
+                                                      msg: "Please enter status type",
+                                                      color: Colors.red,
+                                                    );
+                                                    controllers.productCtr.reset();
+                                                    return;
+                                                  }else{
+                                                    controllers.correctionStatus(context,"add","0",addCtr.text.trim());
+                                                  }
+                                                }, isLoading: true, backgroundColor: colorsConst.primary,
+                                                radius: 5, width: 70,text: "Add",controller: controllers.productCtr,),
                                             )
                                           ],
                                         ),
                                       )
-                                          : const SizedBox()),
-
+                                          : const SizedBox(),
                                       const SizedBox(height: 10),
-
                                       /// FOOTER BUTTONS
                                       Container(
                                         padding:
@@ -740,13 +736,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                             OutlinedButton(
                                               onPressed: () {
                                                 isAdd.value = true;
-
+                                                editIndex.value=100;
                                                 Future.delayed(const Duration(milliseconds: 200), () {
                                                   addFocus.requestFocus();
                                                 });
                                               },
                                               style: OutlinedButton.styleFrom(
-                                                backgroundColor: Colors.white
+                                                  backgroundColor: Colors.white
                                               ),
                                               child: const CustomText(
                                                 text: "+ Add Status",
@@ -754,21 +750,27 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                               ),
                                             ),
                                             const Spacer(),
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  backgroundColor: colorsConst.primary),
-                                              onPressed: () {},
-                                              child: const CustomText(
-                                                text: "Save Changes",
-                                                isCopy: false,
-                                                colors: Colors.white,
-                                              ),
+                                            SizedBox(height: 35,width: 100,
+                                              child: CustomLoadingButton(
+                                                callback: (){
+                                                  if (ctrList[editIndex.value].text.trim().isEmpty) {
+                                                    utils.snackBar(
+                                                      context: context,
+                                                      msg: "Please enter status type",
+                                                      color: Colors.red,
+                                                    );
+                                                    controllers.leadCtr.reset();
+                                                  }else{
+                                                    controllers.correctionStatus(context,"update",controllers.hCallStatusList[editIndex.value]["id"].toString(),ctrList[editIndex.value].text.trim());
+                                                  }
+                                                }, isLoading: true, backgroundColor: colorsConst.primary,
+                                                radius: 5, width: 100,text: "Save Changes",controller: controllers.leadCtr,),
                                             )
                                           ],
                                         ),
                                       )
                                     ],
-                                  ),
+                                  )),
                                 ),
                               );
                             },
@@ -1185,14 +1187,366 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                           height: 40,
                           child: ElevatedButton(
                               onPressed: (){
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation1, animation2) =>
-                                    const AddOfficeHours(),
-                                    transitionDuration: Duration.zero,
-                                    reverseTransitionDuration: Duration.zero,
-                                  ),
+                                // Navigator.push(
+                                //   context,
+                                //   PageRouteBuilder(
+                                //     pageBuilder: (context, animation1, animation2) =>
+                                //     const AddOfficeHours(),
+                                //     transitionDuration: Duration.zero,
+                                //     reverseTransitionDuration: Duration.zero,
+                                //   ),
+                                // );
+                                settingsController.time1.clear();
+                                settingsController.time2.clear();
+
+                                settingsController.shiftController.clear();
+                                settingsController.daysController.clear();
+                                var errMsg="".obs;
+                                var errMsg2="".obs;
+                                var errMsg3="".obs;
+                                var errMsg4="".obs;
+                                var errMsg5="".obs;
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      backgroundColor: const Color(0xFFF1F5F9),
+                                      titlePadding: EdgeInsets.zero,
+                                      contentPadding: EdgeInsets.zero,
+                                      content: SizedBox(
+                                        width: 420,
+                                        child: Obx(()=>Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+
+                                            /// HEADER
+                                            Container(
+                                              padding: const EdgeInsets.all(16),
+                                              decoration: const BoxDecoration(
+                                                color: Color(0xFFE5E7EB),
+                                                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                                              ),
+                                              child: Row(
+                                                children: [
+
+                                                  /// ICON
+                                                  Container(
+                                                    width: 34,
+                                                    height: 34,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.blue,
+                                                      borderRadius: BorderRadius.circular(6),
+                                                    ),
+                                                    child: const Icon(Icons.report_gmailerrorred_sharp, color: Colors.white,size:18),
+                                                  ),
+
+                                                  10.width,
+
+                                                  /// TITLE
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CustomText(
+                                                        text: "Add New Shift",
+                                                        isCopy: false,
+                                                        isBold: true,
+                                                        size: 15,
+                                                      ),
+                                                      CustomText(
+                                                        text: "Configure shift details for an employee",
+                                                        isCopy: false,
+                                                        size: 12,
+                                                        colors: Colors.grey,
+                                                      ),
+                                                    ],
+                                                  ),
+
+                                                  const Spacer(),
+
+                                                  /// CLOSE
+                                                  InkWell(
+                                                    onTap: (){
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      width: 26,
+                                                      height: 26,
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(color: Colors.grey.shade400),
+                                                        borderRadius: BorderRadius.circular(5),
+                                                      ),
+                                                      child: const Icon(Icons.clear,size:14),
+                                                    ),
+                                                  )
+
+                                                ],
+                                              ),
+                                            ),
+
+                                            /// BODY
+                                            Padding(
+                                              padding: const EdgeInsets.all(16),
+                                              child: Column(
+                                                children: [
+
+                                                  /// STEPS
+                                                  Container(
+                                                    height: 35,
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                        color: Colors.grey.shade200,radius: 5,borderColor: Colors.grey.shade300
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          stepWidget("1","Employee",
+                                                              controllers.selectedEmployeeId.value==""?Colors.grey.shade300:Colors.green,
+                                                              controllers.selectedEmployeeId.value==""?Colors.grey:Colors.white
+                                                          ),
+                                                          Container(
+                                                            height: 1,width: 50,color: Colors.grey.shade300,
+                                                          ),
+                                                          stepWidget("2","Schedule",
+                                                              settingsController.time1.text.isEmpty&&settingsController.time1.text.isEmpty?Colors.grey.shade300:Colors.green,
+                                                              settingsController.time1.text.isEmpty&&settingsController.time1.text.isEmpty?Colors.grey:Colors.white),
+                                                          Container(
+                                                            height: 1,width: 50,color: Colors.grey.shade300,
+                                                          ),
+                                                          stepWidget("3","Days",
+                                                              settingsController.shiftController.text.isEmpty&&settingsController.daysController.text.isEmpty?Colors.grey.shade300:Colors.green,
+                                                              settingsController.shiftController.text.isEmpty&&settingsController.daysController.text.isEmpty?Colors.grey:Colors.white),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  const SizedBox(height:20),
+
+                                                  /// EMPLOYEE DROPDOWN
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          const Icon(Icons.person_outline_outlined,color: Colors.grey,size: 15,),
+                                                          6.width,
+                                                          CustomText(
+                                                            text: "Employee Name",
+                                                            isCopy: false,
+                                                            size: 13,
+                                                          ),
+                                                          CustomText(
+                                                              text: "*",
+                                                              isCopy: false,
+                                                              size: 20,colors: Colors.red
+                                                          ),
+                                                        ],
+                                                      ),
+
+                                                      const SizedBox(height:6),
+
+                                                      KeyboardDropdownField<AllEmployeesObj>(
+                                                        items: controllers.employees,
+                                                        borderRadius: 5,
+                                                        borderColor: Colors.grey.shade300,
+                                                        hintText: "Select Employees",
+                                                        labelText: "",
+                                                        labelBuilder: (customer) =>
+                                                        '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                                        itemBuilder: (customer) {
+                                                          return Container(
+                                                            width: 300,
+                                                            alignment: Alignment.topLeft,
+                                                            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                            child: CustomText(
+                                                              text:
+                                                              '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                                              colors: Colors.black,
+                                                              size: 14,
+                                                              isCopy: false,
+                                                              textAlign: TextAlign.start,
+                                                            ),
+                                                          );
+                                                        },
+                                                        textEditingController:
+                                                        controllers.empController,
+                                                        onSelected: (value) {
+                                                          controllers.selectEmployee(value);
+                                                        },
+                                                        onClear: () {
+                                                          controllers.clearSelectedCustomer();
+                                                        },
+                                                      ),
+                                                      CustomText(text: errMsg.value, isCopy: false,colors: Colors.red,)
+                                                    ],
+                                                  ),
+                                                  10.height,
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      ShiftCustomTextField(
+                                                        readOnly: true,
+                                                        onTap: () => settingsController.pickTime(context, true),
+                                                        iconData: Icons.access_time_sharp,
+                                                        // focusNode: passwordFocus2,
+                                                        controller: settingsController.time1,
+                                                        text: 'From',
+                                                        hintText: settingsController.formatTime(settingsController.fromTime.value),
+                                                        errorText: errMsg2.value,
+                                                        width: 170,
+                                                        validator: (value){
+                                                          if(value.toString().isEmpty){
+                                                            errMsg2.value="Start Time is Required";
+                                                            return "Start Time is Required";
+                                                          }else{
+                                                            errMsg2.value="";
+                                                            return null;
+                                                          }
+                                                        },
+                                                      ),
+                                                      ShiftCustomTextField(
+                                                        readOnly: true,
+                                                        onTap: () => settingsController.pickTime(context, false),
+                                                        iconData: Icons.access_time_sharp,
+                                                        // focusNode: passwordFocus2,
+                                                        controller: settingsController.time2,
+                                                        text: 'To',
+                                                        hintText: settingsController.formatTime(settingsController.toTime.value),
+                                                        errorText: errMsg3.value,
+                                                        width: 170,
+                                                        validator: (value){
+                                                          if(value.toString().isEmpty){
+                                                            errMsg3.value="End Time is Required";
+                                                            return "End Time is Required";
+                                                          }else{
+                                                            errMsg3.value="";
+                                                            return null;
+                                                          }
+                                                        },
+                                                      ),
+
+                                                    ],
+                                                  ),
+                                                  10.height,
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      ShiftCustomTextField(
+                                                        iconData: Icons.calendar_today_outlined,
+                                                        // focusNode: passwordFocus2,
+                                                        controller: settingsController.shiftController,
+                                                        text: 'Shift Name',
+                                                        hintText: 'Shift Name',
+                                                        width: 170,
+                                                        errorText: errMsg4.value,
+                                                        validator: (value){
+                                                          if(value.toString().isEmpty){
+                                                            errMsg4.value="Shift Name is Required";
+                                                            return "Shift Name is Required";
+                                                          }else{
+                                                            errMsg4.value="";
+                                                            return null;
+                                                          }
+                                                        },
+                                                        textInputAction: TextInputAction.next,
+                                                        inputFormatters: constInputFormatters.textInput,
+                                                        keyboardType: TextInputType.number,
+                                                      ),
+                                                      ShiftCustomTextField(
+                                                        iconData: Icons.calendar_today_outlined,
+                                                        // focusNode: passwordFocus2,
+                                                        controller: settingsController.daysController,
+                                                        text: 'Working days',
+                                                        hintText: 'Working days',
+                                                        errorText: errMsg5.value,
+                                                        width: 170,
+                                                        validator: (value){
+                                                          if(value.toString().isEmpty){
+                                                            errMsg5.value="Working Days is Required";
+                                                            return "Working days";
+                                                          }else{
+                                                            errMsg5.value="";
+                                                            return null;
+                                                          }
+                                                        },
+                                                        textInputAction: TextInputAction.done,
+                                                        inputFormatters: constInputFormatters.numberInput,
+                                                        keyboardType: TextInputType.number,
+                                                      ),
+
+                                                    ],
+                                                  ),
+                                                  10.height,
+
+                                                ],
+                                              ),
+                                            ),
+
+                                            /// FOOTER
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal:16,vertical:12),
+                                              decoration: const BoxDecoration(
+                                                color: Color(0xFFE5E7EB),
+                                                borderRadius: BorderRadius.vertical(bottom: Radius.circular(12)),
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  OutlinedButton(
+                                                    style: OutlinedButton.styleFrom(
+                                                        backgroundColor: Colors.white
+                                                    ),
+                                                    onPressed: (){
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const CustomText(text:"Cancel",isCopy: false,colors: Colors.grey,),
+                                                  ),10.width,
+                                                  CustomLoadingButton(
+                                                    callback: () async {
+                                                      errMsg.value="";
+                                                      errMsg2.value="";
+                                                      errMsg3.value="";
+                                                      errMsg4.value="";
+                                                      errMsg5.value="";
+                                                      if(controllers.selectedEmployeeId.value.isEmpty){
+                                                        controllers.productCtr.reset();
+                                                        errMsg.value="Please select any employee";
+                                                      }else if(settingsController.time1.text.isEmpty) {
+                                                        controllers.productCtr.reset();
+                                                        errMsg2.value="Start Time is Required";
+                                                      }else if(settingsController.time2.text.isEmpty){
+                                                        controllers.productCtr.reset();
+                                                        errMsg3.value="End Time is Required";
+                                                      }else if(settingsController.shiftController.text.isEmpty) {
+                                                        controllers.productCtr.reset();
+                                                        errMsg4.value="Shift Name is Required";
+                                                      }else if(settingsController.daysController.text.isEmpty){
+                                                        controllers.productCtr.reset();
+                                                        errMsg5.value="Working Days is Required";
+                                                      }else{
+                                                        await settingsController.insertOfficeHourAPI(context);
+                                                      }
+                                                    }, 
+                                                    height: 40,
+                                                    isLoading: true,
+                                                    backgroundColor: colorsConst.primary,
+                                                    radius: 7,
+                                                    width: 120,
+                                                    controller: controllers.productCtr,
+                                                    isImage: false,
+                                                    text: "Add Shift",
+                                                    textColor: Colors.white,
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+
+                                          ],
+                                        )),
+                                      ),
+                                    );
+                                  },
                                 );
                               },
                               child: Row(
@@ -1685,4 +2039,18 @@ class _GeneralSettingsState extends State<GeneralSettings> {
       ),
     );
   }
+  Widget stepWidget(String number,String title,Color bg,Color textClr){
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 10,
+          backgroundColor: bg,
+          child: CustomText(text:number,size: 10,isCopy: false,colors: textClr,),
+        ),
+        const SizedBox(width:6),
+        CustomText(text:title,size: 12, isCopy: false,colors: Colors.grey)
+      ],
+    );
+  }
+
 }

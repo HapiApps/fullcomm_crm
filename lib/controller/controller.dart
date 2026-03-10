@@ -3341,13 +3341,13 @@ var otp = "".obs;
   var selectPinCodeList = [];
   var selectStateList = [];
   var selectCityList = [];
-  Future correctionStatus(BuildContext context,String ops,String id) async {
+  Future correctionStatus(BuildContext context,String ops,String id,String value) async {
     try{
       print("statusCrt.text..........${statusCrt.text}");
       Map data = {
         "action": "correction_status",
         "ops": ops,
-        "value": statusController.text,
+        "value": value,
         "id": id,
         "cos_id": controllers.storage.read("cos_id")
       };
@@ -3365,23 +3365,25 @@ var otp = "".obs;
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return correctionStatus(context,ops,id);
+          return correctionStatus(context,ops,id,value);
         } else {
           controllers.setLogOut();
         }
       }
       if (request.statusCode == 200){
         Navigator.pop(context);
-        Navigator.pop(context);
         getCallStatus();
+        controllers.leadCtr.reset();
         controllers.productCtr.reset();
       } else {
         apiService.errorDialog(Get.context!,request.body);
         controllers.productCtr.reset();
+        controllers.leadCtr.reset();
       }
     }catch(e){
       apiService.errorDialog(Get.context!,e.toString());
       controllers.productCtr.reset();
+      controllers.leadCtr.reset();
     }
   }
   Future insertIndustries(BuildContext context) async {

@@ -23,6 +23,7 @@ import '../screens/leads/prospects.dart';
 import '../screens/leads/qualified.dart';
 import '../screens/leads/suspects.dart';
 import '../screens/leads/target_leads.dart';
+import '../screens/products/product_page.dart';
 import '../screens/records/records.dart';
 import '../screens/reminder/reminder_page.dart';
 import '../screens/settings/general_settings.dart';
@@ -252,7 +253,17 @@ class SideBar extends StatelessWidget {
               unSelectedImage: "assets/images/u_records.png",
               page: const Records(isReload: "true"),
             ),
-
+            SidebarItem(
+              context: context,
+              controllers: controllers,
+              colorsConst: colorsConst,
+              index: 105,
+              icon: Icons.production_quantity_limits_sharp,
+              selectedImage: "assets/images/s_dash.png",
+              unSelectedImage: "assets/images/u_dash.png",
+              label: constValue.products,
+              page: const ProductPage(),
+            ),
             SidebarItem(
               context: context,
               controllers: controllers,

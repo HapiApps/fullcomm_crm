@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/controller/product_controller.dart';
 import 'package:fullcomm_crm/screens/settings/lead_categories.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -108,6 +109,7 @@ class _DashboardPageState extends State<DashboardPage>
       controllers.getCallStatus();
       controllers.getRangeStatus();
       controllers.getIndustries();
+      productCtr.getProducts();
     });
 
     Future.delayed(Duration.zero, () async {

@@ -88,6 +88,46 @@ class CustomStyle {
           borderRadius: BorderRadius.circular(5)),
     );
   }
+  InputDecoration inputDecoration2(
+      {String? text,String? errorText,
+      bool? isIcon,
+      bool? isLogin,
+      IconData? iconData,
+      String? image,
+      VoidCallback? onPressed}) {
+    return InputDecoration(
+      hoverColor: Colors.transparent,
+      focusColor: Colors.transparent,
+       hintText:text,
+      // errorText: errorText,
+      // errorStyle: TextStyle(color: Colors.red, fontSize: 13, fontFamily: "Lato"),
+      hintStyle: TextStyle(
+          color: Colors.grey.shade400, fontSize: 13, fontFamily: "Lato"),
+      fillColor:
+          text == "Search Name" ? Colors.grey.shade200 : Colors.white,
+      filled: true,
+      enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.grey.shade300,
+          ),
+          borderRadius: BorderRadius.circular(5)),
+      focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: colorsConst.primary,
+          ),
+          borderRadius: BorderRadius.circular(5)),
+      focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+              color: const Color(0xffE1E5FA)),
+          borderRadius: BorderRadius.circular(5)),
+      // errorStyle: const TextStyle(height:0.05,fontSize: 12),
+      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+      errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+              color: errorText==""? Color(0xffE1E5FA):Colors.red),
+          borderRadius: BorderRadius.circular(5)),
+    );
+  }
 
   ButtonStyle buttonStyle({Color? color, double? radius}) {
     return ElevatedButton.styleFrom(

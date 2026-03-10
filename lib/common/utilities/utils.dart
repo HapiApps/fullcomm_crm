@@ -2236,6 +2236,20 @@ class Utils {
       html.Url.revokeObjectUrl(url);
     });
   }
+  Future<void> downloadProductSampleExcel() async {
+    final data = await rootBundle.load("assets/catlog_sheet.xlsx");
+    final blob = html.Blob([data.buffer.asUint8List()]);
+    final url = html.Url.createObjectUrlFromBlob(blob);
+
+    final anchor = html.AnchorElement(href: url)
+      ..setAttribute('download', 'catlog_sheet.xlsx')
+      ..click();
+
+    // Revoke after a short delay
+    Future.delayed(const Duration(seconds: 1), () {
+      html.Url.revokeObjectUrl(url);
+    });
+  }
 
   Future<void> downloadSheetImplementation(String fileName, Uint8List bodyBytes) async {
     final blob = html.Blob([bodyBytes]);
@@ -2385,6 +2399,115 @@ class Utils {
       },
     );
   }
+  Future<void> showImportDialogProduct(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          insetPadding: const EdgeInsets.all(5),
+          backgroundColor: colorsConst.secondary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          content: SizedBox(
+            width: 350,
+            height: 500,
+            child: SelectionArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    colors: colorsConst.third,
+                    text: "Your uploaded Excel file should have columns matching the required fields exactly as listed below to ensure correct data insertion:",
+                    isBold: true,
+                    isCopy: true,
+                    size: 15,
+                    textAlign: TextAlign.start,
+                  ),
+                  10.height,
+                  CustomText(
+                    text: "Column Names:",
+                    colors: colorsConst.textColor,
+                    size: 15,
+                    isBold: true,
+                    isCopy: true,
+                  ),
+                  5.height,
+                  dialogText("Title"),
+                  dialogText("Description"),
+                  dialogText("Availability"),
+                  dialogText("Condition"),
+                  dialogText("Price"),
+                  dialogText("Link"),
+                  dialogText("Image Link"),
+                  dialogText("Brand"),
+                  10.height,
+                  CustomText(
+                    text: "File format:",
+                    colors: colorsConst.textColor,
+                    size: 15,
+                    isBold: true,
+                    isCopy: true,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(17, 5, 5, 5),
+                    child: CustomText(
+                      textAlign: TextAlign.start,
+                      text: '.xlsx, .xls',
+                      colors: colorsConst.textColor,
+                      size: 14,
+                      isCopy: true,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(
+                  width: 120,
+                  height: 40,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(40),
+                        backgroundColor: colorsConst.third,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            side: BorderSide(color: colorsConst.third))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const CustomText(
+                      text: "Cancel",
+                      colors: Colors.white,
+                      isBold: true,
+                      size: 15,
+                      isCopy: false,
+                    ),
+                  ),
+                ),
+                10.width,
+                CustomLoadingButton(
+                  callback: () {
+                    thiPickAndReadExcelFileProduct(context);
+                  },
+                  isLoading: true,
+                  backgroundColor: colorsConst.secondary,
+                  radius: 5,
+                  width: 120,
+                  controller: controllers.customerCtr,
+                  text: "Import",
+                  isImage: false,
+                  textColor: colorsConst.textColor,
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget dialogText(String text) {
     return Padding(
@@ -2411,6 +2534,22 @@ class Utils {
       reader.onLoadEnd.listen((event) {
         Uint8List bytes = reader.result as Uint8List;
         thiParseExcelFile(bytes, context, leadStatus);
+      });
+    });
+  }
+  void thiPickAndReadExcelFileProduct(BuildContext context) {
+    final html.FileUploadInputElement input = html.FileUploadInputElement()
+      ..accept = '.xlsx, .xls';
+    input.click();
+
+    input.onChange.listen((event) {
+      final file = input.files!.first;
+      final reader = html.FileReader();
+
+      reader.readAsArrayBuffer(file);
+      reader.onLoadEnd.listen((event) {
+        Uint8List bytes = reader.result as Uint8List;
+        thiParseExcelFileProduct(bytes, context);
       });
     });
   }
@@ -2518,6 +2657,169 @@ class Utils {
               formattedData[mappedField] = value != null && value.toString().isNotEmpty ? value : "WARM";
             }else if (mappedField == "lead_status") {
               formattedData[mappedField] = leadStatus!="0" ? value : "0";
+            } else {
+              formattedData[mappedField] = value;
+            }
+          }
+        });
+
+        if (rowData.containsKey("CONTACT NUMBER")) {
+          formattedData["whatsapp_no"] = rowData["CONTACT NUMBER"];
+        }
+
+        // Add extra fields
+        formattedData["user_id"] = controllers.storage.read("id");
+        formattedData["cos_id"] = controllers.storage.read("cos_id");
+        formattedData["door_no"] = "";
+        formattedData["area"] = "";
+        formattedData["country"] = "India";
+        formattedData["state"] = "Tamil Nadu";
+        formattedData["pincode"] = "";
+        formattedData["product_discussion"] = "";
+        formattedData["discussion_point"] = "";
+        formattedData["points"] = "";
+        formattedData["department"] = "";
+        formattedData["designation"] = "";
+        if (!formattedData.containsKey("source")) {
+          formattedData["source"] = "";
+        }
+
+        if ((formattedData["phone_no"] != null && formattedData["phone_no"].toString().isNotEmpty) ||
+            (formattedData["name"] != null && formattedData["name"].toString().isNotEmpty)) {
+          thiCustomerData.add(formattedData);
+        } else {
+          if (formattedData["email"] != null && formattedData["email"].toString().isNotEmpty) {
+            thiCustomerData.add(formattedData);
+          } else {
+            thiMCustomerData.add(formattedData);
+          }
+        }
+      }
+    }
+
+    print("mCustomerData ${thiMCustomerData.length}");
+    print("customerData ${thiCustomerData.length}");
+
+    if (thiCustomerData.isEmpty) {
+      Navigator.of(context).pop();
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: colorsConst.primary,
+          content: CustomText(
+            text: "Some entries under KEY CONTACT PERSON and CONTACT NUMBER are empty in your Excel sheet. Please check and re-upload.",
+            colors: colorsConst.textColor,
+            size: 16,
+            isCopy: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: CustomText(
+                text: "OK",
+                colors: colorsConst.textColor,
+                size: 16,
+                isCopy: false,
+              ),
+            ),
+          ],
+        ),
+      );
+      return;
+    } else {
+      await apiService.insertThirumalCustomersAPI(context, thiCustomerData);
+    }
+  }
+  void thiParseExcelFileProduct(Uint8List bytes, BuildContext context) async {
+    thiCustomerData = [];
+    var excelD = excel.Excel.decodeBytes(bytes);
+
+    Map<String, String> keyMapping = {
+      "Title": "title",
+      "Description": "description",
+      "Availability": "availability",
+      "Condition": "condition",
+      "Price": "price",
+      "Link": "link",
+      "Image Link": "image_link",
+      "Brand": "brand"
+    };
+
+    for (var table in excelD.tables.keys) {
+      var rows = excelD.tables[table]!.rows;
+
+      List<String> headers = rows.first.map((cell) => (cell?.value.toString().trim().toUpperCase()) ?? "").toList();
+
+      List<String> missingColumns = [];
+
+      for (var key in keyMapping.keys) {
+        if (!headers.contains(key.toUpperCase().trim())) {
+          missingColumns.add(key);
+        }
+      }
+
+      print("missingColumns: $missingColumns");
+
+      if (missingColumns.isNotEmpty) {
+        Navigator.of(context).pop();
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: colorsConst.primary,
+            title: CustomText(
+              text: "Missing Columns",
+              colors: colorsConst.textColor,
+              size: 18,
+              isCopy: true,
+              isBold: true,
+            ),
+            content: CustomText(
+              text: "The following columns are missing:\n\n${missingColumns.join(", ")}",
+              colors: colorsConst.textColor,
+              isCopy: true,
+              size: 16,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: CustomText(
+                  text: "OK",
+                  colors: colorsConst.textColor,
+                  size: 16,
+                  isCopy: false,
+                ),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+
+      for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        Map<String, dynamic> rowData = {};
+        Map<String, dynamic> formattedData = {};
+        bool isRowEmpty = row.every((cell) =>
+        cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
+
+        if (isRowEmpty) continue;
+
+        for (var j = 0; j < headers.length; j++) {
+          String header = headers[j];
+          rowData[header] = row[j]?.value;
+        }
+
+        rowData.forEach((key, value) {
+          String matchedKey = keyMapping.keys.firstWhere(
+                (mappedKey) => mappedKey.toUpperCase().trim() == key.toUpperCase().trim(),
+            orElse: () => "",
+          );
+          if (matchedKey.isNotEmpty) {
+            String mappedField = keyMapping[matchedKey]!;
+            if (mappedField == "rating") {
+              formattedData[mappedField] = value != null && value.toString().isNotEmpty ? value : "WARM";
+            }else if (mappedField == "lead_status") {
+              // formattedData[mappedField] = leadStatus!="0" ? value : "0";
             } else {
               formattedData[mappedField] = value;
             }
@@ -3267,5 +3569,21 @@ class Utils {
         }
     );
   }
-
+void caps(String value,TextEditingController ctr){
+  if (value.toString().isNotEmpty) {
+    String newValue = value
+        .toString()[0]
+        .toUpperCase() +
+        value.toString().substring(1);
+    if (newValue != value) {
+      ctr.value =ctr.value.copyWith(
+        text: newValue,
+        selection:
+        TextSelection.collapsed(
+            offset:
+            newValue.length),
+      );
+    }
+  }
+}
 }

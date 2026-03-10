@@ -28,6 +28,8 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
   TextEditingController upDescriptionController = TextEditingController();
   TextEditingController daysController          = TextEditingController();
   TextEditingController shiftController         = TextEditingController();
+  TextEditingController time1         = TextEditingController();
+  TextEditingController time2         = TextEditingController();
   String? permission;
   String? updatePermission;
   var searchText = ''.obs;
@@ -47,8 +49,10 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
     if (pickedTime != null) {
       if (isFrom) {
         fromTime.value = pickedTime;
+        time1.text = pickedTime.format(context); // controller la time
       } else {
         toTime.value = pickedTime;
+        time2.text= pickedTime.format(context);
       }
     }
   }

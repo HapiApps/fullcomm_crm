@@ -39,10 +39,7 @@ class HeaderSection extends StatefulWidget {
 }
 
 class _HeaderSectionState extends State<HeaderSection> {
-  Future<void> exportLeadsToExcel(
-      List<NewLeadObj> leads,
-      List<CustomerField> fields,
-      ) async {
+  Future<void> exportLeadsToExcel(List<NewLeadObj> leads,List<CustomerField> fields) async {
     final excel = Excel.createExcel();
     final sheet = excel.sheets[excel.getDefaultSheet()!];
     final headers = fields.map((f) => f.userHeading).toList();
