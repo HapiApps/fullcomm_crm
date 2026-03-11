@@ -32,14 +32,16 @@ class LeadCategories extends StatefulWidget {
 }
 
 class _LeadCategoriesState extends State<LeadCategories> {
+  final FocusNode name = FocusNode();
   var isEdit=false.obs;
   var total=0.obs;
-  var show="All".obs;
   var add=false.obs;
   var edit=false.obs;
   var editIndex=100.obs;
   RxList<LeadStatusModel> allLead=<LeadStatusModel>[].obs;
   RxList<LeadStatusModel> lead=<LeadStatusModel>[].obs;
+  List<FocusNode> nameFocusList = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -47,6 +49,10 @@ class _LeadCategoriesState extends State<LeadCategories> {
     if(controllers.allLeadCategoryList.isEmpty){
       apiService.getAllLeadCategories();
     }
+    nameFocusList = List.generate(
+      controllers.allLeadCategoryList.length,
+          (index) => FocusNode(),
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       allLead.value=controllers.allLeadCategoryList;
       lead.value=controllers.leadCategoryList;
@@ -55,9 +61,14 @@ class _LeadCategoriesState extends State<LeadCategories> {
     });
   }
   void check(){
-    for(var i=0;i<dashController.leadReport.length;i++){
-      total.value+=int.parse(dashController.leadReport[i]["customer_count"].toString());
+    for(var i=0;i<controllers.allLeadCategoryList.length;i++){
+      total.value+=int.parse(controllers.allLeadCategoryList[i].totalLead.toString());
     }
+  }
+  @override
+  void dispose() {
+    name.dispose();
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -75,7 +86,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
               width:MediaQuery.of(context).size.width*0.7,
               child: Column(
                 children: [
-                  20.height,
+                  10.height,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -121,11 +132,15 @@ class _LeadCategoriesState extends State<LeadCategories> {
                             height:40,
                             child: ElevatedButton(
                                 onPressed: (){
-                                  // utils.addLeadCategoryDialog(context);
-                                  add.value=true;
-                                  edit.value=false;
-                                  editIndex.value=100;
-                                  controllers.emailMessageCtr.clear();
+                                  if(controllers.leadCategoryList.length!=10){
+                                    add.value=true;
+                                    edit.value=false;
+                                    editIndex.value=100;
+                                    controllers.emailMessageCtr.clear();
+                                    FocusScope.of(context).requestFocus(name);
+                                  }else{
+                                    utils.snackBar(context: context, msg: "Maximum 10 lead categories allowed.", color: Colors.red);
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: colorsConst.primary
@@ -145,161 +160,141 @@ class _LeadCategoriesState extends State<LeadCategories> {
                     thickness: 1.5,
                     color: colorsConst.secondary,
                   ),
-                  20.height,
+                  10.height,
                   Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  InkWell(
-                    onTap: (){
-                      show.value="All";
-                    },
-                    child: Container(
-                      height: 60,
-                      width: MediaQuery.of(context).size.width*0.12,
-                      decoration: customDecoration.baseBackgroundDecoration(
-                        color: Colors.white,radius: 10,borderColor: show.value=="All"?colorsConst.primary:Colors.grey.shade200
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          children: [
-                            Container(
-                                height: 30,
-                                width: 30,
-                                decoration: customDecoration.baseBackgroundDecoration(
-                                    color: Color(0XFFEBF2FF),radius: 5,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Image.asset("assets/images/lead.png",width: 20,height: 20,),
-                                )),10.width,
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                  CustomText(text: "${controllers.allLeadCategoryList.length}", isCopy: false,isBold: true,),
-                                  CustomText(text: "Total Categories", isCopy: false,colors: Color(0XFF666666)),
-                              ],
-                            ),
-                          ],
-                        ),
+                  Container(
+                    height: 60,
+                    width: MediaQuery.of(context).size.width*0.12,
+                    decoration: customDecoration.baseBackgroundDecoration(
+                      color: Colors.white,radius: 10,borderColor: Colors.grey.shade200
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        children: [
+                          Container(
+                              height: 30,
+                              width: 30,
+                              decoration: customDecoration.baseBackgroundDecoration(
+                                  color: Color(0XFFEBF2FF),radius: 5,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Image.asset("assets/images/lead.png",width: 20,height: 20,),
+                              )),10.width,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                                CustomText(text: "${controllers.allLeadCategoryList.length}", isCopy: false,isBold: true,),
+                                CustomText(text: "Total Categories", isCopy: false,colors: Color(0XFF666666)),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  InkWell(
-                    onTap: (){
-                      show.value="Active";
-                    },
-                    child: Container(
-                      height: 60,
-                      width: MediaQuery.of(context).size.width*0.12,
-                      decoration: customDecoration.baseBackgroundDecoration(
-                          color: Colors.white,radius: 10,borderColor: show.value=="Active"?colorsConst.primary:Colors.grey.shade200
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          children: [
-                            Container(
-                                height: 30,
-                                width: 30,
-                                decoration: customDecoration.baseBackgroundDecoration(
-                                  color: Color(0XFFDCFCE7),radius: 5,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Image.asset("assets/images/lead3.png",width: 20,height: 20,),
-                                )),10.width,
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomText(text: "${controllers.leadCategoryList.length}", isCopy: false,colors: Colors.green,isBold: true,),
-                                CustomText(text: "Active", isCopy: false,colors: Color(0XFF666666)),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: (){
-                      show.value="InActive";
-                    },
-                    child: Container(
-                      height: 60,
-                      width: MediaQuery.of(context).size.width*0.12,
-                      decoration: customDecoration.baseBackgroundDecoration(
-                        color: Colors.white,radius: 10,borderColor: show.value=="InActive"?colorsConst.primary:Colors.grey.shade200
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          children: [
-                            Container(
-                                height: 30,
-                                width: 30,
-                                decoration: customDecoration.baseBackgroundDecoration(
-                                    color: Color(0XFFFEF3C7),radius: 5,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Image.asset("assets/images/lead4.png",width: 20,height: 20,),
-                                )),10.width,
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomText(text: "${int.parse(controllers.allLeadCategoryList.length.toString())-int.parse(controllers.leadCategoryList.length.toString())}", isCopy: false,colors: Color(0XFFD97706),isBold: true,),
-                                CustomText(text: "In-Active", isCopy: false,colors: Color(0XFF666666)),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: (){
-                      show.value="All";
-                    },
-                    child: Container(
-                      height: 60,
-                      width: MediaQuery.of(context).size.width*0.12,
-                      decoration: customDecoration.baseBackgroundDecoration(
+                  Container(
+                    height: 60,
+                    width: MediaQuery.of(context).size.width*0.12,
+                    decoration: customDecoration.baseBackgroundDecoration(
                         color: Colors.white,radius: 10,borderColor: Colors.grey.shade200
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        children: [
+                          Container(
+                              height: 30,
+                              width: 30,
+                              decoration: customDecoration.baseBackgroundDecoration(
+                                color: Color(0XFFDCFCE7),radius: 5,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Image.asset("assets/images/lead3.png",width: 20,height: 20,),
+                              )),10.width,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomText(text: "${controllers.leadCategoryList.length}", isCopy: false,colors: Colors.green,isBold: true,),
+                              CustomText(text: "Active", isCopy: false,colors: Color(0XFF666666)),
+                            ],
+                          ),
+                        ],
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          children: [
-                            Container(
-                                height: 30,
-                                width: 30,
-                                decoration: customDecoration.baseBackgroundDecoration(
-                                    color: Color(0XFFF1F5F9),radius: 5,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Image.asset("assets/images/lead2.png",width: 20,height: 20,),
-                                )),10.width,
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                  CustomText(text: "$total", isCopy: false,colors: Color(0XFF666666),isBold: true,),
-                                  CustomText(text: "Total Leads", isCopy: false,colors: Color(0XFF666666)),
-                              ],
-                            ),
-                          ],
-                        ),
+                    ),
+                  ),
+                  Container(
+                    height: 60,
+                    width: MediaQuery.of(context).size.width*0.12,
+                    decoration: customDecoration.baseBackgroundDecoration(
+                      color: Colors.white,radius: 10,borderColor: Colors.grey.shade200
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        children: [
+                          Container(
+                              height: 30,
+                              width: 30,
+                              decoration: customDecoration.baseBackgroundDecoration(
+                                  color: Color(0XFFFEF3C7),radius: 5,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Image.asset("assets/images/lead4.png",width: 20,height: 20,),
+                              )),10.width,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomText(text: "${int.parse(controllers.allLeadCategoryList.length.toString())-int.parse(controllers.leadCategoryList.length.toString())}", isCopy: false,colors: Color(0XFFD97706),isBold: true,),
+                              CustomText(text: "In-Active", isCopy: false,colors: Color(0XFF666666)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 60,
+                    width: MediaQuery.of(context).size.width*0.12,
+                    decoration: customDecoration.baseBackgroundDecoration(
+                      color: Colors.white,radius: 10,borderColor: Colors.grey.shade200
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        children: [
+                          Container(
+                              height: 30,
+                              width: 30,
+                              decoration: customDecoration.baseBackgroundDecoration(
+                                  color: Color(0XFFF1F5F9),radius: 5,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Image.asset("assets/images/lead2.png",width: 20,height: 20,),
+                              )),10.width,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                                CustomText(text: "$total", isCopy: false,colors: Color(0XFF666666),isBold: true,),
+                                CustomText(text: "Total Leads", isCopy: false,colors: Color(0XFF666666)),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ],
               ),
-                  20.height,
+                  10.height,
                   Container(
                     height: 60,
                     width:MediaQuery.of(context).size.width*0.8,
@@ -338,9 +333,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                 ),
                                 child:  Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: CustomText(text: "${show.value=="Active"?controllers.leadCategoryList.length:show.value=="InActive"?
-                                  int.parse(controllers.allLeadCategoryList.length.toString())-int.parse(controllers.leadCategoryList.length.toString())
-                                      :controllers.allLeadCategoryList.length} Categories", isCopy: false,isBold: true,colors: Colors.grey),
+                                  child: CustomText(text: "${controllers.allLeadCategoryList.length} Categories", isCopy: false,isBold: true,colors: Colors.grey),
                                 ),
                               ),
                             ],
@@ -355,33 +348,28 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                   hintText: "Search Categories... ",
                                   controller: controllers.notesController,
                                   onChanged: (value) {
-                                    if(show.value=="Active"){
-                                      final suggestions=lead.where(
-                                              (user){
-                                            final customerName = user.value.toString().toLowerCase();
-                                            final input = value.toString().toLowerCase().trim();
-                                            return customerName.contains(input);
-                                          }).toList();
-                                      controllers.leadCategoryList.value=suggestions;
-                                    }else{
-                                      final suggestions=allLead.where(
-                                              (user){
-                                            final customerName = user.value.toString().toLowerCase();
-                                            final input = value.toString().toLowerCase().trim();
-                                            return customerName.contains(input);
-                                          }).toList();
-                                      controllers.allLeadCategoryList.value=suggestions;
-                                    }
+                                    final suggestions=allLead.where(
+                                            (user){
+                                          final customerName = user.value.toString().toLowerCase();
+                                          final input = value.toString().toLowerCase().trim();
+                                          return customerName.contains(input);
+                                        }).toList();
+                                    controllers.allLeadCategoryList.value=suggestions;
                                   },
                                   //onChanged: onSearchChanged,
                                 ),
                               ),10.width,
                               OutlinedButton(
                                   onPressed: (){
-                                    add.value=true;
-                                    edit.value=false;
-                                    editIndex.value=100;
-                                    controllers.emailMessageCtr.clear();
+                                    if(controllers.leadCategoryList.length!=10){
+                                      add.value=true;
+                                      edit.value=false;
+                                      editIndex.value=100;
+                                      controllers.emailMessageCtr.clear();
+                                      FocusScope.of(context).requestFocus(name);
+                                    }else{
+                                      utils.snackBar(context: context, msg: "Maximum 10 lead categories allowed.", color: Colors.red);
+                                    }
                                   },
                                   child: Row(
                                     children: [
@@ -396,7 +384,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                     ),
                   ),
                   Container(
-                    height: 45,
+                    height: 40,
                     width:MediaQuery.of(context).size.width*0.8,
                     color: colorsConst.primary,
                     child: Padding(
@@ -405,13 +393,24 @@ class _LeadCategoriesState extends State<LeadCategories> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
-                            width: show.value=="Active"?200:100,
-                            child: Row(
-                              children: [
-                                CustomText(text: "NAME", isCopy: false,isBold: true,colors: Colors.white),
-                                Icon(Icons.arrow_downward_sharp,color: Colors.white,size: 15,)
-                              ],
-                            ),
+                            width: 200,
+                              child:Row(
+                                children: [
+                                  SizedBox(
+                                    width: 50,
+                                  ),
+                                  10.width,
+                                  SizedBox(
+                                    width: 140,
+                                    child: Row(
+                                      children: [
+                                        CustomText(text: "NAME", isCopy: false,isBold: true,colors: Colors.white),
+                                        Icon(Icons.arrow_downward_sharp,color: Colors.white,size: 15,)
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )
                           ),
                           SizedBox(
                             width: 100,
@@ -422,11 +421,9 @@ class _LeadCategoriesState extends State<LeadCategories> {
                               ],
                             ),
                           ),
-                          if(show.value!="Active")
                           SizedBox(
                               width: 100,
                               child: CustomText(text: "STATUS", isCopy: false,isBold: true,colors: Colors.white)),
-                          if(show.value!="Active")
                           SizedBox(
                             width: 100,
                             child: Row(
@@ -436,7 +433,6 @@ class _LeadCategoriesState extends State<LeadCategories> {
                               ],
                             ),
                           ),
-                          if(show.value!="Active")
                           SizedBox(
                               width: 100,
                               child: CustomText(text: "ACTIONS", isCopy: false,isBold: true,colors: Colors.white)),
@@ -445,7 +441,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                     ),
                   ),
                   Container(
-                    height: 300,
+                    height: MediaQuery.of(context).size.height*0.6,
                     width:MediaQuery.of(context).size.width*0.8,
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -464,348 +460,296 @@ class _LeadCategoriesState extends State<LeadCategories> {
                         ),
                       ],
                     ),
-                    child: show.value=="All"||show.value=="InActive"?
-                    Column(
+                    child: Column(
                       children: [
-                        Expanded(child:
-                        show.value=="InActive"&&(int.parse(controllers.allLeadCategoryList.length.toString())-int.parse(controllers.leadCategoryList.length.toString()))==0?
-                        CustomText(text: "\n\n\nNo In Active Categories Found", isCopy: false):
-                        controllers.allLeadCategoryList.isEmpty?
-                        CustomText(text: "\n\n\nNo Category Found", isCopy: false):
-                        ListView.builder(
-                          itemCount: controllers.allLeadCategoryList.length,
-                          itemBuilder: (context, index) {
-                            var data = controllers.allLeadCategoryList[index];
-                            return show.value=="InActive"&&data.active=="2"?
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: 100,
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        CustomText(
-                                          text: data.value,
-                                          isCopy: false,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 100,
-                                    child: CustomText(
-                                      text: data.displayOrder.toString(),
-                                      isCopy: false,isBold: true,
-                                      colors: colorsConst.primary,
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: customDecoration.baseBackgroundDecoration(
-                                        color: data.active.toString()=="1"?Colors.green.shade100:Colors.orangeAccent.shade100,radius: 10
-                                    ),
-                                    height: 20,
-                                    width: 100,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.circle,size: 8,color: data.active.toString()=="1"?Colors.green:Colors.orangeAccent,),
-                                        CustomText(
-                                            text: data.active.toString()=="1"?"Active":"In Active",
-                                            isCopy: false,
-                                            colors: data.active.toString()=="1"?Colors.green:Colors.orangeAccent
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 100,
-                                    child: CustomText(
-                                      text: data.totalLead.toString(),
-                                      isCopy: false,isBold: true,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ):
-                            show.value=="All"?Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: 100,
-                                    child: Obx(()=>editIndex.value==index?
-                                    SizedBox(
-                                      height: 30,
-                                      child: TextField(
-                                        controller: controllers.emailMessageCtr,
-                                        decoration: InputDecoration(
-                                          border: UnderlineInputBorder(),
-                                          contentPadding: const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 14,
-                                          ),
-                                        ),
-                                        onEditingComplete: (){
-                                          if (controllers.emailMessageCtr.text.trim().isEmpty) {
-                                            utils.snackBar(
-                                              context: context,
-                                              msg: "Please enter lead category",
-                                              color: Colors.red,
-                                            );
-                                            controllers.productCtr.reset();
-                                            return;
-                                          }else{
-                                            addCategories(context,"update",data.id,index);
-                                          }
-                                        },
-                                      ),
-                                    ):
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        CustomText(
-                                          text: data.value,
-                                          isCopy: false,
-                                        ),
-                                      ],
-                                    ))
-                                  ),
-                                  SizedBox(
-                                    width: 100,
-                                    child: CustomText(
-                                      text: data.displayOrder.toString(),
-                                      isCopy: false,isBold: true,
-                                      colors: colorsConst.primary,
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: customDecoration.baseBackgroundDecoration(
-                                        color: data.active.toString()=="1"?Colors.green.shade100:Colors.orangeAccent.shade100,radius: 10
-                                    ),
-                                    height: 20,
-                                    width: 100,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.circle,size: 8,color: data.active.toString()=="1"?Colors.green:Colors.orangeAccent,),
-                                        CustomText(
-                                            text: data.active.toString()=="1"?"Active":"In Active",
-                                            isCopy: false,
-                                            colors: data.active.toString()=="1"?Colors.green:Colors.orangeAccent
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 100,
-                                    child: CustomText(
-                                      text: data.totalLead.toString(),
-                                      isCopy: false,isBold: true,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 100,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        InkWell(
-                                          onTap: (){
-                                            edit.value=true;
-                                            editIndex.value=index;
-                                            controllers.emailMessageCtr.text=data.value;
-                                          },
-                                          child: Image.asset("assets/images/lead5.png"),
-                                        ),10.width,
-                                        PopupMenuButton(
-                                          icon: Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: Image.asset("assets/images/lead8.png"),
-                                          ),
-                                          onSelected: (value) {
-                                            if (value == "copy") {
-                                              add.value=true;
-                                              controllers.emailMessageCtr.text="${data.value}(copy)";
-                                            } else if (value == "edit") {
-                                              edit.value=true;
-                                              editIndex.value=index;
-                                              controllers.emailMessageCtr.text=data.value;
-                                            }else if (value == "status") {
-                                            }
-                                          },
-                                          itemBuilder: (context) => [
-                                            PopupMenuItem(
-                                              value: "edit",
-                                              child: Row(
-                                                children: [
-                                                  Image.asset("assets/images/lead5.png"),10.width,
-                                                  const Text("Edit Name"),
-                                                ],
-                                              ),
+                        Expanded(
+                          child: ReorderableListView.builder(
+                            buildDefaultDragHandles: false, // default icon hide
+                            // shrinkWrap: true,
+                            itemCount: controllers.allLeadCategoryList.length,
+                            // onReorder: (oldIndex, newIndex) async {
+                            //   if (newIndex > oldIndex) {
+                            //     newIndex -= 1;
+                            //   }
+                            //
+                            //   final item =
+                            //   controllers.allLeadCategoryList.removeAt(oldIndex);
+                            //   controllers.allLeadCategoryList.insert(newIndex, item);
+                            //
+                            //   // Only update display_order
+                            //   for (int i = 0; i < controllers.allLeadCategoryList.length; i++) {
+                            //     controllers.allLeadCategoryList[i].displayOrder = i+1;
+                            //   }
+                            //   isEdit.value = true;
+                            //   // print("${controllers.leadCategoryList}.....");
+                            //   controllers.update();
+                            // },
+                            onReorder: (oldIndex, newIndex) async {
+                              if (newIndex > oldIndex) {
+                                newIndex -= 1;
+                              }
+
+                              final item =
+                              controllers.allLeadCategoryList.removeAt(oldIndex);
+                              controllers.allLeadCategoryList.insert(newIndex, item);
+
+                              // update display_order in allLeadCategoryList
+                              for (int i = 0; i < controllers.allLeadCategoryList.length; i++) {
+                                controllers.allLeadCategoryList[i].displayOrder = i + 1;
+                                //
+                                // // update same id in leadCategoryList
+                                // int index = controllers.leadCategoryList.indexWhere(
+                                //         (e) => e.id == controllers.allLeadCategoryList[i].id);
+                                //
+                                // if (index != -1) {
+                                //   controllers.leadCategoryList[index].displayOrder = i + 1;
+                                // }
+                              }
+
+                              isEdit.value = true;
+                              controllers.update();
+                            },
+                            itemBuilder: (context, index) {
+                              var data = controllers.allLeadCategoryList[index];
+
+                              return Padding(
+                                key: ValueKey(data.id),
+                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                child: Container(
+                                  color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: 200,
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width:50,
+                                              child: data.active=="1"?ReorderableDragStartListener(
+                                                index: index,
+                                                child: const Icon(Icons.menu),
+                                              ):0.width,
                                             ),
-                                            PopupMenuItem(
-                                              value: "copy",
-                                              child: Row(
+                                            10.width,
+                                            SizedBox(
+                                              width:140,
+                                              child: Obx(()=>editIndex.value==index?
+                                              SizedBox(
+                                                width:140,
+                                                child: TextField(
+                                                  focusNode: nameFocusList[editIndex.value],
+                                                  controller: controllers.emailMessageCtr,
+                                                  decoration: InputDecoration(
+                                                    border: UnderlineInputBorder(),
+                                                    contentPadding: const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 14,
+                                                    ),
+                                                  ),
+                                                  onEditingComplete: (){
+                                                    if (controllers.emailMessageCtr.text.trim().isEmpty) {
+                                                      utils.snackBar(
+                                                        context: context,
+                                                        msg: "Please enter lead category",
+                                                        color: Colors.red,
+                                                      );
+                                                      controllers.productCtr.reset();
+                                                      return;
+                                                    }else{
+                                                      addCategories(context,"update",data.id,index);
+                                                    }
+                                                  },
+                                                ),
+                                              ):Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Image.asset("assets/images/lead6.png"),10.width,
-                                                  Text("Duplicate"),
+                                                  CustomText(
+                                                    text: data.value,
+                                                    isCopy: false,
+                                                  ),
                                                 ],
-                                              ),
+                                              ),)
                                             ),
-                                            // PopupMenuItem(
-                                            //   value: "status",
-                                            //   child: Row(
-                                            //     children: [
-                                            //       Image.asset("assets/images/lead7.png"),10.width,
-                                            //       Text("Toggle Status"),
-                                            //     ],
-                                            //   ),
-                                            // ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ):0.height;
-                          },
-                        )),
-                        if(add.value==true)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomTextField(
-                                  width: MediaQuery.of(context).size.width*0.4,
-                                  text: "",isOptional:false,
-                                  hintText: "Category Name",
-                                  controller: controllers.emailMessageCtr,
-                                  onChanged: (value){
-                                    if (value.toString().isNotEmpty) {
-                                      String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
-                                      if (newValue != value) {
-                                        controllers.emailMessageCtr.value = controllers.emailMessageCtr.value.copyWith(
-                                          text: newValue,
-                                          selection: TextSelection.collapsed(offset: newValue.length),
-                                        );
-                                      }
-                                    }
-                                  },
-                                  keyboardType: TextInputType.name,
-                                  textInputAction: TextInputAction.next,
-                                  inputFormatters: constInputFormatters.textInput,
-                                ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      height:30,
-                                      child: CustomLoadingButton(callback: (){
-                                        if (controllers.emailMessageCtr.text.trim().isEmpty) {
-                                          utils.snackBar(
-                                            context: context,
-                                            msg: "Please enter lead category",
-                                            color: Colors.red,
-                                          );
-                                          controllers.productCtr.reset();
-                                          return;
-                                        }else{
-                                          addCategories(context,"add","",100);
-                                        }
-                                      }, isLoading: true, controller: controllers.productCtr,text: "Save",
-                                          backgroundColor: colorsConst.primary, radius: 5, width: 100),
-                                    ),10.width,
-                                    SizedBox(
-                                      width: 80,
-                                      height:30,
-                                      child: OutlinedButton(
-                                        onPressed: () {
-                                          add.value=false;
-                                        },
-                                        style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                                        child: const Text("Cancel", style: TextStyle(color: Colors.black)),
                                       ),
-                                    ),
-
-                                  ],
-                                )
-                              ],
-                            ),
+                                      SizedBox(
+                                        width: 100,
+                                        child: CustomText(
+                                          text: data.displayOrder.toString(),
+                                          isCopy: false,isBold: true,
+                                          colors: colorsConst.primary,
+                                        ),
+                                      ),
+                                      InkWell(
+                                        // onTap: (){
+                                        //   controllers.manageLead(context,data.id,data.active=="1"?2:1);
+                                        // },
+                                        child: Container(
+                                          decoration: customDecoration.baseBackgroundDecoration(
+                                              color: data.active.toString()=="1"?Colors.green.shade100:Colors.orangeAccent.shade100,radius: 10
+                                          ),
+                                          height: 20,
+                                          width: 100,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.circle,size: 8,color: data.active.toString()=="1"?Colors.green:Colors.orangeAccent.shade100,),5.width,
+                                              CustomText(
+                                                  text: data.active.toString()=="1"?"Active":"In Active",
+                                                  isCopy: false,
+                                                  colors: data.active.toString()=="1"?Colors.green:Colors.orangeAccent
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 100,
+                                        child: CustomText(
+                                          text: data.totalLead.toString(),
+                                          isCopy: false,isBold: true,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 100,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            InkWell(
+                                              onTap: (){
+                                                edit.value=true;
+                                                editIndex.value=index;
+                                                controllers.emailMessageCtr.text=data.value;
+                                                FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
+                                              },
+                                              child: Image.asset("assets/images/lead5.png"),
+                                            ),10.width,
+                                            PopupMenuButton(
+                                              icon: Padding(
+                                                padding: const EdgeInsets.all(2.0),
+                                                child: Image.asset("assets/images/lead8.png"),
+                                              ),
+                                              onSelected: (value) {
+                                                if (value == "copy") {
+                                                  add.value=true;
+                                                  controllers.emailMessageCtr.text="${data.value}(copy)";
+                                                } else if (value == "edit") {
+                                                  edit.value=true;
+                                                  editIndex.value=index;
+                                                  controllers.emailMessageCtr.text=data.value;
+                                                  FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
+                                                }else if (value == "status") {
+                                                }
+                                              },
+                                              itemBuilder: (context) => [
+                                                PopupMenuItem(
+                                                  value: "edit",
+                                                  child: Row(
+                                                    children: [
+                                                      Image.asset("assets/images/lead5.png"),10.width,
+                                                      const Text("Edit Name"),
+                                                    ],
+                                                  ),
+                                                ),
+                                                PopupMenuItem(
+                                                  value: "copy",
+                                                  child: Row(
+                                                    children: [
+                                                      Image.asset("assets/images/lead6.png"),10.width,
+                                                      Text("Duplicate"),
+                                                    ],
+                                                  ),
+                                                ),
+                                                // PopupMenuItem(
+                                                //   value: "status",
+                                                //   child: Row(
+                                                //     children: [
+                                                //       Image.asset("assets/images/lead7.png"),10.width,
+                                                //       Text("Toggle Status"),
+                                                //     ],
+                                                //   ),
+                                                // ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                      ],
-                    )
-                    :show.value=="Active"?
-                    controllers.leadCategoryList.isEmpty?
-                    CustomText(text: "\n\n\nNo Category Found", isCopy: false):
-                    ReorderableListView.builder(
-                      buildDefaultDragHandles: false, // default icon hide
-                      // shrinkWrap: true,
-                      itemCount: controllers.leadCategoryList.length,
-                      onReorder: (oldIndex, newIndex) async {
-                        if (newIndex > oldIndex) {
-                          newIndex -= 1;
-                        }
-
-                        final item =
-                        controllers.leadCategoryList.removeAt(oldIndex);
-                        controllers.leadCategoryList.insert(newIndex, item);
-
-                        // Only update display_order
-                        for (int i = 0; i < controllers.leadCategoryList.length; i++) {
-                          controllers.leadCategoryList[i].displayOrder = i+1;
-                        }
-                        isEdit.value = true;
-                        // print("${controllers.leadCategoryList}.....");
-                        controllers.update();
-                      },
-                      itemBuilder: (context, index) {
-                        var data = controllers.leadCategoryList[index];
-
-                        return Padding(
-                          key: ValueKey(data.id),
-                          padding: const EdgeInsets.all(10.0),
+                        ),
+                        if(add.value==true)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SizedBox(
-                                width: 200,
-                                child: Row(
-                                  children: [
-                                    ReorderableDragStartListener(
-                                      index: index,
-                                      child: const Icon(Icons.menu),
-                                    ),10.width,
-                                    CustomText(
-                                      text: data.value,
-                                      isCopy: false,
+                              CustomTextField(
+                                focusNode: name,
+                                width: MediaQuery.of(context).size.width*0.4,
+                                text: "",isOptional:false,
+                                hintText: "Category Name",
+                                controller: controllers.emailMessageCtr,
+                                onChanged: (value){
+                                  if (value.toString().isNotEmpty) {
+                                    String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                                    if (newValue != value) {
+                                      controllers.emailMessageCtr.value = controllers.emailMessageCtr.value.copyWith(
+                                        text: newValue,
+                                        selection: TextSelection.collapsed(offset: newValue.length),
+                                      );
+                                    }
+                                  }
+                                },
+                                keyboardType: TextInputType.name,
+                                textInputAction: TextInputAction.next,
+                                inputFormatters: constInputFormatters.textInput,
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    height:30,
+                                    child: CustomLoadingButton(callback: (){
+                                      if (controllers.emailMessageCtr.text.trim().isEmpty) {
+                                        utils.snackBar(
+                                          context: context,
+                                          msg: "Please enter lead category",
+                                          color: Colors.red,
+                                        );
+                                        controllers.productCtr.reset();
+                                        return;
+                                      }else{
+                                        addCategories(context,"add","",100);
+                                      }
+                                    }, isLoading: true, controller: controllers.productCtr,text: "Save",
+                                        backgroundColor: colorsConst.primary, radius: 5, width: 100),
+                                  ),10.width,
+                                  SizedBox(
+                                    width: 80,
+                                    height:30,
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        add.value=false;
+                                      },
+                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                                      child: const Text("Cancel", style: TextStyle(color: Colors.black)),
                                     ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 100,
-                                child: CustomText(
-                                  text: data.displayOrder.toString(),
-                                  isCopy: false,isBold: true,
-                                  colors: colorsConst.primary,
-                                ),
-                              ),
+                                  ),
+
+                                ],
+                              )
                             ],
                           ),
-                        );
-                      },
-                    ):0.width,
+                        ),
+                      ],
+                    )
                   ),
-                  10.height,
-                  if(show.value=="Active")
+                  5.height,
                   Row(
                     children: [
                       Icon(Icons.error,color: Colors.grey,size: 15,),5.width,
@@ -862,17 +806,19 @@ class _LeadCategoriesState extends State<LeadCategories> {
         apiService.getAllLeadCategories();
         if(ops=="add"){
           controllers.leadCategoryList.add(LeadStatusModel(
-            leadStatus: (responseData['data']['lead_status']).toString(),
-            value: controllers.emailMessageCtr.text.trim(),
-            id: (responseData['data']['id']).toString(),
-            active: (responseData['data']['active']).toString(),
-            totalLead: (responseData['data']['total_lead']).toString(),
-            icon1: "",
-            icon2: "",
-            displayOrder: int.parse(responseData['data']['display_order'].toString()),
-          ));
+              leadStatus: (responseData['data']['lead_status']).toString(),
+              value: controllers.emailMessageCtr.text.trim(),
+              id: (responseData['data']['id']).toString(),
+              active: (responseData['data']['active']).toString(),
+              totalLead: (responseData['data']['total_lead']).toString(),
+              icon1: "",
+              icon2: "",
+              displayOrder: int.parse(responseData['data']['display_order'].toString()),
+            ));
         }else{
-          controllers.leadCategoryList[index]=LeadStatusModel(
+          int index = controllers.leadCategoryList.indexWhere((e) => e.id == id);
+          if (index != -1) {
+            controllers.leadCategoryList[index] =LeadStatusModel(
               leadStatus: (responseData['data']['lead_status']).toString(),
               value: controllers.emailMessageCtr.text.trim(),
               id: (responseData['data']['id']).toString(),
@@ -881,9 +827,11 @@ class _LeadCategoriesState extends State<LeadCategories> {
               icon1: "",
               icon2: "",
               displayOrder: int.parse(responseData['data']['display_order'].toString()));
+          }
         }
-        show.value="All";
-        controllers.productCtr.reset();
+        // controllers.leadCategoryList
+        //     .sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+        // controllers.productCtr.reset();
       } else {
         apiService.errorDialog(context, request.body);
       }

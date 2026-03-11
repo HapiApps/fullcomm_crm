@@ -23,6 +23,7 @@ import '../screens/leads/prospects.dart';
 import '../screens/leads/qualified.dart';
 import '../screens/leads/suspects.dart';
 import '../screens/leads/target_leads.dart';
+import '../screens/products/product_page.dart';
 import '../screens/records/records.dart';
 import '../screens/reminder/reminder_page.dart';
 import '../screens/settings/general_settings.dart';
@@ -212,10 +213,13 @@ class SideBar extends StatelessWidget {
                         return AnimatedSwitcher(
                           duration: const Duration(milliseconds: 300),
                           child: isExpanded?
-                          subItem(context, controllers.isLeadsExpanded,controllers.isSettingsExpanded,controllers.leadCategoryList[index].value, int.parse(controllers.leadCategoryList[index].leadStatus),
-                            NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
-                            name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
-                            list2: controllers.leadCategoryList[index].list2, listIndex: index,),
+                          Container(
+                            width: 110,alignment: Alignment.centerLeft,
+                            child: subItem(context, controllers.isLeadsExpanded,controllers.isSettingsExpanded,controllers.leadCategoryList[index].value, int.parse(controllers.leadCategoryList[index].leadStatus),
+                              NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
+                              name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
+                              list2: controllers.leadCategoryList[index].list2, listIndex: index,),
+                            ),
                           ):0.height,
                         );
                       }),
@@ -249,7 +253,17 @@ class SideBar extends StatelessWidget {
               unSelectedImage: "assets/images/u_records.png",
               page: const Records(isReload: "true"),
             ),
-
+            SidebarItem(
+              context: context,
+              controllers: controllers,
+              colorsConst: colorsConst,
+              index: 105,
+              icon: Icons.production_quantity_limits_sharp,
+              selectedImage: "assets/images/s_dash.png",
+              unSelectedImage: "assets/images/u_dash.png",
+              label: constValue.products,
+              page: const ProductPage(),
+            ),
             SidebarItem(
               context: context,
               controllers: controllers,
@@ -680,6 +694,7 @@ Widget subItem(BuildContext context, RxBool select, RxBool unSelect, String titl
                 padding: const EdgeInsets.only(left: 12),
                 child: Text(
                   title,
+                  textAlign: TextAlign.start,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,

@@ -71,12 +71,16 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
         }
       }
       if (response.statusCode == 200 && result["message"] == "OK") {
-        apiService.getAllMeetingActivity("");
-        Navigator.pop(context);
-        utils.snackBar(context: context,msg: "Category ${active==1?'active':"in active"} successfully.",color: Colors.green);
+        utils.snackBar(context: context,msg: "Category ${active==1?'Active':"InActive"} successfully.",color: Colors.green);
+        apiService.getAllLeadCategories();
+        int index = controllers.leadCategoryList.indexWhere((e) => e.id == id);
+
+        if (index != -1) {
+          controllers.leadCategoryList.removeAt(index);
+        }
         controllers.productCtr.reset();
       } else {
-        apiService.errorDialog(Get.context!, result["message"] ?? "Failed to Category ${active==1?'active':"in active"}.");
+        apiService.errorDialog(Get.context!, result["message"] ?? "Failed to Category ${active==1?'Active':"InActive"}.");
         controllers.productCtr.reset();
       }
     } catch (e) {
@@ -1307,7 +1311,184 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
     return filteredLeads.sublist(start, end);
   }
+  List<NewLeadObj> changePage(RxList<NewLeadObj> list,RxList<NewLeadObj> list2){
+    final query = searchProspects.value.trim().toLowerCase();
+    final ratingFilter = selectedProspectTemperature.value;
+    final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
+    final now = DateTime.now();
 
+    final filteredLeads = list2.value.where((lead) {
+      final matchesQuery = (lead.firstname ?? '').toLowerCase().contains(query) ||
+          (lead.mobileNumber ?? '').toLowerCase().contains(query) ||
+          (lead.companyName ?? '').toLowerCase().contains(query) ||
+          (lead.email ?? '').toLowerCase().contains(query);
+
+      final matchesRating = ratingFilter.isEmpty ||
+          (lead.rating?.toLowerCase() == ratingFilter.toLowerCase());
+
+      bool matchesSort = true;
+      DateTime? updatedDate;
+
+      if (lead.prospectEnrollmentDate != null) {
+        try {
+          if (lead.updatedTs != null && lead.updatedTs != "null" && lead.updatedTs!.isNotEmpty) {
+            updatedDate = DateTime.tryParse(lead.updatedTs!);
+          } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
+            updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
+          }
+        } catch (_) {
+          updatedDate = null;
+          matchesSort = false;
+        }
+
+        if (updatedDate != null) {
+          final diff = now.difference(updatedDate).inDays;
+
+          switch (sortBy) {
+            case 'Today':
+              matchesSort = isSameDate(updatedDate, now);
+              break;
+            case 'Yesterday':
+              matchesSort = diff <= 1;
+              break;
+            case 'Last 7 Days':
+              matchesSort = diff <= 7;
+              break;
+            case 'Last 30 Days':
+              matchesSort = diff <= 30;
+              break;
+            case 'Custom Month':
+              if (selectedPMonth.value != null) {
+                matchesSort = updatedDate.year == selectedPMonth.value!.year &&
+                    updatedDate.month == selectedPMonth.value!.month;
+              } else {
+                matchesSort = true;
+              }
+              break;
+            case 'All':
+            default:
+              matchesSort = true;
+          }
+        } else {
+          matchesSort = false;
+        }
+      } else {
+        matchesSort = false;
+      }
+
+      // 🔹 Date Range Filter (selectedRange)
+      bool matchesDateRange = true;
+      if (selectedRange.value != null && updatedDate != null) {
+        final start = selectedRange.value!.start;
+        final end = selectedRange.value!.end;
+        matchesDateRange = updatedDate.isAfter(start.subtract(const Duration(days: 1))) &&
+            updatedDate.isBefore(end.add(const Duration(days: 1)));
+      }
+
+      return matchesQuery && matchesRating && matchesSort && matchesDateRange;
+    }).toList();
+
+    if (sortBy == 'Custom Month') {
+      DateTime parseDate(String? dateStr, String? fallback) {
+        if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+          dateStr = fallback;
+        }
+        DateTime? parsed;
+        try {
+          parsed = DateFormat('dd.MM.yyyy').tryParse(dateStr!);
+        } catch (_) {
+          parsed = DateTime.tryParse(dateStr!);
+        }
+        return parsed ?? DateTime(1900);
+      }
+
+      filteredLeads.sort((a, b) {
+        final dateA = parseDate(a.prospectEnrollmentDate, a.updatedTs);
+        final dateB = parseDate(b.prospectEnrollmentDate, b.updatedTs);
+        return dateB.compareTo(dateA); // reverse order
+      });
+    }
+
+    if (sortField.isNotEmpty) {
+      filteredLeads.sort((a, b) {
+        dynamic getFieldValue(NewLeadObj lead, String field) {
+          switch (field) {
+            case 'name':
+              var name = lead.firstname ?? '';
+              if (name.contains('||')) name = name.split('||')[0].trim();
+              return name.toLowerCase();
+
+            case 'company_name':
+              return (lead.companyName ?? '').toLowerCase();
+
+            case 'mobile_number':
+              return (lead.mobileNumber ?? '').toLowerCase();
+
+            case 'detailsOfServiceRequired':
+              return (lead.detailsOfServiceRequired ?? '').toLowerCase();
+
+            case 'source':
+              return (lead.source ?? '').toLowerCase();
+
+            case 'city':
+              return (lead.city ?? '').toLowerCase();
+
+            case 'status_update':
+              return (lead.statusUpdate ?? '').toLowerCase();
+
+            case 'updatedTs':
+            case 'prospect_enrollment_date':
+              DateTime parseDate(String? dateStr, String? fallback) {
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  dateStr = fallback;
+                }
+                if (dateStr == null || dateStr.isEmpty || dateStr == "null") {
+                  return DateTime(1900);
+                }
+                DateTime? parsed;
+                try {
+                  parsed = DateFormat('dd.MM.yyyy').parse(dateStr);
+                } catch (_) {
+                  parsed = DateTime.tryParse(dateStr);
+                }
+                return parsed ?? DateTime(1900);
+              }
+              return parseDate(lead.updatedTs, lead.prospectEnrollmentDate);
+            default:
+              final value = lead.asMap()[field];
+              return value.toString().toLowerCase();
+          }
+        }
+
+        final valA = getFieldValue(a, sortField.value);
+        final valB = getFieldValue(b, sortField.value);
+
+        if (valA is DateTime && valB is DateTime) {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        } else {
+          return sortOrderN.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        }
+      });
+    }
+
+    int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
+
+    if (start >= filteredLeads.length) {
+      return list.value=[];
+    }
+
+    int end = start + itemsProspectPerPage;
+    end = end > filteredLeads.length ? filteredLeads.length : end;
+    print("list");
+    print(filteredLeads.sublist(start, end));
+    return list.value=filteredLeads.sublist(start, end);
+    // return filteredLeads.sublist(start, end);
+  // }
+}
   List<NewLeadObj> get paginatedCustomerLeads {
     final query = searchCustomers.value.trim().toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;
@@ -2294,7 +2475,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
 
   int get totalPages => (allNewLeadFuture.length / itemsPerPage).ceil();
-  int get totalProspectPages => (allLeadFuture.length / itemsPerPage).ceil();
+  var  totalProspectPages =0.obs;
 
   final groupController = GroupButtonController();
   final RoundedLoadingButtonController btnController = RoundedLoadingButtonController();
@@ -2844,7 +3025,7 @@ var otp = "".obs;
   var isTemplate = false.obs,
       isAllSelected = false.obs,
       isLeadLoading = false.obs;
-
+  RxString radioSortBy = "All".obs;
   var idList = [].obs,dateList = [].obs,
       isMainPersonList = [].obs,
       isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,allLeadList=<NewLeadObj>[].obs,newLeadList=<NewLeadObj>[].obs,searchNewLeadList=<NewLeadObj>[].obs,
@@ -2884,6 +3065,7 @@ var otp = "".obs;
       light = false.obs,
       isImageLoaded = false.obs,
       isLead = true.obs,
+      isCrmData = true.obs,
       isCustomer = true.obs,
       isProduct = true.obs,
       isEmployee = true.obs;
@@ -3159,13 +3341,13 @@ var otp = "".obs;
   var selectPinCodeList = [];
   var selectStateList = [];
   var selectCityList = [];
-  Future correctionStatus(BuildContext context,String ops,String id) async {
+  Future correctionStatus(BuildContext context,String ops,String id,String value) async {
     try{
       print("statusCrt.text..........${statusCrt.text}");
       Map data = {
         "action": "correction_status",
         "ops": ops,
-        "value": statusController.text,
+        "value": value,
         "id": id,
         "cos_id": controllers.storage.read("cos_id")
       };
@@ -3183,23 +3365,25 @@ var otp = "".obs;
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return correctionStatus(context,ops,id);
+          return correctionStatus(context,ops,id,value);
         } else {
           controllers.setLogOut();
         }
       }
       if (request.statusCode == 200){
         Navigator.pop(context);
-        Navigator.pop(context);
         getCallStatus();
+        controllers.leadCtr.reset();
         controllers.productCtr.reset();
       } else {
         apiService.errorDialog(Get.context!,request.body);
         controllers.productCtr.reset();
+        controllers.leadCtr.reset();
       }
     }catch(e){
       apiService.errorDialog(Get.context!,e.toString());
       controllers.productCtr.reset();
+      controllers.leadCtr.reset();
     }
   }
   Future insertIndustries(BuildContext context) async {
@@ -3693,7 +3877,6 @@ var otp = "".obs;
         controllers.btnController.reset();
         Get.to(NewLeadPage(index: data.leadStatus ,
           name: data.value,list: data.list,list2: data.list2, listIndex: index,));
-        // apiService.getCustomLeads();
         // Navigator.pushReplacement(
         //   context,
           // MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,name: controllers.leadCategoryList[0].value)),

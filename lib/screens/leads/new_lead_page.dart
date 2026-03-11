@@ -93,6 +93,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
       searchBy();
+      controllers.totalProspectPages.value=(widget.list2.length / controllers.itemsPerPage).ceil();
     });
     Future.delayed(Duration.zero, () {
       apiService.changeList(widget.index);
@@ -197,7 +198,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                             builder: (context) {
                               return AlertDialog(
                                 content: CustomText(
-                                  text: "Are you sure delete this customers?",
+                                  text: "Are you sure delete this ${widget.name}?",
                                   size: 16,
                                   isCopy: false,
                                   isBold: true,
@@ -808,23 +809,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                         }).toList();
 
                         widget.list.value = suggestions;
-
-
-                        // final input = textEditingValue.text.trim().toLowerCase();
-                        // final inputNoSpace = input.replaceAll(RegExp(r'\s+'), '');
-                        //
-                        // if (input.isEmpty) return widget.items;
-                        //
-                        // return widget.items.where((item) {
-                        //   final label = widget.labelBuilder(item).toLowerCase();
-                        //   final labelNoSpace = label.replaceAll(RegExp(r'\s+'), '');
-                        //
-                        //   if (widget.filterFn != null) {
-                        //     return widget.filterFn!(input, item);
-                        //   }
-                        //
-                        //   return label.contains(input) || labelNoSpace.contains(inputNoSpace);
-                        // });
+                        print("onchanged called");
 
                         controllers.selectRadio(widget.list, widget.list2);
                       },
@@ -1185,7 +1170,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                     ),
 
                     widget.list.isNotEmpty? Obx(() {
-                      final totalPages = controllers.totalProspectPages == 0 ? 1 : controllers.totalProspectPages;
+                      int totalPages = controllers.totalProspectPages.value == 0 ? 1 : controllers.totalProspectPages.value;
                       final currentPage = controllers.currentProspectPage.value;
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -1193,11 +1178,15 @@ class _NewLeadPageState extends State<NewLeadPage> {
                           utils.paginationButton(Icons.chevron_left, currentPage > 1, () {
                             _focusNode.requestFocus();
                             controllers.currentProspectPage.value--;
+                            controllers.changePage(widget.list,widget.list2);
+                            print("controllers.currentProspectPage.value --- ${controllers.currentProspectPage.value}");
                           }),
                           ...utils.buildPagination(totalPages, currentPage),
                           utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
                             controllers.currentProspectPage.value++;
                             _focusNode.requestFocus();
+                            controllers.changePage(widget.list,widget.list2);
+                            print("controllers.currentProspectPage.value +++ ${controllers.currentProspectPage.value}");
                           }),
                         ],
                       );

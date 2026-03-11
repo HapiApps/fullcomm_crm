@@ -460,7 +460,6 @@ class ApiService {
         );
         controllers.selectedQualifiedSortBy.value="All";
         controllers.selectRadio(list,list2);
-        // apiService.getCustomLeads();
 
         list.sort((a, b) {
           DateTime dateA = DateTime.parse(a.updatedTs.toString());
@@ -583,6 +582,16 @@ class ApiService {
   }
   Future updateCategories(BuildContext context) async {
     try {
+      for (int i = 0; i < controllers.allLeadCategoryList.length; i++) {
+        controllers.allLeadCategoryList[i].displayOrder = i + 1;
+        int index = controllers.leadCategoryList.indexWhere(
+                (e) => e.id == controllers.allLeadCategoryList[i].id);
+
+        if (index != -1) {
+          controllers.leadCategoryList[index].displayOrder = i + 1;
+        }
+      }
+      controllers.leadCategoryList.sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
       Map data = {
         "action": "update_lead_details",
         "list": controllers.leadCategoryList
@@ -613,7 +622,7 @@ class ApiService {
         }
       }
       if (request.statusCode == 200) {
-        utils.snackBar(context: context, msg: "Category updated successfully", color: Colors.green);
+        utils.snackBar(context: context, msg: "Reorder successfully", color: Colors.green);
         controllers.productCtr.reset();
       } else {
         apiService.errorDialog(context, request.body);
@@ -1482,7 +1491,6 @@ class ApiService {
         // apiService.allNewLeadsDetails();
         // apiService.allGoodLeadsDetails();
         // apiService.allTargetLeadsDetails();
-        // apiService.getCustomLeads();
         getHeading();
         apiService.getLeadCategories();
         apiService.getCustomLeads();
@@ -2346,7 +2354,7 @@ class ApiService {
               name: data.value,
               list: data.list,
               list2: data.list2, listIndex: int.parse(status),
-            ),
+            ), preventDuplicates: false,
           );
         });
         controllers.productCtr.reset();
@@ -4009,7 +4017,7 @@ class ApiService {
   Map<String, int> getStatusCountMap() {
     final Map<String, int> map = {};
 
-    for (var item in controllers.callActivity) {
+    for (var item in remController.callFilteredList) {
       final status = item.callStatus.trim();
       if (status.isEmpty) continue;
 
@@ -4017,6 +4025,17 @@ class ApiService {
     }
     return map;
   }
+  // Map<String, int> getStatusCountMap() {
+  //   final Map<String, int> map = {};
+  //
+  //   for (var item in controllers.callActivity) {
+  //     final status = item.callStatus.trim();
+  //     if (status.isEmpty) continue;
+  //
+  //     map[status] = (map[status] ?? 0) + 1;
+  //   }
+  //   return map;
+  // }
   void mergeStatusWithCount() {
     final statusCountMap = getStatusCountMap();
     controllers.hCallStatusList.value = controllers.hCallStatusList.map((item) {
@@ -4031,7 +4050,6 @@ class ApiService {
   }
 //new
   Future getAllCallActivity(String cusId) async {
-    await controllers.getCallStatus();
     try {
       Map data = {
         "search_type": "records",
@@ -4059,17 +4077,17 @@ class ApiService {
         List response = json.decode(request.body);
         controllers.callActivity.clear();
         controllers.callActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
-        final incoming = controllers.callActivity.where((e) => e.callType.isNotEmpty && e.callType.trim() == "Incoming").toList();
-        final outgoing = controllers.callActivity
-            .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Outgoing")
-            .toList();
-        final missed = controllers.callActivity
-            .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Missed")
-            .toList();
-
-        controllers.allIncomingCalls.value = incoming.length.toString();
-        controllers.allOutgoingCalls.value = outgoing.length.toString();
-        controllers.allMissedCalls.value = missed.length.toString();
+        // final incoming = controllers.callActivity.where((e) => e.callType.isNotEmpty && e.callType.trim() == "Incoming").toList();
+        // final outgoing = controllers.callActivity
+        //     .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Outgoing")
+        //     .toList();
+        // final missed = controllers.callActivity
+        //     .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Missed")
+        //     .toList();
+        //
+        // controllers.allIncomingCalls.value = incoming.length.toString();
+        // controllers.allOutgoingCalls.value = outgoing.length.toString();
+        // controllers.allMissedCalls.value = missed.length.toString();
         controllers.allCalls.value = response.length.toString();
         mergeStatusWithCount();
         remController.filterAndSortCalls(
@@ -4825,7 +4843,8 @@ class ApiService {
 
   Future<void> getCustomLeads() async {
     debugPrint("getCustomLeads");
-    controllers.isLead.value = false;
+    controllers.isCrmData.value = false;
+    controllers.allLeadList.clear();
     final url = Uri.parse(scriptApi);
     try {
       final response = await http.post(
@@ -4855,7 +4874,6 @@ class ApiService {
       }
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
-        controllers.allLeadList.clear();
         // newLeadList.clear();
         controllers.allLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         // controllers.searchNewLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
@@ -4878,18 +4896,22 @@ class ApiService {
           print("Final List for ${controllers.leadCategoryList[i].leadStatus} : ${controllers.leadCategoryList[i].list}");
         }
         log("----------> ${controllers.leadCategoryList}");
-        controllers.isLead.value=true;
+        controllers.isCrmData.value=true;
       } else {
+        controllers.allLeadList.clear();
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
     } on SocketException {
-      controllers.isLead.value=true;
+      controllers.allLeadList.clear();
+      controllers.isCrmData.value=true;
       throw Exception('No internet connection');
     } on HttpException catch (e) {
-      controllers.isLead.value=true;
+      controllers.allLeadList.clear();
+      controllers.isCrmData.value=true;
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
-      controllers.isLead.value=true;
+      controllers.allLeadList.clear();
+      controllers.isCrmData.value=true;
       controllers.newLeadList.clear();
       throw Exception('Unexpected error: ${e.toString()}');
     }

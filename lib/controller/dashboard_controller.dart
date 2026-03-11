@@ -504,8 +504,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "role": controllers.storage.read("role"),
         "id": controllers.storage.read("id"),
         "action": "get_data",
-        "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
-        "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
+        "stDate": dashController.date1.value,
+        "enDate": dashController.date2.value,
+        // "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+        // "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
       };
 
       // log("Dashboard request dataaa: ${data.toString()}");
@@ -562,8 +564,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "role": controllers.storage.read("role"),
         "id": controllers.storage.read("id"),
         "action": "get_data",
-        "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
-        "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
+        "stDate": dashController.date1.value,
+        "enDate": dashController.date2.value,
+        // "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+        // "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
       };
 
       log("Dashboard request data: visit_status_report ${data.toString()}");

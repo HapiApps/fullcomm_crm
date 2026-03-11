@@ -150,3 +150,148 @@ class CustomTextField extends StatelessWidget {
     );
   }
 }
+
+class ShiftCustomTextField extends StatelessWidget {
+
+  final String text;
+  final String? hintText;
+  final double? height;
+  final double? width;
+  final TextEditingController controller;
+  final FocusNode? focusNode;
+  final ValueChanged<Object?>? onChanged;
+  final VoidCallback? onTap;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final TextCapitalization? textCapitalization;
+  final FormFieldValidator<String>? validator;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool? isIcon;
+  final bool isOptional;
+  final bool? isLogin;
+  final bool? isShadow;
+  final bool? readOnly;
+  final IconData? iconData;
+  final String? image;
+  final String? prefixText;
+  final String? errorText;
+  final VoidCallback? onPressed;
+  final VoidCallback? onEdit;
+  final ValueChanged<String>? onFieldSubmitted;
+  final bool autofocus;
+
+  const ShiftCustomTextField({
+    super.key,
+    required this.text,
+    this.height = 70,
+    this.width = 270,
+    required this.controller,
+    this.focusNode,
+    this.onChanged,
+    this.onTap,
+    this.keyboardType = TextInputType.text,
+    this.textInputAction = TextInputAction.next,
+    this.textCapitalization = TextCapitalization.words,
+    this.validator,
+    this.inputFormatters,
+    this.hintText,
+    this.isIcon,
+    this.iconData,
+    this.isShadow = false,
+    this.isLogin = false,
+    this.image,
+    this.onPressed,
+    this.prefixText,
+    this.onEdit,
+    this.errorText,
+    this.onFieldSubmitted,
+    this.autofocus = false,
+    this.isOptional = true, this.readOnly=false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+
+    final String safeHint = hintText ?? "";
+    final bool showOptional = isOptional;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+
+        safeHint.isEmpty
+            ? const SizedBox(height: 2)
+            : Row(
+          children: [
+            Icon(iconData,color: Colors.grey,size: 15,),5.width,
+            CustomText(
+              text: text,
+              colors: Colors.black,
+              size: 13,
+              isCopy: false,
+            ),
+
+            if (showOptional)
+              const CustomText(
+                text: "*",
+                colors: Colors.red,
+                size: 20,
+                isCopy: false,
+              ),
+          ],
+        ),
+
+        showOptional ? const SizedBox(height: 0) : const SizedBox(height: 5),
+
+        SizedBox(
+          width: width,
+          height: 40,
+
+          child: TextFormField(
+            readOnly: readOnly!,
+            key: ValueKey(text),
+
+            controller: controller,
+            focusNode: focusNode,
+
+            autofocus: autofocus, // ✅ SAFE
+
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 15,
+              fontFamily: "Lato",
+            ),
+
+            cursorColor: colorsConst.primary,
+
+            onChanged: onChanged,
+            onTap: onTap,
+
+            onFieldSubmitted: onFieldSubmitted,
+            onEditingComplete: onEdit,
+
+            inputFormatters: inputFormatters,
+
+            textCapitalization: textCapitalization!,
+            textInputAction: textInputAction,
+            keyboardType: keyboardType,
+
+            validator: validator,
+
+            decoration: customStyle.inputDecoration2(
+              text: safeHint,
+              image: image,
+              isLogin: isLogin,
+              errorText: errorText,
+              onPressed: onPressed,
+            ),
+          ),
+        ),
+        CustomText(text: errorText.toString(), isCopy: false,colors: Colors.red,),
+        safeHint.isEmpty
+            ? const SizedBox(height: 10)
+            : const SizedBox(height: 20),
+      ],
+    );
+  }
+}
