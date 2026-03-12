@@ -41,6 +41,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   var isUpdateLoading=false.obs;
   var sharingLocation="".obs;
   TextEditingController notesController=TextEditingController();
+
   Future<void> manageLead(BuildContext context,String id,int active) async {
     try {
       Map<String, dynamic> data = {

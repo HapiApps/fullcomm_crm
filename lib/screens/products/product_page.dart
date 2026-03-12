@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
@@ -17,6 +18,7 @@ import '../../components/custom_header_seaction.dart';
 import '../../components/custom_lead_tile.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_no_data.dart';
+import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/dynamic_table_header.dart';
 import '../../components/custom_text.dart';
@@ -76,6 +78,8 @@ class _ProductPageState extends State<ProductPage> {
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
+      productCtr.isSelectAll.value=false;
+      productCtr.idsList.value.clear();
     });
     // Future.delayed(Duration.zero, () {
     //   apiService.changeList(widget.index);
@@ -179,45 +183,6 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                         Row(
                           children: [
-                            // controllers.storage.read("role") != "See All Customer Records"
-                            //     ? const SizedBox.shrink()
-                            //     : CustomLoadingButton(
-                            //   callback: () {
-                            //     // if(widget.list.isEmpty){
-                            //     //   mobileUtils.snackBar(
-                            //     //       context: Get.context!,
-                            //     //       msg: "No data available to export",
-                            //     //       color: Colors.red);
-                            //     // }else{
-                            //     //   exportLeadsToExcel(widget.list, controllers.fields);
-                            //     // }
-                            //   },
-                            //   isLoading: false,
-                            //   height: 35,
-                            //   backgroundColor: Colors.white,
-                            //   radius: 2,
-                            //   width: 100,
-                            //   isImage: false,
-                            //   text: "Export",
-                            //   textColor: colorsConst.primary,
-                            // ),
-                            // 15.width,
-                            // ---- Import button ----
-                            // CustomLoadingButton(
-                            //   callback: () {
-                            //     utils.showImportDialogProduct(context);
-                            //   },
-                            //   isLoading: false,
-                            //   height: 35,
-                            //   backgroundColor: Colors.white,
-                            //   radius: 2,
-                            //   width: 100,
-                            //   isImage: false,
-                            //   text: "Import",
-                            //   textColor: colorsConst.primary,
-                            // ),
-                            // 15.width,
-                            // ---- Add Lead button ----
                             CustomLoadingButton(
                               callback: () async {
                                 Get.to( AddProduct());
@@ -235,6 +200,124 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                       ],
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomSearchTextField(
+                          controller: controllers.search,
+                          hintText: "Search Name",
+                          onChanged: (value) {
+                            controllers.searchText.value = value.toString().trim();
+                            // remController.filterAndSortMeetings(
+                            //   searchText: controllers.searchText.value.toLowerCase(),
+                            //   callType: controllers.selectMeetingType.value,
+                            //   sortField: controllers.sortFieldMeetingActivity.value,
+                            //   sortOrder: controllers.sortOrderMeetingActivity.value,
+                            // );
+                          },
+                        ),
+                        Obx(()=>productCtr.idsList.isNotEmpty?
+                        Row(
+                          children: [
+                            CustomText(text: "Selected count: ${productCtr.idsList.value.length}", isCopy: false),15.width,
+                            InkWell(
+                              focusColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              onTap: (){
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: CustomText(
+                                        text: "Are you sure delete this products?",
+                                        size: 16,
+                                        isBold: true,
+                                        isCopy: false,
+                                        colors: colorsConst.textColor,
+                                      ),
+                                      actions: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(color: colorsConst.primary),
+                                                  color: Colors.white),
+                                              width: 80,
+                                              height: 25,
+                                              child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    shape: const RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.zero,
+                                                    ),
+                                                    backgroundColor: Colors.white,
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: CustomText(
+                                                    text: "Cancel",
+                                                    isCopy: false,
+                                                    colors: colorsConst.primary,
+                                                    size: 14,
+                                                  )),
+                                            ),
+                                            10.width,
+                                            CustomLoadingButton(
+                                              callback: ()async{
+                                                productCtr.deleteProduct(context);
+                                              },
+                                              height: 35,
+                                              isLoading: true,
+                                              backgroundColor: colorsConst.primary,
+                                              radius: 2,
+                                              width: 80,
+                                              controller: controllers.productCtr,
+                                              isImage: false,
+                                              text: "Delete",
+                                              textColor: Colors.white,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  color: colorsConst.secondary,
+                                  borderRadius: BorderRadius.circular(4),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      spreadRadius: 1,
+                                      blurRadius: 5,
+                                    ),
+                                  ],
+                                ),
+                                child:  Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset("assets/images/action_delete.png"),
+                                    10.width,
+                                    CustomText(
+                                      text: "Delete",
+                                      colors: colorsConst.textColor,
+                                      size: 14,
+                                      isBold: true,
+                                      isCopy: false,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ):0.width)
+                      ],
+                    ),
                     Obx(() {
                       if (productCtr.products.isEmpty) {
                         return const Center(
@@ -250,13 +333,15 @@ class _ProductPageState extends State<ProductPage> {
                         child: Table(
                           border: TableBorder.all(color: Colors.grey.shade300),
                           columnWidths: {
-                            0: FixedColumnWidth(weWidth / 8),
-                            1: FixedColumnWidth(weWidth / 8),
+                            0: FixedColumnWidth(50),
+                            1: FixedColumnWidth(100),
                             2: FixedColumnWidth(weWidth / 8),
                             3: FixedColumnWidth(weWidth / 8),
-                            4: FixedColumnWidth(weWidth / 8),
-                            5: FixedColumnWidth(weWidth / 8),
-                            6: FixedColumnWidth(weWidth / 8),
+                            4: FixedColumnWidth(weWidth / 9),
+                            5: FixedColumnWidth(weWidth / 9),
+                            6: FixedColumnWidth(weWidth / 9),
+                            7: FixedColumnWidth(weWidth / 9),
+                            8: FixedColumnWidth(weWidth / 10),
                           },
                           children: [
 
@@ -270,6 +355,32 @@ class _ProductPageState extends State<ProductPage> {
                                 ),
                               ),
                               children: [
+                                Container(
+                                  height: 60, // 👈 heading height increase
+                                  alignment: Alignment.centerLeft,
+                                  child: Center(
+                                    child: Checkbox(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(5.0),
+                                        ),
+                                        side: MaterialStateBorderSide
+                                            .resolveWith(
+                                              (states) => BorderSide(
+                                              width: 1.0,
+                                              color:Colors.grey.shade100),
+                                        ),
+                                        hoverColor: Colors.transparent,
+                                        focusColor: Colors.transparent,
+                                        activeColor: colorsConst.third,
+                                        value:productCtr.isSelectAll.value,
+                                        onChanged: (value) {
+                                          productCtr.isSelectAll.value=!productCtr.isSelectAll.value;
+                                          productCtr.checkDelete();
+                                        }),
+                                  ),
+                                ),
+                                headerCell("Action"),
                                 headerCell("Title"),
                                 headerCell("Description"),
                                 headerCell("Availability"),
@@ -288,9 +399,112 @@ class _ProductPageState extends State<ProductPage> {
                                 decoration: BoxDecoration(
                                   color: index % 2 == 0
                                       ? Colors.white
-                                      : const Color(0xffF8FAFC), // alternate row color
+                                      : Colors.grey.shade100, // alternate row color
                                 ),
                                 children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Obx(()=>Checkbox(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(5.0),
+                                        ),
+                                        side: MaterialStateBorderSide
+                                            .resolveWith(
+                                              (states) => BorderSide(
+                                              width: 1.0,
+                                              color:Colors.grey.shade300),
+                                        ),
+                                        hoverColor: Colors.grey.shade300,
+                                        focusColor: Colors.grey.shade300,
+                                        activeColor: colorsConst.third,
+                                        value:e.isSelect.value,
+                                        onChanged: (value) {
+                                          e.isSelect.value=!e.isSelect.value;
+                                          if(e.isSelect.value==true){
+                                            productCtr.idsList.add(e.id);
+                                          }else{
+                                            productCtr.idsList.remove(e.id);
+                                            productCtr.isSelectAll.value=false;
+                                          }
+                                        })),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: Row(
+                                      children: [
+                                        IconButton(onPressed: (){
+                                          Get.to(UpdateProduct(data: e));
+                                        }, icon: SvgPicture.asset("assets/images/a_edit.svg",width: 16,height: 16)),
+                                        IconButton(onPressed: (){
+                                          productCtr.idsList.add(e.id);
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                content: CustomText(
+                                                  text: "Are you sure delete this product?",
+                                                  size: 16,
+                                                  isBold: true,
+                                                  isCopy: true,
+                                                  colors: colorsConst.textColor,
+                                                ),
+                                                actions: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(color: colorsConst.primary),
+                                                          color: Colors.white),
+                                                      width: 80,
+                                                      height: 25,
+                                                      child: ElevatedButton(
+                                                          style: ElevatedButton.styleFrom(
+                                                            shape: const RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.zero,
+                                                            ),
+                                                            backgroundColor: Colors.white,
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: CustomText(
+                                                            text: "Cancel",
+                                                            colors: colorsConst.primary,
+                                                            size: 14,
+                                                            isCopy: false,
+                                                          )),
+                                                    ),
+                                                    10.width,
+                                                    CustomLoadingButton(
+                                                      callback: (){
+                                                          productCtr.deleteProduct(context);
+                                                      },
+                                                      height: 35,
+                                                      isLoading: true,
+                                                      backgroundColor: colorsConst.primary,
+                                                      radius: 2,
+                                                      width: 80,
+                                                      controller: productCtr.saveCtr,
+                                                      isImage: false,
+                                                      text: "Delete",
+                                                      textColor: Colors.white,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                              );
+                                            },
+                                          );
+                                        }, icon: SvgPicture.asset(
+                                          "assets/images/a_delete.svg",
+                                          width: 16,
+                                          height: 16,
+                                        ))
+                                      ],
+                                    )
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.all(8),
                                     child: CustomText(
