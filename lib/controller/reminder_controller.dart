@@ -837,21 +837,63 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     });
     reminderFilteredList.assignAll(filteredList);
   }
+  // DateTime _parseReminderDate(String dateStr, DateFormat fallbackFormatter) {
+  //   try {
+  //     print("dateStr");
+  //     print(dateStr);
+  //     final cleaned = dateStr.trim().replaceAll(RegExp(r'[^0-9:\-\sT]'), '');
+  //     // Try direct parse first (handles yyyy-MM-dd HH:mm:ss and ISO)
+  //     final parsed = DateTime.tryParse(cleaned);
+  //     if (parsed != null) {
+  //       return parsed;
+  //     }
+  //     final parsed2 = fallbackFormatter.parse(cleaned);
+  //     return parsed2;
+  //   } catch (e) {
+  //     return DateTime(1900);
+  //   }
+  // }
   DateTime _parseReminderDate(String dateStr, DateFormat fallbackFormatter) {
     try {
-      final cleaned = dateStr.trim().replaceAll(RegExp(r'[^0-9:\-\sT]'), '');
-      // Try direct parse first (handles yyyy-MM-dd HH:mm:ss and ISO)
+      print("dateStr");
+      print(dateStr);
+
+      final cleaned = dateStr.trim();
+
+      // 1️⃣ Try direct parse (ISO formats)
       final parsed = DateTime.tryParse(cleaned);
       if (parsed != null) {
         return parsed;
       }
-      final parsed2 = fallbackFormatter.parse(cleaned);
-      return parsed2;
+
+      // 2️⃣ Try fallback formatter
+      try {
+        return fallbackFormatter.parse(cleaned);
+      } catch (_) {}
+
+      // 3️⃣ Try common formats
+      final formats = [
+        DateFormat("dd.MM.yyyy h:mm a"),
+        DateFormat("dd.MM.yyyy hh:mm a"),
+        DateFormat("dd-MM-yyyy h:mm a"),
+        DateFormat("dd-MM-yyyy hh:mm a"),
+        DateFormat("yyyy-MM-dd HH:mm:ss"),
+        DateFormat("yyyy-MM-dd HH:mm"),
+      ];
+
+      for (var f in formats) {
+        try {
+          return f.parse(cleaned);
+        } catch (_) {}
+      }
+
+      // 4️⃣ Last fallback
+      return DateTime(1900);
     } catch (e) {
+      print("Date parse error: $e");
       return DateTime(1900);
     }
   }
-
 
 
   // void sortMails() {

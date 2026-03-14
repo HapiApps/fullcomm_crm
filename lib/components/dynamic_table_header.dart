@@ -108,7 +108,7 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
       final Map<int, TableColumnWidth> columnWidths = {};
       int i = 0;
       for (var h in headings.skip(1)) {
-        columnWidths[i++] = FixedColumnWidth(tableController.colWidth[h]!);
+        columnWidths[i++] = FixedColumnWidth(tableController.colWidth[h] ?? 150);
       }
 
       return Table(
@@ -131,11 +131,12 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
 
   Widget _buildHeaderCell(String h) {
     final lower = h.toLowerCase();
-    final oldValue = lower == "added date" ||
-        lower == "prospect enrollment date" ||
-        lower == "date"
-        ? "Added Date"
-        : h;
+    final oldValue = h;
+    // final oldValue = lower == "added date" ||
+    //     lower == "prospect enrollment date" ||
+    //     lower == "date"
+    //     ? "Added Date"
+    //     : h;
 
     final TextEditingController _controller =
     TextEditingController(text: oldValue);
@@ -180,8 +181,20 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
                     isDense: true,
                     contentPadding: EdgeInsets.zero,
                   ),
-                  onEditingComplete: () {
+                  onEditingComplete: () async {
                     final newValue = _controller.text;
+                    for(var i=0;i<tableController.headingFields.length;i++){
+                      print("tableController.headingFields[i] ${tableController.headingFields[i]}");
+                      print("oldValue ${oldValue}");
+                      print("newValue ${newValue}");
+                      if (tableController.headingFields[i].trim().toLowerCase() ==oldValue.trim().toLowerCase()) {
+                        tableController.headingFields[i] = newValue;
+                      }
+                    }
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
+                    print("tableController.headingFields");
+                    print(tableController.headingFields);
 
                     tableController.updateColumnAPI(
                       context,

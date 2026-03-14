@@ -114,7 +114,6 @@ class FilterSection extends StatelessWidget {
                 10.width,
                 SizedBox(
                   width: 350,
-                  // child: KeyboardDropdownField<NewLeadObj>(
                   child: KeyboardDropdownField<AllCustomersObj>(
                     items: controllers.customers,
                     borderRadius: 5,
@@ -211,6 +210,7 @@ class FilterSection extends StatelessWidget {
                       controllers.clearSelectedCustomer();
                     },
                   ),
+
                 ),
               ],
             ),

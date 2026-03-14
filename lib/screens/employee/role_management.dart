@@ -604,11 +604,16 @@ class _RoleManagementState extends State<RoleManagement> {
                           ),
                         ),
                         onPressed: (){
-                          if(controllers.planType.value=="Business Essential"&&(settingsController.roleList.length ?? 0) < 2){
+                          print(">>>>>");
+                          print(controllers.planType.value);
+                          print(settingsController.roleList);
+                          String plan = controllers.planType.value.toLowerCase();
+
+                          if(plan=="business essential"&&(settingsController.roleList.length ?? 0) < 2){
                             _showAddRoleDialog();
-                          }else if(controllers.planType.value=="Business Fit"&&(settingsController.roleList.length ?? 0) < 5){
+                          }else if(plan=="business fit"&&(settingsController.roleList.length ?? 0) < 5){
                             _showAddRoleDialog();
-                          }else if(controllers.planType.value=="Business Pro"||controllers.planType.value=="Enterprise"){
+                          }else if(plan=="business pro"||plan=="enterprise"){
                             _showAddRoleDialog();
                           }else{
                             utils.snackBar(

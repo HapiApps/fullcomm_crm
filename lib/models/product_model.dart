@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 class ProductModel {
   int? id;
   String? title;
@@ -9,6 +11,7 @@ class ProductModel {
   String? imageLink;
   String? brand;
   String? updatedTs;
+  RxBool isSelect;
 
   ProductModel({
     this.id,
@@ -21,7 +24,8 @@ class ProductModel {
     this.imageLink,
     this.brand,
     this.updatedTs,
-  });
+    RxBool? isSelect,
+  }) : isSelect = isSelect ?? false.obs;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
@@ -30,11 +34,12 @@ class ProductModel {
       description: json['description'],
       availability: json['availability'],
       condition: json['condition'],
-      price: double.parse(json['price'].toString()),
+      price: double.tryParse(json['price'].toString()),
       link: json['link'],
       imageLink: json['image_link'],
       brand: json['brand'],
       updatedTs: json['updated_ts'],
+      isSelect: false.obs,
     );
   }
 
@@ -50,6 +55,7 @@ class ProductModel {
       "image_link": imageLink,
       "brand": brand,
       "updated_ts": updatedTs,
+      "isSelect": isSelect.value,
     };
   }
 }

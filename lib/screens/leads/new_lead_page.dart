@@ -862,9 +862,10 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                   },
                                   onSortDate: () {
                                     setState(() {
-                                      controllers.sortField.value = 'date';
+                                      controllers.sortField.value = 'name';
                                       controllers.sortOrder.value =
                                       controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
+                                      controllers.changePage(widget.list,widget.list2);
                                       // if(controllers.sortOrder.value=="asc"){
                                       //   widget.list.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
                                       //   widget.list2.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));

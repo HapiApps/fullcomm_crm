@@ -119,6 +119,141 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       print("FLUTTER ERROR => $e");
     }
   }
+  Future<void> updateProduct(context,String id,String imagePath) async {
+    try {
+
+      var request = http.MultipartRequest(
+        "POST",
+        Uri.parse(scriptApi),
+      );
+
+      // ✅ HEADER ADD
+      request.headers.addAll({
+        'X-API-TOKEN': "${TokenStorage().readToken()}",
+        'Content-Type': 'application/json',
+      });
+
+      request.fields['action'] = "update_product";
+      request.fields['id'] = id;
+      request.fields['title'] = title.text.trim();
+      request.fields['description'] = description.text.trim();
+      request.fields['availability'] = availability.text.trim();
+      request.fields['condition'] = condition.text.trim();
+      request.fields['price'] = price.text.trim();
+      request.fields['brand'] = brand.text.trim();
+      request.fields['image_path'] = imagePath;
+      request.fields['created_by'] = controllers.storage.read("id").toString();
+      request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
+
+      if (selectedFile.value != null) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            "image",
+            selectedFile.value!.bytes!,
+            filename: selectedFile.value!.name,
+          ),
+        );
+      }
+
+      // SEND
+      var response = await request.send();
+      var responseData = await http.Response.fromStream(response);
+
+      print("STATUS CODE: ${response.statusCode}");
+      print("RAW RESPONSE: ${responseData.body}");
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return updateProduct(context,id,imagePath);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      final decoded = jsonDecode(responseData.body);
+
+      if (response.statusCode == 200 && decoded["status"] == true) {
+        utils.snackBar(context: context, msg: "Product updated successfully", color: Colors.green);
+        productCtr.saveCtr.reset();
+        getProducts();
+        Navigator.pop(context);
+      } else {
+        utils.snackBar(context: context, msg: "Failed", color: Colors.red);
+        productCtr.saveCtr.reset();
+        print("API Error: ${decoded["message"]}");
+      }
+      saveCtr.reset();
+    } catch (e) {
+      utils.snackBar(context: context, msg: "Failed", color: Colors.red);
+      productCtr.saveCtr.reset();
+      saveCtr.reset();
+      print("FLUTTER ERROR => $e");
+    }
+  }
+  Future<void> deleteProduct(context) async {
+    try {
+
+      Map<String, dynamic> data = {
+        "created_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "delete_product",
+        "id": idsList.value,
+      };
+      print("Request: ${jsonEncode(data)}");
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(data),
+      );
+
+
+      print("STATUS CODE: ${response.statusCode}");
+      print("RAW RESPONSE: ${response.body}");
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return deleteProduct(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      final decoded = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && decoded["status"] == true) {
+        idsList.value.clear();
+        utils.snackBar(context: context, msg: "Product deleted successfully", color: Colors.green);
+        productCtr.saveCtr.reset();
+        getProducts();
+        Navigator.pop(context);
+      } else {
+        utils.snackBar(context: context, msg: "Failed", color: Colors.red);
+        productCtr.saveCtr.reset();
+        print("API Error: ${decoded["message"]}");
+      }
+      saveCtr.reset();
+    } catch (e) {
+      utils.snackBar(context: context, msg: "Failed", color: Colors.red);
+      productCtr.saveCtr.reset();
+      saveCtr.reset();
+      print("FLUTTER ERROR => $e");
+    }
+  }
+var idsList=[].obs;
+var isSelectAll=false.obs;
+  void checkDelete() {
+    for (var product in products) {
+      if(isSelectAll.value==true ){
+        product.isSelect.value = isSelectAll.value;
+        idsList.add(product.id);
+      }else{
+        product.isSelect.value = isSelectAll.value;
+        idsList.clear();
+      }
+    }
+  }
+
  RxList<ProductModel> products=<ProductModel>[].obs;
 
   Future<List<ProductModel>> getProducts() async {

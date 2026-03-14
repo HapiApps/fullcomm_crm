@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/controller/product_controller.dart';
 import 'package:fullcomm_crm/screens/settings/lead_categories.dart';
@@ -94,6 +96,9 @@ class _DashboardPageState extends State<DashboardPage>
     _focusNode = FocusNode();
     dashController.getToken();
     apiService.getHeading();
+    Timer.periodic(const Duration(seconds: 30), (timer) {
+      dashController.refreshTime.value++;
+    });
     if(controllers.leadCategoryList.isEmpty){
       apiService.getLeadCategories();
     }
@@ -542,7 +547,7 @@ class _DashboardPageState extends State<DashboardPage>
                     text: version,
                     size: 11,
                     isCopy: false,
-                    colors: Colors.black,
+                    colors: Colors.white,
                     isBold: true,
                   ),
                 ],
@@ -560,26 +565,48 @@ class _DashboardPageState extends State<DashboardPage>
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          GestureDetector(
-                              onTap: () async {
-                                final pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: selectedDate,
-                                  firstDate: DateTime(2020),
-                                  lastDate: DateTime(2030),
-                                );
+                          Obx(() {
 
-                                if (pickedDate != null) {
-                                  setState(() {
-                                    selectedDate = pickedDate;
-                                  });
-                                }
-                              },
-                              child: Obx(()=>CustomText(text:"Last Sync · ${DateTime.now().difference(DateTime.parse(dashController.timestamp.value)).inMinutes} Mins",size: 12.5,
-                                  isBold:true,isCopy:true,colors:Colors.white))
-                          ),
+                            if (dashController.timestamp.value.isEmpty) {
+                              return const CustomText(
+                                isCopy: false,
+                                text: "Last Sync · --",
+                                size: 12.5,
+                                isBold: true,
+                                colors: Colors.white,
+                              );
+                            }
+
+                            final diff = DateTime.now()
+                                .difference(DateTime.parse(dashController.timestamp.value));
+
+                            String timeText = "";
+
+                            if (diff.inSeconds < 60) {
+                              timeText = "Just now";
+                            }
+                            else if (diff.inMinutes < 60) {
+                              timeText = "${diff.inMinutes} mins ago";
+                            }
+                            else if (diff.inHours < 24) {
+                              timeText = "${diff.inHours} hrs ago";
+                            }
+                            else {
+                              timeText = "${diff.inDays} days ago";
+                            }
+
+                            return CustomText(
+                              text: "Last Sync · $timeText",
+                              size: 12.5,
+                              isBold: true,
+                              isCopy: true,
+                              colors: Colors.white,
+                            );
+                          }),
                           6.height,
-                          Image.asset(DashboardAssets.sync),
+                          CircleAvatar(
+                            backgroundColor: Colors.white,radius: 8,
+                              child: Icon(Icons.sync,color: colorsConst.primary,size: 13,)),
                         ],
                       ),
                     ],
@@ -721,7 +748,7 @@ class _DashboardPageState extends State<DashboardPage>
                                   controllers.oldIndex.value = controllers.selectedIndex.value;
                                   controllers.selectedIndex.value = 100;
                                 },
-                                title: "New Customers",
+                                title: "Leads",
                                 numericValue: int.parse(dashController.totalSuspects.value.toString()),
                                 maxValue: maxValue,
                                 iconPath: DashboardAssets.people,
@@ -1432,14 +1459,13 @@ class _DashboardPageState extends State<DashboardPage>
             20.height,
 
             // ================= FUNNEL ITEMS =================
-            for (int i = 0; i < dashController.leadReport.length; i++)
-              if(dashController.leadReport[i]["customer_count"].toString()!="0")
+            for (int i = 0; i < controllers.leadCategoryList.length; i++)
               _animatedLeadItem(
                 index: 0,
                 child: _leadItem(
-                  title: dashController.leadReport[i]["category"] ?? "",
+                  title: controllers.leadCategoryList[i].value,
                   image: DashboardAssets.suspect,
-                  count: dashController.leadReport[i]["customer_count"].toString(),
+                  count: controllers.leadCategoryList[i].list.length.toString(),
                   width: 180,
                 ),
               ),

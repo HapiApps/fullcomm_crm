@@ -1492,7 +1492,7 @@ class ApiService {
         // apiService.allGoodLeadsDetails();
         // apiService.allTargetLeadsDetails();
         getHeading();
-        apiService.getLeadCategories();
+        // apiService.getLeadCategories();
         apiService.getCustomLeads();
         Get.to(DashboardPage());
         prospectsList.clear();
@@ -2085,6 +2085,18 @@ class ApiService {
 
               createdTs: DateTime.now().toString(),
               updatedTs: DateTime.now().toString(),
+            ));
+            controllers.customers.add(AllCustomersObj(
+              id:customerId.toString(),
+              name: controllers.leadNameCrt[0].text.trim(),
+              companyName: controllers.leadCoNameCrt.text.trim(),
+              phoneNo: controllers.numberList
+                  .map((e) => e.text.trim())
+                  .where((e) => e.isNotEmpty)
+                  .join("||"),
+              email: controllers.leadEmailCrt[0].text.trim(), leadStatus: controllers.leadCategoryList[0].id,
+              category: controllers.leadCategoryList[0].value,
+
             ));
             index=i;
             controllers.leadCategoryList.refresh();
@@ -4877,14 +4889,7 @@ class ApiService {
         // newLeadList.clear();
         controllers.allLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         // controllers.searchNewLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
-        // for (int i = 0; i < controllers.newLeadsLength.value; i++) {
-        //   controllers.isLeadsList.add({
-        //     "isSelect": false,
-        //     "lead_id": data[i]["user_id"].toString(),
-        //     "rating": data[i]["rating"].toString(),
-        //     "mail_id": data[i]["email_id"].toString(),
-        //   });
-        // }
+        for (var e in controllers.leadCategoryList) { e.list.clear(); e.list2.clear(); }
         for (int i = 0; i < controllers.leadCategoryList.length; i++) {
           for (int j = 0; j < controllers.allLeadList.length; j++) {
             if (controllers.leadCategoryList[i].leadStatus == controllers.allLeadList[j].leadStatus) {

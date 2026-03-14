@@ -74,22 +74,24 @@ class CustomerStatusCard extends StatelessWidget {
           16.height,
 
           Expanded(
-            child: Column(
-              children: items.asMap().entries.map((entry) {
-                final index = entry.key;
-                final item = entry.value;
+            child: SingleChildScrollView(
+              child: Column(
+                children: items.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final item = entry.value;
 
-                final bool isPurple = index % 2 == 0;
+                  final bool isPurple = index % 2 == 0;
 
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: _StatusRow(
-                    item: item,
-                    fillColor: isPurple ? colorA : colorB,
-                    bgColor: isPurple ? lightPurple : lightBlue,
-                  ),
-                );
-              }).toList(),
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: _StatusRow(
+                      item: item,
+                      fillColor: isPurple ? colorA : colorB,
+                      bgColor: isPurple ? lightPurple : lightBlue,
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ),
         ],
@@ -111,6 +113,7 @@ class _StatusRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
 
         /// Label

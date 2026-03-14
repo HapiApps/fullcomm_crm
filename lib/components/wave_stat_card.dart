@@ -207,10 +207,12 @@ class _WaveStatCardState extends State<WaveStatCard>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
                           widget.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -219,18 +221,20 @@ class _WaveStatCardState extends State<WaveStatCard>
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                      8.width,
-                      Image.asset(
-                        widget.iconPath,
-                        width: 20,
-                        height: 20,
-                      ),
-                    ],
+                        Image.asset(
+                          widget.iconPath,
+                          width: 20,
+                          height: 20,
+                        ),
+                      ],
+                    ),
                   ),
                   5.height,
-                  CustomText(
-                    text:widget.numericValue.toString(),size: 20,colors: widget.valueColor,isCopy: false,isBold: true,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                    child: CustomText(
+                      text:widget.numericValue.toString(),size: 20,colors: widget.valueColor,isCopy: false,isBold: true,
+                    ),
                   ),
                 ],
               ),

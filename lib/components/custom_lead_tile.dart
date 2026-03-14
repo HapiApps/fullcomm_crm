@@ -435,39 +435,44 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                           alignment: Alignment.centerLeft,
                           padding:
                           const EdgeInsets.only(left: 6, right: 5, bottom: 5),
-                          child: TextField(
-                            readOnly: true,
-                            controller: controller,
-                            cursorColor: colorsConst.textColor,
-                            style: TextStyle(
-                              color: colorsConst.textColor,
-                              fontSize: 14,
-                              fontFamily: "Lato",
-                            ),
-                            decoration: const InputDecoration(border: InputBorder.none),
-                            onSubmitted: (value) async {
-                              var send="";
-                              for (var i=0;i<controllers.defaultFields.length;i++){
-                                if(column==controllers.defaultFields[i]["system_field"]){
-                                  send=controllers.defaultFields[i]["system_field"].toString();
-                                  break;
-                                }
-                              }
-                                  if(controller!.text.isNotEmpty){
-                                    // apiService.updateInstantChanges(
-                                    //   context,
-                                    //   leadId: widget.id.toString(),
-                                    //   column: column.toString(),
-                                    //   value:
-                                    //   controller.text,
-                                    // );
-                                    updateLeadAPI(context);
-                                  }else{
-                                    utils.snackBar(context: context, msg: "Enter a value", color: Colors.red);
-                                  }
-
-                            },
-                          ),
+                          // child: TextField(
+                          //   readOnly: true,
+                          //   controller: controller,
+                          //   cursorColor: colorsConst.textColor,
+                          //   style: TextStyle(
+                          //     color: colorsConst.textColor,
+                          //     fontSize: 14,
+                          //     fontFamily: "Lato",
+                          //   ),
+                          //   decoration: const InputDecoration(
+                          //     filled: true,
+                          //       fillColor: Colors.red,
+                          //       border: InputBorder.none
+                          //   ),
+                          //   onSubmitted: (value) async {
+                          //     var send="";
+                          //     for (var i=0;i<controllers.defaultFields.length;i++){
+                          //       if(column==controllers.defaultFields[i]["system_field"]){
+                          //         send=controllers.defaultFields[i]["system_field"].toString();
+                          //         break;
+                          //       }
+                          //     }
+                          //         if(controller!.text.isNotEmpty){
+                          //           // apiService.updateInstantChanges(
+                          //           //   context,
+                          //           //   leadId: widget.id.toString(),
+                          //           //   column: column.toString(),
+                          //           //   value:
+                          //           //   controller.text,
+                          //           // );
+                          //           updateLeadAPI(context);
+                          //         }else{
+                          //           utils.snackBar(context: context, msg: "Enter a value", color: Colors.red);
+                          //         }
+                          //
+                          //   },
+                          // ),
+                          child: CustomText(text: controller?.text ?? "", isCopy: false),
                         ),
                       );
                     }

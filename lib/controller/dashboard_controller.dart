@@ -342,7 +342,8 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
       throw Exception('Failed to load album');
     }
   }
-  var timestamp="${DateTime.now()}".obs;
+  RxString timestamp = "".obs;
+  RxInt refreshTime = 0.obs;
 
   Future getDashboardReport() async {
     final range = dashController.selectedRange.value;
@@ -520,6 +521,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
+      print(data);
       print("Dashboard report:2 ${request.body}");
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();

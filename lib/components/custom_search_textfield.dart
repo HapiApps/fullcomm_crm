@@ -60,7 +60,7 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
                 Color(0xff526B81),
                 BlendMode.srcIn,
               ),)),
-          suffixIcon: widget.controller.text.isEmpty?0.height:IconButton(
+          suffixIcon: widget.controller.text.isEmpty?const SizedBox():IconButton(
             focusColor: Colors.transparent,
               hoverColor: Colors.transparent,
               onPressed: () {

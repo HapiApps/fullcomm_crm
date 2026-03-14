@@ -136,18 +136,77 @@ class TableController extends GetxController {
   //     print("Set Heading fields error: $e");
   //   }
   // }
+  /// March 14
+  // void setHeading(List<dynamic> data) async {
+  //   print("Set Heading 1");
+  //
+  //   try {
+  //     headingFields.value = data
+  //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
+  //         .toList();
+  //
+  //     print("Heading Fields: $headingFields");
+  //
+  //     final prefs = await SharedPreferences.getInstance();
+  //     final saved = prefs.getString('tableHeadings');
+  //
+  //     if (saved != null) {
+  //       final decoded = jsonDecode(saved);
+  //
+  //       List<String> savedHeadings = [];
+  //
+  //       if (decoded is List) {
+  //         savedHeadings = decoded.cast<String>();
+  //       }
+  //
+  //       print("Saved Headings: $savedHeadings");
+  //
+  //       // saved list base
+  //       final combined = List<String>.from(savedHeadings);
+  //
+  //       // new headings மட்டும் add
+  //       for (var h in headingFields) {
+  //         if (!combined.contains(h)) {
+  //           combined.add(h);
+  //         }
+  //       }
+  //       for (var h in tableHeadings) {
+  //         colWidth[h] = 150;
+  //       }
+  //       tableHeadings.value = combined;
+  //
+  //     } else {
+  //       tableHeadings.value = List<String>.from(headingFields);
+  //     }
+  //
+  //     print("Final Headings: ${tableHeadings.value}");
+  //
+  //     await prefs.setString(
+  //         'tableHeadings', jsonEncode(tableHeadings.value));
+  //
+  //   } catch (e) {
+  //     print("Set Heading fields error: $e");
+  //   }
+  // }
   void setHeading(List<dynamic> data) async {
     print("Set Heading 1");
 
     try {
+      // normalize function
+      String normalize(String s) => s.trim().toLowerCase();
+
+      // API headings
       headingFields.value = data
-          .map((e) => controllers.formatHeading(e['user_heading'].toString()))
+          .map((e) => controllers
+          .formatHeading(e['user_heading'].toString().trim()))
           .toList();
 
       print("Heading Fields: $headingFields");
 
       final prefs = await SharedPreferences.getInstance();
       final saved = prefs.getString('tableHeadings');
+
+      List<String> combined = [];
 
       if (saved != null) {
         final decoded = jsonDecode(saved);
@@ -160,28 +219,43 @@ class TableController extends GetxController {
 
         print("Saved Headings: $savedHeadings");
 
-        // saved list base
-        final combined = List<String>.from(savedHeadings);
+        combined = List<String>.from(savedHeadings);
 
-        // new headings மட்டும் add
+        // add new headings (case-insensitive check)
         for (var h in headingFields) {
-          if (!combined.contains(h)) {
+          if (!combined.any((e) => normalize(e) == normalize(h))) {
             combined.add(h);
           }
         }
-        for (var h in tableHeadings) {
-          colWidth[h] = 150;
-        }
-        tableHeadings.value = combined;
 
       } else {
-        tableHeadings.value = List<String>.from(headingFields);
+        combined = List<String>.from(headingFields);
+      }
+
+      // remove duplicates safely
+      final uniqueHeadings = <String>[];
+      final seen = <String>{};
+
+      for (var h in combined) {
+        if (!seen.contains(normalize(h))) {
+          seen.add(normalize(h));
+          uniqueHeadings.add(h);
+        }
+      }
+
+      tableHeadings.value = uniqueHeadings;
+
+      // set column width
+      for (var h in tableHeadings) {
+        colWidth[h] = colWidth[h] ?? 150;
       }
 
       print("Final Headings: ${tableHeadings.value}");
 
       await prefs.setString(
-          'tableHeadings', jsonEncode(tableHeadings.value));
+        'tableHeadings',
+        jsonEncode(tableHeadings.value),
+      );
 
     } catch (e) {
       print("Set Heading fields error: $e");
@@ -369,7 +443,9 @@ class TableController extends GetxController {
         apiService.errorDialog(Get.context!,request.body);
         controllers.productCtr.reset();
       }
+      tableController.isLoading.value=false;
     }catch(e){
+      tableController.isLoading.value=false;
       apiService.errorDialog(Get.context!,e.toString());
       controllers.productCtr.reset();
     }
@@ -414,6 +490,7 @@ class TableController extends GetxController {
         controllers.productCtr.reset();
       }
     }catch(e){
+      print(e);
       apiService.errorDialog(Get.context!,e.toString());
       controllers.productCtr.reset();
     }
