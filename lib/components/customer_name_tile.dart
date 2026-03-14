@@ -2087,33 +2087,34 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                         // color: Colors.yellow,
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: TextFormField(
-                          readOnly:true,
-                          // readOnly: isEditing, // 👈 important
-                          onFieldSubmitted: (value) async {
-                            if(TextEditingController(
-                              text: value.toString() == "null" ? "" : value.toString(),
-                            ).text.isNotEmpty){
-                              // updateLeadAPI(context);
-                            }else{
-                              utils.snackBar(context: context, msg: "Enter a value", color: Colors.red);
-                            }
-
-                          },
-                          controller: TextEditingController(
-                            text: value.toString() == "null" ? "" : value.toString(),
-                          ),
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: colorsConst.textColor,
-                          ),
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                        ),
+                        // child: TextFormField(
+                        //   readOnly:true,
+                        //   // readOnly: isEditing, // 👈 important
+                        //   onFieldSubmitted: (value) async {
+                        //     if(TextEditingController(
+                        //       text: value.toString() == "null" ? "" : value.toString(),
+                        //     ).text.isNotEmpty){
+                        //       // updateLeadAPI(context);
+                        //     }else{
+                        //       utils.snackBar(context: context, msg: "Enter a value", color: Colors.red);
+                        //     }
+                        //
+                        //   },
+                        //   controller: TextEditingController(
+                        //     text: value.toString() == "null" ? "" : value.toString(),
+                        //   ),
+                        //   textAlign: TextAlign.left,
+                        //   style: TextStyle(
+                        //     fontSize: 14,
+                        //     color: colorsConst.textColor,
+                        //   ),
+                        //   decoration: const InputDecoration(
+                        //     border: InputBorder.none,
+                        //     isDense: true,
+                        //     contentPadding: EdgeInsets.zero,
+                        //   ),
+                        // ),
+                        child: CustomText(text: value.toString() == "null" ? "" : value.toString(), isCopy: false),
                       ),
                     ),
                   );

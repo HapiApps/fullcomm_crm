@@ -82,7 +82,7 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
               size: 25,
               isCopy: false,
             )
-                : 0.width,
+                : SizedBox(),
           ],
         ),
         SizedBox(

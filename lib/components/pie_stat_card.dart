@@ -69,6 +69,7 @@ class _LeadPieCardState extends State<LeadPieCard> {
           16.height,
 
           /// PIE CHART
+          if(total.toInt().toString()!="0")
           SizedBox(
             height: 150,
             child: LayoutBuilder(

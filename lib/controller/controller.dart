@@ -1409,7 +1409,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
         return dateB.compareTo(dateA); // reverse order
       });
     }
-
+print("sortField ${sortField}");
     if (sortField.isNotEmpty) {
       filteredLeads.sort((a, b) {
         dynamic getFieldValue(NewLeadObj lead, String field) {

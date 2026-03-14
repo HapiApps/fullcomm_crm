@@ -580,7 +580,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   CustomText(
-                                                    text: "Record Status",
+                                                    text: "Call Record Status",
                                                     isCopy: false,
                                                     isBold: true,
                                                     size: 15,
