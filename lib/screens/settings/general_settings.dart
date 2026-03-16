@@ -750,7 +750,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                               ),
                                             ),
                                             const Spacer(),
-                                            SizedBox(height: 35,width: 100,
+                                            SizedBox(height: 35,width: 150,
                                               child: CustomLoadingButton(
                                                 callback: (){
                                                   if (ctrList[editIndex.value].text.trim().isEmpty) {
@@ -764,7 +764,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                     controllers.correctionStatus(context,"update",controllers.hCallStatusList[editIndex.value]["id"].toString(),ctrList[editIndex.value].text.trim());
                                                   }
                                                 }, isLoading: true, backgroundColor: colorsConst.primary,
-                                                radius: 5, width: 100,text: "Save Changes",controller: controllers.leadCtr,),
+                                                radius: 5, width: 130,text: "Save Changes",controller: controllers.leadCtr,),
                                             )
                                           ],
                                         ),

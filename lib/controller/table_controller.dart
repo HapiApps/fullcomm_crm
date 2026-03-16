@@ -527,8 +527,10 @@ class TableController extends GetxController {
         headingFields.add(heading);
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('tableHeadings', jsonEncode(headingFields.toList()));
-        Navigator.pop(context);
+        print("headingFields");
+        print(headingFields);
         apiService.getHeading();
+        Navigator.pop(context);
         utils.snackBar(context: context, msg: "Heading added successfully", color: Colors.green);
         controllers.productCtr.reset();
       } else {

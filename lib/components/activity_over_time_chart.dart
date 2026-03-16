@@ -1,6 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/common/styles/decoration.dart';
+import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'Customtext.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -77,7 +79,7 @@ class _ActivityOverTimeChartState
     double screenWidth = MediaQuery.of(context).size.width;
     return Container(
       // height: 360, width: screenWidth/1.8,
-      height: 400, width: screenWidth/2,
+      height: 400, width: screenWidth/1.8,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -353,62 +355,105 @@ class CustomerActivityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Container(
+      width: screenWidth /5,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            blurRadius: 8,
-            color: Colors.grey.withOpacity(0.2),
-            offset: const Offset(0, 3),
+            blurRadius: 10,
+            color: Colors.black12,
+            offset: Offset(0, 4),
           )
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           CustomText(
             text: "Customer Activity",
-            size: 18,
-            isBold: true,isCopy: false,
-          ),
-
-          const SizedBox(height: 4),
-
-          CustomText(
-            text: "Total Customers : 987",
             size: 15,
-            colors: Colors.black54,isCopy: false,
+            isBold: true,isCopy: false,colors: Colors.black,
           ),
-
-          const SizedBox(height: 20),
-
+          5.height,
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-
-              activityCircle("54", "Calls", Colors.green, 0.7),
-
-              activityCircle("12", "Mails", Colors.red, 0.3),
-
-              activityCircle("08", "Updates", Colors.blue, 0.25),
-
+              CustomText(
+                text: "Total Customers : ",
+                size: 13,
+                colors: Color(0xff666666),
+                isCopy: false,
+              ),
+              CustomText(
+                text: "987",
+                size: 13,
+                colors: Color(0xff666666),isCopy: false,isBold: true,
+              ),
             ],
+          ),5.height,
+          const Divider(
+            height: 1,
+            thickness: 1,
+            color: Color(0xffE5E7EB),
+          ),
+          20.height,
+          Center(
+            child: SizedBox(
+              height: 120,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Positioned(
+                    left: 40,
+                    child: activityCircle(
+                      dashController.customerStatusReport[0]["total_calls"].toString(),
+                      double.parse(dashController.customerStatusReport[0]["total_calls"].toString()) / 100,
+                      "Calls",
+                      Colors.green,
+                    ),
+                  ),
+
+                  Positioned(
+                    left: 100,
+                    child: activityCircle(
+                      dashController.customerStatusReport[0]["total_mails"].toString(),
+                      double.parse(dashController.customerStatusReport[0]["total_mails"].toString()) / 100,
+                      "Mails",
+                      Colors.red,
+                    ),
+                  ),
+
+                  Positioned(
+                    left: 160,
+                    child: activityCircle(
+                      dashController.customerStatusReport[0]["total_customers"].toString(),
+                      double.parse(dashController.customerStatusReport[0]["total_customers"].toString()) / 100,
+                      "Updates",
+                      Colors.blue,
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
           )
         ],
       ),
     );
   }
 
-  Widget activityCircle(String value, String title, Color color, double percent) {
+  Widget activityCircle(String value, double percent, String title, Color color) {
+
+    if (percent < 0) percent = 0.0;
+    if (percent > 1) percent = 1.0;
+
     return Column(
       children: [
-
         CircularPercentIndicator(
-          radius: 45,
+          radius: 35,
           lineWidth: 10,
           percent: percent,
           backgroundColor: color.withOpacity(0.2),
@@ -417,17 +462,17 @@ class CustomerActivityCard extends StatelessWidget {
           center: CustomText(
             text: value,
             size: 22,
-            isBold: true,isCopy: false,
+            isBold: true,
+            isCopy: false,
           ),
         ),
-
-        const SizedBox(height: 8),
-
+        8.height,
         CustomText(
           text: title,
-          size: 16,
+          size: 14,
           isBold: true,
-          colors: color, isCopy: false,
+          colors: color,
+          isCopy: false,
         ),
       ],
     );

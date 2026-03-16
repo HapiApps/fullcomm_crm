@@ -109,51 +109,6 @@ class _LeadCategoriesState extends State<LeadCategories> {
                           10.height,
                         ],
                       ),
-                      Row(
-                        children: [
-                          if(isEdit.value==true)
-                          SizedBox(
-                            height:40,
-                            child: OutlinedButton(
-                                onPressed: ()async{
-                                  if(isEdit.value==false) {
-                                    controllers.productCtr.reset();
-                                    utils.snackBar(msg: "Please make changes",
-                                        context: context,
-                                        color: Colors.red);
-                                  }else{
-                                    await apiService.updateCategories(context);
-                                  }
-                                },
-                                child: CustomText(text: "Save Changes", isCopy: false,colors: Colors.black,)),
-                          ),
-                          10.width,
-                          SizedBox(
-                            height:40,
-                            child: ElevatedButton(
-                                onPressed: (){
-                                  if(controllers.leadCategoryList.length!=10){
-                                    add.value=true;
-                                    edit.value=false;
-                                    editIndex.value=100;
-                                    controllers.emailMessageCtr.clear();
-                                    FocusScope.of(context).requestFocus(name);
-                                  }else{
-                                    utils.snackBar(context: context, msg: "Maximum 10 lead categories allowed.", color: Colors.red);
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: colorsConst.primary
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.add,color: Colors.white,),
-                                    CustomText(text: "Add Category", isCopy: false)
-                                  ],
-                                )),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                   Divider(
@@ -340,6 +295,23 @@ class _LeadCategoriesState extends State<LeadCategories> {
                           ),
                           Row(
                             children: [
+                              if(isEdit.value==true)
+                              SizedBox(
+                                  height:40,
+                                  child: ElevatedButton(
+                                      onPressed: ()async{
+                                        if(isEdit.value==false) {
+                                          controllers.productCtr.reset();
+                                          utils.snackBar(msg: "Please make changes",
+                                              context: context,
+                                              color: Colors.red);
+                                        }else{
+                                          await apiService.updateCategories(context);
+                                        }
+                                      },
+                                      child: CustomText(text: "Save Changes", isCopy: false,colors: Colors.black,)),
+                                ),
+                              10.width,
                               SizedBox(
                                 width:MediaQuery.of(context).size.width*0.2,
                                 height: 30,
@@ -619,12 +591,26 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                           children: [
                                             InkWell(
                                               onTap: (){
-                                                edit.value=true;
-                                                editIndex.value=index;
-                                                controllers.emailMessageCtr.text=data.value;
-                                                FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
+                                                if(editIndex.value==index){
+                                                  if (controllers.emailMessageCtr.text.trim().isEmpty) {
+                                                    utils.snackBar(
+                                                      context: context,
+                                                      msg: "Please enter lead category",
+                                                      color: Colors.red,
+                                                    );
+                                                    controllers.productCtr.reset();
+                                                    return;
+                                                  }else{
+                                                    addCategories(context,"update",data.id,index);
+                                                  }
+                                                }else{
+                                                  edit.value=true;
+                                                  editIndex.value=index;
+                                                  controllers.emailMessageCtr.text=data.value;
+                                                  FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
+                                                }
                                               },
-                                              child: Image.asset("assets/images/lead5.png"),
+                                              child: editIndex.value==index?Icon(Icons.check):Image.asset("assets/images/lead5.png"),
                                             ),10.width,
                                             PopupMenuButton(
                                               icon: Padding(
