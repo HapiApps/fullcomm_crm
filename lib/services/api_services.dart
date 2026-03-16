@@ -922,7 +922,10 @@ class ApiService {
         remController.titleController.text = "Follow-up calling";
         remController.detailsController.text = controllers.callCommentCont.text;
         controllers.callCommentCont.text = "";
+        controllers.selectCallType.value="All";
+        remController.selectedCallSortBy.value="All";
         getAllCallActivity("");
+        mergeStatusWithCount();
         Navigator.pop(context);
         controllers.productCtr.reset();
         if (remController.stDate.value.isEmpty) {
@@ -4050,17 +4053,26 @@ class ApiService {
   // }
   void mergeStatusWithCount() {
     final statusCountMap = getStatusCountMap();
-    controllers.hCallStatusList.value = controllers.hCallStatusList.map((item) {
-      final statusValue = item["value"]?.toString();
 
-      return {
-        ...item,
-        "count": statusCountMap[statusValue] ?? 0,
-      };
-    }).toList();
+    controllers.hCallStatusList.value =
+        controllers.hCallStatusList.map((item) {
+          final statusValue = item["value"]?.toString();
+
+          return {
+            ...item,
+            "count": statusCountMap[statusValue] ?? 0,
+          };
+        }).toList();
+
+    // 🔹 Total count calculate
+    int totalCount = controllers.hCallStatusList.fold(
+        0, (sum, item) => sum + ((item["count"] ?? 0) as int));
+
+    controllers.allCalls.value = totalCount.toString();
+
+    log("Total Calls: $totalCount");
     log("Merged Status List: ${controllers.hCallStatusList}");
-  }
-//new
+  }//new
   Future getAllCallActivity(String cusId) async {
     try {
       Map data = {

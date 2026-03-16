@@ -1031,9 +1031,9 @@ class _DashboardPageState extends State<DashboardPage>
                                     width: screenWidth/4,
                                     child: Table(
                                       columnWidths: {
-                                        0: FixedColumnWidth(150),
-                                        1: FixedColumnWidth(150),
-                                        2: FixedColumnWidth(130),
+                                        0: FixedColumnWidth(130),
+                                        1: FixedColumnWidth(130),
+                                        2: FixedColumnWidth(150),
                                       },
                                       border: TableBorder(
                                         horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -1052,7 +1052,7 @@ class _DashboardPageState extends State<DashboardPage>
                                                   CustomText(//1
                                                     textAlign: TextAlign.left,
                                                     text: "Customer Name",
-                                                    size: 15,
+                                                    size: 12,
                                                     isBold: true,
                                                     isCopy: true,
                                                     colors: Colors.white,
@@ -1092,7 +1092,7 @@ class _DashboardPageState extends State<DashboardPage>
                                                     textAlign: TextAlign.left,
                                                     text: "Company name",
                                                     isCopy: true,
-                                                    size: 15,
+                                                    size: 12,
                                                     isBold: true,
                                                     colors: Colors.white,
                                                   ),
@@ -1131,7 +1131,7 @@ class _DashboardPageState extends State<DashboardPage>
                                                     textAlign: TextAlign.center,
                                                     text: "Date",
                                                     isCopy: true,
-                                                    size: 15,
+                                                    size: 12,
                                                     isBold: true,
                                                     colors: Colors.white,
                                                   ),
@@ -1189,9 +1189,9 @@ class _DashboardPageState extends State<DashboardPage>
                                           final data = remController.meetingFilteredList[index];
                                           return Table(
                                             columnWidths: {
-                                              0: FixedColumnWidth(150),
-                                              1: FixedColumnWidth(150),
-                                              2: FixedColumnWidth(130),
+                                              0: FixedColumnWidth(130),
+                                              1: FixedColumnWidth(130),
+                                              2: FixedColumnWidth(150),
                                             },
                                             border: TableBorder(
                                               horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -1207,32 +1207,32 @@ class _DashboardPageState extends State<DashboardPage>
                                                     Tooltip(
                                                       message: data.cusName.toString()=="null"?"":data.cusName.toString(),
                                                       child: Padding(
-                                                        padding: const EdgeInsets.all(10.0),
+                                                        padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                         child: CustomText(
                                                           textAlign: TextAlign.left,
                                                           text: data.cusName.toString()=="null"?"":data.cusName.toString(),
-                                                          size: 14,
+                                                          size: 12,
                                                           isCopy: true,
                                                           colors:colorsConst.textColor,
                                                         ),
                                                       ),
                                                     ),
                                                     Padding(
-                                                      padding: const EdgeInsets.all(10.0),
+                                                      padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                       child: CustomText(
                                                         textAlign: TextAlign.left,
                                                         text:data.comName.toString()=="null"?"":data.comName.toString(),
-                                                        size: 14,
+                                                        size: 12,
                                                         isCopy: true,
                                                         colors: colorsConst.textColor,
                                                       ),
                                                     ),
                                                     Padding(
-                                                      padding: const EdgeInsets.all(10.0),
+                                                      padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                       child: CustomText(
                                                         textAlign: TextAlign.left,
                                                         text: formatFirstDate("${data.dates} ${data.time}"),
-                                                        size: 14,
+                                                        size: 12,
                                                         isCopy: true,
                                                         colors: colorsConst.textColor,
                                                       ),

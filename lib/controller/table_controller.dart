@@ -357,10 +357,12 @@ class TableController extends GetxController {
   }
 
   // Swap positions in drag-drop
-  void reorderWords(int oldIndex, int newIndex) {
+  Future<void> reorderWords(int oldIndex, int newIndex) async {
     if (newIndex > oldIndex) newIndex -= 1;
     final word = headingFields.removeAt(oldIndex);
     headingFields.insert(newIndex, word);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('tableHeadings', jsonEncode(headingFields.toList()));
   }
 
   // Apply changes (first 8 update table headings)
@@ -522,6 +524,9 @@ class TableController extends GetxController {
         }
       }
       if (request.statusCode == 200 ){
+        headingFields.add(heading);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('tableHeadings', jsonEncode(headingFields.toList()));
         Navigator.pop(context);
         apiService.getHeading();
         utils.snackBar(context: context, msg: "Heading added successfully", color: Colors.green);

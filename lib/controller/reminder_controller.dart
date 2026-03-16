@@ -619,7 +619,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     }
 
     callFilteredList.assignAll(filtered);
-    apiService.mergeStatusWithCount();
+    // apiService.mergeStatusWithCount();
   }
 
   void filterAndSortMeetings({
