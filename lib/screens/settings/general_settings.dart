@@ -992,7 +992,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                         ),
                                         child: Center(child: Image.asset("assets/images/setting2.png"),)),10.width,
                                     CustomText(
-                                      text: "Record Status",
+                                      text: "Call Record Status",
                                       colors: colorsConst.textColor,size: 20,
                                       isBold: true,
                                       isCopy: true,

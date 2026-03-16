@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'Customtext.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class ActivityLineData {
   final String label;
@@ -340,6 +341,95 @@ class _TooltipCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+
+
+
+class CustomerActivityCard extends StatelessWidget {
+  const CustomerActivityCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 8,
+            color: Colors.grey.withOpacity(0.2),
+            offset: const Offset(0, 3),
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          CustomText(
+            text: "Customer Activity",
+            size: 18,
+            isBold: true,isCopy: false,
+          ),
+
+          const SizedBox(height: 4),
+
+          CustomText(
+            text: "Total Customers : 987",
+            size: 15,
+            colors: Colors.black54,isCopy: false,
+          ),
+
+          const SizedBox(height: 20),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+
+              activityCircle("54", "Calls", Colors.green, 0.7),
+
+              activityCircle("12", "Mails", Colors.red, 0.3),
+
+              activityCircle("08", "Updates", Colors.blue, 0.25),
+
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget activityCircle(String value, String title, Color color, double percent) {
+    return Column(
+      children: [
+
+        CircularPercentIndicator(
+          radius: 45,
+          lineWidth: 10,
+          percent: percent,
+          backgroundColor: color.withOpacity(0.2),
+          progressColor: color,
+          circularStrokeCap: CircularStrokeCap.round,
+          center: CustomText(
+            text: value,
+            size: 22,
+            isBold: true,isCopy: false,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        CustomText(
+          text: title,
+          size: 16,
+          isBold: true,
+          colors: color, isCopy: false,
+        ),
+      ],
     );
   }
 }

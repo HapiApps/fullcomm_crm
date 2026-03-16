@@ -1536,6 +1536,8 @@ void checkType(){
                                           ),
                                         ),
                                       20.height,
+                                      if(calls.isNotEmpty||meetings.isNotEmpty||meetings.isNotEmpty)
+                                      CustomText(text:"Customer Journey", isCopy: false,isBold: true,colors: colorsConst.primary,size: 16,),
                                       if (calls.isNotEmpty) ...[
                                         SizedBox(
                                             width: screenWidth / 4.5,
@@ -1548,7 +1550,7 @@ void checkType(){
                                             child: _buildMeetingRecords(meetings)),
                                         20.height,
                                       ],
-                                      if (reminders.isNotEmpty) ...[
+                                      if (meetings.isNotEmpty) ...[
                                         SizedBox(
                                             width: screenWidth / 4.5,
                                             child: _buildReminderRecords(reminders)),
@@ -1704,12 +1706,17 @@ void checkType(){
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(child: Text("${r.title ?? ''} • ${r.setType ?? ''}", style: TextStyle(fontSize: 13))),
-                  Text(r.startDt ?? "", style: TextStyle(fontSize: 12)),
-                  10.width,
-                  Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+                  Text(r.employee ?? "", style: TextStyle(fontSize: 12)),
+                  Row(
+                    children: [
+                      Expanded(child: Text("${r.title ?? ''} • ${r.setType ?? ''}", style: TextStyle(fontSize: 13))),
+                      Text(r.startDt ?? "", style: TextStyle(fontSize: 12)),
+                      10.width,
+                      Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+                    ],
+                  ),
                 ],
               ),
             ),

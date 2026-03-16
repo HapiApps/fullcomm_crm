@@ -164,7 +164,7 @@ class _WaveStatCardState extends State<WaveStatCard>
       onTap:widget.callback,
       child: Container(
         height: 120,
-        width: screenWidth/7.5,
+        width: screenWidth/7,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),

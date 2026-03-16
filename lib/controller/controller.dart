@@ -1312,6 +1312,18 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
     return filteredLeads.sublist(start, end);
   }
+  List<Color> leadColors=[
+    Color(0xFFF59E0B),
+    Color(0xFF3B82F6),
+    Color(0xFF8B5CF6),
+    Color(0xFF10B981),
+    Color(0xFFEF4444),
+    Color(0xFF1BE8FF),
+    Color(0xFFD80B8F),
+    Color(0xFF5A5A5A),
+    Color(0xFF51F63B),
+    Color(0xFF611D1D),
+  ];
   List<NewLeadObj> changePage(RxList<NewLeadObj> list,RxList<NewLeadObj> list2){
     final query = searchProspects.value.trim().toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;

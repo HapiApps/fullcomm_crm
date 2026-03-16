@@ -50,7 +50,7 @@ class CustomerStatusCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomText(
-            text: "Call Status",
+            text: "Call Record Status",
             isCopy: false,
             size: 15,
             isBold: true,

@@ -22,6 +22,7 @@ import '../common/constant/api.dart';
 import '../common/constant/app_colors.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/constant/dashboard_assets.dart';
+import '../common/styles/decoration.dart';
 import '../common/utilities/utils.dart';
 import '../components/activity_over_time_chart.dart';
 import '../components/activityratingbar.dart';
@@ -149,6 +150,7 @@ class _DashboardPageState extends State<DashboardPage>
           today);
       dashController.getDashboardReport();
       dashController.getLeadReport();
+      dashController.getCustomerStatus();
       dashController.getStatusWiseReport();
       dashController.getRatingReport();
     });
@@ -207,7 +209,6 @@ class _DashboardPageState extends State<DashboardPage>
   final statValues = [1596, 256, 65, 264, 6];
   late final maxValue = statValues.reduce((a, b) => a > b ? a : b);
   String selectedFilter = "Today";
-  bool isJourneyToday = true;
 
   bool isLeadPanelOpen = false;
 
@@ -330,7 +331,7 @@ class _DashboardPageState extends State<DashboardPage>
                 ],
               ),
               SizedBox(
-                width: screenWidth/2.5,
+                width: screenWidth/4,
                 child: KeyboardDropdownField<AllCustomersObj>(
                   items: controllers.customers,
                   borderRadius: 5,
@@ -398,142 +399,140 @@ class _DashboardPageState extends State<DashboardPage>
                           final bool isSelected =
                               dashController.selectedSortBy.value == filter;
 
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  dashController.selectedSortBy.value = filter;
-                                  DateTime now = DateTime.now();
-                                  switch (filter) {
-                                    // case "Today":
-                                    //   dashController.selectedRange
-                                    //       .value = DateTimeRange(
-                                    //     start: DateTime(now.year,
-                                    //         now.month, now.day),
-                                    //     end: DateTime(now.year,
-                                    //         now.month, now.day),
-                                    //   );
-                                    //   break;
-                                    // case "Yesterday":
-                                    //   DateTime yesterday = now
-                                    //       .subtract(Duration(days: 1));
-                                    //   dashController.selectedRange
-                                    //       .value = DateTimeRange(
-                                    //     start: DateTime(
-                                    //         yesterday.year,
-                                    //         yesterday.month,
-                                    //         yesterday.day),
-                                    //     end: DateTime(now.year,
-                                    //         now.month, now.day),
-                                    //   );
-                                    //   break;
-                                    // case "Last 7 Days":
-                                    //   dashController.selectedRange
-                                    //       .value = DateTimeRange(
-                                    //     start: now.subtract(
-                                    //         Duration(days: 6)),
-                                    //     end: now,
-                                    //   );
-                                    //   break;
-                                    // case "Last 30 Days":
-                                    //   dashController.selectedRange
-                                    //       .value = DateTimeRange(
-                                    //     start: now.subtract(
-                                    //         Duration(days: 30)),
-                                    //     end: now,
-                                    //   );
-                                    //   break;
-                                    case "Today":
-                                      dashController.date1.value =
-                                      "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-                                      dashController.date2.value = dashController.date1.value;
-                                      break;
+                          return MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                dashController.selectedSortBy.value = filter;
+                                DateTime now = DateTime.now();
+                                switch (filter) {
+                                  // case "Today":
+                                  //   dashController.selectedRange
+                                  //       .value = DateTimeRange(
+                                  //     start: DateTime(now.year,
+                                  //         now.month, now.day),
+                                  //     end: DateTime(now.year,
+                                  //         now.month, now.day),
+                                  //   );
+                                  //   break;
+                                  // case "Yesterday":
+                                  //   DateTime yesterday = now
+                                  //       .subtract(Duration(days: 1));
+                                  //   dashController.selectedRange
+                                  //       .value = DateTimeRange(
+                                  //     start: DateTime(
+                                  //         yesterday.year,
+                                  //         yesterday.month,
+                                  //         yesterday.day),
+                                  //     end: DateTime(now.year,
+                                  //         now.month, now.day),
+                                  //   );
+                                  //   break;
+                                  // case "Last 7 Days":
+                                  //   dashController.selectedRange
+                                  //       .value = DateTimeRange(
+                                  //     start: now.subtract(
+                                  //         Duration(days: 6)),
+                                  //     end: now,
+                                  //   );
+                                  //   break;
+                                  // case "Last 30 Days":
+                                  //   dashController.selectedRange
+                                  //       .value = DateTimeRange(
+                                  //     start: now.subtract(
+                                  //         Duration(days: 30)),
+                                  //     end: now,
+                                  //   );
+                                  //   break;
+                                  case "Today":
+                                    dashController.date1.value =
+                                    "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+                                    dashController.date2.value = dashController.date1.value;
+                                    break;
 
-                                    case "Yesterday":
-                                      DateTime yesterday = now.subtract(const Duration(days: 1));
+                                  case "Yesterday":
+                                    DateTime yesterday = now.subtract(const Duration(days: 1));
 
-                                      dashController.date1.value =
-                                      "${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}";
-                                      dashController.date2.value = dashController.date1.value;
-                                      break;
+                                    dashController.date1.value =
+                                    "${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}";
+                                    dashController.date2.value = dashController.date1.value;
+                                    break;
 
-                                    case "Last 7 Days":
-                                      DateTime start7 = now.subtract(const Duration(days: 6));
+                                  case "Last 7 Days":
+                                    DateTime start7 = now.subtract(const Duration(days: 6));
 
-                                      dashController.date1.value =
-                                      "${start7.year}-${start7.month.toString().padLeft(2, '0')}-${start7.day.toString().padLeft(2, '0')}";
-                                      dashController.date2.value =
-                                      "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-                                      break;
+                                    dashController.date1.value =
+                                    "${start7.year}-${start7.month.toString().padLeft(2, '0')}-${start7.day.toString().padLeft(2, '0')}";
+                                    dashController.date2.value =
+                                    "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+                                    break;
 
-                                    case "Last 30 Days":
-                                      DateTime start30 = now.subtract(const Duration(days: 29));
+                                  case "Last 30 Days":
+                                    DateTime start30 = now.subtract(const Duration(days: 29));
 
-                                      dashController.date1.value =
-                                      "${start30.year}-${start30.month.toString().padLeft(2, '0')}-${start30.day.toString().padLeft(2, '0')}";
-                                      dashController.date2.value =
-                                      "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-                                      break;
-                                  }
-                                  dashController.getDashboardReport();
-                                  dashController.getLeadReport();
-                                  dashController.getStatusWiseReport();
-                                  final range = dashController.selectedRange.value;
-                                  var today = DateTime.now();
-                                  if (dashController.selectedSortBy.value != "Today" &&
-                                      dashController.selectedSortBy.value != "Yesterday") {
-                                    dashController.getCustomerReport(
-                                        range == null
-                                            ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
-                                            : "${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
-                                        range == null
-                                            ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
-                                            : "${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
-                                  } else {
-                                    var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
-                                    var last7days = DateTime.now().subtract(Duration(days: 7));
-                                    dashController.getCustomerReport(
-                                        "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
-                                        today);
-                                  }
-                                  remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
-                                  remController.filterAndSortMeetings(
-                                    searchText: controllers.searchText.value.toLowerCase(),
-                                    callType: controllers.selectMeetingType.value,
-                                    sortField: controllers.sortFieldMeetingActivity.value,
-                                    sortOrder: controllers.sortOrderMeetingActivity.value,
-                                  );
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
-                                  decoration: BoxDecoration(
-                                    color: isSelected
-                                        ? Colors.white
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: isSelected
-                                        ? const [
-                                      BoxShadow(
-                                        color: Colors.black12,
-                                        blurRadius: 6,
-                                        offset: Offset(0, 2),
-                                      ),
-                                    ]
-                                        : null,
-                                  ),
-                                  child: CustomText(
-                                    text: filter,
-                                    isCopy: false,
-                                    size: 12,
-                                    isBold: true,
-                                    colors: isSelected
-                                        ? const Color(0xff0078D7)
-                                        : const Color(0xff666666),
-                                  ),
+                                    dashController.date1.value =
+                                    "${start30.year}-${start30.month.toString().padLeft(2, '0')}-${start30.day.toString().padLeft(2, '0')}";
+                                    dashController.date2.value =
+                                    "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+                                    break;
+                                }
+                                dashController.getDashboardReport();
+                                dashController.getLeadReport();
+                                dashController.getStatusWiseReport();
+                                dashController.getCustomerStatus();
+                                final range = dashController.selectedRange.value;
+                                var today = DateTime.now();
+                                if (dashController.selectedSortBy.value != "Today" &&
+                                    dashController.selectedSortBy.value != "Yesterday") {
+                                  dashController.getCustomerReport(
+                                      range == null
+                                          ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
+                                          : "${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+                                      range == null
+                                          ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
+                                          : "${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
+                                } else {
+                                  var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
+                                  var last7days = DateTime.now().subtract(Duration(days: 7));
+                                  dashController.getCustomerReport(
+                                      "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
+                                      today);
+                                }
+                                remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
+                                remController.filterAndSortMeetings(
+                                  searchText: controllers.searchText.value.toLowerCase(),
+                                  callType: controllers.selectMeetingType.value,
+                                  sortField: controllers.sortFieldMeetingActivity.value,
+                                  sortOrder: controllers.sortOrderMeetingActivity.value,
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: isSelected
+                                      ? const [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 6,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ]
+                                      : null,
+                                ),
+                                child: CustomText(
+                                  text: filter,
+                                  isCopy: false,
+                                  size: 12,
+                                  isBold: true,
+                                  colors: isSelected
+                                      ? const Color(0xff0078D7)
+                                      : const Color(0xff666666),
                                 ),
                               ),
                             ),
@@ -634,7 +633,7 @@ class _DashboardPageState extends State<DashboardPage>
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.topLeft,
               // color: Colors.pinkAccent,
-              padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
+              padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
               child: Stack(
                   children: [
                     SingleChildScrollView(
@@ -675,7 +674,7 @@ class _DashboardPageState extends State<DashboardPage>
                                         controllers.selectedIndex.value;
                                     controllers.selectedIndex.value = 6;
                                   }
-                              ),SizedBox(width: screenWidth/50,),
+                              ),SizedBox(width: screenWidth/75,),
                               WaveStatCard(
                                   title: "Calls",
                                   numericValue: int.parse(dashController.totalCalls.value.toString()),
@@ -703,7 +702,7 @@ class _DashboardPageState extends State<DashboardPage>
                                     controllers.oldIndex.value = controllers.selectedIndex.value;
                                     controllers.selectedIndex.value = 6;
                                   }
-                              ),SizedBox(width: screenWidth/50,),
+                              ),SizedBox(width: screenWidth/75,),
                               WaveStatCard(
                                 callback: () {
                                   remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
@@ -727,7 +726,7 @@ class _DashboardPageState extends State<DashboardPage>
                                 maxValue: maxValue,
                                 iconPath: DashboardAssets.date,
                                 valueColor: const Color(0xff8B2CF5),
-                              ),SizedBox(width: screenWidth/50,),
+                              ),SizedBox(width: screenWidth/75,),
                               WaveStatCard(
                                 callback: () {
                                   controllers.isLeadsExpanded.value=true;
@@ -753,7 +752,7 @@ class _DashboardPageState extends State<DashboardPage>
                                 maxValue: maxValue,
                                 iconPath: DashboardAssets.people,
                                 valueColor: const Color(0xffF29D38),
-                              ),SizedBox(width: screenWidth/50,),
+                              ),SizedBox(width: screenWidth/75,),
                               WaveStatCard(
                                 callback: () {
                                   remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
@@ -784,10 +783,11 @@ class _DashboardPageState extends State<DashboardPage>
                                 valueColor: const Color(0xffBB271A),
                               ),
                               SizedBox(
-                                width: screenWidth/8,
+                                width: screenWidth/7.5,
                               )
                             ],
                           ),
+                          CustomerActivityCard(),
                           20.height,
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -904,7 +904,8 @@ class _DashboardPageState extends State<DashboardPage>
                                             ),
                                             const SizedBox(width: 6),
                                             CustomText(
-                                              text: "Hot (0-${int.tryParse(dashController.totalHot.value) ??0}d)",
+                                              // text: "Hot ${dashController.totalHot.value=="0"?"0":"(0-${(int.tryParse(dashController.totalHot.value) ??0)}d)"}",
+                                              text: "Hot ${dashController.totalHot.value=="0"?"0":dashController.totalHot.value}",
                                               isCopy: false,
                                               size: 11,
                                               isBold: true,
@@ -930,8 +931,8 @@ class _DashboardPageState extends State<DashboardPage>
                                             ),
                                             SizedBox(width: 6),
                                             CustomText(
-                                              text:  "Warm (${(int.tryParse(dashController.totalHot.value) ??0)+1}-${int.tryParse(
-                                                  dashController.totalWarm.value) ??0}d)",
+                                              text: "Warm ${dashController.totalWarm.value=="0"?"0":"(${(int.tryParse(dashController.totalHot.value) ??0)+1}-${int.tryParse(
+                                                  dashController.totalWarm.value) ??0}d)"}",
                                               isCopy: false,
                                               size: 11,
                                               isBold: true,
@@ -956,7 +957,7 @@ class _DashboardPageState extends State<DashboardPage>
                                             ),
                                             SizedBox(width: 6),
                                             CustomText(
-                                              text:  "Cold (${(int.tryParse(dashController.totalWarm.value) ??0)+1}+d)",
+                                              text: "Cold ${dashController.totalWarm.value=="0"?"0":"(${(int.tryParse(dashController.totalWarm.value) ??0)+1}+d)"}",
                                               isCopy: false,
                                               size: 11,
                                               isBold: true,
@@ -1027,8 +1028,9 @@ class _DashboardPageState extends State<DashboardPage>
                             children: [
                               Column(
                                 children: [
-                                  SizedBox(
-                                    width: screenWidth/4,
+                                  Container(
+                                    color: Colors.white,
+                                    width: screenWidth /4.5,
                                     child: Table(
                                       columnWidths: {
                                         0: FixedColumnWidth(130),
@@ -1168,12 +1170,12 @@ class _DashboardPageState extends State<DashboardPage>
                                       ],
                                     ),
                                   ),
-                                  SizedBox(
-                                    // color: Colors.yellowAccent,
-                                    width: screenWidth/4,
+                                  Container(
+                                    color: Colors.white,
+                                    width: screenWidth /4.5,
                                     child: remController.meetingFilteredList.isEmpty?
                                     CustomText(
-                                      text: "\n\n\nNo Appointments",
+                                      text: "\n\n\nNo Appointments\n\n\n",
                                       isCopy: true,
                                       colors: colorsConst.textColor,
                                       size: 16,)
@@ -1273,7 +1275,237 @@ class _DashboardPageState extends State<DashboardPage>
                               )
                             ],
                           ),
-
+                          // 20.height,
+                          // Row(
+                          //   children: [
+                          //     Column(
+                          //       children: [
+                          //         Container(
+                          //           color: Colors.white,
+                          //           width: screenWidth/1.3,
+                          //           child: Table(
+                          //             columnWidths: {
+                          //               0: FixedColumnWidth(130),
+                          //               1: FixedColumnWidth(130),
+                          //               2: FixedColumnWidth(150),
+                          //             },
+                          //             border: TableBorder(
+                          //               horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                          //               verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                          //             ),
+                          //             children: [
+                          //               TableRow(
+                          //                   decoration: BoxDecoration(
+                          //                       color: colorsConst.primary,
+                          //                       borderRadius: const BorderRadius.only(
+                          //                           topLeft: Radius.circular(5),
+                          //                           topRight: Radius.circular(5))),
+                          //                   children: [
+                          //                     headerCell(2, Row(
+                          //                       children: [
+                          //                         CustomText(//1
+                          //                           textAlign: TextAlign.left,
+                          //                           text: "Customer Name",
+                          //                           size: 15,
+                          //                           isBold: true,
+                          //                           isCopy: true,
+                          //                           colors: Colors.white,
+                          //                         ),
+                          //                         const SizedBox(width: 3),
+                          //                         GestureDetector(
+                          //                           onTap: (){
+                          //                             if(controllers.sortFieldMeetingActivity.value=='customerName' && controllers.sortOrderMeetingActivity.value=='asc'){
+                          //                               controllers.sortOrderMeetingActivity.value='desc';
+                          //                             }else{
+                          //                               controllers.sortOrderMeetingActivity.value='asc';
+                          //                             }
+                          //                             controllers.sortFieldMeetingActivity.value='customerName';
+                          //                             remController.filterAndSortMeetings(
+                          //                               searchText: controllers.searchText.value.toLowerCase(),
+                          //                               callType: controllers.selectMeetingType.value,
+                          //                               sortField: controllers.sortFieldMeetingActivity.value,
+                          //                               sortOrder: controllers.sortOrderMeetingActivity.value,
+                          //                             );
+                          //                           },
+                          //                           child: Obx(() => Image.asset(
+                          //                             controllers.sortFieldMeetingActivity.value.isEmpty
+                          //                                 ? "assets/images/arrow.png"
+                          //                                 : controllers.sortOrderMeetingActivity.value == 'asc'
+                          //                                 ? "assets/images/arrow_up.png"
+                          //                                 : "assets/images/arrow_down.png",
+                          //                             width: 15,
+                          //                             height: 15,
+                          //                           ),
+                          //                           ),
+                          //                         ),
+                          //                       ],
+                          //                     ),),
+                          //                     headerCell(3, Row(
+                          //                       children: [
+                          //                         CustomText(//2
+                          //                           textAlign: TextAlign.left,
+                          //                           text: "Company name",
+                          //                           isCopy: true,
+                          //                           size: 15,
+                          //                           isBold: true,
+                          //                           colors: Colors.white,
+                          //                         ),
+                          //                         const SizedBox(width: 3),
+                          //                         GestureDetector(
+                          //                           onTap: (){
+                          //                             if(controllers.sortFieldMeetingActivity.value=='companyName' && controllers.sortOrderMeetingActivity.value=='asc'){
+                          //                               controllers.sortOrderMeetingActivity.value='desc';
+                          //                             }else{
+                          //                               controllers.sortOrderMeetingActivity.value='asc';
+                          //                             }
+                          //                             controllers.sortFieldMeetingActivity.value='companyName';
+                          //                             remController.filterAndSortMeetings(
+                          //                               searchText: controllers.searchText.value.toLowerCase(),
+                          //                               callType: controllers.selectMeetingType.value,
+                          //                               sortField: controllers.sortFieldMeetingActivity.value,
+                          //                               sortOrder: controllers.sortOrderMeetingActivity.value,
+                          //                             );
+                          //                           },
+                          //                           child: Obx(() => Image.asset(
+                          //                             controllers.sortFieldMeetingActivity.value.isEmpty
+                          //                                 ? "assets/images/arrow.png"
+                          //                                 : controllers.sortOrderMeetingActivity.value == 'asc'
+                          //                                 ? "assets/images/arrow_up.png"
+                          //                                 : "assets/images/arrow_down.png",
+                          //                             width: 15,
+                          //                             height: 15,
+                          //                           ),
+                          //                           ),
+                          //                         ),
+                          //                       ],
+                          //                     ),),
+                          //                     headerCell(7, Row(
+                          //                       children: [
+                          //                         CustomText(
+                          //                           textAlign: TextAlign.center,
+                          //                           text: "Date",
+                          //                           isCopy: true,
+                          //                           size: 15,
+                          //                           isBold: true,
+                          //                           colors: Colors.white,
+                          //                         ),
+                          //                         const SizedBox(width: 3),
+                          //                         GestureDetector(
+                          //                           onTap: (){
+                          //                             if(controllers.sortFieldMeetingActivity.value=='date' && controllers.sortOrderMeetingActivity.value=='asc'){
+                          //                               controllers.sortOrderMeetingActivity.value='desc';
+                          //                             }else{
+                          //                               controllers.sortOrderMeetingActivity.value='asc';
+                          //                             }
+                          //                             controllers.sortFieldMeetingActivity.value='date';
+                          //                             remController.filterAndSortMeetings(
+                          //                               searchText: controllers.searchText.value.toLowerCase(),
+                          //                               callType: controllers.selectMeetingType.value,
+                          //                               sortField: controllers.sortFieldMeetingActivity.value,
+                          //                               sortOrder: controllers.sortOrderMeetingActivity.value,
+                          //                             );
+                          //                           },
+                          //                           child: Obx(() => Image.asset(
+                          //                             controllers.sortFieldMeetingActivity.value.isEmpty
+                          //                                 ? "assets/images/arrow.png"
+                          //                                 : controllers.sortOrderMeetingActivity.value == 'asc'
+                          //                                 ? "assets/images/arrow_up.png"
+                          //                                 : "assets/images/arrow_down.png",
+                          //                             width: 15,
+                          //                             height: 15,
+                          //                           ),
+                          //                           ),
+                          //                         ),
+                          //                       ],
+                          //                     ),)
+                          //                   ]),
+                          //             ],
+                          //           ),
+                          //         ),
+                          //         Container(
+                          //           color: Colors.white,
+                          //           width: screenWidth/1.3,
+                          //           child: remController.meetingFilteredList.isEmpty?
+                          //           CustomText(
+                          //             text: "\n\n\nNo Appointments\n\n\n",
+                          //             isCopy: true,
+                          //             colors: colorsConst.textColor,
+                          //             size: 16,)
+                          //               :RawKeyboardListener(
+                          //             focusNode: _focusNode,
+                          //             autofocus: true,
+                          //             child: ListView.builder(
+                          //               controller: _controller,
+                          //               shrinkWrap: true,
+                          //               physics: const ScrollPhysics(),
+                          //               itemCount: remController.meetingFilteredList.length,
+                          //               itemBuilder: (context, index) {
+                          //                 final data = remController.meetingFilteredList[index];
+                          //                 return Table(
+                          //                   columnWidths: {
+                          //                     0: FixedColumnWidth(130),
+                          //                     1: FixedColumnWidth(130),
+                          //                     2: FixedColumnWidth(150),
+                          //                   },
+                          //                   border: TableBorder(
+                          //                     horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                          //                     verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                          //                     // bottom:  BorderSide(width: 0.2, color: Colors.green.shade400),
+                          //                   ),
+                          //                   children:[
+                          //                     TableRow(
+                          //                         decoration: BoxDecoration(
+                          //                           color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                          //                         ),
+                          //                         children:[
+                          //                           Tooltip(
+                          //                             message: data.cusName.toString()=="null"?"":data.cusName.toString(),
+                          //                             child: Padding(
+                          //                               padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                          //                               child: CustomText(
+                          //                                 textAlign: TextAlign.left,
+                          //                                 text: data.cusName.toString()=="null"?"":data.cusName.toString(),
+                          //                                 size: 15,
+                          //                                 isCopy: true,
+                          //                                 colors:colorsConst.textColor,
+                          //                               ),
+                          //                             ),
+                          //                           ),
+                          //                           Padding(
+                          //                             padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                          //                             child: CustomText(
+                          //                               textAlign: TextAlign.left,
+                          //                               text:data.comName.toString()=="null"?"":data.comName.toString(),
+                          //                               size: 15,
+                          //                               isCopy: true,
+                          //                               colors: colorsConst.textColor,
+                          //                             ),
+                          //                           ),
+                          //                           Padding(
+                          //                             padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                          //                             child: CustomText(
+                          //                               textAlign: TextAlign.left,
+                          //                               text: formatFirstDate("${data.dates} ${data.time}"),
+                          //                               size: 15,
+                          //                               isCopy: true,
+                          //                               colors: colorsConst.textColor,
+                          //                             ),
+                          //                           ),
+                          //                         ]
+                          //                     ),
+                          //                   ],
+                          //                 );
+                          //               },
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //     SizedBox(
+                          //       width: screenWidth/9,
+                          //     )
+                          //   ],
+                          // ),
                           20.height,
                         ],
                       )),
@@ -1398,22 +1630,8 @@ class _DashboardPageState extends State<DashboardPage>
 
             // ================= JOURNEY SWITCH =================
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isJourneyToday = !isJourneyToday;
-                    });
-                  },
-                  child: const Icon(
-                    Icons.circle,
-                    size: 6,
-                    color: Color(0xffD9D9D9),
-                  ),
-                ),
-                6.width,
-
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
                   transitionBuilder: (child, animation) {
@@ -1427,30 +1645,10 @@ class _DashboardPageState extends State<DashboardPage>
                       ),
                     );
                   },
-                  child: CustomText(
-                    text: isJourneyToday
-                        ? "Today's Customer Journey"
-                        : "Overall Customer Journey",
-                    key:  ValueKey(isJourneyToday),
+                  child: CustomText(text:"Life Time Customer Journey",
                     isCopy: false,
-                    size: 11,
                     isBold: true,
-                    colors: Colors.black,
-                  ),
-                ),
-
-                6.width,
-
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isJourneyToday = !isJourneyToday;
-                    });
-                  },
-                  child: const Icon(
-                    Icons.circle,
-                    size: 6,
-                    color: Color(0xffD9D9D9),
+                    colors: colorsConst.primary,
                   ),
                 ),
               ],
@@ -1466,7 +1664,7 @@ class _DashboardPageState extends State<DashboardPage>
                   title: controllers.leadCategoryList[i].value,
                   image: DashboardAssets.suspect,
                   count: controllers.leadCategoryList[i].list.length.toString(),
-                  width: 180,
+                  index: i,
                 ),
               ),
             // _animatedLeadItem(
@@ -1516,7 +1714,7 @@ class _DashboardPageState extends State<DashboardPage>
 
   BoxDecoration _filterGroupDecoration() => BoxDecoration(
     color: Color(0xffE2E8F0),
-    borderRadius: BorderRadius.circular(10),
+    borderRadius: BorderRadius.circular(5),
   );
 
   BoxDecoration _topBarDecoration() => BoxDecoration(
@@ -1635,32 +1833,96 @@ Widget _leadItem({
   required String title,
   required String image,
   required String count,
-  required double width,
+  required int index,
 }) {
   return Column(
     children: [
-      Stack(
-        alignment: Alignment.center,
+      Row(
         children: [
-          Image.asset(image, width: width, fit: BoxFit.contain),
-          CustomText(
-            text:  title.toUpperCase(),
-            isCopy: false,
-            size: 11,
-            isBold: true,
-            colors: Colors.black,
+          Container(
+            height: 55,
+            width: 10,
+            decoration: BoxDecoration(
+              color: controllers.leadColors[index],
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                bottomLeft: Radius.circular(20),
+              ),
+            ),
+          ),
+          Container(
+            height: 55,
+            width: 180,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(15),
+                bottomRight: Radius.circular(15),
+              ),
+              border: Border(
+                right: BorderSide(
+                  color:Colors.grey.shade100,
+                  width: 2,
+                ),
+                top: BorderSide(
+                  color:Colors.grey.shade100,
+                  width: 2,
+                ),
+                bottom: BorderSide(
+                  color:Colors.grey.shade100,
+                  width: 2,
+                ),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        text:  title.toUpperCase(),
+                        isCopy: false,
+                        size: 11,
+                        isBold: true,
+                        colors: Colors.black,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CustomText(
+                        text: count,
+                        isCopy: false,
+                        size: 14,
+                        isBold: true,
+                        colors: Colors.black,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
-      10.height,
-      CustomText(
-        text: count,
-        isCopy: false,
-        size: 14,
-        isBold: true,
-        colors: Colors.black,
-      ),
-      25.height,
+      if(index!=controllers.leadCategoryList.length-1)
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Container(
+            height: 20,
+            color: Colors.grey.shade400,width: 2,
+          ),
+          Container(
+            height: 10,
+            color: Colors.grey.shade300,width: 2,
+          )
+        ],
+      )
     ],
   );
 }
