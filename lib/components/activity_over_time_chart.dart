@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
+import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'Customtext.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -358,6 +359,7 @@ class CustomerActivityCard extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     return Container(
       width: screenWidth /5,
+      height: 300,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -388,7 +390,7 @@ class CustomerActivityCard extends StatelessWidget {
                 isCopy: false,
               ),
               CustomText(
-                text: "987",
+                text: controllers.leadCategoryList.value.last.list2.length.toString(),
                 size: 13,
                 colors: Color(0xff666666),isCopy: false,isBold: true,
               ),
@@ -399,47 +401,47 @@ class CustomerActivityCard extends StatelessWidget {
             thickness: 1,
             color: Color(0xffE5E7EB),
           ),
-          20.height,
-          Center(
-            child: SizedBox(
-              height: 120,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Positioned(
-                    left: 40,
-                    child: activityCircle(
-                      dashController.customerStatusReport[0]["total_calls"].toString(),
-                      double.parse(dashController.customerStatusReport[0]["total_calls"].toString()) / 100,
-                      "Calls",
-                      Colors.green,
-                    ),
+          50.height,
+          dashController.customerStatusReport.isNotEmpty?
+          Container(
+            alignment: Alignment.center,
+            height: 120,
+            // color: Colors.purple,
+            child: Stack(
+              children: [
+                Positioned(
+                  left: 50,
+                  child: activityCircle(
+                    dashController.customerStatusReport[0]["total_calls"].toString(),
+                    double.parse(dashController.customerStatusReport[0]["total_calls"].toString()) / 100,
+                    "Calls",
+                    Colors.green,
                   ),
+                ),
 
-                  Positioned(
-                    left: 100,
-                    child: activityCircle(
-                      dashController.customerStatusReport[0]["total_mails"].toString(),
-                      double.parse(dashController.customerStatusReport[0]["total_mails"].toString()) / 100,
-                      "Mails",
-                      Colors.red,
-                    ),
+                Positioned(
+                  left: 130,
+                  child: activityCircle(
+                    dashController.customerStatusReport[0]["total_mails"].toString(),
+                    double.parse(dashController.customerStatusReport[0]["total_mails"].toString()) / 100,
+                    "Mails",
+                    Colors.red,
                   ),
+                ),
 
-                  Positioned(
-                    left: 160,
-                    child: activityCircle(
-                      dashController.customerStatusReport[0]["total_customers"].toString(),
-                      double.parse(dashController.customerStatusReport[0]["total_customers"].toString()) / 100,
-                      "Updates",
-                      Colors.blue,
-                    ),
+                Positioned(
+                  left: 210,
+                  child: activityCircle(
+                    dashController.customerStatusReport[0]["total_customers"].toString(),
+                    double.parse(dashController.customerStatusReport[0]["total_customers"].toString()) / 100,
+                    "Updates",
+                    Colors.blue,
                   ),
+                ),
 
-                ],
-              ),
+              ],
             ),
-          )
+          ):0.height
         ],
       ),
     );
@@ -453,7 +455,7 @@ class CustomerActivityCard extends StatelessWidget {
     return Column(
       children: [
         CircularPercentIndicator(
-          radius: 35,
+          radius: 45,
           lineWidth: 10,
           percent: percent,
           backgroundColor: color.withOpacity(0.2),

@@ -47,10 +47,11 @@ class DashboardController extends GetxController {
     "Yesterday",
     "Last 7 Days",
     "Last 30 Days",
+    "Custom",
   ];
-  var selectedSortBy = 'Today'.obs;
-  var selectedRange = Rxn<DateTimeRange>(); // null-safe observable
-  var isDateRangeSet = false.obs;
+var selectedSortBy = 'Today'.obs;
+var selectedRange = Rxn<DateTimeRange>(); // null-safe observable
+var isDateRangeSet = false.obs;
 var date1="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}".obs;
 var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}".obs;
   void setDateRange(PickerDateRange range) {
@@ -68,11 +69,12 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
     isDateRangeSet.value = false;
   }
 
-  void showDatePickerDialog(BuildContext context) {
-    showDialog(
+  Future<DateTimeRange?> showDatePickerDialog(BuildContext context) async {
+    return await showDialog<DateTimeRange?>(
       context: context,
       builder: (BuildContext context) {
-        dynamic tempRange;
+        DateTimeRange? tempRange;
+
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
@@ -92,42 +94,31 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
                   minDate: DateTime(2023),
                   maxDate: DateTime.now(),
                   selectionMode: DateRangePickerSelectionMode.range,
-                  selectionShape: DateRangePickerSelectionShape.circle,
-                  selectionRadius: 18,
                   selectionColor: const Color(0xFF004AAD),
                   startRangeSelectionColor: const Color(0xFF004AAD),
                   endRangeSelectionColor: const Color(0xFF004AAD),
                   rangeSelectionColor: const Color(0x22004AAD),
-                  monthCellStyle: const DateRangePickerMonthCellStyle(
-                    textStyle: TextStyle(
-                      fontSize: 14,
-                      height: 1.0,
-                      color: Colors.black87,
-                    ),
-                    todayTextStyle: TextStyle(
-                      fontSize: 14,
-                      height: 1.0,
-                      color: Colors.black87,
-                    ),
-                  ),
 
-                  monthViewSettings: const DateRangePickerMonthViewSettings(
-                    dayFormat: 'EEE',
-                    viewHeaderHeight: 28,
-                  ),
-                  selectionTextStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                    height: 1.0, // fixes vertical centering of number inside circle
-                  ),
-                  onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-                    setState(() {
-                      tempRange = args.value;
-                    });
+                  onSelectionChanged:
+                      (DateRangePickerSelectionChangedArgs args) {
+                    if (args.value is PickerDateRange) {
+                      final PickerDateRange range = args.value;
+
+                      if (range.startDate != null &&
+                          range.endDate != null) {
+                        setState(() {
+                          tempRange = DateTimeRange(
+                            start: range.startDate!,
+                            end: range.endDate!,
+                          );
+                        });
+                      }
+                    }
                   },
                 ),
               ),
+
+              /// ACTIONS
               actions: [
                 const Padding(
                   padding: EdgeInsets.only(bottom: 8.0),
@@ -141,11 +132,13 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
                     ),
                   ),
                 ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    /// CANCEL
                     TextButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => Navigator.pop(context, null),
                       child: const Text(
                         'Cancel',
                         style: TextStyle(
@@ -154,28 +147,54 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
                         ),
                       ),
                     ),
+
+                    /// OK
                     TextButton(
                       onPressed: () {
                         if (tempRange != null) {
-                          setDateRange(tempRange);
+
+                          /// ✅ store range
+                          dashController.selectedRange.value = tempRange;
+
+                          /// ✅ convert to string date
+                          dashController.date1.value =
+                          "${tempRange!.start.year}-${tempRange!.start.month.toString().padLeft(2, '0')}-${tempRange!.start.day.toString().padLeft(2, '0')}";
+
+                          dashController.date2.value =
+                          "${tempRange!.end.year}-${tempRange!.end.month.toString().padLeft(2, '0')}-${tempRange!.end.day.toString().padLeft(2, '0')}";
+
+                          /// ✅ API calls
+                          getDashboardReport();
+                          getLeadReport();
+                          getStatusWiseReport();
+                          getCustomerStatus();
+
+                          getCustomerReport(
+                            dashController.date1.value,
+                            dashController.date2.value,
+                          );
+
+                          /// meeting filter
+                          remController.selectedMeetRange.value = tempRange;
+                          remController.selectedMeetSortBy.value =
+                          "Custom Range";
+
+                          remController.filterAndSortMeetings(
+                            searchText:
+                            controllers.searchText.value.toLowerCase(),
+                            callType:
+                            controllers.selectMeetingType.value,
+                            sortField:
+                            controllers.sortFieldMeetingActivity.value,
+                            sortOrder:
+                            controllers.sortOrderMeetingActivity.value,
+                          );
+
+                          /// ✅ IMPORTANT → return value
+                          Navigator.pop(context, tempRange);
+                        } else {
+                          Navigator.pop(context, null);
                         }
-                        getDashboardReport();
-                        getLeadReport();
-                        getStatusWiseReport();
-                        getCustomerStatus();
-                        final range = dashController.selectedRange.value;
-                        var today = DateTime.now();
-                        getCustomerReport(range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}", range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
-                        dashController.selectedSortBy.value = "";
-                        remController.selectedMeetRange.value = range;
-                        remController.selectedMeetSortBy.value = "Custom Range";
-                        remController.filterAndSortMeetings(
-                          searchText: controllers.searchText.value.toLowerCase(),
-                          callType: controllers.selectMeetingType.value,
-                          sortField: controllers.sortFieldMeetingActivity.value,
-                          sortOrder: controllers.sortOrderMeetingActivity.value,
-                        );
-                        Navigator.pop(context);
                       },
                       child: const Text(
                         'OK',
@@ -194,7 +213,6 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
       },
     );
   }
-
   String _fmt(DateTime d) =>
       "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
   bool canMoveForward() {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
+import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
@@ -12,6 +13,7 @@ import '../common/constant/colors_constant.dart';
 import '../common/constant/default_constant.dart';
 import '../common/widgets/log_in.dart';
 import '../controller/controller.dart';
+import '../controller/reminder_controller.dart';
 import '../screens/DashboardPage.dart';
 import '../screens/leads/new_lead_page.dart';
 import '../screens/leads/view_customer.dart';
@@ -143,6 +145,7 @@ class SideBar extends StatelessWidget {
                         // controllers.selectedIndex.value = 7;
                         controllers.selectedIndex.value = 500;
                         controllers.isLeadsExpanded.toggle();
+                        controllers.selectedQualifiedSortBy.value="All";
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
@@ -540,6 +543,10 @@ class SidebarItem extends StatelessWidget {
             onTap!();
           } else if (page != null) {
             controllers.search.clear();
+            remController.selectedCallSortBy.value="All";
+            remController.selectedMailSortBy.value="All";
+            remController.selectedMeetSortBy.value="All";
+            remController.selectedReminderSortBy.value="All";
             Navigator.push(
               context,
               PageRouteBuilder(

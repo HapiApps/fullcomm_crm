@@ -3259,6 +3259,398 @@ class Utils {
     );
   }
 
+  void showCallDialog(context,String text,VoidCallback callBack,bool isLead){
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        String customerError = "";
+        String dateError = "";
+        String timeError = "";
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Container(
+                width: 600,
+                constraints: const BoxConstraints(maxHeight: 510),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomText(
+                          text: text,
+                          size: 16,
+                          isBold: true,
+                          isCopy: false,
+                        ),
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: const Icon(Icons.clear),
+                        )
+                      ],
+                    ),
+                    Divider(color: Colors.grey.shade200,),
+                    SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// CUSTOMER
+                          if(isLead==false)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "Lead Name ",
+                                      style: TextStyle(color: Colors.black, fontSize: 13),
+                                    ),
+                                    TextSpan(
+                                      text: "*",
+                                      style: TextStyle(color: Colors.red, fontSize: 13),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              5.height,
+                              SizedBox(
+                                height: 45,
+                                child: KeyboardDropdownField<AllCustomersObj>(
+                                  items: controllers.customers,
+                                  borderRadius: 5,
+                                  borderColor: Colors.grey.shade400,
+                                  hintText: "Customers",
+                                  labelText: "",
+
+                                  labelBuilder: (customer) =>
+                                  '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+
+                                  itemBuilder: (customer) {
+                                    return Container(
+                                      alignment: Alignment.centerLeft,
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                                      child: CustomText(
+                                        text:
+                                        '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+                                        size: 14,
+                                        isCopy: false,
+                                      ),
+                                    );
+                                  },
+
+                                  textEditingController: controllers.cusController,
+
+                                  onSelected: (value) {
+                                    controllers.selectCustomer(value);
+                                    setState(() => customerError = "");
+                                  },
+
+                                  onClear: () {
+                                    controllers.clearSelectedCustomer();
+                                    setState(() => customerError = "Please select lead");
+                                  },
+                                ),
+                              ),
+                              if (customerError.isNotEmpty)
+                              Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: CustomText(
+                                    text: customerError,
+                                    colors: Colors.red,
+                                    size: 12,
+                                    isCopy: false,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          10.height,
+
+                          /// DATE & TIME
+                          Row(
+                            children: [
+
+                              /// DATE
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    RichText(
+                                      text: const TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: "Date ",
+                                            style: TextStyle(color: Colors.black, fontSize: 13),
+                                          ),
+                                          TextSpan(
+                                            text: "*",
+                                            style: TextStyle(color: Colors.red, fontSize: 13),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    5.height,
+
+                                    Obx(() => InkWell(
+                                      onTap: () async {
+                                        await utils.datePicker(
+                                          context: context,
+                                          textEditingController: controllers.dateOfConCtr,
+                                          pathVal: controllers.empDOB,
+                                        );
+                                        setState(() => dateError = "");
+                                      },
+                                      child: Container(
+                                        height: 40,
+                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.grey.shade400),
+                                          borderRadius: BorderRadius.circular(5),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            const Icon(Icons.calendar_month_outlined, size: 15),
+                                            5.width,
+                                            CustomText(
+                                              text: controllers.empDOB.value,
+                                              isCopy: false,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )),
+
+                                    if (dateError.isNotEmpty)
+                                      CustomText(
+                                        text: dateError,
+                                        colors: Colors.red,
+                                        size: 12,
+                                        isCopy: false,
+                                      ),
+                                  ],
+                                ),
+                              ),
+
+                              10.width,
+
+                              /// TIME
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    RichText(
+                                      text: const TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: "Time ",
+                                            style: TextStyle(color: Colors.black, fontSize: 13),
+                                          ),
+                                          TextSpan(
+                                            text: "*",
+                                            style: TextStyle(color: Colors.red, fontSize: 13),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    5.height,
+
+                                    Obx(() => InkWell(
+                                      onTap: () async {
+                                        await utils.timePicker(
+                                          context: context,
+                                          textEditingController: controllers.timeOfConCtr,
+                                          pathVal: controllers.callTime,
+                                        );
+                                        setState(() => timeError = "");
+                                      },
+                                      child: Container(
+                                        height: 40,
+                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.grey.shade400),
+                                          borderRadius: BorderRadius.circular(5),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            const Icon(Icons.access_time, size: 15),
+                                            5.width,
+                                            CustomText(
+                                              text: controllers.callTime.value,
+                                              isCopy: false,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )),
+
+                                    if (timeError.isNotEmpty)
+                                      CustomText(
+                                        text: timeError,
+                                        colors: Colors.red,
+                                        size: 12,
+                                        isCopy: false,
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          10.height,
+
+                          /// CALL TYPE
+                          RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Call Type ",
+                                  style: TextStyle(color: Colors.black, fontSize: 13),
+                                ),
+                                TextSpan(
+                                  text: "*",
+                                  style: TextStyle(color: Colors.red, fontSize: 13),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Wrap(
+                            spacing: 10,
+                            children: controllers.callTypeList.map<Widget>((type) {
+                              return Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Radio<String>(
+                                    value: type,
+                                    groupValue: controllers.callType,
+                                    onChanged: (v) {
+                                      setState(() {
+                                        controllers.callType = v!;
+                                      });
+                                    },
+                                  ),
+                                  CustomText(text: type, isCopy: false),
+                                ],
+                              );
+                            }).toList(),
+                          ),
+
+                          10.height,
+
+                          /// STATUS
+                          RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Status ",
+                                  style: TextStyle(color: Colors.black, fontSize: 13),
+                                ),
+                                TextSpan(
+                                  text: "*",
+                                  style: TextStyle(color: Colors.red, fontSize: 13),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Obx(() => Wrap(
+                            spacing: 10,
+                            runSpacing: 5,
+                            children: controllers.hCallStatusList.map<Widget>((item) {
+                              return Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Radio<String>(
+                                    value: item["value"],
+                                    groupValue: controllers.callStatus,
+                                    onChanged: (v) {
+                                      setState(() {
+                                        controllers.callStatus = v!;
+                                      });
+                                    },
+                                  ),
+                                  CustomText(text: item["value"], isCopy: false),
+                                ],
+                              );
+                            }).toList(),
+                          )),
+
+                          10.height,
+
+                          /// NOTES
+                          CustomText(text: "Notes", isCopy: false),
+                          5.height,
+
+                          SizedBox(
+                            height: 80,
+                            child: TextField(
+                              controller: controllers.callCommentCont,
+                              maxLines: null,
+                              expands: true,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    10.height,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: CustomText(
+                            text: "Cancel",
+                            colors: colorsConst.primary,
+                            isCopy: false,
+                          ),
+                        ),
+                        10.width,
+                        ElevatedButton(
+                          onPressed: (){
+                            bool isValid = true;
+
+                            if (isLead==false&&controllers.selectedCustomerId.value.isEmpty) {
+                              customerError = "Please select lead";
+                              isValid = false;
+                            }
+
+                            if (controllers.empDOB.value.isEmpty) {
+                              dateError = "Please select date";
+                              isValid = false;
+                            }
+
+                            if (controllers.callTime.value.isEmpty) {
+                              timeError = "Please select time";
+                              isValid = false;
+                            }
+
+                            setState(() {});
+
+                            if (!isValid) return;
+
+                            callBack();
+                          },
+                          child: const Text("Save"),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   void showFilterDialog(BuildContext context) {
     List<String> items = [
       "Today",
@@ -3419,7 +3811,7 @@ class Utils {
               ),
               onPressed: () {
                 controllers.storage.write("selectedSortBy", selectedValue.value);
-                controllers.selectedSortBy.value = selectedValue.value;
+                dashController.selectedSortBy.value = selectedValue.value;
                 remController.loadSavedFilters();
                 Navigator.pop(context, selectedValue.value);
               },

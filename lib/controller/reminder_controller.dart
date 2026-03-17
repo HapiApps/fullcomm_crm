@@ -21,6 +21,7 @@ import '../models/reminder_obj.dart';
 import '../provider/reminder_provider.dart';
 import '../screens/reminder/reminder_page.dart';
 import 'controller.dart';
+import 'dashboard_controller.dart';
 
 class AddReminderModel {
   final TextEditingController titleController = TextEditingController();
@@ -155,14 +156,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   final Rxn<DateTime> selectedMailMonth = Rxn<DateTime>();
   final Rxn<DateTime> selectedMeetMonth = Rxn<DateTime>();
   final Rxn<DateTime> selectedReminderMonth = Rxn<DateTime>();
-  RxString selectedCallSortBy = "All".obs;
+  RxString selectedCallSortBy = "Today".obs;
   RxString selectedMailSortBy = "All".obs;
   RxString selectedMeetSortBy = "Today".obs;
-  RxString selectedReminderSortBy = "All".obs;
+  RxString selectedReminderSortBy = "Today".obs;
 
   void loadSavedFilters() {
     final storage = controllers.storage.read("selectedSortBy");
-    controllers.selectedSortBy.value = storage ?? "All";
+    dashController.selectedSortBy.value = storage ?? "All";
     controllers.selectedProspectSortBy.value = storage ?? "All";
     controllers.selectedQualifiedSortBy.value = storage ?? "All";
     controllers.selectedCustomerSortBy.value = storage ?? "All";

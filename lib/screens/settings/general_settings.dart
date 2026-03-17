@@ -15,6 +15,7 @@ import '../../components/custom_text.dart';
 import '../../components/custom_textfield.dart';
 import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
+import '../../controller/dashboard_controller.dart';
 import '../../controller/reminder_controller.dart';
 import '../../models/all_customers_obj.dart';
 import '../../services/api_services.dart';
@@ -33,7 +34,9 @@ class _GeneralSettingsState extends State<GeneralSettings> {
     // TODO: implement initState
     super.initState();
     apiService.getAllEmployees();
-    controllers.selectedSortBy.value = controllers.storage.read("selectedSortBy") ?? "All";
+    Future.delayed(Duration.zero, () {
+      dashController.selectedSortBy.value = controllers.storage.read("selectedSortBy") ?? "All";
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -420,7 +423,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                         ),
                                         child: Center(child: Image.asset("assets/images/setting1.png"),)),10.width,
                                     CustomText(
-                                      text: "Lead Categories",
+                                      text: "1. Lead Categories",
                                       colors: colorsConst.textColor,size: 20,
                                       isBold: true,
                                       isCopy: true,
@@ -428,12 +431,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   ],
                                 ),10.height,
                                 CustomText(
-                                  text: "Manage the order and structure of categories used",
-                                  isCopy: true,
-                                ),5.height,
-                                CustomText(
-                                  text: "across the dashboard views.",
-                                  isCopy: true,
+                                  text: "Manage the order and structure of categories used across the dashboard views.",
+                                  isCopy: true,textAlign: TextAlign.start,
                                 ),5.height,
                                 Divider(thickness: 0.2,color: Colors.grey,),5.height,
                                 Row(
@@ -487,7 +486,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                         ),
                                         child: Center(child: Icon(Icons.calendar_today_outlined,color: colorsConst.primary,size: 20,))),10.width,
                                     CustomText(
-                                      text: "Default Date Range",
+                                      text: "2. Default Date Range",
                                       colors: colorsConst.textColor,size: 20,
                                       isBold: true,
                                       isCopy: true,
@@ -495,12 +494,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   ],
                                 ),10.height,
                                 CustomText(
-                                  text: "Choose the default time filter applied to",
-                                  isCopy: true,
-                                ),5.height,
-                                CustomText(
-                                  text: "dashboard records and analytics views.",
-                                  isCopy: true,
+                                  text: "Choose the default time filter applied to dashboard records and analytics views.",
+                                  isCopy: true,textAlign: TextAlign.start,
                                 ),5.height,
                                 Divider(thickness: 0.2,color: Colors.grey,),5.height,
                                 Row(
@@ -510,7 +505,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                       children: [
                                         Image.asset("assets/images/setting3.png",width: 15,height: 15,),5.width,
                                         Obx(()=>CustomText(
-                                          text: controllers.selectedSortBy.value,
+                                          text: dashController.selectedSortBy.value,
                                           isCopy: true,
                                         )),
                                       ],
@@ -992,7 +987,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                         ),
                                         child: Center(child: Image.asset("assets/images/setting2.png"),)),10.width,
                                     CustomText(
-                                      text: "Call Record Status",
+                                      text: "3. Call Record Status",
                                       colors: colorsConst.textColor,size: 20,
                                       isBold: true,
                                       isCopy: true,
@@ -1000,12 +995,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   ],
                                 ),10.height,
                                 CustomText(
-                                  text: "Customize customer engagement status labels",
-                                  isCopy: true,
-                                ),5.height,
-                                CustomText(
-                                  text: "used across records and pipelines.",
-                                  isCopy: true,
+                                  text: "Customize customer engagement status labels used across records and pipelines.",
+                                  isCopy: true,textAlign: TextAlign.start,
                                 ),5.height,
                                 Divider(thickness: 0.2,color: Colors.grey,),5.height,
                                 Row(
@@ -1039,8 +1030,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                   ],
                 ),
                 Divider(color: Colors.grey.shade200,),
-                CustomText(text: "\nEmployee Shifts", isCopy: false,size: 20,isBold: true,),5.height,
-                CustomText(text: "Manage working hours and shift schedules for your team.\n", isCopy: false,colors: Colors.grey,),
+                CustomText(text: "\n4. Employee Shifts", isCopy: false,size: 20,isBold: true,),5.height,
+                CustomText(text: "Manage working hours and shift schedules for your team.\n", isCopy: false),
                 // 10.height,
                 // Row(
                 //   children: [

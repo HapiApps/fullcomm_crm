@@ -346,7 +346,7 @@ class _ReminderPageState extends State<ReminderPage> {
                  children: [
                    CustomSearchTextField(
                      controller: controllers.search,
-                     hintText: "Search Customer Name, Employee Name, Reminder Title",
+                     hintText: "Search Lead Name, Employee Name, Reminder Title",
                      onChanged: (value) {
                        remController.searchText.value = value.toString().trim();
                      },
@@ -569,7 +569,7 @@ class _ReminderPageState extends State<ReminderPage> {
                            Row(
                              children: [
                                CustomText(
-                                 text: "Customer Name",
+                                 text: "Lead Name",
                                  size: 15,
                                  isBold: true,
                                  isCopy: true,

@@ -66,7 +66,7 @@ class _LeadPieCardState extends State<LeadPieCard> {
             thickness: 1,
             color: Color(0xffE5E7EB),
           ),
-          16.height,
+          5.height,
 
           /// PIE CHART
           if(total.toInt().toString()!="0")
@@ -154,15 +154,16 @@ class _LeadPieCardState extends State<LeadPieCard> {
             ),
           ),
 
-          20.height,
+          5.height,
 
           /// LEGEND GRID (2 per row)
           SizedBox(
-            // height: 90,
+            height: 50,
             child: GridView.builder(
-              shrinkWrap: true,
-              physics:
-              const NeverScrollableScrollPhysics(),
+              physics: const BouncingScrollPhysics(), // 👈 scroll feel
+                // shrinkWrap: true,
+              // physics:
+              // const NeverScrollableScrollPhysics(),
               // itemCount: widget.data.length,
               gridDelegate:
               const SliverGridDelegateWithFixedCrossAxisCount(
@@ -171,34 +172,6 @@ class _LeadPieCardState extends State<LeadPieCard> {
                 crossAxisSpacing: 55,
                 childAspectRatio: 10,
               ),
-              // itemBuilder: (context, index) {
-              //   final item = widget.data[index];
-              //
-              //   return Row(
-              //     mainAxisAlignment:
-              //     MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Row(
-              //         children: [
-              //           CircleAvatar(
-              //             radius: 5,
-              //             backgroundColor: item.color,
-              //           ),
-              //           6.width,
-              //           CustomText(
-              //             text: item.label,
-              //             isCopy: false,
-              //           ),
-              //         ],
-              //       ),
-              //       CustomText(
-              //         text: item.value.toInt().toString(),
-              //         isBold: true,
-              //         isCopy: false,
-              //       ),
-              //     ],
-              //   );
-              // },
                 itemCount: dashController.leadReport.length,
                 itemBuilder: (context, index) {
 

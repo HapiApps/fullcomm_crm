@@ -54,31 +54,17 @@ class _NewLeadPageState extends State<NewLeadPage> {
     // widget.list.value = suggestions;
     // controllers.selectRadio(widget.list,widget.list2);
     controllers.searchProspects.value = controllers.search.text;
-
-    final input = controllers.search.text.toLowerCase().trim();
-    final inputNoSpace = input.replaceAll(" ", "");
-
-    final suggestions = widget.list2.where((user) {
-
-      final phone = user.mobileNumber.toString().toLowerCase();
-      final name = user.firstname.toString().toLowerCase();
-      final company = user.companyName.toString().toLowerCase();
-
-      final phoneNoSpace = phone.replaceAll(" ", "");
-      final nameNoSpace = name.replaceAll(" ", "");
-      final companyNoSpace = company.replaceAll(" ", "");
-
-      return phone.contains(input) ||
-          name.contains(input) ||
-          company.contains(input) ||
-          phoneNoSpace.contains(inputNoSpace) ||
-          nameNoSpace.contains(inputNoSpace) ||
-          companyNoSpace.contains(inputNoSpace);
-
-    }).toList();
-
-    widget.list.value = suggestions;
-
+    if(controllers.search.text.trim().isNotEmpty){
+      final suggestions = widget.list2.where(
+              (user) {
+            final phone = user.mobileNumber.toString().toLowerCase();
+            final name = user.firstname.toString().toLowerCase();
+            final city = user.companyName.toString().toLowerCase();
+            final input = controllers.search.text.toString().toLowerCase().trim();
+            return phone.contains(input) ||name.contains(input) ||city.contains(input);
+          }).toList();
+      widget.list.value = suggestions;
+    }
     controllers.selectRadio(widget.list, widget.list2);
   }
   @override
@@ -118,7 +104,6 @@ class _NewLeadPageState extends State<NewLeadPage> {
         //   );
         // }
       });
-      controllers.searchProspects.value = "";
     });
     _leftController.addListener(() {
       if (_rightController.hasClients &&
@@ -851,9 +836,9 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                         }
                                       } else {
                                         controllers.isAllSelected.value = false;
+                                        controllers.idList.clear();
                                         for (var lead in widget.list) {
                                           lead.select = false;
-                                          controllers.idList.remove(lead.userId);
                                         }
                                       }
                                     });

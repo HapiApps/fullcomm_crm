@@ -154,7 +154,6 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   RxString selectedTemperature = "".obs;
   RxString selectedProspectTemperature = "".obs;
   RxString selectedQualifiedTemperature = "".obs;
-  RxString selectedSortBy = "All".obs;
   RxString selectedProspectSortBy = "All".obs;
   RxString selectedQualifiedSortBy = "All".obs;
   RxString selectedCustomerSortBy = "All".obs;
@@ -3013,6 +3012,7 @@ var refreshValue=true.obs;
   RxList<bool> editMode = <bool>[].obs;
   RxList<LeadStatusModel> leadCategoryList = <LeadStatusModel>[].obs;
   RxList<LeadStatusModel> allLeadCategoryList = <LeadStatusModel>[].obs;
+  RxList<LeadStatusModel> allLead=<LeadStatusModel>[].obs;
   // RxList leadCategoryList = [
   //   {"lead_status": "1", "value": "Suspects","id" : "1"},
   //   {"lead_status": "2", "value": "Prospects","id" : "2"},

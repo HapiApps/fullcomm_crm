@@ -843,7 +843,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               children: [
                                 CustomText(//1
                                   textAlign: TextAlign.left,
-                                  text: "Customer Name",
+                                  text: "Lead Name",
                                   size: 15,
                                   isBold: true,
                                   isCopy: true,

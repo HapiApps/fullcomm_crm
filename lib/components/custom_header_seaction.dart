@@ -65,6 +65,7 @@ class _HeaderSectionState extends State<HeaderSection> {
       }).toList();
       sheet?.appendRow(row);
     }
+    controllers.idList.clear();
     final fileBytes = excel.encode();
     final blob = html.Blob([fileBytes]);
     final url = html.Url.createObjectUrlFromBlob(blob);
@@ -131,7 +132,17 @@ class _HeaderSectionState extends State<HeaderSection> {
                       msg: "No data available to export",
                       color: Colors.red);
                 }else{
-                  exportLeadsToExcel(widget.list, controllers.fields);
+                  RxList<NewLeadObj> storeList=<NewLeadObj>[].obs;
+                  if(controllers.idList.isNotEmpty){
+                    for(var i=0;i<controllers.idList.length;i++){
+                      for(var j=0;j<widget.list.length;j++){
+                        if(controllers.idList[i]==widget.list[j].userId){
+                          storeList.add(widget.list[j]);
+                        }
+                      }
+                    }
+                  }
+                  exportLeadsToExcel(controllers.idList.isNotEmpty?storeList:widget.list, controllers.fields);
                 }
               },
               isLoading: false,

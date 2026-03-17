@@ -1082,7 +1082,7 @@ class ReminderUtils {
                         thickness: 1.5,
                         color: colorsConst.secondary,
                       ),
-                      8.height,
+                      5.height,
                       Container(
                         padding: EdgeInsets.all(16),
                         alignment: Alignment.center,
@@ -1095,9 +1095,9 @@ class ReminderUtils {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomTextField(
-                              hintText: "Set reminder for the event",
+                              hintText: "Set reminder for the Event",
                               // hintText: "Enter Event Name",
-                              text: "Set reminder for the event",
+                              text: "Set reminder for the Event",
                               controller: remController.titleController,
                               width: textFieldSize,
                               keyboardType: TextInputType.text,
@@ -1225,17 +1225,20 @@ class ReminderUtils {
                                 ),
                                 ),
                                 20.width,
-                                CustomDropDown(
-                                  saveValue: remController.repeat,
-                                  isOptional: false,
-                                  valueList: ["Immediately", "5 mins", "15 mins", "10 mins", "30 mins"],
-                                  text: "Event Duration",
-                                  width: 200,
-                                  onChanged: (value) async {
-                                    setState(() {
-                                      remController.repeat = value.toString();
-                                    });
-                                  },
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                                  child: CustomDropDown(
+                                    saveValue: remController.repeat,
+                                    isOptional: false,
+                                    valueList: ["Immediately", "5 mins", "15 mins", "10 mins", "30 mins"],
+                                    text: "Event Duration",
+                                    width: 200,
+                                    onChanged: (value) async {
+                                      setState(() {
+                                        remController.repeat = value.toString();
+                                      });
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
@@ -1244,13 +1247,11 @@ class ReminderUtils {
                               colors: colorsConst.fieldHead,
                               isCopy: true,
                               size: 13,),
-                            5.height,
                             SizedBox(
                               width: textFieldSize,
                               child: TextFormField(
                                   textCapitalization: TextCapitalization.sentences,
                                   controller: remController.detailsController,
-                                  maxLines: 5,
                                   style: GoogleFonts.lato(
                                     color: Colors.black,
                                     fontSize: 17,
@@ -1258,8 +1259,7 @@ class ReminderUtils {
                                   decoration: customStyle.inputDecoration(
                                       text: "Enter Details")
                               ),
-                            ),
-                            20.height,
+                            ),10.height,
                             CustomDropDown(
                               saveValue: remController.location,
                               isOptional: false,
@@ -1353,7 +1353,7 @@ class ReminderUtils {
                                               width: screenWidth/4,
                                             ),
                                             if (employeeError != null)
-                                              Padding(
+                                            Padding(
                                                 padding: const EdgeInsets.only(top: 4.0),
                                                 child: Text(
                                                   employeeError!,
@@ -1446,7 +1446,6 @@ class ReminderUtils {
                                 ],
                               ),
                             ),
-                            20.height,
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -1534,7 +1533,6 @@ class ReminderUtils {
                           ],
                         ),
                       ),
-                      20.height,
                       Obx(() => Column(
                         children: [
                           ...remController.reminders
@@ -1558,7 +1556,7 @@ class ReminderUtils {
                           ),
                         ],
                       )),
-                      20.height,
+                      5.height,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -1786,7 +1784,7 @@ class ReminderUtils {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
 
                       Text("Notification Type",
                           style: GoogleFonts.lato(
@@ -1832,7 +1830,7 @@ class ReminderUtils {
                         },
                       ),
 
-                      8.height,
+                      5.height,
                       Consumer<ReminderProvider>(
                         builder: (context, provider, _) {
                           if (provider.selectedNotification == "task") {
@@ -2035,7 +2033,7 @@ class ReminderUtils {
                         },
                       ),
 
-                      13.height,
+                      5.height,
 
                       /// Action buttons
                       Row(
@@ -2109,6 +2107,7 @@ class ReminderUtils {
 
   Widget reminderCard(int index,BuildContext context) {
     final reminder = remController.reminders[index];
+    remController.reminders[index].titleController.text=remController.titleController.text;
     return  Container(
       //width: 550,
       padding: EdgeInsets.all(16),

@@ -983,11 +983,11 @@ class ApiService {
                 "customer_name": controllers.selectedCustomerName.value,
                 "type": type,
                 "cos_id": controllers.storage.read("cos_id"),
-                "call_type":controllers.upCallType,
-                "call_status":controllers.upcallStatus,
-                "date":"${controllers.upDate.value} ${controllers.upCallTime.value}",
+                "call_type":controllers.callType,
+                "call_status":controllers.callStatus,
+                "date":"${controllers.empDOB.value} ${controllers.callTime.value}",
                 "updated_by": controllers.storage.read("id"),
-                "comments": controllers.upCallCommentCont.text.trim(),
+                "comments": controllers.callCommentCont.text.trim(),
                 "id":id
               }),
           encoding: Encoding.getByName("utf-8"));
@@ -2724,6 +2724,7 @@ class ApiService {
   Future getAllLeadCategories() async {
     try {
       controllers.allLeadCategoryList.clear();
+      controllers.allLead.clear();
       Map data = {
         "search_type": "all_lead_categories",
         "cos_id": controllers.storage.read("cos_id"),
@@ -2749,6 +2750,18 @@ class ApiService {
       if (request.statusCode == 200) {
         // controllers.leadCategoryList.clear();
         List response = json.decode(request.body);
+        controllers.allLead.value = response.map<LeadStatusModel>((item) {
+          return LeadStatusModel(
+            leadStatus: item["lead_status"].toString(),
+            value: item["value"].toString(),
+            id: item["id"].toString(),
+            icon1: item["icon1"].toString(),
+            icon2: item["icon2"].toString(),
+            displayOrder: item["display_order"],
+            active: item['active'].toString(),
+            totalLead: item['total_lead'].toString(),
+          );
+        }).toList();
         controllers.allLeadCategoryList.value = response.map<LeadStatusModel>((item) {
           return LeadStatusModel(
             leadStatus: item["lead_status"].toString(),
