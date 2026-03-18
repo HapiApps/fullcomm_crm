@@ -12,6 +12,7 @@ import 'package:fullcomm_crm/components/customer_name_tile.dart';
 import 'package:fullcomm_crm/screens/products/add_product.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import '../../common/constant/api.dart';
 import '../../common/utilities/mail_utils.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
@@ -394,7 +395,7 @@ class _ProductPageState extends State<ProductPage> {
                             /// DATA ROWS
                             ...List.generate(productCtr.products.length, (index) {
                               final e = productCtr.products[index];
-
+                              print('$imageFile?path=${e.link.toString()}');
                               return TableRow(
                                 decoration: BoxDecoration(
                                   color: index % 2 == 0
@@ -551,28 +552,28 @@ class _ProductPageState extends State<ProductPage> {
                                   /// IMAGE COLUMN
                                   Padding(
                                     padding: const EdgeInsets.all(8),
-                                    child: e.imageLink == null || e.imageLink!.isEmpty
-                                        ? const CustomText(
-                                      text: "No Image",
-                                      isCopy: false,
-                                    )
-                                        : ClipRRect(
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: CachedNetworkImage(
-                                            imageUrl: e.imageLink!,fit:BoxFit.cover ,
-                                            imageBuilder: (context, imageProvider) =>
-                                            Container(
-                                              decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover,
-                                              ),
-                                              ),
-                                            ),
-                                            errorWidget: (context,url,error)=>Icon(Icons.error_outline,color: Colors.black,),
-                                            placeholder: (context,url)=>Icon(Icons.error_outline,color: Colors.black,)
-                                            )
+                                    child: CachedNetworkImage(
+                                      imageUrl: '$imageFile?path=${e.link.toString()}',
+                                      fit: BoxFit.cover,
+
+                                      imageBuilder: (context, imageProvider) => Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+
+                                      placeholder: (context, url) => Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+
+                                      errorWidget: (context, url, error) => Icon(
+                                        Icons.error,
+                                        color: Colors.red,
+                                      ),
                                     ),
                                   ),
                                 ],

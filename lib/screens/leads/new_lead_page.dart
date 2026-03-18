@@ -132,16 +132,20 @@ class _NewLeadPageState extends State<NewLeadPage> {
   Widget build(BuildContext context) {
 
     final screenWidth = MediaQuery.of(context).size.width;
-    double tableWidth;
-    if (screenWidth >= 1600) {
-      tableWidth = 4000;
-    } else if (screenWidth >= 1200) {
-      tableWidth = 3000;
-    } else if (screenWidth >= 900) {
-      tableWidth = 2400;
-    } else {
-      tableWidth = 2000;
-    }
+    // double tableWidth;
+    // if (screenWidth >= 1600) {
+    //   tableWidth = 4000;
+    // } else if (screenWidth >= 1200) {
+    //   tableWidth = 3000;
+    // } else if (screenWidth >= 900) {
+    //   tableWidth = 2400;
+    // } else {
+    //   tableWidth = 2000;
+    // }
+    double tableWidth = tableController.tableHeadings.fold(
+      0.0,
+          (sum, h) => sum + (tableController.colWidth[h] ?? 150),
+    );
     return SelectionArea(
       child: Scaffold(
         body: Row(
@@ -241,7 +245,8 @@ class _NewLeadPageState extends State<NewLeadPage> {
                       },
                       onMail: () {
                         // mailUtils.bulkEmailDialog(_focusNode, list: widget.list);
-                        mailUtils.bulkEmailDialog(_focusNode, list: controllers.allLeadList);
+                        // mailUtils.bulkEmailDialog(_focusNode, list: controllers.allLeadList);
+                        mailUtils.bulkEmail(_focusNode, list: widget.list);
                       },
                       onPromote: () {
                         debugPrint("onTapppp");

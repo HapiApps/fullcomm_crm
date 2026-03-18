@@ -312,7 +312,7 @@ class CallRecord {
   final String? quotationName;
   final String? callType;
   final String? callStatus;
-  final int? createdBy;
+  final String? createdBy;
   final int? updatedBy;
   final String? createdTs;
   final String? updatedTs;
@@ -361,7 +361,7 @@ class CallRecord {
     quotationName: s(json['quotation_name']),
     callType: s(json['call_type']),
     callStatus: s(json['call_status']),
-    createdBy: i(json['created_by']),
+    createdBy: s(json['created_by']),
     updatedBy: i(json['updated_by']),
     createdTs: s(json['created_ts']),
     updatedTs: s(json['updated_ts']),
@@ -414,7 +414,7 @@ class MailRecord extends CallRecord {
     String? quotationName,
     String? callType,
     String? callStatus,
-    int? createdBy,
+    String? createdBy,
     int? updatedBy,
     String? createdTs,
     String? updatedTs,
@@ -463,7 +463,7 @@ class MailRecord extends CallRecord {
         quotationName: s(json['quotation_name']),
         callType: s(json['call_type']),
         callStatus: s(json['call_status']),
-        createdBy: i(json['created_by']),
+        createdBy: s(json['created_by']),
         updatedBy: i(json['updated_by']),
         createdTs: s(json['created_ts']),
         updatedTs: s(json['updated_ts']),
@@ -609,7 +609,7 @@ class Reminder {
     type: s(json['type']),
     location: s(json['location']),
     repeatType: s(json['repeat_type']),
-    employee: s(json['employee']),
+    employee: s(json['employee_names']),
     customer: s(json['customer']),
     startDt: s(json['start_dt']),
     endDt: s(json['end_dt']),
@@ -635,7 +635,7 @@ class Reminder {
     'type': type,
     'location': location,
     'repeat_type': repeatType,
-    'employee': employee,
+    'employee_names': employee,
     'customer': customer,
     'start_dt': startDt,
     'end_dt': endDt,

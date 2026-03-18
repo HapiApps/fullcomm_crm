@@ -22,6 +22,7 @@ const String scriptApi       = "$domain/CRM/script.php";
 const String prospectsScript = "$domain/CRM/prospects_script.php";
 const String qualifiedScript = "$domain/CRM/qualified_script.php";
 const String getImage        = "$domain/CRM/get_files.php";
+const String imageFile        = "$domain/CRM/image_file.php";
 
 
 /// Thirumal database

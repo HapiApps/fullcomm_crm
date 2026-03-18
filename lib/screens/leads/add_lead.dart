@@ -33,6 +33,7 @@ class AddLead extends StatefulWidget {
 
 class _AddLeadState extends State<AddLead> {
   List<FocusNode> phoneFocusList = [];
+  List<bool> checkList = [];
   List<FocusNode> phoneFocusList2 = [];
   void getStringValue()  {
     Future.delayed(Duration.zero, () {
@@ -121,6 +122,7 @@ class _AddLeadState extends State<AddLead> {
         controllers.infoNumberList.clear();
         controllers.numberList.add(TextEditingController());
         phoneFocusList.add(FocusNode());
+        checkList.add(false);
         phoneFocusList2.add(FocusNode());
         controllers.infoNumberList.add(TextEditingController());
         controllers.leadCoNameCrt.text = "";
@@ -316,11 +318,13 @@ class _AddLeadState extends State<AddLead> {
                             controllers.visitType="Call";
                             controllers.numberList.clear();
                             phoneFocusList.clear();
+                            checkList.clear();
                             phoneFocusList2.clear();
                             controllers.infoNumberList.clear();
                             controllers.numberList.add(TextEditingController());
                             controllers.infoNumberList.add(TextEditingController());
                             phoneFocusList.add(FocusNode());
+                            checkList.add(false);
                             phoneFocusList2.add(FocusNode());
                             controllers.leadCoNameCrt.text = "";
                             controllers.leadCoMobileCrt.text = "";
@@ -801,75 +805,26 @@ class _AddLeadState extends State<AddLead> {
                                           width: textFieldSize,
                                           child: ListView.builder(
                                               shrinkWrap:true,
+                                              reverse: true,
                                               itemCount:controllers.numberList.length,
                                               itemBuilder: (context,index){
                                                 return Column(
                                                     children:[
-                                                      Row(
-                                                          children:[
-                                                            SizedBox(
-                                                              width: textFieldSize-40,
-                                                              // height: 80,
-                                                              child: CustomTextField(
-                                                                focusNode: phoneFocusList[index],
-                                                                onEdit: () {
-                                                                  FocusScope.of(context)
-                                                                      .requestFocus(whatsApp);
-                                                                },
-                                                                // focusNode: whatsApp,
-                                                                hintText: _formatHeading(
-                                                                    controllers.getUserHeading(
-                                                                        "mobile_name") ??
-                                                                        "Mobile No"),
-                                                                text: _formatHeading(
-                                                                    controllers.getUserHeading(
-                                                                        "mobile_name") ??
-                                                                        "Mobile No"),
-                                                                controller:controllers.numberList[index],
-                                                                width: textFieldSize,
-                                                                isOptional: true,
-                                                                keyboardType: TextInputType.number,
-                                                                textInputAction: TextInputAction.next,
-                                                                inputFormatters: constInputFormatters.mobileNumberInput,
-                                                                onChanged: (value) async {
-                                                                //   if (controllers.leadWhatsCrt[index].text !=controllers.leadMobileCrt[index].text) {
-                                                                //     controllers.isCoMobileNumberList[index] =false;
-                                                                //   } else {
-                                                                //     controllers.isCoMobileNumberList[index] =true;
-                                                                //   }
-                                                                //   SharedPreferences sharedPref =
-                                                                //   await SharedPreferences
-                                                                //       .getInstance();
-                                                                //   sharedPref.setString(
-                                                                //       "leadWhats$index",
-                                                                //       value.toString().trim());
-                                                                },
-                                                              ),
-                                                            ),
-                                                            IconButton(
-                                                                onPressed:(){
-                                                                  if (controllers.numberList.length > 1) {
-                                                                    controllers.numberList.removeAt(index);
-                                                                    phoneFocusList[index].dispose();
-                                                                    phoneFocusList.removeAt(index);
-                                                                    controllers.update();
-                                                                  }else{
-                                                                    utils.snackBar(context: context, msg: "Enter at least one ${_formatHeading(
-                                                                        controllers.getUserHeading(
-                                                                            "mobile_name") ??
-                                                                            "Mobile No")}", color: Colors.red);
-                                                                  }
-                                                                },
-                                                                icon:SvgPicture.asset("assets/images/delete.svg")
-                                                            )
-                                                          ]
-                                                      ),
                                                       if(index==controllers.numberList.length-1)
                                                         Row(
-                                                          mainAxisAlignment: MainAxisAlignment.end,
-                                                          children: [
-                                                            IconButton(
-                                                              onPressed: () {
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              CustomText(text: _formatHeading(
+                                                                  controllers.getUserHeading(
+                                                                      "mobile_name") ??
+                                                                      "Mobile No"), isCopy: false),
+                                                              CustomText(text: "*",size: 18,colors: Colors.red, isCopy: false),
+                                                            ],
+                                                          ),
+                                                          InkWell(
+                                                              onTap: () {
                                                                 bool isMistake = false;
                                                                 Set<String> uniqueNumbers = {};
 
@@ -910,19 +865,116 @@ class _AddLeadState extends State<AddLead> {
                                                                 if (!isMistake) {
                                                                   controllers.numberList.add(TextEditingController());
                                                                   phoneFocusList.add(FocusNode());
+                                                                  checkList.add(false);
                                                                   FocusScope.of(context).requestFocus(phoneFocusList.last);
                                                                   controllers.update();
                                                                 }
                                                               },
-                                                              icon: Icon(Icons.add),
+                                                              child: Icon(Icons.add),
                                                             ),
-                                                          ],
-                                                        )
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children:[
+                                                            SizedBox(
+                                                              width: textFieldSize-40,
+                                                              // height: 80,
+                                                              child: TextFormField(
+                                                                controller:controllers.numberList[index],
+                                                                focusNode: phoneFocusList[index],
+                                                                style: const TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 15,
+                                                                  fontFamily: "Lato",
+                                                                ),
+                                                                cursorColor: colorsConst.primary,
+                                                                onChanged: (value) {
+                                                                  setState(() {
+                                                                    if(checkList[index]==true){
+                                                                      controllers.leadWhatsCrt[0].text =controllers.numberList[index].text;
+                                                                    }else{
+                                                                      controllers.leadWhatsCrt[0].clear();
+                                                                    }
+                                                                  });
+                                                                },
+                                                                onEditingComplete: () {
+                                                                  FocusScope.of(context)
+                                                                      .requestFocus(whatsApp);
+                                                                },
+                                                                inputFormatters: constInputFormatters.mobileNumberInput,
+                                                                textInputAction: TextInputAction.next,
+                                                                decoration: InputDecoration(
+                                                                  hoverColor: Colors.transparent,
+                                                                  focusColor: Colors.transparent,
+                                                                  hintText:_formatHeading(
+                                                                      controllers.getUserHeading(
+                                                                          "mobile_name") ??
+                                                                          "Mobile No"),
+                                                                  errorStyle: TextStyle(color: Colors.red, fontSize: 13, fontFamily: "Lato"),
+                                                                  hintStyle: TextStyle(
+                                                                      color: Colors.grey.shade400, fontSize: 13, fontFamily: "Lato"),
+                                                                  fillColor:Colors.white,
+                                                                  filled: true,
+                                                                  suffixIcon: InkWell(
+                                                                      onTap: () {
+                                                                        setState(() {
+                                                                          checkList[index]=!checkList[index];
+                                                                          if(checkList[index]==true){
+                                                                            controllers.leadWhatsCrt[0].text =controllers.numberList[index].text;
+                                                                          }else{
+                                                                            controllers.leadWhatsCrt[0].clear();
+                                                                          }
+                                                                        });
+                                                                      },
+                                                                      child: Icon(Icons.check_circle, color: checkList[index]==false?Colors.grey:Colors.green)),
+                                                                  enabledBorder: OutlineInputBorder(
+                                                                      borderSide: BorderSide(
+                                                                        color: Colors.grey.shade400,
+                                                                      ),
+                                                                      borderRadius: BorderRadius.circular(5)),
+                                                                  focusedBorder: OutlineInputBorder(
+                                                                      borderSide: BorderSide(
+                                                                        color: colorsConst.primary,
+                                                                      ),
+                                                                      borderRadius: BorderRadius.circular(5)),
+                                                                  focusedErrorBorder: OutlineInputBorder(
+                                                                      borderSide: BorderSide(
+                                                                          color: const Color(0xffE1E5FA)),
+                                                                      borderRadius: BorderRadius.circular(5)),
+                                                                  // errorStyle: const TextStyle(height:0.05,fontSize: 12),
+                                                                  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                                                  errorBorder: OutlineInputBorder(
+                                                                      borderSide: BorderSide(
+                                                                          color: const Color(0xffE1E5FA)),
+                                                                      borderRadius: BorderRadius.circular(5)),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            InkWell(
+                                                                onTap:(){
+                                                                  if (controllers.numberList.length > 1) {
+                                                                    controllers.numberList.removeAt(index);
+                                                                    phoneFocusList[index].dispose();
+                                                                    phoneFocusList.removeAt(index);
+                                                                    checkList.removeAt(index);
+                                                                    controllers.update();
+                                                                  }else{
+                                                                    utils.snackBar(context: context, msg: "Enter at least one ${_formatHeading(
+                                                                        controllers.getUserHeading(
+                                                                            "mobile_name") ??
+                                                                            "Mobile No")}", color: Colors.red);
+                                                                  }
+                                                                },
+                                                                child:SvgPicture.asset("assets/images/delete.svg",width: 20,height: 20,)
+                                                            )
+                                                          ]
+                                                      ),5.height
                                                     ]
                                                 );
                                               }),
                                         );
-                                      }),
+                                      }),10.height,
                                       CustomTextField(
                                         onEdit: () {
                                           FocusScope.of(context)
@@ -1244,72 +1296,22 @@ class _AddLeadState extends State<AddLead> {
                                 child: ListView.builder(
                                     shrinkWrap:true,
                                     itemCount:controllers.infoNumberList.length,
+                                    reverse: true,
                                     itemBuilder: (context,index){
                                       return Column(
                                           children:[
-                                            Row(
-                                                children:[
-                                                  SizedBox(
-                                                    width: textFieldSize-40,
-                                                    // height: 80,
-                                                    child: CustomTextField(
-                                                      focusNode: phoneFocusList2[index],
-                                                      onEdit: () {
-                                                        FocusScope.of(context).requestFocus(linkedin);
-                                                      },
-                                                      hintText: "Company Phone No.",
-                                                      text: "Company Phone No.",
-                                                      controller: controllers.infoNumberList[index],
-                                                      width: textFieldSize,
-                                                      keyboardType: TextInputType.number,
-                                                      textInputAction: TextInputAction.next,
-                                                      isOptional: false,
-                                                      inputFormatters:
-                                                      constInputFormatters.mobileNumberInput,
-                                                      onChanged: (value) async {
-                                                        // if (value.toString().isNotEmpty) {
-                                                        //   String newValue =
-                                                        //       value.toString()[0].toUpperCase() +
-                                                        //           value.toString().substring(1);
-                                                        //   if (newValue != value) {
-                                                        //     controllers.leadCoMobileCrt.value =
-                                                        //         controllers.leadCoMobileCrt.value
-                                                        //             .copyWith(
-                                                        //           text: newValue,
-                                                        //           selection: TextSelection.collapsed(
-                                                        //               offset: newValue.length),
-                                                        //         );
-                                                        //   }
-                                                        // }
-                                                        // SharedPreferences sharedPref =
-                                                        // await SharedPreferences.getInstance();
-                                                        // sharedPref.setString(
-                                                        //     "leadCoMobile", value.toString().trim());
-                                                      },
-                                                      // }
-                                                    ),
-                                                  ),
-                                                  IconButton(
-                                                      onPressed:(){
-                                                        if (controllers.infoNumberList.length > 1) {
-                                                          controllers.infoNumberList.removeAt(index);
-                                                          phoneFocusList2[index].dispose();
-                                                          phoneFocusList2.removeAt(index);
-                                                          controllers.update();
-                                                        }else{
-                                                          utils.snackBar(context: context, msg: "Enter at least one mobile number.", color: Colors.red);
-                                                        }
-                                                      },
-                                                      icon:SvgPicture.asset("assets/images/delete.svg")
-                                                  )
-                                                ]
-                                            ),
                                             if(index==controllers.infoNumberList.length-1)
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  IconButton(
-                                                    onPressed: () {
+                                                  Row(
+                                                    children: [
+                                                      CustomText(text: "Company Phone No.", isCopy: false),
+                                                      CustomText(text: "*",size: 18,colors: Colors.red, isCopy: false),
+                                                    ],
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {
                                                       bool isMistake = false;
                                                       Set<String> uniqueNumbers = {};
 
@@ -1348,15 +1350,73 @@ class _AddLeadState extends State<AddLead> {
                                                         controllers.update();
                                                       }
                                                     },
-                                                    icon: Icon(Icons.add),
+                                                    child: Icon(Icons.add),
                                                   ),
                                                 ],
-                                              )
+                                              ),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children:[
+                                                  SizedBox(
+                                                    width: textFieldSize-40,
+                                                    // height: 80,
+                                                    child: CustomTextField(
+                                                      focusNode: phoneFocusList2[index],
+                                                      onEdit: () {
+                                                        FocusScope.of(context).requestFocus(linkedin);
+                                                      },
+                                                      hintText: "",
+                                                      text: "",
+                                                      controller: controllers.infoNumberList[index],
+                                                      width: textFieldSize,
+                                                      keyboardType: TextInputType.number,
+                                                      textInputAction: TextInputAction.next,
+                                                      isOptional: true,
+                                                      inputFormatters:
+                                                      constInputFormatters.mobileNumberInput,
+                                                      onChanged: (value) async {
+                                                        // if (value.toString().isNotEmpty) {
+                                                        //   String newValue =
+                                                        //       value.toString()[0].toUpperCase() +
+                                                        //           value.toString().substring(1);
+                                                        //   if (newValue != value) {
+                                                        //     controllers.leadCoMobileCrt.value =
+                                                        //         controllers.leadCoMobileCrt.value
+                                                        //             .copyWith(
+                                                        //           text: newValue,
+                                                        //           selection: TextSelection.collapsed(
+                                                        //               offset: newValue.length),
+                                                        //         );
+                                                        //   }
+                                                        // }
+                                                        // SharedPreferences sharedPref =
+                                                        // await SharedPreferences.getInstance();
+                                                        // sharedPref.setString(
+                                                        //     "leadCoMobile", value.toString().trim());
+                                                      },
+                                                      // }
+                                                    ),
+                                                  ),
+                                                  InkWell(
+                                                      onTap:(){
+                                                        if (controllers.infoNumberList.length > 1) {
+                                                          controllers.infoNumberList.removeAt(index);
+                                                          phoneFocusList2[index].dispose();
+                                                          phoneFocusList2.removeAt(index);
+                                                          controllers.update();
+                                                        }else{
+                                                          utils.snackBar(context: context, msg: "Enter at least one mobile number.", color: Colors.red);
+                                                        }
+                                                      },
+                                                      child:SvgPicture.asset("assets/images/delete.svg",width: 20,height: 20,)
+                                                  )
+                                                ]
+                                            ),5.height
                                           ]
                                       );
                                     }),
                               );
-                            }),
+                            }),10.height,
                             IndustryDropdown(
                               width: textFieldSize,
                               items: controllers.industriesList,

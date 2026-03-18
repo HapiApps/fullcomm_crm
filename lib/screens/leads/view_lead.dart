@@ -1550,7 +1550,7 @@ void checkType(){
                                             child: _buildMeetingRecords(meetings)),
                                         20.height,
                                       ],
-                                      if (meetings.isNotEmpty) ...[
+                                      if (reminders.isNotEmpty) ...[
                                         SizedBox(
                                             width: screenWidth / 4.5,
                                             child: _buildReminderRecords(reminders)),
@@ -1617,12 +1617,18 @@ void checkType(){
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: Text("${c.callType ?? ''} • ${c.callStatus ?? ''}", style: TextStyle(fontSize: 13))),
-                  Text(c.sentDate ?? "", style: TextStyle(fontSize: 12)),
-                  10.width,
-                  Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+                  CustomText(text:c.createdBy ?? "", size: 12,colors: Colors.black,isCopy: false,isBold: true,),
+                  Row(
+                    children: [
+                      Expanded(child: Text("${c.callType ?? ''} • ${c.callStatus ?? ''}", style: TextStyle(fontSize: 13))),
+                      Text(c.sentDate ?? "", style: TextStyle(fontSize: 12)),
+                      10.width,
+                      Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -1661,12 +1667,18 @@ void checkType(){
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: Text("${m.title ?? ''} • ${m.status ?? ''}", style: TextStyle(fontSize: 13))),
-                  Text(m.dates ?? "", style: TextStyle(fontSize: 12)),
-                  10.width,
-                  Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+                  CustomText(text:m.createdBy ?? "", size: 12,colors: Colors.black,isCopy: false,isBold: true,),
+                  Row(
+                    children: [
+                      Expanded(child: Text("${m.title ?? ''} • ${m.status ?? ''}", style: TextStyle(fontSize: 13))),
+                      Text(m.dates ?? "", style: TextStyle(fontSize: 12)),
+                      10.width,
+                      Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -1708,7 +1720,18 @@ void checkType(){
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Column(
                 children: [
-                  Text(r.employee ?? "", style: TextStyle(fontSize: 12)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          CustomText(text:"Employee : ", size: 12,colors: Colors.grey,isCopy: false,),
+                          CustomText(text:r.employee ?? "", size: 12,colors: Colors.black,isCopy: false,isBold: true,),
+                        ],
+                      ),
+                      CustomText(text:r.createdBy ?? "", size: 12,colors: Colors.black,isCopy: false,isBold: true,),
+                    ],
+                  ),
                   Row(
                     children: [
                       Expanded(child: Text("${r.title ?? ''} • ${r.setType ?? ''}", style: TextStyle(fontSize: 13))),

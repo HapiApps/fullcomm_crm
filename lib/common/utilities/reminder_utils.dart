@@ -1045,6 +1045,10 @@ class ReminderUtils {
     controllers.selectNEmployee("1",controllers.storage.read("f_name"), controllers.storage.read("mobile",));
     remController.assignedIds.value="";
     remController.assignedNames.value="";
+    final futureDate = DateTime.now().add(const Duration(days: 3));
+    remController.stDate.value = DateFormat('dd-MM-yyyy').format(futureDate);
+    controllers.dateOfConCtr.text = DateFormat('dd-MM-yyyy').format(futureDate);
+    remController.stTime.value = DateFormat('hh.mm a').format(DateTime.now().subtract(const Duration(minutes: 15)));
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -1402,14 +1406,15 @@ class ReminderUtils {
                                               hintText: "Customers",
                                               labelText: "",
                                               labelBuilder: (customer) =>
-                                              '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                              '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
                                               itemBuilder: (customer) {
                                                 return Container(
                                                   width: 300,
                                                   alignment: Alignment.topLeft,
                                                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                   child: CustomText(
-                                                    text: '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
+                                                    text:
+                                                    '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
                                                     colors: Colors.black,
                                                     size: 14,
                                                     isCopy:false,
