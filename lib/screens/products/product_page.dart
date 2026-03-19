@@ -29,6 +29,8 @@ import '../../controller/product_controller.dart';
 import '../../controller/table_controller.dart';
 import '../../models/new_lead_obj.dart';
 import '../../services/api_services.dart';
+import '../invoice/invoice.dart';
+import 'order_page.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key, });
@@ -184,6 +186,34 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                         Row(
                           children: [
+                            CustomLoadingButton(
+                              callback: () async {
+                                Get.to(AddOrderPage());
+                              },
+                              isLoading: false,
+                              height: 35,
+                              backgroundColor: colorsConst.primary,
+                              radius: 2,
+                              width: 150,
+                              isImage: false,
+                              text: "Invoice",
+                              textColor: Colors.white,
+                            ),
+                            10.width,
+                            CustomLoadingButton(
+                              callback: () async {
+                                Get.to(AddOrderPage());
+                              },
+                              isLoading: false,
+                              height: 35,
+                              backgroundColor: colorsConst.primary,
+                              radius: 2,
+                              width: 150,
+                              isImage: false,
+                              text: "Order",
+                              textColor: Colors.white,
+                            ),
+                            10.width,
                             CustomLoadingButton(
                               callback: () async {
                                 Get.to( AddProduct());
@@ -395,7 +425,6 @@ class _ProductPageState extends State<ProductPage> {
                             /// DATA ROWS
                             ...List.generate(productCtr.products.length, (index) {
                               final e = productCtr.products[index];
-                              print('$imageFile?path=${e.link.toString()}');
                               return TableRow(
                                 decoration: BoxDecoration(
                                   color: index % 2 == 0
@@ -552,29 +581,10 @@ class _ProductPageState extends State<ProductPage> {
                                   /// IMAGE COLUMN
                                   Padding(
                                     padding: const EdgeInsets.all(8),
-                                    child: CachedNetworkImage(
-                                      imageUrl: '$imageFile?path=${e.link.toString()}',
-                                      fit: BoxFit.cover,
-
-                                      imageBuilder: (context, imageProvider) => Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-
-                                      placeholder: (context, url) => Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
-
-                                      errorWidget: (context, url, error) => Icon(
-                                        Icons.error,
-                                        color: Colors.red,
-                                      ),
-                                    ),
+                                    child: e.link!=""&&e.link!="null"?Image.network(
+                                      '$imageFile?path=${e.link}',
+                                      fit: BoxFit.cover,width: 50,height: 50,
+                                    ):CustomText(text: "No Image", isCopy: false),
                                   ),
                                 ],
                               );

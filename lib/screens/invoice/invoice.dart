@@ -6,6 +6,8 @@ import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
+import '../../controller/product_controller.dart';
 // void main() {
 //   runApp(const InvoiceView(
 //     cName: 'Santhiya',
@@ -162,24 +164,19 @@ class _InvoiceViewState extends State<InvoiceView> {
           ],
         ),
         // Item Row
-        TableRow(
-          children: [
-            _cell("1"),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(text: "Billing Software", isCopy: true,isBold: true,size: 15,),
-                  SizedBox(height: 60), // Space for layout
-                  CustomText(text:"SAC CODE: 998314", colors: Colors.blue.shade800, size: 15,isCopy: true,),
-                ],
-              ),
-            ),
-            _cell(""),
-            _cell("15,000", align: TextAlign.right),
-          ],
-        ),
+        ...List.generate(productCtr.rows.length, (index) {
+          final row = productCtr.rows[index];
+
+          return TableRow(
+            children: [
+              _cell("${index+1}"),
+              _cell(row.product?.title ?? ""),
+              _cell(row.qty.toString()),
+              // _cell("₹ ${row.price}"),
+              _cell("₹ ${row.amount}"),
+            ],
+          );
+        }),
       ],
     );
   }

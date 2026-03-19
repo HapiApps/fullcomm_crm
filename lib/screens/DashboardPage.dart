@@ -116,6 +116,7 @@ class _DashboardPageState extends State<DashboardPage>
       controllers.getRangeStatus();
       controllers.getIndustries();
       productCtr.getProducts();
+      productCtr.getOrderDetails();
     });
 
     Future.delayed(Duration.zero, () async {

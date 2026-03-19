@@ -59,3 +59,27 @@ class ProductModel {
     };
   }
 }
+
+class BillingRow {
+  ProductModel? product;
+  int qty;
+  double price;
+  double amount;
+
+  BillingRow({
+    this.product,
+    this.qty = 1,
+    this.price = 0,
+    this.amount = 0,
+  });
+  Map<String, dynamic> toJson() {
+    return {
+      "product_id": product?.id,
+      "name": product?.title,
+      "qty": qty,
+      "price": price,
+      "amount": amount,
+    };
+  }
+
+}

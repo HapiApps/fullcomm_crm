@@ -20,6 +20,7 @@ import '../common/widgets/log_in.dart';
 import '../components/custom_loading_button.dart';
 import '../components/custom_text.dart';
 import '../components/custom_textfield.dart';
+import '../models/order_model.dart';
 import '../models/product_model.dart';
 import '../models/template_obj.dart';
 import '../services/api_services.dart';
@@ -119,7 +120,7 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       print("FLUTTER ERROR => $e");
     }
   }
-  Future<void> updateProduct(context,String id,String imagePath) async {
+  Future<void> updateProduct(context,String id,String imagePath,String linkPath) async {
     try {
 
       var request = http.MultipartRequest(
@@ -142,6 +143,7 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       request.fields['price'] = price.text.trim();
       request.fields['brand'] = brand.text.trim();
       request.fields['image_path'] = imagePath;
+      request.fields['link_path'] = linkPath;
       request.fields['created_by'] = controllers.storage.read("id").toString();
       request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
 
@@ -164,7 +166,7 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return updateProduct(context,id,imagePath);
+          return updateProduct(context,id,imagePath,linkPath);
         } else {
           controllers.setLogOut();
         }
@@ -275,7 +277,7 @@ var isSelectAll=false.obs;
       );
 
       // print("STATUS CODE add_values: ${response.statusCode}");
-      print("get_products...: ${response.body}");
+      // print("get_products...: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -294,6 +296,144 @@ var isSelectAll=false.obs;
     } catch (e) {
       log("FLUTTER ERROR => $e");
       return [];
+    }
+  }
+
+  RxList<Order> ordersList=<Order>[].obs;
+
+  Future<List<Order>> getOrderDetails() async {
+    try {
+      ordersList.clear();
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "action": "get_data",
+          "search_type": "get_order_details",
+          "role": controllers.storage.read("role").toString(),
+          "id": controllers.storage.read("id").toString(),
+          "cos_id": controllers.storage.read("cos_id").toString(),
+        }),
+      );
+
+      // print("STATUS CODE add_values: ${response.statusCode}");
+      print("get_products...: ${response.body}");
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getOrderDetails();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200) {
+        final List data = jsonDecode(response.body);
+        ordersList.value =data.map((e) => Order.fromJson(e)).toList();
+        return ordersList;
+      }else{
+          return [];
+      }
+    } catch (e) {
+      log("FLUTTER ERROR => $e");
+      return [];
+    }
+  }
+  RxList<BillingRow> rows = <BillingRow>[].obs;
+
+  /// 🔹 INIT
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
+  /// 🔹 ADD PRODUCT
+  void addProducts(ProductModel product) {
+    bool alreadyAdded =
+    rows.any((e) => e.product?.id == product.id);
+
+    if (alreadyAdded) {
+      Get.snackbar("Warning", "Product already added");
+      return;
+    }
+
+    rows.add(BillingRow(
+      product: product,
+      price: product.price ?? 0.0,
+      qty: 1,
+      amount: product.price ?? 0.0,
+    ));
+  }
+
+  /// 🔹 UPDATE QTY
+  void updateQty(int index, int qty) {
+    rows[index].qty = qty;
+    rows[index].amount = rows[index].price * qty;
+    rows.refresh();
+  }
+
+  /// 🔹 DELETE ROW
+  void removeRow(int index) {
+    rows.removeAt(index);
+  }
+
+  /// 🔹 TOTAL
+  double getTotal() {
+    return rows.fold(0, (sum, item) => sum + item.amount);
+  }
+  Future<void> insertOrder(context,String totalAmt,String customerId,) async {
+    try {
+
+      Map<String, dynamic> data = {
+        "created_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id"),
+        "total_amt": totalAmt,
+        "customer_id": customerId,
+        "action": "insert_order",
+        "productList": rows.toJson(),
+      };
+      print("Request: ${jsonEncode(data)}");
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(data),
+      );
+
+
+      print("STATUS CODE: ${response.statusCode}");
+      print("RAW RESPONSE: ${response.body}");
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertOrder(context,totalAmt,customerId);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      final decoded = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && decoded["status"] == true) {
+        idsList.value.clear();
+        utils.snackBar(context: context, msg: "Order Placed successfully", color: Colors.green);
+        productCtr.saveCtr.reset();
+        // getProducts();
+        Navigator.pop(context);
+      } else {
+        utils.snackBar(context: context, msg: "Failed", color: Colors.red);
+        productCtr.saveCtr.reset();
+        print("API Error: ${decoded["message"]}");
+      }
+      saveCtr.reset();
+    } catch (e) {
+      utils.snackBar(context: context, msg: "Failed", color: Colors.red);
+      productCtr.saveCtr.reset();
+      saveCtr.reset();
+      print("FLUTTER ERROR => $e");
     }
   }
 

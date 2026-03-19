@@ -4,6 +4,7 @@ import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:get/get.dart';
 
+import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/constant/key_constant.dart';
 import '../../components/Customtext.dart';
@@ -70,20 +71,30 @@ class _AddProductState extends State<AddProduct> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomText(
-                          text:
-                          "New Product",
-                          colors: colorsConst.textColor,
-                          size: 23,
-                          isBold: true,
-                          isCopy: true,
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap:(){
+                                Get.back();
+                              },
+                              child: Icon(Icons.arrow_back),
+                            ),10.width,
+                            CustomText(
+                              text:
+                              "New Product",
+                              colors: colorsConst.textColor,
+                              size: 23,
+                              isBold: true,
+                              isCopy: true,
+                            ),
+                          ],
                         ),
                         5.height,
                         CustomText(
                           text:
                           "Add your Products Information\n\n",
                           colors: colorsConst.textColor,
-                          size: 12,
+                          size: 15,
                           isCopy: true,
                         ),
                       ],
@@ -214,8 +225,8 @@ class _AddProductState extends State<AddProduct> {
                                   productCtr.pickImage();
                                 },
                                 child: Container(
-                                  height: 200,
-                                  width: 200,
+                                  height: 100,
+                                  width: 100,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade300),
@@ -234,13 +245,14 @@ class _AddProductState extends State<AddProduct> {
                               },
                               child: Image.memory(
                                 productCtr.selectedFile.value!.bytes!,
-                                height: 200,
-                                width: 200,
+                                height: 100,
+                                width: 100,
                                 fit: BoxFit.cover,
                               ),
                             );
 
                         }),
+                        50.width,
                         CustomLoadingButton(
                             callback: (){
                               if(productCtr.title.text.trim().isEmpty){
@@ -339,20 +351,30 @@ class _UpdateProductState extends State<UpdateProduct> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomText(
-                          text:
-                          "Update Product",
-                          colors: colorsConst.textColor,
-                          size: 23,
-                          isBold: true,
-                          isCopy: true,
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap:(){
+                                Get.back();
+                              },
+                              child: Icon(Icons.arrow_back),
+                            ),10.width,
+                            CustomText(
+                              text:
+                              "Update Product",
+                              colors: colorsConst.textColor,
+                              size: 23,
+                              isBold: true,
+                              isCopy: true,
+                            ),
+                          ],
                         ),
                         5.height,
                         CustomText(
                           text:
                           "Update your Products Information\n\n",
                           colors: colorsConst.textColor,
-                          size: 12,
+                          size: 15,
                           isCopy: true,
                         ),
                       ],
@@ -477,14 +499,33 @@ class _UpdateProductState extends State<UpdateProduct> {
                     Row(
                       children: [
                         Obx(() {
+                          if (widget.data.link!="null"&&widget.data.link!=""&&productCtr.selectedFile.value==null) {
+                            return InkWell(
+                              onTap: (){
+                                productCtr.pickImage();
+                              },
+                              child: Container(
+                                height: 100,
+                                width: 100,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey.shade300),
+                                ),
+                                child: Image.network(
+                                  '$imageFile?path=${widget.data.link}',
+                                  fit: BoxFit.cover,width: 50,height: 50,
+                                ),
+                              ),
+                            );
+                          }
                           if (productCtr.selectedFile.value == null) {
                             return InkWell(
                               onTap: (){
                                 productCtr.pickImage();
                               },
                               child: Container(
-                                height: 200,
-                                width: 200,
+                                height: 100,
+                                width: 100,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey.shade300),
@@ -503,13 +544,14 @@ class _UpdateProductState extends State<UpdateProduct> {
                             },
                             child: Image.memory(
                               productCtr.selectedFile.value!.bytes!,
-                              height: 200,
-                              width: 200,
+                              height: 100,
+                              width: 100,
                               fit: BoxFit.cover,
                             ),
                           );
 
                         }),
+                        50.width,
                         CustomLoadingButton(
                             callback: (){
                               if(productCtr.title.text.trim().isEmpty){
@@ -536,7 +578,7 @@ class _UpdateProductState extends State<UpdateProduct> {
                               //   productCtr.saveCtr.reset();
                               // }
                               else{
-                                productCtr.updateProduct(context,widget.data.id.toString(),widget.data.imageLink.toString());
+                                productCtr.updateProduct(context,widget.data.id.toString(),widget.data.imageLink.toString(),widget.data.link.toString());
                               }
                             }, isLoading: true, controller: productCtr.saveCtr,text: "Save",
                             backgroundColor: colorsConst.primary, radius: 10, width: 100)
