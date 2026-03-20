@@ -383,7 +383,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "enDate": dashController.date2.value,
       };
 
-      // log("Dashboard report 1:    ${data.toString()}");
+      log("Dashboard report 1:    ${data.toString()}");
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {

@@ -25,7 +25,7 @@ import '../screens/leads/prospects.dart';
 import '../screens/leads/qualified.dart';
 import '../screens/leads/suspects.dart';
 import '../screens/leads/target_leads.dart';
-import '../screens/products/order_page.dart';
+import '../screens/order/order_page.dart';
 import '../screens/products/product_page.dart';
 import '../screens/records/records.dart';
 import '../screens/reminder/reminder_page.dart';

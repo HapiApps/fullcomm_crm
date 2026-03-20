@@ -277,7 +277,7 @@ var isSelectAll=false.obs;
       );
 
       // print("STATUS CODE add_values: ${response.statusCode}");
-      // print("get_products...: ${response.body}");
+      print("get_products...: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -300,10 +300,12 @@ var isSelectAll=false.obs;
   }
 
   RxList<Order> ordersList=<Order>[].obs;
+  RxList<Order> ordersList2=<Order>[].obs;
 
   Future<List<Order>> getOrderDetails() async {
     try {
       ordersList.clear();
+      ordersList2.clear();
       final response = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -320,7 +322,7 @@ var isSelectAll=false.obs;
       );
 
       // print("STATUS CODE add_values: ${response.statusCode}");
-      print("get_products...: ${response.body}");
+      print("get_order_details..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -332,6 +334,7 @@ var isSelectAll=false.obs;
       if (response.statusCode == 200) {
         final List data = jsonDecode(response.body);
         ordersList.value =data.map((e) => Order.fromJson(e)).toList();
+        ordersList2.value =data.map((e) => Order.fromJson(e)).toList();
         return ordersList;
       }else{
           return [];
@@ -359,12 +362,12 @@ var isSelectAll=false.obs;
       return;
     }
 
-    rows.add(BillingRow(
-      product: product,
-      price: product.price ?? 0.0,
-      qty: 1,
-      amount: product.price ?? 0.0,
-    ));
+    // rows.add(BillingRow(
+    //   product: product,
+    //   price: product.price ?? 0.0,
+    //   qty: 1,
+    //   amount: product.price ?? 0.0,
+    // ));
   }
 
   /// 🔹 UPDATE QTY

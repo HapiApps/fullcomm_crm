@@ -30,7 +30,7 @@ import '../../controller/table_controller.dart';
 import '../../models/new_lead_obj.dart';
 import '../../services/api_services.dart';
 import '../invoice/invoice.dart';
-import 'order_page.dart';
+import '../order/order_page.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key, });
@@ -186,37 +186,37 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                         Row(
                           children: [
-                            CustomLoadingButton(
-                              callback: () async {
-                                Get.to(AddOrderPage());
-                              },
-                              isLoading: false,
-                              height: 35,
-                              backgroundColor: colorsConst.primary,
-                              radius: 2,
-                              width: 150,
-                              isImage: false,
-                              text: "Invoice",
-                              textColor: Colors.white,
-                            ),
+                            // CustomLoadingButton(
+                            //   callback: () async {
+                            //     Get.to(AddOrderPage());
+                            //   },
+                            //   isLoading: false,
+                            //   height: 35,
+                            //   backgroundColor: colorsConst.primary,
+                            //   radius: 2,
+                            //   width: 150,
+                            //   isImage: false,
+                            //   text: "Invoice",
+                            //   textColor: Colors.white,
+                            // ),
+                            // 10.width,
+                            // CustomLoadingButton(
+                            //   callback: () async {
+                            //     Get.to(AddOrderPage());
+                            //   },
+                            //   isLoading: false,
+                            //   height: 35,
+                            //   backgroundColor: colorsConst.primary,
+                            //   radius: 2,
+                            //   width: 150,
+                            //   isImage: false,
+                            //   text: "Order",
+                            //   textColor: Colors.white,
+                            // ),
                             10.width,
                             CustomLoadingButton(
                               callback: () async {
-                                Get.to(AddOrderPage());
-                              },
-                              isLoading: false,
-                              height: 35,
-                              backgroundColor: colorsConst.primary,
-                              radius: 2,
-                              width: 150,
-                              isImage: false,
-                              text: "Order",
-                              textColor: Colors.white,
-                            ),
-                            10.width,
-                            CustomLoadingButton(
-                              callback: () async {
-                                Get.to( AddProduct());
+                                // Get.to( AddProduct());
                               },
                               isLoading: false,
                               height: 35,
@@ -234,19 +234,19 @@ class _ProductPageState extends State<ProductPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomSearchTextField(
-                          controller: controllers.search,
-                          hintText: "Search Name",
-                          onChanged: (value) {
-                            controllers.searchText.value = value.toString().trim();
-                            // remController.filterAndSortMeetings(
-                            //   searchText: controllers.searchText.value.toLowerCase(),
-                            //   callType: controllers.selectMeetingType.value,
-                            //   sortField: controllers.sortFieldMeetingActivity.value,
-                            //   sortOrder: controllers.sortOrderMeetingActivity.value,
-                            // );
-                          },
-                        ),
+                        // CustomSearchTextField(
+                        //   controller: controllers.search,
+                        //   hintText: "Search Name",
+                        //   onChanged: (value) {
+                        //     controllers.searchText.value = value.toString().trim();
+                        //     // remController.filterAndSortMeetings(
+                        //     //   searchText: controllers.searchText.value.toLowerCase(),
+                        //     //   callType: controllers.selectMeetingType.value,
+                        //     //   sortField: controllers.sortFieldMeetingActivity.value,
+                        //     //   sortOrder: controllers.sortOrderMeetingActivity.value,
+                        //     // );
+                        //   },
+                        // ),
                         Obx(()=>productCtr.idsList.isNotEmpty?
                         Row(
                           children: [
@@ -364,10 +364,10 @@ class _ProductPageState extends State<ProductPage> {
                         child: Table(
                           border: TableBorder.all(color: Colors.grey.shade300),
                           columnWidths: {
-                            0: FixedColumnWidth(50),
+                            0: FixedColumnWidth(60),
                             1: FixedColumnWidth(100),
                             2: FixedColumnWidth(weWidth / 8),
-                            3: FixedColumnWidth(weWidth / 8),
+                            3: FixedColumnWidth(weWidth / 7),
                             4: FixedColumnWidth(weWidth / 9),
                             5: FixedColumnWidth(weWidth / 9),
                             6: FixedColumnWidth(weWidth / 9),
@@ -412,13 +412,12 @@ class _ProductPageState extends State<ProductPage> {
                                   ),
                                 ),
                                 headerCell("Action"),
-                                headerCell("Title"),
-                                headerCell("Description"),
-                                headerCell("Availability"),
-                                headerCell("Condition"),
-                                headerCell("Price"),
-                                headerCell("Brand"),
-                                headerCell("Image"),
+                                headerCell("Name"),
+                                headerCell("SKU ID"),
+                                headerCell("HSN Code"),
+                                headerCell("Category"),
+                                headerCell("Sub Category"),
+                                headerCell("GST(in %)"),
                               ],
                             ),
 
@@ -464,7 +463,7 @@ class _ProductPageState extends State<ProductPage> {
                                     child: Row(
                                       children: [
                                         IconButton(onPressed: (){
-                                          Get.to(UpdateProduct(data: e));
+                                          // Get.to(UpdateProduct(data: e));
                                         }, icon: SvgPicture.asset("assets/images/a_edit.svg",width: 16,height: 16)),
                                         IconButton(onPressed: (){
                                           productCtr.idsList.add(e.id);
@@ -545,46 +544,37 @@ class _ProductPageState extends State<ProductPage> {
                                   Padding(
                                     padding: const EdgeInsets.all(8),
                                     child: CustomText(
-                                      text: e.description ?? "",
+                                      text: e.skuId ?? "",
                                       isCopy: true,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8),
                                     child: CustomText(
-                                      text: e.availability ?? "",
+                                      text: e.hsnCode ?? "",
                                       isCopy: true,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8),
                                     child: CustomText(
-                                      text: e.condition.toString(),
+                                      text: e.catId.toString(),
                                       isCopy: true,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8),
                                     child: CustomText(
-                                      text: e.price.toString(),
+                                      text: e.subCatId.toString(),
                                       isCopy: true,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8),
                                     child: CustomText(
-                                      text: e.brand.toString(),
+                                      text: e.gst.toString(),
                                       isCopy: true,
                                     ),
-                                  ),
-
-                                  /// IMAGE COLUMN
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: e.link!=""&&e.link!="null"?Image.network(
-                                      '$imageFile?path=${e.link}',
-                                      fit: BoxFit.cover,width: 50,height: 50,
-                                    ):CustomText(text: "No Image", isCopy: false),
                                   ),
                                 ],
                               );

@@ -2684,6 +2684,7 @@ class ApiService {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
       debugPrint("leadddddd");
+      debugPrint(data.toString());
       debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();

@@ -25,6 +25,7 @@ import '../models/mail_receive_obj.dart';
 import '../models/meeting_obj.dart';
 import '../models/month_report_obj.dart';
 import '../models/new_lead_obj.dart';
+import '../models/order_model.dart';
 import '../models/product_obj.dart';
 import '../models/user_heading_obj.dart';
 import 'package:http/http.dart'as http;
@@ -1501,6 +1502,76 @@ print("sortField ${sortField}");
     // return filteredLeads.sublist(start, end);
   // }
 }
+  List<Order> changeOrderPage(RxList<Order> list,RxList<Order> list2){
+    final query = searchProspects.value.trim().toLowerCase();
+    final ratingFilter = selectedProspectTemperature.value;
+    final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
+    final now = DateTime.now();
+
+    final filteredLeads = list2.value.where((lead) {
+      final matchesQuery = (lead.customerName ?? '').toLowerCase().contains(query);
+
+      // bool matchesSort = true;
+      // DateTime? updatedDate;
+      //
+      // try {
+      //   if (lead.createdTs != "null" && lead.createdTs!.isNotEmpty) {
+      //     updatedDate = DateTime.tryParse(lead.createdTs!);
+      //   } else if (lead.prospectEnrollmentDate != null && lead.prospectEnrollmentDate!.isNotEmpty) {
+      //     updatedDate = DateFormat('dd.MM.yyyy').parse(lead.prospectEnrollmentDate!);
+      //   }
+      // } catch (_) {
+      //   updatedDate = null;
+      //   matchesSort = false;
+      // }
+
+
+      return matchesQuery;
+    }).toList();
+
+    if (sortField.isNotEmpty) {
+      filteredLeads.sort((a, b) {
+        dynamic getFieldValue(Order lead, String field) {
+          switch (field) {
+            case 'name':
+              var name = lead.customerName ?? '';
+              if (name.contains('||')) name = name.split('||')[0].trim();
+              return name.toLowerCase();
+            default:
+              // final value = lead.asMap()[field];
+              return "value".toString().toLowerCase();
+          }
+        }
+
+        final valA = getFieldValue(a, sortField.value);
+        final valB = getFieldValue(b, sortField.value);
+
+        if (valA is DateTime && valB is DateTime) {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        } else {
+          return sortOrderN.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        }
+      });
+    }
+
+    int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
+
+    if (start >= filteredLeads.length) {
+      return list.value=[];
+    }
+
+    int end = start + itemsProspectPerPage;
+    end = end > filteredLeads.length ? filteredLeads.length : end;
+    print("list");
+    print(filteredLeads.sublist(start, end));
+    return list.value=filteredLeads.sublist(start, end);
+    // return filteredLeads.sublist(start, end);
+  // }
+}
   List<NewLeadObj> get paginatedCustomerLeads {
     final query = searchCustomers.value.trim().toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;
@@ -2598,6 +2669,9 @@ print("sortField ${sortField}");
   }
 
   void selectCustomer(AllCustomersObj c) {
+    print("c.id");
+    print(c.id);
+    print(c.name);
     selectedCustomerId.value = c.id;
     selectedCustomerName.value = c.name;
     selectedCustomerMobile.value = c.phoneNo;
