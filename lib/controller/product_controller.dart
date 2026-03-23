@@ -11,7 +11,9 @@ import 'package:fullcomm_crm/models/role_obj.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';
@@ -37,6 +39,71 @@ class ProductController extends GetxController with GetSingleTickerProviderState
   final TextEditingController brand = TextEditingController();
   final RoundedLoadingButtonController saveCtr = RoundedLoadingButtonController();
   Rxn<PlatformFile> selectedFile = Rxn<PlatformFile>();
+  var searchProspects = ''.obs;
+  RxString selectedProspectTemperature = "".obs;
+  RxString selectedQualifiedSortBy = "All".obs;
+  var sortField = ''.obs;
+  var sortOrder = 'asc'.obs;
+  var sortOrderN = 'asc'.obs;
+  var currentProspectPage = 1.obs;
+  final itemsProspectPerPage = 20;
+  var  totalProspectPages =0.obs;
+  final itemsPerPage = 20; // Adjust based on your needs
+
+  List<ProductModel> changeProductPage(RxList<ProductModel> list,RxList<ProductModel> list2){
+    final query = searchProspects.value.trim().toLowerCase();
+    final ratingFilter = selectedProspectTemperature.value;
+    final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
+    final now = DateTime.now();
+
+    final filteredLeads = list2.value.where((lead) {
+      final matchesQuery = (lead.title ?? '').toLowerCase().contains(query);
+      return matchesQuery;
+    }).toList();
+
+    if (sortField.isNotEmpty) {
+      filteredLeads.sort((a, b) {
+        dynamic getFieldValue(ProductModel lead, String field) {
+          switch (field) {
+            case 'name':
+              var name = lead.title ?? '';
+              if (name.contains('||')) name = name.split('||')[0].trim();
+              return name.toLowerCase();
+            default:
+            // final value = lead.asMap()[field];
+              return "value".toString().toLowerCase();
+          }
+        }
+
+        final valA = getFieldValue(a, sortField.value);
+        final valB = getFieldValue(b, sortField.value);
+
+        if (valA is DateTime && valB is DateTime) {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        } else {
+          return sortOrderN.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        }
+      });
+    }
+
+    int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
+
+    if (start >= filteredLeads.length) {
+      return list.value=[];
+    }
+
+    int end = start + itemsProspectPerPage;
+    end = end > filteredLeads.length ? filteredLeads.length : end;
+    print("list");
+    print(filteredLeads.sublist(start, end));
+    return list.value=filteredLeads.sublist(start, end);
+    // return filteredLeads.sublist(start, end);
+    // }
+  }
 
   Future pickImage() async {
 
@@ -255,12 +322,30 @@ var isSelectAll=false.obs;
       }
     }
   }
+  String formatAmount(dynamic amount) {
+    try {
+      if (amount == null) return "₹0";
 
+      final value = double.parse(amount.toString());
+
+      final formatter = NumberFormat.currency(
+        locale: 'en_IN',     // 👈 Indian format
+        symbol: '₹',         // 👈 Rupee symbol
+        decimalDigits: 2,    // 👈 2 decimal places
+      );
+
+      return formatter.format(value);
+    } catch (e) {
+      return "₹0";
+    }
+  }
  RxList<ProductModel> products=<ProductModel>[].obs;
+ RxList<ProductModel> products2=<ProductModel>[].obs;
 
   Future<List<ProductModel>> getProducts() async {
     try {
       products.clear();
+      products2.clear();
       final response = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -289,6 +374,7 @@ var isSelectAll=false.obs;
       if (response.statusCode == 200) {
         final List data = jsonDecode(response.body);
         products.value =data.map((e) => ProductModel.fromJson(e)).toList();
+        products2.value =data.map((e) => ProductModel.fromJson(e)).toList();
         return products;
       }else{
           return [];
@@ -298,10 +384,51 @@ var isSelectAll=false.obs;
       return [];
     }
   }
+  String numberToWords(int number) {
+    final units = [
+      "", "One", "Two", "Three", "Four", "Five", "Six",
+      "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve",
+      "Thirteen", "Fourteen", "Fifteen", "Sixteen",
+      "Seventeen", "Eighteen", "Nineteen"
+    ];
 
+    final tens = [
+      "", "", "Twenty", "Thirty", "Forty",
+      "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
+    ];
+
+    if (number < 20) return units[number];
+
+    if (number < 100) {
+      return "${tens[number ~/ 10]} ${units[number % 10]}";
+    }
+
+    if (number < 1000) {
+      return "${units[number ~/ 100]} Hundred ${numberToWords(number % 100)}";
+    }
+
+    if (number < 100000) {
+      return "${numberToWords(number ~/ 1000)} Thousand ${numberToWords(number % 1000)}";
+    }
+
+    if (number < 10000000) {
+      return "${numberToWords(number ~/ 100000)} Lakh ${numberToWords(number % 100000)}";
+    }
+
+    return number.toString();
+  }
+  final ScreenshotController screenshotController = ScreenshotController();
   RxList<Order> ordersList=<Order>[].obs;
   RxList<Order> ordersList2=<Order>[].obs;
-
+  String formatDateTime(String? dateTime) {
+    try {
+      if (dateTime == null || dateTime.isEmpty) return "-";
+      final dt = DateTime.parse(dateTime);
+      return DateFormat('dd-MM-yyyy hh:mm a').format(dt);
+    } catch (e) {
+      return dateTime ?? "-";
+    }
+  }
   Future<List<Order>> getOrderDetails() async {
     try {
       ordersList.clear();

@@ -5,8 +5,11 @@ class Order {
   final String createdTs;
   final String totalAmt;
   final String createdBy;
-  // final int cosId;
-  // final List<Product> products;
+  final String status;
+  final String address;
+  final String mobile;
+  final String subtotal;
+  final List<Product> products;
 
   Order({
     required this.id,
@@ -15,6 +18,11 @@ class Order {
     required this.totalAmt,
     required this.createdBy,
     required this.createdTs,
+    required this.status,
+    required this.address,
+    required this.mobile,
+    required this.subtotal,
+    required this.products,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -24,32 +32,47 @@ class Order {
       customerName: json['name'] ?? "",
       createdTs: json['created_ts'] ?? "",
       totalAmt: json['o_total']?.toString() ?? "",
-      createdBy: json['created_by']?.toString() ?? "",    );
+      subtotal: json['subtotal']?.toString() ?? "",
+      mobile: json['mobile']?.toString() ?? "",
+      address: json['address']?.toString() ?? "",
+      status: json['status']?.toString() ?? "",
+      createdBy: json['created_by']?.toString() ?? "",
+
+      /// ✅ SAFE LIST PARSE
+      products: json['products'] != null
+          ? List<Product>.from(
+          (json['products'] as List)
+              .map((e) => Product.fromJson(e)))
+          : [],
+    );
   }
 }
 
-// class Product {
-//   final int productId;
-//   final String name;
-//   final int qty;
-//   final double price;
-//   final double amount;
-//
-//   Product({
-//     required this.productId,
-//     required this.name,
-//     required this.qty,
-//     required this.price,
-//     required this.amount,
-//   });
-//
-//   factory Product.fromJson(Map<String, dynamic> json) {
-//     return Product(
-//       productId: json['product_id'] ?? 0,
-//       name: json['name'] ?? '',
-//       qty: json['qty'] ?? 0,
-//       price: (json['price'] ?? 0).toDouble(),
-//       amount: (json['amount'] ?? 0).toDouble(),
-//     );
-//   }
-// }
+class Product {
+  final String name;
+  final int qty;
+  final double price;
+  final double amount;
+
+  Product({
+    required this.name,
+    required this.qty,
+    required this.price,
+    required this.amount,
+  });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      name: json['name'] ?? '',
+
+      /// ✅ string/int safe convert
+      qty: int.tryParse(json['qty']?.toString() ?? "0") ?? 0,
+
+      /// ✅ safe double convert
+      price: double.tryParse(json['price']?.toString() ?? "0") ?? 0,
+
+      /// ✅ API uses 'amt'
+      amount: double.tryParse(json['amt']?.toString() ?? "0") ?? 0,
+    );
+  }
+}

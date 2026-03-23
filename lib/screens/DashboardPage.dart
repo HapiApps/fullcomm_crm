@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/controller/product_controller.dart';
 import 'package:fullcomm_crm/screens/settings/lead_categories.dart';
@@ -685,7 +686,8 @@ void checkDate(){
                                 ),SizedBox(width: screenWidth/75,),
                                 WaveStatCard(
                                     title: "Calls",
-                                    numericValue: int.parse(dashController.totalCalls.value.toString()),
+                                    // numericValue: int.parse(dashController.totalCalls.value.toString()),
+                                    numericValue: remController.callFilteredList.length,
                                     maxValue: maxValue,
                                     iconPath: DashboardAssets.phone,
                                     valueColor: const Color(0xff53922A),
@@ -730,7 +732,8 @@ void checkDate(){
                                     controllers.selectedIndex.value = 6;
                                   },
                                   title: "Appointments",
-                                  numericValue: int.parse(dashController.totalMeetings.value.toString()),
+                                  // numericValue: int.parse(dashController.totalMeetings.value.toString()),
+                                  numericValue: remController.meetingFilteredList.length,
                                   maxValue: maxValue,
                                   iconPath: DashboardAssets.date,
                                   valueColor: const Color(0xff8B2CF5),
@@ -1408,7 +1411,7 @@ void checkDate(){
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CustomText(text: "Reminders", isCopy: false,isBold: true,size: 15,),5.height,
+                                    CustomText(text: "Reminders ${remController.reminderFilteredList.length}", isCopy: false,isBold: true,size: 15,),5.height,
                                     Container(
                                       color: Colors.white,
                                       width: screenWidth/1.29,
@@ -1933,7 +1936,7 @@ void checkDate(){
                                   ),
                                 ),
                                 ActivityOverTimeChart(
-                                  maxY: 80,
+                                  maxY: 330,
                                   xLabels: controllers.xLabels,
                                   lines: [
                                     ActivityLineData(

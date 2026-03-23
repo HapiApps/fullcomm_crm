@@ -383,7 +383,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "enDate": dashController.date2.value,
       };
 
-      log("Dashboard report 1:    ${data.toString()}");
+      print("Dashboard report 1:    ${data.toString()}");
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -393,7 +393,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      // print("Dashboard report: ${request.body}");
+      print("Dashboard report: ${request.body}");
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

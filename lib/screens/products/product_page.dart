@@ -83,6 +83,7 @@ class _ProductPageState extends State<ProductPage> {
       _focusNode.requestFocus();
       productCtr.isSelectAll.value=false;
       productCtr.idsList.value.clear();
+      productCtr.totalProspectPages.value=(productCtr.products.length / productCtr.itemsPerPage).ceil();
     });
     // Future.delayed(Duration.zero, () {
     //   apiService.changeList(widget.index);
@@ -168,12 +169,21 @@ class _ProductPageState extends State<ProductPage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CustomText(
-                              text: "Products",
-                              colors: colorsConst.textColor,
-                              size: 25,
-                              isBold: true,
-                              isCopy: true,
+                            Row(
+                              children: [
+                                InkWell(
+                                    onTap:(){
+                                      Get.back();
+                                    },
+                                    child: Icon(Icons.arrow_back)),10.width,
+                                CustomText(
+                                  text: "Products",
+                                  colors: colorsConst.textColor,
+                                  size: 25,
+                                  isBold: true,
+                                  isCopy: true,
+                                ),
+                              ],
                             ),
                             10.height,
                             CustomText(
@@ -184,69 +194,74 @@ class _ProductPageState extends State<ProductPage> {
                             ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            // CustomLoadingButton(
-                            //   callback: () async {
-                            //     Get.to(AddOrderPage());
-                            //   },
-                            //   isLoading: false,
-                            //   height: 35,
-                            //   backgroundColor: colorsConst.primary,
-                            //   radius: 2,
-                            //   width: 150,
-                            //   isImage: false,
-                            //   text: "Invoice",
-                            //   textColor: Colors.white,
-                            // ),
-                            // 10.width,
-                            // CustomLoadingButton(
-                            //   callback: () async {
-                            //     Get.to(AddOrderPage());
-                            //   },
-                            //   isLoading: false,
-                            //   height: 35,
-                            //   backgroundColor: colorsConst.primary,
-                            //   radius: 2,
-                            //   width: 150,
-                            //   isImage: false,
-                            //   text: "Order",
-                            //   textColor: Colors.white,
-                            // ),
-                            10.width,
-                            CustomLoadingButton(
-                              callback: () async {
-                                // Get.to( AddProduct());
-                              },
-                              isLoading: false,
-                              height: 35,
-                              backgroundColor: colorsConst.primary,
-                              radius: 2,
-                              width: 150,
-                              isImage: false,
-                              text: "Add Product",
-                              textColor: Colors.white,
-                            ),
-                          ],
-                        ),
+                        // Row(
+                        //   children: [
+                        //     // CustomLoadingButton(
+                        //     //   callback: () async {
+                        //     //     Get.to(AddOrderPage());
+                        //     //   },
+                        //     //   isLoading: false,
+                        //     //   height: 35,
+                        //     //   backgroundColor: colorsConst.primary,
+                        //     //   radius: 2,
+                        //     //   width: 150,
+                        //     //   isImage: false,
+                        //     //   text: "Invoice",
+                        //     //   textColor: Colors.white,
+                        //     // ),
+                        //     // 10.width,
+                        //     // CustomLoadingButton(
+                        //     //   callback: () async {
+                        //     //     Get.to(AddOrderPage());
+                        //     //   },
+                        //     //   isLoading: false,
+                        //     //   height: 35,
+                        //     //   backgroundColor: colorsConst.primary,
+                        //     //   radius: 2,
+                        //     //   width: 150,
+                        //     //   isImage: false,
+                        //     //   text: "Order",
+                        //     //   textColor: Colors.white,
+                        //     // ),
+                        //     10.width,
+                        //     CustomLoadingButton(
+                        //       callback: () async {
+                        //         // Get.to( AddProduct());
+                        //       },
+                        //       isLoading: false,
+                        //       height: 35,
+                        //       backgroundColor: colorsConst.primary,
+                        //       radius: 2,
+                        //       width: 150,
+                        //       isImage: false,
+                        //       text: "Add Product",
+                        //       textColor: Colors.white,
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // CustomSearchTextField(
-                        //   controller: controllers.search,
-                        //   hintText: "Search Name",
-                        //   onChanged: (value) {
-                        //     controllers.searchText.value = value.toString().trim();
-                        //     // remController.filterAndSortMeetings(
-                        //     //   searchText: controllers.searchText.value.toLowerCase(),
-                        //     //   callType: controllers.selectMeetingType.value,
-                        //     //   sortField: controllers.sortFieldMeetingActivity.value,
-                        //     //   sortOrder: controllers.sortOrderMeetingActivity.value,
-                        //     // );
-                        //   },
-                        // ),
+                        CustomSearchTextField(
+                          controller: controllers.search,
+                          hintText: "Search Name",
+                          onChanged: (value) {
+                            controllers.searchText.value = value.toString().trim();
+                            setState(() {
+                              final suggestions=productCtr.products2.where(
+                                      (user){
+                                    final customerName = user.title.toString().toLowerCase();
+                                    final customerNo = user.hsnCode.toString().toLowerCase();
+                                    final bankName = user.skuId.toString().toLowerCase();
+                                    final input = value.toString().toLowerCase().trim();
+                                    return customerName.contains(input) || customerNo.contains(input)|| bankName.contains(input);
+                                  }).toList();
+                              productCtr.products.value=suggestions;
+                            });
+                          },
+                        ),
                         Obx(()=>productCtr.idsList.isNotEmpty?
                         Row(
                           children: [
@@ -349,241 +364,114 @@ class _ProductPageState extends State<ProductPage> {
                         ):0.width)
                       ],
                     ),
+
                     Obx(() {
-                      if (productCtr.products.isEmpty) {
-                        return const Center(
-                          child: CustomText(
-                            text: "No Products Found",
-                            isCopy: false,
-                          ),
-                        );
-                      }
-
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Table(
-                          border: TableBorder.all(color: Colors.grey.shade300),
-                          columnWidths: {
-                            0: FixedColumnWidth(60),
-                            1: FixedColumnWidth(100),
-                            2: FixedColumnWidth(weWidth / 8),
-                            3: FixedColumnWidth(weWidth / 7),
-                            4: FixedColumnWidth(weWidth / 9),
-                            5: FixedColumnWidth(weWidth / 9),
-                            6: FixedColumnWidth(weWidth / 9),
-                            7: FixedColumnWidth(weWidth / 9),
-                            8: FixedColumnWidth(weWidth / 10),
-                          },
-                          children: [
-
-                            /// HEADER
-                            TableRow(
-                              decoration: BoxDecoration(
-                                color: colorsConst.primary,
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10),
-                                ),
-                              ),
-                              children: [
-                                Container(
-                                  height: 60, // 👈 heading height increase
-                                  alignment: Alignment.centerLeft,
-                                  child: Center(
-                                    child: Checkbox(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(5.0),
-                                        ),
-                                        side: MaterialStateBorderSide
-                                            .resolveWith(
-                                              (states) => BorderSide(
-                                              width: 1.0,
-                                              color:Colors.grey.shade100),
-                                        ),
-                                        hoverColor: Colors.transparent,
-                                        focusColor: Colors.transparent,
-                                        activeColor: colorsConst.third,
-                                        value:productCtr.isSelectAll.value,
-                                        onChanged: (value) {
-                                          productCtr.isSelectAll.value=!productCtr.isSelectAll.value;
-                                          productCtr.checkDelete();
-                                        }),
-                                  ),
-                                ),
-                                headerCell("Action"),
-                                headerCell("Name"),
-                                headerCell("SKU ID"),
-                                headerCell("HSN Code"),
-                                headerCell("Category"),
-                                headerCell("Sub Category"),
-                                headerCell("GST(in %)"),
-                              ],
-                            ),
-
-                            /// DATA ROWS
-                            ...List.generate(productCtr.products.length, (index) {
-                              final e = productCtr.products[index];
-                              return TableRow(
+                      return Column(
+                        children: [
+                          /// 🔴 HEADER (Fixed)
+                          Table(
+                            border: TableBorder.all(color: Colors.grey.shade300),
+                            columnWidths: {
+                              0: FixedColumnWidth(weWidth / 3.5),
+                              1: FixedColumnWidth(weWidth / 8),
+                              2: FixedColumnWidth(weWidth / 8),
+                              3: FixedColumnWidth(weWidth / 7),
+                              4: FixedColumnWidth(weWidth / 9),
+                              5: FixedColumnWidth(weWidth / 9)
+                            },
+                            children: [
+                              TableRow(
                                 decoration: BoxDecoration(
-                                  color: index % 2 == 0
-                                      ? Colors.white
-                                      : Colors.grey.shade100, // alternate row color
+                                  color: colorsConst.primary,
                                 ),
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Obx(()=>Checkbox(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(5.0),
-                                        ),
-                                        side: MaterialStateBorderSide
-                                            .resolveWith(
-                                              (states) => BorderSide(
-                                              width: 1.0,
-                                              color:Colors.grey.shade300),
-                                        ),
-                                        hoverColor: Colors.grey.shade300,
-                                        focusColor: Colors.grey.shade300,
-                                        activeColor: colorsConst.third,
-                                        value:e.isSelect.value,
-                                        onChanged: (value) {
-                                          e.isSelect.value=!e.isSelect.value;
-                                          if(e.isSelect.value==true){
-                                            productCtr.idsList.add(e.id);
-                                          }else{
-                                            productCtr.idsList.remove(e.id);
-                                            productCtr.isSelectAll.value=false;
-                                          }
-                                        })),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: Row(
-                                      children: [
-                                        IconButton(onPressed: (){
-                                          // Get.to(UpdateProduct(data: e));
-                                        }, icon: SvgPicture.asset("assets/images/a_edit.svg",width: 16,height: 16)),
-                                        IconButton(onPressed: (){
-                                          productCtr.idsList.add(e.id);
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                content: CustomText(
-                                                  text: "Are you sure delete this product?",
-                                                  size: 16,
-                                                  isBold: true,
-                                                  isCopy: true,
-                                                  colors: colorsConst.textColor,
-                                                ),
-                                                actions: [
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                  children: [
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(color: colorsConst.primary),
-                                                          color: Colors.white),
-                                                      width: 80,
-                                                      height: 25,
-                                                      child: ElevatedButton(
-                                                          style: ElevatedButton.styleFrom(
-                                                            shape: const RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.zero,
-                                                            ),
-                                                            backgroundColor: Colors.white,
-                                                          ),
-                                                          onPressed: () {
-                                                            Navigator.pop(context);
-                                                          },
-                                                          child: CustomText(
-                                                            text: "Cancel",
-                                                            colors: colorsConst.primary,
-                                                            size: 14,
-                                                            isCopy: false,
-                                                          )),
-                                                    ),
-                                                    10.width,
-                                                    CustomLoadingButton(
-                                                      callback: (){
-                                                          productCtr.deleteProduct(context);
-                                                      },
-                                                      height: 35,
-                                                      isLoading: true,
-                                                      backgroundColor: colorsConst.primary,
-                                                      radius: 2,
-                                                      width: 80,
-                                                      controller: productCtr.saveCtr,
-                                                      isImage: false,
-                                                      text: "Delete",
-                                                      textColor: Colors.white,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                              );
-                                            },
-                                          );
-                                        }, icon: SvgPicture.asset(
-                                          "assets/images/a_delete.svg",
-                                          width: 16,
-                                          height: 16,
-                                        ))
-                                      ],
-                                    )
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: CustomText(
-                                      text: e.title ?? "",
-                                      isCopy: true,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: CustomText(
-                                      text: e.skuId ?? "",
-                                      isCopy: true,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: CustomText(
-                                      text: e.hsnCode ?? "",
-                                      isCopy: true,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: CustomText(
-                                      text: e.catId.toString(),
-                                      isCopy: true,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: CustomText(
-                                      text: e.subCatId.toString(),
-                                      isCopy: true,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: CustomText(
-                                      text: e.gst.toString(),
-                                      isCopy: true,
-                                    ),
-                                  ),
+                                  headerCell("Name"),
+                                  headerCell("SKU ID"),
+                                  headerCell("HSN Code"),
+                                  headerCell("Category"),
+                                  headerCell("Sub Category"),
+                                  headerCell("GST(in %)"),
                                 ],
+                              ),
+                            ],
+                          ),
+                          productCtr.products.isEmpty?
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            height: MediaQuery.of(context).size.height*0.6,
+                              child: CustomNoData()):
+                          /// 🟢 BODY (Scrollable மட்டும்)
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height*0.6, // 👈 scroll area
+                            child: Obx(() {
+                              if (productCtr.products.isEmpty) {
+                                return const Center(
+                                  child: CustomText(
+                                    text: "No Orders Found",
+                                    isCopy: false,
+                                  ),
+                                );
+                              }
+
+                              return SingleChildScrollView(
+                                child: Table(
+                                  border: TableBorder.all(color: Colors.grey.shade300),
+                                  columnWidths: {
+                                    0: FixedColumnWidth(weWidth / 3.5),
+                                    1: FixedColumnWidth(weWidth / 8),
+                                    2: FixedColumnWidth(weWidth / 8),
+                                    3: FixedColumnWidth(weWidth / 7),
+                                    4: FixedColumnWidth(weWidth / 9),
+                                    5: FixedColumnWidth(weWidth / 9)
+                                  },
+                                  children: List.generate(productCtr.products.length, (index) {
+                                    final e = productCtr.products[index];
+                                    return TableRow(
+                                      decoration: BoxDecoration(
+                                        color: index % 2 == 0
+                                            ? Colors.white
+                                            : Colors.grey.shade50,
+                                      ),
+                                      children: [
+                                        valueCell(e.title.toString()),
+                                        valueCell(e.skuId.toString()),
+                                        valueCell(e.hsnCode.toString()),
+                                        valueCell(e.cat.toString()),
+                                        valueCell(e.subCat.toString()),
+                                        valueCell(e.gst.toString())
+                                      ],
+                                    );
+                                  }),
+                                ),
                               );
                             }),
-                          ],
-                        ),
+                          ),
+                        ],
                       );
                     }),
-                    20.height,
+                    productCtr.products.isNotEmpty? Obx(() {
+                      int totalPages = productCtr.totalProspectPages.value == 0 ? 1 : productCtr.totalProspectPages.value;
+                      final currentPage = productCtr.currentProspectPage.value;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          utils.paginationButton(Icons.chevron_left, currentPage > 1, () {
+                            _focusNode.requestFocus();
+                            productCtr.currentProspectPage.value--;
+                            productCtr.changeProductPage(productCtr.products,productCtr.products2);
+                            print("controllers.currentProspectPage.value --- ${productCtr.currentProspectPage.value}");
+                          }),
+                          ...utils.buildPagination(totalPages, currentPage),
+                          utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
+                            productCtr.currentProspectPage.value++;
+                            _focusNode.requestFocus();
+                            productCtr.changeProductPage(productCtr.products,productCtr.products2);
+                            print("controllers.currentProspectPage.value +++ ${productCtr.currentProspectPage.value}");
+                          }),
+                        ],
+                      );
+                    }):0.height,
+                    20.height
                   ],
                 ),
               ),
@@ -603,6 +491,18 @@ class _ProductPageState extends State<ProductPage> {
           isCopy: false,
           isBold: true,
           colors: Colors.white,
+        ),
+      ),
+    );
+  }
+  Widget valueCell(String text) {
+    return Container(
+      height: 50, // 👈 heading height increase
+      alignment: Alignment.centerLeft,
+      child: Center(
+        child: CustomText(
+          text: text,size: 16,
+          isCopy: false,
         ),
       ),
     );
