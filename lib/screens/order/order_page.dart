@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
@@ -30,45 +31,299 @@ class OrderPage extends StatefulWidget {
   State<OrderPage> createState() => _OrderPageState();
 }
 
+// class _OrderPageState extends State<OrderPage> {
+//   final ScrollController _controller = ScrollController();
+//   late FocusNode _focusNode;
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//     _focusNode = FocusNode();
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       _focusNode.requestFocus();
+//       // productCtr.isSelectAll.value=false;
+//     });
+//   }
+//
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     controllers.totalProspectPages.value=(productCtr.ordersList.length / controllers.itemsPerPage).ceil();
+//     var weWidth=MediaQuery.of(context).size.width;
+//     return SelectionArea(
+//       child: Scaffold(
+//         body: Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//             SideBar(),
+//             Obx(() => Container(
+//               width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+//               height: MediaQuery.of(context).size.height,
+//               alignment: Alignment.center,
+//               padding: EdgeInsets.fromLTRB(20, 5, 20, 16),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   // Header Section
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           Row(
+//                             children: [
+//                               InkWell(
+//                                 onTap:(){
+//                                   Get.back();
+//                                 },
+//                                   child: Icon(Icons.arrow_back)),10.width,
+//                               CustomText(
+//                                 text: "Orders",
+//                                 colors: colorsConst.textColor,
+//                                 size: 25,
+//                                 isBold: true,
+//                                 isCopy: true,
+//                               ),
+//                             ],
+//                           ),
+//                           10.height,
+//                           CustomText(
+//                             text: "View all of your Orders Details\n\n\n",
+//                             colors: colorsConst.textColor,
+//                             size: 14,
+//                             isCopy: true,
+//                           ),
+//                         ],
+//                       ),
+//                     ],
+//                   ),
+//                   Obx(() {
+//                     if (productCtr.ordersList.isEmpty) {
+//                       return const Center(
+//                         child: CustomText(
+//                           text: "No Orders Found",
+//                           isCopy: false,
+//                         ),
+//                       );
+//                     }
+//                     return Column(
+//                       children: [
+//                         /// 🔴 HEADER (Fixed)
+//                         Table(
+//                           border: TableBorder.all(color: Colors.grey.shade300),
+//                           columnWidths: {
+//                             0: FixedColumnWidth(weWidth / 8),
+//                             1: FixedColumnWidth(weWidth / 2.55),
+//                             2: FixedColumnWidth(weWidth / 8),
+//                             3: FixedColumnWidth(weWidth / 7),
+//                             4: FixedColumnWidth(weWidth / 9)
+//                           },
+//                           children: [
+//                             TableRow(
+//                               decoration: BoxDecoration(
+//                                 color: colorsConst.primary,
+//                               ),
+//                               children: [
+//                                 headerCell("Order No"),
+//                                 headerCell("Customer"),
+//                                 headerCell("Total Amount"),
+//                                 headerCell("Order Date"),
+//                                 headerCell("Invoice"),
+//                               ],
+//                             ),
+//                           ],
+//                         ),
+//
+//                         /// 🟢 BODY (Scrollable மட்டும்)
+//                         SizedBox(
+//                           height: MediaQuery.of(context).size.height*0.6, // 👈 scroll area
+//                           child: Obx(() {
+//                             if (productCtr.ordersList.isEmpty) {
+//                               return const Center(
+//                                 child: CustomText(
+//                                   text: "No Orders Found",
+//                                   isCopy: false,
+//                                 ),
+//                               );
+//                             }
+//
+//                             return SingleChildScrollView(
+//                               child: Table(
+//                                 border: TableBorder.all(color: Colors.grey.shade300),
+//                                 columnWidths: {
+//                                   0: FixedColumnWidth(weWidth / 8),
+//                                   1: FixedColumnWidth(weWidth / 2.55),
+//                                   2: FixedColumnWidth(weWidth / 8),
+//                                   3: FixedColumnWidth(weWidth / 7),
+//                                   4: FixedColumnWidth(weWidth / 9)
+//                                 },
+//                                 children: List.generate(productCtr.ordersList.length, (index) {
+//                                   final e = productCtr.ordersList[index];
+//                                   return TableRow(
+//                                     decoration: BoxDecoration(
+//                                       color: index % 2 == 0
+//                                           ? Colors.white
+//                                           : Colors.grey.shade50,
+//                                     ),
+//                                     children: [
+//                                       valueCell(e.orderId.toString()),
+//                                       valueCell(e.customerName.toString()),
+//                                       valueCell(productCtr.formatAmount(e.totalAmt.toString())),
+//                                       valueCell(productCtr.formatDateTime(e.createdTs.toString())),
+//                                       SizedBox(
+//                                         height: 50,
+//                                         child: Padding(
+//                                           padding: const EdgeInsets.all(8.0),
+//                                           child: ElevatedButton(
+//                                               onPressed: (){
+//                                                 showDialog(
+//                                                   context: context,
+//                                                   builder: (_) => OrderInvoiceDialog(order: e),
+//                                                 );
+//                                               },
+//                                               child: Row(
+//                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                                                 children: [
+//                                                   Icon(Icons.print,color: Colors.white,),
+//                                                   CustomText(text: "Invoice", isCopy: false),
+//                                                 ],
+//                                               )),
+//                                         ),
+//                                       ),
+//                                     ],
+//                                   );
+//                                 }),
+//                               ),
+//                             );
+//                           }),
+//                         ),
+//                       ],
+//                     );
+//                   }),
+//                   productCtr.ordersList.isNotEmpty? Obx(() {
+//                     int totalPages = controllers.totalProspectPages.value == 0 ? 1 : controllers.totalProspectPages.value;
+//                     final currentPage = controllers.currentProspectPage.value;
+//                     return Row(
+//                       mainAxisAlignment: MainAxisAlignment.end,
+//                       children: [
+//                         utils.paginationButton(Icons.chevron_left, currentPage > 1, () {
+//                           _focusNode.requestFocus();
+//                           controllers.currentProspectPage.value--;
+//                           controllers.changeOrderPage(productCtr.ordersList,productCtr.ordersList2);
+//                           print("controllers.currentProspectPage.value --- ${controllers.currentProspectPage.value}");
+//                         }),
+//                         ...utils.buildPagination(totalPages, currentPage),
+//                         utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
+//                           controllers.currentProspectPage.value++;
+//                           _focusNode.requestFocus();
+//                           controllers.changeOrderPage(productCtr.ordersList,productCtr.ordersList2);
+//                           print("controllers.currentProspectPage.value +++ ${controllers.currentProspectPage.value}");
+//                         }),
+//                       ],
+//                     );
+//                   }):0.height,
+//                   20.height,
+//                 ],
+//               ),
+//             ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//   Widget headerText(String text) {
+//     return CustomText(
+//       text: text,
+//       isBold: true,size: 16,
+//       colors: Colors.white, isCopy: false,
+//     );
+//   }
+//   Widget headerCell(String text) {
+//     return Container(
+//       height: 60, // 👈 heading height increase
+//       alignment: Alignment.centerLeft,
+//       child: Center(
+//         child: CustomText(
+//           text: text,size: 16,
+//           isCopy: false,
+//           isBold: true,
+//           colors: Colors.white,
+//         ),
+//       ),
+//     );
+//   }
+//   Widget valueCell(String text) {
+//     return Container(
+//       height: 50, // 👈 heading height increase
+//       alignment: Alignment.centerLeft,
+//       child: Center(
+//         child: CustomText(
+//           text: text,size: 16,
+//           isCopy: false,
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
 class _OrderPageState extends State<OrderPage> {
-  final ScrollController _controller = ScrollController();
+  final ScrollController _horizontalController = ScrollController();
+  final ScrollController _verticalController = ScrollController();
   late FocusNode _focusNode;
+  final ScrollController _headerHorizontalController = ScrollController();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _focusNode = FocusNode();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
-      // productCtr.isSelectAll.value=false;
+      controllers.totalProspectPages.value=(productCtr.ordersList.length / controllers.itemsPerPage).ceil();
     });
+    /// 🔥 SYNC HEADER + BODY
+    _horizontalController.addListener(() {
+      if (_headerHorizontalController.hasClients &&
+          _headerHorizontalController.offset != _horizontalController.offset) {
+        _headerHorizontalController.jumpTo(_horizontalController.offset);
+      }
+    });
+
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _horizontalController.dispose();
+    _verticalController.dispose();
+    _headerHorizontalController.dispose(); // ✅ add
+    _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    controllers.totalProspectPages.value=(productCtr.ordersList.length / controllers.itemsPerPage).ceil();
-    var weWidth=MediaQuery.of(context).size.width;
+    var weWidth = MediaQuery.of(context).size.width;
+
     return SelectionArea(
       child: Scaffold(
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SideBar(),
-            Obx(() => Container(
+            Container(
               width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
               padding: EdgeInsets.fromLTRB(20, 5, 20, 16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header Section
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -78,9 +333,9 @@ class _OrderPageState extends State<OrderPage> {
                           Row(
                             children: [
                               InkWell(
-                                onTap:(){
-                                  Get.back();
-                                },
+                                  onTap:(){
+                                    Get.back();
+                                  },
                                   child: Icon(Icons.arrow_back)),10.width,
                               CustomText(
                                 text: "Orders",
@@ -102,110 +357,364 @@ class _OrderPageState extends State<OrderPage> {
                       ),
                     ],
                   ),
-                  Obx(() {
-                    if (productCtr.ordersList.isEmpty) {
-                      return const Center(
-                        child: CustomText(
-                          text: "No Orders Found",
-                          isCopy: false,
-                        ),
-                      );
-                    }
-                    return Column(
-                      children: [
-                        /// 🔴 HEADER (Fixed)
-                        Table(
-                          border: TableBorder.all(color: Colors.grey.shade300),
-                          columnWidths: {
-                            0: FixedColumnWidth(weWidth / 8),
-                            1: FixedColumnWidth(weWidth / 2.55),
-                            2: FixedColumnWidth(weWidth / 8),
-                            3: FixedColumnWidth(weWidth / 7),
-                            4: FixedColumnWidth(weWidth / 9)
-                          },
-                          children: [
-                            TableRow(
-                              decoration: BoxDecoration(
-                                color: colorsConst.primary,
-                              ),
-                              children: [
-                                headerCell("Order No"),
-                                headerCell("Customer"),
-                                headerCell("Total Amount"),
-                                headerCell("Order Date"),
-                                headerCell("Invoice"),
-                              ],
-                            ),
-                          ],
-                        ),
-
-                        /// 🟢 BODY (Scrollable மட்டும்)
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height*0.6, // 👈 scroll area
-                          child: Obx(() {
-                            if (productCtr.ordersList.isEmpty) {
-                              return const Center(
-                                child: CustomText(
-                                  text: "No Orders Found",
-                                  isCopy: false,
-                                ),
-                              );
-                            }
-
-                            return SingleChildScrollView(
-                              child: Table(
-                                border: TableBorder.all(color: Colors.grey.shade300),
-                                columnWidths: {
-                                  0: FixedColumnWidth(weWidth / 8),
-                                  1: FixedColumnWidth(weWidth / 2.55),
-                                  2: FixedColumnWidth(weWidth / 8),
-                                  3: FixedColumnWidth(weWidth / 7),
-                                  4: FixedColumnWidth(weWidth / 9)
-                                },
-                                children: List.generate(productCtr.ordersList.length, (index) {
-                                  final e = productCtr.ordersList[index];
-                                  return TableRow(
-                                    decoration: BoxDecoration(
-                                      color: index % 2 == 0
-                                          ? Colors.white
-                                          : Colors.grey.shade50,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomSearchTextField(
+                        controller: controllers.search,
+                        hintText: "Search Customer Name",
+                        onChanged: (value) {
+                          controllers.searchText.value = value.toString().trim();
+                          setState(() {
+                            final suggestions=productCtr.ordersList2.where(
+                                    (user){
+                                  final customerName = user.customerName.toString().toLowerCase();
+                                  final input = value.toString().toLowerCase().trim();
+                                  return customerName.contains(input);
+                                }).toList();
+                            productCtr.ordersList.value=suggestions;
+                          });
+                        },
+                      ),
+                      Obx(()=>productCtr.idsList.isNotEmpty?
+                      Row(
+                        children: [
+                          CustomText(text: "Selected count: ${productCtr.idsList.value.length}", isCopy: false),15.width,
+                          InkWell(
+                            focusColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            onTap: (){
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    content: CustomText(
+                                      text: "Are you sure delete this products?",
+                                      size: 16,
+                                      isBold: true,
+                                      isCopy: false,
+                                      colors: colorsConst.textColor,
                                     ),
-                                    children: [
-                                      valueCell(e.orderId.toString()),
-                                      valueCell(e.customerName.toString()),
-                                      valueCell(productCtr.formatAmount(e.totalAmt.toString())),
-                                      valueCell(productCtr.formatDateTime(e.createdTs.toString())),
-                                      SizedBox(
-                                        height: 50,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: ElevatedButton(
-                                              onPressed: (){
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (_) => OrderInvoiceDialog(order: e),
-                                                );
-                                              },
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                children: [
-                                                  Icon(Icons.print,color: Colors.white,),
-                                                  CustomText(text: "Invoice", isCopy: false),
-                                                ],
-                                              )),
-                                        ),
+                                    actions: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: colorsConst.primary),
+                                                color: Colors.white),
+                                            width: 80,
+                                            height: 25,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.zero,
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: CustomText(
+                                                  text: "Cancel",
+                                                  isCopy: false,
+                                                  colors: colorsConst.primary,
+                                                  size: 14,
+                                                )),
+                                          ),
+                                          10.width,
+                                          CustomLoadingButton(
+                                            callback: ()async{
+                                              productCtr.deleteProduct(context);
+                                            },
+                                            height: 35,
+                                            isLoading: true,
+                                            backgroundColor: colorsConst.primary,
+                                            radius: 2,
+                                            width: 80,
+                                            controller: controllers.productCtr,
+                                            isImage: false,
+                                            text: "Delete",
+                                            textColor: Colors.white,
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   );
-                                }),
+                                },
+                              );
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: colorsConst.secondary,
+                                borderRadius: BorderRadius.circular(4),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                  ),
+                                ],
                               ),
+                              child:  Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset("assets/images/action_delete.png"),
+                                  10.width,
+                                  CustomText(
+                                    text: "Delete",
+                                    colors: colorsConst.textColor,
+                                    size: 14,
+                                    isBold: true,
+                                    isCopy: false,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ):0.width)
+                    ],
+                  ),
+                  10.height,
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        _focusNode.requestFocus(); // 👈 keyboard activate
+                      },
+                      child: RawKeyboardListener(
+                        focusNode: _focusNode,
+                        autofocus: true,
+                        onKey: (event) {
+                          if (event is! RawKeyDownEvent) return;
+
+                          if (!_verticalController.hasClients ||
+                              !_horizontalController.hasClients) return;
+
+                          const double scrollAmount = 120;
+
+                          final maxV = _verticalController.position.maxScrollExtent;
+                          final minV = _verticalController.position.minScrollExtent;
+
+                          final maxH = _horizontalController.position.maxScrollExtent;
+                          final minH = _horizontalController.position.minScrollExtent;
+
+                          /// ⬇ DOWN
+                          if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                            final newOffset =
+                            (_verticalController.offset + scrollAmount).clamp(minV, maxV);
+
+                            _verticalController.animateTo(
+                              newOffset,
+                              duration: Duration(milliseconds: 200),
+                              curve: Curves.easeOut,
                             );
-                          }),
+                          }
+
+                          /// ⬆ UP
+                          if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                            final newOffset =
+                            (_verticalController.offset - scrollAmount).clamp(minV, maxV);
+
+                            _verticalController.animateTo(
+                              newOffset,
+                              duration: Duration(milliseconds: 200),
+                              curve: Curves.easeOut,
+                            );
+                          }
+
+                          /// ➡ RIGHT
+                          if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+                            final newOffset =
+                            (_horizontalController.offset + scrollAmount).clamp(minH, maxH);
+
+                            _horizontalController.animateTo(
+                              newOffset,
+                              duration: Duration(milliseconds: 200),
+                              curve: Curves.easeOut,
+                            );
+                          }
+
+                          /// ⬅ LEFT
+                          if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+                            final newOffset =
+                            (_horizontalController.offset - scrollAmount).clamp(minH, maxH);
+
+                            _horizontalController.animateTo(
+                              newOffset,
+                              duration: Duration(milliseconds: 200),
+                              curve: Curves.easeOut,
+                            );
+                          }
+                        },
+
+                        child: Column(
+                          children: [
+
+                            /// 🔴 HEADER (separate controller)
+                            SingleChildScrollView(
+                              controller: _headerHorizontalController, // ✅ IMPORTANT
+                              scrollDirection: Axis.horizontal,
+                              child: SizedBox(
+                                width: 2000, // 👈 SAME WIDTH
+                                child: Table(
+                                  border: TableBorder(
+                                    horizontalInside:
+                                    BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                    verticalInside:
+                                    BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                  ),
+                                    columnWidths: {
+                                      0: FixedColumnWidth(weWidth / 15),
+                                      1: FixedColumnWidth(weWidth / 5),
+                                      2: FixedColumnWidth(weWidth / 8),
+                                      3: FixedColumnWidth(weWidth / 7),
+                                      4: FixedColumnWidth(weWidth / 9)
+                                    },
+                                  children: [
+                                    TableRow(
+                                      decoration: BoxDecoration(
+                                        color: colorsConst.primary,
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          topRight: Radius.circular(5),
+                                        ),
+                                      ),
+                                      children: [
+                                        headerCell("Order No",
+                                            callBack: (){
+                                              if(controllers.sortOrderN.value == 'asc'){
+                                                productCtr.ordersList.sort((a, b) =>
+                                                    a.orderId.toString().toLowerCase()
+                                                        .compareTo(b.orderId.toString().toLowerCase()));
+                                              }else{
+                                                productCtr.ordersList.sort((a, b) =>
+                                                    b.orderId.toString().toLowerCase()
+                                                        .compareTo(a.orderId.toString().toLowerCase()));
+                                              }
+                                            }
+                                        ),
+                                        headerCell("Customer Name",callBack: (){
+                                          if(controllers.sortOrderN.value == 'asc'){
+                                            productCtr.ordersList.sort((a, b) =>
+                                                a.customerName.toString().toLowerCase()
+                                                    .compareTo(b.customerName.toString().toLowerCase()));
+                                          }else{
+                                            productCtr.ordersList.sort((a, b) =>
+                                                b.customerName.toString().toLowerCase()
+                                                    .compareTo(a.customerName.toString().toLowerCase()));
+                                          }
+                                        }),
+                                        headerCell("Total Amount",callBack: (){
+                                          if(controllers.sortOrderN.value == 'asc'){
+                                            productCtr.ordersList.sort((a, b) =>
+                                                a.totalAmt.toString().toLowerCase()
+                                                    .compareTo(b.totalAmt.toString().toLowerCase()));
+                                          }else{
+                                            productCtr.ordersList.sort((a, b) =>
+                                                b.totalAmt.toString().toLowerCase()
+                                                    .compareTo(a.totalAmt.toString().toLowerCase()));
+                                          }
+                                        }),
+                                        headerCell("Order Date",callBack: (){
+                                          if(controllers.sortOrderN.value == 'asc'){
+                                            productCtr.ordersList.sort((a, b) =>
+                                                a.createdTs.toString().toLowerCase()
+                                                    .compareTo(b.createdTs.toString().toLowerCase()));
+                                          }else{
+                                            productCtr.ordersList.sort((a, b) =>
+                                                b.createdTs.toString().toLowerCase()
+                                                    .compareTo(a.createdTs.toString().toLowerCase()));
+                                          }
+                                        }),
+                                        headerCell("Invoice",callBack: (){}),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            /// 🟢 BODY
+                            Expanded(
+                              child: Scrollbar(
+                                controller: _horizontalController,
+                                thumbVisibility: true,
+                                trackVisibility: true,
+                                thickness: 8,
+                                radius: const Radius.circular(8),
+                                scrollbarOrientation: ScrollbarOrientation.bottom, // 👈 முக்கியம்
+                                child: SingleChildScrollView(
+                                  controller: _horizontalController,
+                                  scrollDirection: Axis.horizontal,
+                                  child: SizedBox(
+                                    width: 2000, // 👈 must same
+                                    child: Scrollbar(
+                                      controller: _verticalController,
+                                      thumbVisibility: true,
+                                      trackVisibility: true,
+                                      child: SingleChildScrollView(
+                                        controller: _verticalController,
+                                        child: Table(
+                                            columnWidths: {
+                                              0: FixedColumnWidth(weWidth / 15),
+                                              1: FixedColumnWidth(weWidth / 5),
+                                              2: FixedColumnWidth(weWidth / 8),
+                                              3: FixedColumnWidth(weWidth / 7),
+                                              4: FixedColumnWidth(weWidth / 9)
+                                            },
+                                          border: TableBorder.all(color: Colors.grey.shade300),
+                                          children: List.generate(productCtr.ordersList.length, (index) {
+                                            final e = productCtr.ordersList[index];
+                                            return TableRow(
+                                              decoration: BoxDecoration(
+                                                color: index % 2 == 0
+                                                    ? Colors.white
+                                                    : colorsConst.backgroundColor,
+                                              ),
+                                              children: [
+                                                valueCell(e.orderId.toString()),
+                                                valueCell(e.customerName.toString()),
+                                                valueCell(productCtr.formatAmount(e.totalAmt.toString())),
+                                                valueCell(productCtr.formatDateTime(e.createdTs.toString())),
+                                                SizedBox(
+                                            height: 50,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: ElevatedButton(
+                                                  onPressed: (){
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (_) => OrderInvoiceDialog(order: e),
+                                                    );
+                                                  },
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: [
+                                                      Icon(Icons.print,color: Colors.white,),
+                                                      CustomText(text: "Invoice", isCopy: false),
+                                                    ],
+                                                  )),
+                                            ),
+                                          ),
+                                              ],
+                                            );
+                                          }),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                      ],
-                    );
-                  }),
-                  productCtr.ordersList.isNotEmpty? Obx(() {
+                      ),
+                    ),
+                  ),
+                    productCtr.ordersList.isNotEmpty? Obx(() {
                     int totalPages = controllers.totalProspectPages.value == 0 ? 1 : controllers.totalProspectPages.value;
                     final currentPage = controllers.currentProspectPage.value;
                     return Row(
@@ -231,46 +740,55 @@ class _OrderPageState extends State<OrderPage> {
                 ],
               ),
             ),
-            ),
           ],
         ),
       ),
     );
   }
-  Widget headerText(String text) {
-    return CustomText(
-      text: text,
-      isBold: true,size: 16,
-      colors: Colors.white, isCopy: false,
-    );
-  }
-  Widget headerCell(String text) {
+
+  Widget headerCell(String text,{required VoidCallback callBack}) {
     return Container(
-      height: 60, // 👈 heading height increase
-      alignment: Alignment.centerLeft,
-      child: Center(
-        child: CustomText(
-          text: text,size: 16,
-          isCopy: false,
-          isBold: true,
-          colors: Colors.white,
-        ),
+      height: 45,
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CustomText(
+              text:text,isCopy: false,
+              colors: Colors.white
+          ),5.width,
+          GestureDetector(
+            onTap: (){
+              setState(() {
+                callBack();
+              });
+            },
+            child: Obx(() => Image.asset(
+              controllers.sortField.value.isEmpty
+                  ? "assets/images/arrow.png"
+                  : controllers.sortOrderN.value == 'asc'
+                  ? "assets/images/arrow_up.png"
+                  : "assets/images/arrow_down.png",
+              width: 15,
+              height: 15,
+            )),
+          ),
+        ],
       ),
     );
   }
+
   Widget valueCell(String text) {
     return Container(
-      height: 50, // 👈 heading height increase
-      alignment: Alignment.centerLeft,
-      child: Center(
-        child: CustomText(
-          text: text,size: 16,
-          isCopy: false,
-        ),
+      height: 45,
+      alignment: Alignment.center,
+      child: CustomText(
+        text:text,isCopy: false,
       ),
     );
   }
 }
+
 
 class OrderInvoiceDialog extends StatelessWidget {
   final Order order;

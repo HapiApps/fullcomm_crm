@@ -117,7 +117,7 @@ class SideBar extends StatelessWidget {
             //           list2: controllers.leadCategoryList[index].list2, listIndex: index,),
             //       );
             //     }),
-
+            if(controllers.leadCategoryList.isNotEmpty)
             Obx(() {
               bool isExpanded = controllers.isLeadsExpanded.value;
               // bool isSelected = controllers.selectedIndex.value == 500 ||
@@ -261,6 +261,18 @@ class SideBar extends StatelessWidget {
               context: context,
               controllers: controllers,
               colorsConst: colorsConst,
+              // index: 11,
+              index: 102,
+              icon: Icons.alarm,
+              label: "Reminder",
+              selectedImage: "assets/images/s_reminder.png",
+              unSelectedImage: "assets/images/u_reminder.png",
+              page: const ReminderPage(),
+            ),
+            SidebarItem(
+              context: context,
+              controllers: controllers,
+              colorsConst: colorsConst,
               index: 105,
               icon: Icons.production_quantity_limits_sharp,
               selectedImage: "assets/images/product1.png",
@@ -278,18 +290,6 @@ class SideBar extends StatelessWidget {
               unSelectedImage: "assets/images/order.png",
               label: "Orders",
               page: const OrderPage(),
-            ),
-            SidebarItem(
-              context: context,
-              controllers: controllers,
-              colorsConst: colorsConst,
-              // index: 11,
-              index: 102,
-              icon: Icons.alarm,
-              label: "Reminder",
-              selectedImage: "assets/images/s_reminder.png",
-              unSelectedImage: "assets/images/u_reminder.png",
-              page: const ReminderPage(),
             ),
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()

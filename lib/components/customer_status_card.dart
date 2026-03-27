@@ -169,6 +169,12 @@ class _StatusRow extends StatelessWidget {
               ),
             ],
           ),
+        ),5.width,
+        CustomText(
+          text: item.value.toString(),
+          isCopy: false,
+          size: 13,
+          colors: Colors.black,
         ),
       ],
     );

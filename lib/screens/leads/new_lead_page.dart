@@ -36,7 +36,6 @@ class NewLeadPage extends StatefulWidget {
 }
 
 class _NewLeadPageState extends State<NewLeadPage> {
-  final ScrollController _controller = ScrollController();
   final ScrollController _horizontalController = ScrollController();
   final ScrollController _leftController = ScrollController();
   final ScrollController _rightController = ScrollController();
@@ -121,7 +120,6 @@ class _NewLeadPageState extends State<NewLeadPage> {
 
   @override
   void dispose() {
-    _controller.dispose();
     _horizontalController.dispose();
     _leftController.dispose();
     _rightController.dispose();

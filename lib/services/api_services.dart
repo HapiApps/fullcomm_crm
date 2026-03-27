@@ -2671,6 +2671,7 @@ class ApiService {
   Future getLeadCategories() async {
     try {
       // controllers.leadCategoryList.clear();
+      debugPrint("get leadddddd");
       Map data = {
         "search_type": "lead_categories",
         "cos_id": controllers.storage.read("cos_id"),
@@ -4928,6 +4929,7 @@ class ApiService {
         }
         log("----------> ${controllers.leadCategoryList}");
         controllers.isCrmData.value=true;
+        dashController.getCustomerStatus();
       } else {
         controllers.allLeadList.clear();
         throw Exception('Failed to load leads: Status code ${response.body}');

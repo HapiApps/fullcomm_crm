@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/controller/product_controller.dart';
+import 'package:fullcomm_crm/screens/leads/view_lead.dart';
 import 'package:fullcomm_crm/screens/settings/lead_categories.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -108,6 +109,7 @@ class _DashboardPageState extends State<DashboardPage>
       apiService.getCustomLeads();
     }
     apiService.getAllLeadCategories();
+    dashController.getCustomerStatus();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
@@ -151,7 +153,6 @@ class _DashboardPageState extends State<DashboardPage>
           today);
       dashController.getDashboardReport();
       dashController.getLeadReport();
-      dashController.getCustomerStatus();
       dashController.getStatusWiseReport();
       dashController.getRatingReport();
     });

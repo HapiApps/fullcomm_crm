@@ -580,6 +580,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
       Map data = {
         "action": "get_data",
         "search_type": "customer_range_report",
+        "lead_status": controllers.leadCategoryList.last.leadStatus,
         "id": controllers.storage.read("id"),
         "role": controllers.storage.read("role"),
         "cos_id": controllers.storage.read("cos_id"),
@@ -594,7 +595,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
 
-      print("STATUS CODE range_report: ${request.statusCode}");
+      print("customer_range_report: ${request.statusCode}");
       print("RAW RESPONSE: ${data}");
       print("RAW RESPONSE: ${request.body}");
       if (request.statusCode == 401) {

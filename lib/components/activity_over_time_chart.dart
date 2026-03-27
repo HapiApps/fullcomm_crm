@@ -4,6 +4,7 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'Customtext.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -357,94 +358,194 @@ class CustomerActivityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    return Container(
-      width: screenWidth /5,
-      height: 300,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: const [
-          BoxShadow(
-            blurRadius: 10,
-            color: Colors.black12,
-            offset: Offset(0, 4),
-          )
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomText(
-            text: "Customer Activity",
-            size: 15,
-            isBold: true,isCopy: false,colors: Colors.black,
-          ),
-          5.height,
-          Row(
-            children: [
-              CustomText(
-                text: "Total Customers : ",
-                size: 13,
-                colors: Color(0xff666666),
-                isCopy: false,
-              ),
-              CustomText(
-                text: controllers.leadCategoryList.value.last.list2.length.toString(),
-                size: 13,
-                colors: Color(0xff666666),isCopy: false,isBold: true,
-              ),
+    return Obx(()=>Column(
+      children: [
+        Container(
+          width: screenWidth /5,
+          height: 140,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: const [
+              BoxShadow(
+                blurRadius: 10,
+                color: Colors.black12,
+                offset: Offset(0, 4),
+              )
             ],
-          ),5.height,
-          const Divider(
-            height: 1,
-            thickness: 1,
-            color: Color(0xffE5E7EB),
           ),
-          50.height,
-          dashController.customerStatusReport.isNotEmpty?
-          Container(
-            alignment: Alignment.center,
-            height: 120,
-            // color: Colors.purple,
-            child: Stack(
-              children: [
-                Positioned(
-                  left: 50,
-                  child: activityCircle(
-                    dashController.customerStatusReport[0]["total_calls"].toString(),
-                    double.parse(dashController.customerStatusReport[0]["total_calls"].toString()) / 100,
-                    "Calls",
-                    Colors.green,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomText(
+                    text: "Customer Activity",
+                    size: 15,
+                    isBold: true,isCopy: false,colors: Colors.black,
                   ),
-                ),
-
-                Positioned(
-                  left: 130,
-                  child: activityCircle(
-                    dashController.customerStatusReport[0]["total_mails"].toString(),
-                    double.parse(dashController.customerStatusReport[0]["total_mails"].toString()) / 100,
-                    "Mails",
-                    Colors.red,
+                  Row(
+                    children: [
+                      CustomText(
+                        text: "Total Customers : ",
+                        size: 13,
+                        colors: Color(0xff666666),
+                        isCopy: false,
+                      ),
+                      CustomText(
+                        text: controllers.leadCategoryList.value.last.list2.length.toString(),
+                        size: 13,
+                        colors: Color(0xff666666),isCopy: false,isBold: true,
+                      ),
+                    ],
                   ),
-                ),
+                ],
+              ),
+              5.height,
+              const Divider(
+                height: 1,
+                thickness: 1,
+                color: Color(0xffE5E7EB),
+              ),10.height,
+              dashController.customerStatusReport.isNotEmpty?
+              Container(
+                alignment: Alignment.center,
+                height: 72,
+                // color: Colors.yellow,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 50,
+                      child: activityCircle(
+                        dashController.customerStatusReport[0]["customer_call"].toString(),
+                        double.parse(dashController.customerStatusReport[0]["customer_call"].toString()) / 100,
+                        "Calls",
+                        Colors.green,
+                      ),
+                    ),
 
-                Positioned(
-                  left: 210,
-                  child: activityCircle(
-                    dashController.customerStatusReport[0]["total_customers"].toString(),
-                    double.parse(dashController.customerStatusReport[0]["total_customers"].toString()) / 100,
-                    "Updates",
-                    Colors.blue,
+                    Positioned(
+                      left: 130,
+                      child: activityCircle(
+                        dashController.customerStatusReport[0]["customer_mail"].toString(),
+                        double.parse(dashController.customerStatusReport[0]["customer_mail"].toString()) / 100,
+                        "Mails",
+                        Colors.red,
+                      ),
+                    ),
+
+                    Positioned(
+                      left: 210,
+                      child: activityCircle(
+                        dashController.customerStatusReport[0]["customer_count"].toString(),
+                        double.parse(dashController.customerStatusReport[0]["customer_count"].toString()) / 100,
+                        "Updates",
+                        Colors.blue,
+                      ),
+                    ),
+
+                  ],
+                ),
+              ):0.height
+            ],
+          ),
+        ),15.height,
+        Container(
+          width: screenWidth /5,
+          height: 140,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: const [
+              BoxShadow(
+                blurRadius: 10,
+                color: Colors.black12,
+                offset: Offset(0, 4),
+              )
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomText(
+                    text: "Lead Activity",
+                    size: 15,
+                    isBold: true,isCopy: false,colors: Colors.black,
                   ),
-                ),
+                  Row(
+                    children: [
+                      CustomText(
+                        text: "Total Leads : ",
+                        size: 13,
+                        colors: Color(0xff666666),
+                        isCopy: false,
+                      ),
+                      CustomText(
+                        text: "${controllers.leadCategoryList.fold(0, (sum, item) => sum + (item.list2.length ?? 0))-controllers.leadCategoryList.value.last.list2.length}",
+                        size: 13,
+                        colors: Color(0xff666666),isCopy: false,isBold: true,
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              5.height,
+              const Divider(
+                height: 1,
+                thickness: 1,
+                color: Color(0xffE5E7EB),
+              ),10.height,
+              dashController.customerStatusReport.isNotEmpty?
+              Container(
+                alignment: Alignment.center,
+                height: 72,
+                // color: Colors.yellow,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 50,
+                      child: activityCircle(
+                        dashController.customerStatusReport[0]["lead_call"].toString(),
+                        double.parse(dashController.customerStatusReport[0]["lead_call"].toString()) / 100,
+                        "Calls",
+                        Colors.green,
+                      ),
+                    ),
 
-              ],
-            ),
-          ):0.height
-        ],
-      ),
-    );
+                    Positioned(
+                      left: 130,
+                      child: activityCircle(
+                        dashController.customerStatusReport[0]["lead_mail"].toString(),
+                        double.parse(dashController.customerStatusReport[0]["lead_mail"].toString()) / 100,
+                        "Mails",
+                        Colors.red,
+                      ),
+                    ),
+
+                    Positioned(
+                      left: 210,
+                      child: activityCircle(
+                        dashController.customerStatusReport[0]["lead_count"].toString(),
+                        double.parse(dashController.customerStatusReport[0]["lead_count"].toString()) / 100,
+                        "Updates",
+                        Colors.blue,
+                      ),
+                    ),
+
+                  ],
+                ),
+              ):0.height
+            ],
+          ),
+        ),
+      ],
+    ));
   }
 
   Widget activityCircle(String value, double percent, String title, Color color) {
@@ -455,23 +556,22 @@ class CustomerActivityCard extends StatelessWidget {
     return Column(
       children: [
         CircularPercentIndicator(
-          radius: 45,
-          lineWidth: 10,
+          radius: 27,
+          lineWidth: 5,
           percent: percent,
           backgroundColor: color.withOpacity(0.2),
           progressColor: color,
           circularStrokeCap: CircularStrokeCap.round,
           center: CustomText(
             text: value,
-            size: 22,
+            size: 15,
             isBold: true,
             isCopy: false,
           ),
         ),
-        8.height,
         CustomText(
           text: title,
-          size: 14,
+          size: 13,
           isBold: true,
           colors: color,
           isCopy: false,
