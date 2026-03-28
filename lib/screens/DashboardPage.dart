@@ -801,81 +801,85 @@ void checkDate(){
                             ),
                             20.height,
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 SizedBox(
-                                  width: screenWidth / 4,
-                                  height: 300,
-                                  child: LeadPieCard(
-                                    // title: "Lead Distribution",
-                                    // subtitle: "Breakdown by current stage",
-                                    // total: controllers.allLeadList.length,
-                                      data: [
-                                        for (int i = 0; i < dashController.leadReport.length; i++)
-                                          if ((double.tryParse(
-                                              dashController.leadReport[i]["customer_count"].toString()) ??
-                                              0) >
-                                              0)
-                                            PieData(
-                                              label: dashController.leadReport[i]["category"] ?? "",
-                                              value: double.tryParse(
-                                                  dashController.leadReport[i]["customer_count"].toString()) ??
-                                                  0,
-                                              color: dashController.color[i],
-                                            ),
-                                      ]
-                                  ),
-                                ),
-                                CustomerActivityCard(),
-
-                                // 15.width,
-                                // -------- Call Status --------
-                                InkWell(
-                                  onTap: (){
-                                    remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
-                                    controllers.changeTab(0);
-                                    Navigator.push(
-                                      context,
-                                      PageRouteBuilder(
-                                        pageBuilder: (context,
-                                            animation1,
-                                            animation2) =>
-                                        const Records(
-                                          isReload: "true",
+                                  width: screenWidth/1.29,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: screenWidth / 4,
+                                        height: 300,
+                                        child: LeadPieCard(
+                                          // title: "Lead Distribution",
+                                          // subtitle: "Breakdown by current stage",
+                                          // total: controllers.allLeadList.length,
+                                            data: [
+                                              for (int i = 0; i < dashController.leadReport.length; i++)
+                                                if ((double.tryParse(
+                                                    dashController.leadReport[i]["customer_count"].toString()) ??
+                                                    0) >
+                                                    0)
+                                                  PieData(
+                                                    label: dashController.leadReport[i]["category"] ?? "",
+                                                    value: double.tryParse(
+                                                        dashController.leadReport[i]["customer_count"].toString()) ??
+                                                        0,
+                                                    color: dashController.color[i],
+                                                  ),
+                                            ]
                                         ),
-                                        transitionDuration:
-                                        Duration.zero,
-                                        reverseTransitionDuration:
-                                        Duration.zero,
                                       ),
-                                    );
-                                    controllers.oldIndex.value = controllers.selectedIndex.value;
-                                    controllers.selectedIndex.value = 6;
-                                  },
-                                  child: SizedBox(
-                                    width: screenWidth/3.3,
-                                    child: CustomerStatusCard(
-                                      items: [
-                                        for (var i = 0;
-                                        i < dashController.visitStatusReport.length;
-                                        i++)
-                                          CustomerStatusItem(
-                                            label: dashController.visitStatusReport[i]["value"].toString(),
-                                            value: int.parse(
-                                                dashController.visitStatusReport[i]["total_count"].toString()),
-                                            percentage: dashController.total == 0
-                                                ? 0
-                                                : double.parse(
-                                                dashController.visitStatusReport[i]["total_count"].toString()) /
-                                                dashController.total,
+                                      CustomerActivityCard(),
+                                      InkWell(
+                                        onTap: (){
+                                          remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+                                          controllers.changeTab(0);
+                                          Navigator.push(
+                                            context,
+                                            PageRouteBuilder(
+                                              pageBuilder: (context,
+                                                  animation1,
+                                                  animation2) =>
+                                              const Records(
+                                                isReload: "true",
+                                              ),
+                                              transitionDuration:
+                                              Duration.zero,
+                                              reverseTransitionDuration:
+                                              Duration.zero,
+                                            ),
+                                          );
+                                          controllers.oldIndex.value = controllers.selectedIndex.value;
+                                          controllers.selectedIndex.value = 6;
+                                        },
+                                        child: SizedBox(
+                                          width: screenWidth/3.3,
+                                          child: CustomerStatusCard(
+                                            items: [
+                                              for (var i = 0;
+                                              i < dashController.visitStatusReport.length;
+                                              i++)
+                                                CustomerStatusItem(
+                                                  label: dashController.visitStatusReport[i]["value"].toString(),
+                                                  value: int.parse(
+                                                      dashController.visitStatusReport[i]["total_count"].toString()),
+                                                  percentage: dashController.total == 0
+                                                      ? 0
+                                                      : double.parse(
+                                                      dashController.visitStatusReport[i]["total_count"].toString()) /
+                                                      dashController.total,
+                                                ),
+                                            ],
                                           ),
-                                      ],
-                                    ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 SizedBox(
-                                  width: screenWidth/8,
+                                  width: screenWidth/9,
                                 )
                               ],
                             ),
@@ -1782,183 +1786,190 @@ void checkDate(){
                             ),
                             20.height,
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  height: 300,
-                                  width: screenWidth /4.7,
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: _whiteCard(),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                SizedBox(
+                                  width: screenWidth/1.29,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // -------- TITLE --------
-                                      CustomText(
-                                        text: "Active Status",
-                                        isCopy: false,
-                                        size: 15,
-                                        isBold: true,
-                                      ),
-                                      4.height,
-                                      // -------- SUBTITLE --------
-                                      CustomText(
-                                        text: "Customer Engagement Levels",
-                                        isCopy: false,
-                                        size: 13,
-                                        isBold: false,
-                                        colors: Color(0xff6B7280),
-                                      ),
-                                      10.height,
-                                      // -------- DIVIDER --------
-                                      const Divider(
-                                        height: 1,
-                                        thickness: 1,
-                                        color: Color(0xffD1D5DB),
-                                      ),
+                                      Container(
+                                        height: 300,
+                                        width: screenWidth /4.7,
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: _whiteCard(),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            // -------- TITLE --------
+                                            CustomText(
+                                              text: "Active Status",
+                                              isCopy: false,
+                                              size: 15,
+                                              isBold: true,
+                                            ),
+                                            4.height,
+                                            // -------- SUBTITLE --------
+                                            CustomText(
+                                              text: "Customer Engagement Levels",
+                                              isCopy: false,
+                                              size: 13,
+                                              isBold: false,
+                                              colors: Color(0xff6B7280),
+                                            ),
+                                            10.height,
+                                            // -------- DIVIDER --------
+                                            const Divider(
+                                              height: 1,
+                                              thickness: 1,
+                                              color: Color(0xffD1D5DB),
+                                            ),
 
-                                      18.height,
+                                            18.height,
 
-                                      // -------- RATING BAR () --------
-                                      Expanded(
-                                        child: LayoutBuilder(
-                                          builder: (context, constraints) {
-                                            final hot = int.tryParse(
-                                                dashController
-                                                    .totalHot.value) ??
-                                                0;
-                                            final warm = int.tryParse(
-                                                dashController
-                                                    .totalWarm.value) ??
-                                                0;
-                                            final cold = int.tryParse(
-                                                dashController
-                                                    .totalCold.value) ??
-                                                0;
-                                            final total = hot + warm + cold;
+                                            // -------- RATING BAR () --------
+                                            Expanded(
+                                              child: LayoutBuilder(
+                                                builder: (context, constraints) {
+                                                  final hot = int.tryParse(
+                                                      dashController
+                                                          .totalHot.value) ??
+                                                      0;
+                                                  final warm = int.tryParse(
+                                                      dashController
+                                                          .totalWarm.value) ??
+                                                      0;
+                                                  final cold = int.tryParse(
+                                                      dashController
+                                                          .totalCold.value) ??
+                                                      0;
+                                                  final total = hot + warm + cold;
 
-                                            return ActivityRatingBar(
-                                              hot: hot,
-                                              warm: warm,
-                                              cold: cold,
-                                              totalWidth:
-                                              constraints.maxWidth,
-                                            );
-                                          },
+                                                  return ActivityRatingBar(
+                                                    hot: hot,
+                                                    warm: warm,
+                                                    cold: cold,
+                                                    totalWidth:
+                                                    constraints.maxWidth,
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            12.height,
+                                            Wrap(
+                                              spacing: 16,
+                                              runSpacing: 8,
+                                              children: [
+                                                Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    const SizedBox(
+                                                      width: 8,
+                                                      height: 8,
+                                                      child: DecoratedBox(
+                                                        decoration: BoxDecoration(
+                                                          color: Color(
+                                                            0xffEF4444,
+                                                          ),
+                                                          shape: BoxShape.circle,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 6),
+                                                    CustomText(
+                                                      // text: "Hot ${dashController.totalHot.value=="0"?"0":"(0-${(int.tryParse(dashController.totalHot.value) ??0)}d)"}",
+                                                      text: "Hot ${dashController.totalHot.value=="0"?"0":dashController.totalHot.value}",
+                                                      isCopy: false,
+                                                      size: 11,
+                                                      isBold: true,
+                                                      colors: const Color(0xffEF4444),
+                                                    ),
+                                                  ],
+                                                ),
+
+                                                Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 8,
+                                                      height: 8,
+                                                      child: DecoratedBox(
+                                                        decoration: BoxDecoration(
+                                                          color: Color(
+                                                            0xffF59E0B,
+                                                          ),
+                                                          shape: BoxShape.circle,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 6),
+                                                    CustomText(
+                                                      text: "Warm ${dashController.totalWarm.value=="0"?"0":"(${(int.tryParse(dashController.totalHot.value) ??0)+1}-${int.tryParse(
+                                                          dashController.totalWarm.value) ??0}d)"}",
+                                                      isCopy: false,
+                                                      size: 11,
+                                                      isBold: true,
+                                                      colors: Color(0xffF59E0B),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 8,
+                                                      height: 8,
+                                                      child: DecoratedBox(
+                                                        decoration: BoxDecoration(
+                                                          color: Color(
+                                                            0xff3B82F6,
+                                                          ),
+                                                          shape: BoxShape.circle,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 6),
+                                                    CustomText(
+                                                      text: "Cold ${dashController.totalWarm.value=="0"?"0":"(${(int.tryParse(dashController.totalWarm.value) ??0)+1}+d)"}",
+                                                      isCopy: false,
+                                                      size: 11,
+                                                      isBold: true,
+                                                      colors: Color(0xff3B82F6),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      12.height,
-                                      Wrap(
-                                        spacing: 16,
-                                        runSpacing: 8,
-                                        children: [
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const SizedBox(
-                                                width: 8,
-                                                height: 8,
-                                                child: DecoratedBox(
-                                                  decoration: BoxDecoration(
-                                                    color: Color(
-                                                      0xffEF4444,
-                                                    ),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 6),
-                                              CustomText(
-                                                // text: "Hot ${dashController.totalHot.value=="0"?"0":"(0-${(int.tryParse(dashController.totalHot.value) ??0)}d)"}",
-                                                text: "Hot ${dashController.totalHot.value=="0"?"0":dashController.totalHot.value}",
-                                                isCopy: false,
-                                                size: 11,
-                                                isBold: true,
-                                                colors: const Color(0xffEF4444),
-                                              ),
-                                            ],
+                                      ActivityOverTimeChart(
+                                        maxY: 330,
+                                        xLabels: controllers.xLabels,
+                                        lines: [
+                                          ActivityLineData(
+                                            label: "Calls",
+                                            color: Color(0xff3B82F6),
+                                            values: controllers.calls,
                                           ),
-
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              SizedBox(
-                                                width: 8,
-                                                height: 8,
-                                                child: DecoratedBox(
-                                                  decoration: BoxDecoration(
-                                                    color: Color(
-                                                      0xffF59E0B,
-                                                    ),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 6),
-                                              CustomText(
-                                                text: "Warm ${dashController.totalWarm.value=="0"?"0":"(${(int.tryParse(dashController.totalHot.value) ??0)+1}-${int.tryParse(
-                                                    dashController.totalWarm.value) ??0}d)"}",
-                                                isCopy: false,
-                                                size: 11,
-                                                isBold: true,
-                                                colors: Color(0xffF59E0B),
-                                              ),
-                                            ],
+                                          ActivityLineData(
+                                            label: "Mails",
+                                            color: Color(0xff10B981),
+                                            values: controllers.mails,
                                           ),
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              SizedBox(
-                                                width: 8,
-                                                height: 8,
-                                                child: DecoratedBox(
-                                                  decoration: BoxDecoration(
-                                                    color: Color(
-                                                      0xff3B82F6,
-                                                    ),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 6),
-                                              CustomText(
-                                                text: "Cold ${dashController.totalWarm.value=="0"?"0":"(${(int.tryParse(dashController.totalWarm.value) ??0)+1}+d)"}",
-                                                isCopy: false,
-                                                size: 11,
-                                                isBold: true,
-                                                colors: Color(0xff3B82F6),
-                                              ),
-                                            ],
+                                          ActivityLineData(
+                                            label: "Updates",
+                                            color: Color(0xffEF4444),
+                                            values: controllers.updates,
                                           ),
                                         ],
                                       ),
                                     ],
                                   ),
                                 ),
-                                ActivityOverTimeChart(
-                                  maxY: 330,
-                                  xLabels: controllers.xLabels,
-                                  lines: [
-                                    ActivityLineData(
-                                      label: "Calls",
-                                      color: Color(0xff3B82F6),
-                                      values: controllers.calls,
-                                    ),
-                                    ActivityLineData(
-                                      label: "Mails",
-                                      color: Color(0xff10B981),
-                                      values: controllers.mails,
-                                    ),
-                                    ActivityLineData(
-                                      label: "Updates",
-                                      color: Color(0xffEF4444),
-                                      values: controllers.updates,
-                                    ),
-                                  ],
-                                ),
                                 SizedBox(
-                                  width: screenWidth/8,
+                                  width: screenWidth/9,
                                 )
                               ],
                             ),

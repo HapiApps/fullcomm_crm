@@ -583,30 +583,32 @@ class _OrderPageState extends State<OrderPage> {
                                         ),
                                       ),
                                       children: [
-                                        headerCell("Order No",
-                                            callBack: (){
-                                              if(controllers.sortOrderN.value == 'asc'){
-                                                productCtr.ordersList.sort((a, b) =>
-                                                    a.orderId.toString().toLowerCase()
-                                                        .compareTo(b.orderId.toString().toLowerCase()));
-                                              }else{
-                                                productCtr.ordersList.sort((a, b) =>
-                                                    b.orderId.toString().toLowerCase()
-                                                        .compareTo(a.orderId.toString().toLowerCase()));
-                                              }
+                                        headerCell(
+                                          "Order No",
+                                          field: "orderId",
+                                          callBack: () {
+                                            if (controllers.sortOrderN.value == 'asc') {
+                                              productCtr.ordersList.sort(
+                                                      (a, b) => a.orderId.compareTo(b.orderId));
+                                            } else {
+                                              productCtr.ordersList.sort(
+                                                      (a, b) => b.orderId.compareTo(a.orderId));
                                             }
+                                          },
                                         ),
-                                        headerCell("Customer Name",callBack: (){
-                                          if(controllers.sortOrderN.value == 'asc'){
-                                            productCtr.ordersList.sort((a, b) =>
-                                                a.customerName.toString().toLowerCase()
-                                                    .compareTo(b.customerName.toString().toLowerCase()));
-                                          }else{
-                                            productCtr.ordersList.sort((a, b) =>
-                                                b.customerName.toString().toLowerCase()
-                                                    .compareTo(a.customerName.toString().toLowerCase()));
-                                          }
-                                        }),
+                                        headerCell(
+                                          "Customer Name",
+                                          field: "customerName",
+                                          callBack: () {
+                                            if (controllers.sortOrderN.value == 'asc') {
+                                              productCtr.ordersList.sort(
+                                                      (a, b) => a.customerName.compareTo(b.customerName));
+                                            } else {
+                                              productCtr.ordersList.sort(
+                                                      (a, b) => b.customerName.compareTo(a.customerName));
+                                            }
+                                          },
+                                        ),
                                         headerCell("Total Amount",callBack: (){
                                           if(controllers.sortOrderN.value == 'asc'){
                                             productCtr.ordersList.sort((a, b) =>
@@ -617,7 +619,7 @@ class _OrderPageState extends State<OrderPage> {
                                                 b.totalAmt.toString().toLowerCase()
                                                     .compareTo(a.totalAmt.toString().toLowerCase()));
                                           }
-                                        }),
+                                        }, field: 'Total Amount'),
                                         headerCell("Order Date",callBack: (){
                                           if(controllers.sortOrderN.value == 'asc'){
                                             productCtr.ordersList.sort((a, b) =>
@@ -628,8 +630,8 @@ class _OrderPageState extends State<OrderPage> {
                                                 b.createdTs.toString().toLowerCase()
                                                     .compareTo(a.createdTs.toString().toLowerCase()));
                                           }
-                                        }),
-                                        headerCell("Invoice",callBack: (){}),
+                                        }, field: 'Order Date'),
+                                        headerCell("Invoice",callBack: (){}, field: ''),
                                       ],
                                     ),
                                   ],
@@ -746,7 +748,7 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
-  Widget headerCell(String text,{required VoidCallback callBack}) {
+  Widget headerCell(String text,{required VoidCallback callBack, required String field}) {
     return Container(
       height: 45,
       alignment: Alignment.center,
@@ -754,17 +756,29 @@ class _OrderPageState extends State<OrderPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CustomText(
-              text:text,isCopy: false,
-              colors: Colors.white
-          ),5.width,
+            text: text,
+            isCopy: false,
+            colors: Colors.white,
+          ),
+          5.width,
           GestureDetector(
-            onTap: (){
+            onTap: () {
               setState(() {
+
+                /// toggle asc/desc
+                if (controllers.sortField.value == field) {
+                  controllers.sortOrderN.value =
+                  controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
+                } else {
+                  controllers.sortField.value = field;
+                  controllers.sortOrderN.value = 'asc';
+                }
+
                 callBack();
               });
             },
             child: Obx(() => Image.asset(
-              controllers.sortField.value.isEmpty
+              controllers.sortField.value != field
                   ? "assets/images/arrow.png"
                   : controllers.sortOrderN.value == 'asc'
                   ? "assets/images/arrow_up.png"
@@ -777,7 +791,6 @@ class _OrderPageState extends State<OrderPage> {
       ),
     );
   }
-
   Widget valueCell(String text) {
     return Container(
       height: 45,
@@ -1213,8 +1226,7 @@ class OrderInvoiceDialog extends StatelessWidget {
       ),
     );
   }
-  pw.Widget totalRows(String title, String value,
-      {bool isBold = false}) {
+  pw.Widget totalRows(String title, String value,{bool isBold = false}) {
     return pw.Container(
       padding: const pw.EdgeInsets.all(5),
       decoration: pw.BoxDecoration(

@@ -31,6 +31,25 @@ import 'controller.dart';
 final productCtr = Get.put(ProductController());
 
 class ProductController extends GetxController with GetSingleTickerProviderStateMixin {
+
+
+  var selectedProductId="".obs;
+  var selectedProductName="".obs;
+  void selectProduct(ProductModel c) {
+    print("productsList");
+    print(productsList);
+    selectedProductId.value = c.id.toString();
+    selectedProductName.value = c.title.toString();
+    controllers.search.text = c.title ?? "";
+    productsList.value.add(c);
+    productsList.refresh();
+  }
+  void clearProduct() {
+    selectedProductId.value = "";
+    selectedProductName.value = "";
+    // productsList.value.remove(value);
+  }
+
   final TextEditingController title = TextEditingController();
   final TextEditingController description = TextEditingController();
   final TextEditingController availability = TextEditingController();
@@ -341,6 +360,7 @@ var isSelectAll=false.obs;
   }
  RxList<ProductModel> products=<ProductModel>[].obs;
  RxList<ProductModel> products2=<ProductModel>[].obs;
+  RxList<ProductModel> productsList=<ProductModel>[].obs;
 
   Future<List<ProductModel>> getProducts() async {
     try {

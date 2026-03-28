@@ -2672,6 +2672,7 @@ print("sortField ${sortField}");
     print("c.id");
     print(c.id);
     print(c.name);
+    print(c.email);
     selectedCustomerId.value = c.id;
     selectedCustomerName.value = c.name;
     selectedCustomerMobile.value = c.phoneNo;

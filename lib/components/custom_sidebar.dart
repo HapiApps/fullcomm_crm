@@ -27,6 +27,7 @@ import '../screens/leads/suspects.dart';
 import '../screens/leads/target_leads.dart';
 import '../screens/order/order_page.dart';
 import '../screens/products/product_page.dart';
+import '../screens/quotation/send_quotation.dart';
 import '../screens/records/records.dart';
 import '../screens/reminder/reminder_page.dart';
 import '../screens/settings/general_settings.dart';
@@ -290,6 +291,17 @@ class SideBar extends StatelessWidget {
               unSelectedImage: "assets/images/order.png",
               label: "Orders",
               page: const OrderPage(),
+            ),
+            SidebarItem(
+              context: context,
+              controllers: controllers,
+              colorsConst: colorsConst,
+              index: 107,
+              icon: Icons.production_quantity_limits_sharp,
+              selectedImage: "assets/images/order1.png",
+              unSelectedImage: "assets/images/order.png",
+              label: "Quotation",
+              page: const SendQuotation(),
             ),
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()

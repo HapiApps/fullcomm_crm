@@ -20,6 +20,7 @@ import 'package:fullcomm_crm/screens/dashboard.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/models/product_obj.dart';
@@ -2804,6 +2805,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      print("allCustomers");
+      print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3313,6 +3316,58 @@ class ApiService {
   //       throw Exception('Failed to load album');
   //   }
   // }
+
+  Future insertQuotationAPI(BuildContext context,pw.Document pdf) async {
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
+
+      // Body values
+      request.fields['clientMail'] = controllers.selectedCustomerEmail.value;
+      request.fields['subject'] = controllers.emailSubjectCtr.text;
+      request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
+      request.fields['count'] = '${controllers.emailCount.value + 1}';
+      request.fields['quotation_name'] = "Product Quotation";
+      request.fields['body'] = controllers.emailMessageCtr.text;
+      request.fields['user_id'] = controllers.storage.read("id").toString();
+      request.fields['id'] = controllers.selectedCustomerId.value;
+      request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
+      request.fields['action'] = 'send_quotation';
+      request.headers.addAll({
+        'X-API-TOKEN': "${TokenStorage().readToken()}",
+        'Content-Type': 'application/json'
+      });
+      final bytes = await pdf.save();
+
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'invoice',
+          bytes,
+          filename: "invoice_${DateTime.now().millisecondsSinceEpoch}.pdf",
+        ),
+      );
+      var response = await request.send();
+      var body = await response.stream.bytesToString();
+      print("body");
+      print(body);
+      if (response.statusCode == 200 && body == "Message has been sent") {
+        utils.snackBar(
+            msg: "Mail has been sent",
+            color: Colors.green,
+            context: Get.context!);
+        controllers.emailMessageCtr.clear();
+        controllers.emailToCtr.clear();
+        controllers.emailSubjectCtr.clear();
+        Navigator.pop(Get.context!);
+        controllers.emailCtr.reset();
+      } else {
+        controllers.emailCtr.reset();
+        errorDialog(Get.context!, "Mail has been not sent");
+      }
+    } catch (e) {
+      errorDialog(Get.context!, e.toString());
+      controllers.emailCtr.reset();
+    }
+  }
 
   Future insertEmailAPI(BuildContext context, String id, String image) async {
     try {
