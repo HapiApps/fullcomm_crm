@@ -14,6 +14,7 @@ import 'package:fullcomm_crm/models/order_model.dart';
 import 'package:fullcomm_crm/screens/invoice/invoice.dart';
 import 'package:fullcomm_crm/screens/order/place_order.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -49,11 +50,11 @@ class _SendQuotationState extends State<SendQuotation> {
     super.initState();
     _focusNode = FocusNode();
     productCtr.productsList.clear();
-    controllers.clearSelectedCustomer();
-    productCtr.clearProduct();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
-      controllers.totalProspectPages.value=(productCtr.ordersList.length / controllers.itemsPerPage).ceil();
+      controllers.clearSelectedCustomer();
+      productCtr.clearProduct();
+      // controllers.totalProspectPages.value=(productCtr.ordersList.length / controllers.itemsPerPage).ceil();
     });
     /// 🔥 SYNC HEADER + BODY
     _horizontalController.addListener(() {
@@ -94,33 +95,387 @@ class _SendQuotationState extends State<SendQuotation> {
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Row(
-                            children: [
-                              InkWell(
-                                  onTap:(){
-                                    Get.back();
-                                  },
-                                  child: Icon(Icons.arrow_back)),10.width,
-                              CustomText(
-                                text: "Send Quotation",
-                                colors: colorsConst.textColor,
-                                size: 25,
-                                isBold: true,
-                                isCopy: true,
-                              ),
-                            ],
+                          CustomText(
+                            text: "Send Quotation",
+                            colors: colorsConst.textColor,
+                            size: 20,
+                            isBold: true,
+                            isCopy: true,
                           ),
-                          // 10.height,
-                          // CustomText(
-                          //   text: "View all of your Orders Details\n\n\n",
-                          //   colors: colorsConst.textColor,
-                          //   size: 14,
-                          //   isCopy: true,
-                          // ),
+                          10.height,
+                          CustomText(
+                            text: "",
+                            colors: colorsConst.textColor,
+                            size: 14,
+                            isCopy: true,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                              height: 40,
+                              child: ElevatedButton(
+                                onPressed: (){
+                                  if(controllers.selectedCustomerId.value==""){
+                                    utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
+                                    return;
+                                  }
+                                  if(productCtr.productsList.isEmpty){
+                                    utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
+                                    return;
+                                  }
+                                  for(var i=0;i<productCtr.productsList.length;i++){
+                                    if(productCtr.productsList[i].qty.text.isEmpty){
+                                      utils.snackBar(context: context, msg: "Please fill quantity", color: Colors.red);
+                                      controllers.emailCtr.reset();
+                                      return;
+                                    }
+                                  }
+                                  printInvoice();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xff0078D7),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Invoice',
+                                  style: GoogleFonts.lato(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                              ),
+                            ),10.width,
+                          SizedBox(
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: (){
+                                if(controllers.selectedCustomerId.value==""){
+                                  utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
+                                }else if(productCtr.productsList.isEmpty){
+                                  utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
+                                }else{
+                                  setState(() {
+                                    controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
+                                    controllers.isTemplate.value=false;
+                                    controllers.emailSubjectCtr.clear();
+                                    controllers.emailMessageCtr.clear();
+                                  });
+                                  showDialog(
+                                      context: Get.context!,
+                                      barrierDismissible: false,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          actions: [
+                                            Column(
+                                              children: [
+                                                Divider(
+                                                  color: Colors.grey.shade300,
+                                                  thickness: 1,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    SizedBox(
+                                                      child: Row(
+                                                        children: [
+                                                          TextButton(
+                                                              onPressed: () {
+                                                                Navigator.of(context).pop();
+                                                                settingsController.showAddTemplateDialog(context);
+                                                              },
+                                                              child: CustomText(
+                                                                text: "Add Template",
+                                                                isCopy: false,
+                                                                colors: colorsConst.third,
+                                                                size: 18,
+                                                                isBold: true,
+                                                              )),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    CustomLoadingButton(
+                                                      callback: () {
+                                                        if(controllers.emailToCtr.text.trim().isEmpty){
+                                                          utils.snackBar(context: context, msg: "To is empty!", color: Colors.red);
+                                                          controllers.emailCtr.reset();
+                                                          return;
+                                                        }
+                                                        if(!controllers.emailToCtr.text.trim().isEmail){
+                                                          utils.snackBar(
+                                                            context: context,
+                                                            msg: "Invalid mail!",
+                                                            color: Colors.red,
+                                                          );
+                                                          controllers.emailCtr.reset();
+                                                          return;
+                                                        }
+                                                        if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                                          utils.snackBar(context: context, msg: "Subject is empty!", color: Colors.red);
+                                                          controllers.emailCtr.reset();
+                                                          return;
+                                                        }
+                                                        if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                                          utils.snackBar(context: context, msg: "Message is empty!", color: Colors.red);
+                                                          controllers.emailCtr.reset();
+                                                          return;
+                                                        }
+                                                        for(var i=0;i<productCtr.productsList.length;i++){
+                                                          if(productCtr.productsList[i].qty.text.isEmpty){
+                                                            utils.snackBar(context: context, msg: "Please fill quantity", color: Colors.red);
+                                                            controllers.emailCtr.reset();
+                                                            return;
+                                                          }
+                                                        }
+                                                        sendInvoice();
+                                                      },
+                                                      controller: controllers.emailCtr,
+                                                      isImage: false,
+                                                      isLoading: true,
+                                                      backgroundColor: colorsConst.primary,
+                                                      radius: 5,
+                                                      width: 200,
+                                                      height: 50,
+                                                      text: "Quotation",
+                                                      textColor: Colors.white,
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                          content: SizedBox(
+                                              width: 600,
+                                              height: 400,
+                                              child: SingleChildScrollView(
+                                                child: Column(
+                                                  children: [
+                                                    Align(
+                                                        alignment: Alignment.topRight,
+                                                        child: InkWell(
+                                                            onTap: () {
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: Icon(
+                                                              Icons.clear,
+                                                              size: 18,
+                                                              color: colorsConst.textColor,
+                                                            ))),
+                                                    Align(
+                                                      alignment: Alignment.topRight,
+                                                      child: TextButton(
+                                                          onPressed: () {
+                                                            controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                          },
+                                                          child: CustomText(
+                                                            text: "Get Form Template",
+                                                            colors: colorsConst.third,
+                                                            size: 18,
+                                                            isCopy: false,
+                                                            isBold: true,
+                                                          )),
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        CustomText(
+                                                          textAlign: TextAlign.center,
+                                                          text: "To",
+                                                          colors: colorsConst.textColor,
+                                                          size: 15,
+                                                          isCopy: false,
+                                                        ),
+                                                        50.width,
+                                                        SizedBox(
+                                                          width: 500,
+                                                          child: TextField(
+                                                            controller: controllers.emailToCtr,
+                                                            style: TextStyle(
+                                                                fontSize: 15, color: colorsConst.textColor),
+                                                            decoration: const InputDecoration(
+                                                              border: InputBorder.none,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                        width: 600,
+                                                        child: SingleChildScrollView(
+                                                          child: Column(
+                                                            children: [
+                                                              Divider(
+                                                                color: Colors.grey.shade300,
+                                                                thickness: 1,
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  15.height,
+                                                                  CustomText(
+                                                                    text: "Subject",
+                                                                    colors: colorsConst.textColor,
+                                                                    size: 14,
+                                                                    isCopy: false,
+                                                                  ),
+                                                                  20.width,
+                                                                  SizedBox(
+                                                                    width: 500,
+                                                                    height: 50,
+                                                                    child: TextField(
+                                                                      controller: controllers.emailSubjectCtr,
+                                                                      maxLines: null,
+                                                                      minLines: 1,
+                                                                      style: TextStyle(
+                                                                        color: colorsConst.textColor,
+                                                                      ),
+                                                                      decoration: const InputDecoration(
+                                                                        border: InputBorder.none,
+                                                                      ),
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              Divider(
+                                                                color: Colors.grey.shade300,
+                                                                thickness: 1,
+                                                              ),
+                                                              Obx(() => controllers.isTemplate.value == false
+                                                                  ? SingleChildScrollView(
+                                                                child: Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      width: 600,
+                                                                      height: 223,
+                                                                      child: TextField(
+                                                                        textInputAction: TextInputAction.newline,
+                                                                        controller: controllers.emailMessageCtr,
+                                                                        keyboardType: TextInputType.multiline,
+                                                                        maxLines: 21,
+                                                                        expands: false,
+                                                                        style: TextStyle(
+                                                                          color: colorsConst.textColor,
+                                                                        ),
+                                                                        decoration: InputDecoration(
+                                                                          hintText: "Message",
+                                                                          hintStyle: TextStyle(
+                                                                              color: colorsConst.textColor,
+                                                                              fontSize: 14,
+                                                                              fontFamily: "Lato"),
+                                                                          border: InputBorder.none,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              )
+                                                                  :Obx(() => UnconstrainedBox(
+                                                                child: Container(
+                                                                  width: 500,
+                                                                  alignment: Alignment.center,
+                                                                  decoration: BoxDecoration(
+                                                                    color: colorsConst.secondary,
+                                                                    borderRadius: BorderRadius.circular(10),
+                                                                  ),
+                                                                  child: SingleChildScrollView(
+                                                                    child: Column(
+                                                                      children: [
+                                                                        SizedBox(
+                                                                          width: 500,
+                                                                          height: 210,
+                                                                          child: Table(
+                                                                            defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                            border: TableBorder.all(
+                                                                              color: Colors.grey.shade300,
+                                                                              style: BorderStyle.solid,
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                              width: 1,
+                                                                            ),
+                                                                            children: [
+                                                                              // Header Row
+                                                                              TableRow(
+                                                                                children: [
+                                                                                  CustomText(
+                                                                                    textAlign: TextAlign.center,
+                                                                                    text: "\nTemplate Name\n",
+                                                                                    colors: colorsConst.textColor,
+                                                                                    size: 15,
+                                                                                    isBold: true,
+                                                                                    isCopy: false,
+                                                                                  ),
+                                                                                  CustomText(
+                                                                                    textAlign: TextAlign.center,
+                                                                                    text: "\nSubject\n",
+                                                                                    colors: colorsConst.textColor,
+                                                                                    size: 15,
+                                                                                    isBold: true,
+                                                                                    isCopy: false,
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              // Dynamic Rows
+                                                                              for (var item in settingsController.templateList)
+                                                                                utils.emailRow(
+                                                                                    context,
+                                                                                    isCheck: controllers.isAdd,
+                                                                                    templateName: item.templateName,
+                                                                                    msg: item.message,
+                                                                                    subject: item.subject,
+                                                                                    id: item.id
+                                                                                ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ))
+                                                              )
+                                                            ],
+                                                          ),
+                                                        )),
+                                                  ],
+                                                ),
+                                              )),
+                                        );
+                                      });
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xff0078D7),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              child: Text(
+                                'Send Quotation',
+                                style: GoogleFonts.lato(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ],
+                  ),
+                  10.height,
+                  Divider(
+                    thickness: 1.5,
+                    color: colorsConst.secondary,
                   ),
                   10.height,
                   Row(
@@ -140,310 +495,19 @@ class _SendQuotationState extends State<SendQuotation> {
                             productCtr.selectProduct(product!);
                           });
                         },),
-                      CustomLoadingButton(
-                        callback: (){
-                          if(controllers.selectedCustomerId.value==""){
-                            utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
-                          }else if(productCtr.productsList.isEmpty){
-                            utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
-                          }else{
-                            printInvoice();
-                          }
-                        },
-                        isLoading: false,isImage: false,
-                        backgroundColor: colorsConst.primary, radius: 5,
-                        width: MediaQuery.of(context).size.width*0.05,
-                        text: "Invoice",),
-                      CustomLoadingButton(
-                        callback: (){
-                          if(controllers.selectedCustomerId.value==""){
-                            utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
-                          }else if(productCtr.productsList.isEmpty){
-                            utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
-                          }else{
-                            setState(() {
-                              controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
-                              controllers.isTemplate.value=false;
-                              controllers.emailSubjectCtr.clear();
-                              controllers.emailMessageCtr.clear();
-                            });
-                            showDialog(
-                                context: Get.context!,
-                                barrierDismissible: false,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    actions: [
-                                      Column(
-                                        children: [
-                                          Divider(
-                                            color: Colors.grey.shade300,
-                                            thickness: 1,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              SizedBox(
-                                                child: Row(
-                                                  children: [
-                                                    TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context).pop();
-                                                          settingsController.showAddTemplateDialog(context);
-                                                        },
-                                                        child: CustomText(
-                                                          text: "Add Template",
-                                                          isCopy: false,
-                                                          colors: colorsConst.third,
-                                                          size: 18,
-                                                          isBold: true,
-                                                        )),
-                                                  ],
-                                                ),
-                                              ),
-                                              CustomLoadingButton(
-                                                callback: () {
-                                                  if(controllers.emailToCtr.text.trim().isEmpty){
-                                                    utils.snackBar(context: context, msg: "To is empty!", color: Colors.red);
-                                                    controllers.emailCtr.reset();
-                                                    return;
-                                                  }
-                                                  if(!controllers.emailToCtr.text.trim().isEmail){
-                                                    utils.snackBar(
-                                                      context: context,
-                                                      msg: "Invalid mail!",
-                                                      color: Colors.red,
-                                                    );
-                                                    controllers.emailCtr.reset();
-                                                    return;
-                                                  }
-                                                  if(controllers.emailSubjectCtr.text.trim().isEmpty){
-                                                    utils.snackBar(context: context, msg: "Subject is empty!", color: Colors.red);
-                                                    controllers.emailCtr.reset();
-                                                    return;
-                                                  }
-                                                  if(controllers.emailMessageCtr.text.trim().isEmpty){
-                                                    utils.snackBar(context: context, msg: "Message is empty!", color: Colors.red);
-                                                    controllers.emailCtr.reset();
-                                                    return;
-                                                  }
-                                                  sendInvoice();
-                                                },
-                                                controller: controllers.emailCtr,
-                                                isImage: false,
-                                                isLoading: true,
-                                                backgroundColor: colorsConst.primary,
-                                                radius: 5,
-                                                width: 200,
-                                                height: 50,
-                                                text: "Quotation",
-                                                textColor: Colors.white,
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                    content: SizedBox(
-                                        width: 600,
-                                        height: 400,
-                                        child: SingleChildScrollView(
-                                          child: Column(
-                                            children: [
-                                              Align(
-                                                  alignment: Alignment.topRight,
-                                                  child: InkWell(
-                                                      onTap: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Icon(
-                                                        Icons.clear,
-                                                        size: 18,
-                                                        color: colorsConst.textColor,
-                                                      ))),
-                                              Align(
-                                                alignment: Alignment.topRight,
-                                                child: TextButton(
-                                                    onPressed: () {
-                                                      controllers.isTemplate.value = !controllers.isTemplate.value;
-                                                    },
-                                                    child: CustomText(
-                                                      text: "Get Form Template",
-                                                      colors: colorsConst.third,
-                                                      size: 18,
-                                                      isCopy: false,
-                                                      isBold: true,
-                                                    )),
-                                              ),
-                                              Row(
-                                                children: [
-                                                  CustomText(
-                                                    textAlign: TextAlign.center,
-                                                    text: "To",
-                                                    colors: colorsConst.textColor,
-                                                    size: 15,
-                                                    isCopy: false,
-                                                  ),
-                                                  50.width,
-                                                  SizedBox(
-                                                    width: 500,
-                                                    child: TextField(
-                                                      controller: controllers.emailToCtr,
-                                                      style: TextStyle(
-                                                          fontSize: 15, color: colorsConst.textColor),
-                                                      decoration: const InputDecoration(
-                                                        border: InputBorder.none,
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                  width: 600,
-                                                  child: SingleChildScrollView(
-                                                    child: Column(
-                                                      children: [
-                                                        Divider(
-                                                          color: Colors.grey.shade300,
-                                                          thickness: 1,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            15.height,
-                                                            CustomText(
-                                                              text: "Subject",
-                                                              colors: colorsConst.textColor,
-                                                              size: 14,
-                                                              isCopy: false,
-                                                            ),
-                                                            20.width,
-                                                            SizedBox(
-                                                              width: 500,
-                                                              height: 50,
-                                                              child: TextField(
-                                                                controller: controllers.emailSubjectCtr,
-                                                                maxLines: null,
-                                                                minLines: 1,
-                                                                style: TextStyle(
-                                                                  color: colorsConst.textColor,
-                                                                ),
-                                                                decoration: const InputDecoration(
-                                                                  border: InputBorder.none,
-                                                                ),
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        Divider(
-                                                          color: Colors.grey.shade300,
-                                                          thickness: 1,
-                                                        ),
-                                                        Obx(() => controllers.isTemplate.value == false
-                                                            ? SingleChildScrollView(
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              SizedBox(
-                                                                width: 600,
-                                                                height: 223,
-                                                                child: TextField(
-                                                                  textInputAction: TextInputAction.newline,
-                                                                  controller: controllers.emailMessageCtr,
-                                                                  keyboardType: TextInputType.multiline,
-                                                                  maxLines: 21,
-                                                                  expands: false,
-                                                                  style: TextStyle(
-                                                                    color: colorsConst.textColor,
-                                                                  ),
-                                                                  decoration: InputDecoration(
-                                                                    hintText: "Message",
-                                                                    hintStyle: TextStyle(
-                                                                        color: colorsConst.textColor,
-                                                                        fontSize: 14,
-                                                                        fontFamily: "Lato"),
-                                                                    border: InputBorder.none,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                            :Obx(() => UnconstrainedBox(
-                                                          child: Container(
-                                                            width: 500,
-                                                            alignment: Alignment.center,
-                                                            decoration: BoxDecoration(
-                                                              color: colorsConst.secondary,
-                                                              borderRadius: BorderRadius.circular(10),
-                                                            ),
-                                                            child: SingleChildScrollView(
-                                                              child: Column(
-                                                                children: [
-                                                                  SizedBox(
-                                                                    width: 500,
-                                                                    height: 210,
-                                                                    child: Table(
-                                                                      defaultColumnWidth: const FixedColumnWidth(120.0),
-                                                                      border: TableBorder.all(
-                                                                        color: Colors.grey.shade300,
-                                                                        style: BorderStyle.solid,
-                                                                        borderRadius: BorderRadius.circular(10),
-                                                                        width: 1,
-                                                                      ),
-                                                                      children: [
-                                                                        // Header Row
-                                                                        TableRow(
-                                                                          children: [
-                                                                            CustomText(
-                                                                              textAlign: TextAlign.center,
-                                                                              text: "\nTemplate Name\n",
-                                                                              colors: colorsConst.textColor,
-                                                                              size: 15,
-                                                                              isBold: true,
-                                                                              isCopy: false,
-                                                                            ),
-                                                                            CustomText(
-                                                                              textAlign: TextAlign.center,
-                                                                              text: "\nSubject\n",
-                                                                              colors: colorsConst.textColor,
-                                                                              size: 15,
-                                                                              isBold: true,
-                                                                              isCopy: false,
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        // Dynamic Rows
-                                                                        for (var item in settingsController.templateList)
-                                                                          utils.emailRow(
-                                                                              context,
-                                                                              isCheck: controllers.isAdd,
-                                                                              templateName: item.templateName,
-                                                                              msg: item.message,
-                                                                              subject: item.subject,
-                                                                              id: item.id
-                                                                          ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ))
-                                                        )
-                                                      ],
-                                                    ),
-                                                  )),
-                                            ],
-                                          ),
-                                        )),
-                                  );
-                                });
-                          }
-                        },
-                        isLoading: false,isImage: false,
-                        backgroundColor: colorsConst.primary, radius: 5,
-                        width: MediaQuery.of(context).size.width*0.08,
-                        text: "Send Quotation",)
+                      Container(
+                        width: MediaQuery.of(context).size.width*0.1,
+                        height: 40,
+                        decoration: customDecoration.baseBackgroundDecoration(
+                          color: Colors.green,radius: 5
+                        ),
+                        child: Center(
+                          child: CustomText(
+                            textAlign: TextAlign.center,
+                            text: "Total Amount : ${productCtr.productsList.fold(0.0,(sum, item) => sum + (double.tryParse(item.amount.text) ?? 0.0),)}",
+                              isCopy: false,colors: Colors.white,isBold: true,),
+                        ),
+                      )
                     ],
                   ),
                   10.height,
@@ -485,14 +549,17 @@ class _SendQuotationState extends State<SendQuotation> {
                       verticalInside:
                       BorderSide(width: 0.5, color: Colors.grey.shade300),
                     ),
-                    columnWidths: const {
-                      0: FixedColumnWidth(60),   // S.No
-                      1: FlexColumnWidth(2),     // Product
-                      2: FlexColumnWidth(1.5),   // Category
-                      3: FlexColumnWidth(1.5),   // Sub Category
-                      4: FlexColumnWidth(1.5),   // Brand
-                      5: FixedColumnWidth(80),   // GST
-                    },
+                    // columnWidths: const {
+                    //   0: FixedColumnWidth(60),   // S.No
+                    //   1: FlexColumnWidth(50),     // Product
+                    //   2: FlexColumnWidth(30),   // Category
+                    //   3: FlexColumnWidth(30),   // Sub Category
+                    //   4: FlexColumnWidth(30),   // Brand
+                    //   5: FixedColumnWidth(70),   // GST
+                    //   6: FixedColumnWidth(70),   // GST
+                    //   7: FixedColumnWidth(70),   // GST
+                    //   8: FixedColumnWidth(100),   // GST
+                    // },
                     children: [
 
                       /// 🔹 Header Row
@@ -506,7 +573,11 @@ class _SendQuotationState extends State<SendQuotation> {
                         ),
                         children: [
                           headerCell("S.No"),
-                          headerCell("Product"),
+                          headerCell("Product Name"),
+                          headerCell("Quantity"),
+                          headerCell("MRP"),
+                          headerCell("Price"),
+                          headerCell("Amount"),
                           headerCell("Category"),
                           headerCell("Sub Category"),
                           headerCell("Brand"),
@@ -529,6 +600,21 @@ class _SendQuotationState extends State<SendQuotation> {
                             children: [
                               valueCell("${index + 1}"),
                               valueCell(data.title.toString()),
+                              // valueCell(data.qty.toString()),
+                              TextField(
+                                controller: data.qty,
+                                onChanged: (value){
+                                  setState(() {
+                                    data.amount.text="${int.parse(data.qty.text)*int.parse(data.outPrice.toString())}";
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  border: UnderlineInputBorder()
+                                ),
+                              ),
+                              valueCell(data.mrp.toString()),
+                              valueCell(data.outPrice.toString()),
+                              valueCell(data.amount.text),
                               valueCell(data.cat.toString()),
                               valueCell(data.subCat.toString()),
                               valueCell(data.brand.toString()),
@@ -647,7 +733,7 @@ class _SendQuotationState extends State<SendQuotation> {
 
                 /// CUSTOMER
                 pw.Text("M/S : ${controllers.selectedCustomerName}"),
-                // pw.Text("Address : ${controllers.selectedc}"),
+                // pw.Text("Address : ${controllers.sele}"),
 
                 pw.SizedBox(height: 10),
 
@@ -669,9 +755,9 @@ class _SendQuotationState extends State<SendQuotation> {
                     /// HEADER
                     pw.TableRow(
                       children: [
-                        tableCell("S. No.", isHeader: true),
-                        tableCell("Particulars", isHeader: true),
-                        tableCell("Qty.", isHeader: true),
+                        tableCell("S.No.", isHeader: true),
+                        tableCell("Product Name", isHeader: true),
+                        tableCell("Qty", isHeader: true),
                         tableCell("Amount INR", isHeader: true),
                       ],
                     ),
@@ -684,8 +770,8 @@ class _SendQuotationState extends State<SendQuotation> {
                         children: [
                           tableCell("${index + 1}"),
                           tableCell(p.title.toString()),
-                          tableCell(p.brand.toString()),
-                          tableCell("Rs. 10"),
+                          tableCell(p.qty.text),
+                          tableCell("Rs. ${p.amount.text}"),
                         ],
                       );
                     }),
@@ -725,7 +811,7 @@ class _SendQuotationState extends State<SendQuotation> {
                             totalRows("CGST 9%", "1,350"),
                             totalRows("Round Off 9%", "1,350"),
                             totalRows("Total After", "1,350"),
-                            // totalRows("Tax for HapiApps", data.totalAmt,isBold: true),
+                            totalRows("Tax for HapiApps", "0",isBold: true),
                             pw.SizedBox(height: 20),
                             pw.Text("Signature"),
                           ],
@@ -849,9 +935,9 @@ class _SendQuotationState extends State<SendQuotation> {
                     /// HEADER
                     pw.TableRow(
                       children: [
-                        tableCell("S. No.", isHeader: true),
-                        tableCell("Particulars", isHeader: true),
-                        tableCell("Qty.", isHeader: true),
+                        tableCell("S.No.", isHeader: true),
+                        tableCell("Product Name", isHeader: true),
+                        tableCell("Qty", isHeader: true),
                         tableCell("Amount INR", isHeader: true),
                       ],
                     ),
@@ -864,8 +950,8 @@ class _SendQuotationState extends State<SendQuotation> {
                         children: [
                           tableCell("${index + 1}"),
                           tableCell(p.title.toString()),
-                          tableCell(p.brand.toString()),
-                          tableCell("Rs. 10"),
+                          tableCell(p.qty.text),
+                          tableCell("Rs. ${p.amount.text}"),
                         ],
                       );
                     }),
@@ -926,15 +1012,6 @@ class _SendQuotationState extends State<SendQuotation> {
     apiService.insertQuotationAPI(context,pdf);
   }
 
-  Future<File> savePdfFile(pw.Document pdf) async {
-    final dir = await getApplicationDocumentsDirectory();
-
-    final file = File("${dir.path}/invoice.pdf");
-
-    await file.writeAsBytes(await pdf.save());
-
-    return file;
-  }
   pw.Widget tableCell(String text, {bool isHeader = false}) {
     return pw.Padding(
       padding: const pw.EdgeInsets.all(6),
@@ -1110,130 +1187,6 @@ class _ProductDropdownState extends State<ProductDropdown> {
     );
   }
 }
-
-// class CustomerSearchDropdown extends StatefulWidget {
-//   final List<AllCustomersObj> customers;
-//   final Function(AllCustomersObj) onSelected;
-//
-//   const CustomerSearchDropdown({
-//     super.key,
-//     required this.customers,
-//     required this.onSelected,
-//   });
-//
-//   @override
-//   State<CustomerSearchDropdown> createState() => _CustomerSearchDropdownState();
-// }
-//
-// class _CustomerSearchDropdownState extends State<CustomerSearchDropdown> {
-//   final TextEditingController controller = TextEditingController();
-//   final FocusNode focusNode = FocusNode();
-//
-//   OverlayEntry? overlayEntry;
-//   List<AllCustomersObj> filtered = [];
-//
-//   final LayerLink layerLink = LayerLink();
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     filtered = widget.customers;
-//
-//     focusNode.addListener(() {
-//       if (!focusNode.hasFocus) {
-//         removeDropdown();
-//       }
-//     });
-//   }
-//
-//   void search(String value) {
-//     filtered = widget.customers.where((c) {
-//       return (c.name ?? "").toLowerCase().contains(value.toLowerCase()) ||
-//           (c.phoneNo ?? "").toLowerCase().contains(value.toLowerCase()) ||
-//           (c.companyName ?? "").toLowerCase().contains(value.toLowerCase());
-//     }).toList();
-//
-//     overlayEntry?.markNeedsBuild();
-//   }
-//
-//   void showDropdown() {
-//     if (overlayEntry != null) return;
-//
-//     overlayEntry = createOverlay();
-//     Overlay.of(context).insert(overlayEntry!);
-//   }
-//
-//   void removeDropdown() {
-//     overlayEntry?.remove();
-//     overlayEntry = null;
-//   }
-//
-//   OverlayEntry createOverlay() {
-//     RenderBox renderBox = context.findRenderObject() as RenderBox;
-//     var size = renderBox.size;
-//
-//     return OverlayEntry(
-//       builder: (context) {
-//         return Positioned(
-//           width: size.width,
-//           child: CompositedTransformFollower(
-//             link: layerLink,
-//             offset: Offset(0, size.height + 5),
-//             child: Material(
-//               elevation: 4,
-//               child: Container(
-//                 height: 200,
-//                 color: Colors.white,
-//                 child: ListView.builder(
-//                   padding: EdgeInsets.zero,
-//                   itemCount: filtered.length,
-//                   itemBuilder: (context, index) {
-//                     final customer = filtered[index];
-//
-//                     return ListTile(
-//                       title: Text(
-//                           "${customer.name}, ${customer.companyName ?? ""}"),
-//                       subtitle: Text(
-//                           "${customer.phoneNo} - ${customer.category ?? ""}"),
-//                       onTap: () {
-//                         controller.text =
-//                         "${customer.name} - ${customer.phoneNo}";
-//
-//                         widget.onSelected(customer); // callback
-//
-//                         removeDropdown(); // close dropdown
-//                         focusNode.unfocus();
-//                       },
-//                     );
-//                   },
-//                 ),
-//               ),
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return CompositedTransformTarget(
-//       link: layerLink,
-//       child: TextField(
-//         controller: controller,
-//         focusNode: focusNode,
-//         onTap: showDropdown,
-//         onChanged: search,
-//         decoration: InputDecoration(
-//           hintText: "Search Customer",
-//           border: OutlineInputBorder(
-//             borderRadius: BorderRadius.circular(5),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class ProductSearchDropdown extends StatefulWidget {
   final List<ProductModel> products;

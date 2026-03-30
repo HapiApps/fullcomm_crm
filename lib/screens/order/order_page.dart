@@ -329,34 +329,108 @@ class _OrderPageState extends State<OrderPage> {
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Row(
-                            children: [
-                              InkWell(
-                                  onTap:(){
-                                    Get.back();
-                                  },
-                                  child: Icon(Icons.arrow_back)),10.width,
-                              CustomText(
-                                text: "Orders",
-                                colors: colorsConst.textColor,
-                                size: 25,
-                                isBold: true,
-                                isCopy: true,
-                              ),
-                            ],
+                          CustomText(
+                            text: "Orders",
+                            colors: colorsConst.textColor,
+                            size: 20,
+                            isBold: true,
+                            isCopy: true,
                           ),
                           10.height,
                           CustomText(
-                            text: "View all of your Orders Details\n\n\n",
+                            text: "View all of your Orders Details",
                             colors: colorsConst.textColor,
                             size: 14,
                             isCopy: true,
                           ),
                         ],
                       ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.end,
+                      //   children: [
+                      //     if(controllers.planType.value!="Business Essential"&&controllers.planType.value!="Business Fit")
+                      //       SizedBox(
+                      //         height: 40,
+                      //         child: ElevatedButton(
+                      //           onPressed: (){
+                      //             Navigator.push(
+                      //               context,
+                      //               PageRouteBuilder(
+                      //                 pageBuilder: (context, animation1, animation2) =>
+                      //                 const ReminderCalender(),
+                      //                 transitionDuration: Duration.zero,
+                      //                 reverseTransitionDuration: Duration.zero,
+                      //               ),
+                      //             );
+                      //           },
+                      //           style: ElevatedButton.styleFrom(
+                      //             backgroundColor: const Color(0xff0078D7),
+                      //             padding: const EdgeInsets.symmetric(
+                      //                 horizontal: 20, vertical: 12),
+                      //             shape: RoundedRectangleBorder(
+                      //               borderRadius: BorderRadius.circular(4),
+                      //             ),
+                      //           ),
+                      //           child: Text(
+                      //             'Reminder Calender',
+                      //             style: GoogleFonts.lato(
+                      //                 color: Colors.white,
+                      //                 fontSize: 14,
+                      //                 fontWeight: FontWeight.bold
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),10.width,
+                      //     SizedBox(
+                      //       height: 40,
+                      //       child: ElevatedButton(
+                      //         onPressed: (){
+                      //           // Navigator.push(
+                      //           //   context,
+                      //           //   PageRouteBuilder(
+                      //           //     pageBuilder: (context, animation1, animation2) => AddReminder(),
+                      //           //     transitionDuration: Duration.zero,
+                      //           //     reverseTransitionDuration: Duration.zero,
+                      //           //   ),
+                      //           // );
+                      //           reminderUtils.showAddReminderDialog(context);
+                      //         },
+                      //         style: ElevatedButton.styleFrom(
+                      //           backgroundColor: const Color(0xff0078D7),
+                      //           padding: const EdgeInsets.symmetric(
+                      //               horizontal: 20, vertical: 12),
+                      //           shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(4),
+                      //           ),
+                      //         ),
+                      //         child: Row(
+                      //           children: [
+                      //             const Icon(Icons.add,color: Colors.white),
+                      //             const SizedBox(width: 5),
+                      //             Text(
+                      //               'Add Reminder',
+                      //               style: GoogleFonts.lato(
+                      //                   color: Colors.white,
+                      //                   fontSize: 14,
+                      //                   fontWeight: FontWeight.bold
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                     ],
                   ),
+                  10.height,
+                  Divider(
+                    thickness: 1.5,
+                    color: colorsConst.secondary,
+                  ),
+                  10.height,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -558,7 +632,7 @@ class _OrderPageState extends State<OrderPage> {
                               controller: _headerHorizontalController, // ✅ IMPORTANT
                               scrollDirection: Axis.horizontal,
                               child: SizedBox(
-                                width: 2000, // 👈 SAME WIDTH
+                                width: MediaQuery.of(context).size.width*0.9,
                                 child: Table(
                                   border: TableBorder(
                                     horizontalInside:
@@ -571,7 +645,7 @@ class _OrderPageState extends State<OrderPage> {
                                       1: FixedColumnWidth(weWidth / 5),
                                       2: FixedColumnWidth(weWidth / 8),
                                       3: FixedColumnWidth(weWidth / 7),
-                                      4: FixedColumnWidth(weWidth / 9)
+                                      4: FixedColumnWidth(50)
                                     },
                                   children: [
                                     TableRow(
@@ -631,7 +705,7 @@ class _OrderPageState extends State<OrderPage> {
                                                     .compareTo(a.createdTs.toString().toLowerCase()));
                                           }
                                         }, field: 'Order Date'),
-                                        headerCell("Invoice",callBack: (){}, field: ''),
+                                        headerCell("Invoice",callBack: (){}, field: 'Invoice'),
                                       ],
                                     ),
                                   ],
@@ -652,7 +726,7 @@ class _OrderPageState extends State<OrderPage> {
                                   controller: _horizontalController,
                                   scrollDirection: Axis.horizontal,
                                   child: SizedBox(
-                                    width: 2000, // 👈 must same
+                                    width: MediaQuery.of(context).size.width*0.9,
                                     child: Scrollbar(
                                       controller: _verticalController,
                                       thumbVisibility: true,
@@ -665,7 +739,7 @@ class _OrderPageState extends State<OrderPage> {
                                               1: FixedColumnWidth(weWidth / 5),
                                               2: FixedColumnWidth(weWidth / 8),
                                               3: FixedColumnWidth(weWidth / 7),
-                                              4: FixedColumnWidth(weWidth / 9)
+                                              4: FixedColumnWidth(50)
                                             },
                                           border: TableBorder.all(color: Colors.grey.shade300),
                                           children: List.generate(productCtr.ordersList.length, (index) {
@@ -681,26 +755,31 @@ class _OrderPageState extends State<OrderPage> {
                                                 valueCell(e.customerName.toString()),
                                                 valueCell(productCtr.formatAmount(e.totalAmt.toString())),
                                                 valueCell(productCtr.formatDateTime(e.createdTs.toString())),
-                                                SizedBox(
-                                            height: 50,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: ElevatedButton(
-                                                  onPressed: (){
+                                                InkWell(
+                                                  onTap:(){
                                                     showDialog(
                                                       context: context,
                                                       builder: (_) => OrderInvoiceDialog(order: e),
                                                     );
                                                   },
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Icon(Icons.print,color: Colors.white,),
-                                                      CustomText(text: "Invoice", isCopy: false),
-                                                    ],
-                                                  )),
-                                            ),
-                                          ),
+                                                  child: SizedBox(
+                                                    // decoration: customDecoration.baseBackgroundDecoration(
+                                                    //   color: colorsConst.primary,radius: 10
+                                                    // ),
+                                                    height: 50,
+                                                    width:50,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Icon(Icons.print,color: colorsConst.primary),5.width,
+                                                          CustomText(text: "Invoice", isCopy: false,colors: colorsConst.primary),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
                                               ],
                                             );
                                           }),
@@ -761,6 +840,7 @@ class _OrderPageState extends State<OrderPage> {
             colors: Colors.white,
           ),
           5.width,
+          if(field!="Invoice")
           GestureDetector(
             onTap: () {
               setState(() {

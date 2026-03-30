@@ -32,6 +32,7 @@ import '../common/utilities/utils.dart';
 import '../components/custom_text.dart';
 import '../controller/controller.dart';
 import '../controller/image_controller.dart';
+import '../controller/product_controller.dart';
 import '../controller/reminder_controller.dart';
 import '../controller/settings_controller.dart';
 import '../models/customer_activity.dart';
@@ -3320,7 +3321,9 @@ class ApiService {
   Future insertQuotationAPI(BuildContext context,pw.Document pdf) async {
     try {
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
-
+      String productListJson = jsonEncode(
+        productCtr.productsList.map((e) => e.toJson()).toList(),
+      );
       // Body values
       request.fields['clientMail'] = controllers.selectedCustomerEmail.value;
       request.fields['subject'] = controllers.emailSubjectCtr.text;
@@ -3328,28 +3331,32 @@ class ApiService {
       request.fields['count'] = '${controllers.emailCount.value + 1}';
       request.fields['quotation_name'] = "Product Quotation";
       request.fields['body'] = controllers.emailMessageCtr.text;
-      request.fields['user_id'] = controllers.storage.read("id").toString();
-      request.fields['id'] = controllers.selectedCustomerId.value;
+      request.fields['cus_id'] = controllers.storage.read("id").toString();
+      request.fields['customer_id'] = controllers.selectedCustomerId.value;
       request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
       request.fields['action'] = 'send_quotation';
+      request.fields['total_amt'] = '${productCtr.productsList.fold(0.0,(sum, item) => sum + (double.tryParse(item.amount.text) ?? 0.0),)}';
+      request.fields['productList'] = productListJson;
       request.headers.addAll({
         'X-API-TOKEN': "${TokenStorage().readToken()}",
         'Content-Type': 'application/json'
       });
       final bytes = await pdf.save();
 
+
+
       request.files.add(
         http.MultipartFile.fromBytes(
           'invoice',
           bytes,
-          filename: "invoice_${DateTime.now().millisecondsSinceEpoch}.pdf",
+          filename: "${controllers.selectedCustomerName.value}_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.pdf",
         ),
       );
       var response = await request.send();
       var body = await response.stream.bytesToString();
       print("body");
       print(body);
-      if (response.statusCode == 200 && body == "Message has been sent") {
+      if (response.statusCode == 200) {
         utils.snackBar(
             msg: "Mail has been sent",
             color: Colors.green,
@@ -3357,6 +3364,9 @@ class ApiService {
         controllers.emailMessageCtr.clear();
         controllers.emailToCtr.clear();
         controllers.emailSubjectCtr.clear();
+        productCtr.productsList.clear();
+        controllers.clearSelectedCustomer();
+        productCtr.clearProduct();
         Navigator.pop(Get.context!);
         controllers.emailCtr.reset();
       } else {

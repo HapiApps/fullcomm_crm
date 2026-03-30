@@ -42,11 +42,13 @@ class ProductController extends GetxController with GetSingleTickerProviderState
     selectedProductName.value = c.title.toString();
     controllers.search.text = c.title ?? "";
     productsList.value.add(c);
+    controllers.search.clear();
     productsList.refresh();
   }
   void clearProduct() {
     selectedProductId.value = "";
     selectedProductName.value = "";
+    controllers.search.clear();
     // productsList.value.remove(value);
   }
 
