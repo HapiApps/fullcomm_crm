@@ -120,6 +120,7 @@ class _DashboardPageState extends State<DashboardPage>
       controllers.getIndustries();
       productCtr.getProducts();
       productCtr.getOrderDetails();
+      productCtr.getQuotationDetails();
     });
 
     Future.delayed(Duration.zero, () async {

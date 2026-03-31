@@ -125,6 +125,60 @@ class ProductController extends GetxController with GetSingleTickerProviderState
     // return filteredLeads.sublist(start, end);
     // }
   }
+  List<Quotations> changeQuotationPage(RxList<Quotations> list,RxList<Quotations> list2){
+    final query = searchProspects.value.trim().toLowerCase();
+    final ratingFilter = selectedProspectTemperature.value;
+    final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
+    final now = DateTime.now();
+
+    final filteredLeads = list2.value.where((lead) {
+      final matchesQuery = (lead.name ?? '').toLowerCase().contains(query);
+      return matchesQuery;
+    }).toList();
+
+    if (sortField.isNotEmpty) {
+      filteredLeads.sort((a, b) {
+        dynamic getFieldValue(Quotations lead, String field) {
+          switch (field) {
+            case 'name':
+              var name = lead.name ?? '';
+              if (name.contains('||')) name = name.split('||')[0].trim();
+              return name.toLowerCase();
+            default:
+            // final value = lead.asMap()[field];
+              return "value".toString().toLowerCase();
+          }
+        }
+
+        final valA = getFieldValue(a, sortField.value);
+        final valB = getFieldValue(b, sortField.value);
+
+        if (valA is DateTime && valB is DateTime) {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        } else {
+          return sortOrderN.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        }
+      });
+    }
+
+    int start = (currentProspectPage.value - 1) * itemsProspectPerPage;
+
+    if (start >= filteredLeads.length) {
+      return list.value=[];
+    }
+
+    int end = start + itemsProspectPerPage;
+    end = end > filteredLeads.length ? filteredLeads.length : end;
+    print("list");
+    print(filteredLeads.sublist(start, end));
+    return list.value=filteredLeads.sublist(start, end);
+    // return filteredLeads.sublist(start, end);
+    // }
+  }
 
   Future pickImage() async {
 
@@ -384,7 +438,7 @@ var isSelectAll=false.obs;
       );
 
       // print("STATUS CODE add_values: ${response.statusCode}");
-      print("get_products...: ${response.body}");
+      // print("get_products...: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -471,7 +525,7 @@ var isSelectAll=false.obs;
       );
 
       // print("STATUS CODE add_values: ${response.statusCode}");
-      print("get_order_details..: ${response.body}");
+      // print("get_order_details..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -485,6 +539,53 @@ var isSelectAll=false.obs;
         ordersList.value =data.map((e) => Order.fromJson(e)).toList();
         ordersList2.value =data.map((e) => Order.fromJson(e)).toList();
         return ordersList;
+      }else{
+          return [];
+      }
+    } catch (e) {
+      log("FLUTTER ERROR => $e");
+      return [];
+    }
+  }
+
+  RxList<Quotations> quotationsList=<Quotations>[].obs;
+  RxList<Quotations> quotationsList2=<Quotations>[].obs;
+  Future<List<Quotations>> getQuotationDetails() async {
+    try {
+      quotationsList.clear();
+      quotationsList2.clear();
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "action": "get_data",
+          "search_type": "get_quotations",
+          "role": controllers.storage.read("role").toString(),
+          "id": controllers.storage.read("id").toString(),
+          "cos_id": controllers.storage.read("cos_id").toString(),
+        }),
+      );
+
+      // print("STATUS CODE add_values: ${response.statusCode}");
+      print("get_quotations..: ${response.body}");
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getQuotationDetails();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200) {
+        final List data = jsonDecode(response.body);
+        quotationsList.value =data.map((e) => Quotations.fromJson(e)).toList();
+        quotationsList2.value =data.map((e) => Quotations.fromJson(e)).toList();
+        // print("get_quotations..: ${quotationsList.length}");
+        // print("get_quotations..: ${quotationsList2.length}");
+        return quotationsList;
       }else{
           return [];
       }

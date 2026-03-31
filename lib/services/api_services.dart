@@ -3349,13 +3349,21 @@ class ApiService {
         http.MultipartFile.fromBytes(
           'invoice',
           bytes,
-          filename: "${controllers.selectedCustomerName.value}_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.pdf",
+          filename: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
         ),
       );
       var response = await request.send();
       var body = await response.stream.bytesToString();
       print("body");
       print(body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertQuotationAPI(context,pdf);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (response.statusCode == 200) {
         utils.snackBar(
             msg: "Mail has been sent",
@@ -3368,6 +3376,52 @@ class ApiService {
         controllers.clearSelectedCustomer();
         productCtr.clearProduct();
         Navigator.pop(Get.context!);
+        controllers.emailCtr.reset();
+      } else {
+        controllers.emailCtr.reset();
+        errorDialog(Get.context!, "Mail has been not sent");
+      }
+    } catch (e) {
+      errorDialog(Get.context!, e.toString());
+      controllers.emailCtr.reset();
+    }
+  }
+
+  Future confirmOrderAPI(BuildContext context,String id,String cusId,String totalAmt,String name) async {
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
+      request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
+      request.fields['id'] = id;
+      request.fields['customer_id'] = cusId;
+      request.fields['action'] = 'insert_order';
+      request.fields['total_amt'] = totalAmt;
+      request.fields['name'] = name;
+      // request.fields['productList'] = productListJson;
+      request.headers.addAll({
+        'X-API-TOKEN': "${TokenStorage().readToken()}",
+        'Content-Type': 'application/json'
+      });
+      var response = await request.send();
+      var body = await response.stream.bytesToString();
+      print("body");
+      print(request.fields);
+      print(body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return confirmOrderAPI(context,id,cusId,totalAmt,name);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200) {
+        utils.snackBar(
+            msg: "Order Confirmed",
+            color: Colors.green,
+            context: Get.context!);
+        // controllers.clearSelectedCustomer();
+        // productCtr.clearProduct();
+        // Navigator.pop(Get.context!);
         controllers.emailCtr.reset();
       } else {
         controllers.emailCtr.reset();

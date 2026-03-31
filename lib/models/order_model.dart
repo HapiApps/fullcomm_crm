@@ -76,3 +76,32 @@ class Product {
     );
   }
 }
+
+class Quotations {
+  final int id;
+  final String invoicePdf;
+  final String name;
+  final String createdTs;
+  final int totalAmt;
+  final int cusId;
+
+  Quotations({
+    required this.id,
+    required this.totalAmt,
+    required this.invoicePdf,
+    required this.name,
+    required this.createdTs,
+    required this.cusId,
+  });
+
+  factory Quotations.fromJson(Map<String, dynamic> json) {
+    return Quotations(
+      id: int.tryParse(json['id']?.toString() ?? "0") ?? 0,
+      cusId: int.tryParse(json['cus_id']?.toString() ?? "0") ?? 0,
+      invoicePdf: json['invoice_pdf'] ?? '',
+      name: json['name'] ?? '',
+      createdTs: json['created_ts'] ?? '',
+      totalAmt: int.tryParse(json['total_amt']?.toString() ?? "0") ?? 0
+    );
+  }
+}
