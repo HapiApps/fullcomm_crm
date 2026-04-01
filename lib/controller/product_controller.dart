@@ -547,6 +547,425 @@ var isSelectAll=false.obs;
       return [];
     }
   }
+  RxString selectedCallSortBy = "All".obs;
+  var selectedCallRange = Rxn<DateTimeRange>();
+  final Rxn<DateTime> selectedCallMonth = Rxn<DateTime>();
+  void filterAndSortProducts({
+    required String searchText,
+    required String sortField,
+    required String sortOrder,
+    required String selectedDateFilter,
+    required DateTime? selectedMonth,
+    required DateTimeRange? selectedRange,
+  }) {
+    DateTime parseDate(String dateStr) {
+      try {
+        return DateTime.parse(dateStr); // 🔥 BEST
+      } catch (e) {
+        return DateTime(1900);
+      }
+    }
+
+    final now = DateTime.now();
+
+    final filtered = products2.where((activity) {
+
+      final matchesSearch =
+          searchText.isEmpty ||
+              activity.title.toString().toLowerCase().contains(searchText.toLowerCase()) ||
+              activity.hsnCode.toString().toLowerCase().contains(searchText.toLowerCase());
+
+      final activityDate = parseDate(activity.createdTs.toString());
+
+      bool matchesDate = true;
+
+      final now = DateTime.now();
+      final todayStart = DateTime(now.year, now.month, now.day);
+
+      /// Today
+      if (selectedDateFilter == "Today") {
+        final tomorrowStart = todayStart.add(const Duration(days: 1));
+
+        matchesDate = activityDate.isAfter(todayStart) &&
+            activityDate.isBefore(tomorrowStart);
+      }
+
+      /// Yesterday
+      else if (selectedDateFilter == "Yesterday") {
+        final yesterdayStart = todayStart.subtract(const Duration(days: 1));
+
+        matchesDate = activityDate.isAfter(yesterdayStart) &&
+            activityDate.isBefore(todayStart);
+      }
+
+      /// Last 7 Days
+      else if (selectedDateFilter == "Last 7 Days") {
+        final start = todayStart.subtract(const Duration(days: 6));
+
+        matchesDate = activityDate.isAfter(start) &&
+            activityDate.isBefore(todayStart.add(const Duration(days: 1)));
+      }
+
+      /// Last 30 Days
+      else if (selectedDateFilter == "Last 30 Days") {
+        final start = todayStart.subtract(const Duration(days: 29));
+
+        matchesDate = activityDate.isAfter(start) &&
+            activityDate.isBefore(todayStart.add(const Duration(days: 1)));
+      }
+      print("activityDate ${activityDate}");
+      print("selectedRange ${selectedRange}");
+
+      /// Date Range Filter (same date issue fixed)
+      if (selectedRange != null) {
+        final start = DateTime(
+          selectedRange.start.year,
+          selectedRange.start.month,
+          selectedRange.start.day,
+        );
+
+        final end = DateTime(
+          selectedRange.end.year,
+          selectedRange.end.month,
+          selectedRange.end.day,
+          23, 59, 59,
+        );
+
+        matchesDate = !activityDate.isBefore(start) &&
+            !activityDate.isAfter(end);
+      }
+      /// Month Filter
+      if (selectedMonth != null) {
+        matchesDate = activityDate.month == selectedMonth.month &&
+            activityDate.year == selectedMonth.year;
+      }
+
+      return matchesSearch && matchesDate;
+
+    }).toList();
+
+    /// Sorting
+    if (sortField == 'name') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.title.toString().toLowerCase().compareTo(b.title.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'mrp') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.mrp.toString()) ?? 0;
+        final bVal = int.tryParse(b.mrp.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'price') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.outPrice.toString()) ?? 0;
+        final bVal = int.tryParse(b.outPrice.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'sku') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.skuId.toString()) ?? 0;
+        final bVal = int.tryParse(b.skuId.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'hsn') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.hsnCode.toString()) ?? 0;
+        final bVal = int.tryParse(b.hsnCode.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'gst') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.gst.toString()) ?? 0;
+        final bVal = int.tryParse(b.gst.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'date') {
+      filtered.sort((a, b) {
+        final dateA = parseDate(a.createdTs.toString());
+        final dateB = parseDate(b.createdTs.toString());
+        final comparison = dateA.compareTo(dateB);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'cat') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.cat.toString().toLowerCase().compareTo(b.cat.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'sub cat') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.subCat.toString().toLowerCase().compareTo(b.subCat.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    products.assignAll(filtered);
+  }
+
+  void filterAndSortOrders({
+    required String searchText,
+    required String sortField,
+    required String sortOrder,
+    required String selectedDateFilter,
+    required DateTime? selectedMonth,
+    required DateTimeRange? selectedRange,
+  }) {
+    DateTime parseDate(String dateStr) {
+      try {
+        return DateTime.parse(dateStr); // 🔥 BEST
+      } catch (e) {
+        return DateTime(1900);
+      }
+    }
+
+    final now = DateTime.now();
+
+    final filtered = ordersList2.where((activity) {
+
+      final matchesSearch =
+          searchText.isEmpty ||
+              activity.customerName.toString().toLowerCase().contains(searchText.toLowerCase()) ||
+              activity.totalAmt.toString().toLowerCase().contains(searchText.toLowerCase());
+
+      final activityDate = parseDate(activity.createdTs.toString());
+
+      bool matchesDate = true;
+
+      final now = DateTime.now();
+      final todayStart = DateTime(now.year, now.month, now.day);
+
+      /// Today
+      if (selectedDateFilter == "Today") {
+        final tomorrowStart = todayStart.add(const Duration(days: 1));
+
+        matchesDate = activityDate.isAfter(todayStart) &&
+            activityDate.isBefore(tomorrowStart);
+      }
+
+      /// Yesterday
+      else if (selectedDateFilter == "Yesterday") {
+        final yesterdayStart = todayStart.subtract(const Duration(days: 1));
+
+        matchesDate = activityDate.isAfter(yesterdayStart) &&
+            activityDate.isBefore(todayStart);
+      }
+
+      /// Last 7 Days
+      else if (selectedDateFilter == "Last 7 Days") {
+        final start = todayStart.subtract(const Duration(days: 6));
+
+        matchesDate = activityDate.isAfter(start) &&
+            activityDate.isBefore(todayStart.add(const Duration(days: 1)));
+      }
+
+      /// Last 30 Days
+      else if (selectedDateFilter == "Last 30 Days") {
+        final start = todayStart.subtract(const Duration(days: 29));
+
+        matchesDate = activityDate.isAfter(start) &&
+            activityDate.isBefore(todayStart.add(const Duration(days: 1)));
+      }
+      print("activityDate ${activityDate}");
+      print("selectedRange ${selectedRange}");
+
+      /// Date Range Filter (same date issue fixed)
+      if (selectedRange != null) {
+        final start = DateTime(
+          selectedRange.start.year,
+          selectedRange.start.month,
+          selectedRange.start.day,
+        );
+
+        final end = DateTime(
+          selectedRange.end.year,
+          selectedRange.end.month,
+          selectedRange.end.day,
+          23, 59, 59,
+        );
+
+        matchesDate = !activityDate.isBefore(start) &&
+            !activityDate.isAfter(end);
+      }
+      /// Month Filter
+      if (selectedMonth != null) {
+        matchesDate = activityDate.month == selectedMonth.month &&
+            activityDate.year == selectedMonth.year;
+      }
+
+      return matchesSearch && matchesDate;
+
+    }).toList();
+
+    /// Sorting
+    if (sortField == 'name') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.customerName.toString().toLowerCase().compareTo(b.customerName.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'number') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.orderId.toString()) ?? 0;
+        final bVal = int.tryParse(b.orderId.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'amt') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.totalAmt.toString()) ?? 0;
+        final bVal = int.tryParse(b.totalAmt.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'date') {
+      filtered.sort((a, b) {
+        final dateA = parseDate(a.createdTs.toString());
+        final dateB = parseDate(b.createdTs.toString());
+        final comparison = dateA.compareTo(dateB);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    ordersList.assignAll(filtered);
+  }
+
+  void filterAndSortQuotations({
+    required String searchText,
+    required String sortField,
+    required String sortOrder,
+    required String selectedDateFilter,
+    required DateTime? selectedMonth,
+    required DateTimeRange? selectedRange,
+  }) {
+  DateTime parseDate(String dateStr) {
+    try {
+      return DateTime.parse(dateStr); // 🔥 BEST
+    } catch (e) {
+      return DateTime(1900);
+    }
+  }
+
+    final now = DateTime.now();
+
+    final filtered = quotationsList2.where((activity) {
+
+      final matchesSearch =
+          searchText.isEmpty ||
+              activity.number.toString().toLowerCase().contains(searchText.toLowerCase()) ||
+              activity.totalAmt.toString().toLowerCase().contains(searchText.toLowerCase()) ||
+              activity.number.toString().toLowerCase().contains(searchText.toLowerCase());
+
+      final activityDate = parseDate(activity.createdTs.toString());
+
+      bool matchesDate = true;
+
+      final now = DateTime.now();
+      final todayStart = DateTime(now.year, now.month, now.day);
+
+      /// Today
+      if (selectedDateFilter == "Today") {
+      final tomorrowStart = todayStart.add(const Duration(days: 1));
+
+      matchesDate = activityDate.isAfter(todayStart) &&
+      activityDate.isBefore(tomorrowStart);
+      }
+
+      /// Yesterday
+      else if (selectedDateFilter == "Yesterday") {
+      final yesterdayStart = todayStart.subtract(const Duration(days: 1));
+
+      matchesDate = activityDate.isAfter(yesterdayStart) &&
+      activityDate.isBefore(todayStart);
+      }
+
+      /// Last 7 Days
+      else if (selectedDateFilter == "Last 7 Days") {
+      final start = todayStart.subtract(const Duration(days: 6));
+
+      matchesDate = activityDate.isAfter(start) &&
+      activityDate.isBefore(todayStart.add(const Duration(days: 1)));
+      }
+
+      /// Last 30 Days
+      else if (selectedDateFilter == "Last 30 Days") {
+      final start = todayStart.subtract(const Duration(days: 29));
+
+      matchesDate = activityDate.isAfter(start) &&
+      activityDate.isBefore(todayStart.add(const Duration(days: 1)));
+      }
+      print("activityDate ${activityDate}");
+      print("selectedRange ${selectedRange}");
+
+      /// Date Range Filter (same date issue fixed)
+      if (selectedRange != null) {
+        final start = DateTime(
+          selectedRange.start.year,
+          selectedRange.start.month,
+          selectedRange.start.day,
+        );
+
+        final end = DateTime(
+          selectedRange.end.year,
+          selectedRange.end.month,
+          selectedRange.end.day,
+          23, 59, 59,
+        );
+
+        matchesDate = !activityDate.isBefore(start) &&
+            !activityDate.isAfter(end);
+      }
+      /// Month Filter
+      if (selectedMonth != null) {
+        matchesDate = activityDate.month == selectedMonth.month &&
+            activityDate.year == selectedMonth.year;
+      }
+
+      return matchesSearch && matchesDate;
+
+    }).toList();
+
+    /// Sorting
+    if (sortField == 'name') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'number') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.number.toLowerCase().compareTo(b.number.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'amt') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.totalAmt.toString()) ?? 0;
+        final bVal = int.tryParse(b.totalAmt.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'date') {
+        filtered.sort((a, b) {
+          final dateA = parseDate(a.createdTs);
+          final dateB = parseDate(b.createdTs);
+          final comparison = dateA.compareTo(dateB);
+          return sortOrder == 'asc' ? comparison : -comparison;
+        });
+    }else if (sortField == 'status') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.status.toLowerCase().compareTo(b.status.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    quotationsList.assignAll(filtered);
+  }
 
   RxList<Quotations> quotationsList=<Quotations>[].obs;
   RxList<Quotations> quotationsList2=<Quotations>[].obs;

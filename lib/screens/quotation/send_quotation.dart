@@ -232,7 +232,7 @@ class _SendQuotationState extends State<SendQuotation> {
                                                   radius: 5,
                                                   width: 200,
                                                   height: 50,
-                                                  text: "Quotation",
+                                                  text: "Send Quotation",
                                                   textColor: Colors.white,
                                                 ),
                                               ],

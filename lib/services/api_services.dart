@@ -3375,6 +3375,7 @@ class ApiService {
         productCtr.productsList.clear();
         controllers.clearSelectedCustomer();
         productCtr.clearProduct();
+        productCtr.getQuotationDetails();
         Navigator.pop(Get.context!);
         controllers.emailCtr.reset();
       } else {
@@ -3387,15 +3388,17 @@ class ApiService {
     }
   }
 
-  Future confirmOrderAPI(BuildContext context,String id,String cusId,String totalAmt,String name) async {
+  Future confirmOrderAPI(BuildContext context,String id,String cusId,String totalAmt,String name,String number) async {
     try {
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
       request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
+      request.fields['updated_by'] = controllers.storage.read("id").toString();
       request.fields['id'] = id;
       request.fields['customer_id'] = cusId;
       request.fields['action'] = 'insert_order';
       request.fields['total_amt'] = totalAmt;
       request.fields['name'] = name;
+      request.fields['number'] = number;
       // request.fields['productList'] = productListJson;
       request.headers.addAll({
         'X-API-TOKEN': "${TokenStorage().readToken()}",
@@ -3409,7 +3412,7 @@ class ApiService {
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return confirmOrderAPI(context,id,cusId,totalAmt,name);
+          return confirmOrderAPI(context,id,cusId,totalAmt,name,number);
         } else {
           controllers.setLogOut();
         }
@@ -3423,6 +3426,7 @@ class ApiService {
         // productCtr.clearProduct();
         // Navigator.pop(Get.context!);
         controllers.emailCtr.reset();
+        productCtr.getQuotationDetails();
       } else {
         controllers.emailCtr.reset();
         errorDialog(Get.context!, "Mail has been not sent");

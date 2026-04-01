@@ -81,7 +81,9 @@ class Quotations {
   final int id;
   final String invoicePdf;
   final String name;
+  final String number;
   final String createdTs;
+  final String status;
   final int totalAmt;
   final int cusId;
 
@@ -90,7 +92,9 @@ class Quotations {
     required this.totalAmt,
     required this.invoicePdf,
     required this.name,
+    required this.number,
     required this.createdTs,
+    required this.status,
     required this.cusId,
   });
 
@@ -100,6 +104,8 @@ class Quotations {
       cusId: int.tryParse(json['cus_id']?.toString() ?? "0") ?? 0,
       invoicePdf: json['invoice_pdf'] ?? '',
       name: json['name'] ?? '',
+      number: json['number'] ?? '',
+      status: json['status'] ?? '',
       createdTs: json['created_ts'] ?? '',
       totalAmt: int.tryParse(json['total_amt']?.toString() ?? "0") ?? 0
     );

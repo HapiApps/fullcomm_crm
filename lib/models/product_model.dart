@@ -57,8 +57,8 @@ class ProductModel {
       isSelect: false.obs,
 
       /// ✅ IMPORTANT FIX
-      qty: TextEditingController(text: json['qty']?.toString() ?? "0",),
-      amount: TextEditingController(text: json['amount']?.toString() ?? "0",),
+      qty: TextEditingController(text: json['qty']?.toString() ?? "",),
+      amount: TextEditingController(text: json['amount']?.toString() ?? "",),
     );
   }
 
