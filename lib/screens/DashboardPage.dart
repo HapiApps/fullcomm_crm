@@ -1072,16 +1072,21 @@ void checkDate(){
                                                       color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                                     ),
                                                     children:[
-                                                      Tooltip(
-                                                        message: data.cusName.toString()=="null"?"":data.cusName.toString(),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.cusName.toString()=="null"?"":data.cusName.toString(),
-                                                            size: 15,
-                                                            isCopy: true,
-                                                            colors:colorsConst.textColor,
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showMeetingDialog(context, remController.meetingFilteredList,index);
+                                                        },
+                                                        child: Tooltip(
+                                                          message: data.cusName.toString()=="null"?"":data.cusName.toString(),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: data.cusName.toString()=="null"?"":data.cusName.toString(),
+                                                              size: 15,
+                                                              isCopy: true,
+                                                              colors:colorsConst.textColor,
+                                                            ),
                                                           ),
                                                         ),
                                                       ),

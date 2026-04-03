@@ -8,7 +8,7 @@ class DashboardAssets {
   static const String leadStage = "assets/images/lead_stage.png";
 
   // Wave cards
-  static const String mail = "assets/images/mail.png";
+  static const String mail = "assets/images/Mail.png";
   static const String phone = "assets/images/phone.png";
   static const String date = "assets/images/date.png";
   static const String people = "assets/images/people.png";

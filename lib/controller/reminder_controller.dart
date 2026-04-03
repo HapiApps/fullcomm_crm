@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:http/http.dart' as http;
@@ -14,6 +15,7 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../common/constant/api.dart';
 import '../common/utilities/jwt_storage.dart';
 import '../common/utilities/mobile_snackbar.dart';
+import '../components/Customtext.dart';
 import '../models/all_customers_obj.dart';
 import '../models/customer_activity.dart';
 import '../models/meeting_obj.dart';
@@ -41,6 +43,134 @@ class AddReminderModel {
 
 final remController = Get.put(ReminderController());
 
+void showMeetingDialog(
+    BuildContext context,
+    List<MeetingObj> meetings,
+    int index,
+    ) {
+  PageController controller = PageController(initialPage: index);
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        backgroundColor: Colors.white,
+        insetPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        child: Container(
+          width: 400,height: 400,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Expanded(
+                child: PageView.builder(
+                  controller: controller,
+                  itemCount: meetings.length,
+                  itemBuilder: (context, i) {
+                    final meeting = meetings[i];
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: CustomText(
+                            text: "Meeting Details",
+                            size: 18,
+                            isBold: true,isCopy: false,
+                          ),
+                        ),
+                        15.height,
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            children: [
+                              buildRow("Company Name", meeting.comName),
+                              buildRow("Customer Name", meeting.cusName),
+                              buildRow("Title", meeting.title),
+                              buildRow("Venue", meeting.venue),
+                              buildRow("Date", meeting.dates),
+                              buildRow("Time", meeting.time),
+                              buildRow("Notes", meeting.notes),
+                              buildRow("Status", meeting.status),
+                            ],
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: CustomText(text:"Close",isCopy: false,),
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_left,size: 30),
+                    onPressed: () {
+                      controller.previousPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.ease,
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.arrow_right,size: 30),
+                    onPressed: () {
+                      controller.nextPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.ease,
+                      );
+                    },
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+Widget buildRow(String label, String value) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 3,
+          child: CustomText(
+            text: label,
+            size: 14,
+            isBold: true,
+            colors: Colors.grey, isCopy: false,
+          ),
+        ),
+        Expanded(
+          flex: 5,
+          child: CustomText(
+            text: value,
+            size: 14,
+            isBold: true,isCopy: false,
+          ),
+        ),
+      ],
+    ),
+  );
+}
 class ReminderController extends GetxController with GetSingleTickerProviderStateMixin {
   // late CalendarDataSource dataSource;
   late CalendarDataSource dataSource;
