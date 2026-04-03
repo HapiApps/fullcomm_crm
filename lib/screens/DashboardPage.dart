@@ -1076,38 +1076,45 @@ void checkDate(){
                                                         onTap:(){
                                                           showMeetingDialog(context, remController.meetingFilteredList,index);
                                                         },
-                                                        child: Tooltip(
-                                                          message: data.cusName.toString()=="null"?"":data.cusName.toString(),
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text: data.cusName.toString()=="null"?"":data.cusName.toString(),
-                                                              size: 15,
-                                                              isCopy: true,
-                                                              colors:colorsConst.textColor,
-                                                            ),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: data.cusName.toString()=="null"?"":data.cusName.toString(),
+                                                            size: 15,
+                                                            isCopy: true,
+                                                            colors:colorsConst.textColor,
                                                           ),
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                        child: CustomText(
-                                                          textAlign: TextAlign.left,
-                                                          text:data.comName.toString()=="null"?"":data.comName.toString(),
-                                                          size: 15,
-                                                          isCopy: true,
-                                                          colors: colorsConst.textColor,
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showMeetingDialog(context, remController.meetingFilteredList,index);
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text:data.comName.toString()=="null"?"":data.comName.toString(),
+                                                            size: 15,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                          ),
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                        child: CustomText(
-                                                          textAlign: TextAlign.left,
-                                                          text: formatFirstDate("${data.dates} ${data.time}"),
-                                                          size: 15,
-                                                          isCopy: true,
-                                                          colors: colorsConst.textColor,
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showMeetingDialog(context, remController.meetingFilteredList,index);
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: formatFirstDate("${data.dates} ${data.time}"),
+                                                            size: 15,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                          ),
                                                         ),
                                                       ),
                                                     ]
@@ -1358,8 +1365,10 @@ void checkDate(){
                                                       color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                                     ),
                                                     children:[
-                                                      Tooltip(
-                                                        message: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showCallDialog(context,remController.callFilteredList,index);
+                                                        },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                           child: CustomText(
@@ -1371,34 +1380,49 @@ void checkDate(){
                                                           ),
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                        child: CustomText(
-                                                          textAlign: TextAlign.left,
-                                                          text: controllers.formatDate(data.sentDate.toString()),
-                                                          size: 15,
-                                                          isCopy: true,
-                                                          colors: colorsConst.textColor,
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showCallDialog(context,remController.callFilteredList,index);
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: controllers.formatDate(data.sentDate.toString()),
+                                                            size: 15,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                          ),
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                        child: CustomText(
-                                                          textAlign: TextAlign.left,
-                                                          text: data.callType,
-                                                          size: 15,
-                                                          isCopy: true,
-                                                          colors: colorsConst.textColor,
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showCallDialog(context,remController.callFilteredList,index);
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: data.callType,
+                                                            size: 15,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                          ),
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                        child: CustomText(
-                                                          textAlign: TextAlign.left,
-                                                          text: data.callStatus,
-                                                          size: 15,
-                                                          isCopy: true,
-                                                          colors: colorsConst.textColor,
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showCallDialog(context,remController.callFilteredList,index);
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: data.callStatus,
+                                                            size: 15,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                          ),
                                                         ),
                                                       ),
                                                     ]
@@ -1422,7 +1446,7 @@ void checkDate(){
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CustomText(text: "Reminders ${remController.reminderFilteredList.length}", isCopy: false,isBold: true,size: 15,),5.height,
+                                    CustomText(text: "Reminders", isCopy: false,isBold: true,size: 15,),5.height,
                                     Container(
                                       color: Colors.white,
                                       width: screenWidth/1.29,
@@ -1697,8 +1721,10 @@ void checkDate(){
                                                       color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                                     ),
                                                     children:[
-                                                      Tooltip(
-                                                        message: data.title.toString(),
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showReminderDialog(context,remController.reminderFilteredList,index);
+                                                        },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                           child: CustomText(
@@ -1710,8 +1736,10 @@ void checkDate(){
                                                           ),
                                                         ),
                                                       ),
-                                                      Tooltip(
-                                                        message: data.type.toString()=="1"?"Follow-up":"Appointment",
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showReminderDialog(context,remController.reminderFilteredList,index);
+                                                        },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                           child: CustomText(
@@ -1723,8 +1751,10 @@ void checkDate(){
                                                           ),
                                                         ),
                                                       ),
-                                                      Tooltip(
-                                                        message: data.employeeName.toString(),
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showReminderDialog(context,remController.reminderFilteredList,index);
+                                                        },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                           child: CustomText(
@@ -1736,8 +1766,10 @@ void checkDate(){
                                                           ),
                                                         ),
                                                       ),
-                                                      Tooltip(
-                                                        message: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showReminderDialog(context,remController.reminderFilteredList,index);
+                                                        },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                           child: CustomText(
@@ -1749,8 +1781,10 @@ void checkDate(){
                                                           ),
                                                         ),
                                                       ),
-                                                      Tooltip(
-                                                        message: data.startDt.toString()=="null"?"":data.startDt.toString(),
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showReminderDialog(context,remController.reminderFilteredList,index);
+                                                        },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                           child: CustomText(
@@ -1762,8 +1796,10 @@ void checkDate(){
                                                           ),
                                                         ),
                                                       ),
-                                                      Tooltip(
-                                                        message: data.endDt.toString()=="null"?"":data.endDt.toString(),
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showReminderDialog(context,remController.reminderFilteredList,index);
+                                                        },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                           child: CustomText(

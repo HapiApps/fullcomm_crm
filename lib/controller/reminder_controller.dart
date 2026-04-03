@@ -75,6 +75,13 @@ void showMeetingDialog(
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: Icon(Icons.clear),
+                          ),
+                        ),5.height,
                         Center(
                           child: CustomText(
                             text: "Meeting Details",
@@ -95,20 +102,220 @@ void showMeetingDialog(
                               buildRow("Customer Name", meeting.cusName),
                               buildRow("Title", meeting.title),
                               buildRow("Venue", meeting.venue),
-                              buildRow("Date", meeting.dates),
-                              buildRow("Time", meeting.time),
+                              buildRow("Date", meeting.dates.toString().split("||")[0]),
+                              buildRow("Time", meeting.time.toString().split("||")[0]),
                               buildRow("Notes", meeting.notes),
                               buildRow("Status", meeting.status),
                             ],
                           ),
                         ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_left,size: 30),
+                    onPressed: () {
+                      controller.previousPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.ease,
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.arrow_right,size: 30),
+                    onPressed: () {
+                      controller.nextPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.ease,
+                      );
+                    },
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+void showCallDialog(
+    BuildContext context,
+    List<CustomerActivity> calls,
+    int index,
+    ) {
+  PageController controller = PageController(initialPage: index);
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        backgroundColor: Colors.white,
+        insetPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        child: Container(
+          width: 400,height: 400,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Expanded(
+                child: PageView.builder(
+                  controller: controller,
+                  itemCount: calls.length,
+                  itemBuilder: (context, i) {
+                    final meeting = calls[i];
+                    final leadStatus = meeting.leadStatus == "1"
+                        ? "Suspects"
+                        : meeting.leadStatus == "2"
+                        ? "Prospects"
+                        : meeting.leadStatus == "3"
+                        ? "Qualified"
+                        : "Customers";
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Align(
                           alignment: Alignment.centerRight,
-                          child: TextButton(
+                          child: IconButton(
                             onPressed: () => Navigator.pop(context),
-                            child: CustomText(text:"Close",isCopy: false,),
+                            icon: Icon(Icons.clear),
                           ),
-                        )
+                        ),5.height,
+                        Center(
+                          child: CustomText(
+                            text: "Call Records",
+                            size: 18,
+                            isBold: true,isCopy: false,
+                          ),
+                        ),
+                        15.height,
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            children: [
+                              // buildRow("Company Name", meeting.comName),
+                              buildRow("Lead Name", meeting.customerName),
+                              buildRow("Mobile Number", meeting.toData.toString()=="null"?"":meeting.toData.toString()),
+                              buildRow("Call Type", meeting.callType),
+                              buildRow("Message", meeting.message),
+                              buildRow("Status", meeting.callStatus),
+                              buildRow("Lead Status", leadStatus),
+                              buildRow("Date", meeting.sentDate),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_left,size: 30),
+                    onPressed: () {
+                      controller.previousPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.ease,
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.arrow_right,size: 30),
+                    onPressed: () {
+                      controller.nextPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.ease,
+                      );
+                    },
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+void showReminderDialog(
+    BuildContext context,
+    List<ReminderModel> calls,
+    int index,
+    ) {
+  PageController controller = PageController(initialPage: index);
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        backgroundColor: Colors.white,
+        insetPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        child: Container(
+          width: 400,height: 400,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Expanded(
+                child: PageView.builder(
+                  controller: controller,
+                  itemCount: calls.length,
+                  itemBuilder: (context, i) {
+                    final meeting = calls[i];
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: Icon(Icons.clear),
+                          ),
+                        ),5.height,
+                        Center(
+                          child: CustomText(
+                            text: "Reminders Details",
+                            size: 18,
+                            isBold: true,isCopy: false,
+                          ),
+                        ),
+                        15.height,
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            children: [
+                              buildRow("Event Name", meeting.title),
+                              buildRow("Type", meeting.type.toString()=="1"?"Follow-up":"Appointment"),
+                              buildRow("Location", meeting.location.toString()=="null"?"":meeting.location.toString()),
+                              buildRow("Employee Name", meeting.employeeName),
+                              buildRow("Lead Name", meeting.customerName),
+                              buildRow("Start Date", meeting.startDt),
+                              buildRow("End Date", meeting.endDt),
+                              buildRow("DatDetailse", meeting.details),
+                            ],
+                          ),
+                        ),
                       ],
                     );
                   },
@@ -149,10 +356,12 @@ Widget buildRow(String label, String value) {
     padding: const EdgeInsets.symmetric(vertical: 4),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Expanded(
           flex: 3,
           child: CustomText(
+            textAlign: TextAlign.start,
             text: label,
             size: 14,
             isBold: true,
@@ -162,6 +371,7 @@ Widget buildRow(String label, String value) {
         Expanded(
           flex: 5,
           child: CustomText(
+            textAlign: TextAlign.start,
             text: value,
             size: 14,
             isBold: true,isCopy: false,
