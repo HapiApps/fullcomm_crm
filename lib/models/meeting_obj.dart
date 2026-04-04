@@ -10,6 +10,8 @@ class MeetingObj {
   final String notes;
   final String status;
   final String createdBy;
+  final String employeeName;
+  final String employee;
 
   MeetingObj({
     required this.id,
@@ -23,6 +25,8 @@ class MeetingObj {
     required this.notes,
     required this.status,
     required this.createdBy,
+    required this.employeeName,
+    required this.employee,
   });
 
   factory MeetingObj.fromJson(Map<String, dynamic> json) {
@@ -38,6 +42,8 @@ class MeetingObj {
       notes: json['notes']?.toString() ?? '',
       status: json['status']?.toString() ?? '',
       createdBy: json['created_by']?.toString() ?? '',
+      employeeName: json['employee_name']?.toString() ?? '',
+      employee: json['employee']?.toString() ?? '',
     );
   }
 
@@ -54,6 +60,8 @@ class MeetingObj {
       'notes': notes,
       'status': status,
       'created_by': createdBy,
+      'employee_name': employeeName,
+      'employee': employee,
     };
   }
 }

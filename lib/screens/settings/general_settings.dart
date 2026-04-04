@@ -431,7 +431,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   ],
                                 ),10.height,
                                 CustomText(
-                                  text: "Manage the order and structure of categories used across the dashboard views.",
+                                  text: "Manage the order and structure of categories used across the dashboard billing.",
                                   isCopy: true,textAlign: TextAlign.start,
                                 ),5.height,
                                 Divider(thickness: 0.2,color: Colors.grey,),5.height,
@@ -494,7 +494,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   ],
                                 ),10.height,
                                 CustomText(
-                                  text: "Choose the default time filter applied to dashboard records and analytics views.",
+                                  text: "Choose the default time filter applied to dashboard records and analytics billing.",
                                   isCopy: true,textAlign: TextAlign.start,
                                 ),5.height,
                                 Divider(thickness: 0.2,color: Colors.grey,),5.height,
@@ -646,6 +646,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                         );
                                                         controllers.productCtr.reset();
                                                         return;
+                                                      }else if (ctrList[index].text.length>15) {
+                                                        utils.snackBar(
+                                                          context: context,
+                                                          msg: "Status type must be 15 chars only",
+                                                          color: Colors.red,
+                                                        );
+                                                        controllers.productCtr.reset();
+                                                        return;
                                                       }else{
                                                         controllers.correctionStatus(context,"update",controllers.hCallStatusList[index]["id"].toString(),ctrList[index].text.trim());
                                                       }
@@ -702,6 +710,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                     utils.snackBar(
                                                       context: context,
                                                       msg: "Please enter status type",
+                                                      color: Colors.red,
+                                                    );
+                                                    controllers.productCtr.reset();
+                                                    return;
+                                                  }else if (addCtr.text.length>15) {
+                                                    utils.snackBar(
+                                                      context: context,
+                                                      msg: "Status type must be 15 chars only",
                                                       color: Colors.red,
                                                     );
                                                     controllers.productCtr.reset();

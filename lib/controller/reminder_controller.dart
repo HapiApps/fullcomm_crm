@@ -37,7 +37,6 @@ class AddReminderModel {
 
   RxString selectedTime = "1 Min".obs;
   RxString customTime = "1 Day".obs;
-
   List<String> otherTimes = ["1 Day", "2 Days", "3 Days", "1 Week","1 Month"];
 }
 
@@ -384,6 +383,9 @@ Widget buildRow(String label, String value) {
 class ReminderController extends GetxController with GetSingleTickerProviderStateMixin {
   // late CalendarDataSource dataSource;
   late CalendarDataSource dataSource;
+  var filterCall = "All".obs;
+  var filterRem = "All".obs;
+  var filterApp = "All".obs;
 
   bool hasAppointment(DateTime date) {
     return dataSource.appointments!.any((appt) =>
@@ -837,6 +839,13 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       final matchesCallType =
           callType.isEmpty || callType == "All" || activity.callStatus == callType;
 
+      final matchesFilterType =
+          filterCall.value == "All" ||
+              (filterCall.value == "My" &&
+                  activity.name == controllers.storage.read("f_name")) ||
+              (filterCall.value == "Team" &&
+                  activity.name != controllers.storage.read("f_name"));
+
       final matchesSearch =
           searchText.isEmpty ||
               activity.customerName.toLowerCase().contains(searchText.toLowerCase()) ||
@@ -897,7 +906,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
             activityDate.year == selectedMonth.year;
       }
 
-      return matchesCallType && matchesSearch && matchesDate;
+      return matchesCallType && matchesSearch && matchesDate && matchesFilterType;
 
     }).toList();
 
@@ -946,6 +955,20 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       filtered.sort((a, b) {
         final comparison =
         a.leadStatus.toLowerCase().compareTo(b.leadStatus.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'addedBy') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'company') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.companyName.toLowerCase().compareTo(b.companyName.toLowerCase());
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     }
@@ -1008,12 +1031,18 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     filtered = filtered.where((activity) {
       final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
           activity.status == controllers.selectMeetingType.value;
+      final matchesFilterType =
+          filterApp.value == "All" ||
+              (filterApp.value == "My" &&
+                  activity.employeeName == controllers.storage.read("f_name")) ||
+              (filterApp.value == "Team" &&
+                  activity.employeeName != controllers.storage.read("f_name"));
 
       final matchesSearch = searchText.isEmpty ||
           (activity.comName.toLowerCase().contains(searchText)) ||
           (activity.cusName.toLowerCase().contains(searchText));
 
-      return matchesCallType && matchesSearch;
+      return matchesCallType && matchesSearch && matchesFilterType;
     }).toList();
 
     String field = controllers.sortFieldMeetingActivity.value;
@@ -1034,6 +1063,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       filtered.sort((a, b) => compareString(a.venue ?? '', b.venue ?? ''));
     } else if (field == 'notes') {
       filtered.sort((a, b) => compareString(a.notes ?? '', b.notes ?? ''));
+    } else if (field == 'emp') {
+      filtered.sort((a, b) => compareString(a.employeeName ?? '', b.employeeName ?? ''));
     } else if (field == 'date') {
       filtered.sort((a, b) {
         final dateA = _parseMeetingDate(a.dates ?? '');
@@ -1123,6 +1154,21 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           break;
       }
     }
+    filteredList = filteredList.where((a) {
+      return filterReminder.value == "All" ||
+          (filterReminder.value == "Follow" && a.type == "1") ||
+          (filterReminder.value == "Appointment" && a.type == "2");
+    }).toList();
+    filteredList = filteredList.where((a) {
+      String currentUser = controllers.storage.read("f_name") ?? "";
+
+      return filterRem.value == "All" ||
+          (filterRem.value == "My" &&
+              (a.employeeName ?? "").toLowerCase().contains(currentUser.toLowerCase())) ||
+          (filterRem.value == "Team" &&
+              !(a.employeeName ?? "").toLowerCase().contains(currentUser.toLowerCase()));
+    }).toList();
+
     filteredList.sort((a, b) {
       dynamic aValue;
       dynamic bValue;
@@ -1176,6 +1222,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
       return sortOrderCallActivity.value == 'asc' ? result : -result;
     });
+
     reminderFilteredList.assignAll(filteredList);
   }
   // DateTime _parseReminderDate(String dateStr, DateFormat fallbackFormatter) {
@@ -1709,6 +1756,7 @@ void unSelectAllAppointments() {
   var meetingReminderCount = 0.obs;
   var defaultMonth=DateTime.now().month.obs;
   var thisMonthLeave = "0".obs;
+  var filterReminder = "All".obs;
 
   Future<void> allReminders(String type) async {
     isLoadingReminders.value = true;
@@ -1733,6 +1781,8 @@ void unSelectAllAppointments() {
           "search_type": "allReminders"
         }),
       );
+      print("allReminders");
+      print(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1869,7 +1919,7 @@ void unSelectAllAppointments() {
           };
         }).toList(),
       };
-      print("Reminder data $data");
+      print("Reminder billing_data $data");
       final request = await http.post(Uri.parse(scriptApi),
           // headers: {
           //   "Accept": "application/text",
@@ -2175,7 +2225,7 @@ void unSelectAllAppointments() {
         "cos_id": controllers.storage.read("cos_id"),
         "recordList": selectedRecordMailIds,
       };
-      print("Response bodyjsonEncode(data): ${jsonEncode(data)}");
+      print("Response bodyjsonEncode(billing_data): ${jsonEncode(data)}");
       final response = await http.post(
         Uri.parse(scriptApi),
         // headers: {

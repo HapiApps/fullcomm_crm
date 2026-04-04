@@ -2,7 +2,7 @@
 // import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 // import 'package:fullcomm_crm/common/extentions/extensions.dart';
 // import 'package:fullcomm_crm/common/utilities/mail_utils.dart';
-// import 'package:fullcomm_crm/common/utilities/utils.dart';
+// import 'package:fullcomm_crm/common/utilities/billing_utils.dart';
 // import 'package:fullcomm_crm/components/custom_loading_button.dart';
 // import 'package:fullcomm_crm/components/custom_no_data.dart';
 // import 'package:fullcomm_crm/components/customer_name_tile.dart';
@@ -542,7 +542,7 @@
 //                                                 physics: const ScrollPhysics(),
 //                                                 itemCount: controllers.paginatedLeads.length,
 //                                                 itemBuilder: (context, index) {
-//                                                   final data = controllers.paginatedLeads[index];
+//                                                   final billing_data = controllers.paginatedLeads[index];
 //                                                   return Obx(()=>LeftLeadTile(
 //                                                     leadIndex: "0",
 //                                                     pageName: "Suspects",
@@ -551,7 +551,7 @@
 //                                                       setState(() {
 //                                                         controllers.isAllSelected.value = false;
 //                                                         controllers.isNewLeadList[index]["isSelect"] = value ?? false;
-//                                                         final leadId = data.userId.toString();
+//                                                         final leadId = billing_data.userId.toString();
 //                                                         if (value == true) {
 //                                                           final exists = apiService.prospectsList.any(
 //                                                                 (e) => e["lead_id"] == leadId,
@@ -560,9 +560,9 @@
 //                                                             apiService.prospectsList.add({
 //                                                               "lead_id": leadId.toString(),
 //                                                               "user_id": controllers.storage.read("id").toString(),
-//                                                               "rating": data.rating ?? "Warm",
+//                                                               "rating": billing_data.rating ?? "Warm",
 //                                                               "cos_id": controllers.storage.read("cos_id").toString(),
-//                                                               "mail_id": data.email.toString().split("||")[0].toString(),
+//                                                               "mail_id": billing_data.email.toString().split("||")[0].toString(),
 //                                                             });
 //                                                           }
 //                                                         } else {
@@ -572,60 +572,60 @@
 //                                                         }
 //                                                       });
 //                                                     },
-//                                                     visitType: data.visitType.toString(),
-//                                               detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
-//                                               statusUpdate: data.statusUpdate.toString(),
+//                                                     visitType: billing_data.visitType.toString(),
+//                                               detailsOfServiceReq: billing_data.detailsOfServiceRequired.toString(),
+//                                               statusUpdate: billing_data.statusUpdate.toString(),
 //                                               index: index,
-//                                               points: data.points.toString(),
-//                                               quotationStatus: data.quotationStatus.toString(),
-//                                               quotationRequired: data.quotationRequired.toString(),
-//                                               productDiscussion: data.productDiscussion.toString(),
-//                                               discussionPoint: data.discussionPoint.toString(),
-//                                               notes: data.notes.toString(),
-//                                               linkedin: data.linkedin,
-//                                               x: data.x,
-//                                               name: data.firstname.toString().split("||")[0],
-//                                               mobileNumber: data.mobileNumber.toString().split("||")[0],
-//                                               email: data.email.toString().split("||")[0],
-//                                               companyName: data.companyName.toString(),
-//                                               mainWhatsApp: data.whatsapp.toString().split("||")[0],
-//                                               emailUpdate: data.quotationUpdate.toString(),
-//                                               id: data.userId.toString(),
-//                                               status: data.leadStatus ?? "UnQualified",
-//                                               rating: data.rating ?? "Warm",
-//                                               mainName: data.firstname.toString().split("||")[0],
-//                                               mainMobile: data.mobileNumber.toString().split("||")[0],
-//                                               mainEmail: data.email.toString().split("||")[0],
+//                                               points: billing_data.points.toString(),
+//                                               quotationStatus: billing_data.quotationStatus.toString(),
+//                                               quotationRequired: billing_data.quotationRequired.toString(),
+//                                               productDiscussion: billing_data.productDiscussion.toString(),
+//                                               discussionPoint: billing_data.discussionPoint.toString(),
+//                                               notes: billing_data.notes.toString(),
+//                                               linkedin: billing_data.linkedin,
+//                                               x: billing_data.x,
+//                                               name: billing_data.firstname.toString().split("||")[0],
+//                                               mobileNumber: billing_data.mobileNumber.toString().split("||")[0],
+//                                               email: billing_data.email.toString().split("||")[0],
+//                                               companyName: billing_data.companyName.toString(),
+//                                               mainWhatsApp: billing_data.whatsapp.toString().split("||")[0],
+//                                               emailUpdate: billing_data.quotationUpdate.toString(),
+//                                               id: billing_data.userId.toString(),
+//                                               status: billing_data.leadStatus ?? "UnQualified",
+//                                               rating: billing_data.rating ?? "Warm",
+//                                               mainName: billing_data.firstname.toString().split("||")[0],
+//                                               mainMobile: billing_data.mobileNumber.toString().split("||")[0],
+//                                               mainEmail: billing_data.email.toString().split("||")[0],
 //                                               title: "",
-//                                               whatsappNumber: data.whatsapp.toString().split("||")[0],
+//                                               whatsappNumber: billing_data.whatsapp.toString().split("||")[0],
 //                                               mainTitle: "",
-//                                               addressId: data.addressId ?? "",
-//                                               companyWebsite: data.companyWebsite ?? "",
-//                                               companyNumber: data.companyNumber ?? "",
-//                                               companyEmail: data.companyEmail ?? "",
-//                                               industry: data.industry ?? "",
-//                                               productServices: data.product ?? "",
-//                                               source:data.source ?? "",
-//                                               owner: data.owner ?? "",
+//                                               addressId: billing_data.addressId ?? "",
+//                                               companyWebsite: billing_data.companyWebsite ?? "",
+//                                               companyNumber: billing_data.companyNumber ?? "",
+//                                               companyEmail: billing_data.companyEmail ?? "",
+//                                               industry: billing_data.industry ?? "",
+//                                               productServices: billing_data.product ?? "",
+//                                               source:billing_data.source ?? "",
+//                                               owner: billing_data.owner ?? "",
 //                                               timelineDecision: "",
 //                                               serviceInterest: "",
 //                                               description: "",
-//                                               leadStatus: data.leadStatus ?? "",
-//                                               active: data.active ?? "",
-//                                               addressLine1: data.doorNo ?? "",
-//                                               addressLine2: data.landmark1 ?? "",
-//                                               area: data.area ?? "",
-//                                               city: data.city ?? "",
-//                                               state: data.state ?? "",
-//                                               country: data.country ?? "",
-//                                               pinCode: data.pincode ?? "",
-//                                               prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
-//                                               expectedConvertionDate: data.expectedConvertionDate ?? "",
-//                                               numOfHeadcount: data.numOfHeadcount ?? "",
-//                                               expectedBillingValue: data.expectedBillingValue ?? "",
-//                                               arpuValue: data.arpuValue ?? "",
-//                                               updatedTs: data.updatedTs ?? "",
-//                                               sourceDetails: data.sourceDetails ?? "",
+//                                               leadStatus: billing_data.leadStatus ?? "",
+//                                               active: billing_data.active ?? "",
+//                                               addressLine1: billing_data.doorNo ?? "",
+//                                               addressLine2: billing_data.landmark1 ?? "",
+//                                               area: billing_data.area ?? "",
+//                                               city: billing_data.city ?? "",
+//                                               state: billing_data.state ?? "",
+//                                               country: billing_data.country ?? "",
+//                                               pinCode: billing_data.pincode ?? "",
+//                                               prospectEnrollmentDate: billing_data.prospectEnrollmentDate ?? "",
+//                                               expectedConvertionDate: billing_data.expectedConvertionDate ?? "",
+//                                               numOfHeadcount: billing_data.numOfHeadcount ?? "",
+//                                               expectedBillingValue: billing_data.expectedBillingValue ?? "",
+//                                               arpuValue: billing_data.arpuValue ?? "",
+//                                               updatedTs: billing_data.updatedTs ?? "",
+//                                               sourceDetails: billing_data.sourceDetails ?? "",
 //                                                                                     ));
 //                                                                                   },
 //                                                                                 ),
@@ -713,7 +713,7 @@
 //                                             physics: const ScrollPhysics(),
 //                                             itemCount: controllers.paginatedLeads.length,
 //                                             itemBuilder: (context, index) {
-//                                               final data = controllers.paginatedLeads[index];
+//                                               final billing_data = controllers.paginatedLeads[index];
 //                                               return Obx(()=>CustomLeadTile(
 //                                                 pageName: "Suspects",
 //                                                 saveValue: controllers.isNewLeadList[index]["isSelect"],
@@ -721,74 +721,74 @@
 //                                                   setState(() {
 //                                                     if(controllers.isNewLeadList[index]["isSelect"]==true){
 //                                                       controllers.isNewLeadList[index]["isSelect"]=false;
-//                                                       var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+//                                                       var i=apiService.prospectsList.indexWhere((element) => element["lead_id"]==billing_data.userId.toString());
 //                                                       apiService.prospectsList.removeAt(i);
 //                                                     }else{
 //                                                       controllers.isNewLeadList[index]["isSelect"]=true;
 //                                                       apiService.prospectsList.add({
-//                                                         "lead_id":data.userId.toString(),
+//                                                         "lead_id":billing_data.userId.toString(),
 //                                                         "user_id":controllers.storage.read("id"),
-//                                                         "rating":data.rating ?? "Warm",
+//                                                         "rating":billing_data.rating ?? "Warm",
 //                                                         "cos_id":controllers.storage.read("cos_id"),
-//                                                         "mail_id":data.email.toString().split("||")[0]
+//                                                         "mail_id":billing_data.email.toString().split("||")[0]
 //                                                       });
 //                                                     }
 //                                                   });
 //                                                 },
-//                                                 visitType: data.visitType.toString(),
-//                                                 detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
-//                                                 statusUpdate: data.statusUpdate.toString(),
+//                                                 visitType: billing_data.visitType.toString(),
+//                                                 detailsOfServiceReq: billing_data.detailsOfServiceRequired.toString(),
+//                                                 statusUpdate: billing_data.statusUpdate.toString(),
 //                                                 index: index,
-//                                                 points: data.points.toString(),
-//                                                 quotationStatus: data.quotationStatus.toString(),
-//                                                 quotationRequired: data.quotationRequired.toString(),
-//                                                 productDiscussion: data.productDiscussion.toString(),
-//                                                 discussionPoint: data.discussionPoint.toString(),
-//                                                 notes: data.notes.toString(),
-//                                                 linkedin: data.linkedin,
-//                                                 x: data.x,
-//                                                 name: data.firstname.toString().split("||")[0],
-//                                                 mobileNumber: data.mobileNumber.toString().split("||")[0],
-//                                                 email: data.email.toString().split("||")[0],
-//                                                 companyName: data.companyName.toString(),
-//                                                 mainWhatsApp: data.whatsapp.toString().split("||")[0],
-//                                                 emailUpdate: data.quotationUpdate.toString(),
-//                                                 id: data.userId.toString(),
-//                                                 status: data.leadStatus ?? "UnQualified",
-//                                                 rating: data.rating ?? "Warm",
-//                                                 mainName: data.firstname.toString().split("||")[0],
-//                                                 mainMobile: data.mobileNumber.toString().split("||")[0],
-//                                                 mainEmail: data.email.toString().split("||")[0],
+//                                                 points: billing_data.points.toString(),
+//                                                 quotationStatus: billing_data.quotationStatus.toString(),
+//                                                 quotationRequired: billing_data.quotationRequired.toString(),
+//                                                 productDiscussion: billing_data.productDiscussion.toString(),
+//                                                 discussionPoint: billing_data.discussionPoint.toString(),
+//                                                 notes: billing_data.notes.toString(),
+//                                                 linkedin: billing_data.linkedin,
+//                                                 x: billing_data.x,
+//                                                 name: billing_data.firstname.toString().split("||")[0],
+//                                                 mobileNumber: billing_data.mobileNumber.toString().split("||")[0],
+//                                                 email: billing_data.email.toString().split("||")[0],
+//                                                 companyName: billing_data.companyName.toString(),
+//                                                 mainWhatsApp: billing_data.whatsapp.toString().split("||")[0],
+//                                                 emailUpdate: billing_data.quotationUpdate.toString(),
+//                                                 id: billing_data.userId.toString(),
+//                                                 status: billing_data.leadStatus ?? "UnQualified",
+//                                                 rating: billing_data.rating ?? "Warm",
+//                                                 mainName: billing_data.firstname.toString().split("||")[0],
+//                                                 mainMobile: billing_data.mobileNumber.toString().split("||")[0],
+//                                                 mainEmail: billing_data.email.toString().split("||")[0],
 //                                                 title: "",
-//                                                 whatsappNumber: data.whatsapp.toString().split("||")[0],
+//                                                 whatsappNumber: billing_data.whatsapp.toString().split("||")[0],
 //                                                 mainTitle: "",
-//                                                 addressId: data.addressId ?? "",
-//                                                 companyWebsite: data.companyWebsite ?? "",
-//                                                 companyNumber: data.companyNumber ?? "",
-//                                                 companyEmail: data.companyEmail ?? "",
-//                                                 industry: data.industry ?? "",
-//                                                 productServices: data.product ?? "",
-//                                                 source:data.source ?? "",
-//                                                 owner: data.owner ?? "",
+//                                                 addressId: billing_data.addressId ?? "",
+//                                                 companyWebsite: billing_data.companyWebsite ?? "",
+//                                                 companyNumber: billing_data.companyNumber ?? "",
+//                                                 companyEmail: billing_data.companyEmail ?? "",
+//                                                 industry: billing_data.industry ?? "",
+//                                                 productServices: billing_data.product ?? "",
+//                                                 source:billing_data.source ?? "",
+//                                                 owner: billing_data.owner ?? "",
 //                                                 timelineDecision: "",
 //                                                 serviceInterest: "",
 //                                                 description: "",
-//                                                 leadStatus: data.leadStatus ?? "",
-//                                                 active: data.active ?? "",
-//                                                 addressLine1: data.doorNo ?? "",
-//                                                 addressLine2: data.landmark1 ?? "",
-//                                                 area: data.area ?? "",
-//                                                 city: data.city ?? "",
-//                                                 state: data.state ?? "",
-//                                                 country: data.country ?? "",
-//                                                 pinCode: data.pincode ?? "",
-//                                                 prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
-//                                                 expectedConvertionDate: data.expectedConvertionDate ?? "",
-//                                                 numOfHeadcount: data.numOfHeadcount ?? "",
-//                                                 expectedBillingValue: data.expectedBillingValue ?? "",
-//                                                 arpuValue: data.arpuValue ?? "",
-//                                                 updatedTs: data.updatedTs ?? "",
-//                                                 sourceDetails: data.sourceDetails ?? "",
+//                                                 leadStatus: billing_data.leadStatus ?? "",
+//                                                 active: billing_data.active ?? "",
+//                                                 addressLine1: billing_data.doorNo ?? "",
+//                                                 addressLine2: billing_data.landmark1 ?? "",
+//                                                 area: billing_data.area ?? "",
+//                                                 city: billing_data.city ?? "",
+//                                                 state: billing_data.state ?? "",
+//                                                 country: billing_data.country ?? "",
+//                                                 pinCode: billing_data.pincode ?? "",
+//                                                 prospectEnrollmentDate: billing_data.prospectEnrollmentDate ?? "",
+//                                                 expectedConvertionDate: billing_data.expectedConvertionDate ?? "",
+//                                                 numOfHeadcount: billing_data.numOfHeadcount ?? "",
+//                                                 expectedBillingValue: billing_data.expectedBillingValue ?? "",
+//                                                 arpuValue: billing_data.arpuValue ?? "",
+//                                                 updatedTs: billing_data.updatedTs ?? "",
+//                                                 sourceDetails: billing_data.sourceDetails ?? "",
 //                                               ));
 //                                             },
 //                                           ):
@@ -809,12 +809,12 @@
 //                         return Row(
 //                           mainAxisAlignment: MainAxisAlignment.end,
 //                           children: [
-//                             utils.paginationButton(Icons.chevron_left, currentPage > 1, () {
+//                             billing_utils.paginationButton(Icons.chevron_left, currentPage > 1, () {
 //                               _focusNode.requestFocus();
 //                               controllers.currentPage.value--;
 //                             }),
-//                             ...utils.buildPagination(totalPages, currentPage),
-//                             utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
+//                             ...billing_utils.buildPagination(totalPages, currentPage),
+//                             billing_utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
 //                               controllers.currentPage.value++;
 //                               _focusNode.requestFocus();
 //                             }),

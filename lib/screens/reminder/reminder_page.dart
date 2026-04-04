@@ -194,48 +194,97 @@ class _ReminderPageState extends State<ReminderPage> {
                  ],
                ),
                10.height,
-               Row(
+               Obx(()=>Row(
                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                  children: [
                    Row(
                      children: [
-                       CustomText(
-                         text: "Follow-up Reminder",
-                         colors: colorsConst.primary,
-                         isBold: true,
-                         size: 15,
-                         isCopy: true,
-                       ),
-                       10.width,
-                       CircleAvatar(
-                         backgroundColor: colorsConst.primary,
-                         radius: 17,
-                         child: CustomText(
-                           text: remController.followUpReminderCount.value.toString(),
-                           colors: Colors.white,
-                           isCopy: true,
-                           size: 13,
+                       InkWell(
+                         onTap: (){
+                           remController.filterReminder.value="All";
+                           remController.sortReminders();
+                         },
+                         child: Row(
+                           children: [
+                             CustomText(
+                               text: "All",
+                               colors: colorsConst.primary,
+                               isBold: true,
+                               size: 15,
+                               isCopy: true,
+                             ),
+                             10.width,
+                             CircleAvatar(
+                               backgroundColor: remController.filterReminder.value=="All"?colorsConst.primary:colorsConst.secondary,
+                               radius: 17,
+                               child: CustomText(
+                                 text: "${remController.followUpReminderCount.value+remController.meetingReminderCount.value}",
+                                 colors: remController.filterReminder.value=="All"?Colors.white:colorsConst.primary,
+                                 isCopy: true,
+                                 size: 13,
+                               ),
+                             ),
+                           ],
                          ),
                        ),
                        20.width,
-                       CustomText(
-                         text: "Appointment Reminder",
-                         colors: colorsConst.primary,
-                         isBold: true,
-                         size: 15,
-                         isCopy: true,
-                       ),
-                       10.width,
-                       CircleAvatar(
-                         backgroundColor: colorsConst.primary,
-                         radius: 17,
-                         child: CustomText(
-                           text: remController.meetingReminderCount.value.toString(),
-                           colors: Colors.white,
-                           isCopy: true,
-                           size: 13,
+                       InkWell(
+                         onTap: (){
+                           remController.filterReminder.value="Follow";
+                           remController.sortReminders();
+                         },
+                         child: Row(
+                           children: [
+                             CustomText(
+                               text: "Follow-up Reminder",
+                               colors: colorsConst.primary,
+                               isBold: true,
+                               size: 15,
+                               isCopy: true,
+                             ),
+                             10.width,
+                             CircleAvatar(
+                               backgroundColor: remController.filterReminder.value=="Follow"?colorsConst.primary:colorsConst.secondary,
+                               radius: 17,
+                               child: CustomText(
+                                 text: remController.followUpReminderCount.value.toString(),
+                                 colors: remController.filterReminder.value=="Follow"?Colors.white:colorsConst.primary,
+                                 isCopy: true,
+                                 size: 13,
+                               ),
+                             ),
+                           ],
                          ),
                        ),
+                       20.width,
+                       InkWell(
+                         onTap: (){
+                           remController.filterReminder.value="Appointment";
+                           remController.sortReminders();
+                         },
+                         child: Row(
+                           children: [
+                             CustomText(
+                               text: "Appointment Reminder",
+                               colors: colorsConst.primary,
+                               isBold: true,
+                               size: 15,
+                               isCopy: true,
+                             ),
+                             10.width,
+                             CircleAvatar(
+                               backgroundColor: remController.filterReminder.value=="Appointment"?colorsConst.primary:colorsConst.secondary,
+                               radius: 17,
+                               child: CustomText(
+                                 text: remController.meetingReminderCount.value.toString(),
+                                 colors: remController.filterReminder.value=="Appointment"?Colors.white:colorsConst.primary,
+                                 isCopy: true,
+                                 size: 13,
+                               ),
+                             ),
+                           ],
+                         ),
+                       )
                      ],
                    ),
                    remController.selectedReminderIds.isNotEmpty?
@@ -334,7 +383,7 @@ class _ReminderPageState extends State<ReminderPage> {
                      ),
                    ):1.width
                  ],
-               ),
+               ),),
                5.height,
                Divider(
                  thickness: 1.5,

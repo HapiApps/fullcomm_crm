@@ -1,0 +1,28 @@
+
+import 'package:flutter/foundation.dart';
+
+final LocalData localData = LocalData();
+
+class LocalData {
+
+  // User Details (Cashier) :
+  String userId   = '0';
+  String userName = '';
+  String userMobile = '';
+  String secretCode = '';
+  int cancelCode = 0;
+  String version = '0.0.21';
+
+  // Customer Details :
+  String customerName = '';
+  String customerMobile = '';
+  String customerAddress = '';
+
+  // Platform Key :
+  static String platformKey = kIsWeb
+      ? '3'
+      : (defaultTargetPlatform == TargetPlatform.android ? '1'
+      : defaultTargetPlatform == TargetPlatform.iOS ? '2'
+      : '0');
+
+}

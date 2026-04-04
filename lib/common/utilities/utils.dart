@@ -57,16 +57,16 @@ class Utils {
   //         e.email!.trim() != "null").length;
   //     withoutMail = total - withMail;
   //     apiService.prospectsList.addAll(
-  //       subList.where((data) =>
-  //       data.email != null &&
-  //           data.email!.trim().isNotEmpty &&
-  //           data.email!.trim() != "null") // mail check
-  //           .map((data) => {
-  //         "lead_id": data.userId.toString(),
+  //       subList.where((billing_data) =>
+  //       billing_data.email != null &&
+  //           billing_data.email!.trim().isNotEmpty &&
+  //           billing_data.email!.trim() != "null") // mail check
+  //           .map((billing_data) => {
+  //         "lead_id": billing_data.userId.toString(),
   //         "user_id": controllers.storage.read("id"),
-  //         "rating": data.rating ?? "Warm",
+  //         "rating": billing_data.rating ?? "Warm",
   //         "cos_id": controllers.storage.read("cos_id"),
-  //         "mail_id": data.email!.split("||")[0]
+  //         "mail_id": billing_data.email!.split("||")[0]
   //       }),
   //     );
   //   }
@@ -125,7 +125,7 @@ class Utils {
   //                                 // ),
   //                                 IconButton(
   //                                     onPressed: () {
-  //                                       utils.chooseFile(mediaDataV:imageController.empMediaData,
+  //                                       billing_utils.chooseFile(mediaDataV:imageController.empMediaData,
   //                                           fileName:imageController.empFileName,
   //                                           pathName:imageController.photo1);
   //                                     },
@@ -446,7 +446,7 @@ class Utils {
   //                                     //                         isBold: true,
   //                                     //                       ),
   //                                     //                     ]),
-  //                                     //                 utils.emailRow(
+  //                                     //                 billing_utils.emailRow(
   //                                     //                     context,
   //                                     //                     isCheck: controllers.isAdd,
   //                                     //                     templateName:
@@ -455,13 +455,13 @@ class Utils {
   //                                     //                     "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
   //                                     //                     subject:
   //                                     //                     "Exclusive Promotion for You - \nLimited Time Offer!"),
-  //                                     //                 utils.emailRow(
+  //                                     //                 billing_utils.emailRow(
   //                                     //                     context,
   //                                     //                     isCheck: controllers.isAdd,
   //                                     //                     templateName: "Follow-Up",
   //                                     //                     msg: "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
   //                                     //                     subject: "Follow-up on Recent Service Interaction"),
-  //                                     //                 utils.emailRow(context,
+  //                                     //                 billing_utils.emailRow(context,
   //                                     //                     msg:
   //                                     //                     "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
   //                                     //                     isCheck:
@@ -2123,7 +2123,7 @@ class Utils {
 
       if (rows.length < 6) {
         Navigator.of(context).pop();
-        apiService.errorDialog(context, "Excel format is invalid. Needs min 6 rows (3 empty, system, display, data).");
+        apiService.errorDialog(context, "Excel format is invalid. Needs min 6 rows (3 empty, system, display, billing_data).");
         return;
       }
       const expectedKeys = [
@@ -2178,7 +2178,7 @@ class Utils {
         }
       }
 
-      // 🔽 Parse data rows (from row 6 → index 5 onwards)
+      // 🔽 Parse billing_data rows (from row 6 → index 5 onwards)
       for (var i = 5; i < rows.length; i++) {
         var row = rows[i];
         bool isRowEmpty = row.every((cell) =>
@@ -2297,7 +2297,7 @@ class Utils {
                 children: [
                   CustomText(
                     colors: colorsConst.third,
-                    text: "Your uploaded Excel file should have columns matching the required fields exactly as listed below to ensure correct data insertion:",
+                    text: "Your uploaded Excel file should have columns matching the required fields exactly as listed below to ensure correct billing_data insertion:",
                     isBold: true,
                     isCopy: true,
                     size: 15,
@@ -2416,7 +2416,7 @@ class Utils {
                 children: [
                   CustomText(
                     colors: colorsConst.third,
-                    text: "Your uploaded Excel file should have columns matching the required fields exactly as listed below to ensure correct data insertion:",
+                    text: "Your uploaded Excel file should have columns matching the required fields exactly as listed below to ensure correct billing_data insertion:",
                     isBold: true,
                     isCopy: true,
                     size: 15,
@@ -2919,7 +2919,7 @@ class Utils {
                   SizedBox(
                     width: 340,
                     child: Text(
-                      "In this CRM template, \n\n1. Place your column names on Row 5. This will appear in EasyCRM as Heading.\n\n2. Place your data from Row 6. \n\n3. Pick the CRM internal field designators from Row 4 and place it over correct heading on Row 5.\n\n4. Save the sheet and upload to EasyCRM and start managing your Leads and Customers.",
+                      "In this CRM template, \n\n1. Place your column names on Row 5. This will appear in EasyCRM as Heading.\n\n2. Place your billing_data from Row 6. \n\n3. Pick the CRM internal field designators from Row 4 and place it over correct heading on Row 5.\n\n4. Save the sheet and upload to EasyCRM and start managing your Leads and Customers.",
                       style: TextStyle(
                         color: colorsConst.textColor,
                         fontSize: 15,

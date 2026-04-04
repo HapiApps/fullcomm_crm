@@ -29,11 +29,13 @@ class _CallCommentsState extends State<CallComments> {
     50,   // 0 Checkbox
     80,  // 1 Actions
     150,  // 2 Event Name
+    150,  // 2 Event Name
     150,  // 3 Type
     150,  // 4 Location
     150,  // 5 Employee Name
     150,  // 6 Customer Name
     150,  // 7 Start Date
+    150,  // 8 End Date
     150,  // 8 End Date
   ];
   Widget headerCell(int index, Widget child) {
@@ -530,6 +532,50 @@ class _CallCommentsState extends State<CallComments> {
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.left,
+                                  text: "Company Name",
+                                  size: 15,
+                                  isBold: true,
+                                  isCopy: true,
+                                  colors: Colors.white,
+                                ),
+                                3.width,
+                                GestureDetector(
+                                  onTap: (){
+                                    if(controllers.sortFieldCallActivity.value=='company' && controllers.sortOrderCallActivity.value=='asc'){
+                                      controllers.sortOrderCallActivity.value='desc';
+                                    }else{
+                                      controllers.sortOrderCallActivity.value='asc';
+                                    }
+                                    controllers.sortFieldCallActivity.value='company';
+                                    remController.filterAndSortCalls(
+                                      allCalls: controllers.callActivity,
+                                      searchText: controllers.searchText.value.toLowerCase(),
+                                      callType: controllers.selectCallType.value,
+                                      sortField: controllers.sortFieldCallActivity.value,
+                                      sortOrder: controllers.sortOrderCallActivity.value,
+                                      selectedMonth: remController.selectedCallMonth.value,
+                                      selectedRange: remController.selectedCallRange.value,
+                                      selectedDateFilter: remController.selectedCallSortBy.value,
+                                    );
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    controllers.sortFieldCallActivity.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : controllers.sortOrderCallActivity.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
+                            ),),
+                            headerCell(
+                              2,  Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
                                   text: "Lead Name",
                                   size: 15,
                                   isBold: true,
@@ -826,6 +872,48 @@ class _CallCommentsState extends State<CallComments> {
                                   ),
                                 ),
                               ],
+                            ),),
+                            headerCell(9, Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.center,
+                                  text: "Added By",
+                                  isCopy: true,
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),3.width,
+                                GestureDetector(
+                                  onTap: (){
+                                    if(controllers.sortFieldCallActivity.value=='addedBy' && controllers.sortOrderCallActivity.value=='asc'){
+                                      controllers.sortOrderCallActivity.value='desc';
+                                    }else{
+                                      controllers.sortOrderCallActivity.value='asc';
+                                    }
+                                    controllers.sortFieldCallActivity.value='addedBy';
+                                    remController.filterAndSortCalls(
+                                      allCalls: controllers.callActivity,
+                                      searchText: controllers.searchText.value.toLowerCase(),
+                                      callType: controllers.selectCallType.value,
+                                      sortField: controllers.sortFieldCallActivity.value,
+                                      sortOrder: controllers.sortOrderCallActivity.value,
+                                      selectedMonth: remController.selectedCallMonth.value,
+                                      selectedRange: remController.selectedCallRange.value,
+                                      selectedDateFilter: remController.selectedCallSortBy.value,
+                                    );
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    controllers.sortFieldCallActivity.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : controllers.sortOrderCallActivity.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
                             ),)
                           ]),
                     ],
@@ -866,13 +954,6 @@ class _CallCommentsState extends State<CallComments> {
                           itemCount: remController.callFilteredList.length,
                           itemBuilder: (context, index) {
                             final data = remController.callFilteredList[index];
-                            final leadStatus = data.leadStatus == "1"
-                                ? "Suspects"
-                                : data.leadStatus == "2"
-                                ? "Prospects"
-                                : data.leadStatus == "3"
-                                ? "Qualified"
-                                : "Customers";
                             return Table(
                               columnWidths: {
                                 for (int i = 0; i < colWidths.length; i++)
@@ -1361,6 +1442,19 @@ class _CallCommentsState extends State<CallComments> {
                                         ),
                                       ),
                                       Tooltip(
+                                        message: data.companyName.toString()=="null"?"":data.companyName.toString(),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: data.companyName.toString()=="null"?"":data.companyName.toString(),
+                                            size: 14,
+                                            isCopy: true,
+                                            colors:colorsConst.textColor,
+                                          ),
+                                        ),
+                                      ),
+                                      Tooltip(
                                         message: data.customerName.toString()=="null"?"":data.customerName.toString(),
                                         child: Padding(
                                           padding: const EdgeInsets.all(10.0),
@@ -1423,7 +1517,7 @@ class _CallCommentsState extends State<CallComments> {
                                         padding: const EdgeInsets.all(10.0),
                                         child: CustomText(
                                           textAlign: TextAlign.left,
-                                          text: leadStatus.toString(),
+                                          text: data.leadStatus.toString(),
                                           size: 14,
                                           isCopy: true,
                                           colors:colorsConst.textColor,
@@ -1434,6 +1528,16 @@ class _CallCommentsState extends State<CallComments> {
                                         child: CustomText(
                                           textAlign: TextAlign.left,
                                           text: controllers.formatDate(data.sentDate.toString()),
+                                          size: 14,
+                                          isCopy: true,
+                                          colors: colorsConst.textColor,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.left,
+                                          text: data.name.toString(),
                                           size: 14,
                                           isCopy: true,
                                           colors: colorsConst.textColor,

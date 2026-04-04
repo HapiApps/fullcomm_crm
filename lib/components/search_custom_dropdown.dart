@@ -32,43 +32,96 @@ class _SearchCustomDropdownState extends State<SearchCustomDropdown> {
   //SingleSelectController searchCont = SingleSelectController;
   @override
   Widget build(BuildContext context) {
-    return Container(
+    // return Container(
+    //   width: widget.width,
+    //   height: 40,
+    //   alignment: Alignment.center,
+    //   decoration: BoxDecoration(
+    //     color: Colors.white,
+    //     borderRadius: BorderRadius.circular(5),
+    //     border: Border.all(
+    //       color: Colors.grey.shade400, // 🔥 darker
+    //       width: 1.2,                  // 🔥 important
+    //     ),
+    //   ),
+    //   child: CustomDropdown.multiSelect(
+    //     hintText: widget.hintText,
+    //     items: widget.valueList,
+    //     decoration: CustomDropdownDecoration(
+    //         hintStyle: TextStyle(
+    //           color: colorsConst.primary,
+    //           fontSize: 13,
+    //           fontWeight: FontWeight.w500,
+    //           // fontStyle: FontStyle.italic,
+    //         ),
+    //         headerStyle: const TextStyle(
+    //             color: Colors.black, fontSize: 13, fontFamily: "Lato"),
+    //         searchFieldDecoration: SearchFieldDecoration(
+    //           hintStyle: TextStyle(
+    //             color: colorsConst.primary,
+    //             fontSize: 13,
+    //           ),
+    //           prefixIcon:
+    //           IconButton(onPressed: () {}, icon: const Icon(Icons.add,size: 15,)),
+    //           textStyle: const TextStyle(
+    //               color: Colors.black, fontSize: 13, fontFamily: "Lato"),
+    //         ),
+    //
+    //         listItemStyle: const TextStyle(
+    //             color: Colors.black,
+    //             fontSize: 13,
+    //             fontWeight: FontWeight.w500)),
+    //           onListChanged: (item) {
+    //             FocusScope.of(context).unfocus();
+    //             remController.changeAssignedIs(context,item);
+    //           },
+    //   ),
+    // );
+    return SizedBox(
       width: widget.width,
       height: 40,
-      alignment: Alignment.center,
-      decoration: customDecoration.baseBackgroundDecoration(
-          radius: 5, color: Colors.white, borderColor: Colors.grey.shade300),
       child: CustomDropdown.multiSelect(
         hintText: widget.hintText,
         items: widget.valueList,
+
         decoration: CustomDropdownDecoration(
+          closedBorderRadius: BorderRadius.circular(5),
+          expandedBorderRadius: BorderRadius.circular(5),
+          /// 🔥 முக்கியம்
+          closedBorder: Border.all(
+            color: Colors.grey.shade400,
+            width: 1.2,
+          ),
+
+          expandedBorder: Border.all(
+            color: Colors.blue, // focus color
+            width: 1.5,
+          ),
+
+          hintStyle: TextStyle(
+            color: colorsConst.primary,
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+          ),
+
+          headerStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 13,
+          ),
+
+          searchFieldDecoration: SearchFieldDecoration(
             hintStyle: TextStyle(
               color: colorsConst.primary,
               fontSize: 13,
-              fontWeight: FontWeight.w500,
-              // fontStyle: FontStyle.italic,
             ),
-            headerStyle: const TextStyle(
-                color: Colors.black, fontSize: 13, fontFamily: "Lato"),
-            searchFieldDecoration: SearchFieldDecoration(
-              hintStyle: TextStyle(
-                color: colorsConst.primary,
-                fontSize: 13,
-              ),
-              prefixIcon:
-              IconButton(onPressed: () {}, icon: const Icon(Icons.add,size: 15,)),
-              textStyle: const TextStyle(
-                  color: Colors.black, fontSize: 13, fontFamily: "Lato"),
-            ),
+            prefixIcon: Icon(Icons.add, size: 15),
+          ),
+        ),
 
-            listItemStyle: const TextStyle(
-                color: Colors.black,
-                fontSize: 13,
-                fontWeight: FontWeight.w500)),
-              onListChanged: (item) {
-                FocusScope.of(context).unfocus();
-                remController.changeAssignedIs(context,item);
-              },
+        onListChanged: (item) {
+          FocusScope.of(context).unfocus();
+          remController.changeAssignedIs(context, item);
+        },
       ),
     );
   }

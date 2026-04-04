@@ -13,7 +13,7 @@
 // import 'package:shared_preferences/shared_preferences.dart';
 // import '../common/constant/api.dart';
 // import '../common/constant/colors_constant.dart';
-// import '../common/utilities/utils.dart';
+// import '../common/utilities/billing_utils.dart';
 // import '../components/custom_rating.dart';
 // import '../components/custom_sidebar.dart';
 // import '../components/custom_text.dart';
@@ -133,7 +133,7 @@
 //       canPop: false,
 //       onPopInvokedWithResult: (didPop, result) async {
 //         if (!didPop) {
-//           final shouldExit = await utils.showExitDialog(context);
+//           final shouldExit = await billing_utils.showExitDialog(context);
 //           if (shouldExit) {
 //             html.window.open("https://www.google.com", "_self");
 //           }
@@ -1015,7 +1015,7 @@
 //                                                     physics: const ScrollPhysics(),
 //                                                     itemCount: remController.meetingFilteredList.length,
 //                                                     itemBuilder: (context, index) {
-//                                                       final data = remController.meetingFilteredList[index];
+//                                                       final billing_data = remController.meetingFilteredList[index];
 //                                                       return Table(
 //                                                         columnWidths: {
 //                                                           0: FixedColumnWidth(150),
@@ -1034,12 +1034,12 @@
 //                                                               ),
 //                                                               children:[
 //                                                                 Tooltip(
-//                                                                   message: data.cusName.toString()=="null"?"":data.cusName.toString(),
+//                                                                   message: billing_data.cusName.toString()=="null"?"":billing_data.cusName.toString(),
 //                                                                   child: Padding(
 //                                                                     padding: const EdgeInsets.all(10.0),
 //                                                                     child: CustomText(
 //                                                                       textAlign: TextAlign.left,
-//                                                                       text: data.cusName.toString()=="null"?"":data.cusName.toString(),
+//                                                                       text: billing_data.cusName.toString()=="null"?"":billing_data.cusName.toString(),
 //                                                                       size: 14,
 //                                                                       isCopy: true,
 //                                                                       colors:colorsConst.textColor,
@@ -1050,7 +1050,7 @@
 //                                                                   padding: const EdgeInsets.all(10.0),
 //                                                                   child: CustomText(
 //                                                                     textAlign: TextAlign.left,
-//                                                                     text:data.comName.toString()=="null"?"":data.comName.toString(),
+//                                                                     text:billing_data.comName.toString()=="null"?"":billing_data.comName.toString(),
 //                                                                     size: 14,
 //                                                                     isCopy: true,
 //                                                                     colors: colorsConst.textColor,
@@ -1060,7 +1060,7 @@
 //                                                                   padding: const EdgeInsets.all(10.0),
 //                                                                   child: CustomText(
 //                                                                     textAlign: TextAlign.left,
-//                                                                     text: formatFirstDate("${data.dates} ${data.time}"),
+//                                                                     text: formatFirstDate("${billing_data.dates} ${billing_data.time}"),
 //                                                                     size: 14,
 //                                                                     isCopy: true,
 //                                                                     colors: colorsConst.textColor,
@@ -1393,7 +1393,7 @@
 //                     ],
 //                   )),
 //             ),
-//             // utils.funnelContainer(context)
+//             // billing_utils.funnelContainer(context)
 //           ],
 //         )),
 //       ),

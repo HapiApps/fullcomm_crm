@@ -414,36 +414,28 @@ class CustomerActivityCard extends StatelessWidget {
                 alignment: Alignment.center,
                 height: 72,
                 // color: Colors.yellow,
-                child: Stack(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Positioned(
-                      left: 50,
-                      child: activityCircle(
-                        dashController.customerStatusReport[0]["customer_call"].toString(),
-                        double.parse(dashController.customerStatusReport[0]["customer_call"].toString()) / 100,
-                        "Calls",
-                        Colors.green,
-                      ),
+                    activityCircle(
+                      dashController.customerStatusReport[0]["customer_call"].toString(),
+                      double.parse(dashController.customerStatusReport[0]["customer_call"].toString()) / 100,
+                      "Calls",
+                      Colors.green,
                     ),
 
-                    Positioned(
-                      left: 130,
-                      child: activityCircle(
-                        dashController.customerStatusReport[0]["customer_mail"].toString(),
-                        double.parse(dashController.customerStatusReport[0]["customer_mail"].toString()) / 100,
-                        "Mails",
-                        Colors.red,
-                      ),
+                    activityCircle(
+                      dashController.customerStatusReport[0]["customer_mail"].toString(),
+                      double.parse(dashController.customerStatusReport[0]["customer_mail"].toString()) / 100,
+                      "Mails",
+                      Colors.red,
                     ),
 
-                    Positioned(
-                      left: 210,
-                      child: activityCircle(
-                        dashController.customerStatusReport[0]["customer_count"].toString(),
-                        double.parse(dashController.customerStatusReport[0]["customer_count"].toString()) / 100,
-                        "Updates",
-                        Colors.blue,
-                      ),
+                    activityCircle(
+                      dashController.customerStatusReport[0]["customer_count"].toString(),
+                      double.parse(dashController.customerStatusReport[0]["customer_count"].toString()) / 100,
+                      "Updates",
+                      Colors.blue,
                     ),
 
                   ],
@@ -506,36 +498,26 @@ class CustomerActivityCard extends StatelessWidget {
                 alignment: Alignment.center,
                 height: 72,
                 // color: Colors.yellow,
-                child: Stack(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Positioned(
-                      left: 50,
-                      child: activityCircle(
-                        dashController.customerStatusReport[0]["lead_call"].toString(),
-                        double.parse(dashController.customerStatusReport[0]["lead_call"].toString()) / 100,
-                        "Calls",
-                        Colors.green,
-                      ),
+                    activityCircle(
+                      dashController.customerStatusReport[0]["lead_call"].toString(),
+                      double.parse(dashController.customerStatusReport[0]["lead_call"].toString()) / 100,
+                      "Calls",
+                      Colors.green,
                     ),
-
-                    Positioned(
-                      left: 130,
-                      child: activityCircle(
-                        dashController.customerStatusReport[0]["lead_mail"].toString(),
-                        double.parse(dashController.customerStatusReport[0]["lead_mail"].toString()) / 100,
-                        "Mails",
-                        Colors.red,
-                      ),
+                    activityCircle(
+                      dashController.customerStatusReport[0]["lead_mail"].toString(),
+                      double.parse(dashController.customerStatusReport[0]["lead_mail"].toString()) / 100,
+                      "Mails",
+                      Colors.red,
                     ),
-
-                    Positioned(
-                      left: 210,
-                      child: activityCircle(
-                        dashController.customerStatusReport[0]["lead_count"].toString(),
-                        double.parse(dashController.customerStatusReport[0]["lead_count"].toString()) / 100,
-                        "Updates",
-                        Colors.blue,
-                      ),
+                    activityCircle(
+                      dashController.customerStatusReport[0]["lead_count"].toString(),
+                      double.parse(dashController.customerStatusReport[0]["lead_count"].toString()) / 100,
+                      "Updates",
+                      Colors.blue,
                     ),
 
                   ],

@@ -7,7 +7,7 @@
 // import '../common/constant/colors_constant.dart';
 // import '../controller/controller.dart';
 // import '../controller/table_controller.dart';
-// import '../models/user_heading_obj.dart';
+// import '../billing_models/user_heading_obj.dart';
 //
 // class CustomerNameHeader extends StatefulWidget {
 //   final bool showCheckbox;

@@ -288,7 +288,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "stDate":stDate,
         "enDate":endDate
       };
-      // print("main day wise ${data.toString()}");
+      // print("main day wise ${billing_data.toString()}");
       dayReport.value = [];
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -442,7 +442,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
           dashController.totalCustomers.value    = response["total_customers"]?.toString() ?? "0";
         } else {
           // handle empty response gracefully
-          print("Dashboard API returned empty data");
+          print("Dashboard API returned empty billing_data");
           dashController.totalMails.value        = "0";
           dashController.totalReminders.value    = "0";
           dashController.totalMeetings.value     = "0";
@@ -531,7 +531,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         // "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
       };
 
-      // log("Dashboard request dataaa: ${data.toString()}");
+      // log("Dashboard request dataaa: ${billing_data.toString()}");
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -541,7 +541,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      // print(data);
+      // print(billing_data);
       // print("Dashboard report:2 ${request.body}");
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -651,7 +651,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         // "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
       };
 
-      // log("Dashboard request data: visit_status_report ${data.toString()}");
+      // log("Dashboard request billing_data: visit_status_report ${billing_data.toString()}");
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {

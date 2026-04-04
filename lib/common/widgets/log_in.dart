@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
           SystemNavigator.pop();
         }
         // if (!didPop) {
-        //   final shouldExit = await utils.showExitDialog(context);
+        //   final shouldExit = await billing_utils.showExitDialog(context);
         //   if (shouldExit) {
         //     html.window.open("https://www.google.com", "_self");
         //   }

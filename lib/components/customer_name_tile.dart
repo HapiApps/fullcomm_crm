@@ -1360,7 +1360,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
   }
   // Future updateLeadAPI(BuildContext context) async {
   //   try {
-  //     Map data = {
+  //     Map billing_data = {
   //       "cos_id": controllers.storage.read("cos_id"),
   //
   //       "city": getVal("city"),
@@ -1409,7 +1409,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
   //     };
   //     final request = await http.post(
   //       Uri.parse(scriptApi),
-  //       body: jsonEncode(data),
+  //       body: jsonEncode(billing_data),
   //       headers: {
   //         'X-API-TOKEN': "${TokenStorage().readToken()}",
   //         'Content-Type': 'application/json',
@@ -1428,7 +1428,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
   //     }
   //     if (request.statusCode == 200 &&
   //         response["message"] == "Customer updated successfully") {
-  //       utils.snackBar(msg: "Your Lead is updated successfully !",
+  //       billing_utils.snackBar(msg: "Your Lead is updated successfully !",
   //           color: Colors.green,context:Get.context!);
   //       Get.back();
   //       apiService.allNewLeadsDetails();
@@ -1437,12 +1437,12 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
   //       controllers.leadCtr.reset();
   //     } else {
   //       Navigator.of(context).pop();
-  //       utils.snackBar(context:Get.context!,msg:"Failed", color: Colors.red);
+  //       billing_utils.snackBar(context:Get.context!,msg:"Failed", color: Colors.red);
   //       controllers.leadCtr.reset();
   //     }
   //   } catch (e) {
   //     Navigator.of(context).pop();
-  //     utils.snackBar(context:Get.context!,msg:"Something went wrong, Please try again later", color: Colors.red);
+  //     billing_utils.snackBar(context:Get.context!,msg:"Something went wrong, Please try again later", color: Colors.red);
   //     controllers.leadCtr.reset();
   //   }
   // }

@@ -15,6 +15,7 @@ import '../../components/custom_text.dart';
 import '../../components/custom_textfield.dart';
 import '../../components/date_filter_bar.dart';
 import '../../components/keyboard_search.dart';
+import '../../components/search_custom_dropdown.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
 
@@ -76,6 +77,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
     80,  // 1 Actions
     150,  // 2 Event Name
     150,  // 3 Type
+    150,  // 3 Type
     150,  // 4 Location
     150,  // 5 Employee Name
     150,  // 6 Customer Name
@@ -118,6 +120,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
     super.initState();
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      apiService.getAllEmployees();
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero,(){
@@ -215,6 +218,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               String? stTimeError;
                               String? enTimeError;
                               String? customerError;
+                              String? employeeError;
 
                               return StatefulBuilder(
                                 builder: (context, setState) {
@@ -669,6 +673,44 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                 ),
                                             ],
                                           ),
+                                          10.height,
+                                          Row(
+                                            children: [
+                                              CustomText(
+                                                text: "Employees",
+                                                size: 13,
+                                                colors: colorsConst.fieldHead,
+                                                isCopy: false,
+                                              ),
+                                              const CustomText(
+                                                text: "*",
+                                                colors: Colors.red,
+                                                size: 13,
+                                                isCopy: false,
+                                              )
+                                            ],
+                                          ),
+                                          SearchCustomDropdown(
+                                            text: "",isOptional: false,
+                                            hintText: remController.assignedIds.value==""?"":remController.assignedNames.value,
+                                            valueList: controllers.employees,
+                                            onChanged: (value) {
+                                              setState((){
+                                                employeeError=null;
+                                              });
+                                            },
+                                            width: 480,
+                                          ),
+                                          10.height,
+                                          if (employeeError != null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 4),
+                                              child: Text(
+                                                employeeError!,
+                                                style: const TextStyle(
+                                                    color: Colors.red, fontSize: 13),
+                                              ),
+                                            ),
                                           5.height,
                                           /// NOTES
                                           Column(
@@ -768,6 +810,11 @@ class _MeetingCommentsState extends State<MeetingComments> {
 
                                               if (controllers.selectedCustomerId.value.isEmpty) {
                                                 setState(() => customerError = "Select lead name");
+                                                controllers.productCtr.reset();
+                                                return;
+                                              }
+                                              if (controllers.selectedEmployeeId.value.isEmpty) {
+                                                setState(() => employeeError = "Select employee name");
                                                 controllers.productCtr.reset();
                                                 return;
                                               }
@@ -1127,6 +1174,45 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 ),
                               ],
                             ),),
+                            headerCell(3, Row(
+                              children: [
+                                CustomText(//2
+                                  textAlign: TextAlign.left,
+                                  text: "Employee name",
+                                  isCopy: true,
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(controllers.sortFieldMeetingActivity.value=='emp' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                      controllers.sortOrderMeetingActivity.value='desc';
+                                    }else{
+                                      controllers.sortOrderMeetingActivity.value='asc';
+                                    }
+                                    controllers.sortFieldMeetingActivity.value='emp';
+                                    remController.filterAndSortMeetings(
+                                      searchText: controllers.searchText.value.toLowerCase(),
+                                      callType: controllers.selectMeetingType.value,
+                                      sortField: controllers.sortFieldMeetingActivity.value,
+                                      sortOrder: controllers.sortOrderMeetingActivity.value,
+                                    );
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    controllers.sortFieldMeetingActivity.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : controllers.sortOrderMeetingActivity.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
+                            ),),
                             headerCell(4, Row(
                               children: [
                                 CustomText(
@@ -1372,6 +1458,8 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                     controllers.timeOfConCtr.text = data.time.toString()=="null"?"":data.time.toString();
                                                     controllers.callCommentCont.text = data.notes.toString()=="null"?"":data.notes.toString();
                                                     controllers.cusController.text ='${data.cusName}${data.comName.isEmpty ? "" : " ,${data.comName}"}';
+                                                    remController.assignedIds.value=data.employee;
+                                                    ;remController.assignedNames.value=data.employeeName;
                                                   });
                                                   showDialog(
                                                     context: context,
@@ -1384,6 +1472,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                       String? stTimeError;
                                                       String? enTimeError;
                                                       String? customerError;
+                                                      String? employeeError;
 
                                                       return StatefulBuilder(
                                                         builder: (context, setState) {
@@ -1838,7 +1927,35 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                                         ),
                                                                     ],
                                                                   ),
-                                                                  5.height,
+                                                                  10.height,
+                                                                  Row(
+                                                                    children: [
+                                                                      CustomText(
+                                                                        text: "Employees",
+                                                                        size: 13,
+                                                                        colors: colorsConst.fieldHead,
+                                                                        isCopy: false,
+                                                                      ),
+                                                                      const CustomText(
+                                                                        text: "*",
+                                                                        colors: Colors.red,
+                                                                        size: 13,
+                                                                        isCopy: false,
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                  SearchCustomDropdown(
+                                                                    text: "",isOptional: false,
+                                                                    hintText: remController.assignedIds.value==""?"":remController.assignedNames.value,
+                                                                    valueList: controllers.employees,
+                                                                    onChanged: (value) {
+                                                                      setState((){
+                                                                        employeeError=null;
+                                                                      });
+                                                                    },
+                                                                    width: 480,
+                                                                  ),
+                                                                  10.height,
                                                                   /// NOTES
                                                                   Column(
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1936,6 +2053,11 @@ class _MeetingCommentsState extends State<MeetingComments> {
 
                                                                       if (controllers.selectedCustomerId.value.isEmpty) {
                                                                         setState(() => customerError = "Select lead name");
+                                                                        controllers.productCtr.reset();
+                                                                        return;
+                                                                      }
+                                                                      if (controllers.selectedEmployeeId.value.isEmpty) {
+                                                                        setState(() => customerError = "Select employee name");
                                                                         controllers.productCtr.reset();
                                                                         return;
                                                                       }
@@ -2426,6 +2548,16 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                         child: CustomText(
                                           textAlign: TextAlign.left,
                                           text:data.comName.toString()=="null"?"":data.comName.toString(),
+                                          size: 14,
+                                          isCopy: true,
+                                          colors: colorsConst.textColor,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.left,
+                                          text:data.employeeName.toString()=="null"?"":data.employeeName.toString(),
                                           size: 14,
                                           isCopy: true,
                                           colors: colorsConst.textColor,

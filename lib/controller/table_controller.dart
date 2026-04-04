@@ -41,10 +41,10 @@ class TableController extends GetxController {
   var isLoading = false.obs;
   var headingFields = <String>[].obs;
 
-  // void setHeading(List<dynamic> data) async {
+  // void setHeading(List<dynamic> billing_data) async {
   //   log("Set Heading 1");
   //   try {
-  //     headingFields.value = data
+  //     headingFields.value = billing_data
   //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
   //         .toList();
   //
@@ -75,11 +75,11 @@ class TableController extends GetxController {
   //   }
   // }
   /// changed 9 mar
-  // void setHeading(List<dynamic> data) async {
+  // void setHeading(List<dynamic> billing_data) async {
   //   print("Set Heading 1");
   //
   //   try {
-  //     headingFields.value = data
+  //     headingFields.value = billing_data
   //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
   //         .toList();
   //
@@ -121,7 +121,7 @@ class TableController extends GetxController {
   //       print("Table Headings: $tableHeadings");
   //
   //     } else {
-  //       print("No saved data");
+  //       print("No saved billing_data");
   //       tableHeadings.value = List<String>.from(headingFields);
   //     }
   //
@@ -137,11 +137,11 @@ class TableController extends GetxController {
   //   }
   // }
   /// March 14
-  // void setHeading(List<dynamic> data) async {
+  // void setHeading(List<dynamic> billing_data) async {
   //   print("Set Heading 1");
   //
   //   try {
-  //     headingFields.value = data
+  //     headingFields.value = billing_data
   //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
   //         .toList();
   //
@@ -263,7 +263,7 @@ class TableController extends GetxController {
   }
   void setHeadingFields(List<dynamic> data) async {
     try {
-      log("Incoming data: $data");
+      log("Incoming billing_data: $data");
 
       final prefs = await SharedPreferences.getInstance();
       final saved = prefs.getString('tableHeadings');

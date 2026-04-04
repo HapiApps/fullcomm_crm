@@ -8,6 +8,7 @@ import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../billing/billing_view/new_billing_screen.dart';
 import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/constant/default_constant.dart';
@@ -301,8 +302,9 @@ class SideBar extends StatelessWidget {
               icon: Icons.production_quantity_limits_sharp,
               selectedImage: "assets/images/order1.png",
               unSelectedImage: "assets/images/order.png",
-              label: "Quotation",
-              page: const QuotationPage(),
+              label: "Quotation Invoice",
+              // page: const QuotationPage(),
+              page: const NewBillingScreen(),
             ),
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()

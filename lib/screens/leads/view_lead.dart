@@ -1866,16 +1866,16 @@ void checkType(){
 //                   future: controllers.leadFuture,
 //                   builder: (context, snapshot) {
 //                     if (snapshot.hasData) {
-//                       final data = snapshot.data!;
-//                       final cust = data.customer;
-//                       final addr = data.address;
-//                       final persons = data.customerPersons;
+//                       final billing_data = snapshot.billing_data!;
+//                       final cust = billing_data.customer;
+//                       final addr = billing_data.address;
+//                       final persons = billing_data.customerPersons;
 //                       final primaryPerson = persons.isNotEmpty ? persons[0] : null;
-//                       final additional = data.additionalInfo;
-//                       final calls = data.callRecords;
-//                       final mails = data.mailRecords;
-//                       final meetings = data.meetings;
-//                       final reminders = data.reminders;
+//                       final additional = billing_data.additionalInfo;
+//                       final calls = billing_data.callRecords;
+//                       final mails = billing_data.mailRecords;
+//                       final meetings = billing_data.meetings;
+//                       final reminders = billing_data.reminders;
 //                       // final displayName = primaryPerson?.name ?? cust?.companyName ?? widget.name ?? "";
 //                       // final displayMobile = primaryPerson?.phone ?? widget.mobileNumber ?? "";
 //                       // final displayEmail = primaryPerson?.email ?? widget.email ?? "";
@@ -2228,7 +2228,7 @@ void checkType(){
 //                                             imageController.photo1.value = "";
 //                                             controllers.emailToCtr.text =
 //                                             displayEmail.isEmpty ? "" : displayEmail;
-//                                             utils.sendEmailDialog(
+//                                             billing_utils.sendEmailDialog(
 //                                               id: widget.id.toString(),
 //                                               name: displayName,
 //                                               mobile: displayMobile,
@@ -2301,7 +2301,7 @@ void checkType(){
 //                                                             isCopy: true,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                             text: _formatHeading(
 //                                                                 controllers.getUserHeading(
 //                                                                     "name") ??
@@ -2309,7 +2309,7 @@ void checkType(){
 //                                                             color: colorsConst.primary,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                             text: _formatHeading(
 //                                                                 controllers.getUserHeading(
 //                                                                     "mobile_name") ??
@@ -2317,7 +2317,7 @@ void checkType(){
 //                                                             color: colorsConst.primary,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                             text: _formatHeading(
 //                                                                 controllers.getUserHeading(
 //                                                                     "email") ??
@@ -2339,22 +2339,22 @@ void checkType(){
 //                                                             size: 16,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: displayName,
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: (displayMobile)
 //                                                                   .toString()
 //                                                                   .split("||")
 //                                                                   .where((e) => e.isNotEmpty)
 //                                                                   .join(", "),
 //                                                               color: colorsConst.textColor),
-//                                                           // utils.leadText(
+//                                                           // billing_utils.leadText(
 //                                                           //     text: displayMobile,
 //                                                           //     color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: displayEmail,
 //                                                               color: colorsConst.textColor),
 //                                                         ],
@@ -2379,7 +2379,7 @@ void checkType(){
 //                                                             size: 16,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                             text: _formatHeading(
 //                                                                 controllers.getUserHeading(
 //                                                                     "owner") ??
@@ -2387,15 +2387,15 @@ void checkType(){
 //                                                             color: colorsConst.primary,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Whatsapp No",
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Quotation Required",
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Visit Type",
 //                                                               color: colorsConst.primary),
 //                                                         ],
@@ -2412,21 +2412,21 @@ void checkType(){
 //                                                             isCopy: true,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.owner ?? widget.owner ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: widget.whatsAppNo,
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: (cust?.product ?? "").isNotEmpty
 //                                                                   ? (cust!.product == "1" ? "Yes" : "No")
 //                                                                   : "No",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.visitType ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                         ],
@@ -2471,15 +2471,15 @@ void checkType(){
 //                                                             isCopy: true,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Door No",
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Area",
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "State",
 //                                                               color: colorsConst.primary),
 //                                                         ],
@@ -2496,15 +2496,15 @@ void checkType(){
 //                                                             isCopy: true,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: addr?.doorNo ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: addr?.area ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: addr?.state ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                         ],
@@ -2529,15 +2529,15 @@ void checkType(){
 //                                                             isCopy: true,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Pincode",
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "City",
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Country",
 //                                                               color: colorsConst.primary),
 //                                                         ],
@@ -2555,15 +2555,15 @@ void checkType(){
 //                                                             isCopy: true,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: addr?.pincode ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: addr?.city ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: addr?.country ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                         ],
@@ -2608,20 +2608,20 @@ void checkType(){
 //                                                             isCopy: true,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: _formatHeading(controllers.getUserHeading
 //                                                                 ("company_name") ?? "Company Name"),
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Company Phone No.",
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Industry",
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Linkedin",
 //                                                               color: colorsConst.primary),
 //                                                         ],
@@ -2638,11 +2638,11 @@ void checkType(){
 //                                                             isCopy: true,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.companyName ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: (cust?.companyNumber ?? "")
 //                                                                   .toString()
 //                                                                   .split("||")
@@ -2650,11 +2650,11 @@ void checkType(){
 //                                                                   .join(", "),
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.industry ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.linkedin ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                         ],
@@ -2679,19 +2679,19 @@ void checkType(){
 //                                                             size: 16,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Website",
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Company Email",
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: "Product/Services",
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(text: "X", color: colorsConst.primary),
+//                                                           billing_utils.leadText(text: "X", color: colorsConst.primary),
 //                                                         ],
 //                                                       ),
 //                                                       30.width,
@@ -2707,19 +2707,19 @@ void checkType(){
 //                                                             isCopy: true,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.companyWebsite ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.companyEmail ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.product ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.x ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                         ],
@@ -2764,41 +2764,41 @@ void checkType(){
 //                                                             isCopy: true,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: _formatHeading(controllers
 //                                                                   .getUserHeading(
 //                                                                   "product_discussion") ??
 //                                                                   "Product Discussed"),
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: _formatHeading(controllers
 //                                                                   .getUserHeading("status") ??
 //                                                                   "Status"),
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: _formatHeading(controllers
 //                                                                   .getUserHeading(
 //                                                                   "expected_billing_value") ??
 //                                                                   "Expected Monthly Billing Value"),
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: _formatHeading(controllers
 //                                                                   .getUserHeading(
 //                                                                   "num_of_headcount") ??
 //                                                                   "Total Number Of Head Count"),
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: _formatHeading(controllers
 //                                                                   .getUserHeading(
 //                                                                   "details_of_service_required") ??
 //                                                                   "Details of Service Required"),
 //                                                               color: colorsConst.primary),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: _formatHeading(controllers
 //                                                                   .getUserHeading("rating") ??
 //                                                                   "Prospect Grading"),
@@ -2818,11 +2818,11 @@ void checkType(){
 //                                                             isCopy: true,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.product ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                             text: (() {
 //                                                               final ls = cust?.leadStatus;
 //                                                               if (ls == null) return "";
@@ -2834,19 +2834,19 @@ void checkType(){
 //                                                             color: colorsConst.textColor,
 //                                                           ),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.expectedBillingValue ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.numOfHeadcount ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.detailsOfServiceRequired ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                           20.height,
-//                                                           utils.leadText(
+//                                                           billing_utils.leadText(
 //                                                               text: cust?.rating ?? "",
 //                                                               color: colorsConst.textColor),
 //                                                         ],
@@ -2872,41 +2872,41 @@ void checkType(){
 //                                                               isCopy: true,
 //                                                             ),
 //                                                             20.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text: "Additional Notes",
 //                                                                 color: colorsConst.primary),
 //                                                             20.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text: "Response Priority",
 //                                                                 color: colorsConst.primary),
 //                                                             20.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text: _formatHeading(controllers
 //                                                                     .getUserHeading("arpu_value") ??
 //                                                                     "ARPU Value"),
 //                                                                 color: colorsConst.primary),
 //                                                             20.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text:
 //                                                                 _formatHeading(controllers.getUserHeading(
 //                                                                     "expected_convertion_date") ??
 //                                                                     "Expected Conversion Date"),
 //                                                                 color: colorsConst.primary),
 //                                                             20.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text: _formatHeading(controllers
 //                                                                     .getUserHeading(
 //                                                                     "prospect_enrollment_date") ??
 //                                                                     "Prospect Enrollment Date"),
 //                                                                 color: colorsConst.primary),
 //                                                             10.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text: _formatHeading(controllers
 //                                                                     .getUserHeading("source") ??
 //                                                                     "SOURCE OF PROSPECT"),
 //                                                                 color: colorsConst.primary),
 //                                                             20.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text: _formatHeading(controllers
 //                                                                     .getUserHeading("status_update") ??
 //                                                                     "Status Update"),
@@ -2926,33 +2926,33 @@ void checkType(){
 //                                                               isCopy: true,
 //                                                             ),
 //                                                             20.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text: widget.notes ?? "",
 //                                                                 color: colorsConst.textColor),
 //                                                             20.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text:"Normal",
 //                                                                 color: colorsConst.textColor),
 //                                                             20.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text: cust?.arpuValue ?? "",
 //                                                                 color: colorsConst.textColor),
 //                                                             20.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text: cust?.expectedConvertionDate ?? "",
 //                                                                 color: colorsConst.textColor),
 //                                                             20.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text: cust?.prospectEnrollmentDate ?? "",
 //                                                                 color: colorsConst.textColor),
 //                                                             20.height,
-//                                                             utils.leadText(
+//                                                             billing_utils.leadText(
 //                                                                 text: cust?.source ?? "",
 //                                                                 color: colorsConst.textColor),
 //                                                             20.height,
 //                                                             Tooltip(
 //                                                               message: cust?.statusUpdate ?? "",
-//                                                               child: utils.leadText(
+//                                                               child: billing_utils.leadText(
 //                                                                   text: cust?.statusUpdate ?? "",
 //                                                                   color: colorsConst.textColor),
 //                                                             ),
@@ -2996,11 +2996,11 @@ void checkType(){
 //                                                   crossAxisAlignment:
 //                                                   CrossAxisAlignment.start,
 //                                                   children: [
-//                                                     utils.leadText(
+//                                                     billing_utils.leadText(
 //                                                         text: info.fieldName ?? "",
 //                                                         color: colorsConst.primary),
 //                                                     10.width,
-//                                                     utils.leadText(
+//                                                     billing_utils.leadText(
 //                                                         text: info.fieldValue ?? "",
 //                                                         color: colorsConst.textColor),
 //                                                   ],

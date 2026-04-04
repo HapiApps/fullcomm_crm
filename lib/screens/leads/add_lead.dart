@@ -2464,7 +2464,7 @@ class _AddLeadState extends State<AddLead> {
 // import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 // import 'package:fullcomm_crm/common/constant/default_constant.dart';
 // import 'package:fullcomm_crm/common/extentions/lib_extensions.dart';
-// import 'package:fullcomm_crm/common/utilities/utils.dart';
+// import 'package:fullcomm_crm/common/utilities/billing_utils.dart';
 // import 'package:fullcomm_crm/components/custom_dropdown.dart';
 // import 'package:fullcomm_crm/components/custom_loading_button.dart';
 // import 'package:fullcomm_crm/components/custom_text.dart';
@@ -2759,20 +2759,20 @@ class _AddLeadState extends State<AddLead> {
 //                         CustomLoadingButton(
 //                           callback: () {
 //                             if (controllers.leadNameCrt[0].text.isEmpty) {
-//                               utils.snackBar(
+//                               billing_utils.snackBar(
 //                                   msg: "Please add name",
 //                                   color: Colors.red,
 //                                   context: context);
 //                               controllers.leadCtr.reset();
 //                             } else if (controllers.leadMobileCrt[0].text.isEmpty) {
-//                               utils.snackBar(
+//                               billing_utils.snackBar(
 //                                   msg: "Please Add Phone No",
 //                                   color: Colors.red,
 //                                   context: context);
 //                               controllers.leadCtr.reset();
 //                             } else if (controllers.leadMobileCrt[0].text.length !=
 //                                 10) {
-//                               utils.snackBar(
+//                               billing_utils.snackBar(
 //                                   msg: "Invalid Phone No",
 //                                   color: Colors.red,
 //                                   context: context);
@@ -2781,14 +2781,14 @@ class _AddLeadState extends State<AddLead> {
 //                             } else if (controllers
 //                                 .leadWhatsCrt[0].text.isNotEmpty &&
 //                                 controllers.leadWhatsCrt[0].text.length != 10) {
-//                               utils.snackBar(
+//                               billing_utils.snackBar(
 //                                   msg: "Invalid WhatsApp No",
 //                                   color: Colors.red,
 //                                   context: context);
 //                               controllers.leadCtr.reset();
 //                             } else if (controllers.visitType == null ||
 //                                 controllers.visitType.toString().isEmpty) {
-//                               utils.snackBar(
+//                               billing_utils.snackBar(
 //                                   msg: "Please Select Call Visit Type",
 //                                   color: Colors.red,
 //                                   context: context);
@@ -2796,7 +2796,7 @@ class _AddLeadState extends State<AddLead> {
 //                             } else if (controllers
 //                                 .leadWhatsCrt[0].text.isNotEmpty &&
 //                                 controllers.leadWhatsCrt[0].text.length != 10) {
-//                               utils.snackBar(
+//                               billing_utils.snackBar(
 //                                   msg: "Invalid Whats No",
 //                                   color: Colors.red,
 //                                   context: context);
@@ -2804,14 +2804,14 @@ class _AddLeadState extends State<AddLead> {
 //                             } else if (controllers
 //                                 .leadCoMobileCrt.text.isNotEmpty &&
 //                                 controllers.leadCoMobileCrt.text.length != 10) {
-//                               utils.snackBar(
+//                               billing_utils.snackBar(
 //                                   msg: "Invalid Company Phone No",
 //                                   color: Colors.red,
 //                                   context: context);
 //                               controllers.leadCtr.reset();
 //                             } else if (controllers.leadCoEmailCrt.text.isNotEmpty &&
 //                                 !controllers.leadCoEmailCrt.text.isEmail) {
-//                               utils.snackBar(
+//                               billing_utils.snackBar(
 //                                   msg: "Please add valid Company Email",
 //                                   color: Colors.red,
 //                                   context: context);
@@ -2826,7 +2826,7 @@ class _AddLeadState extends State<AddLead> {
 //                                         6) {
 //                                       apiService.insertSingleCustomer(context);
 //                                     } else {
-//                                       utils.snackBar(
+//                                       billing_utils.snackBar(
 //                                           msg: "Please add 6 digits pin code",
 //                                           color: Colors.red,
 //                                           context: context);
@@ -2835,7 +2835,7 @@ class _AddLeadState extends State<AddLead> {
 //                                   }
 //                                 } else {
 //                                   ///Santhiya
-//                                   utils.snackBar(
+//                                   billing_utils.snackBar(
 //                                       msg: "Please add valid email",
 //                                       color: Colors.red,
 //                                       context: context);
@@ -2849,7 +2849,7 @@ class _AddLeadState extends State<AddLead> {
 //                                       6) {
 //                                     apiService.insertSingleCustomer(context);
 //                                   } else {
-//                                     utils.snackBar(
+//                                     billing_utils.snackBar(
 //                                         msg: "Please add 6 digits pin code",
 //                                         color: colorsConst.primary,
 //                                         context: context);
@@ -3060,13 +3060,13 @@ class _AddLeadState extends State<AddLead> {
 //                                       //   crossAxisAlignment: CrossAxisAlignment.start,
 //                                       //   mainAxisAlignment: MainAxisAlignment.start,
 //                                       //   children: [
-//                                       //     utils.textFieldNearText(
+//                                       //     billing_utils.textFieldNearText(
 //                                       //         'Name', true),
 //                                       //     30.height,
-//                                       //     utils.textFieldNearText(
+//                                       //     billing_utils.textFieldNearText(
 //                                       //         'Mobile Number', true),
 //                                       //     10.height,
-//                                       //     utils.textFieldNearText(
+//                                       //     billing_utils.textFieldNearText(
 //                                       //         'Whatsapp Number', true),
 //                                       //     10.height,
 //                                       //   ],
@@ -3199,7 +3199,7 @@ class _AddLeadState extends State<AddLead> {
 //                                           //                             if (controllers.numberList.length > 1) {
 //                                           //                               controllers.numberList.removeAt(index);
 //                                           //                             }else{
-//                                           //                               utils.snackBar(context: context, msg: "Enter at least one mobile number.", color: Colors.red);
+//                                           //                               billing_utils.snackBar(context: context, msg: "Enter at least one mobile number.", color: Colors.red);
 //                                           //                             }
 //                                           //                           },
 //                                           //                           icon:SvgPicture.asset("assets/images/delete.svg")
@@ -3221,7 +3221,7 @@ class _AddLeadState extends State<AddLead> {
 //                                           //                             // Empty or not 10 digits
 //                                           //                             if (number.isEmpty || number.length != 10) {
 //                                           //                               isMistake = true;
-//                                           //                               utils.snackBar(
+//                                           //                               billing_utils.snackBar(
 //                                           //                                 context: context,
 //                                           //                                 msg: "Enter valid 10 digit mobile number",
 //                                           //                                 color: Colors.red,
@@ -3232,7 +3232,7 @@ class _AddLeadState extends State<AddLead> {
 //                                           //                             // Duplicate check
 //                                           //                             if (uniqueNumbers.contains(number)) {
 //                                           //                               isMistake = true;
-//                                           //                               utils.snackBar(
+//                                           //                               billing_utils.snackBar(
 //                                           //                                 context: context,
 //                                           //                                 msg: "Same mobile number already added",
 //                                           //                                 color: Colors.red,
@@ -3557,13 +3557,13 @@ class _AddLeadState extends State<AddLead> {
 //                                       //   crossAxisAlignment:
 //                                       //       CrossAxisAlignment.start,
 //                                       //   children: [
-//                                       //     utils.textFieldNearText(
+//                                       //     billing_utils.textFieldNearText(
 //                                       //         'Account Manager (Optional)',
 //                                       //         false),
-//                                       //     utils.textFieldNearText(
+//                                       //     billing_utils.textFieldNearText(
 //                                       //         'Email Id (Optional)', false),
 //                                       //     10.height,
-//                                       //     utils.textFieldNearText(
+//                                       //     billing_utils.textFieldNearText(
 //                                       //         'Date Of Connection', false),
 //                                       //     10.height,
 //                                       //   ],
@@ -3628,7 +3628,7 @@ class _AddLeadState extends State<AddLead> {
 //                                           CustomTextField(
 //                                               focusNode: email,
 //                                               onEdit: () {
-//                                                 utils.datePicker(
+//                                                 billing_utils.datePicker(
 //                                                     context: context,
 //                                                     textEditingController:
 //                                                     controllers.dateOfConCtr,
@@ -3653,7 +3653,7 @@ class _AddLeadState extends State<AddLead> {
 //                                                     value.toString().trim());
 //                                               },
 //                                               onFieldSubmitted: (value) {
-//                                                 utils.datePicker(
+//                                                 billing_utils.datePicker(
 //                                                     context: context,
 //                                                     textEditingController:
 //                                                     controllers.dateOfConCtr,
@@ -3678,7 +3678,7 @@ class _AddLeadState extends State<AddLead> {
 //                                               width: textFieldSize,
 //                                               isOptional: false,
 //                                               onTap: () {
-//                                                 utils.datePicker(
+//                                                 billing_utils.datePicker(
 //                                                     context: context,
 //                                                     textEditingController:
 //                                                     controllers.dateOfConCtr,
@@ -3721,12 +3721,12 @@ class _AddLeadState extends State<AddLead> {
 //                           // Column(
 //                           //   crossAxisAlignment: CrossAxisAlignment.start,
 //                           //   children: [
-//                           //     utils.textFieldNearText(
+//                           //     billing_utils.textFieldNearText(
 //                           //         'Company Name', false),
-//                           //     utils.textFieldNearText(
+//                           //     billing_utils.textFieldNearText(
 //                           //         'Company Phone No', false),
-//                           //     utils.textFieldNearText('Industry', false),
-//                           //     utils.textFieldNearText('Linkedin', false),
+//                           //     billing_utils.textFieldNearText('Industry', false),
+//                           //     billing_utils.textFieldNearText('Linkedin', false),
 //                           //   ],
 //                           // ),
 //
@@ -3825,7 +3825,7 @@ class _AddLeadState extends State<AddLead> {
 //                                 //                             if (controllers.infoNumberList.length > 1) {
 //                                 //                               controllers.infoNumberList.removeAt(index);
 //                                 //                             }else{
-//                                 //                               utils.snackBar(context: context, msg: "Enter at least one mobile number.", color: Colors.red);
+//                                 //                               billing_utils.snackBar(context: context, msg: "Enter at least one mobile number.", color: Colors.red);
 //                                 //                             }
 //                                 //                           },
 //                                 //                           icon:SvgPicture.asset("assets/images/delete.svg")
@@ -3847,7 +3847,7 @@ class _AddLeadState extends State<AddLead> {
 //                                 //                             // Empty or not 10 digits
 //                                 //                             if (number.isEmpty || number.length != 10) {
 //                                 //                               isMistake = true;
-//                                 //                               utils.snackBar(
+//                                 //                               billing_utils.snackBar(
 //                                 //                                 context: context,
 //                                 //                                 msg: "Enter valid 10 digit mobile number",
 //                                 //                                 color: Colors.red,
@@ -3858,7 +3858,7 @@ class _AddLeadState extends State<AddLead> {
 //                                 //                             // Duplicate check
 //                                 //                             if (uniqueNumbers.contains(number)) {
 //                                 //                               isMistake = true;
-//                                 //                               utils.snackBar(
+//                                 //                               billing_utils.snackBar(
 //                                 //                                 context: context,
 //                                 //                                 msg: "Same mobile number already added",
 //                                 //                                 color: Colors.red,
@@ -3962,12 +3962,12 @@ class _AddLeadState extends State<AddLead> {
 //                           // Column(
 //                           //   crossAxisAlignment: CrossAxisAlignment.start,
 //                           //   children: [
-//                           //     utils.textFieldNearText(
+//                           //     billing_utils.textFieldNearText(
 //                           //         'Company Email', false),
-//                           //     utils.textFieldNearText(
+//                           //     billing_utils.textFieldNearText(
 //                           //         'Product/Services', false),
-//                           //     utils.textFieldNearText('Website', false),
-//                           //     utils.textFieldNearText('X', false),
+//                           //     billing_utils.textFieldNearText('Website', false),
+//                           //     billing_utils.textFieldNearText('X', false),
 //                           //   ],
 //                           // ),
 //                           Column(
@@ -4375,7 +4375,7 @@ class _AddLeadState extends State<AddLead> {
 //                               CustomTextField(
 //                                 focusNode: ob7,
 //                                 onEdit: () {
-//                                   utils.datePicker(
+//                                   billing_utils.datePicker(
 //                                       context: context,
 //                                       textEditingController:
 //                                       controllers.dateOfConCtr,
@@ -4410,7 +4410,7 @@ class _AddLeadState extends State<AddLead> {
 //                                   value: controllers.exDate.value,
 //                                   width: textFieldSize,
 //                                   onTap: () {
-//                                     utils.datePicker(
+//                                     billing_utils.datePicker(
 //                                         context: context,
 //                                         textEditingController:
 //                                         controllers.dateOfConCtr,
@@ -4440,7 +4440,7 @@ class _AddLeadState extends State<AddLead> {
 //                               CustomTextField(
 //                                 focusNode: ob8,
 //                                 onEdit: () {
-//                                   utils.datePicker(
+//                                   billing_utils.datePicker(
 //                                       context: context,
 //                                       textEditingController:
 //                                       controllers.dateOfConCtr,
@@ -4482,7 +4482,7 @@ class _AddLeadState extends State<AddLead> {
 //                                   value: controllers.prospectDate.value,
 //                                   width: textFieldSize,
 //                                   onTap: () {
-//                                     utils.datePicker(
+//                                     billing_utils.datePicker(
 //                                         context: context,
 //                                         textEditingController:
 //                                         controllers.dateOfConCtr,
@@ -4745,20 +4745,20 @@ class _AddLeadState extends State<AddLead> {
 //                                 onEdit: () {
 //                                   controllers.leadCtr.start();
 //                                   if (controllers.leadNameCrt[0].text.isEmpty) {
-//                                     utils.snackBar(
+//                                     billing_utils.snackBar(
 //                                         msg: "Please add name",
 //                                         color: Colors.red,
 //                                         context: context);
 //                                     controllers.leadCtr.reset();
 //                                   } else if (controllers.leadMobileCrt[0].text.isEmpty) {
-//                                     utils.snackBar(
+//                                     billing_utils.snackBar(
 //                                         msg: "Please Add Phone No",
 //                                         color: Colors.red,
 //                                         context: context);
 //                                     controllers.leadCtr.reset();
 //                                   } else if (controllers.leadMobileCrt[0].text.length !=
 //                                       10) {
-//                                     utils.snackBar(
+//                                     billing_utils.snackBar(
 //                                         msg: "Invalid Phone No",
 //                                         color: Colors.red,
 //                                         context: context);
@@ -4767,14 +4767,14 @@ class _AddLeadState extends State<AddLead> {
 //                                   } else if (controllers
 //                                       .leadWhatsCrt[0].text.isNotEmpty &&
 //                                       controllers.leadWhatsCrt[0].text.length != 10) {
-//                                     utils.snackBar(
+//                                     billing_utils.snackBar(
 //                                         msg: "Invalid WhatsApp No",
 //                                         color: Colors.red,
 //                                         context: context);
 //                                     controllers.leadCtr.reset();
 //                                   } else if (controllers.visitType == null ||
 //                                       controllers.visitType.toString().isEmpty) {
-//                                     utils.snackBar(
+//                                     billing_utils.snackBar(
 //                                         msg: "Please Select Call Visit Type",
 //                                         color: Colors.red,
 //                                         context: context);
@@ -4782,7 +4782,7 @@ class _AddLeadState extends State<AddLead> {
 //                                   } else if (controllers
 //                                       .leadWhatsCrt[0].text.isNotEmpty &&
 //                                       controllers.leadWhatsCrt[0].text.length != 10) {
-//                                     utils.snackBar(
+//                                     billing_utils.snackBar(
 //                                         msg: "Invalid Whats No",
 //                                         color: Colors.red,
 //                                         context: context);
@@ -4790,14 +4790,14 @@ class _AddLeadState extends State<AddLead> {
 //                                   } else if (controllers
 //                                       .leadCoMobileCrt.text.isNotEmpty &&
 //                                       controllers.leadCoMobileCrt.text.length != 10) {
-//                                     utils.snackBar(
+//                                     billing_utils.snackBar(
 //                                         msg: "Invalid Company Phone No",
 //                                         color: Colors.red,
 //                                         context: context);
 //                                     controllers.leadCtr.reset();
 //                                   } else if (controllers.leadCoEmailCrt.text.isNotEmpty &&
 //                                       !controllers.leadCoEmailCrt.text.isEmail) {
-//                                     utils.snackBar(
+//                                     billing_utils.snackBar(
 //                                         msg: "Please add valid Company Email",
 //                                         color: Colors.red,
 //                                         context: context);
@@ -4812,7 +4812,7 @@ class _AddLeadState extends State<AddLead> {
 //                                               6) {
 //                                             apiService.insertSingleCustomer(context);
 //                                           } else {
-//                                             utils.snackBar(
+//                                             billing_utils.snackBar(
 //                                                 msg: "Please add 6 digits pin code",
 //                                                 color: Colors.red,
 //                                                 context: context);
@@ -4821,7 +4821,7 @@ class _AddLeadState extends State<AddLead> {
 //                                         }
 //                                       } else {
 //                                         ///Santhiya
-//                                         utils.snackBar(
+//                                         billing_utils.snackBar(
 //                                             msg: "Please add valid email",
 //                                             color: Colors.red,
 //                                             context: context);
@@ -4835,7 +4835,7 @@ class _AddLeadState extends State<AddLead> {
 //                                             6) {
 //                                           apiService.insertSingleCustomer(context);
 //                                         } else {
-//                                           utils.snackBar(
+//                                           billing_utils.snackBar(
 //                                               msg: "Please add 6 digits pin code",
 //                                               color: colorsConst.primary,
 //                                               context: context);

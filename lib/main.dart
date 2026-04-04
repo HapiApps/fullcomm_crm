@@ -11,6 +11,10 @@ import 'package:fullcomm_crm/screens/mobile_dashboard.dart';
 import 'package:fullcomm_crm/screens/dashboard.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/view_models/billing_provider.dart';
+import 'package:fullcomm_crm/view_models/billing_provider_before_combo.dart';
+import 'package:fullcomm_crm/view_models/credentials_provider.dart';
+import 'package:fullcomm_crm/view_models/customer_provider.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -51,6 +55,11 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => EmployeeProvider()),
         ChangeNotifierProvider(create: (_) => ReminderProvider()),
         ChangeNotifierProvider(create: (_) => DashboardProvider()),
+        ChangeNotifierProvider(create: (_) => BillingProvider()),
+        ChangeNotifierProvider(create: (_) => BillingProviderBeforeCombo()),
+        ChangeNotifierProvider(create: (_) => UserDataProvider()),
+        ChangeNotifierProvider(create: (_) => CustomersProvider()),
+
       ],child: MyApp(loginScreen: loginScreen,)));
 }
 

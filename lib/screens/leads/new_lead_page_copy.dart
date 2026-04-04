@@ -3,7 +3,7 @@
 // import 'package:flutter/services.dart';
 // import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 // import 'package:fullcomm_crm/common/extentions/extensions.dart';
-// import 'package:fullcomm_crm/common/utilities/utils.dart';
+// import 'package:fullcomm_crm/common/utilities/billing_utils.dart';
 // import 'package:flutter/material.dart';
 // import 'package:fullcomm_crm/components/customer_name_tile.dart';
 // import 'package:get/get.dart';
@@ -19,7 +19,7 @@
 // import '../../components/custom_text.dart';
 // import '../../components/customer_name_header.dart';
 // import '../../controller/controller.dart';
-// import '../../models/new_lead_obj.dart';
+// import '../../billing_models/new_lead_obj.dart';
 // import '../../services/api_services.dart';
 //
 // class NewLeadPage extends StatefulWidget {
@@ -819,7 +819,7 @@
 //                                       physics: const ScrollPhysics(),
 //                                       itemCount: widget.list.length,
 //                                       itemBuilder: (context, index) {
-//                                         final data = widget.list[index];
+//                                         final billing_data = widget.list[index];
 //                                         return Obx(()=>CustomerNameTile(
 //                                           listIndex: index,
 //                                           list: widget.list,list2: widget.list2,
@@ -839,60 +839,60 @@
 //                                             setState(() {});
 //                                             debugPrint("...${controllers.idList}");
 //                                           },
-//                                           visitType: data.visitType.toString(),
-//                                           detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
-//                                           statusUpdate: data.statusUpdate.toString(),
+//                                           visitType: billing_data.visitType.toString(),
+//                                           detailsOfServiceReq: billing_data.detailsOfServiceRequired.toString(),
+//                                           statusUpdate: billing_data.statusUpdate.toString(),
 //                                           index: index,
-//                                           points: data.points.toString(),
-//                                           quotationStatus: data.quotationStatus.toString(),
-//                                           quotationRequired: data.quotationRequired.toString(),
-//                                           productDiscussion: data.productDiscussion.toString(),
-//                                           discussionPoint: data.discussionPoint.toString(),
-//                                           notes: data.notes.toString(),
-//                                           linkedin: data.linkedin,
-//                                           x: data.x,
-//                                           name: data.firstname.toString().split("||")[0],
-//                                           mobileNumber: data.mobileNumber.toString(),
-//                                           email: data.email.toString().split("||")[0],
-//                                           companyName: data.companyName.toString(),
-//                                           mainWhatsApp: data.whatsapp.toString().split("||")[0],
-//                                           emailUpdate: data.quotationUpdate.toString(),
-//                                           id: data.userId.toString(),
-//                                           status: data.leadStatus ?? "UnQualified",
-//                                           rating: data.rating ?? "Warm",
-//                                           mainName: data.firstname.toString().split("||")[0],
-//                                           mainMobile: data.mobileNumber.toString().split("||")[0],
-//                                           mainEmail: data.email.toString().split("||")[0],
+//                                           points: billing_data.points.toString(),
+//                                           quotationStatus: billing_data.quotationStatus.toString(),
+//                                           quotationRequired: billing_data.quotationRequired.toString(),
+//                                           productDiscussion: billing_data.productDiscussion.toString(),
+//                                           discussionPoint: billing_data.discussionPoint.toString(),
+//                                           notes: billing_data.notes.toString(),
+//                                           linkedin: billing_data.linkedin,
+//                                           x: billing_data.x,
+//                                           name: billing_data.firstname.toString().split("||")[0],
+//                                           mobileNumber: billing_data.mobileNumber.toString(),
+//                                           email: billing_data.email.toString().split("||")[0],
+//                                           companyName: billing_data.companyName.toString(),
+//                                           mainWhatsApp: billing_data.whatsapp.toString().split("||")[0],
+//                                           emailUpdate: billing_data.quotationUpdate.toString(),
+//                                           id: billing_data.userId.toString(),
+//                                           status: billing_data.leadStatus ?? "UnQualified",
+//                                           rating: billing_data.rating ?? "Warm",
+//                                           mainName: billing_data.firstname.toString().split("||")[0],
+//                                           mainMobile: billing_data.mobileNumber.toString().split("||")[0],
+//                                           mainEmail: billing_data.email.toString().split("||")[0],
 //                                           title: "",
-//                                           whatsappNumber: data.whatsapp.toString().split("||")[0],
+//                                           whatsappNumber: billing_data.whatsapp.toString().split("||")[0],
 //                                           mainTitle: "",
-//                                           addressId: data.addressId ?? "",
-//                                           companyWebsite: data.companyWebsite ?? "",
-//                                           companyNumber: data.companyNumber ?? "",
-//                                           companyEmail: data.companyEmail ?? "",
-//                                           industry: data.industry ?? "",
-//                                           productServices: data.product ?? "",
-//                                           source:data.source ?? "",
-//                                           owner: data.owner ?? "",
+//                                           addressId: billing_data.addressId ?? "",
+//                                           companyWebsite: billing_data.companyWebsite ?? "",
+//                                           companyNumber: billing_data.companyNumber ?? "",
+//                                           companyEmail: billing_data.companyEmail ?? "",
+//                                           industry: billing_data.industry ?? "",
+//                                           productServices: billing_data.product ?? "",
+//                                           source:billing_data.source ?? "",
+//                                           owner: billing_data.owner ?? "",
 //                                           timelineDecision: "",
 //                                           serviceInterest: "",
 //                                           description: "",
-//                                           leadStatus: data.leadStatus ?? "",
-//                                           active: data.active ?? "",
-//                                           addressLine1: data.doorNo ?? "",
-//                                           addressLine2: data.landmark1 ?? "",
-//                                           area: data.area ?? "",
-//                                           city: data.city ?? "",
-//                                           state: data.state ?? "",
-//                                           country: data.country ?? "",
-//                                           pinCode: data.pincode ?? "",
-//                                           prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
-//                                           expectedConvertionDate: data.expectedConvertionDate ?? "",
-//                                           numOfHeadcount: data.numOfHeadcount ?? "",
-//                                           expectedBillingValue: data.expectedBillingValue ?? "",
-//                                           arpuValue: data.arpuValue ?? "",
-//                                           updatedTs: data.updatedTs ?? "",
-//                                           sourceDetails: data.sourceDetails ?? "",
+//                                           leadStatus: billing_data.leadStatus ?? "",
+//                                           active: billing_data.active ?? "",
+//                                           addressLine1: billing_data.doorNo ?? "",
+//                                           addressLine2: billing_data.landmark1 ?? "",
+//                                           area: billing_data.area ?? "",
+//                                           city: billing_data.city ?? "",
+//                                           state: billing_data.state ?? "",
+//                                           country: billing_data.country ?? "",
+//                                           pinCode: billing_data.pincode ?? "",
+//                                           prospectEnrollmentDate: billing_data.prospectEnrollmentDate ?? "",
+//                                           expectedConvertionDate: billing_data.expectedConvertionDate ?? "",
+//                                           numOfHeadcount: billing_data.numOfHeadcount ?? "",
+//                                           expectedBillingValue: billing_data.expectedBillingValue ?? "",
+//                                           arpuValue: billing_data.arpuValue ?? "",
+//                                           updatedTs: billing_data.updatedTs ?? "",
+//                                           sourceDetails: billing_data.sourceDetails ?? "",
 //                                         ));
 //                                       },
 //                                     ),
@@ -989,7 +989,7 @@
 //                                             physics: const ScrollPhysics(),
 //                                             itemCount: widget.list.length,
 //                                             itemBuilder: (context, index) {
-//                                               final data = widget.list[index];
+//                                               final billing_data = widget.list[index];
 //                                               return Obx(()=>CustomLeadTile(
 //                                                 listIndex: index,
 //                                                 list: widget.list,list2: widget.list2,
@@ -999,14 +999,14 @@
 //                                                 //   setState(() {
 //                                                 //     if(controllers.isLeadsList[index]["isSelect"]==true){
 //                                                 //       controllers.isLeadsList[index]["isSelect"]=false;
-//                                                 //       var i=apiService.newLeadList.indexWhere((element) => element["lead_id"]==data.userId.toString());
+//                                                 //       var i=apiService.newLeadList.indexWhere((element) => element["lead_id"]==billing_data.userId.toString());
 //                                                 //       apiService.newLeadList.removeAt(i);
 //                                                 //     }else{
 //                                                 //       controllers.isLeadsList[index]["isSelect"]=true;
 //                                                 //       apiService.newLeadList.add({
-//                                                 //         "lead_id":data.userId.toString(),
+//                                                 //         "lead_id":billing_data.userId.toString(),
 //                                                 //         "user_id":controllers.storage.read("id"),
-//                                                 //         "rating":data.rating ?? "Warm",
+//                                                 //         "rating":billing_data.rating ?? "Warm",
 //                                                 //         "cos_id":controllers.storage.read("cos_id"),
 //                                                 //       });
 //                                                 //     }
@@ -1026,60 +1026,60 @@
 //                                                   setState(() {});
 //                                                   debugPrint("...${controllers.idList}");
 //                                                 },
-//                                                 visitType: data.visitType.toString(),
-//                                                 detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
-//                                                 statusUpdate: data.statusUpdate.toString(),
+//                                                 visitType: billing_data.visitType.toString(),
+//                                                 detailsOfServiceReq: billing_data.detailsOfServiceRequired.toString(),
+//                                                 statusUpdate: billing_data.statusUpdate.toString(),
 //                                                 index: index,
-//                                                 points: data.points.toString(),
-//                                                 quotationStatus: data.quotationStatus.toString(),
-//                                                 quotationRequired: data.quotationRequired.toString(),
-//                                                 productDiscussion: data.productDiscussion.toString(),
-//                                                 discussionPoint: data.discussionPoint.toString(),
-//                                                 notes: data.notes.toString(),
-//                                                 linkedin: data.linkedin,
-//                                                 x: data.x,
-//                                                 name: data.firstname.toString().split("||")[0],
-//                                                 mobileNumber: data.mobileNumber.toString().split("||")[0],
-//                                                 email: data.email.toString().split("||")[0],
-//                                                 companyName: data.companyName.toString(),
-//                                                 mainWhatsApp: data.whatsapp.toString().split("||")[0],
-//                                                 emailUpdate: data.quotationUpdate.toString(),
-//                                                 id: data.userId.toString(),
-//                                                 status: data.leadStatus ?? "UnQualified",
-//                                                 rating: data.rating ?? "Warm",
-//                                                 mainName: data.firstname.toString().split("||")[0],
-//                                                 mainMobile: data.mobileNumber.toString().split("||")[0],
-//                                                 mainEmail: data.email.toString().split("||")[0],
+//                                                 points: billing_data.points.toString(),
+//                                                 quotationStatus: billing_data.quotationStatus.toString(),
+//                                                 quotationRequired: billing_data.quotationRequired.toString(),
+//                                                 productDiscussion: billing_data.productDiscussion.toString(),
+//                                                 discussionPoint: billing_data.discussionPoint.toString(),
+//                                                 notes: billing_data.notes.toString(),
+//                                                 linkedin: billing_data.linkedin,
+//                                                 x: billing_data.x,
+//                                                 name: billing_data.firstname.toString().split("||")[0],
+//                                                 mobileNumber: billing_data.mobileNumber.toString().split("||")[0],
+//                                                 email: billing_data.email.toString().split("||")[0],
+//                                                 companyName: billing_data.companyName.toString(),
+//                                                 mainWhatsApp: billing_data.whatsapp.toString().split("||")[0],
+//                                                 emailUpdate: billing_data.quotationUpdate.toString(),
+//                                                 id: billing_data.userId.toString(),
+//                                                 status: billing_data.leadStatus ?? "UnQualified",
+//                                                 rating: billing_data.rating ?? "Warm",
+//                                                 mainName: billing_data.firstname.toString().split("||")[0],
+//                                                 mainMobile: billing_data.mobileNumber.toString().split("||")[0],
+//                                                 mainEmail: billing_data.email.toString().split("||")[0],
 //                                                 title: "",
-//                                                 whatsappNumber: data.whatsapp.toString().split("||")[0],
+//                                                 whatsappNumber: billing_data.whatsapp.toString().split("||")[0],
 //                                                 mainTitle: "",
-//                                                 addressId: data.addressId ?? "",
-//                                                 companyWebsite: data.companyWebsite ?? "",
-//                                                 companyNumber: data.companyNumber ?? "",
-//                                                 companyEmail: data.companyEmail ?? "",
-//                                                 industry: data.industry ?? "",
-//                                                 productServices: data.product ?? "",
-//                                                 source:data.source ?? "",
-//                                                 owner: data.owner ?? "",
+//                                                 addressId: billing_data.addressId ?? "",
+//                                                 companyWebsite: billing_data.companyWebsite ?? "",
+//                                                 companyNumber: billing_data.companyNumber ?? "",
+//                                                 companyEmail: billing_data.companyEmail ?? "",
+//                                                 industry: billing_data.industry ?? "",
+//                                                 productServices: billing_data.product ?? "",
+//                                                 source:billing_data.source ?? "",
+//                                                 owner: billing_data.owner ?? "",
 //                                                 timelineDecision: "",
 //                                                 serviceInterest: "",
 //                                                 description: "",
-//                                                 leadStatus: data.leadStatus ?? "",
-//                                                 active: data.active ?? "",
-//                                                 addressLine1: data.doorNo ?? "",
-//                                                 addressLine2: data.landmark1 ?? "",
-//                                                 area: data.area ?? "",
-//                                                 city: data.city ?? "",
-//                                                 state: data.state ?? "",
-//                                                 country: data.country ?? "",
-//                                                 pinCode: data.pincode ?? "",
-//                                                 prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
-//                                                 expectedConvertionDate: data.expectedConvertionDate ?? "",
-//                                                 numOfHeadcount: data.numOfHeadcount ?? "",
-//                                                 expectedBillingValue: data.expectedBillingValue ?? "",
-//                                                 arpuValue: data.arpuValue ?? "",
-//                                                 updatedTs: data.updatedTs ?? "",
-//                                                 sourceDetails: data.sourceDetails ?? "",
+//                                                 leadStatus: billing_data.leadStatus ?? "",
+//                                                 active: billing_data.active ?? "",
+//                                                 addressLine1: billing_data.doorNo ?? "",
+//                                                 addressLine2: billing_data.landmark1 ?? "",
+//                                                 area: billing_data.area ?? "",
+//                                                 city: billing_data.city ?? "",
+//                                                 state: billing_data.state ?? "",
+//                                                 country: billing_data.country ?? "",
+//                                                 pinCode: billing_data.pincode ?? "",
+//                                                 prospectEnrollmentDate: billing_data.prospectEnrollmentDate ?? "",
+//                                                 expectedConvertionDate: billing_data.expectedConvertionDate ?? "",
+//                                                 numOfHeadcount: billing_data.numOfHeadcount ?? "",
+//                                                 expectedBillingValue: billing_data.expectedBillingValue ?? "",
+//                                                 arpuValue: billing_data.arpuValue ?? "",
+//                                                 updatedTs: billing_data.updatedTs ?? "",
+//                                                 sourceDetails: billing_data.sourceDetails ?? "",
 //                                               ));
 //                                             },
 //                                           ):
@@ -1101,12 +1101,12 @@
 //                       return Row(
 //                         mainAxisAlignment: MainAxisAlignment.end,
 //                         children: [
-//                           utils.paginationButton(Icons.chevron_left, currentPage > 1, () {
+//                           billing_utils.paginationButton(Icons.chevron_left, currentPage > 1, () {
 //                             _focusNode.requestFocus();
 //                             controllers.currentProspectPage.value--;
 //                           }),
-//                           ...utils.buildPagination(totalPages, currentPage),
-//                           utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
+//                           ...billing_utils.buildPagination(totalPages, currentPage),
+//                           billing_utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
 //                             controllers.currentProspectPage.value++;
 //                             _focusNode.requestFocus();
 //                           }),

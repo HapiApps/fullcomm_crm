@@ -205,6 +205,41 @@ class _LeadPieCardState extends State<LeadPieCard> {
                 }
             ),
           ),
+          ///
+          // Wrap(
+          //   spacing: 20, // horizontal gap
+          //   runSpacing: 10, // vertical gap
+          //   children: List.generate(dashController.leadReport.length, (index) {
+          //     final item = dashController.leadReport[index];
+          //     final value =
+          //         int.tryParse(item["customer_count"].toString()) ?? 0;
+          //
+          //     return SizedBox(
+          //       width: MediaQuery.of(context).size.width / 2.3, // 2 per row
+          //       child: Row(
+          //         children: [
+          //           CircleAvatar(
+          //             radius: 5,
+          //             backgroundColor: dashController.color[index],
+          //           ),
+          //           const SizedBox(width: 6),
+          //           Expanded(
+          //             child: CustomText(
+          //               text: item["category"] ?? "",
+          //               isCopy: false,
+          //             ),
+          //           ),
+          //           const SizedBox(width: 6),
+          //           CustomText(
+          //             text: value.toString(),
+          //             isBold: true,
+          //             isCopy: false,
+          //           ),
+          //         ],
+          //       ),
+          //     );
+          //   }),
+          // )
         ],
       ),
     );

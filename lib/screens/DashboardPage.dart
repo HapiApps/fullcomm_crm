@@ -890,15 +890,73 @@ void checkDate(){
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CustomText(text: "Appointments", isCopy: false,isBold: true,size: 15,),5.height,
+                                    Row(
+                                      children: [
+                                        CustomText(text: "Appointments", isCopy: false,isBold: true,size: 15,),
+                                        if(controllers.storage.read("role") == "See All Customer Records")
+                                        Row(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Radio<String>(
+                                                    value: "My",
+                                                    groupValue: remController.filterApp.value,
+                                                    activeColor: const Color(0xFF0078D7),
+                                                    onChanged: (v) {
+                                                      remController.filterApp.value="My";
+                                                      remController.filterAndSortMeetings(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        callType: controllers.selectMeetingType.value,
+                                                        sortField: controllers.sortFieldMeetingActivity.value,
+                                                        sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                      );
+                                                    },
+                                                  ),
+                                                  CustomText(
+                                                    text: "My",
+                                                    colors: Colors.black,
+                                                    size: 15,
+                                                    isCopy: true,
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Radio<String>(
+                                                    value: "Team",
+                                                    groupValue: remController.filterApp.value,
+                                                    activeColor: const Color(0xFF0078D7),
+                                                    onChanged: (v) {
+                                                      remController.filterApp.value="Team";
+                                                      remController.filterAndSortMeetings(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        callType: controllers.selectMeetingType.value,
+                                                        sortField: controllers.sortFieldMeetingActivity.value,
+                                                        sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                      );
+                                                    },
+                                                  ),
+                                                  CustomText(
+                                                    text: "Team",
+                                                    colors: Colors.black,
+                                                    size: 15,
+                                                    isCopy: true,
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                      ],
+                                    ),5.height,
                                     Container(
                                       color: Colors.white,
                                       width: screenWidth/3,
                                       child: Table(
                                         columnWidths: {
-                                          0: FixedColumnWidth(130),
-                                          1: FixedColumnWidth(130),
-                                          2: FixedColumnWidth(150),
+                                          0: FixedColumnWidth(100),
+                                          1: FixedColumnWidth(100),
+                                          2: FixedColumnWidth(100),
+                                          3: FixedColumnWidth(100),
                                         },
                                         border: TableBorder(
                                           horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -917,7 +975,7 @@ void checkDate(){
                                                     CustomText(//1
                                                       textAlign: TextAlign.left,
                                                       text: "Lead Name",
-                                                      size: 15,
+                                                      size: 13,
                                                       isBold: true,
                                                       isCopy: true,
                                                       colors: Colors.white,
@@ -957,7 +1015,7 @@ void checkDate(){
                                                       textAlign: TextAlign.left,
                                                       text: "Company name",
                                                       isCopy: true,
-                                                      size: 15,
+                                                      size: 13,
                                                       isBold: true,
                                                       colors: Colors.white,
                                                     ),
@@ -990,13 +1048,52 @@ void checkDate(){
                                                     ),
                                                   ],
                                                 ),),
+                                                headerCell(3, Row(
+                                                  children: [
+                                                    CustomText(//2
+                                                      textAlign: TextAlign.left,
+                                                      text: "Employee",
+                                                      isCopy: true,
+                                                      size: 13,
+                                                      isBold: true,
+                                                      colors: Colors.white,
+                                                    ),
+                                                    3.width,
+                                                    GestureDetector(
+                                                      onTap: (){
+                                                        if(controllers.sortFieldMeetingActivity.value=='emp' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                                          controllers.sortOrderMeetingActivity.value='desc';
+                                                        }else{
+                                                          controllers.sortOrderMeetingActivity.value='asc';
+                                                        }
+                                                        controllers.sortFieldMeetingActivity.value='emp';
+                                                        remController.filterAndSortMeetings(
+                                                          searchText: controllers.searchText.value.toLowerCase(),
+                                                          callType: controllers.selectMeetingType.value,
+                                                          sortField: controllers.sortFieldMeetingActivity.value,
+                                                          sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                        );
+                                                      },
+                                                      child: Obx(() => Image.asset(
+                                                        controllers.sortFieldMeetingActivity.value.isEmpty
+                                                            ? "assets/images/arrow.png"
+                                                            : controllers.sortOrderMeetingActivity.value == 'asc'
+                                                            ? "assets/images/arrow_up.png"
+                                                            : "assets/images/arrow_down.png",
+                                                        width: 15,
+                                                        height: 15,
+                                                      ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),),
                                                 headerCell(7, Row(
                                                   children: [
                                                     CustomText(
                                                       textAlign: TextAlign.center,
-                                                      text: "Appointment Date",
+                                                      text: "Date",
                                                       isCopy: true,
-                                                      size: 15,
+                                                      size: 13,
                                                       isBold: true,
                                                       colors: Colors.white,
                                                     ),
@@ -1057,9 +1154,10 @@ void checkDate(){
                                             final data = remController.meetingFilteredList[index];
                                             return Table(
                                               columnWidths: {
-                                                0: FixedColumnWidth(130),
-                                                1: FixedColumnWidth(130),
-                                                2: FixedColumnWidth(150),
+                                                0: FixedColumnWidth(100),
+                                                1: FixedColumnWidth(100),
+                                                2: FixedColumnWidth(100),
+                                                3: FixedColumnWidth(100),
                                               },
                                               border: TableBorder(
                                                 horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -1081,7 +1179,7 @@ void checkDate(){
                                                           child: CustomText(
                                                             textAlign: TextAlign.left,
                                                             text: data.cusName.toString()=="null"?"":data.cusName.toString(),
-                                                            size: 15,
+                                                            size: 13,
                                                             isCopy: true,
                                                             colors:colorsConst.textColor,
                                                           ),
@@ -1096,7 +1194,22 @@ void checkDate(){
                                                           child: CustomText(
                                                             textAlign: TextAlign.left,
                                                             text:data.comName.toString()=="null"?"":data.comName.toString(),
-                                                            size: 15,
+                                                            size: 13,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showMeetingDialog(context, remController.meetingFilteredList,index);
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text:data.employeeName.toString()=="null"?"":data.employeeName.toString(),
+                                                            size: 13,
                                                             isCopy: true,
                                                             colors: colorsConst.textColor,
                                                           ),
@@ -1111,7 +1224,7 @@ void checkDate(){
                                                           child: CustomText(
                                                             textAlign: TextAlign.left,
                                                             text: formatFirstDate("${data.dates} ${data.time}"),
-                                                            size: 15,
+                                                            size: 13,
                                                             isCopy: true,
                                                             colors: colorsConst.textColor,
                                                           ),
@@ -1130,16 +1243,83 @@ void checkDate(){
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CustomText(text: "Call Records", isCopy: false,isBold: true,size: 15,),5.height,
+                                    Row(
+                                      children: [
+                                        CustomText(text: "Call Records", isCopy: false,isBold: true,size: 15,),
+                                        if(controllers.storage.read("role") == "See All Customer Records")
+                                        Row(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Radio<String>(
+                                                  value: "My",
+                                                  groupValue: remController.filterCall.value,
+                                                  activeColor: const Color(0xFF0078D7),
+                                                  onChanged: (v) {
+                                                    remController.filterCall.value="My";
+                                                    remController.filterAndSortCalls(
+                                                      allCalls: controllers.callActivity,
+                                                      searchText: controllers.searchText.value.toLowerCase(),
+                                                      callType: controllers.selectCallType.value,
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value,
+                                                      selectedMonth: remController.selectedCallMonth.value,
+                                                      selectedRange: remController.selectedCallRange.value,
+                                                      selectedDateFilter: remController.selectedCallSortBy.value,
+                                                    );
+                                                  },
+                                                ),
+                                                CustomText(
+                                                  text: "My",
+                                                  colors: Colors.black,
+                                                  size: 15,
+                                                  isCopy: true,
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Radio<String>(
+                                                  value: "Team",
+                                                  groupValue: remController.filterCall.value,
+                                                  activeColor: const Color(0xFF0078D7),
+                                                  onChanged: (v) {
+                                                    remController.filterCall.value="Team";
+                                                    remController.filterAndSortCalls(
+                                                      allCalls: controllers.callActivity,
+                                                      searchText: controllers.searchText.value.toLowerCase(),
+                                                      callType: controllers.selectCallType.value,
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value,
+                                                      selectedMonth: remController.selectedCallMonth.value,
+                                                      selectedRange: remController.selectedCallRange.value,
+                                                      selectedDateFilter: remController.selectedCallSortBy.value,
+                                                    );
+                                                  },
+                                                ),
+                                                CustomText(
+                                                  text: "Team",
+                                                  colors: Colors.black,
+                                                  size: 15,
+                                                  isCopy: true,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),5.height,
                                     Container(
                                       color: Colors.white,
                                       width: screenWidth/2.3,
                                       child: Table(
                                         columnWidths: {
-                                          0: FixedColumnWidth(130),
-                                          1: FixedColumnWidth(130),
-                                          2: FixedColumnWidth(150),
-                                          3: FixedColumnWidth(150),
+                                          0: FixedColumnWidth(100),
+                                          1: FixedColumnWidth(100),
+                                          2: FixedColumnWidth(100),
+                                          3: FixedColumnWidth(100),
+                                          4: FixedColumnWidth(100),
+                                          5: FixedColumnWidth(100),
                                         },
                                         border: TableBorder(
                                           horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -1158,7 +1338,7 @@ void checkDate(){
                                                     CustomText(//1
                                                       textAlign: TextAlign.left,
                                                       text: "Lead Name",
-                                                      size: 15,
+                                                      size: 13,
                                                       isBold: true,
                                                       isCopy: true,
                                                       colors: Colors.white,
@@ -1195,13 +1375,55 @@ void checkDate(){
                                                     ),
                                                   ],
                                                 ),),
+                                                headerCell(1, Row(
+                                                  children: [
+                                                    CustomText(//1
+                                                      textAlign: TextAlign.left,
+                                                      text: "Company",
+                                                      size: 13,
+                                                      isBold: true,
+                                                      isCopy: true,
+                                                      colors: Colors.white,
+                                                    ),3.width,
+                                                    GestureDetector(
+                                                      onTap: (){
+                                                        if(controllers.sortFieldCallActivity.value=='company' && controllers.sortOrderCallActivity.value=='asc'){
+                                                          controllers.sortOrderCallActivity.value='desc';
+                                                        }else{
+                                                          controllers.sortOrderCallActivity.value='asc';
+                                                        }
+                                                        controllers.sortFieldCallActivity.value='company';
+                                                        remController.filterAndSortCalls(
+                                                          allCalls: controllers.callActivity,
+                                                          searchText: controllers.searchText.value.toLowerCase(),
+                                                          callType: controllers.selectCallType.value,
+                                                          sortField: controllers.sortFieldCallActivity.value,
+                                                          sortOrder: controllers.sortOrderCallActivity.value,
+                                                          selectedMonth: remController.selectedCallMonth.value,
+                                                          selectedRange: remController.selectedCallRange.value,
+                                                          selectedDateFilter: remController.selectedCallSortBy.value,
+                                                        );
+                                                      },
+                                                      child: Obx(() => Image.asset(
+                                                        controllers.sortFieldCallActivity.value.isEmpty
+                                                            ? "assets/images/arrow.png"
+                                                            : controllers.sortOrderCallActivity.value == 'asc'
+                                                            ? "assets/images/arrow_up.png"
+                                                            : "assets/images/arrow_down.png",
+                                                        width: 15,
+                                                        height: 15,
+                                                      ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),),
                                                 headerCell(2, Row(
                                                   children: [
                                                     CustomText(
                                                       textAlign: TextAlign.center,
                                                       text: "Call Date",
                                                       isCopy: true,
-                                                      size: 15,
+                                                      size: 13,
                                                       isBold: true,
                                                       colors: Colors.white,
                                                     ),3.width,
@@ -1243,7 +1465,7 @@ void checkDate(){
                                                       textAlign: TextAlign.center,
                                                       text: "Call Type",
                                                       isCopy: true,
-                                                      size: 15,
+                                                      size: 13,
                                                       isBold: true,
                                                       colors: Colors.white,
                                                     ),3.width,
@@ -1285,7 +1507,7 @@ void checkDate(){
                                                       textAlign: TextAlign.center,
                                                       text: "Call Status",
                                                       isCopy: true,
-                                                      size: 15,
+                                                      size: 13,
                                                       isBold: true,
                                                       colors: Colors.white,
                                                     ),3.width,
@@ -1297,6 +1519,48 @@ void checkDate(){
                                                           controllers.sortOrderCallActivity.value='asc';
                                                         }
                                                         controllers.sortFieldCallActivity.value='status';
+                                                        remController.filterAndSortCalls(
+                                                          allCalls: controllers.callActivity,
+                                                          searchText: controllers.searchText.value.toLowerCase(),
+                                                          callType: controllers.selectCallType.value,
+                                                          sortField: controllers.sortFieldCallActivity.value,
+                                                          sortOrder: controllers.sortOrderCallActivity.value,
+                                                          selectedMonth: remController.selectedCallMonth.value,
+                                                          selectedRange: remController.selectedCallRange.value,
+                                                          selectedDateFilter: remController.selectedCallSortBy.value,
+                                                        );
+                                                      },
+                                                      child: Obx(() => Image.asset(
+                                                        controllers.sortFieldCallActivity.value.isEmpty
+                                                            ? "assets/images/arrow.png"
+                                                            : controllers.sortOrderCallActivity.value == 'asc'
+                                                            ? "assets/images/arrow_up.png"
+                                                            : "assets/images/arrow_down.png",
+                                                        width: 15,
+                                                        height: 15,
+                                                      ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),),
+                                                headerCell(5, Row(
+                                                  children: [
+                                                    CustomText(
+                                                      textAlign: TextAlign.center,
+                                                      text: "Added By",
+                                                      isCopy: true,
+                                                      size: 13,
+                                                      isBold: true,
+                                                      colors: Colors.white,
+                                                    ),3.width,
+                                                    GestureDetector(
+                                                      onTap: (){
+                                                        if(controllers.sortFieldCallActivity.value=='addedBy' && controllers.sortOrderCallActivity.value=='asc'){
+                                                          controllers.sortOrderCallActivity.value='desc';
+                                                        }else{
+                                                          controllers.sortOrderCallActivity.value='asc';
+                                                        }
+                                                        controllers.sortFieldCallActivity.value='addedBy';
                                                         remController.filterAndSortCalls(
                                                           allCalls: controllers.callActivity,
                                                           searchText: controllers.searchText.value.toLowerCase(),
@@ -1349,10 +1613,12 @@ void checkDate(){
                                             final data = remController.callFilteredList[index];
                                             return Table(
                                               columnWidths: {
-                                                0: FixedColumnWidth(130),
-                                                1: FixedColumnWidth(130),
-                                                2: FixedColumnWidth(150),
-                                                3: FixedColumnWidth(150),
+                                                0: FixedColumnWidth(100),
+                                                1: FixedColumnWidth(100),
+                                                2: FixedColumnWidth(100),
+                                                3: FixedColumnWidth(100),
+                                                4: FixedColumnWidth(100),
+                                                5: FixedColumnWidth(100),
                                               },
                                               border: TableBorder(
                                                 horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -1374,7 +1640,7 @@ void checkDate(){
                                                           child: CustomText(
                                                             textAlign: TextAlign.left,
                                                             text: data.customerName.toString()=="null"?"":data.customerName.toString(),
-                                                            size: 15,
+                                                            size: 13,
                                                             isCopy: true,
                                                             colors:colorsConst.textColor,
                                                           ),
@@ -1388,10 +1654,36 @@ void checkDate(){
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                           child: CustomText(
                                                             textAlign: TextAlign.left,
-                                                            text: controllers.formatDate(data.sentDate.toString()),
-                                                            size: 15,
+                                                            text: data.companyName.toString()=="null"?"":data.companyName.toString(),
+                                                            size: 13,
                                                             isCopy: true,
-                                                            colors: colorsConst.textColor,
+                                                            colors:colorsConst.textColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showCallDialog(context,remController.callFilteredList,index);
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                          child: Column(
+                                                            children: [
+                                                              CustomText(
+                                                                textAlign: TextAlign.left,
+                                                                text: data.sentDate.toString().split(" ")[0],
+                                                                size: 13,
+                                                                isCopy: true,
+                                                                colors: colorsConst.textColor,
+                                                              ),
+                                                              CustomText(
+                                                                textAlign: TextAlign.start,
+                                                                text: "${data.sentDate.toString().split(" ")[1]} ${data.sentDate.toString().split(" ")[2]}",
+                                                                size: 13,
+                                                                isCopy: true,
+                                                                colors: colorsConst.textColor,
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
                                                       ),
@@ -1404,7 +1696,7 @@ void checkDate(){
                                                           child: CustomText(
                                                             textAlign: TextAlign.left,
                                                             text: data.callType,
-                                                            size: 15,
+                                                            size: 13,
                                                             isCopy: true,
                                                             colors: colorsConst.textColor,
                                                           ),
@@ -1419,7 +1711,22 @@ void checkDate(){
                                                           child: CustomText(
                                                             textAlign: TextAlign.left,
                                                             text: data.callStatus,
-                                                            size: 15,
+                                                            size: 13,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      InkWell(
+                                                        onTap:(){
+                                                          showCallDialog(context,remController.callFilteredList,index);
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: data.name,
+                                                            size: 13,
                                                             isCopy: true,
                                                             colors: colorsConst.textColor,
                                                           ),
@@ -1446,7 +1753,54 @@ void checkDate(){
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CustomText(text: "Reminders", isCopy: false,isBold: true,size: 15,),5.height,
+                                    Row(
+                                      children: [
+                                        CustomText(text: "Reminders", isCopy: false,isBold: true,size: 15,),
+                                        if(controllers.storage.read("role") == "See All Customer Records")
+                                          Row(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Radio<String>(
+                                                    value: "My",
+                                                    groupValue: remController.filterRem.value,
+                                                    activeColor: const Color(0xFF0078D7),
+                                                    onChanged: (v) {
+                                                      remController.filterRem.value="My";
+                                                      remController.sortReminders();
+                                                    },
+                                                  ),
+                                                  CustomText(
+                                                    text: "My",
+                                                    colors: Colors.black,
+                                                    size: 15,
+                                                    isCopy: true,
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Radio<String>(
+                                                    value: "Team",
+                                                    groupValue: remController.filterRem.value,
+                                                    activeColor: const Color(0xFF0078D7),
+                                                    onChanged: (v) {
+                                                      remController.filterRem.value="Team";
+                                                      remController.sortReminders();
+                                                    },
+                                                  ),
+                                                  CustomText(
+                                                    text: "Team",
+                                                    colors: Colors.black,
+                                                    size: 15,
+                                                    isCopy: true,
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                      ],
+                                    ),5.height,
                                     Container(
                                       color: Colors.white,
                                       width: screenWidth/1.29,
@@ -2131,13 +2485,17 @@ void checkDate(){
                         child: Image.asset(DashboardAssets.leadStage),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
 
+            10.height,
+            CustomText(
+              text: "Life Time Customer Journey",
+              isCopy: false,colors: Colors.blue,
+            ),
             20.height,
-
             // ================= FUNNEL ITEMS =================
             for (int i = 0; i < controllers.leadCategoryList.length; i++)
               _animatedLeadItem(

@@ -500,7 +500,7 @@ class ReminderUtils {
   //                                 errorText: startDError,
   //                                 width: 150,
   //                                 onTap: () {
-  //                                   utils.datePicker(
+  //                                   billing_utils.datePicker(
   //                                       context: context,
   //                                       textEditingController: controllers.dateOfConCtr,
   //                                       pathVal: remController.stDate);
@@ -520,7 +520,7 @@ class ReminderUtils {
   //                                 width: 150,
   //                                 errorText: startTError,
   //                                 onTap: () {
-  //                                   utils.timePicker(
+  //                                   billing_utils.timePicker(
   //                                       context: context,
   //                                       textEditingController:
   //                                       controllers.timeOfConCtr,
@@ -788,7 +788,7 @@ class ReminderUtils {
   //                                 errorText: endDError,
   //                                 width: 150,
   //                                 onTap: () {
-  //                                   utils.datePicker(
+  //                                   billing_utils.datePicker(
   //                                       context: context,
   //                                       textEditingController: controllers.dateOfConCtr,
   //                                       pathVal: remController.enDate);
@@ -808,7 +808,7 @@ class ReminderUtils {
   //                                 width: 150,
   //                                 errorText: endTError,
   //                                 onTap: () {
-  //                                   utils.timePicker(
+  //                                   billing_utils.timePicker(
   //                                       context: context,
   //                                       textEditingController:
   //                                       controllers.timeOfConCtr,
