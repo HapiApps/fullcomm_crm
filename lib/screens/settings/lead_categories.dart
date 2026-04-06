@@ -908,7 +908,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
           controllers.setLogOut();
         }
       }
-      if (request.statusCode == 200) {
+      if (request.statusCode==200) {
         add.value=false;
         edit.value=false;
         editIndex.value=100;
@@ -917,27 +917,27 @@ class _LeadCategoriesState extends State<LeadCategories> {
         apiService.getAllLeadCategories();
         if(ops=="add"){
           controllers.leadCategoryList.add(LeadStatusModel(
-              leadStatus: (responseData['billing_data']['lead_status']).toString(),
+              leadStatus: (responseData['data']['lead_status']).toString(),
               value: controllers.emailMessageCtr.text.trim(),
-              id: (responseData['billing_data']['id']).toString(),
-              active: (responseData['billing_data']['active']).toString(),
-              totalLead: (responseData['billing_data']['total_lead']).toString(),
+              id: (responseData['data']['id']).toString(),
+              active: (responseData['data']['active']).toString(),
+              totalLead: (responseData['data']['total_lead']).toString(),
               icon1: "",
               icon2: "",
-              displayOrder: int.parse(responseData['billing_data']['display_order'].toString()),
+              displayOrder: int.parse(responseData['data']['display_order'].toString()),
             ));
         }else{
           int index = controllers.leadCategoryList.indexWhere((e) => e.id == id);
           if (index != -1) {
             controllers.leadCategoryList[index] =LeadStatusModel(
-              leadStatus: (responseData['billing_data']['lead_status']).toString(),
+              leadStatus: (responseData['data']['lead_status']).toString(),
               value: controllers.emailMessageCtr.text.trim(),
-              id: (responseData['billing_data']['id']).toString(),
-              active: (responseData['billing_data']['active']).toString(),
-              totalLead: (responseData['billing_data']['total_lead']).toString(),
+              id: (responseData['data']['id']).toString(),
+              active: (responseData['data']['active']).toString(),
+              totalLead: (responseData['data']['total_lead']).toString(),
               icon1: "",
               icon2: "",
-              displayOrder: int.parse(responseData['billing_data']['display_order'].toString()));
+              displayOrder: int.parse(responseData['data']['display_order'].toString()));
           }
         }
         // controllers.leadCategoryList

@@ -1034,12 +1034,16 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       final matchesFilterType =
           filterApp.value == "All" ||
               (filterApp.value == "My" &&
-                  activity.employeeName == controllers.storage.read("f_name")) ||
+                  activity.employeeName.contains(controllers.storage.read("f_name"))) ||
               (filterApp.value == "Team" &&
-                  activity.employeeName != controllers.storage.read("f_name"));
+                  !activity.employeeName.contains(controllers.storage.read("f_name")));
 
       final matchesSearch = searchText.isEmpty ||
           (activity.comName.toLowerCase().contains(searchText)) ||
+          (activity.employeeName.toLowerCase().contains(searchText)) ||
+          (activity.title.toLowerCase().contains(searchText)) ||
+          (activity.venue.toLowerCase().contains(searchText)) ||
+          (activity.notes.toLowerCase().contains(searchText)) ||
           (activity.cusName.toLowerCase().contains(searchText));
 
       return matchesCallType && matchesSearch && matchesFilterType;
@@ -1065,6 +1069,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       filtered.sort((a, b) => compareString(a.notes ?? '', b.notes ?? ''));
     } else if (field == 'emp') {
       filtered.sort((a, b) => compareString(a.employeeName ?? '', b.employeeName ?? ''));
+    }  else if (field == 'status') {
+      filtered.sort((a, b) => compareString(a.status ?? '', b.status ?? ''));
     } else if (field == 'date') {
       filtered.sort((a, b) {
         final dateA = _parseMeetingDate(a.dates ?? '');

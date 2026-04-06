@@ -53,7 +53,7 @@ class _RecordsState extends State<Records> {
               child: Column(
                 children: [
                   Container(
-                    height: 70,
+                    height: 60,
                     color: Color(0xffE2E8F0),
                     child: TabBar(
                       controller: controllers.tabController,

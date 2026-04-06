@@ -17,7 +17,6 @@ import 'package:fullcomm_crm/billing_utils/sized_box.dart';
 import 'package:fullcomm_crm/billing_utils/text_formats.dart';
 import 'package:fullcomm_crm/billing_utils/toast_messages.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
-import 'package:fullcomm_crm/view_models/credentials_provider.dart';
 import 'package:fullcomm_crm/view_models/customer_provider.dart';
 import 'package:fullcomm_crm/billing/orders/hold_order_details.dart';
 import 'package:provider/provider.dart';
@@ -172,10 +171,8 @@ class _ReorderState extends State<Reorder> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final billing = Provider.of<BillingProvider>(context, listen: false);
       final customers = Provider.of<CustomersProvider>(context, listen: false);
-      final credentials = Provider.of<UserDataProvider>(context, listen: false);
       FocusScope.of(context).requestFocus(billing.dropdownFocusNode);
       billing.dropdownFocusNode.requestFocus();
-      await credentials.loadCashierInfo();
       // Set cashier
       billing.cashierController.text =
       "${billing.cashierNameController} - ${billing.cashierIdController}";
@@ -249,8 +246,8 @@ class _ReorderState extends State<Reorder> {
     String searchText = "";
     bool _isPaymentDialogOpen = false;
     BuildContext? _dialogContext;bool _isPrinting = false;
-    return Consumer3<UserDataProvider, CustomersProvider, BillingProvider>(
-        builder: (context, userDataProvider, customerProvider, billingProvider,
+    return Consumer2<CustomersProvider, BillingProvider>(
+        builder: (context, customerProvider, billingProvider,
             _) {
           return Focus(
             autofocus: true,

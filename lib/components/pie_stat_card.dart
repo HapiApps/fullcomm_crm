@@ -154,22 +154,21 @@ class _LeadPieCardState extends State<LeadPieCard> {
             ),
           ),
 
-          5.height,
+          // 5.height,
 
           /// LEGEND GRID (2 per row)
           SizedBox(
-            height: 50,
+            // height: 50,
             child: GridView.builder(
-              physics: const BouncingScrollPhysics(), // 👈 scroll feel
-                // shrinkWrap: true,
-              // physics:
-              // const NeverScrollableScrollPhysics(),
+              // physics: const BouncingScrollPhysics(), // 👈 scroll feel
+              shrinkWrap: true,
+              physics:const NeverScrollableScrollPhysics(),
               // itemCount: widget.data.length,
               gridDelegate:
               const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+                crossAxisCount: 3,
                 mainAxisSpacing: 8,
-                crossAxisSpacing: 55,
+                crossAxisSpacing: 3,
                 childAspectRatio: 10,
               ),
                 itemCount: dashController.leadReport.length,
@@ -180,24 +179,19 @@ class _LeadPieCardState extends State<LeadPieCard> {
                       int.tryParse(item["customer_count"].toString()) ?? 0;
 
                   return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 5,
-                            backgroundColor: dashController.color[index],
-                          ),
-                          6.width,
-                          CustomText(
-                            text: item["category"] ?? "",
-                            isCopy: false,
-                          ),
-                        ],
+                      CircleAvatar(
+                        radius: 5,
+                        backgroundColor: dashController.color[index],
                       ),
+                      6.width,
+                      CustomText(
+                        text: item["category"] ?? "",
+                        isCopy: false,colors: dashController.color[index],
+                      ),5.width,
                       CustomText(
                         text: value.toString(),
-                        isBold: true,
                         isCopy: false,
                       ),
                     ],
@@ -207,38 +201,53 @@ class _LeadPieCardState extends State<LeadPieCard> {
           ),
           ///
           // Wrap(
-          //   spacing: 20, // horizontal gap
-          //   runSpacing: 10, // vertical gap
-          //   children: List.generate(dashController.leadReport.length, (index) {
-          //     final item = dashController.leadReport[index];
-          //     final value =
-          //         int.tryParse(item["customer_count"].toString()) ?? 0;
+          //   spacing: 25.0, // Horizontal gap (oru item-kum innoru item-kum naduvula)
+          //   runSpacing: 12.0, // Vertical gap (adutha line-ku)
+          //   alignment: WrapAlignment.start,
+          //   children: dashController.leadReport.asMap().entries.map((entry) {
+          //     int index = entry.key;
+          //     var item = entry.value;
           //
-          //     return SizedBox(
-          //       width: MediaQuery.of(context).size.width / 2.3, // 2 per row
+          //     // Value extract panrom (item["customer_count"])
+          //     final value = int.tryParse(item["customer_count"].toString()) ?? 0;
+          //
+          //     // Color safe-ah edukkarom
+          //     final itemColor = dashController.color[index % dashController.color.length];
+          //
+          //     return IntrinsicWidth( // Ithu content-ku yetha maari width-ah adjust pannikum
           //       child: Row(
+          //         mainAxisSize: MainAxisSize.min,
           //         children: [
-          //           CircleAvatar(
-          //             radius: 5,
-          //             backgroundColor: dashController.color[index],
-          //           ),
-          //           const SizedBox(width: 6),
-          //           Expanded(
-          //             child: CustomText(
-          //               text: item["category"] ?? "",
-          //               isCopy: false,
+          //           // Dot
+          //           Container(
+          //             width: 10,
+          //             height: 10,
+          //             decoration: BoxDecoration(
+          //               color: itemColor,
+          //               shape: BoxShape.circle,
           //             ),
           //           ),
-          //           const SizedBox(width: 6),
+          //           8.width,
+          //           // Category Name
           //           CustomText(
-          //             text: value.toString(),
-          //             isBold: true,
-          //             isCopy: false,
+          //             text:"${item["category"] ?? ""}",
+          //               size: 14,
+          //               colors: itemColor,isBold: true, isCopy: false,
           //           ),
+          //
+          //           // Count Value
+          //           // Text(
+          //           //   value.toString(),
+          //           //   style: TextStyle(
+          //           //     fontSize: 14,
+          //           //     color: Colors.black,
+          //           //     fontWeight: FontWeight.bold,
+          //           //   ),
+          //           // ),
           //         ],
           //       ),
           //     );
-          //   }),
+          //   }).toList(),
           // )
         ],
       ),

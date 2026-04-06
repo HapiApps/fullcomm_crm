@@ -302,7 +302,7 @@ class SideBar extends StatelessWidget {
               icon: Icons.production_quantity_limits_sharp,
               selectedImage: "assets/images/order1.png",
               unSelectedImage: "assets/images/order.png",
-              label: "Quotation Invoice",
+              label: "Quotation",
               // page: const QuotationPage(),
               page: const NewBillingScreen(),
             ),

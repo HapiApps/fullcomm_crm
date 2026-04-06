@@ -1,38 +1,17 @@
-import 'dart:developer';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:fullcomm_crm/components/customer_name_tile.dart';
 import 'package:fullcomm_crm/controller/reminder_controller.dart';
-import 'package:fullcomm_crm/screens/products/add_product.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import '../../common/constant/api.dart';
-import '../../common/utilities/mail_utils.dart';
-import '../../components/custom_filter_seaction.dart';
-import '../../components/custom_header_seaction.dart';
-import '../../components/custom_lead_tile.dart';
-import '../../components/custom_loading_button.dart';
-import '../../components/custom_no_data.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/date_filter_bar.dart';
-import '../../components/dynamic_table_header.dart';
 import '../../components/custom_text.dart';
-import '../../components/customer_name_header.dart';
 import '../../controller/controller.dart';
 import '../../controller/product_controller.dart';
-import '../../controller/table_controller.dart';
-import '../../models/new_lead_obj.dart';
-import '../../services/api_services.dart';
-import '../invoice/invoice.dart';
-import '../order/order_page.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key, });
@@ -115,8 +94,6 @@ class _ProductPageState extends State<ProductPage> {
   final ScrollController _controller = ScrollController();
   @override
   Widget build(BuildContext context) {
-    var weWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       body: Row(
         children: [
@@ -248,7 +225,7 @@ class _ProductPageState extends State<ProductPage> {
                           setState(() {
                             final suggestions=productCtr.products2.where(
                                     (user){
-                                  final customerName = user.title.toString().toLowerCase();
+                                  final customerName = user.pTitle.toString().toLowerCase();
                                   final customerNo = user.hsnCode.toString().toLowerCase();
                                   final bankName = user.skuId.toString().toLowerCase();
                                   final input = value.toString().toLowerCase().trim();
@@ -539,129 +516,129 @@ class _ProductPageState extends State<ProductPage> {
                                   ),
                                 ],
                               ),),
-                              headerCell(8, Row(
-                                children: [
-                                  CustomText(//4
-                                    textAlign: TextAlign.left,
-                                    text: "Category",
-                                    size: 15,
-                                    isBold: true,
-                                    isCopy: true,
-                                    colors: Colors.white,
-                                  ),
-                                  3.width,
-                                  GestureDetector(
-                                    onTap: (){
-                                      if(controllers.sortFieldCallActivity.value=='cat' && controllers.sortOrderCallActivity.value=='asc'){
-                                        controllers.sortOrderCallActivity.value='desc';
-                                      }else{
-                                        controllers.sortOrderCallActivity.value='asc';
-                                      }
-                                      controllers.sortFieldCallActivity.value='cat';
-                                      productCtr.filterAndSortProducts(
-                                        searchText: controllers.searchText.value.toLowerCase(),
-                                        sortField: controllers.sortFieldCallActivity.value,
-                                        sortOrder: controllers.sortOrderCallActivity.value,
-                                        selectedMonth: productCtr.selectedCallMonth.value,
-                                        selectedRange: productCtr.selectedCallRange.value,
-                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                      );
-                                    },
-                                    child: Obx(() => Image.asset(
-                                      controllers.sortFieldCallActivity.value.isEmpty
-                                          ? "assets/images/arrow.png"
-                                          : controllers.sortOrderCallActivity.value == 'asc'
-                                          ? "assets/images/arrow_up.png"
-                                          : "assets/images/arrow_down.png",
-                                      width: 15,
-                                      height: 15,
-                                    ),
-                                    ),
-                                  ),
-                                ],
-                              ),),
-                              headerCell(9, Row(
-                                children: [
-                                  CustomText(//4
-                                    textAlign: TextAlign.left,
-                                    text: "Sub Category",
-                                    size: 15,
-                                    isBold: true,
-                                    isCopy: true,
-                                    colors: Colors.white,
-                                  ),
-                                  3.width,
-                                  GestureDetector(
-                                    onTap: (){
-                                      if(controllers.sortFieldCallActivity.value=='sub cat' && controllers.sortOrderCallActivity.value=='asc'){
-                                        controllers.sortOrderCallActivity.value='desc';
-                                      }else{
-                                        controllers.sortOrderCallActivity.value='asc';
-                                      }
-                                      controllers.sortFieldCallActivity.value='sub cat';
-                                      productCtr.filterAndSortProducts(
-                                        searchText: controllers.searchText.value.toLowerCase(),
-                                        sortField: controllers.sortFieldCallActivity.value,
-                                        sortOrder: controllers.sortOrderCallActivity.value,
-                                        selectedMonth: productCtr.selectedCallMonth.value,
-                                        selectedRange: productCtr.selectedCallRange.value,
-                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                      );
-                                    },
-                                    child: Obx(() => Image.asset(
-                                      controllers.sortFieldCallActivity.value.isEmpty
-                                          ? "assets/images/arrow.png"
-                                          : controllers.sortOrderCallActivity.value == 'asc'
-                                          ? "assets/images/arrow_up.png"
-                                          : "assets/images/arrow_down.png",
-                                      width: 15,
-                                      height: 15,
-                                    ),
-                                    ),
-                                  ),
-                                ],
-                              ),),
-                              headerCell(10, Row(
-                                children: [
-                                  CustomText(//4
-                                    textAlign: TextAlign.left,
-                                    text: "GST in %",
-                                    size: 15,
-                                    isBold: true,
-                                    isCopy: true,
-                                    colors: Colors.white,
-                                  ),
-                                  3.width,
-                                  GestureDetector(
-                                    onTap: (){
-                                      if(controllers.sortFieldCallActivity.value=='gst' && controllers.sortOrderCallActivity.value=='asc'){
-                                        controllers.sortOrderCallActivity.value='desc';
-                                      }else{
-                                        controllers.sortOrderCallActivity.value='asc';
-                                      }
-                                      controllers.sortFieldCallActivity.value='gst';
-                                      productCtr.filterAndSortProducts(
-                                        searchText: controllers.searchText.value.toLowerCase(),
-                                        sortField: controllers.sortFieldCallActivity.value,
-                                        sortOrder: controllers.sortOrderCallActivity.value,
-                                        selectedMonth: productCtr.selectedCallMonth.value,
-                                        selectedRange: productCtr.selectedCallRange.value,
-                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                      );
-                                    },
-                                    child: Obx(() => Image.asset(
-                                      controllers.sortFieldCallActivity.value.isEmpty
-                                          ? "assets/images/arrow.png"
-                                          : controllers.sortOrderCallActivity.value == 'asc'
-                                          ? "assets/images/arrow_up.png"
-                                          : "assets/images/arrow_down.png",
-                                      width: 15,
-                                      height: 15,
-                                    ),
-                                    ),
-                                  ),
-                                ],
-                              ),),
+                              // headerCell(8, Row(
+                              //   children: [
+                              //     CustomText(//4
+                              //       textAlign: TextAlign.left,
+                              //       text: "Category",
+                              //       size: 15,
+                              //       isBold: true,
+                              //       isCopy: true,
+                              //       colors: Colors.white,
+                              //     ),
+                              //     3.width,
+                              //     GestureDetector(
+                              //       onTap: (){
+                              //         if(controllers.sortFieldCallActivity.value=='cat' && controllers.sortOrderCallActivity.value=='asc'){
+                              //           controllers.sortOrderCallActivity.value='desc';
+                              //         }else{
+                              //           controllers.sortOrderCallActivity.value='asc';
+                              //         }
+                              //         controllers.sortFieldCallActivity.value='cat';
+                              //         productCtr.filterAndSortProducts(
+                              //           searchText: controllers.searchText.value.toLowerCase(),
+                              //           sortField: controllers.sortFieldCallActivity.value,
+                              //           sortOrder: controllers.sortOrderCallActivity.value,
+                              //           selectedMonth: productCtr.selectedCallMonth.value,
+                              //           selectedRange: productCtr.selectedCallRange.value,
+                              //           selectedDateFilter: productCtr.selectedCallSortBy.value,
+                              //         );
+                              //       },
+                              //       child: Obx(() => Image.asset(
+                              //         controllers.sortFieldCallActivity.value.isEmpty
+                              //             ? "assets/images/arrow.png"
+                              //             : controllers.sortOrderCallActivity.value == 'asc'
+                              //             ? "assets/images/arrow_up.png"
+                              //             : "assets/images/arrow_down.png",
+                              //         width: 15,
+                              //         height: 15,
+                              //       ),
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),),
+                              // headerCell(9, Row(
+                              //   children: [
+                              //     CustomText(//4
+                              //       textAlign: TextAlign.left,
+                              //       text: "Sub Category",
+                              //       size: 15,
+                              //       isBold: true,
+                              //       isCopy: true,
+                              //       colors: Colors.white,
+                              //     ),
+                              //     3.width,
+                              //     GestureDetector(
+                              //       onTap: (){
+                              //         if(controllers.sortFieldCallActivity.value=='sub cat' && controllers.sortOrderCallActivity.value=='asc'){
+                              //           controllers.sortOrderCallActivity.value='desc';
+                              //         }else{
+                              //           controllers.sortOrderCallActivity.value='asc';
+                              //         }
+                              //         controllers.sortFieldCallActivity.value='sub cat';
+                              //         productCtr.filterAndSortProducts(
+                              //           searchText: controllers.searchText.value.toLowerCase(),
+                              //           sortField: controllers.sortFieldCallActivity.value,
+                              //           sortOrder: controllers.sortOrderCallActivity.value,
+                              //           selectedMonth: productCtr.selectedCallMonth.value,
+                              //           selectedRange: productCtr.selectedCallRange.value,
+                              //           selectedDateFilter: productCtr.selectedCallSortBy.value,
+                              //         );
+                              //       },
+                              //       child: Obx(() => Image.asset(
+                              //         controllers.sortFieldCallActivity.value.isEmpty
+                              //             ? "assets/images/arrow.png"
+                              //             : controllers.sortOrderCallActivity.value == 'asc'
+                              //             ? "assets/images/arrow_up.png"
+                              //             : "assets/images/arrow_down.png",
+                              //         width: 15,
+                              //         height: 15,
+                              //       ),
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),),
+                              // headerCell(10, Row(
+                              //   children: [
+                              //     CustomText(//4
+                              //       textAlign: TextAlign.left,
+                              //       text: "GST in %",
+                              //       size: 15,
+                              //       isBold: true,
+                              //       isCopy: true,
+                              //       colors: Colors.white,
+                              //     ),
+                              //     3.width,
+                              //     GestureDetector(
+                              //       onTap: (){
+                              //         if(controllers.sortFieldCallActivity.value=='gst' && controllers.sortOrderCallActivity.value=='asc'){
+                              //           controllers.sortOrderCallActivity.value='desc';
+                              //         }else{
+                              //           controllers.sortOrderCallActivity.value='asc';
+                              //         }
+                              //         controllers.sortFieldCallActivity.value='gst';
+                              //         productCtr.filterAndSortProducts(
+                              //           searchText: controllers.searchText.value.toLowerCase(),
+                              //           sortField: controllers.sortFieldCallActivity.value,
+                              //           sortOrder: controllers.sortOrderCallActivity.value,
+                              //           selectedMonth: productCtr.selectedCallMonth.value,
+                              //           selectedRange: productCtr.selectedCallRange.value,
+                              //           selectedDateFilter: productCtr.selectedCallSortBy.value,
+                              //         );
+                              //       },
+                              //       child: Obx(() => Image.asset(
+                              //         controllers.sortFieldCallActivity.value.isEmpty
+                              //             ? "assets/images/arrow.png"
+                              //             : controllers.sortOrderCallActivity.value == 'asc'
+                              //             ? "assets/images/arrow_up.png"
+                              //             : "assets/images/arrow_down.png",
+                              //         width: 15,
+                              //         height: 15,
+                              //       ),
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),),
                               headerCell(11, Row(
                                 children: [
                                   CustomText(//4
@@ -1241,12 +1218,12 @@ class _ProductPageState extends State<ProductPage> {
                                           ),
                                         ),
                                         Tooltip(
-                                          message: data.title.toString()=="null"?"":data.title.toString(),
+                                          message: data.pTitle.toString()=="null"?"":data.pTitle.toString(),
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: CustomText(
                                               textAlign: TextAlign.left,
-                                              text:data.title.toString()=="null"?"":data.title.toString(),
+                                              text:data.pTitle.toString()=="null"?"":data.pTitle.toString(),
                                               size: 14,
                                               isCopy: true,
                                               colors: colorsConst.textColor,
@@ -1305,45 +1282,45 @@ class _ProductPageState extends State<ProductPage> {
                                             ),
                                           ),
                                         ),
-                                        Tooltip(
-                                          message: data.cat.toString()=="null"?"":data.cat.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text: data.cat.toString()=="null"?"":data.cat.toString(),
-                                              size: 14,
-                                              isCopy: true,
-                                              colors:colorsConst.textColor,
-                                            ),
-                                          ),
-                                        ),
-                                        Tooltip(
-                                          message: data.subCat.toString()=="null"?"":data.subCat.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text: data.subCat.toString()=="null"?"":data.subCat.toString(),
-                                              size: 14,
-                                              isCopy: true,
-                                              colors:colorsConst.textColor,
-                                            ),
-                                          ),
-                                        ),
-                                        Tooltip(
-                                          message: data.gst.toString()=="null"?"":data.gst.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text: data.gst.toString()=="null"?"":data.gst.toString(),
-                                              size: 14,
-                                              isCopy: true,
-                                              colors:colorsConst.textColor,
-                                            ),
-                                          ),
-                                        ),
+                                        // Tooltip(
+                                        //   message: data.cat.toString()=="null"?"":data.cat.toString(),
+                                        //   child: Padding(
+                                        //     padding: const EdgeInsets.all(10.0),
+                                        //     child: CustomText(
+                                        //       textAlign: TextAlign.left,
+                                        //       text: data.cat.toString()=="null"?"":data.cat.toString(),
+                                        //       size: 14,
+                                        //       isCopy: true,
+                                        //       colors:colorsConst.textColor,
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                        // Tooltip(
+                                        //   message: data.subCat.toString()=="null"?"":data.subCat.toString(),
+                                        //   child: Padding(
+                                        //     padding: const EdgeInsets.all(10.0),
+                                        //     child: CustomText(
+                                        //       textAlign: TextAlign.left,
+                                        //       text: data.subCat.toString()=="null"?"":data.subCat.toString(),
+                                        //       size: 14,
+                                        //       isCopy: true,
+                                        //       colors:colorsConst.textColor,
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                        // Tooltip(
+                                        //   message: data.gst.toString()=="null"?"":data.gst.toString(),
+                                        //   child: Padding(
+                                        //     padding: const EdgeInsets.all(10.0),
+                                        //     child: CustomText(
+                                        //       textAlign: TextAlign.left,
+                                        //       text: data.gst.toString()=="null"?"":data.gst.toString(),
+                                        //       size: 14,
+                                        //       isCopy: true,
+                                        //       colors:colorsConst.textColor,
+                                        //     ),
+                                        //   ),
+                                        // ),
                                         Tooltip(
                                           message: productCtr.formatDateTime(data.createdTs.toString()),
                                           child: Padding(

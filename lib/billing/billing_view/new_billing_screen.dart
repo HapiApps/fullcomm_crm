@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fullcomm_crm/res/colors.dart';
 import 'package:fullcomm_crm/res/components/bottom_widgets.dart';
@@ -16,17 +19,22 @@ import 'package:fullcomm_crm/billing_utils/sized_box.dart';
 import 'package:fullcomm_crm/billing_utils/text_formats.dart';
 import 'package:fullcomm_crm/billing_utils/toast_messages.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
-import 'package:fullcomm_crm/view_models/credentials_provider.dart';
 import 'package:fullcomm_crm/view_models/customer_provider.dart';
 import 'package:fullcomm_crm/billing/orders/hold_order_details.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../billing_utils/caps_letter.dart';
 import '../../common/billing_data/local_data.dart';
 import '../../common/billing_data/project_data.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/styles/decoration.dart';
+import '../../common/utilities/utils.dart';
+import '../../components/Customtext.dart';
+import '../../components/custom_loading_button.dart';
 import '../../components/custom_sidebar.dart';
 import '../../controller/controller.dart';
+import '../../controller/settings_controller.dart';
 import '../../models/all_customers_obj.dart';
 import '../../models/billing_models/billing_product.dart';
 import '../../models/billing_models/customers_response.dart';
@@ -39,10 +47,13 @@ import '../../res/components/k_dropdown_menu_2.dart';
 import '../../res/components/k_text_field.dart';
 import '../../res/components/keyboard_search.dart';
 import '../../screens/quotation/send_quotation.dart';
+import '../../services/api_services.dart';
 import '../orders/hold_order.dart';
 import '../orders/order_detail_page.dart';
 import '../orders/reorderbill.dart';
 import '../products/add_products.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class NextPageIntent extends Intent {
   const NextPageIntent();
@@ -197,7 +208,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      log("ScrollController is not attached to any scroll view.");
+      // log("ScrollController is not attached to any scroll view.");
     }
   }
   void scrollToTop() {
@@ -235,10 +246,8 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final billing = Provider.of<BillingProvider>(context, listen: false);
       final customers = Provider.of<CustomersProvider>(context, listen: false);
-      final credentials = Provider.of<UserDataProvider>(context, listen: false);
       FocusScope.of(context).requestFocus(billing.dropdownFocusNode);
       billing.dropdownFocusNode.requestFocus();
-      await credentials.loadCashierInfo();
       // Set cashier
       billing.cashierController.text =
       "${billing.cashierNameController} - ${billing.cashierIdController}";
@@ -1000,10 +1009,6 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
     return true; // ✅ close popup
   }
 
-
-
-
-
   String capitalizeEachWord(String value) {
     if (value.trim().isEmpty) return value;
 
@@ -1029,8 +1034,8 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
     String searchText = "";
     bool _isPaymentDialogOpen = false;
     BuildContext? _dialogContext;bool _isPrinting = false;
-    return Consumer3<UserDataProvider, CustomersProvider, BillingProvider>(
-        builder: (context, userDataProvider, customerProvider, billingProvider,
+    return Consumer2<CustomersProvider, BillingProvider>(
+        builder: (context, customerProvider, billingProvider,
             _) {
           return Scaffold(
             body: Focus(
@@ -3073,103 +3078,38 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                       .selectBillMethod ?? "Cash";
                                                   final paymentId = paymentMap[selectedMethod] ??
                                                       '0';
-
-                                                  if (customerProvider.selectedCustomerId
-                                                      .isEmpty) {
-                                                    customerProvider.setCustomerDetails(
-                                                      customerId: ProjectData.cash,
-                                                      customerName: ProjectData.name,
-                                                      customerMobile: ProjectData.mobile,
-                                                      customerAddress: ProjectData
-                                                          .address,
-                                                    );
-                                                  }
-
                                                   final now = DateTime.now();
                                                   final billNo = 'BILL${now
                                                       .millisecondsSinceEpoch % 10000}';
                                                   final formattedDate =
                                                       '${now.day}/${now.month}/${now
                                                       .year} ${now.hour}:${now.minute}';
-
-                                                  await billingProvider
-                                                      .saveHoldBillDetails(context: context,
+                                                  await billingProvider.saveHoldBillDetails(context: context,
                                                     order: Order(
-                                                      split_pay: billingProvider
-                                                          .selectBillMethod ==
-                                                          "Split Payment"
-                                                          ? (billingProvider.upiPayment
-                                                          .text.isEmpty
-                                                          ? "0"
-                                                          : billingProvider.upiPayment
-                                                          .text)
-                                                          : "0",
-
+                                                      split_pay: billingProvider.selectBillMethod =="Split Payment"?
+                                                      (billingProvider.upiPayment.text.isEmpty ? "0" : billingProvider.upiPayment .text): "0",
                                                       id: billNo,
                                                       createdTs: formattedDate,
-                                                      customerMobile: customerProvider
-                                                          .selectedCustomerMobile,
-                                                      customerId: customerProvider
-                                                          .selectedCustomerId,
-                                                      customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
-                                                      customerAddress:
-                                                      customerProvider
-                                                          .customerAddressController.text,
-
-                                                      cashier: controllers.storage.read("id"),
+                                                      customerMobile: controllers.selectedCustomerMobile.value,
+                                                      cashier: "${controllers.storage.read("id")}",
+                                                      salesmanId: "${controllers.storage.read("id")}",
+                                                      customerId: controllers.selectedCustomerId.value,
+                                                      customerName: controllers.selectedCustomerName.value,
+                                                      customerAddress:"",
                                                       paymentMethod: selectedMethod,
                                                       paymentId: paymentId,
-
-                                                      creditDays: selectedMethod ==
-                                                          "Credit"
-                                                          ? (billingProvider.creditDays ??
-                                                          0)
-                                                          : 0,
-
-                                                      products: billingProvider
-                                                          .billingItems,
-                                                      orderGrandTotal:
-                                                      billingProvider
-                                                          .calculatedGrandTotal()
-                                                          .toStringAsFixed(2),
-                                                      orderSubTotal:
-                                                      billingProvider
-                                                          .calculatedGrandTotal()
-                                                          .toStringAsFixed(2),
-
-                                                      receivedAmt: billingProvider
-                                                          .paymentReceived.text.isEmpty
-                                                          ? "0.0"
-                                                          : double.parse(
-                                                          billingProvider.paymentReceived
-                                                              .text)
-                                                          .toStringAsFixed(2),
-
-                                                      payBackAmt: (
-                                                          selectedMethod == "Cash"
-                                                              ? ((billingProvider
-                                                              .paymentReceived.text
-                                                              .isEmpty
-                                                              ? 0.0
-                                                              : double.parse(
-                                                              billingProvider
-                                                                  .paymentReceived
-                                                                  .text)) -
-                                                              billingProvider
-                                                                  .calculatedGrandTotal())
-                                                              .abs()
-                                                              .toStringAsFixed(2)
-                                                              : "0.00"
+                                                      creditDays: selectedMethod =="Credit"? (billingProvider.creditDays ??0): 0,
+                                                      products: billingProvider.billingItems,
+                                                      orderGrandTotal:billingProvider.calculatedGrandTotal().toStringAsFixed(2),
+                                                      orderSubTotal:billingProvider.calculatedGrandTotal().toStringAsFixed(2),
+                                                      receivedAmt: billingProvider.paymentReceived.text.isEmpty? "0.0": double.parse(billingProvider.paymentReceived.text).toStringAsFixed(2),
+                                                      payBackAmt:(selectedMethod == "Cash" ? ((billingProvider .paymentReceived.text .isEmpty ? 0.0
+                                                              : double.parse( billingProvider .paymentReceived .text)) -
+                                                              billingProvider .calculatedGrandTotal()) .abs() .toStringAsFixed(2) : "0.00"
                                                       ),
                                                       version: "0.0",
-                                                      savings:
-                                                      '${billingProvider.billingItems
-                                                          .fold(0.0, (t, i) =>
-                                                      t + i.calculateDiscount())}',
-
+                                                      savings: '${billingProvider.billingItems .fold(0.0, (t, i) => t + i.calculateDiscount())}',
                                                       billStatus: 0,
-                                                      salesmanId: controllers.storage.read("id")
-                                                          .toString(),
                                                     ),
                                                   );
 
@@ -3753,7 +3693,324 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                               ),
                                             ),
                                           ),
-
+                                          SizedBox(
+                                            height: 40,
+                                            child: ElevatedButton(
+                                              onPressed: (){
+                                                if(controllers.selectedCustomerId.value==""){
+                                                  utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
+                                                }else if(billingProvider.billingItems.isEmpty){
+                                                  utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
+                                                }else{
+                                                  setState(() {
+                                                    controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
+                                                    controllers.isTemplate.value=false;
+                                                    controllers.emailSubjectCtr.clear();
+                                                    controllers.emailMessageCtr.clear();
+                                                  });
+                                                  showDialog(
+                                                      context: context,
+                                                      barrierDismissible: false,
+                                                      builder: (context) {
+                                                        return AlertDialog(
+                                                          actions: [
+                                                            Column(
+                                                              children: [
+                                                                Divider(
+                                                                  color: Colors.grey.shade300,
+                                                                  thickness: 1,
+                                                                ),
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      child: Row(
+                                                                        children: [
+                                                                          TextButton(
+                                                                              onPressed: () {
+                                                                                Navigator.of(context).pop();
+                                                                                settingsController.showAddTemplateDialog(context);
+                                                                              },
+                                                                              child: CustomText(
+                                                                                text: "Add Template",
+                                                                                isCopy: false,
+                                                                                colors: colorsConst.third,
+                                                                                size: 18,
+                                                                                isBold: true,
+                                                                              )),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    CustomLoadingButton(
+                                                                      callback: () {
+                                                                        if(controllers.emailToCtr.text.trim().isEmpty){
+                                                                          utils.snackBar(context: context, msg: "To is empty!", color: Colors.red);
+                                                                          controllers.emailCtr.reset();
+                                                                          return;
+                                                                        }
+                                                                        if(!controllers.emailToCtr.text.trim().isEmail){
+                                                                          utils.snackBar(
+                                                                            context: context,
+                                                                            msg: "Invalid mail!",
+                                                                            color: Colors.red,
+                                                                          );
+                                                                          controllers.emailCtr.reset();
+                                                                          return;
+                                                                        }
+                                                                        if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                                                          utils.snackBar(context: context, msg: "Subject is empty!", color: Colors.red);
+                                                                          controllers.emailCtr.reset();
+                                                                          return;
+                                                                        }
+                                                                        if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                                                          utils.snackBar(context: context, msg: "Message is empty!", color: Colors.red);
+                                                                          controllers.emailCtr.reset();
+                                                                          return;
+                                                                        }
+                                                                        sendInvoice(billingProvider);
+                                                                      },
+                                                                      controller: controllers.emailCtr,
+                                                                      isImage: false,
+                                                                      isLoading: true,
+                                                                      backgroundColor: colorsConst.primary,
+                                                                      radius: 5,
+                                                                      width: 200,
+                                                                      height: 50,
+                                                                      text: "Send Quotation",
+                                                                      textColor: Colors.white,
+                                                                    ),
+                                                                  ],
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ],
+                                                          content: SizedBox(
+                                                              width: 600,
+                                                              height: 400,
+                                                              child: SingleChildScrollView(
+                                                                child: Column(
+                                                                  children: [
+                                                                    Align(
+                                                                        alignment: Alignment.topRight,
+                                                                        child: InkWell(
+                                                                            onTap: () {
+                                                                              Navigator.pop(context);
+                                                                            },
+                                                                            child: Icon(
+                                                                              Icons.clear,
+                                                                              size: 18,
+                                                                              color: colorsConst.textColor,
+                                                                            ))),
+                                                                    Align(
+                                                                      alignment: Alignment.topRight,
+                                                                      child: TextButton(
+                                                                          onPressed: () {
+                                                                            controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                          },
+                                                                          child: CustomText(
+                                                                            text: "Get Form Template",
+                                                                            colors: colorsConst.third,
+                                                                            size: 18,
+                                                                            isCopy: false,
+                                                                            isBold: true,
+                                                                          )),
+                                                                    ),
+                                                                    Row(
+                                                                      children: [
+                                                                        CustomText(
+                                                                          textAlign: TextAlign.center,
+                                                                          text: "To",
+                                                                          colors: colorsConst.textColor,
+                                                                          size: 15,
+                                                                          isCopy: false,
+                                                                        ),
+                                                                        50.width,
+                                                                        SizedBox(
+                                                                          width: 500,
+                                                                          child: TextField(
+                                                                            controller: controllers.emailToCtr,
+                                                                            style: TextStyle(
+                                                                                fontSize: 15, color: colorsConst.textColor),
+                                                                            decoration: const InputDecoration(
+                                                                              border: InputBorder.none,
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                    SizedBox(
+                                                                        width: 600,
+                                                                        child: SingleChildScrollView(
+                                                                          child: Column(
+                                                                            children: [
+                                                                              Divider(
+                                                                                color: Colors.grey.shade300,
+                                                                                thickness: 1,
+                                                                              ),
+                                                                              Row(
+                                                                                children: [
+                                                                                  15.height,
+                                                                                  CustomText(
+                                                                                    text: "Subject",
+                                                                                    colors: colorsConst.textColor,
+                                                                                    size: 14,
+                                                                                    isCopy: false,
+                                                                                  ),
+                                                                                  20.width,
+                                                                                  SizedBox(
+                                                                                    width: 500,
+                                                                                    height: 50,
+                                                                                    child: TextField(
+                                                                                      controller: controllers.emailSubjectCtr,
+                                                                                      maxLines: null,
+                                                                                      minLines: 1,
+                                                                                      style: TextStyle(
+                                                                                        color: colorsConst.textColor,
+                                                                                      ),
+                                                                                      decoration: const InputDecoration(
+                                                                                        border: InputBorder.none,
+                                                                                      ),
+                                                                                    ),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                              Divider(
+                                                                                color: Colors.grey.shade300,
+                                                                                thickness: 1,
+                                                                              ),
+                                                                              Obx(() => controllers.isTemplate.value == false
+                                                                                  ? SingleChildScrollView(
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    SizedBox(
+                                                                                      width: 600,
+                                                                                      height: 170,
+                                                                                      child: TextField(
+                                                                                        textInputAction: TextInputAction.newline,
+                                                                                        controller: controllers.emailMessageCtr,
+                                                                                        keyboardType: TextInputType.multiline,
+                                                                                        maxLines: 21,
+                                                                                        expands: false,
+                                                                                        style: TextStyle(
+                                                                                          color: colorsConst.textColor,
+                                                                                        ),
+                                                                                        decoration: InputDecoration(
+                                                                                          hintText: "Message",
+                                                                                          hintStyle: TextStyle(
+                                                                                              color: colorsConst.textColor,
+                                                                                              fontSize: 14,
+                                                                                              fontFamily: "Lato"),
+                                                                                          border: InputBorder.none,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              )
+                                                                                  :Obx(() => UnconstrainedBox(
+                                                                                child: Container(
+                                                                                  width: 500,
+                                                                                  alignment: Alignment.center,
+                                                                                  decoration: BoxDecoration(
+                                                                                    color: colorsConst.secondary,
+                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                  ),
+                                                                                  child: SingleChildScrollView(
+                                                                                    child: Column(
+                                                                                      children: [
+                                                                                        SizedBox(
+                                                                                          width: 500,
+                                                                                          height: 170,
+                                                                                          child: Table(
+                                                                                            defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                            border: TableBorder.all(
+                                                                                              color: Colors.grey.shade300,
+                                                                                              style: BorderStyle.solid,
+                                                                                              borderRadius: BorderRadius.circular(10),
+                                                                                              width: 1,
+                                                                                            ),
+                                                                                            children: [
+                                                                                              // Header Row
+                                                                                              TableRow(
+                                                                                                children: [
+                                                                                                  CustomText(
+                                                                                                    textAlign: TextAlign.center,
+                                                                                                    text: "\nTemplate Name\n",
+                                                                                                    colors: colorsConst.textColor,
+                                                                                                    size: 15,
+                                                                                                    isBold: true,
+                                                                                                    isCopy: false,
+                                                                                                  ),
+                                                                                                  CustomText(
+                                                                                                    textAlign: TextAlign.center,
+                                                                                                    text: "\nSubject\n",
+                                                                                                    colors: colorsConst.textColor,
+                                                                                                    size: 15,
+                                                                                                    isBold: true,
+                                                                                                    isCopy: false,
+                                                                                                  ),
+                                                                                                ],
+                                                                                              ),
+                                                                                              // Dynamic Rows
+                                                                                              for (var item in settingsController.templateList)
+                                                                                                utils.emailRow(
+                                                                                                    context,
+                                                                                                    isCheck: controllers.isAdd,
+                                                                                                    templateName: item.templateName,
+                                                                                                    msg: item.message,
+                                                                                                    subject: item.subject,
+                                                                                                    id: item.id
+                                                                                                ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ))),
+                                                                              Container(
+                                                                                width: MediaQuery.of(context).size.width*0.6,
+                                                                                decoration: customDecoration.baseBackgroundDecoration(
+                                                                                  color: Colors.grey.shade50,radius: 5,
+                                                                                ),
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.all(8.0),
+                                                                                  child: CustomText(
+                                                                                    textAlign: TextAlign.start,
+                                                                                    text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
+                                                                                    isCopy: false,colors: colorsConst.primary,isBold: true,),
+                                                                                ),
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        )),
+                                                                  ],
+                                                                ),
+                                                              )),
+                                                        );
+                                                      });
+                                                }
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: const Color(0xff0078D7),
+                                                padding: const EdgeInsets.symmetric(
+                                                    horizontal: 20, vertical: 12),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                'Send Quotation',
+                                                style: GoogleFonts.lato(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
 
@@ -4185,6 +4442,240 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
     );
   }
 
+  Future<void> sendInvoice(BillingProvider billingPvr) async {
+    final pdf = await generateInvoicePdf(billingPvr);
+
+    apiService.insertQuotationAPI(context, pdf);
+  }
+
+  Future<pw.Document> generateInvoicePdf(BillingProvider billingPvr) async {
+    print(".......printInvoice");
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (context) {
+          return pw.Container(
+            padding: const pw.EdgeInsets.all(20),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+
+                /// 🔴 TITLE BOX
+                pw.Center(
+                  child: pw.Container(
+                    padding: const pw.EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 5),
+                    decoration: pw.BoxDecoration(
+                      border: pw.Border.all(),
+                      borderRadius: pw.BorderRadius.circular(5),
+                    ),
+                    child: pw.Text("TAX INVOICE",
+                        style: pw.TextStyle(fontSize: 14)),
+                  ),
+                ),
+
+                pw.SizedBox(height: 20),
+
+                /// 🟢 HEADER ROW
+                pw.Row(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+
+                    /// LEFT SIDE (Company)
+                    pw.Expanded(
+                      flex: 6,
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text("Hapi Apps",
+                              style: pw.TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: pw.FontWeight.bold)),
+                          pw.Text(
+                              "7/38, East Street, Kulaiyankarisal\nThoothukudi, Tamil Nadu, 628103"),
+                          pw.SizedBox(height: 5),
+                          pw.Text("Email : info@hapiapps.com"),
+                          pw.Text("Mobile : +91 9677 281 724"),
+                          pw.Text("GSTIN : "),
+                        ],
+                      ),
+                    ),
+
+                    /// RIGHT BOX
+                    pw.Container(
+                      padding: const pw.EdgeInsets.all(10),
+                      decoration: pw.BoxDecoration(
+                        border: pw.Border.all(),
+                        borderRadius: pw.BorderRadius.circular(5),
+                      ),
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          rowText("InvoiceNo:", (10000 + Random().nextInt(90000)).toString()),
+                          rowText("InvoiceDate:", DateFormat("dd-MM-yyyy").format(DateTime.now())),
+                          // rowText("OrderNo:", data.id),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+
+                pw.SizedBox(height: 15),
+
+                /// CUSTOMER
+                pw.Text("M/S : ${controllers.selectedCustomerName}"),
+                // pw.Text("Address : ${controllers.selectedc}"),
+
+                pw.SizedBox(height: 10),
+
+                pw.Text("PARTY GSTIN : "),
+
+                pw.SizedBox(height: 10),
+
+                /// 🔵 TABLE
+                pw.Table(
+                  border: pw.TableBorder.all(),
+                  columnWidths: {
+                    0: const pw.FlexColumnWidth(1),
+                    1: const pw.FlexColumnWidth(4),
+                    2: const pw.FlexColumnWidth(1),
+                    3: const pw.FlexColumnWidth(1),
+                    4: const pw.FlexColumnWidth(2),
+                  },
+                  children: [
+
+                    /// HEADER
+                    pw.TableRow(
+                      children: [
+                        tableCell("S.No.", isHeader: true),
+                        tableCell("Product Name", isHeader: true),
+                        tableCell("Qty", isHeader: true),
+                        tableCell("MRP", isHeader: true),
+                        tableCell("Amount INR", isHeader: true),
+                      ],
+                    ),
+
+                    /// DATA
+                    ...List.generate(billingPvr.billingItems.length, (index) {
+                      final p = billingPvr.billingItems[index];
+
+                      return pw.TableRow(
+                        children: [
+                          tableCell("${index + 1}"),
+                          tableCell(p.productTitle.toString()),
+                          tableCell(p.quantity.toString()),
+                          tableCell(p.p_mrp.toString()),
+                          tableCell("Rs. ${p.outPrice}"),
+                        ],
+                      );
+                    }),
+                  ],
+                ),
+
+                pw.SizedBox(height: 10),
+
+                /// 🔶 BOTTOM SECTION
+                pw.Row(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+
+                    /// LEFT SIDE
+                    pw.Expanded(
+                      flex: 6,
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          // pw.Text("Amount in Words: INR ${productCtr.numberToWords(int.parse(data.totalAmt))} Only"),
+                          pw.SizedBox(height: 10),
+                          pw.Text("UPI ID:"),
+                          pw.Text("Bank Account No:"),
+                          pw.Text("Name: Hapi Apps"),
+                          pw.Text("IFSC: ..."),
+                          pw.Text("Kulaiyankarisal branch"),
+                        ],
+                      ),
+                    ),
+
+                    /// RIGHT SIDE (TOTAL BOX)
+                    pw.Expanded(
+                      flex: 4,
+                      child: pw.Container(
+                        decoration:
+                        pw.BoxDecoration(border: pw.Border.all()),
+                        child: pw.Column(
+                          children: [
+                            totalRows("Total Before Tax SGST", "15,000"),
+                            totalRows("CGST 9%", "1,350"),
+                            totalRows("Round Off 9%", "1,350"),
+                            totalRows("Total After", "1,350"),
+                            // totalRows("Tax for HapiApps", data.totalAmt,isBold: true),
+                            pw.SizedBox(height: 20),
+                            pw.Text("Signature"),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+    return pdf;
+  }
+  pw.Widget totalRows(String title, String value,{bool isBold = false}) {
+    return pw.Container(
+      padding: const pw.EdgeInsets.all(5),
+      decoration: pw.BoxDecoration(
+        border: pw.Border(bottom: pw.BorderSide()),
+      ),
+      child: pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        children: [
+          pw.Text(title,
+              style: pw.TextStyle(
+                  fontWeight: isBold
+                      ? pw.FontWeight.bold
+                      : pw.FontWeight.normal)),
+          pw.Text(value,
+              style: pw.TextStyle(
+                  fontWeight: isBold
+                      ? pw.FontWeight.bold
+                      : pw.FontWeight.normal)),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget tableCell(String text, {bool isHeader = false}) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.all(6),
+      child: pw.Text(
+        text,
+        style: pw.TextStyle(
+          fontWeight:
+          isHeader ? pw.FontWeight.bold : pw.FontWeight.normal,
+        ),
+      ),
+    );
+  }
+
+  pw.Widget rowText(String title, String value) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 2),
+      child: pw.Row(
+        children: [
+          pw.Text(title),
+          pw.SizedBox(width: 5),
+          pw.Text(value),
+        ],
+      ),
+    );
+  }
 
 
   Future<void> showPaymentBalanceDialog(

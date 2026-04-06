@@ -96,6 +96,7 @@ dependencies:
   bluetooth_thermal_printer:
   qr_flutter: ^4.0.0
   collection: ^1.18.0
+#  fluttertoast:
 dev_dependencies:
   flutter_test:
     sdk: flutter

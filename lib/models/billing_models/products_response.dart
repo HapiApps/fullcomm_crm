@@ -54,6 +54,7 @@ class ProductData {
   DateTime? expiryDate;
   String? stockDate;
   String? supplierId;
+  String? createdTs;
 
   String? minimumExpiryDate;
   String? maximumExpiryDate;
@@ -103,6 +104,7 @@ class ProductData {
     this.buyQty,
     this.getQty,
     this.isFree,
+    this.createdTs,
   });
 
   factory ProductData.fromJson(Map<String, dynamic> json) => ProductData(
@@ -148,6 +150,7 @@ class ProductData {
     buyQty: json["buy_qty"]?.toString(),
     getQty: json["get_qty"]?.toString(),
     isFree: json["is_free"]?.toString(),
+    createdTs: json["created_ts"]?.toString(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -190,5 +193,6 @@ class ProductData {
     "buy_qty": buyQty,
     "get_qty": getQty,
     "is_free": isFree,
+    "created_ts": createdTs,
   };
 }

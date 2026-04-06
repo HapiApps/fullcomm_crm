@@ -16,7 +16,6 @@ import 'package:fullcomm_crm/billing_utils/sized_box.dart';
 import 'package:fullcomm_crm/billing_utils/text_formats.dart';
 import 'package:fullcomm_crm/billing_utils/toast_messages.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
-import 'package:fullcomm_crm/view_models/credentials_provider.dart';
 import 'package:fullcomm_crm/view_models/customer_provider.dart';
 import 'package:fullcomm_crm/billing/orders/hold_order_details.dart';
 import 'package:provider/provider.dart';
@@ -231,10 +230,8 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final billing = Provider.of<BillingProvider>(context, listen: false);
       final customers = Provider.of<CustomersProvider>(context, listen: false);
-      final credentials = Provider.of<UserDataProvider>(context, listen: false);
       FocusScope.of(context).requestFocus(billing.dropdownFocusNode);
       billing.dropdownFocusNode.requestFocus();
-      await credentials.loadCashierInfo();
       // Set cashier
       billing.cashierController.text =
       "${billing.cashierNameController} - ${billing.cashierIdController}";
@@ -1101,10 +1098,10 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
         .size
         .height;
     String searchText = "";
-    bool _isPaymentDialogOpen = false;
-    BuildContext? _dialogContext;bool _isPrinting = false;
-    return Consumer3<UserDataProvider, CustomersProvider, BillingProvider>(
-        builder: (context, userDataProvider, customerProvider, billingProvider,
+    bool isPaymentDialogOpen = false;
+    bool isPrinting = false;
+    return Consumer2<CustomersProvider, BillingProvider>(
+        builder: (context, customerProvider, billingProvider,
             _) {
           return Focus(
             autofocus: true,
@@ -1202,12 +1199,12 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                         final billingProvider = Provider.of<BillingProvider>(context, listen: false);
                         final customerProvider = Provider.of<CustomersProvider>(context, listen: false);
 
-                        print("_isPaymentDialogOpen: $_isPaymentDialogOpen");
+                        print("_isPaymentDialogOpen: $isPaymentDialogOpen");
 
                         // 🔹 CLOSE DIALOG IF ALREADY OPEN
-                        if (_isPaymentDialogOpen) {
+                        if (isPaymentDialogOpen) {
                           Navigator.pop(context); // ONLY ONE POP
-                          setState(() => _isPaymentDialogOpen = false);
+                          setState(() => isPaymentDialogOpen = false);
                           return;
                         }
 
@@ -1223,7 +1220,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                         }
 
                         // 🔹 OPEN PAYMENT DIALOG
-                        setState(() => _isPaymentDialogOpen = true);
+                        setState(() => isPaymentDialogOpen = true);
 
                         showPaymentBalanceDialog(
                           context,
@@ -1233,12 +1230,12 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                             // 🔥 PREVENT MULTIPLE CALLS
                             // =======================================
                             // if (billingProvider.billingItems.isNotEmpty) {
-                            if (_isPrinting) {
+                            if (isPrinting) {
                               print("PRINT BLOCKED — ALREADY PRINTING");
                               return;
                             }
 
-                            _isPrinting = true; // lock
+                            isPrinting = true; // lock
 
                             final paymentMap = {
                               'UPI': '1',
@@ -1330,7 +1327,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                             );
 
                             // Unlock print after attempt
-                            _isPrinting = false;
+                            isPrinting = false;
                           },
                           // },
 
@@ -1341,12 +1338,12 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                             // 🔥 PREVENT MULTIPLE CALLS
                             // =======================================
                             // if (billingProvider.billingItems.isNotEmpty) {
-                            if (_isPrinting) {
+                            if (isPrinting) {
                               print("PRINT BLOCKED — ALREADY PRINTING");
                               return;
                             }
 
-                            _isPrinting = true; // lock
+                            isPrinting = true; // lock
 
                             final paymentMap = {
                               'UPI': '1',
@@ -1438,10 +1435,10 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                             );
 
                             // Unlock print after attempt
-                            _isPrinting = false;
+                            isPrinting = false;
                           },
                         ).whenComplete(() {
-                          setState(() => _isPaymentDialogOpen = false);
+                          setState(() => isPaymentDialogOpen = false);
                         });
 
                         return;
@@ -1452,12 +1449,12 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                         final billingProvider = Provider.of<BillingProvider>(context, listen: false);
                         final customerProvider = Provider.of<CustomersProvider>(context, listen: false);
 
-                        print("_isPaymentDialogOpen: $_isPaymentDialogOpen");
+                        print("_isPaymentDialogOpen: $isPaymentDialogOpen");
 
                         // 🔹 CLOSE DIALOG IF ALREADY OPEN
-                        if (_isPaymentDialogOpen) {
+                        if (isPaymentDialogOpen) {
                           Navigator.pop(context); // ONLY ONE POP
-                          setState(() => _isPaymentDialogOpen = false);
+                          setState(() => isPaymentDialogOpen = false);
                           return;
                         }
 
@@ -1473,7 +1470,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                         }
 
                         // 🔹 OPEN PAYMENT DIALOG
-                        setState(() => _isPaymentDialogOpen = true);
+                        setState(() => isPaymentDialogOpen = true);
                         // 🔹 Directly save the bill
                         final selectedMethod = billingProvider.selectBillMethod.toString();
                         final paymentMap = {
@@ -3929,12 +3926,12 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                   // 🔥 PREVENT MULTIPLE CALLS
                                                   // =======================================
                                                   // if (billingProvider.billingItems.isNotEmpty) {
-                                                  if (_isPrinting) {
+                                                  if (isPrinting) {
                                                     print("PRINT BLOCKED — ALREADY PRINTING");
                                                     return;
                                                   }
 
-                                                  _isPrinting = true; // lock
+                                                  isPrinting = true; // lock
 
                                                   final paymentMap = {
                                                     'UPI': '1',
@@ -4026,7 +4023,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                   );
 
                                                   // Unlock print after attempt
-                                                  _isPrinting = false;
+                                                  isPrinting = false;
                                                 },
                                               );
                                             } else {
@@ -4200,12 +4197,12 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                   // 🔥 PREVENT MULTIPLE CALLS
                                                   // =======================================
                                                   // if (billingProvider.billingItems.isNotEmpty) {
-                                                  if (_isPrinting) {
+                                                  if (isPrinting) {
                                                     print("PRINT BLOCKED — ALREADY PRINTING");
                                                     return;
                                                   }
 
-                                                  _isPrinting = true; // lock
+                                                  isPrinting = true; // lock
 
                                                   final paymentMap = {
                                                     'UPI': '1',
@@ -4297,7 +4294,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                   );
 
                                                   // Unlock print after attempt
-                                                  _isPrinting = false;
+                                                  isPrinting = false;
                                                 },
                                               );
                                             } else {

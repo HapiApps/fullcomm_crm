@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 
+import '../controller/controller.dart';
+import '../screens/records/records.dart';
 import 'Customtext.dart';
 
 /// Two alternating colors
@@ -112,71 +114,81 @@ class _StatusRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+    return InkWell(
+      onTap: item.value==0?null:(){
+        controllers.selectCallType.value = item.label;
+        Navigator.push( context,
+          PageRouteBuilder( pageBuilder: (context, animation1, animation2) => const Records( isReload: "true", ),
+            transitionDuration: Duration.zero, reverseTransitionDuration: Duration.zero, ), );
+        controllers.oldIndex.value = controllers.selectedIndex.value;
+        controllers.selectedIndex.value = 101;
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
 
-        /// Label
-        SizedBox(
-          width: 110,
-          child: CustomText(
-            text: item.label,
-            isCopy: false,
-            size: 13,
-            isBold: true,
-            colors: const Color(0xff8A8A8A),
+          /// Label
+          SizedBox(
+            width: 110,
+            child: CustomText(
+              text: item.label,
+              isCopy: false,
+              size: 13,
+              isBold: true,
+              colors: const Color(0xff8A8A8A),
+            ),
           ),
-        ),
 
-        10.width,
+          10.width,
 
-        /// Bar Section
-        Expanded(
-          child: Stack(
-            alignment: Alignment.centerLeft,
-            children: [
-              /// FULL LIGHT BACKGROUND
-              Container(
-                height: 15,
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(0),
-                    bottomLeft: Radius.circular(0),
-                    topRight: Radius.circular(5),
-                    bottomRight: Radius.circular(5),
+          /// Bar Section
+          Expanded(
+            child: Stack(
+              alignment: Alignment.centerLeft,
+              children: [
+                /// FULL LIGHT BACKGROUND
+                Container(
+                  height: 15,
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(0),
+                      bottomLeft: Radius.circular(0),
+                      topRight: Radius.circular(5),
+                      bottomRight: Radius.circular(5),
+                    ),
                   ),
                 ),
-              ),
-              /// Dotted Grid
-              // Positioned.fill(
-              //   child: CustomPaint(
-              //     painter: _DottedVerticalPainter(),
-              //   ),
-              // ),
+                /// Dotted Grid
+                // Positioned.fill(
+                //   child: CustomPaint(
+                //     painter: _DottedVerticalPainter(),
+                //   ),
+                // ),
 
-              /// DARK FILL
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  return _HoverBar(
-                    label: item.label,
-                    value: item.value,
-                    percentage: item.percentage,
-                    color: fillColor,
-                    maxWidth: constraints.maxWidth,
-                  );
-                },
-              ),
-            ],
+                /// DARK FILL
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    return _HoverBar(
+                      label: item.label,
+                      value: item.value,
+                      percentage: item.percentage,
+                      color: fillColor,
+                      maxWidth: constraints.maxWidth,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),5.width,
+          CustomText(
+            text: item.value.toString(),
+            isCopy: false,
+            size: 13,
+            colors: Colors.black,
           ),
-        ),5.width,
-        CustomText(
-          text: item.value.toString(),
-          isCopy: false,
-          size: 13,
-          colors: Colors.black,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

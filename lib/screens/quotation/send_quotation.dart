@@ -487,13 +487,13 @@ class _SendQuotationState extends State<SendQuotation> {
                         controllers.selectCustomer(customer!);
                       });
                     },),
-                  ProductDropdown(
-                    prdList: productCtr.products,
-                    onChanged: (ProductModel? product) {
-                      setState(() {
-                        productCtr.selectProduct(product!);
-                      });
-                    },),
+                  // ProductDropdown(
+                  //   prdList: productCtr.products,
+                  //   onChanged: (ProductModel? product) {
+                  //     setState(() {
+                  //       productCtr.selectProduct(product!);
+                  //     });
+                  //   },),
                   Container(
                     width: MediaQuery.of(context).size.width*0.1,
                     height: 40,

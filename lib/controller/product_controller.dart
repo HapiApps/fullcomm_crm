@@ -22,6 +22,7 @@ import '../common/widgets/log_in.dart';
 import '../components/custom_loading_button.dart';
 import '../components/custom_text.dart';
 import '../components/custom_textfield.dart';
+import '../models/billing_models/products_response.dart';
 import '../models/order_model.dart';
 import '../models/product_model.dart';
 import '../models/template_obj.dart';
@@ -71,23 +72,23 @@ class ProductController extends GetxController with GetSingleTickerProviderState
   var  totalProspectPages =0.obs;
   final itemsPerPage = 20; // Adjust based on your needs
 
-  List<ProductModel> changeProductPage(RxList<ProductModel> list,RxList<ProductModel> list2){
+  List<ProductData> changeProductPage(RxList<ProductData> list,RxList<ProductData> list2){
     final query = searchProspects.value.trim().toLowerCase();
     final ratingFilter = selectedProspectTemperature.value;
     final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
     final now = DateTime.now();
 
     final filteredLeads = list2.value.where((lead) {
-      final matchesQuery = (lead.title ?? '').toLowerCase().contains(query);
+      final matchesQuery = (lead.pTitle ?? '').toLowerCase().contains(query);
       return matchesQuery;
     }).toList();
 
     if (sortField.isNotEmpty) {
       filteredLeads.sort((a, b) {
-        dynamic getFieldValue(ProductModel lead, String field) {
+        dynamic getFieldValue(ProductData lead, String field) {
           switch (field) {
             case 'name':
-              var name = lead.title ?? '';
+              var name = lead.pTitle ?? '';
               if (name.contains('||')) name = name.split('||')[0].trim();
               return name.toLowerCase();
             default:
@@ -388,13 +389,13 @@ var idsList=[].obs;
 var isSelectAll=false.obs;
   void checkDelete() {
     for (var product in products) {
-      if(isSelectAll.value==true ){
-        product.isSelect.value = isSelectAll.value;
-        idsList.add(product.id);
-      }else{
-        product.isSelect.value = isSelectAll.value;
-        idsList.clear();
-      }
+      // if(isSelectAll.value==true ){
+      //   product.isSelect.value = isSelectAll.value;
+      //   idsList.add(product.id);
+      // }else{
+      //   product.isSelect.value = isSelectAll.value;
+      //   idsList.clear();
+      // }
     }
   }
   String formatAmount(dynamic amount) {
@@ -414,11 +415,11 @@ var isSelectAll=false.obs;
       return "₹0";
     }
   }
- RxList<ProductModel> products=<ProductModel>[].obs;
- RxList<ProductModel> products2=<ProductModel>[].obs;
+ RxList<ProductData> products=<ProductData>[].obs;
+ RxList<ProductData> products2=<ProductData>[].obs;
   RxList<ProductModel> productsList=<ProductModel>[].obs;
 
-  Future<List<ProductModel>> getProducts() async {
+  Future<List<ProductData>> getProducts() async {
     try {
       products.clear();
       products2.clear();
@@ -429,10 +430,7 @@ var isSelectAll=false.obs;
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          "action": "get_data",
-          "search_type": "get_products",
-          "role": controllers.storage.read("role").toString(),
-          "id": controllers.storage.read("id").toString(),
+          "action": "select_products",
           "cos_id": controllers.storage.read("cos_id").toString(),
         }),
       );
@@ -448,9 +446,13 @@ var isSelectAll=false.obs;
         }
       }
       if (response.statusCode == 200) {
-        final List data = jsonDecode(response.body);
-        products.value =data.map((e) => ProductModel.fromJson(e)).toList();
-        products2.value =data.map((e) => ProductModel.fromJson(e)).toList();
+        // final List data = jsonDecode(response.body);
+        // ProductsResponse.fromJson(jsonDecode(response.body));
+        // products.value =data.map((e) => ProductModel.fromJson(e)).toList();
+        // products2.value =data.map((e) => ProductModel.fromJson(e)).toList();
+        final ProductsResponse data = ProductsResponse.fromJson(jsonDecode(response.body));
+        products.value = data.productList ?? [];
+        products2.value = data.productList ?? [];
         return products;
       }else{
           return [];
@@ -572,7 +574,7 @@ var isSelectAll=false.obs;
 
       final matchesSearch =
           searchText.isEmpty ||
-              activity.title.toString().toLowerCase().contains(searchText.toLowerCase()) ||
+              activity.pTitle.toString().toLowerCase().contains(searchText.toLowerCase()) ||
               activity.hsnCode.toString().toLowerCase().contains(searchText.toLowerCase());
 
       final activityDate = parseDate(activity.createdTs.toString());
@@ -648,7 +650,7 @@ var isSelectAll=false.obs;
     if (sortField == 'name') {
       filtered.sort((a, b) {
         final comparison =
-        a.title.toString().toLowerCase().compareTo(b.title.toString().toLowerCase());
+        a.pTitle.toString().toLowerCase().compareTo(b.pTitle.toString().toLowerCase());
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     }else if (sortField == 'mrp') {
@@ -679,33 +681,36 @@ var isSelectAll=false.obs;
         final comparison = aVal.compareTo(bVal);
         return sortOrder == 'asc' ? comparison : -comparison;
       });
-    }else if (sortField == 'gst') {
-      filtered.sort((a, b) {
-        final aVal = int.tryParse(a.gst.toString()) ?? 0;
-        final bVal = int.tryParse(b.gst.toString()) ?? 0;
-        final comparison = aVal.compareTo(bVal);
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }else if (sortField == 'date') {
+    }
+    // else if (sortField == 'gst') {
+    //   filtered.sort((a, b) {
+    //     final aVal = int.tryParse(a.gst.toString()) ?? 0;
+    //     final bVal = int.tryParse(b.gst.toString()) ?? 0;
+    //     final comparison = aVal.compareTo(bVal);
+    //     return sortOrder == 'asc' ? comparison : -comparison;
+    //   });
+    // }
+    else if (sortField == 'date') {
       filtered.sort((a, b) {
         final dateA = parseDate(a.createdTs.toString());
         final dateB = parseDate(b.createdTs.toString());
         final comparison = dateA.compareTo(dateB);
         return sortOrder == 'asc' ? comparison : -comparison;
       });
-    }else if (sortField == 'cat') {
-      filtered.sort((a, b) {
-        final comparison =
-        a.cat.toString().toLowerCase().compareTo(b.cat.toString().toLowerCase());
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }else if (sortField == 'sub cat') {
-      filtered.sort((a, b) {
-        final comparison =
-        a.subCat.toString().toLowerCase().compareTo(b.subCat.toString().toLowerCase());
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
     }
+    // else if (sortField == 'cat') {
+    //   filtered.sort((a, b) {
+    //     final comparison =
+    //     a.cat.toString().toLowerCase().compareTo(b.cat.toString().toLowerCase());
+    //     return sortOrder == 'asc' ? comparison : -comparison;
+    //   });
+    // }else if (sortField == 'sub cat') {
+    //   filtered.sort((a, b) {
+    //     final comparison =
+    //     a.subCat.toString().toLowerCase().compareTo(b.subCat.toString().toLowerCase());
+    //     return sortOrder == 'asc' ? comparison : -comparison;
+    //   });
+    // }
     products.assignAll(filtered);
   }
 

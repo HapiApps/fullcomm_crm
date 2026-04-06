@@ -880,7 +880,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
               totalLead: (responseData['billing_data']['total_lead']).toString(),
               icon1: "",
               icon2: "",
-              displayOrder: int.parse(responseData['billing_data']['display_order'].toString()));
+              displayOrder: int.parse(responseData['data']['display_order'].toString()));
         }
         show.value="All";
         controllers.productCtr.reset();

@@ -43,6 +43,7 @@ import '../provider/dashboard_provider.dart';
 import '../provider/employee_provider.dart';
 import '../services/api_services.dart';
 import 'dart:html' as html;
+import '../view_models/billing_provider.dart';
 import 'employee/employee_screen.dart';
 import 'leads/new_lead_page.dart';
 
@@ -108,14 +109,25 @@ class _DashboardPageState extends State<DashboardPage>
     if(controllers.allLeadList.isEmpty){
       apiService.getCustomLeads();
     }
-    apiService.getAllLeadCategories();
-    dashController.getCustomerStatus();
-
+    if(controllers.allLeadCategoryList.isEmpty){
+      apiService.getAllLeadCategories();
+    }
+    if(dashController.customerStatusReport.isEmpty){
+      dashController.getCustomerStatus();
+    }
+    if(Provider.of<BillingProvider>(context, listen: false).productsList.isEmpty){
+      Provider.of<BillingProvider>(context, listen: false).getProducts();
+    }
+    if(productCtr.products.isEmpty){
+      productCtr.getProducts();
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
       employeeData.staffRoleDetailsData(context: context);
-      controllers.getCallStatus();
+      if(controllers.hCallStatusList.isEmpty){
+        controllers.getCallStatus();
+      }
       controllers.getRangeStatus();
       controllers.getIndustries();
       productCtr.getProducts();
@@ -145,6 +157,17 @@ class _DashboardPageState extends State<DashboardPage>
         callType: controllers.selectMeetingType.value,
         sortField: controllers.sortFieldMeetingActivity.value,
         sortOrder: controllers.sortOrderMeetingActivity.value,
+      );
+      remController.sortReminders();
+      remController.filterAndSortCalls(
+        allCalls: controllers.callActivity,
+        searchText: controllers.searchText.value.toLowerCase(),
+        callType: controllers.selectCallType.value,
+        sortField: controllers.sortFieldCallActivity.value,
+        sortOrder: controllers.sortOrderCallActivity.value,
+        selectedMonth: remController.selectedCallMonth.value,
+        selectedRange: remController.selectedCallRange.value,
+        selectedDateFilter: remController.selectedCallSortBy.value,
       );
       String today =
           "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
@@ -683,7 +706,7 @@ void checkDate(){
                                       );
                                       controllers.oldIndex.value =
                                           controllers.selectedIndex.value;
-                                      controllers.selectedIndex.value = 6;
+                                      controllers.selectedIndex.value = 101;
                                     }
                                 ),SizedBox(width: screenWidth/75,),
                                 WaveStatCard(
@@ -712,7 +735,7 @@ void checkDate(){
                                         ),
                                       );
                                       controllers.oldIndex.value = controllers.selectedIndex.value;
-                                      controllers.selectedIndex.value = 6;
+                                      controllers.selectedIndex.value = 101;
                                     }
                                 ),SizedBox(width: screenWidth/75,),
                                 WaveStatCard(
@@ -731,7 +754,7 @@ void checkDate(){
                                       ),
                                     );
                                     controllers.oldIndex.value = controllers.selectedIndex.value;
-                                    controllers.selectedIndex.value = 6;
+                                    controllers.selectedIndex.value = 101;
                                   },
                                   title: "Appointments",
                                   // numericValue: int.parse(dashController.totalMeetings.value.toString()),
@@ -746,7 +769,7 @@ void checkDate(){
                                     setState(() {
                                       controllers.selectedIndex.value =int.parse(controllers.leadCategoryList[0].leadStatus);
                                     });
-                                    print(controllers.selectedIndex.value);
+                                    // print(controllers.selectedIndex.value);
                                     Navigator.push(
                                       context,
                                       PageRouteBuilder(
@@ -785,7 +808,7 @@ void checkDate(){
                                     controllers.oldIndex.value =
                                         controllers.selectedIndex.value;
                                     controllers.selectedIndex.value =
-                                    11;
+                                    102;
                                   },
                                   title: "Reminders",
                                   numericValue: int.parse(dashController
@@ -837,23 +860,14 @@ void checkDate(){
                                         onTap: (){
                                           remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
                                           controllers.changeTab(0);
-                                          Navigator.push(
-                                            context,
-                                            PageRouteBuilder(
-                                              pageBuilder: (context,
-                                                  animation1,
-                                                  animation2) =>
-                                              const Records(
-                                                isReload: "true",
-                                              ),
-                                              transitionDuration:
-                                              Duration.zero,
-                                              reverseTransitionDuration:
-                                              Duration.zero,
-                                            ),
+                                          controllers.selectCallType.value = "All";
+                                          Navigator.push( context,
+                                          PageRouteBuilder( pageBuilder: (context, animation1, animation2) =>
+                                            const Records( isReload: "true", ), transitionDuration: Duration.zero, reverseTransitionDuration: Duration.zero,
+                                          ),
                                           );
                                           controllers.oldIndex.value = controllers.selectedIndex.value;
-                                          controllers.selectedIndex.value = 6;
+                                          controllers.selectedIndex.value = 101;
                                         },
                                         child: SizedBox(
                                           width: screenWidth/3.3,
@@ -899,6 +913,30 @@ void checkDate(){
                                               Row(
                                                 children: [
                                                   Radio<String>(
+                                                    value: "All",
+                                                    groupValue: remController.filterApp.value,
+                                                    activeColor: const Color(0xFF0078D7),
+                                                    onChanged: (v) {
+                                                      remController.filterApp.value="All";
+                                                      remController.filterAndSortMeetings(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        callType: controllers.selectMeetingType.value,
+                                                        sortField: controllers.sortFieldMeetingActivity.value,
+                                                        sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                      );
+                                                    },
+                                                  ),
+                                                  CustomText(
+                                                    text: "All",
+                                                    colors: Colors.black,
+                                                    size: 15,
+                                                    isCopy: true,
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Radio<String>(
                                                     value: "My",
                                                     groupValue: remController.filterApp.value,
                                                     activeColor: const Color(0xFF0078D7),
@@ -913,7 +951,7 @@ void checkDate(){
                                                     },
                                                   ),
                                                   CustomText(
-                                                    text: "My",
+                                                    text: "Mine",
                                                     colors: Colors.black,
                                                     size: 15,
                                                     isCopy: true,
@@ -1252,6 +1290,34 @@ void checkDate(){
                                             Row(
                                               children: [
                                                 Radio<String>(
+                                                  value: "All",
+                                                  groupValue: remController.filterCall.value,
+                                                  activeColor: const Color(0xFF0078D7),
+                                                  onChanged: (v) {
+                                                    remController.filterCall.value="All";
+                                                    remController.filterAndSortCalls(
+                                                      allCalls: controllers.callActivity,
+                                                      searchText: controllers.searchText.value.toLowerCase(),
+                                                      callType: controllers.selectCallType.value,
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value,
+                                                      selectedMonth: remController.selectedCallMonth.value,
+                                                      selectedRange: remController.selectedCallRange.value,
+                                                      selectedDateFilter: remController.selectedCallSortBy.value,
+                                                    );
+                                                  },
+                                                ),
+                                                CustomText(
+                                                  text: "All",
+                                                  colors: Colors.black,
+                                                  size: 15,
+                                                  isCopy: true,
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Radio<String>(
                                                   value: "My",
                                                   groupValue: remController.filterCall.value,
                                                   activeColor: const Color(0xFF0078D7),
@@ -1270,7 +1336,7 @@ void checkDate(){
                                                   },
                                                 ),
                                                 CustomText(
-                                                  text: "My",
+                                                  text: "Mine",
                                                   colors: Colors.black,
                                                   size: 15,
                                                   isCopy: true,
@@ -1762,6 +1828,25 @@ void checkDate(){
                                               Row(
                                                 children: [
                                                   Radio<String>(
+                                                    value: "All",
+                                                    groupValue: remController.filterRem.value,
+                                                    activeColor: const Color(0xFF0078D7),
+                                                    onChanged: (v) {
+                                                      remController.filterRem.value="All";
+                                                      remController.sortReminders();
+                                                    },
+                                                  ),
+                                                  CustomText(
+                                                    text: "All",
+                                                    colors: Colors.black,
+                                                    size: 15,
+                                                    isCopy: true,
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Radio<String>(
                                                     value: "My",
                                                     groupValue: remController.filterRem.value,
                                                     activeColor: const Color(0xFF0078D7),
@@ -1771,7 +1856,7 @@ void checkDate(){
                                                     },
                                                   ),
                                                   CustomText(
-                                                    text: "My",
+                                                    text: "Mine",
                                                     colors: Colors.black,
                                                     size: 15,
                                                     isCopy: true,

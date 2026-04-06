@@ -1,22 +1,16 @@
 import 'dart:convert';
 import 'package:excel/excel.dart' as excel;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
-import 'package:fullcomm_crm/screens/leads/prospects.dart';
-import 'package:fullcomm_crm/screens/leads/qualified.dart';
-import 'package:fullcomm_crm/screens/leads/suspects.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/screens/leads/view_customer.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_text.dart';
 import '../../components/dialog_button.dart';
@@ -942,7 +936,9 @@ class Utils {
   }
 
   void showComposeMail(BuildContext context) {
+    controllers.emailToCtr.clear();
     controllers.emailSubjectCtr.clear();
+    controllers.emailMessageCtr.clear();
     imageController.photo1.value="";
     final formatProvider = Provider.of<ReminderProvider>(context, listen: false);
     formatProvider.resetFormatting();
@@ -964,13 +960,10 @@ class Utils {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          "Compose Mail",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
+                        CustomText(
+                          text: "Compose Mail",
+                          size: 16,isCopy: false,isBold: true,
+                            colors: Colors.black87,
                         ),
                         IconButton(
                           icon: const Icon(Icons.close, size: 15, color: Colors.black),
@@ -978,112 +971,143 @@ class Utils {
                         ),
                       ],
                     ),
-                    Divider(color: Colors.grey.shade300),
+                    Divider(color: Colors.grey),
                     const SizedBox(height: 10),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SizedBox(
-                            width: 70,
-                            child: Text("To",
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold))),
+                        SizedBox(
+                          width: 70,
+                          child: CustomText(text:"To",size: 14,
+                            textAlign: TextAlign.start,
+                            isCopy: false,isBold: true,),
+                        ),
                         Expanded(
                           child: TextFormField(
                             controller: controllers.emailToCtr,
                             style: const TextStyle(fontSize: 14),
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               isDense: true,
-                              border: InputBorder.none,
-                              hintText: "",
-                              contentPadding: EdgeInsets.zero,
+                              contentPadding: EdgeInsets.all(10),
+                              border: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue, width: 2),
+                              ),
+                              errorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red),
+                              ),
+                              focusedErrorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red, width: 2),
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    10.height,
-                    Divider(color: Colors.grey.shade300),
-                    10.height,
+                    // 10.height,
+                    // Divider(color: Colors.grey.shade300),
+                    20.height,
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SizedBox(
-                            width: 70,
-                            child: Text("CC",
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold))),
+                        SizedBox(
+                          width: 70,
+                          child: CustomText(text:"CC",
+                            textAlign: TextAlign.start,
+                            size: 14, isCopy: false,isBold: true,),
+                        ),
                         Expanded(
                           child: TextFormField(
                             style: const TextStyle(fontSize: 14),
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               isDense: true,
-                              border: InputBorder.none,
-                              hintText: "",
-                              contentPadding: EdgeInsets.zero,
+                              contentPadding: EdgeInsets.all(10),
+                              border: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue, width: 2),
+                              ),
+                              errorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red),
+                              ),
+                              focusedErrorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red, width: 2),
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    10.height,
-                    Divider(color: Colors.grey.shade300),
-                    10.height,
+                    // 10.height,
+                    // Divider(color: Colors.grey.shade300),
+                    20.height,
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SizedBox(
+                        SizedBox(
                           width: 70,
-                          child: Text(
-                            "Subject",
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                          ),
-                        ),
+                            child: CustomText(
+                              textAlign: TextAlign.start,
+                              text:"Subject",size: 14, isCopy: false,isBold: true,)),
                         Expanded(
                           child: Stack(
                             alignment: Alignment.centerRight,
                             children: [
-                              InkWell(
-                                onTap: () async {
-                                  if (formatProvider.isLink && controllers.emailSubjectCtr.text.isNotEmpty) {
-                                    final text = controllers.emailSubjectCtr.text.trim();
-                                    final url = text.startsWith("http") ? text : "https://$text";
-                                    final uri = Uri.parse(url);
-                                    if (await canLaunchUrl(uri)) {
-                                      await launchUrl(uri, mode: LaunchMode.externalApplication);
-                                    }
-                                  }
-                                },
-                                child: IgnorePointer(
-                                  ignoring: formatProvider.isLink,
-                                  child: TextFormField(
-                                    controller: controllers.emailSubjectCtr,
-                                    readOnly: formatProvider.isLink,
-                                    style: formatProvider.subjectTextStyle,
-                                    decoration: const InputDecoration(
-                                      fillColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      isDense: true,
-                                      border: InputBorder.none,
-                                      hintText: "",
-                                      contentPadding: EdgeInsets.only(right: 30),
-                                    ),
+                              TextFormField(
+                                controller: controllers.emailSubjectCtr,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.all(10),
+                                  border: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.blue, width: 2),
+                                  ),
+                                  errorBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.red),
+                                  ),
+                                  focusedErrorBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.red, width: 2),
                                   ),
                                 ),
+                                // decoration: const InputDecoration(
+                                //   fillColor: Colors.white,
+                                //   focusColor: Colors.white,
+                                //   hoverColor: Colors.white,
+                                //   isDense: true,
+                                //   border: InputBorder.none,
+                                //   hintText: "",
+                                //   contentPadding: EdgeInsets.only(right: 30),
+                                // ),
                               ),
-                              if (formatProvider.isLink)
-                                IconButton(
-                                  icon: const Icon(Icons.close, size: 18, color: Colors.red),
-                                  onPressed: () {
-                                    controllers.emailSubjectCtr.clear();
-                                    formatProvider.removeLink();
-                                  },
-                                ),
+                              // if (formatProvider.isLink)
+                              //   IconButton(
+                              //     icon: const Icon(Icons.close, size: 18, color: Colors.red),
+                              //     onPressed: () {
+                              //       controllers.emailMessageCtr.clear();
+                              //       formatProvider.removeLink();
+                              //     },
+                              //   ),
                             ],
                           ),
                         ),
                       ],
                     ),
                     10.height,
-                    Divider(color: Colors.grey.shade300),
+                    // Divider(color: Colors.grey.shade300),
                     Row(
                       children: [
                         IconButton(
@@ -1118,10 +1142,8 @@ class Utils {
                         IconButton(
                           icon: const Icon(Icons.link, size: 20, color: Colors.black87),
                           onPressed: () {
-                            if (controllers.emailSubjectCtr.text.trim().isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Subject is empty!")),
-                              );
+                            if (controllers.emailMessageCtr.text.trim().isEmpty) {
+                              showToast("Subject is empty!",Colors.red);
                               return;
                             }
                             formatProvider.toggleLink();
@@ -1134,22 +1156,61 @@ class Utils {
                     Container(
                       height: 120,
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.grey.shade300),
                       ),
-                      child: TextField(
-                        maxLines: null,
-                        expands: true,
-                        controller: controllers.emailMessageCtr,
-                        style: TextStyle(fontSize: 14),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(8),
-                          border: InputBorder.none,
-                          hintText: "",
+                      child: InkWell(
+                        onTap: () async {
+                          if (formatProvider.isLink && controllers.emailMessageCtr.text.isNotEmpty) {
+                            final text = controllers.emailMessageCtr.text.trim();
+                            final url = text.startsWith("http") ? text : "https://$text";
+                            final uri = Uri.parse(url);
+                            if (await canLaunchUrl(uri)) {
+                              await launchUrl(uri, mode: LaunchMode.externalApplication);
+                            }
+                          }
+                        },
+                        child: IgnorePointer(
+                          ignoring: formatProvider.isLink,
+                          child: TextFormField(
+                            maxLines: null,
+                            expands: true,
+                            readOnly: formatProvider.isLink,
+                            style: formatProvider.subjectTextStyle,
+                            controller: controllers.emailMessageCtr,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              focusColor: Colors.white,
+                              hoverColor: Colors.white,
+                              contentPadding: EdgeInsets.all(8),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.blue, width: 2),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.red),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.red, width: 2),
+                              ),
+                              hintText: "Message",
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                   14.height,
-                     InkWell(
+                    14.height,
+                    InkWell(
                        onTap: (){
                           utils.chooseFile(
                               mediaDataV: imageController.empMediaData,
@@ -1188,7 +1249,7 @@ class Utils {
                         ],
                       ),
                     ),),
-                    Divider(color: Colors.grey.shade300),
+                    Divider(color: Colors.grey),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -1208,32 +1269,28 @@ class Utils {
                             8.width,
                             CustomLoadingButton(
                               callback: () {
-                                if(controllers.emailToCtr.text.trim().isEmpty){
-                                  snackBar(context: context, msg: "To is empty!", color: Colors.red);
+                                if (controllers.emailToCtr.text.trim().isEmpty) {
+                                  showToast("To is empty!", Colors.red);
                                   controllers.emailCtr.reset();
                                   return;
                                 }
-                                if(!controllers.emailToCtr.text.trim().isEmail){
-                                  snackBar(
-                                    context: context,
-                                    msg: "Invalid mail!",
-                                    color: Colors.red,
-                                  );
+
+                                if (!isValidEmail(controllers.emailToCtr.text.trim())) {
+                                  showToast("Invalid mail!", Colors.red);
                                   controllers.emailCtr.reset();
                                   return;
                                 }
                                 if(controllers.emailSubjectCtr.text.trim().isEmpty){
-                                  snackBar(context: context, msg: "Subject is empty!", color: Colors.red);
+                                  showToast("Subject is empty!",Colors.red);
                                   controllers.emailCtr.reset();
                                   return;
                                 }
                                 if(controllers.emailMessageCtr.text.trim().isEmpty){
-                                  snackBar(context: context, msg: "Message is empty!", color: Colors.red);
+                                  showToast("Message is empty!",Colors.red);
                                   controllers.emailCtr.reset();
                                   return;
                                 }
-                                apiService.insertEmailAPI(context, "1",
-                                    imageController.photo1.value);
+                                apiService.insertEmailAPI(context, "1",imageController.photo1.value);
                               },
                               controller: controllers.emailCtr,
                               isImage: false,
@@ -1245,7 +1302,7 @@ class Utils {
                                   ? 90
                                   : 200,
                               height: 50,
-                              text:"Save",
+                              text:"Send",
                               textColor: Colors.white,
                             ),
                           ],
@@ -1261,7 +1318,22 @@ class Utils {
       },
     );
   }
-
+  void showToast(String msg,Color color) {
+    Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
+      backgroundColor: color,
+      textColor: Colors.white,
+      fontSize: 14.0,
+    );
+  }
+  bool isValidEmail(String email) {
+    final emailRegex = RegExp(
+      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+    );
+    return emailRegex.hasMatch(email);
+  }
   makingWebsite({String? web}) async {
     final url = Uri.parse('https://www.$web.com');
     if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
@@ -3657,7 +3729,7 @@ class Utils {
       "Yesterday",
       "Last 7 Days",
       "Last 30 Days",
-      "All"
+      // "All"
     ];
     final storage = controllers.storage.read("selectedSortBy");
     RxString selectedValue = "".obs;

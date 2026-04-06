@@ -3391,6 +3391,49 @@ class ApiService {
       controllers.emailCtr.reset();
     }
   }
+  Future updateAppointmentStatus(BuildContext context,String status) async {
+    try {
+      Map data ={
+        "created_by":controllers.storage.read("id"),
+        "cos_id":controllers.storage.read("cos_id"),
+        "status":status,
+        "idList":remController.selectedMeetingIds.value,
+        "action":"appointment_status"
+      };
+
+      final request = await http.post(Uri.parse(scriptApi),
+        body: jsonEncode(data),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+      );
+      print("body");
+      print(data);
+      print(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return updateAppointmentStatus(context,status);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200) {
+        utils.snackBar( msg: "Status Updated Successfully", color: Colors.green, context: Get.context!);
+        remController.selectedMeetingIds.clear();
+        apiService.getAllMeetingActivity("");
+        Navigator.pop(Get.context!);
+        controllers.emailCtr.reset();
+      } else {
+        controllers.emailCtr.reset();
+        errorDialog(Get.context!, "Status Updated Failed");
+      }
+    } catch (e) {
+      errorDialog(Get.context!, e.toString());
+      controllers.emailCtr.reset();
+    }
+  }
 
   Future confirmOrderAPI(BuildContext context,String id,String cusId,String totalAmt,String name,String number) async {
     try {

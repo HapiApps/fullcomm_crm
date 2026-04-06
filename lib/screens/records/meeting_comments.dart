@@ -38,50 +38,131 @@ class _MeetingCommentsState extends State<MeetingComments> {
   String searchText = "";
   late FocusNode _focusNode;
   final ScrollController _controller = ScrollController();
+  // String formatFirstDate(String input) {
+  //   try {
+  //     List<String> parts = input.split("||").map((e) => e.trim()).toList();
+  //     String datePart = parts.isNotEmpty ? parts.first : "";
+  //     String? timePart;
+  //     if (parts.length >= 2) {
+  //       for (String p in parts.reversed) {
+  //         if (p.contains(':') ||
+  //             p.toLowerCase().contains('am') ||
+  //             p.toLowerCase().contains('pm')) {
+  //           timePart = p;
+  //           break;
+  //         }
+  //       }
+  //     }
+  //     datePart = datePart.replaceAll('.', '-');
+  //     String combined = timePart != null && timePart.isNotEmpty
+  //         ? "$datePart $timePart"
+  //         : datePart;
+  //     DateTime parsedDate;
+  //     if (combined.contains(':') ||
+  //         combined.toLowerCase().contains('am') ||
+  //         combined.toLowerCase().contains('pm')) {
+  //       parsedDate = DateFormat("dd-MM-yyyy h:mm a").parse(combined);
+  //       return DateFormat("dd-MM-yyyy h:mm a").format(parsedDate);
+  //     } else {
+  //       parsedDate = DateFormat("dd-MM-yyyy").parse(combined);
+  //       return DateFormat("dd-MM-yyyy").format(parsedDate);
+  //     }
+  //   } catch (e) {
+  //     print("Error parsing: $e");
+  //     return "";
+  //   }
+  // }
   String formatFirstDate(String input) {
     try {
+      // print(input);
+
       List<String> parts = input.split("||").map((e) => e.trim()).toList();
-      String datePart = parts.isNotEmpty ? parts.first : "";
-      String? timePart;
-      if (parts.length >= 2) {
-        for (String p in parts.reversed) {
-          if (p.contains(':') ||
-              p.toLowerCase().contains('am') ||
-              p.toLowerCase().contains('pm')) {
-            timePart = p;
-            break;
-          }
+
+      String date1 = parts.isNotEmpty ? parts[0].replaceAll('.', '-') : "";
+
+      String secondPart = parts.length > 1 ? parts[1] : "";
+
+      String date2 = date1;
+      String time1 = "";
+
+      if (secondPart.isNotEmpty) {
+        // 👉 extract date2
+        final dateMatch =
+        RegExp(r'\d{2}[.-]\d{2}[.-]\d{4}').firstMatch(secondPart);
+
+        if (dateMatch != null) {
+          date2 = dateMatch.group(0)!.replaceAll('.', '-');
+        }
+
+        // 👉 extract time1 (works with or without "and")
+        final timeMatch = RegExp(
+          r'\d{1,2}[:.-]\d{2}\s?(AM|PM)',
+          caseSensitive: false,
+        ).firstMatch(secondPart);
+
+        if (timeMatch != null) {
+          time1 = timeMatch.group(0)!;
         }
       }
-      datePart = datePart.replaceAll('.', '-');
-      String combined = timePart != null && timePart.isNotEmpty
-          ? "$datePart $timePart"
-          : datePart;
-      DateTime parsedDate;
-      if (combined.contains(':') ||
-          combined.toLowerCase().contains('am') ||
-          combined.toLowerCase().contains('pm')) {
-        parsedDate = DateFormat("dd-MM-yyyy h:mm a").parse(combined);
-        return DateFormat("dd-MM-yyyy h:mm a").format(parsedDate);
-      } else {
-        parsedDate = DateFormat("dd-MM-yyyy").parse(combined);
-        return DateFormat("dd-MM-yyyy").format(parsedDate);
+
+      // 👉 normalize time1 (12-58 → 12:58)
+      time1 = time1.replaceAllMapped(
+        RegExp(r'(\d{1,2})-(\d{2})'),
+            (m) => "${m[1]}:${m[2]}",
+      );
+
+      time1 = time1.replaceAll('.', ':');
+
+      // 👉 time2
+      String time2 = parts.length > 2 ? parts[2].trim() : "";
+
+      time2 = time2.replaceAllMapped(
+        RegExp(r'(\d{1,2})-(\d{2})'),
+            (m) => "${m[1]}:${m[2]}",
+      );
+
+      time2 = time2.replaceAll('.', ':');
+
+      final match2 = RegExp(r'\d{1,2}:\d{2}\s?(AM|PM)', caseSensitive: false)
+          .firstMatch(time2);
+      time2 = match2?.group(0) ?? "";
+
+      String formattedStart = date1;
+      String formattedEnd = date2;
+
+      // 👉 parse start
+      if (time1.isNotEmpty) {
+        DateTime start =
+        DateFormat("dd-MM-yyyy h:mm a").parse("$date1 $time1");
+
+        formattedStart = DateFormat("dd-MM-yyyy h:mm a").format(start);
       }
+
+      // 👉 parse end
+      if (time2.isNotEmpty) {
+        DateTime end =
+        DateFormat("dd-MM-yyyy h:mm a").parse("$date2 $time2");
+
+        formattedEnd = DateFormat("dd-MM-yyyy h:mm a").format(end);
+      }
+
+      return "$formattedStart to $formattedEnd";
     } catch (e) {
-      print("Error parsing: $e");
+      // print("Error parsing: $e");
       return "";
     }
   }
   List<double> colWidths = [
     50,   // 0 Checkbox
     80,  // 1 Actions
-    150,  // 2 Event Name
-    150,  // 3 Type
-    150,  // 3 Type
-    150,  // 4 Location
-    150,  // 5 Employee Name
-    150,  // 6 Customer Name
-    150,  // 7 Start Date
+    100,  // 2 Event Name
+    100,  // 3 Type
+    100,  // 3 Type
+    100,  // 4 Location
+    100,  // 5 Employee Name
+    100,  // 6 Customer Name
+    100,  // 7 Start Date
+    100,  // 7 Start Date
   ];
   Widget headerCell(int index, Widget child) {
     return Stack(
@@ -194,9 +275,9 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         onPressed: (){
                           final futureDate = DateTime.now().add(const Duration(days: 3));
                           controllers.fDate.value = DateFormat('dd-MM-yyyy').format(futureDate);
-                          controllers.fTime.value = DateFormat('hh.mm a').format(DateTime.now().subtract(const Duration(minutes: 15)));
-                          controllers.toDate.value = "";
-                          controllers.toTime.value = "";
+                          controllers.fTime.value = DateFormat('hh.mm a').format(DateTime.now().add(const Duration(minutes: 15)));
+                          controllers.toDate.value = DateFormat('dd-MM-yyyy').format(futureDate);
+                          controllers.toTime.value = DateFormat('hh.mm a').format(DateTime.now().add(const Duration(minutes: 30)));
 
                           setState(() {
                             controllers.clearSelectedCustomer();
@@ -246,91 +327,37 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                     // ✅ CONTENT (NO SCROLL)
                                     content: SizedBox(
                                       width: 500,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          RichText(
-                                            text: const TextSpan(
-                                              children: [
-                                                TextSpan(
-                                                  text: "Appointment Title",
-                                                  style: TextStyle(color: Colors.black, fontSize: 13),
-                                                ),
-                                                TextSpan(
-                                                  text: "*",
-                                                  style: TextStyle(color: Colors.red, fontSize: 13),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 480,
-                                            child: TextField(
-                                              controller: controllers.meetingTitleCrt,
-                                              onChanged: (value) {
-                                                if (value.toString().isNotEmpty) {
-                                                  setState(() => titleError = null);
-                                                }
-                                              },
-                                              decoration: InputDecoration(
-                                                hintText: "Appointment Title",
-                                                border: OutlineInputBorder(),
-                                                enabledBorder: OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color: Colors.grey.shade400,
-                                                    ),
-                                                    borderRadius: BorderRadius.circular(5)),
-                                                focusedBorder: OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color: colorsConst.primary,
-                                                    ),
-                                                    borderRadius: BorderRadius.circular(5)),
-                                                focusedErrorBorder: OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: const Color(0xffE1E5FA)),
-                                                    borderRadius: BorderRadius.circular(5)),
-                                                contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                                errorBorder: OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: const Color(0xffE1E5FA)),
-                                                    borderRadius: BorderRadius.circular(5)),
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            RichText(
+                                              text: const TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: "Appointment Title",
+                                                    style: TextStyle(color: Colors.black, fontSize: 13),
+                                                  ),
+                                                  TextSpan(
+                                                    text: "*",
+                                                    style: TextStyle(color: Colors.red, fontSize: 13),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                          ),
-                                          if (titleError.toString().isNotEmpty)
-                                            CustomText(
-                                              text: titleError.toString(),
-                                              colors: Colors.red,
-                                              size: 12,
-                                              isCopy: false,
-                                            ),
-                                          5.height,
-                                          RichText(
-                                            text: const TextSpan(
-                                              children: [
-                                                TextSpan(
-                                                  text: "Appointment Venue",
-                                                  style: TextStyle(color: Colors.black, fontSize: 13),
-                                                ),
-                                                TextSpan(
-                                                  text: "*",
-                                                  style: TextStyle(color: Colors.red, fontSize: 13),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 480,
-                                            child: TextField(
-                                              controller: controllers.meetingVenueCrt,
-                                              onChanged: (value) {
-                                                if (value.toString().isNotEmpty) {
-                                                  setState(() => venueError = null);
-                                                }
-                                              },
-                                              decoration: InputDecoration(
-                                                border: OutlineInputBorder(),
+                                            SizedBox(
+                                              width: 480,
+                                              child: TextField(
+                                                controller: controllers.meetingTitleCrt,
+                                                onChanged: (value) {
+                                                  if (value.toString().isNotEmpty) {
+                                                    setState(() => titleError = null);
+                                                  }
+                                                },
+                                                decoration: InputDecoration(
+                                                  hintText: "Appointment Title",
+                                                  border: OutlineInputBorder(),
                                                   enabledBorder: OutlineInputBorder(
                                                       borderSide: BorderSide(
                                                         color: Colors.grey.shade400,
@@ -350,384 +377,42 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                       borderSide: BorderSide(
                                                           color: const Color(0xffE1E5FA)),
                                                       borderRadius: BorderRadius.circular(5)),
-                                                  hintText: "Appointment Venue"
-                                              ),
-                                            ),
-                                          ),
-                                          if (venueError.toString().isNotEmpty)
-                                            CustomText(
-                                              text: venueError.toString(),
-                                              colors: Colors.red,
-                                              size: 12,
-                                              isCopy: false,
-                                            ),
-                                          5.height,
-                                          SizedBox(
-                                            width:480,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-
-                                                /// DATE
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    RichText(
-                                                      text: const TextSpan(
-                                                        children: [
-                                                          TextSpan(
-                                                            text: "From Date",
-                                                            style: TextStyle(color: Colors.black, fontSize: 13),
-                                                          ),
-                                                          TextSpan(
-                                                            text: "*",
-                                                            style: TextStyle(color: Colors.red, fontSize: 13),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Obx(() => InkWell(
-                                                      onTap: () {
-                                                        utils.datePicker(
-                                                          context: context,
-                                                          textEditingController: controllers.dateOfConCtr,
-                                                          pathVal: controllers.fDate,
-                                                        );
-                                                        setState(() => stDateError = null);
-                                                      },
-                                                      child: Container(
-                                                        height: 40,
-                                                        width:480/2.2,
-                                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                        decoration: BoxDecoration(
-                                                          border: Border.all(color: Colors.grey.shade400),
-                                                          borderRadius: BorderRadius.circular(5),
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            const Icon(Icons.calendar_month_outlined, size: 15),
-                                                            5.width,
-                                                            CustomText(
-                                                              text: controllers.fDate.value,
-                                                              isCopy: false,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    )),
-
-                                                    if (stDateError.toString().isNotEmpty)
-                                                      CustomText(
-                                                        text: stDateError.toString(),
-                                                        colors: Colors.red,
-                                                        size: 12,
-                                                        isCopy: false,
-                                                      ),
-                                                  ],
-                                                ),
-
-                                                /// TIME
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    RichText(
-                                                      text: const TextSpan(
-                                                        children: [
-                                                          TextSpan(
-                                                            text: "From Time",
-                                                            style: TextStyle(color: Colors.black, fontSize: 13),
-                                                          ),
-                                                          TextSpan(
-                                                            text: "*",
-                                                            style: TextStyle(color: Colors.red, fontSize: 13),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Obx(() => InkWell(
-                                                      onTap: () {
-                                                        utils.datePicker(
-                                                          context: context,
-                                                          textEditingController: controllers.dateOfConCtr,
-                                                          pathVal: controllers.fDate,
-                                                        );
-                                                        setState(() => stTimeError = null);
-                                                      },
-                                                      child: Container(
-                                                        height: 40,
-                                                        width:480/2.2,
-                                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                        decoration: BoxDecoration(
-                                                          border: Border.all(color: Colors.grey.shade400),
-                                                          borderRadius: BorderRadius.circular(5),
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            const Icon(Icons.access_time, size: 15),
-                                                            5.width,
-                                                            CustomText(
-                                                              text: controllers.fTime.value,
-                                                              isCopy: false,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    )),
-
-                                                    if (stTimeError.toString().isNotEmpty)
-                                                      CustomText(
-                                                        text: stTimeError.toString(),
-                                                        colors: Colors.red,
-                                                        size: 12,
-                                                        isCopy: false,
-                                                      ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width:480,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-
-                                                /// DATE
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    RichText(
-                                                      text: const TextSpan(
-                                                        children: [
-                                                          TextSpan(
-                                                            text: "To Date",
-                                                            style: TextStyle(color: Colors.black, fontSize: 13),
-                                                          ),
-                                                          TextSpan(
-                                                            text: "*",
-                                                            style: TextStyle(color: Colors.red, fontSize: 13),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Obx(() => InkWell(
-                                                      onTap: () {
-                                                        utils.datePicker(
-                                                          context: context,
-                                                          textEditingController: controllers.dateOfConCtr,
-                                                          pathVal: controllers.toDate,
-                                                        );
-                                                        setState(() => enDateError = null);
-                                                      },
-                                                      child: Container(
-                                                        height: 40,
-                                                        width:480/2.2,
-                                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                        decoration: BoxDecoration(
-                                                          border: Border.all(color: Colors.grey.shade400),
-                                                          borderRadius: BorderRadius.circular(5),
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            const Icon(Icons.calendar_month_outlined, size: 15),
-                                                            5.width,
-                                                            CustomText(
-                                                              text: controllers.toDate.value,
-                                                              isCopy: false,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    )),
-
-                                                    if (enDateError.toString().isNotEmpty)
-                                                      CustomText(
-                                                        text: enDateError.toString(),
-                                                        colors: Colors.red,
-                                                        size: 12,
-                                                        isCopy: false,
-                                                      ),
-                                                  ],
-                                                ),
-
-                                                /// TIME
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    RichText(
-                                                      text: const TextSpan(
-                                                        children: [
-                                                          TextSpan(
-                                                            text: "To Time",
-                                                            style: TextStyle(color: Colors.black, fontSize: 13),
-                                                          ),
-                                                          TextSpan(
-                                                            text: "*",
-                                                            style: TextStyle(color: Colors.red, fontSize: 13),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Obx(() => InkWell(
-                                                      onTap: () {
-                                                        utils.timePicker(
-                                                          context: context,
-                                                          textEditingController: controllers.timeOfConCtr,
-                                                          pathVal: controllers.toTime,
-                                                        );
-                                                        setState(() => enTimeError = null);
-                                                      },
-                                                      child: Container(
-                                                        height: 40,
-                                                        width:480/2.2,
-                                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                        decoration: BoxDecoration(
-                                                          border: Border.all(color: Colors.grey.shade400),
-                                                          borderRadius: BorderRadius.circular(5),
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            const Icon(Icons.access_time, size: 15),
-                                                            5.width,
-                                                            CustomText(
-                                                              text: controllers.toTime.value,
-                                                              isCopy: false,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    )),
-
-                                                    if (enTimeError.toString().isNotEmpty)
-                                                      CustomText(
-                                                        text: enTimeError.toString(),
-                                                        colors: Colors.red,
-                                                        size: 12,
-                                                        isCopy: false,
-                                                      ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          /// CUSTOMER DROPDOWN
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              RichText(
-                                                text: const TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: "Lead Name",
-                                                      style: TextStyle(color: Colors.black, fontSize: 13),
-                                                    ),
-                                                    TextSpan(
-                                                      text: "*",
-                                                      style: TextStyle(color: Colors.red, fontSize: 13),
-                                                    ),
-                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 480,
-                                                height: 50,
-                                                child: KeyboardDropdownField<AllCustomersObj>(
-                                                  items: controllers.customers,
-                                                  hintText: "Lead Name",
-                                                  borderRadius: 5,
-                                                  borderColor: Colors.grey.shade400,
-                                                  labelBuilder: (customer) =>
-                                                  '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
-                                                  itemBuilder: (customer) =>
-                                                      Container(
-                                                        width: 300,
-                                                        alignment: Alignment.topLeft,
-                                                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                                        child: CustomText(
-                                                          text:
-                                                          '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
-                                                          colors: Colors.black,
-                                                          size: 14,
-                                                          isCopy: false,
-                                                          textAlign: TextAlign.start,
-                                                        ),
-                                                      ),
-                                                  textEditingController: controllers.cusController,
-                                                  onSelected: (value) {
-                                                    setState(() => customerError = null);
-                                                    controllers.selectCustomer(value);
-                                                  },
-                                                  onClear: () {
-                                                    controllers.clearSelectedCustomer();
-                                                  },
-                                                ),
-                                              ),
-                                              if (customerError != null)
-                                                Padding(
-                                                  padding: const EdgeInsets.only(top: 4),
-                                                  child: Text(
-                                                    customerError!,
-                                                    style: const TextStyle(
-                                                        color: Colors.red, fontSize: 13),
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                          10.height,
-                                          Row(
-                                            children: [
+                                            ),
+                                            if (titleError.toString().isNotEmpty)
                                               CustomText(
-                                                text: "Employees",
-                                                size: 13,
-                                                colors: colorsConst.fieldHead,
+                                                text: titleError.toString(),
+                                                colors: Colors.red,
+                                                size: 12,
                                                 isCopy: false,
                                               ),
-                                              const CustomText(
-                                                text: "*",
-                                                colors: Colors.red,
-                                                size: 13,
-                                                isCopy: false,
-                                              )
-                                            ],
-                                          ),
-                                          SearchCustomDropdown(
-                                            text: "",isOptional: false,
-                                            hintText: remController.assignedIds.value==""?"":remController.assignedNames.value,
-                                            valueList: controllers.employees,
-                                            onChanged: (value) {
-                                              setState((){
-                                                employeeError=null;
-                                              });
-                                            },
-                                            width: 480,
-                                          ),
-                                          10.height,
-                                          if (employeeError != null)
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 4),
-                                              child: Text(
-                                                employeeError!,
-                                                style: const TextStyle(
-                                                    color: Colors.red, fontSize: 13),
+                                            5.height,
+                                            RichText(
+                                              text: const TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: "Appointment Venue",
+                                                    style: TextStyle(color: Colors.black, fontSize: 13),
+                                                  ),
+                                                  // TextSpan(
+                                                  //   text: "*",
+                                                  //   style: TextStyle(color: Colors.red, fontSize: 13),
+                                                  // ),
+                                                ],
                                               ),
                                             ),
-                                          5.height,
-                                          /// NOTES
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const CustomText(text: "Notes", size: 13, isCopy: false,),
-                                              SizedBox(
-                                                width: 480,
-                                                height: 40,
-                                                child: TextField(
-                                                  controller: controllers.callCommentCont,
-                                                  expands: true,
-                                                  maxLines: null,
-                                                  decoration: InputDecoration(
-                                                    hintText: "Notes",
-                                                    border: OutlineInputBorder(),
-
+                                            SizedBox(
+                                              width: 480,
+                                              child: TextField(
+                                                controller: controllers.meetingVenueCrt,
+                                                // onChanged: (value) {
+                                                //   if (value.toString().isNotEmpty) {
+                                                //     setState(() => venueError = null);
+                                                //   }
+                                                // },
+                                                decoration: InputDecoration(
+                                                  border: OutlineInputBorder(),
                                                     enabledBorder: OutlineInputBorder(
                                                         borderSide: BorderSide(
                                                           color: Colors.grey.shade400,
@@ -747,12 +432,410 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                         borderSide: BorderSide(
                                                             color: const Color(0xffE1E5FA)),
                                                         borderRadius: BorderRadius.circular(5)),
-                                                  ),
+                                                    hintText: "Appointment Venue"
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                        ],
+                                            ),
+                                            // if (venueError.toString().isNotEmpty)
+                                            //   CustomText(
+                                            //     text: venueError.toString(),
+                                            //     colors: Colors.red,
+                                            //     size: 12,
+                                            //     isCopy: false,
+                                            //   ),
+                                            5.height,
+                                            SizedBox(
+                                              width:480,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+
+                                                  /// DATE
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      RichText(
+                                                        text: const TextSpan(
+                                                          children: [
+                                                            TextSpan(
+                                                              text: "From Date",
+                                                              style: TextStyle(color: Colors.black, fontSize: 13),
+                                                            ),
+                                                            TextSpan(
+                                                              text: "*",
+                                                              style: TextStyle(color: Colors.red, fontSize: 13),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Obx(() => InkWell(
+                                                        onTap: () {
+                                                          utils.datePicker(
+                                                            context: context,
+                                                            textEditingController: controllers.dateOfConCtr,
+                                                            pathVal: controllers.fDate,
+                                                          );
+                                                          setState(() => stDateError = null);
+                                                        },
+                                                        child: Container(
+                                                          height: 40,
+                                                          width:480/2.2,
+                                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                          decoration: BoxDecoration(
+                                                            border: Border.all(color: Colors.grey.shade400),
+                                                            borderRadius: BorderRadius.circular(5),
+                                                          ),
+                                                          child: Row(
+                                                            children: [
+                                                              const Icon(Icons.calendar_month_outlined, size: 15),
+                                                              5.width,
+                                                              CustomText(
+                                                                text: controllers.fDate.value,
+                                                                isCopy: false,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )),
+
+                                                      if (stDateError.toString().isNotEmpty)
+                                                        CustomText(
+                                                          text: stDateError.toString(),
+                                                          colors: Colors.red,
+                                                          size: 12,
+                                                          isCopy: false,
+                                                        ),
+                                                    ],
+                                                  ),
+
+                                                  /// TIME
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      RichText(
+                                                        text: const TextSpan(
+                                                          children: [
+                                                            TextSpan(
+                                                              text: "From Time",
+                                                              style: TextStyle(color: Colors.black, fontSize: 13),
+                                                            ),
+                                                            TextSpan(
+                                                              text: "*",
+                                                              style: TextStyle(color: Colors.red, fontSize: 13),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Obx(() => InkWell(
+                                                        onTap: () {
+                                                          utils.timePicker(
+                                                            context: context,
+                                                            textEditingController: controllers.dateOfConCtr,
+                                                            pathVal: controllers.fTime,
+                                                          );
+                                                          setState(() => stTimeError = null);
+                                                        },
+                                                        child: Container(
+                                                          height: 40,
+                                                          width:480/2.2,
+                                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                          decoration: BoxDecoration(
+                                                            border: Border.all(color: Colors.grey.shade400),
+                                                            borderRadius: BorderRadius.circular(5),
+                                                          ),
+                                                          child: Row(
+                                                            children: [
+                                                              const Icon(Icons.access_time, size: 15),
+                                                              5.width,
+                                                              CustomText(
+                                                                text: controllers.fTime.value,
+                                                                isCopy: false,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )),
+
+                                                      if (stTimeError.toString().isNotEmpty)
+                                                        CustomText(
+                                                          text: stTimeError.toString(),
+                                                          colors: Colors.red,
+                                                          size: 12,
+                                                          isCopy: false,
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width:480,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+
+                                                  /// DATE
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      RichText(
+                                                        text: const TextSpan(
+                                                          children: [
+                                                            TextSpan(
+                                                              text: "To Date",
+                                                              style: TextStyle(color: Colors.black, fontSize: 13),
+                                                            ),
+                                                            TextSpan(
+                                                              text: "*",
+                                                              style: TextStyle(color: Colors.red, fontSize: 13),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Obx(() => InkWell(
+                                                        onTap: () {
+                                                          utils.datePicker(
+                                                            context: context,
+                                                            textEditingController: controllers.dateOfConCtr,
+                                                            pathVal: controllers.toDate,
+                                                          );
+                                                          setState(() => enDateError = null);
+                                                        },
+                                                        child: Container(
+                                                          height: 40,
+                                                          width:480/2.2,
+                                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                          decoration: BoxDecoration(
+                                                            border: Border.all(color: Colors.grey.shade400),
+                                                            borderRadius: BorderRadius.circular(5),
+                                                          ),
+                                                          child: Row(
+                                                            children: [
+                                                              const Icon(Icons.calendar_month_outlined, size: 15),
+                                                              5.width,
+                                                              CustomText(
+                                                                text: controllers.toDate.value,
+                                                                isCopy: false,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )),
+
+                                                      if (enDateError.toString().isNotEmpty)
+                                                        CustomText(
+                                                          text: enDateError.toString(),
+                                                          colors: Colors.red,
+                                                          size: 12,
+                                                          isCopy: false,
+                                                        ),
+                                                    ],
+                                                  ),
+
+                                                  /// TIME
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      RichText(
+                                                        text: const TextSpan(
+                                                          children: [
+                                                            TextSpan(
+                                                              text: "To Time",
+                                                              style: TextStyle(color: Colors.black, fontSize: 13),
+                                                            ),
+                                                            TextSpan(
+                                                              text: "*",
+                                                              style: TextStyle(color: Colors.red, fontSize: 13),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Obx(() => InkWell(
+                                                        onTap: () {
+                                                          utils.timePicker(
+                                                            context: context,
+                                                            textEditingController: controllers.timeOfConCtr,
+                                                            pathVal: controllers.toTime,
+                                                          );
+                                                          setState(() => enTimeError = null);
+                                                        },
+                                                        child: Container(
+                                                          height: 40,
+                                                          width:480/2.2,
+                                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                          decoration: BoxDecoration(
+                                                            border: Border.all(color: Colors.grey.shade400),
+                                                            borderRadius: BorderRadius.circular(5),
+                                                          ),
+                                                          child: Row(
+                                                            children: [
+                                                              const Icon(Icons.access_time, size: 15),
+                                                              5.width,
+                                                              CustomText(
+                                                                text: controllers.toTime.value,
+                                                                isCopy: false,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )),
+
+                                                      if (enTimeError.toString().isNotEmpty)
+                                                        CustomText(
+                                                          text: enTimeError.toString(),
+                                                          colors: Colors.red,
+                                                          size: 12,
+                                                          isCopy: false,
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            /// CUSTOMER DROPDOWN
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                RichText(
+                                                  text: const TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: "Lead Name",
+                                                        style: TextStyle(color: Colors.black, fontSize: 13),
+                                                      ),
+                                                      TextSpan(
+                                                        text: "*",
+                                                        style: TextStyle(color: Colors.red, fontSize: 13),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 480,
+                                                  height: 50,
+                                                  child: KeyboardDropdownField<AllCustomersObj>(
+                                                    items: controllers.customers,
+                                                    hintText: "Lead Name",
+                                                    borderRadius: 5,
+                                                    borderColor: Colors.grey.shade400,
+                                                    labelBuilder: (customer) =>
+                                                    '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+                                                    itemBuilder: (customer) =>
+                                                        Container(
+                                                          width: 300,
+                                                          alignment: Alignment.topLeft,
+                                                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                          child: CustomText(
+                                                            text:
+                                                            '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+                                                            colors: Colors.black,
+                                                            size: 14,
+                                                            isCopy: false,
+                                                            textAlign: TextAlign.start,
+                                                          ),
+                                                        ),
+                                                    textEditingController: controllers.cusController,
+                                                    onSelected: (value) {
+                                                      setState(() => customerError = null);
+                                                      controllers.selectCustomer(value);
+                                                    },
+                                                    onClear: () {
+                                                      controllers.clearSelectedCustomer();
+                                                    },
+                                                  ),
+                                                ),
+                                                if (customerError != null)
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 4),
+                                                    child: Text(
+                                                      customerError!,
+                                                      style: const TextStyle(
+                                                          color: Colors.red, fontSize: 13),
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                            10.height,
+                                            Row(
+                                              children: [
+                                                CustomText(
+                                                  text: "Employees",
+                                                  size: 13,
+                                                  colors: colorsConst.fieldHead,
+                                                  isCopy: false,
+                                                ),
+                                                const CustomText(
+                                                  text: "*",
+                                                  colors: Colors.red,
+                                                  size: 13,
+                                                  isCopy: false,
+                                                )
+                                              ],
+                                            ),
+                                            SearchCustomDropdown(
+                                              text: "",isOptional: false,
+                                              hintText: remController.assignedIds.value==""?"":remController.assignedNames.value,
+                                              valueList: controllers.employees,
+                                              onChanged: (value) {
+                                                setState((){
+                                                  employeeError=null;
+                                                });
+                                              },
+                                              width: 480,
+                                            ),
+                                            10.height,
+                                            if (employeeError != null)
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 4),
+                                                child: Text(
+                                                  employeeError!,
+                                                  style: const TextStyle(
+                                                      color: Colors.red, fontSize: 13),
+                                                ),
+                                              ),
+                                            5.height,
+                                            /// NOTES
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                const CustomText(text: "Notes", size: 13, isCopy: false,),
+                                                SizedBox(
+                                                  width: 480,
+                                                  height: 40,
+                                                  child: TextField(
+                                                    controller: controllers.callCommentCont,
+                                                    expands: true,
+                                                    maxLines: null,
+                                                    decoration: InputDecoration(
+                                                      hintText: "Notes",
+                                                      border: OutlineInputBorder(),
+
+                                                      enabledBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                            color: Colors.grey.shade400,
+                                                          ),
+                                                          borderRadius: BorderRadius.circular(5)),
+                                                      focusedBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                            color: colorsConst.primary,
+                                                          ),
+                                                          borderRadius: BorderRadius.circular(5)),
+                                                      focusedErrorBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: const Color(0xffE1E5FA)),
+                                                          borderRadius: BorderRadius.circular(5)),
+                                                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                                      errorBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: const Color(0xffE1E5FA)),
+                                                          borderRadius: BorderRadius.circular(5)),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     /// ACTIONS
@@ -769,7 +852,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
 
                                           CustomLoadingButton(
                                             controller: controllers.productCtr,
-                                            text: "Save",
+                                            text: "Set",
                                             callback: () {
 
                                               if (controllers.meetingTitleCrt.text.isEmpty) {
@@ -778,11 +861,11 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                 return;
                                               }
 
-                                              if (controllers.meetingVenueCrt.text.isEmpty) {
-                                                setState(() => venueError = "Enter venue");
-                                                controllers.productCtr.reset();
-                                                return;
-                                              }
+                                              // if (controllers.meetingVenueCrt.text.isEmpty) {
+                                              //   setState(() => venueError = "Enter venue");
+                                              //   controllers.productCtr.reset();
+                                              //   return;
+                                              // }
 
                                               if (controllers.fDate.value.isEmpty) {
                                                 setState(() => stDateError = "Select start date");
@@ -884,6 +967,104 @@ class _MeetingCommentsState extends State<MeetingComments> {
                     Row(
                       children: [
                         CustomText(text: "Selected count: ${remController.selectedMeetingIds.value.length}", isCopy: false),15.width,
+                        InkWell(
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          onTap: (){
+                            String? selectedValue="Scheduled";
+
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return StatefulBuilder( // 🔥 important
+                                  builder: (context, setState) {
+                                    return AlertDialog(
+                                      title: CustomText(text: "Update Appointment Status",isCopy: false,isBold: true,size: 16,),
+                                      content: SizedBox(
+                                        width: 300,
+                                        child: DropdownButtonFormField<String>(
+                                          value: selectedValue,
+                                          hint: CustomText(text: "Select",isCopy: false,),
+                                          isExpanded: true,
+                                          items: ["Scheduled", "Completed", "Cancelled"]
+                                              .map((e) => DropdownMenuItem(
+                                            value: e,
+                                            child: CustomText(text: e,isCopy: false,),
+                                          ))
+                                              .toList(),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedValue = value;
+                                            });
+                                          },
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            contentPadding:
+                                            EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                          ),
+                                        ),
+                                      ),
+                                      actions: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(context),
+                                              child: CustomText(text:"Cancel",isCopy: false,colors: Colors.grey,),
+                                            ),10.width,
+                                            CustomLoadingButton(
+                                              callback: ()async{
+                                                apiService.updateAppointmentStatus(context,selectedValue.toString());
+                                              },
+                                              height: 35,
+                                              isLoading: true,
+                                              backgroundColor: colorsConst.primary,
+                                              radius: 2,
+                                              width: 80,
+                                              controller: controllers.productCtr,
+                                              isImage: false,
+                                              text: "Save",
+                                              textColor: Colors.white,
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: colorsConst.secondary,
+                              borderRadius: BorderRadius.circular(4),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                ),
+                              ],
+                            ),
+                            child:  Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset("assets/images/action_promote.png"),
+                                10.width,
+                                CustomText(
+                                  text: "Status",
+                                  colors: colorsConst.textColor,
+                                  size: 14,
+                                  isBold: true,
+                                  isCopy: false,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),20.width,
                         InkWell(
                           focusColor: Colors.transparent,
                           hoverColor: Colors.transparent,
@@ -993,7 +1174,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                   children: [
                     CustomSearchTextField(
                       controller: controllers.search,
-                      hintText: "Search Name, Customer Name, Company Name",
+                      hintText: "Search Lead Name, Company Name, Employee Name",
                       onChanged: (value) {
                         controllers.searchText.value = value.toString().trim();
                         remController.filterAndSortMeetings(
@@ -1291,6 +1472,45 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 ),
                               ],
                             ),),
+                            headerCell(5,  Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Status",
+                                  isCopy: true,
+                                  size: 15,
+                                  isBold: true,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(controllers.sortFieldMeetingActivity.value=='status' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                      controllers.sortOrderMeetingActivity.value='desc';
+                                    }else{
+                                      controllers.sortOrderMeetingActivity.value='asc';
+                                    }
+                                    controllers.sortFieldMeetingActivity.value='status';
+                                    remController.filterAndSortMeetings(
+                                      searchText: controllers.searchText.value.toLowerCase(),
+                                      callType: controllers.selectMeetingType.value,
+                                      sortField: controllers.sortFieldMeetingActivity.value,
+                                      sortOrder: controllers.sortOrderMeetingActivity.value,
+                                    );
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    controllers.sortFieldMeetingActivity.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : controllers.sortOrderMeetingActivity.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
+                            ),),
                             headerCell(6, Row(
                               children: [
                                 CustomText(
@@ -1500,90 +1720,36 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                             // ✅ CONTENT (NO SCROLL)
                                                             content: SizedBox(
                                                               width: 500,
-                                                              child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                mainAxisSize: MainAxisSize.min,
-                                                                children: [
-                                                                  RichText(
-                                                                    text: const TextSpan(
-                                                                      children: [
-                                                                        TextSpan(
-                                                                          text: "Appointment Title",
-                                                                          style: TextStyle(color: Colors.black, fontSize: 13),
-                                                                        ),
-                                                                        TextSpan(
-                                                                          text: "*",
-                                                                          style: TextStyle(color: Colors.red, fontSize: 13),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 480,
-                                                                    child: TextField(
-                                                                      controller: controllers.meetingTitleCrt,
-                                                                      onChanged: (value) {
-                                                                        if (value.toString().isNotEmpty) {
-                                                                          setState(() => titleError = null);
-                                                                        }
-                                                                      },
-                                                                      decoration: InputDecoration(
-                                                                        hintText: "Appointment Title",
-                                                                        border: OutlineInputBorder(),
-                                                                        enabledBorder: OutlineInputBorder(
-                                                                            borderSide: BorderSide(
-                                                                              color: Colors.grey.shade400,
-                                                                            ),
-                                                                            borderRadius: BorderRadius.circular(5)),
-                                                                        focusedBorder: OutlineInputBorder(
-                                                                            borderSide: BorderSide(
-                                                                              color: colorsConst.primary,
-                                                                            ),
-                                                                            borderRadius: BorderRadius.circular(5)),
-                                                                        focusedErrorBorder: OutlineInputBorder(
-                                                                            borderSide: BorderSide(
-                                                                                color: const Color(0xffE1E5FA)),
-                                                                            borderRadius: BorderRadius.circular(5)),
-                                                                        contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                                                        errorBorder: OutlineInputBorder(
-                                                                            borderSide: BorderSide(
-                                                                                color: const Color(0xffE1E5FA)),
-                                                                            borderRadius: BorderRadius.circular(5)),
+                                                              child: SingleChildScrollView(
+                                                                child: Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  mainAxisSize: MainAxisSize.min,
+                                                                  children: [
+                                                                    RichText(
+                                                                      text: const TextSpan(
+                                                                        children: [
+                                                                          TextSpan(
+                                                                            text: "Appointment Title",
+                                                                            style: TextStyle(color: Colors.black, fontSize: 13),
+                                                                          ),
+                                                                          TextSpan(
+                                                                            text: "*",
+                                                                            style: TextStyle(color: Colors.red, fontSize: 13),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  if (titleError.toString().isNotEmpty)
-                                                                    CustomText(
-                                                                      text: titleError.toString(),
-                                                                      colors: Colors.red,
-                                                                      size: 12,
-                                                                      isCopy: false,
-                                                                    ),
-                                                                  5.height,
-                                                                  RichText(
-                                                                    text: const TextSpan(
-                                                                      children: [
-                                                                        TextSpan(
-                                                                          text: "Appointment Venue",
-                                                                          style: TextStyle(color: Colors.black, fontSize: 13),
-                                                                        ),
-                                                                        TextSpan(
-                                                                          text: "*",
-                                                                          style: TextStyle(color: Colors.red, fontSize: 13),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 480,
-                                                                    child: TextField(
-                                                                      controller: controllers.meetingVenueCrt,
-                                                                      onChanged: (value) {
-                                                                        if (value.toString().isNotEmpty) {
-                                                                          setState(() => venueError = null);
-                                                                        }
-                                                                      },
-                                                                      decoration: InputDecoration(
+                                                                    SizedBox(
+                                                                      width: 480,
+                                                                      child: TextField(
+                                                                        controller: controllers.meetingTitleCrt,
+                                                                        onChanged: (value) {
+                                                                          if (value.toString().isNotEmpty) {
+                                                                            setState(() => titleError = null);
+                                                                          }
+                                                                        },
+                                                                        decoration: InputDecoration(
+                                                                          hintText: "Appointment Title",
                                                                           border: OutlineInputBorder(),
                                                                           enabledBorder: OutlineInputBorder(
                                                                               borderSide: BorderSide(
@@ -1604,372 +1770,37 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                                               borderSide: BorderSide(
                                                                                   color: const Color(0xffE1E5FA)),
                                                                               borderRadius: BorderRadius.circular(5)),
-                                                                          hintText: "Appointment Venue"
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  if (venueError.toString().isNotEmpty)
-                                                                    CustomText(
-                                                                      text: venueError.toString(),
-                                                                      colors: Colors.red,
-                                                                      size: 12,
-                                                                      isCopy: false,
-                                                                    ),
-                                                                  5.height,
-                                                                  SizedBox(
-                                                                    width:480,
-                                                                    child: Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                      children: [
-
-                                                                        /// DATE
-                                                                        Column(
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            RichText(
-                                                                              text: const TextSpan(
-                                                                                children: [
-                                                                                  TextSpan(
-                                                                                    text: "From Date",
-                                                                                    style: TextStyle(color: Colors.black, fontSize: 13),
-                                                                                  ),
-                                                                                  TextSpan(
-                                                                                    text: "*",
-                                                                                    style: TextStyle(color: Colors.red, fontSize: 13),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                            Obx(() => InkWell(
-                                                                              onTap: () {
-                                                                                utils.datePicker(
-                                                                                  context: context,
-                                                                                  textEditingController: controllers.dateOfConCtr,
-                                                                                  pathVal: controllers.fDate,
-                                                                                );
-                                                                                setState(() => stDateError = null);
-                                                                              },
-                                                                              child: Container(
-                                                                                height: 40,
-                                                                                width:480/2.2,
-                                                                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                                                decoration: BoxDecoration(
-                                                                                  border: Border.all(color: Colors.grey.shade400),
-                                                                                  borderRadius: BorderRadius.circular(5),
-                                                                                ),
-                                                                                child: Row(
-                                                                                  children: [
-                                                                                    const Icon(Icons.calendar_month_outlined, size: 15),
-                                                                                    5.width,
-                                                                                    CustomText(
-                                                                                      text: controllers.fDate.value,
-                                                                                      isCopy: false,
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                            )),
-
-                                                                            if (stDateError.toString().isNotEmpty)
-                                                                              CustomText(
-                                                                                text: stDateError.toString(),
-                                                                                colors: Colors.red,
-                                                                                size: 12,
-                                                                                isCopy: false,
-                                                                              ),
-                                                                          ],
-                                                                        ),
-
-                                                                        /// TIME
-                                                                        Column(
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            RichText(
-                                                                              text: const TextSpan(
-                                                                                children: [
-                                                                                  TextSpan(
-                                                                                    text: "From Time",
-                                                                                    style: TextStyle(color: Colors.black, fontSize: 13),
-                                                                                  ),
-                                                                                  TextSpan(
-                                                                                    text: "*",
-                                                                                    style: TextStyle(color: Colors.red, fontSize: 13),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                            Obx(() => InkWell(
-                                                                              onTap: () {
-                                                                                utils.datePicker(
-                                                                                  context: context,
-                                                                                  textEditingController: controllers.dateOfConCtr,
-                                                                                  pathVal: controllers.fDate,
-                                                                                );
-                                                                                setState(() => stTimeError = null);
-                                                                              },
-                                                                              child: Container(
-                                                                                height: 40,
-                                                                                width:480/2.2,
-                                                                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                                                decoration: BoxDecoration(
-                                                                                  border: Border.all(color: Colors.grey.shade400),
-                                                                                  borderRadius: BorderRadius.circular(5),
-                                                                                ),
-                                                                                child: Row(
-                                                                                  children: [
-                                                                                    const Icon(Icons.access_time, size: 15),
-                                                                                    5.width,
-                                                                                    CustomText(
-                                                                                      text: controllers.fTime.value,
-                                                                                      isCopy: false,
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                            )),
-
-                                                                            if (stTimeError.toString().isNotEmpty)
-                                                                              CustomText(
-                                                                                text: stTimeError.toString(),
-                                                                                colors: Colors.red,
-                                                                                size: 12,
-                                                                                isCopy: false,
-                                                                              ),
-                                                                          ],
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width:480,
-                                                                    child: Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                      children: [
-
-                                                                        /// DATE
-                                                                        Column(
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            RichText(
-                                                                              text: const TextSpan(
-                                                                                children: [
-                                                                                  TextSpan(
-                                                                                    text: "To Date",
-                                                                                    style: TextStyle(color: Colors.black, fontSize: 13),
-                                                                                  ),
-                                                                                  TextSpan(
-                                                                                    text: "*",
-                                                                                    style: TextStyle(color: Colors.red, fontSize: 13),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                            Obx(() => InkWell(
-                                                                              onTap: () {
-                                                                                utils.datePicker(
-                                                                                  context: context,
-                                                                                  textEditingController: controllers.dateOfConCtr,
-                                                                                  pathVal: controllers.toDate,
-                                                                                );
-                                                                                setState(() => enDateError = null);
-                                                                              },
-                                                                              child: Container(
-                                                                                height: 40,
-                                                                                width:480/2.2,
-                                                                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                                                decoration: BoxDecoration(
-                                                                                  border: Border.all(color: Colors.grey.shade400),
-                                                                                  borderRadius: BorderRadius.circular(5),
-                                                                                ),
-                                                                                child: Row(
-                                                                                  children: [
-                                                                                    const Icon(Icons.calendar_month_outlined, size: 15),
-                                                                                    5.width,
-                                                                                    CustomText(
-                                                                                      text: controllers.toDate.value,
-                                                                                      isCopy: false,
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                            )),
-
-                                                                            if (enDateError.toString().isNotEmpty)
-                                                                              CustomText(
-                                                                                text: enDateError.toString(),
-                                                                                colors: Colors.red,
-                                                                                size: 12,
-                                                                                isCopy: false,
-                                                                              ),
-                                                                          ],
-                                                                        ),
-
-                                                                        /// TIME
-                                                                        Column(
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            RichText(
-                                                                              text: const TextSpan(
-                                                                                children: [
-                                                                                  TextSpan(
-                                                                                    text: "To Time",
-                                                                                    style: TextStyle(color: Colors.black, fontSize: 13),
-                                                                                  ),
-                                                                                  TextSpan(
-                                                                                    text: "*",
-                                                                                    style: TextStyle(color: Colors.red, fontSize: 13),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                            Obx(() => InkWell(
-                                                                              onTap: () {
-                                                                                utils.timePicker(
-                                                                                  context: context,
-                                                                                  textEditingController: controllers.timeOfConCtr,
-                                                                                  pathVal: controllers.toTime,
-                                                                                );
-                                                                                setState(() => enTimeError = null);
-                                                                              },
-                                                                              child: Container(
-                                                                                height: 40,
-                                                                                width:480/2.2,
-                                                                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                                                decoration: BoxDecoration(
-                                                                                  border: Border.all(color: Colors.grey.shade400),
-                                                                                  borderRadius: BorderRadius.circular(5),
-                                                                                ),
-                                                                                child: Row(
-                                                                                  children: [
-                                                                                    const Icon(Icons.access_time, size: 15),
-                                                                                    5.width,
-                                                                                    CustomText(
-                                                                                      text: controllers.toTime.value,
-                                                                                      isCopy: false,
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                            )),
-
-                                                                            if (enTimeError.toString().isNotEmpty)
-                                                                              CustomText(
-                                                                                text: enTimeError.toString(),
-                                                                                colors: Colors.red,
-                                                                                size: 12,
-                                                                                isCopy: false,
-                                                                              ),
-                                                                          ],
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  /// CUSTOMER DROPDOWN
-                                                                  Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                    children: [
-                                                                      RichText(
-                                                                        text: const TextSpan(
-                                                                          children: [
-                                                                            TextSpan(
-                                                                              text: "Lead Name",
-                                                                              style: TextStyle(color: Colors.black, fontSize: 13),
-                                                                            ),
-                                                                            TextSpan(
-                                                                              text: "*",
-                                                                              style: TextStyle(color: Colors.red, fontSize: 13),
-                                                                            ),
-                                                                          ],
                                                                         ),
                                                                       ),
-                                                                      SizedBox(
-                                                                        width: 480,
-                                                                        height: 50,
-                                                                        child: KeyboardDropdownField<AllCustomersObj>(
-                                                                          items: controllers.customers,
-                                                                          hintText: "Lead Name",
-                                                                          borderRadius: 5,
-                                                                          borderColor: Colors.grey.shade400,
-                                                                          labelBuilder: (customer) =>
-                                                                          '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
-                                                                          itemBuilder: (customer) =>
-                                                                              Container(
-                                                                                width: 300,
-                                                                                alignment: Alignment.topLeft,
-                                                                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                                                                child: CustomText(
-                                                                                  text:
-                                                                                  '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
-                                                                                  colors: Colors.black,
-                                                                                  size: 14,
-                                                                                  isCopy: false,
-                                                                                  textAlign: TextAlign.start,
-                                                                                ),
-                                                                              ),
-                                                                          textEditingController: controllers.cusController,
-                                                                          onSelected: (value) {
-                                                                            setState(() => customerError = null);
-                                                                            controllers.selectCustomer(value);
-                                                                          },
-                                                                          onClear: () {
-                                                                            controllers.clearSelectedCustomer();
-                                                                          },
-                                                                        ),
-                                                                      ),
-                                                                      if (customerError != null)
-                                                                        Padding(
-                                                                          padding: const EdgeInsets.only(top: 4),
-                                                                          child: Text(
-                                                                            customerError!,
-                                                                            style: const TextStyle(
-                                                                                color: Colors.red, fontSize: 13),
-                                                                          ),
-                                                                        ),
-                                                                    ],
-                                                                  ),
-                                                                  10.height,
-                                                                  Row(
-                                                                    children: [
+                                                                    ),
+                                                                    if (titleError.toString().isNotEmpty)
                                                                       CustomText(
-                                                                        text: "Employees",
-                                                                        size: 13,
-                                                                        colors: colorsConst.fieldHead,
+                                                                        text: titleError.toString(),
+                                                                        colors: Colors.red,
+                                                                        size: 12,
                                                                         isCopy: false,
                                                                       ),
-                                                                      const CustomText(
-                                                                        text: "*",
-                                                                        colors: Colors.red,
-                                                                        size: 13,
-                                                                        isCopy: false,
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  SearchCustomDropdown(
-                                                                    text: "",isOptional: false,
-                                                                    hintText: remController.assignedIds.value==""?"":remController.assignedNames.value,
-                                                                    valueList: controllers.employees,
-                                                                    onChanged: (value) {
-                                                                      setState((){
-                                                                        employeeError=null;
-                                                                      });
-                                                                    },
-                                                                    width: 480,
-                                                                  ),
-                                                                  10.height,
-                                                                  /// NOTES
-                                                                  Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                    children: [
-                                                                      const CustomText(text: "Notes", size: 13, isCopy: false,),
-                                                                      SizedBox(
-                                                                        width: 480,
-                                                                        height: 40,
-                                                                        child: TextField(
-                                                                          controller: controllers.callCommentCont,
-                                                                          expands: true,
-                                                                          maxLines: null,
-                                                                          decoration: InputDecoration(
-                                                                            hintText: "Notes",
+                                                                    5.height,
+                                                                    RichText(
+                                                                      text: const TextSpan(
+                                                                        children: [
+                                                                          TextSpan(
+                                                                            text: "Appointment Venue",
+                                                                            style: TextStyle(color: Colors.black, fontSize: 13),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 480,
+                                                                      child: TextField(
+                                                                        controller: controllers.meetingVenueCrt,
+                                                                        // onChanged: (value) {
+                                                                          // if (value.toString().isNotEmpty) {
+                                                                          //   setState(() => venueError = null);
+                                                                          // }
+                                                                        // },
+                                                                        decoration: InputDecoration(
                                                                             border: OutlineInputBorder(),
                                                                             enabledBorder: OutlineInputBorder(
                                                                                 borderSide: BorderSide(
@@ -1990,12 +1821,399 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                                                 borderSide: BorderSide(
                                                                                     color: const Color(0xffE1E5FA)),
                                                                                 borderRadius: BorderRadius.circular(5)),
-                                                                          ),
+                                                                            hintText: "Appointment Venue"
                                                                         ),
                                                                       ),
-                                                                    ],
-                                                                  ),
-                                                                ],
+                                                                    ),
+                                                                    // if (venueError.toString().isNotEmpty)
+                                                                    //   CustomText(
+                                                                    //     text: venueError.toString(),
+                                                                    //     colors: Colors.red,
+                                                                    //     size: 12,
+                                                                    //     isCopy: false,
+                                                                    //   ),
+                                                                    5.height,
+                                                                    SizedBox(
+                                                                      width:480,
+                                                                      child: Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        children: [
+
+                                                                          /// DATE
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              RichText(
+                                                                                text: const TextSpan(
+                                                                                  children: [
+                                                                                    TextSpan(
+                                                                                      text: "From Date",
+                                                                                      style: TextStyle(color: Colors.black, fontSize: 13),
+                                                                                    ),
+                                                                                    TextSpan(
+                                                                                      text: "*",
+                                                                                      style: TextStyle(color: Colors.red, fontSize: 13),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              Obx(() => InkWell(
+                                                                                onTap: () {
+                                                                                  utils.datePicker(
+                                                                                    context: context,
+                                                                                    textEditingController: controllers.dateOfConCtr,
+                                                                                    pathVal: controllers.fDate,
+                                                                                  );
+                                                                                  setState(() => stDateError = null);
+                                                                                },
+                                                                                child: Container(
+                                                                                  height: 40,
+                                                                                  width:480/2.2,
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                  decoration: BoxDecoration(
+                                                                                    border: Border.all(color: Colors.grey.shade400),
+                                                                                    borderRadius: BorderRadius.circular(5),
+                                                                                  ),
+                                                                                  child: Row(
+                                                                                    children: [
+                                                                                      const Icon(Icons.calendar_month_outlined, size: 15),
+                                                                                      5.width,
+                                                                                      CustomText(
+                                                                                        text: controllers.fDate.value,
+                                                                                        isCopy: false,
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              )),
+
+                                                                              if (stDateError.toString().isNotEmpty)
+                                                                                CustomText(
+                                                                                  text: stDateError.toString(),
+                                                                                  colors: Colors.red,
+                                                                                  size: 12,
+                                                                                  isCopy: false,
+                                                                                ),
+                                                                            ],
+                                                                          ),
+
+                                                                          /// TIME
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              RichText(
+                                                                                text: const TextSpan(
+                                                                                  children: [
+                                                                                    TextSpan(
+                                                                                      text: "From Time",
+                                                                                      style: TextStyle(color: Colors.black, fontSize: 13),
+                                                                                    ),
+                                                                                    TextSpan(
+                                                                                      text: "*",
+                                                                                      style: TextStyle(color: Colors.red, fontSize: 13),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              Obx(() => InkWell(
+                                                                                onTap: () {
+                                                                                  utils.timePicker(
+                                                                                    context: context,
+                                                                                    textEditingController: controllers.dateOfConCtr,
+                                                                                    pathVal: controllers.fTime,
+                                                                                  );
+                                                                                  setState(() => stTimeError = null);
+                                                                                },
+                                                                                child: Container(
+                                                                                  height: 40,
+                                                                                  width:480/2.2,
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                  decoration: BoxDecoration(
+                                                                                    border: Border.all(color: Colors.grey.shade400),
+                                                                                    borderRadius: BorderRadius.circular(5),
+                                                                                  ),
+                                                                                  child: Row(
+                                                                                    children: [
+                                                                                      const Icon(Icons.access_time, size: 15),
+                                                                                      5.width,
+                                                                                      CustomText(
+                                                                                        text: controllers.fTime.value,
+                                                                                        isCopy: false,
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              )),
+
+                                                                              if (stTimeError.toString().isNotEmpty)
+                                                                                CustomText(
+                                                                                  text: stTimeError.toString(),
+                                                                                  colors: Colors.red,
+                                                                                  size: 12,
+                                                                                  isCopy: false,
+                                                                                ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width:480,
+                                                                      child: Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        children: [
+
+                                                                          /// DATE
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              RichText(
+                                                                                text: const TextSpan(
+                                                                                  children: [
+                                                                                    TextSpan(
+                                                                                      text: "To Date",
+                                                                                      style: TextStyle(color: Colors.black, fontSize: 13),
+                                                                                    ),
+                                                                                    TextSpan(
+                                                                                      text: "*",
+                                                                                      style: TextStyle(color: Colors.red, fontSize: 13),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              Obx(() => InkWell(
+                                                                                onTap: () {
+                                                                                  utils.datePicker(
+                                                                                    context: context,
+                                                                                    textEditingController: controllers.dateOfConCtr,
+                                                                                    pathVal: controllers.toDate,
+                                                                                  );
+                                                                                  setState(() => enDateError = null);
+                                                                                },
+                                                                                child: Container(
+                                                                                  height: 40,
+                                                                                  width:480/2.2,
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                  decoration: BoxDecoration(
+                                                                                    border: Border.all(color: Colors.grey.shade400),
+                                                                                    borderRadius: BorderRadius.circular(5),
+                                                                                  ),
+                                                                                  child: Row(
+                                                                                    children: [
+                                                                                      const Icon(Icons.calendar_month_outlined, size: 15),
+                                                                                      5.width,
+                                                                                      CustomText(
+                                                                                        text: controllers.toDate.value,
+                                                                                        isCopy: false,
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              )),
+
+                                                                              if (enDateError.toString().isNotEmpty)
+                                                                                CustomText(
+                                                                                  text: enDateError.toString(),
+                                                                                  colors: Colors.red,
+                                                                                  size: 12,
+                                                                                  isCopy: false,
+                                                                                ),
+                                                                            ],
+                                                                          ),
+
+                                                                          /// TIME
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              RichText(
+                                                                                text: const TextSpan(
+                                                                                  children: [
+                                                                                    TextSpan(
+                                                                                      text: "To Time",
+                                                                                      style: TextStyle(color: Colors.black, fontSize: 13),
+                                                                                    ),
+                                                                                    TextSpan(
+                                                                                      text: "*",
+                                                                                      style: TextStyle(color: Colors.red, fontSize: 13),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              Obx(() => InkWell(
+                                                                                onTap: () {
+                                                                                  utils.timePicker(
+                                                                                    context: context,
+                                                                                    textEditingController: controllers.timeOfConCtr,
+                                                                                    pathVal: controllers.toTime,
+                                                                                  );
+                                                                                  setState(() => enTimeError = null);
+                                                                                },
+                                                                                child: Container(
+                                                                                  height: 40,
+                                                                                  width:480/2.2,
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                  decoration: BoxDecoration(
+                                                                                    border: Border.all(color: Colors.grey.shade400),
+                                                                                    borderRadius: BorderRadius.circular(5),
+                                                                                  ),
+                                                                                  child: Row(
+                                                                                    children: [
+                                                                                      const Icon(Icons.access_time, size: 15),
+                                                                                      5.width,
+                                                                                      CustomText(
+                                                                                        text: controllers.toTime.value,
+                                                                                        isCopy: false,
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              )),
+
+                                                                              if (enTimeError.toString().isNotEmpty)
+                                                                                CustomText(
+                                                                                  text: enTimeError.toString(),
+                                                                                  colors: Colors.red,
+                                                                                  size: 12,
+                                                                                  isCopy: false,
+                                                                                ),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    /// CUSTOMER DROPDOWN
+                                                                    Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        RichText(
+                                                                          text: const TextSpan(
+                                                                            children: [
+                                                                              TextSpan(
+                                                                                text: "Lead Name",
+                                                                                style: TextStyle(color: Colors.black, fontSize: 13),
+                                                                              ),
+                                                                              TextSpan(
+                                                                                text: "*",
+                                                                                style: TextStyle(color: Colors.red, fontSize: 13),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width: 480,
+                                                                          height: 50,
+                                                                          child: KeyboardDropdownField<AllCustomersObj>(
+                                                                            items: controllers.customers,
+                                                                            hintText: "Lead Name",
+                                                                            borderRadius: 5,
+                                                                            borderColor: Colors.grey.shade400,
+                                                                            labelBuilder: (customer) =>
+                                                                            '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+                                                                            itemBuilder: (customer) =>
+                                                                                Container(
+                                                                                  width: 300,
+                                                                                  alignment: Alignment.topLeft,
+                                                                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                                                  child: CustomText(
+                                                                                    text:
+                                                                                    '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+                                                                                    colors: Colors.black,
+                                                                                    size: 14,
+                                                                                    isCopy: false,
+                                                                                    textAlign: TextAlign.start,
+                                                                                  ),
+                                                                                ),
+                                                                            textEditingController: controllers.cusController,
+                                                                            onSelected: (value) {
+                                                                              setState(() => customerError = null);
+                                                                              controllers.selectCustomer(value);
+                                                                            },
+                                                                            onClear: () {
+                                                                              controllers.clearSelectedCustomer();
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                        if (customerError != null)
+                                                                          Padding(
+                                                                            padding: const EdgeInsets.only(top: 4),
+                                                                            child: Text(
+                                                                              customerError!,
+                                                                              style: const TextStyle(
+                                                                                  color: Colors.red, fontSize: 13),
+                                                                            ),
+                                                                          ),
+                                                                      ],
+                                                                    ),
+                                                                    10.height,
+                                                                    Row(
+                                                                      children: [
+                                                                        CustomText(
+                                                                          text: "Employees",
+                                                                          size: 13,
+                                                                          colors: colorsConst.fieldHead,
+                                                                          isCopy: false,
+                                                                        ),
+                                                                        const CustomText(
+                                                                          text: "*",
+                                                                          colors: Colors.red,
+                                                                          size: 13,
+                                                                          isCopy: false,
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                    SearchCustomDropdown(
+                                                                      text: "",isOptional: false,
+                                                                      hintText: remController.assignedIds.value==""?"":remController.assignedNames.value,
+                                                                      valueList: controllers.employees,
+                                                                      onChanged: (value) {
+                                                                        setState((){
+                                                                          employeeError=null;
+                                                                        });
+                                                                      },
+                                                                      width: 480,
+                                                                    ),
+                                                                    10.height,
+                                                                    /// NOTES
+                                                                    Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        const CustomText(text: "Notes", size: 13, isCopy: false,),
+                                                                        SizedBox(
+                                                                          width: 480,
+                                                                          height: 40,
+                                                                          child: TextField(
+                                                                            controller: controllers.callCommentCont,
+                                                                            expands: true,
+                                                                            maxLines: null,
+                                                                            decoration: InputDecoration(
+                                                                              hintText: "Notes",
+                                                                              border: OutlineInputBorder(),
+                                                                              enabledBorder: OutlineInputBorder(
+                                                                                  borderSide: BorderSide(
+                                                                                    color: Colors.grey.shade400,
+                                                                                  ),
+                                                                                  borderRadius: BorderRadius.circular(5)),
+                                                                              focusedBorder: OutlineInputBorder(
+                                                                                  borderSide: BorderSide(
+                                                                                    color: colorsConst.primary,
+                                                                                  ),
+                                                                                  borderRadius: BorderRadius.circular(5)),
+                                                                              focusedErrorBorder: OutlineInputBorder(
+                                                                                  borderSide: BorderSide(
+                                                                                      color: const Color(0xffE1E5FA)),
+                                                                                  borderRadius: BorderRadius.circular(5)),
+                                                                              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                                                              errorBorder: OutlineInputBorder(
+                                                                                  borderSide: BorderSide(
+                                                                                      color: const Color(0xffE1E5FA)),
+                                                                                  borderRadius: BorderRadius.circular(5)),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
                                                             ),
                                                             /// ACTIONS
@@ -2012,7 +2230,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
 
                                                                   CustomLoadingButton(
                                                                     controller: controllers.productCtr,
-                                                                    text: "Save",
+                                                                    text: "Set",
                                                                     callback: () {
 
                                                                       if (controllers.meetingTitleCrt.text.isEmpty) {
@@ -2021,11 +2239,11 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                                         return;
                                                                       }
 
-                                                                      if (controllers.meetingVenueCrt.text.isEmpty) {
-                                                                        setState(() => venueError = "Enter venue");
-                                                                        controllers.productCtr.reset();
-                                                                        return;
-                                                                      }
+                                                                      // if (controllers.meetingVenueCrt.text.isEmpty) {
+                                                                      //   setState(() => venueError = "Enter venue");
+                                                                      //   controllers.productCtr.reset();
+                                                                      //   return;
+                                                                      // }
 
                                                                       if (controllers.fDate.value.isEmpty) {
                                                                         setState(() => stDateError = "Select start date");
@@ -2587,6 +2805,16 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                             isCopy: true,
                                             colors:colorsConst.textColor,
                                           ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.left,
+                                          text: data.status.toString(),
+                                          size: 14,
+                                          isCopy: true,
+                                          colors:colorsConst.textColor,
                                         ),
                                       ),
                                       Tooltip(
