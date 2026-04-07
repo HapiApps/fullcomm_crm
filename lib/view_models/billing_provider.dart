@@ -16,6 +16,7 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:universal_html/js.dart';
 import '../billing/pdf/bill_pdf.dart';
 import '../billing_utils/text_formats.dart';
+import '../common/utilities/utils.dart';
 import '../controller/controller.dart';
 import '../models/billing_models/billing_product.dart';
 import '../models/billing_models/category_model.dart';
@@ -654,7 +655,7 @@ class BillingProvider with ChangeNotifier{
     final totalDiscount = billingItems.fold(0.0,
             (total, item) => total + item.calculateDiscount());
 
-    log("formattedAmount ${totalDiscount}");
+    // log("formattedAmount ${totalDiscount}");
 
     return totalDiscount.toStringAsFixed(2);   // ⭐ TWO DECIMAL POINTS
   }
@@ -1822,7 +1823,7 @@ class BillingProvider with ChangeNotifier{
     notifyListeners();
 
     final success = await PlaceOrderRepository.insertProduct({
-      "action": "b_insert_product",
+      "action": "insert_product",
       "p_title": title.text.trim(),
       "cat_id": catProv.selectedCategory!.id.toString(),
       "sub_cat_id": catProv.selectedSubCategory!.id.toString(),
@@ -1841,7 +1842,6 @@ class BillingProvider with ChangeNotifier{
 
     loading = false;
     notifyListeners();
-
     if (success) {
       Navigator.pop(context);
       clearProductForm();
@@ -1880,28 +1880,28 @@ class BillingProvider with ChangeNotifier{
   bool validatePrices(BillingProvider p, BuildContext context) {
     // ---------- BASIC TEXT VALIDATION ----------
     if (p.title.text.trim().isEmpty) {
-      ("Enter Product Name", context);
+      utils.showToast("Enter Product Name",Colors.red);
       return false;
     }
 
     if (p.sku.text.trim().isEmpty) {
-      showErrorSnackBar("Enter HSN Code", context);
+      utils.showToast("Enter HSN Code",Colors.red);
       return false;
     }
 
     if (p.barcode.text.trim().isEmpty) {
-      showErrorSnackBar("Barcode is required", context);
+      utils.showToast("Barcode is required",Colors.red);
       return false;
     }
 
     // ---------- CATEGORY ----------
     if (p.selectedCategory == null) {
-      showErrorSnackBar("Select Category", context);
+      utils.showToast("Select Category",Colors.red);
       return false;
     }
 
     if (p.selectedSubCategory == null) {
-      showErrorSnackBar("Select Sub Category", context);
+      utils.showToast("Select Sub Category",Colors.red);
       return false;
     }
 
@@ -1914,7 +1914,7 @@ class BillingProvider with ChangeNotifier{
     }
 
     if (p.units.text.trim().isEmpty) {
-      showErrorSnackBar("Enter Unit", context);
+      utils.showToast("Enter Unit",Colors.red);
       return false;
     }
 
@@ -1924,40 +1924,40 @@ class BillingProvider with ChangeNotifier{
     final double? inPrice = double.tryParse(p.inPrice.text);
 
     if (mrp == null ) {
-      showErrorSnackBar("Enter valid  Mrp price values", context);
+      utils.showToast("Enter valid  Mrp price values",Colors.red);
       return false;
     }
 
     if (outPrice == null ) {
-      showErrorSnackBar("Enter valid out price values", context);
+      utils.showToast("Enter valid out price values",Colors.red);
       return false;
     }
 
     if ( inPrice == null) {
-      showErrorSnackBar("Enter valid In-price values", context);
+      utils.showToast("Enter valid In-price values",Colors.red);
       return false;
     }
 
     if (mrp <= 0 || outPrice <= 0 || inPrice <= 0) {
-      showErrorSnackBar("Price must be greater than zero", context);
+      utils.showToast("Price must be greater than zero",Colors.red);
       return false;
     }
 
     // MRP > Out Price
     if (mrp <= outPrice) {
-      showErrorSnackBar("MRP must be greater than Out Price", context);
+      utils.showToast("MRP must be greater than Out Price",Colors.red);
       return false;
     }
 
     // In Price < Out Price
     if (inPrice >= outPrice) {
-      showErrorSnackBar("In Price must be less than Out Price", context);
+      utils.showToast("In Price must be less than Out Price",Colors.red);
       return false;
     }
 
     // ---------- LOOSE ----------
     if (p.isLoose != 0 && p.isLoose != 1) {
-      showErrorSnackBar("Select Loose Product (Yes / No)", context);
+      utils.showToast("Select Loose Product (Yes / No)",Colors.red);
       return false;
     }
 

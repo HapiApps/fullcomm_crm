@@ -17,10 +17,12 @@ import 'package:fullcomm_crm/screens/leads/qualified.dart';
 import 'package:fullcomm_crm/screens/leads/suspects.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/screens/dashboard.dart';
+import 'package:fullcomm_crm/view_models/billing_provider.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/models/product_obj.dart';
@@ -42,6 +44,7 @@ import '../models/mail_receive_obj.dart';
 import '../models/meeting_obj.dart';
 import '../models/month_report_obj.dart';
 import '../screens/DashboardPage.dart';
+import '../screens/order/order_page.dart';
 
 final ApiService apiService = ApiService._();
 
@@ -3322,13 +3325,9 @@ class ApiService {
   //   }
   // }
 
-  Future insertQuotationAPI(BuildContext context,pw.Document pdf) async {
+  Future insertQuotationAPI(BuildContext context,pw.Document pdf,String productListJson) async {
     try {
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
-      String productListJson = jsonEncode(
-        productCtr.productsList.map((e) => e.toJson()).toList(),
-      );
-      // Body values
       request.fields['clientMail'] = controllers.selectedCustomerEmail.value;
       request.fields['subject'] = controllers.emailSubjectCtr.text;
       request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
@@ -3339,7 +3338,7 @@ class ApiService {
       request.fields['customer_id'] = controllers.selectedCustomerId.value;
       request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
       request.fields['action'] = 'send_quotation';
-      request.fields['total_amt'] = '${productCtr.productsList.fold(0.0,(sum, item) => sum + (double.tryParse(item.amount.text) ?? 0.0),)}';
+      request.fields['total_amt'] = '${Provider.of<BillingProvider>(context, listen: false).calculatedGrandTotal()}';
       request.fields['productList'] = productListJson;
       request.headers.addAll({
         'X-API-TOKEN': "${TokenStorage().readToken()}",
@@ -3363,24 +3362,24 @@ class ApiService {
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return insertQuotationAPI(context,pdf);
+          return insertQuotationAPI(context,pdf,productListJson);
         } else {
           controllers.setLogOut();
         }
       }
       if (response.statusCode == 200) {
         utils.snackBar(
-            msg: "Mail has been sent",
+            msg: "Quotation sent successfully",
             color: Colors.green,
             context: Get.context!);
         controllers.emailMessageCtr.clear();
         controllers.emailToCtr.clear();
         controllers.emailSubjectCtr.clear();
         productCtr.productsList.clear();
-        controllers.clearSelectedCustomer();
-        productCtr.clearProduct();
+        Provider.of<BillingProvider>(context, listen: false).billingItems.clear();
         productCtr.getQuotationDetails();
         Navigator.pop(Get.context!);
+        controllers.changeTab(1);
         controllers.emailCtr.reset();
       } else {
         controllers.emailCtr.reset();
@@ -3474,6 +3473,17 @@ class ApiService {
         // Navigator.pop(Get.context!);
         controllers.emailCtr.reset();
         productCtr.getQuotationDetails();
+        productCtr.getOrderDetails();
+        remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+        controllers.changeTab(0);
+        Navigator.push(context,
+          PageRouteBuilder(
+            pageBuilder: (context,animation1,animation2) =>
+            const OrderPage(),
+            transitionDuration:Duration.zero,
+            reverseTransitionDuration:Duration.zero,),);
+        controllers.oldIndex.value = controllers.selectedIndex.value;
+        controllers.selectedIndex.value = 101;
       } else {
         controllers.emailCtr.reset();
         errorDialog(Get.context!, "Mail has been not sent");

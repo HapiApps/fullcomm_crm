@@ -853,7 +853,7 @@ class _SendQuotationState extends State<SendQuotation> {
   Future<void> sendInvoice() async {
     final pdf = await generateInvoicePdf();
 
-    apiService.insertQuotationAPI(context, pdf);
+    apiService.insertQuotationAPI(context, pdf,"");
   }
 
   pw.Widget tableCell(String text, {bool isHeader = false}) {

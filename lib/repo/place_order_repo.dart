@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/common/constant/api.dart';
 import '../billing_utils/toast_messages.dart';
 import '../common/billing_data/api_urls.dart';
+import '../common/utilities/jwt_storage.dart';
 import '../controller/controller.dart';
 import '../models/billing_models/category_model.dart';
 import '../models/billing_models/online_orders.dart';
@@ -183,16 +185,24 @@ class PlaceOrderRepository {
 
     try {
       final response = await http.post(
-        Uri.parse(ApiUrl.script),
+        Uri.parse(scriptApi),
         headers: {
-          "Content-Type": "application/json",
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json'
         },
         body: body,
       );
 
       print("REQUEST BODY: $body");
       print("RESPONSE BODY: ${response.body}");
-
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertProduct(data);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       final decoded = jsonDecode(response.body);
 
       // ✅ BACKEND CONFIRMED SUCCESS FLAG

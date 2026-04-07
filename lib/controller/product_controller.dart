@@ -509,8 +509,8 @@ var isSelectAll=false.obs;
   }
   Future<List<Order>> getOrderDetails() async {
     try {
-      ordersList.clear();
-      ordersList2.clear();
+      // ordersList.clear();
+      // ordersList2.clear();
       final response = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -976,8 +976,8 @@ var isSelectAll=false.obs;
   RxList<Quotations> quotationsList2=<Quotations>[].obs;
   Future<List<Quotations>> getQuotationDetails() async {
     try {
-      quotationsList.clear();
-      quotationsList2.clear();
+      // quotationsList.clear();
+      // quotationsList2.clear();
       final response = await http.post(
         Uri.parse(scriptApi),
         headers: {

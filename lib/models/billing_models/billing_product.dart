@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:fullcomm_crm/models/billing_models/products_response.dart';
 
+import '../../controller/controller.dart';
+
 class BillingItem {
   String id;
   ProductData product;
@@ -258,6 +260,7 @@ class BillingItem {
 
   Map<String, dynamic> toJson() {
     return {
+      "cos_id": controllers.storage.read("cos_id"),
       'id': id,
       'is_loose': product.isLoose.toString(),
       'batch_no': product.batchNo.toString(),

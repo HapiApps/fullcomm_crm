@@ -19,7 +19,7 @@ class ScreenWidgets {
         children: [
           Image.asset(
             image,
-            height: height ?? MediaQuery.of(context).size.height * 0.35,
+            height: height ?? MediaQuery.of(context).size.height * 0.25,
             width: width ?? MediaQuery.of(context).size.height * 0.35,
           ),
           5.height,

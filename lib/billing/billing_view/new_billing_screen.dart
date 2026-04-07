@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ import 'package:fullcomm_crm/view_models/billing_provider.dart';
 import 'package:fullcomm_crm/view_models/customer_provider.dart';
 import 'package:fullcomm_crm/billing/orders/hold_order_details.dart';
 import 'package:intl/intl.dart';
+import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../billing_utils/caps_letter.dart';
@@ -1766,2672 +1768,2683 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                             // }
                           }
                         },
-                        child: Row(
-                          children: [
-                            SideBar(),
-                            GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onTap: () {
-                                  // 🔥 mouse click ஆனாலும் focus return
-                                  _focusNode.requestFocus();
-                                },
-                                child: billingProvider.isLoading ? LoadingWidgets
-                                    .circleLoading()
-                                    : Container(
-                                  width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
-                                  height: MediaQuery.of(context).size.height,
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          _focusNode.requestFocus();
-                                        },
-                                        child: Container(
-                                          color: colorsConst.primary,
-                                          padding: const EdgeInsets.only(bottom: 1),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              20.height,
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                children: [
-                                                  SizedBox(
-                                                    height: 70,
-                                                    width: 120,
-                                                    child: InkWell(
-                                                      onTap: () =>
-                                                          billingProvider.clearBillingData(
-                                                              context),
-                                                      child: Container(
-                                                        padding: const EdgeInsets.symmetric(
-                                                            horizontal: 10, vertical: 8),
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: Colors.black26),
-                                                            color: Colors.white
-                                                          // color: colorsConst.primaryGreen.withOpacity(0.2)
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            // ICON
-                                                            SvgPicture.asset(
-                                                              "assets/bill/Reset.svg",
-                                                              height: 23,
-                                                            ),
-                                                            const SizedBox(width: 2),
-
-                                                            // TWO-LINE TEXT
-                                                            const Column(
-                                                              crossAxisAlignment: CrossAxisAlignment
-                                                                  .start,
-                                                              children: [
-                                                                Text(
-                                                                  "Clear Bill\n Shf + Tab",
-                                                                  style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight
-                                                                        .bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 70,
-                                                    width: 134,
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(builder: (
-                                                                context) => const OrderDetailPage()));
-                                                      },
-                                                      child: Container(
-                                                        padding: const EdgeInsets.symmetric(
-                                                            horizontal: 10, vertical: 8),
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: Colors.black26),
-                                                            color: Colors.white
-                                                          // color: colorsConst.primaryGreen.withOpacity(0.2)
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            // ICON
-                                                            SvgPicture.asset(
-                                                              "assets/bill/bill.svg",
-                                                              height: 30,
-                                                            ),
-                                                            const SizedBox(width: 2),
-
-                                                            // TWO-LINE TEXT
-                                                            const Column(
-                                                              crossAxisAlignment: CrossAxisAlignment
-                                                                  .start,
-                                                              children: [
-                                                                Text(
-                                                                  "Search Bill\n ALT + S",
-                                                                  style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight
-                                                                        .bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 70,
-                                                    width: 146,
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        showDialog(
-                                                          context: context,
-                                                          barrierDismissible: true,
-                                                          builder: (_) => const AddProductDialog(),
-                                                        );
-                                                      },
-
-                                                      child: Container(
-                                                        padding: const EdgeInsets.symmetric(
-                                                            horizontal: 10, vertical: 8),
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: Colors.black26),
-                                                            color: Colors.white
-                                                          // color: colorsConst.primaryGreen.withOpacity(0.2)
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            // ICON
-                                                            SvgPicture.asset(
-                                                              "assets/bill/bill.svg",
-                                                              height: 30,
-                                                            ),
-                                                            const SizedBox(width: 2),
-
-                                                            // TWO-LINE TEXT
-                                                            const Column(
-                                                              crossAxisAlignment: CrossAxisAlignment
-                                                                  .start,
-                                                              children: [
-                                                                Text(
-                                                                  "Add Product\nALT + N",
-                                                                  style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight
-                                                                        .bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 70,
-                                                    width:137,
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        if (localData.secretCode == null ||
-                                                            localData.secretCode!
-                                                                .trim()
-                                                                .isEmpty) {
-                                                          ScaffoldMessenger
-                                                              .of(context)
-                                                              .showSnackBar(
-                                                             SnackBar(
-                                                              content: Text(
-                                                                "Don't Have the Access to return quantity",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
-                                                              backgroundColor: colorsConst.primary,
-                                                              duration: Duration(seconds: 2),
-                                                            ),
-                                                          );
-
-                                                          return; // stop opening dialog
-                                                        }
-
-                                                        showReturnQuantityDialog();
-                                                      },
-                                                      child: Container(
-                                                        padding: const EdgeInsets.symmetric(
-                                                            horizontal: 10, vertical: 8),
-                                                        decoration: BoxDecoration(
-                                                          // border: Border.all(color: Colors.white),
-                                                            border: Border.all(
-                                                                color: Colors.black26),
-                                                            color: Colors.white),
-                                                        child: Row(
-                                                          children: [
-                                                            // ICON
-                                                            SvgPicture.asset(
-                                                              "assets/bill/return.svg",
-                                                              height: 30,
-                                                            ),
-                                                            const SizedBox(width: 2),
-
-                                                            // TWO-LINE TEXT
-                                                            const Column(
-                                                              crossAxisAlignment: CrossAxisAlignment
-                                                                  .start,
-                                                              children: [
-                                                                Text(
-                                                                  "Return Qty \nALT + R",
-                                                                  style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight
-                                                                        .bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 70,
-                                                    width: 138,
-                                                    child: InkWell(
-                                                      onTap: () async {
-                                                        // âœ… Wait for result from HoldBillsScreen
-                                                        final result = await Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(builder: (
-                                                              context) => HoldBill()
-                                                          ),
-                                                        );
-
-                                                        // âœ… If user released a bill, rebuild the screen
-                                                        if (result == true) {
-                                                          setState(() {}); // refreshes UI to show restored products
-                                                        }
-                                                      },
-                                                      child: Container(
-                                                        padding: const EdgeInsets.symmetric(
-                                                            horizontal: 10, vertical: 8),
-                                                        decoration: BoxDecoration(
-                                                          // border: Border.all(color: Colors.white),
-                                                            border: Border.all(
-                                                                color: Colors.black26),
-                                                            color: Colors.white
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            // ICON
-                                                            SvgPicture.asset(
-                                                              "assets/bill/release_bill.svg",
-                                                              height: 30,
-                                                            ),
-                                                            const SizedBox(width: 2),
-
-                                                            // TWO-LINE TEXT
-                                                            const Column(
-                                                              crossAxisAlignment: CrossAxisAlignment
-                                                                  .start,
-                                                              children: [
-                                                                Text(
-                                                                  "Release Bill\nALT + H",
-                                                                  style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight
-                                                                        .bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 70,
-                                                    width: 140,
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        customerProvider.addCustomerDialog(
-                                                            context);
-                                                      },
-                                                      child: Container(
-                                                        padding: const EdgeInsets.symmetric(
-                                                            horizontal: 10, vertical: 8),
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: Colors.black26),
-                                                            color: Colors.white),
-                                                        child: Row(
-                                                          children: [
-                                                            // ICON
-                                                            SvgPicture.asset(
-                                                              "assets/bill/customer.svg",
-                                                              height: 30,
-                                                            ),
-                                                            const SizedBox(width: 2),
-
-                                                            // TWO-LINE TEXT
-                                                            const Column(
-                                                              crossAxisAlignment: CrossAxisAlignment
-                                                                  .start,
-                                                              children: [
-                                                                Text(
-                                                                  "Add Cust\nALT + C",
-                                                                  style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight
-                                                                        .bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 70,
-                                                    width: 155,
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        if (billingProvider.isWChecked) {
-                                                          billingProvider.getWholeSaleProducts();
-                                                        } else {
-                                                          billingProvider.getProducts();
-                                                        }
-                                                      },
-                                                      child: Container(
-                                                        padding: const EdgeInsets.symmetric(
-                                                            horizontal: 10, vertical: 8),
-                                                        decoration: BoxDecoration(
-                                                          // border: Border.all(color: Colors.white),
-                                                            border: Border.all(
-                                                                color: Colors.black26),
-                                                            color: Colors.white),
-                                                        child: Row(
-                                                          children: [
-                                                            // ICON
-                                                            SvgPicture.asset(
-                                                              "assets/bill/Refresh.svg",
-                                                              height: 30,
-                                                            ),
-                                                            const SizedBox(width: 2),
-
-                                                            // TWO-LINE TEXT
-                                                            const Column(
-                                                              crossAxisAlignment: CrossAxisAlignment
-                                                                  .start,
-                                                              children: [
-                                                                Text(
-                                                                  "Refresh Stock\nALT + L",
-                                                                  style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight
-                                                                        .bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 70,
-                                                    width: 118,
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        customerProvider
-                                                            .showCashierPopupAndLogout(
-                                                            context,billingProvider);
-                                                      },
-                                                      child: Container(
-                                                        padding: const EdgeInsets.symmetric(
-                                                            horizontal: 10, vertical: 8),
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: Colors.black26),
-                                                            color: Colors
-                                                                .white // color: colorsConst.primaryGreen.withOpacity(0.2)
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            // ICON
-                                                            SvgPicture.asset(
-                                                              "assets/bill/logout.svg",
-                                                              height: 30,
-                                                            ),
-                                                            const SizedBox(width: 2),
-
-                                                            // TWO-LINE TEXT
-                                                            const Column(
-                                                              crossAxisAlignment: CrossAxisAlignment
-                                                                  .start,
-                                                              children: [
-                                                                Text(
-                                                                  "Logout\nALT + O",
-                                                                  style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight
-                                                                        .bold,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),20.height,
-                                              CustomerDropdown(
-                                                custList: controllers.customers,
-                                                onChanged: (AllCustomersObj? customer) {
-                                                  setState(() {
-                                                    controllers.selectCustomer(customer!);
-                                                  });
-                                                },),20.height,
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      /// Fixed Header:
-                                      // Row containing Search Dropdown and Variation/Quantity field
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0, right: 8, bottom: 1, top: 5),
-                                            child: Row(
+                        child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              // 🔥 mouse click ஆனாலும் focus return
+                              _focusNode.requestFocus();
+                            },
+                            child: billingProvider.isLoading ? LoadingWidgets
+                                .circleLoading()
+                                : Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        _focusNode.requestFocus();
+                                      },
+                                      child: Container(
+                                        color: colorsConst.primary,
+                                        padding: const EdgeInsets.only(bottom: 1),
+                                        child: Column(
+                                          // crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            20.height,
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                               children: [
-                                                /// Searchable DropdownMenu (Header)
-                                                Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      left: 8.0,
-                                                      right: 8,
-                                                      bottom: 1,
-                                                      top: 1),
-                                                  child: Row(
-                                                    children: [
-                                                      SizedBox(
-                                                        width: screenWidth/5,
-                                                        child: Container(
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius
-                                                                .circular(20),
-                                                            border: Border.all(
-                                                                color: Colors.grey
-                                                                    .shade600,
-                                                                width: 1.4),
-                                                          ),
-                                                          padding: const EdgeInsets.symmetric(horizontal: 0),
-                                                          child:Focus(
-                                                            onKeyEvent: (node, event) {
-                                                              // 🚫 block ONLY arrow keys (these cause editable.dart crash)
-                                                              if (event.logicalKey == LogicalKeyboardKey.arrowDown ||
-                                                                  event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                                                                return KeyEventResult.handled;
-                                                              }
-
-                                                              // ✅ allow everything else (numbers, enter, tab, etc)
-                                                              return KeyEventResult.ignored;
-                                                            },
-                                                            onFocusChange: (hasFocus) {
-                                                              if (!hasFocus) {
-
-                                                                final billing = billingProvider;
-                                                                final text = dropdownController.text.trim();
-
-                                                                // 🔒 Skip validation during scan / programmatic update
-                                                                if (_isProgrammaticChange) return;
-
-                                                                // ❌ Manual typing but no product selected
-                                                                if (billing.selectedProduct == null && text.isNotEmpty) {
-                                                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                                                  //   const SnackBar(
-                                                                  //     content: Text("❌ Product not found"),
-                                                                  //     backgroundColor: Colors.red,
-                                                                  //   ),
-                                                                  // );
-
-                                                                  Future.microtask(() {
-                                                                    billing.dropdownFocusNode.requestFocus();
-
-                                                                    dropdownController.value = TextEditingValue(
-                                                                      text: dropdownController.text,
-                                                                      selection: TextSelection.collapsed(
-                                                                        offset: dropdownController.text.length,
-                                                                      ),
-                                                                    );
-                                                                  });
-                                                                }
-                                                              }
-                                                            },
-                                                            child: KeyboardDropdownField<ProductData>(
-                                                              focusNode: billingProvider.dropdownFocusNode,
-
-                                                              items: billingProvider.productsList
-                                                                  .where((p) {
-                                                                final price = double.tryParse(p.outPrice?.toString() ?? "0") ?? 0;
-
-                                                                // Apply price > 0 condition to BOTH loose and normal products
-                                                                if (price > 0) return true;
-
-                                                                return false;
-                                                              })
-                                                                  .toList()
-                                                                ..sort((a, b) {
-                                                                  String titleA = a.pTitle?.toLowerCase().trim() ?? "";
-                                                                  String titleB = b.pTitle?.toLowerCase().trim() ?? "";
-                                                                  titleA = titleA.replaceAll(RegExp(r'\s+'), '');
-                                                                  titleB = titleB.replaceAll(RegExp(r'\s+'), '');
-
-                                                                  bool aStartsNum = RegExp(r'^\d').hasMatch(titleA);
-                                                                  bool bStartsNum = RegExp(r'^\d').hasMatch(titleB);
-
-                                                                  if (!aStartsNum && bStartsNum) return -1;
-                                                                  if (aStartsNum && !bStartsNum) return 1;
-                                                                  return titleA.compareTo(titleB);
-                                                                }),
-                                                              hintText: "Product...",
-                                                              hintStyle: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: 24,
-                                                                color: Colors.grey.shade600,
-                                                              ),
-                                                              linkStyle: const TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: 24,
-                                                                color: Colors.black,
-                                                              ),
-
-                                                              labelText: "Product",
-                                                              textEditingController: dropdownController,
-
-                                                              labelBuilder: (product) {
-                                                                final double qty =
-                                                                    double.tryParse(product.qtyLeft?.toString() ?? "0") ?? 0;
-
-                                                                bool isLowStock = qty > 0 && qty <= 10; // 🔥 low stock limit
-
-                                                                return product.isLoose == '0'
-                                                                    ? '${product.pTitle ?? ""}'
-                                                                    '${product.pVariation != null ? " ${product.pVariation}" : ""}'
-                                                                    '${product.unit != null ? product.unit : ""}'
-                                                                    : '${product.pTitle ?? ""}'
-                                                                    '${product.pVariation != null ? " (${product.pVariation})" : ""}';
-
-                                                              },
-
-                                                              itemBuilder: (product)
-                                                              {
-                                                                final double qty =
-                                                                    double.tryParse(product.qtyLeft?.toString() ?? "0") ?? 0;
-
-                                                                bool isLowStock = qty > 0 && qty <= 20; // 🔥 low stock limit
-
-
-                                                                bool isOutOfStock = qty <= 0;
-                                                                return Container(
-                                                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                                                                  child:
-                                                                  Row(
-                                                                    children: [
-                                                                      SizedBox(
-                                                                        width: 230,
-                                                                        child: Text(
-                                                                          product.qtyLeft! == "0"
-                                                                              ? product.isLoose == '0'
-                                                                              ? '${product.pTitle} ${product.pVariation}${product.unit} (Out of Stock)'
-                                                                              : '${product.pTitle} (${product.pVariation}) (Out of Stock)'
-                                                                              : product.isLoose == '0'
-                                                                              ? '${product.pTitle} ${product.pVariation}${product.unit}'
-                                                                              : '${product.pTitle} (${product.pVariation})',
-                                                                          style: TextStyle(
-                                                                            color: isOutOfStock ? Colors.green
-                                                                                : Colors.black, // ✅ out of stock red
-                                                                            fontSize: 18,
-                                                                            fontWeight: FontWeight.bold,
-                                                                          ),
-                                                                          maxLines: 2,
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                        ),
-                                                                      ),
-
-                                                                      SizedBox(width: 10),
-                                                                      buildInfoBlock(
-                                                                        label: product.qtyLeft! == "0"
-                                                                            ? ""
-                                                                            : "MRP:",
-                                                                        value: product.qtyLeft! == "0"
-                                                                            ? ""
-                                                                            : product.isLoose == "1"
-                                                                            ? ((double.tryParse(
-                                                                            product.mrp?.toString() ?? "") ?? 0))
-                                                                            .toStringAsFixed(1)
-                                                                            : (double.tryParse(
-                                                                            product.mrp?.toString() ?? "") ?? 0)
-                                                                            .toStringAsFixed(1),
-                                                                        color: Colors.blue, color1: Colors.black,
-                                                                      ),
-
-                                                                      buildInfoBlock(
-                                                                        label: product.qtyLeft! == "0"
-                                                                            ? ""
-                                                                            : "Sell:",
-                                                                        value: product.qtyLeft! == "0"
-                                                                            ? ""
-                                                                            : product.isLoose == "1"
-                                                                            ? ((double.tryParse(
-                                                                            product.pricePerG?.toString() ?? "") ?? 0) * 1000)
-                                                                            .toStringAsFixed(1)
-                                                                            : (double.tryParse(
-                                                                            product.outPrice?.toString() ?? "") ?? 0)
-                                                                            .toStringAsFixed(1),
-                                                                        color: Colors.green, color1: Colors.black,
-                                                                      ),
-
-                                                                      buildInfoBlock(
-                                                                        label: product.qtyLeft! == "0"
-                                                                            ? ""
-                                                                            : "Stk:",
-                                                                        value: product.qtyLeft! == "0"
-                                                                            ? ""
-                                                                            : product.isLoose == "1"
-                                                                            ? "${((double.tryParse(
-                                                                            product.qtyLeft?.toString() ?? "") ?? 0) / 1000)
-                                                                            .toStringAsFixed(2)} Kg"
-                                                                            : (int.tryParse(
-                                                                            product.qtyLeft?.toString() ?? "") ?? 0)
-                                                                            .toString(),
-                                                                        color: Colors.purple,
-                                                                        color1: isLowStock ? Colors.lightBlueAccent.shade700 : Colors.black,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-
-                                                              },
-                                                              onScan: (code) {
-                                                                final billingProvider =
-                                                                Provider.of<BillingProvider>(context, listen: false);
-
-                                                                String onlyDigits(String s) =>
-                                                                    s.replaceAll(RegExp(r'[^0-9]'), '');
-
-                                                                final digits = onlyDigits(code.trim());
-
-                                                                if (digits.length < 6) return;
-
-                                                                _scanDebounce?.cancel();
-
-                                                                _scanDebounce = Timer(const Duration(milliseconds: 120), () {
-
-                                                                  try {
-                                                                    final match = billingProvider.productsList.firstWhere(
-                                                                          (p) => p.barcode == digits,
-                                                                    );
-
-                                                                    final double qty =
-                                                                        double.tryParse(match.qtyLeft?.toString() ?? "0") ?? 0;
-
-                                                                    if (qty <= 0) {
-                                                                      ScaffoldMessenger.of(context).showSnackBar(
-                                                                        const SnackBar(
-                                                                          content: Text("❌ Out of Stock"),
-                                                                          backgroundColor: Colors.red,
-                                                                        ),
-                                                                      );
-                                                                      return;
-                                                                    }
-
-                                                                    _isProgrammaticChange = true;
-
-                                                                    dropdownController.value = TextEditingValue(
-                                                                      text: digits,
-                                                                      selection: TextSelection.collapsed(offset: digits.length),
-                                                                    );
-
-                                                                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                                      _setScannedProduct(match);
-                                                                      scrollDown();
-                                                                      _isProgrammaticChange = false;
-                                                                    });
-
-                                                                    // reset error memory on success
-                                                                    _lastScannedCode = null;
-                                                                    _lastErrorTime = null;
-
-                                                                  } catch (_) {
-
-                                                                    final now = DateTime.now();
-
-                                                                    // 🔒 Prevent repeat error within 1 second for same barcode
-                                                                    if (_lastScannedCode == digits &&
-                                                                        _lastErrorTime != null &&
-                                                                        now.difference(_lastErrorTime!) < const Duration(seconds: 1)) {
-                                                                      return;
-                                                                    }
-
-                                                                    _lastScannedCode = digits;
-                                                                    _lastErrorTime = now;
-
-                                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                                      const SnackBar(
-                                                                        content: Text("❌ Product not found"),
-                                                                        backgroundColor: Colors.red,
-                                                                      ),
-                                                                    );
-                                                                  }
-                                                                });
-                                                              },
-
-
-
-                                                              //                                                    onScan: (code) {
-                                                              //                                                      final billingProvider =
-                                                              //                                                      Provider.of<BillingProvider>(context, listen: false);
-                                                              //
-                                                              //                                                      String onlyDigits(String s) =>
-                                                              //                                                          s.replaceAll(RegExp(r'[^0-9]'), '');
-                                                              //
-                                                              //                                                      final digits = onlyDigits(code.trim());
-                                                              //                                                      if (digits.length < 6) return;
-                                                              //
-                                                              //                                                      try {
-                                                              //                                                        final match = billingProvider.productsList.firstWhere(
-                                                              //                                                              (p) => p.barcode == digits,
-                                                              //                                                        );
-                                                              //    /// ❌ NOT FOUND
-                                                              // ///   if (match == null) {
-                                                              //
-                                                              //                                                        final qty =
-                                                              //                                                            double.tryParse(match.qtyLeft?.toString() ?? "0") ?? 0;
-                                                              //
-                                                              //                                                        // if (qty <= 0) {
-                                                              //                                                        //   ScaffoldMessenger.of(context).showSnackBar(
-                                                              //                                                        //     const SnackBar(
-                                                              //                                                        //       content: Text("❌ Out of Stock"),
-                                                              //                                                        //       backgroundColor: Colors.red,
-                                                              //                                                        //     ),
-                                                              //                                                        //   );
-                                                              //                                                        //   return;
-                                                              //                                                        // }
-                                                              //
-                                                              //                                                        _isProgrammaticChange = true;
-                                                              //
-                                                              //                                                        /// update text safely
-                                                              //                                                        dropdownController.value = TextEditingValue(
-                                                              //                                                          text: digits,
-                                                              //                                                          selection: TextSelection.collapsed(offset: digits.length),
-                                                              //                                                        );
-                                                              //
-                                                              //                                                        /// schedule logic AFTER frame (non blocking)
-                                                              //                                                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                              //                                                          _setScannedProduct(match);
-                                                              //                                                          scrollDown();
-                                                              //                                                        });
-                                                              //
-                                                              //                                                      } catch (_) {
-                                                              //                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                              //                                                          const SnackBar(
-                                                              //                                                            content: Text("❌ Product not found"),
-                                                              //                                                            backgroundColor: Colors.red,
-                                                              //                                                          ),
-                                                              //                                                        );
-                                                              //                                                      }
-                                                              //
-                                                              //                                                      _isProgrammaticChange = false;
-                                                              //                                                    },
-
-
-
-                                                              // onSelected: (product) async {
-                                                              //   bool isOutOfStock(ProductData p) {
-                                                              //     final double qty =
-                                                              //         double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
-                                                              //     return qty <= 0;
-                                                              //   }
-                                                              //   // 🚫 BLOCK OUT OF STOCK SELECTION
-                                                              //   if (isOutOfStock(product)) {
-                                                              //     ScaffoldMessenger.of(context).showSnackBar(
-                                                              //       const SnackBar(
-                                                              //         content: Text("❌ Out of Stock"),
-                                                              //         backgroundColor: Colors.red,
-                                                              //       ),
-                                                              //     );
-                                                              //
-                                                              //     dropdownController.clear();
-                                                              //     billingProvider.selectedProduct = null;
-                                                              //
-                                                              //     Future.delayed(const Duration(milliseconds: 80), () {
-                                                              //       billingProvider.dropdownFocusNode.requestFocus();
-                                                              //     });
-                                                              //
-                                                              //     return; // ⛔ STOP HERE
-                                                              //   }
-                                                              //
-                                                              //   // ✅ ALLOW ONLY IF STOCK AVAILABLE
-                                                              //   billingProvider.selectedProduct = product;
-                                                              //
-                                                              //   billingProvider.updateTemporaryFields(
-                                                              //     variation: product.isLoose == '1' ? 1.0 : null,
-                                                              //     quantity: product.isLoose == '0' ? 1 : null,
-                                                              //   );
-                                                              //
-                                                              //   dropdownController.text =
-                                                              //   product.isLoose == '0'
-                                                              //       ? '${product.pTitle} ${product.pVariation}${product.unit}'
-                                                              //       : '${product.pTitle} (${product.pVariation})';
-                                                              //
-                                                              //   dropdownController.selection = TextSelection.fromPosition(
-                                                              //     TextPosition(offset: dropdownController.text.length),
-                                                              //   );
-                                                              //
-                                                              //   fieldFocusNode.requestFocus();
-                                                              // },
-
-                                                              onSelected: (product) async {
-                                                                bool isOutOfStock(ProductData p) {
-                                                                  final double qty =
-                                                                      double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
-                                                                  return qty <= 0;
-                                                                }
-
-                                                                // 🚫 BLOCK OUT OF STOCK SELECTION
-                                                                if (isOutOfStock(product)) {
-                                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                                    const SnackBar(
-                                                                      content: Text("❌ Out of Stock"),
-                                                                      backgroundColor: Colors.red,
-                                                                    ),
-                                                                  );
-
-                                                                  safeClear(dropdownController);
-                                                                  billingProvider.selectedProduct = null;
-
-                                                                  Future.microtask(() {
-                                                                    billingProvider.dropdownFocusNode.requestFocus();
-                                                                    scrollDown();
-                                                                  });
-
-                                                                  return;
-                                                                }
-
-                                                                // ✅ ALLOW ONLY IF STOCK AVAILABLE
-                                                                billingProvider.selectedProduct = product;
-
-                                                                billingProvider.updateTemporaryFields(
-                                                                  variation: product.isLoose == '1' ? 1.0 : null,
-                                                                  quantity: product.isLoose == '0' ? 1 : null,
-                                                                );
-
-                                                                final displayText = product.isLoose == '0'
-                                                                    ? '${product.pTitle} ${product.pVariation}${product.unit}'
-                                                                    : '${product.pTitle} (${product.pVariation})';
-
-                                                                // ✅ SAFE text + caret placement
-                                                                dropdownController.value = TextEditingValue(
-                                                                  text: displayText,
-                                                                  selection: TextSelection.collapsed(offset: displayText.length),
-                                                                );
-
-                                                                // ✅ Delay focus change (prevents caret crash)
-                                                                Future.microtask(() {
-                                                                  fieldFocusNode.requestFocus();
-                                                                  scrollDown();
-                                                                });
-                                                              },
-
-
-
-                                                              // onSelected: (product) async {
-                                                              //   billingProvider
-                                                              //       .selectedProduct =
-                                                              //       product;
-                                                              //   billingProvider
-                                                              //       .updateTemporaryFields(
-                                                              //     variation: product
-                                                              //         .isLoose == '1'
-                                                              //         ? 1.0
-                                                              //         : null,
-                                                              //     quantity: product
-                                                              //         .isLoose == '0'
-                                                              //         ? 1
-                                                              //         : null,
-                                                              //   );
-                                                              //
-                                                              //   dropdownController.text =
-                                                              //   product.isLoose == '0'
-                                                              //       ? '${product
-                                                              //       .pTitle} ${product
-                                                              //       .pVariation}${product
-                                                              //       .unit}'
-                                                              //       : '${product
-                                                              //       .pTitle} (${product
-                                                              //       .pVariation})';
-                                                              //
-                                                              //   dropdownController
-                                                              //       .selection =
-                                                              //       TextSelection
-                                                              //           .fromPosition(
-                                                              //         TextPosition(
-                                                              //             offset: dropdownController
-                                                              //                 .text.length),
-                                                              //       );
-                                                              //
-                                                              //   fieldFocusNode
-                                                              //       .requestFocus();
-                                                              // },
-                                                              onClear: () {
-                                                                billingProvider
-                                                                    .selectedProduct = null;
-                                                                billingProvider
-                                                                    .updateTemporaryFields(
-                                                                    quantity: 0,
-                                                                    variation: 0.0);
-                                                                safeClear(dropdownController);
-                                                                safeClear(quantityVariationController);
-
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ),
+                                                SizedBox(
+                                                  height: 70,
+                                                  width: 120,
+                                                  child: InkWell(
+                                                    onTap: () =>
+                                                        billingProvider.clearBillingData(
+                                                            context),
+                                                    child: Container(
+                                                      padding: const EdgeInsets.symmetric(
+                                                          horizontal: 10, vertical: 8),
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color: Colors.black26),
+                                                          color: Colors.white
+                                                        // color: colorsConst.primaryGreen.withOpacity(0.2)
                                                       ),
+                                                      child: Row(
+                                                        children: [
+                                                          // ICON
+                                                          SvgPicture.asset(
+                                                            "assets/bill/Reset.svg",
+                                                            height: 23,
+                                                          ),
+                                                          const SizedBox(width: 2),
 
-                                                      30.width,
-
-                                                      ///quantity /variation entry
-                                                      Container(
-                                                        width: screenWidth*0.12,
-                                                        alignment: Alignment.center,
-                                                        child: MyTextField(
-                                                          focusNode: fieldFocusNode,
-                                                          height: 50,
-                                                          controller: quantityVariationController,
-
-                                                          hintText: billingProvider
-                                                              .selectedProduct
-                                                              ?.isLoose == '1'
-                                                              ? "1.000"
-                                                              : "1",
-                                                          labelText: billingProvider
-                                                              .selectedProduct
-                                                              ?.isLoose == '1'
-                                                              ? "variation"
-                                                              : "Quantity",
-
-                                                          keyboardType: TextInputType
-                                                              .number,
-                                                          inputFormatters: billingProvider
-                                                              .selectedProduct
-                                                              ?.isLoose == '1'
-                                                              ? InputFormatters
-                                                              .variationInput
-                                                              : InputFormatters
-                                                              .quantityInput,
-                                                          // onTap: () {
-                                                          //   if (billingProvider.selectedProduct != null &&
-                                                          //       quantityVariationController.text.isEmpty) {
-                                                          //     quantityVariationController.text =
-                                                          //     billingProvider.selectedProduct!
-                                                          //         .isLoose == '1'
-                                                          //         ? "1.000"
-                                                          //         : "1";
-                                                          //     quantityVariationController.selection =
-                                                          //         TextSelection(
-                                                          //             baseOffset: 0,
-                                                          //             extentOffset: quantityVariationController
-                                                          //                 .text.length);
-                                                          //   }
-                                                          // },
-                                                          // onChanged: (value) {
-                                                          //   if (billingProvider
-                                                          //       .selectedProduct ==
-                                                          //       null) {
-                                                          //     Toasts.showToastBar(
-                                                          //         context: context,
-                                                          //         text: "Please add product",
-                                                          //         color: Colors.red);
-                                                          //     return;
-                                                          //   }
-                                                          //   if (value.isEmpty) {
-                                                          //     quantityVariationController.text =
-                                                          //     billingProvider.selectedProduct!.isLoose == '1'
-                                                          //         ? "1.000"
-                                                          //         : "1";
-                                                          //     quantityVariationController.selection =
-                                                          //         TextSelection(
-                                                          //             baseOffset: 0,
-                                                          //             extentOffset: quantityVariationController
-                                                          //                 .text.length);
-                                                          //     return;
-                                                          //   }
-                                                          //   if (billingProvider
-                                                          //       .selectedProduct!
-                                                          //       .isLoose == '1') {
-                                                          //     billingProvider
-                                                          //         .updateTemporaryFields(
-                                                          //         variation: (double
-                                                          //             .parse(value) *
-                                                          //             1000));
-                                                          //   } else {
-                                                          //     billingProvider
-                                                          //         .updateTemporaryFields(
-                                                          //         quantity: int
-                                                          //             .tryParse(
-                                                          //             value) ??
-                                                          //             billingProvider
-                                                          //                 .temporaryQuantity);
-                                                          //   }
-                                                          // },
-                                                          onFieldSubmitted: (value) {
-                                                            final billing = billingProvider;
-
-                                                            // 1) Selected product must exist
-                                                            final product = billing.selectedProduct;
-                                                            bool isOutOfStock(ProductData p) {
-                                                              final double qty =
-                                                                  double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
-                                                              return qty <= 0;
-                                                            }
-                                                            if (product == null) {
-                                                              Toasts.showToastBar(
-                                                                context: context,
-                                                                text: "Please add product",
-                                                                color: Colors.red,
-                                                              );
-                                                              return;
-                                                            }
-                                                            if (isOutOfStock(product)) {
-                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                const SnackBar(
-                                                                  content: Text("❌ Out of Stock"),
-                                                                  backgroundColor: Colors.red,
+                                                          // TWO-LINE TEXT
+                                                          const Column(
+                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              Text(
+                                                                "Clear Bill\n Shf + Tab",
+                                                                style: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 16,
+                                                                  fontWeight: FontWeight
+                                                                      .bold,
                                                                 ),
-                                                              );
-                                                              return;
-                                                            }
-
-                                                            // 2) Entered value cleanup
-                                                            final enteredText = value.trim().isEmpty ? "1" : value.trim();
-
-                                                            // 3) Safe parsing
-                                                            final double parsedDouble = safeDouble(enteredText);
-                                                            final int parsedInt = safeInt(enteredText);
-
-                                                            // 4) Safe product values
-                                                            final double stockQty = safeDouble(product.qtyLeft);
-                                                            final double mrp = safeDouble(product.mrp);
-                                                            final double outPrice = safeDouble(product.outPrice);
-
-                                                            // ---------------------------------------------------
-                                                            // PRODUCT EXISTS → UPDATE IT
-                                                            // ---------------------------------------------------
-                                                            final alreadyExists = billing.billingItems.any(
-                                                                  (item) => item.id == product.id.toString(),
-                                                            );
-
-                                                            if (alreadyExists) {
-                                                              final existingItem = billing.billingItems.firstWhere(
-                                                                    (item) => item.id == product.id.toString(),
-                                                              );
-
-                                                              final double currentQty = product.isLoose == '1'
-                                                                  ? existingItem.variation / 1000
-                                                                  : existingItem.quantity.toDouble();
-
-                                                              final double newQty = product.isLoose == '1'
-                                                                  ? parsedDouble
-                                                                  : parsedInt.toDouble();
-
-                                                              final double totalQty = currentQty + newQty;
-                                                              if (stockQty <= 0) {
-                                                                Toasts.showToastBar(
-                                                                  context: context,
-                                                                  text: "Out of Stock",
-                                                                  color: Colors.red,
-                                                                );
-                                                                return;
-                                                              }
-
-                                                              // STOCK CHECK
-                                                              if (totalQty > stockQty) {
-                                                                Toasts.showToastBar(
-                                                                  context: context,
-                                                                  text: "Stock limit reached! Available: $stockQty",
-                                                                  color: Colors.red,
-                                                                );
-
-                                                                // 🔥 CLEAR EVERYTHING RELATED TO THIS PRODUCT
-                                                                safeClear(quantityVariationController);
-                                                                safeClear(dropdownController);
-
-                                                                billing.selectedProduct = null;
-
-                                                                // 🔥 MOVE FOCUS BACK TO PRODUCT FIELD
-                                                                Future.microtask(() {
-                                                                  billing.dropdownFocusNode.requestFocus();
-                                                                });
-
-                                                                return;
-                                                              }
-                                                              // UPDATE EXISTING ITEM
-                                                              final index = billing.billingItems.indexOf(existingItem);
-
-                                                              if (product.isLoose == '1') {
-                                                                final double addQty = parsedDouble * 1000;
-                                                                existingItem.variation += addQty;
-
-                                                                billing.quantityControllers[index]!.text =
-                                                                    (existingItem.variation / 1000).toStringAsFixed(3);
-
-                                                              } else
-                                                              {
-                                                                existingItem.quantity += parsedInt;
-
-                                                                billing.quantityControllers[index]!.text =
-                                                                    existingItem.quantity.toString();
-                                                              }
-
-                                                              billing.updateExistingBillingItem(existingItem);
-                                                              billing.notifyListeners();
-
-                                                              // RESET
-                                                              safeClear(quantityVariationController);
-                                                              safeClear(dropdownController);
-                                                              billing.selectedProduct = null;
-                                                              Future.microtask(() {
-                                                                billing.dropdownFocusNode.requestFocus();
-                                                              });
-
-                                                              return;
-                                                            }
-
-                                                            // ---------------------------------------------------
-                                                            // ADD NEW PRODUCT
-                                                            // ---------------------------------------------------
-                                                            if (product.isLoose == '1') {
-                                                              final double enteredKg = parsedDouble <= 0 ? 1.0 : parsedDouble;
-                                                              final double enteredQty = enteredKg * 1000;
-                                                              if (enteredQty > stockQty) {
-                                                                Toasts.showToastBar(
-                                                                  context: context,
-                                                                  text: "Entered weight exceeds stock ($stockQty g).",
-                                                                  color: Colors.red,
-                                                                );
-                                                                Future.microtask(() {
-                                                                  fieldFocusNode.requestFocus();
-                                                                });
-
-                                                                return;
-                                                              }
-
-                                                              billing.addBillingItem(
-                                                                BillingItem(
-                                                                  id: product.id.toString(),
-                                                                  product: product,
-                                                                  productTitle: "${product.pTitle}",
-                                                                  variation: enteredQty,
-                                                                  variationUnit: "${product.pVariation}${product.unit}",
-                                                                  quantity: 1,
-                                                                  p_out_price: product.outPrice.toString(),
-                                                                  p_mrp:product.mrp.toString(),
-                                                                ),
-                                                              );
-
-                                                              final index = billing.billingItems.indexWhere(
-                                                                      (item) => item.product.id == product.id.toString());
-
-                                                              billing.quantityControllers[index]!.text =
-                                                                  enteredKg.toStringAsFixed(3);
-
-                                                            } else {
-                                                              final int finalQty = parsedInt <= 0 ? 1 : parsedInt;
-                                                              if (stockQty <= 0) {
-                                                                Toasts.showToastBar(
-                                                                  context: context,
-                                                                  text: "Out of Stock",
-                                                                  color: Colors.red,
-                                                                );
-                                                                return;
-                                                              }
-
-                                                              if (finalQty > stockQty) {
-                                                                Toasts.showToastBar(
-                                                                  context: context,
-                                                                  text: "Entered quantity exceeds stock ($stockQty).",
-                                                                  color: Colors.red,
-                                                                );
-                                                                Future.microtask(() {
-                                                                  fieldFocusNode.requestFocus();
-                                                                });
-
-                                                                return;
-                                                              }
-
-                                                              billing.addBillingItem(
-                                                                BillingItem(
-                                                                  id: product.id.toString(),
-                                                                  product: product,
-                                                                  variation: 1,
-                                                                  variationUnit: "${product.pVariation}${product.unit}",
-                                                                  quantity: finalQty,
-                                                                  productTitle: product.pTitle ?? "",
-                                                                  p_out_price: product.outPrice.toString(),
-                                                                  p_mrp:product.mrp.toString(),
-                                                                ),
-                                                              );
-                                                            }
-
-                                                            // ---------------------------------------------------
-                                                            // FINAL RESET
-                                                            // ---------------------------------------------------
-                                                            safeClear(billing.barcodeScanner);
-                                                            billing.selectedProduct = null;
-
-                                                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                                scrollDown();
-                                                              });
-                                                            });
-
-                                                            safeClear(quantityVariationController);
-                                                            safeClear(dropdownController);
-
-                                                            Future.microtask(() {
-                                                              billing.dropdownFocusNode.requestFocus();
-                                                            });
-                                                          },
-
-                                                        ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
                                                       ),
-
-
-                                                    ],
+                                                    ),
                                                   ),
                                                 ),
+                                                SizedBox(
+                                                  height: 70,
+                                                  width: 134,
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(builder: (
+                                                              context) => const OrderDetailPage()));
+                                                    },
+                                                    child: Container(
+                                                      padding: const EdgeInsets.symmetric(
+                                                          horizontal: 10, vertical: 8),
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color: Colors.black26),
+                                                          color: Colors.white
+                                                        // color: colorsConst.primaryGreen.withOpacity(0.2)
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          // ICON
+                                                          SvgPicture.asset(
+                                                            "assets/bill/bill.svg",
+                                                            height: 30,
+                                                          ),
+                                                          const SizedBox(width: 2),
 
+                                                          // TWO-LINE TEXT
+                                                          const Column(
+                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              Text(
+                                                                "Search Bill\n ALT + S",
+                                                                style: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 16,
+                                                                  fontWeight: FontWeight
+                                                                      .bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 70,
+                                                  width: 146,
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        barrierDismissible: true,
+                                                        builder: (_) => const AddProductDialog(),
+                                                      );
+                                                    },
 
-                                                10.width,
+                                                    child: Container(
+                                                      padding: const EdgeInsets.symmetric(
+                                                          horizontal: 10, vertical: 8),
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color: Colors.black26),
+                                                          color: Colors.white
+                                                        // color: colorsConst.primaryGreen.withOpacity(0.2)
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          // ICON
+                                                          SvgPicture.asset(
+                                                            "assets/bill/bill.svg",
+                                                            height: 30,
+                                                          ),
+                                                          const SizedBox(width: 2),
+
+                                                          // TWO-LINE TEXT
+                                                          const Column(
+                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              Text(
+                                                                "Add Product\nALT + N",
+                                                                style: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 16,
+                                                                  fontWeight: FontWeight
+                                                                      .bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 70,
+                                                  width:137,
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      if (localData.secretCode == null ||
+                                                          localData.secretCode!
+                                                              .trim()
+                                                              .isEmpty) {
+                                                        ScaffoldMessenger
+                                                            .of(context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                            content: Text(
+                                                              "Don't Have the Access to return quantity",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
+                                                            backgroundColor: colorsConst.primary,
+                                                            duration: Duration(seconds: 2),
+                                                          ),
+                                                        );
+
+                                                        return; // stop opening dialog
+                                                      }
+
+                                                      showReturnQuantityDialog();
+                                                    },
+                                                    child: Container(
+                                                      padding: const EdgeInsets.symmetric(
+                                                          horizontal: 10, vertical: 8),
+                                                      decoration: BoxDecoration(
+                                                        // border: Border.all(color: Colors.white),
+                                                          border: Border.all(
+                                                              color: Colors.black26),
+                                                          color: Colors.white),
+                                                      child: Row(
+                                                        children: [
+                                                          // ICON
+                                                          SvgPicture.asset(
+                                                            "assets/bill/return.svg",
+                                                            height: 30,
+                                                          ),
+                                                          const SizedBox(width: 2),
+
+                                                          // TWO-LINE TEXT
+                                                          const Column(
+                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              Text(
+                                                                "Return Qty \nALT + R",
+                                                                style: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 16,
+                                                                  fontWeight: FontWeight
+                                                                      .bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 70,
+                                                  width: 138,
+                                                  child: InkWell(
+                                                    onTap: () async {
+                                                      // âœ… Wait for result from HoldBillsScreen
+                                                      final result = await Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(builder: (
+                                                            context) => HoldBill()
+                                                        ),
+                                                      );
+
+                                                      // âœ… If user released a bill, rebuild the screen
+                                                      if (result == true) {
+                                                        setState(() {}); // refreshes UI to show restored products
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      padding: const EdgeInsets.symmetric(
+                                                          horizontal: 10, vertical: 8),
+                                                      decoration: BoxDecoration(
+                                                        // border: Border.all(color: Colors.white),
+                                                          border: Border.all(
+                                                              color: Colors.black26),
+                                                          color: Colors.white
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          // ICON
+                                                          SvgPicture.asset(
+                                                            "assets/bill/release_bill.svg",
+                                                            height: 30,
+                                                          ),
+                                                          const SizedBox(width: 2),
+
+                                                          // TWO-LINE TEXT
+                                                          const Column(
+                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              Text(
+                                                                "Release Bill\nALT + H",
+                                                                style: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 16,
+                                                                  fontWeight: FontWeight
+                                                                      .bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 70,
+                                                  width: 140,
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      customerProvider.addCustomerDialog(
+                                                          context);
+                                                    },
+                                                    child: Container(
+                                                      padding: const EdgeInsets.symmetric(
+                                                          horizontal: 10, vertical: 8),
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color: Colors.black26),
+                                                          color: Colors.white),
+                                                      child: Row(
+                                                        children: [
+                                                          // ICON
+                                                          SvgPicture.asset(
+                                                            "assets/bill/customer.svg",
+                                                            height: 30,
+                                                          ),
+                                                          const SizedBox(width: 2),
+
+                                                          // TWO-LINE TEXT
+                                                          const Column(
+                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              Text(
+                                                                "Add Cust\nALT + C",
+                                                                style: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 16,
+                                                                  fontWeight: FontWeight
+                                                                      .bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 70,
+                                                  width: 155,
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      if (billingProvider.isWChecked) {
+                                                        billingProvider.getWholeSaleProducts();
+                                                      } else {
+                                                        billingProvider.getProducts();
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      padding: const EdgeInsets.symmetric(
+                                                          horizontal: 10, vertical: 8),
+                                                      decoration: BoxDecoration(
+                                                        // border: Border.all(color: Colors.white),
+                                                          border: Border.all(
+                                                              color: Colors.black26),
+                                                          color: Colors.white),
+                                                      child: Row(
+                                                        children: [
+                                                          // ICON
+                                                          SvgPicture.asset(
+                                                            "assets/bill/Refresh.svg",
+                                                            height: 30,
+                                                          ),
+                                                          const SizedBox(width: 2),
+
+                                                          // TWO-LINE TEXT
+                                                          const Column(
+                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              Text(
+                                                                "Refresh Stock\nALT + L",
+                                                                style: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 16,
+                                                                  fontWeight: FontWeight
+                                                                      .bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 70,
+                                                  width: 118,
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      customerProvider
+                                                          .showCashierPopupAndLogout(
+                                                          context,billingProvider);
+                                                    },
+                                                    child: Container(
+                                                      padding: const EdgeInsets.symmetric(
+                                                          horizontal: 10, vertical: 8),
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color: Colors.black26),
+                                                          color: Colors
+                                                              .white // color: colorsConst.primaryGreen.withOpacity(0.2)
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          // ICON
+                                                          SvgPicture.asset(
+                                                            "assets/bill/logout.svg",
+                                                            height: 30,
+                                                          ),
+                                                          const SizedBox(width: 2),
+
+                                                          // TWO-LINE TEXT
+                                                          const Column(
+                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              Text(
+                                                                "Logout\nALT + O",
+                                                                style: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 16,
+                                                                  fontWeight: FontWeight
+                                                                      .bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
                                               ],
+                                            ),20.height,
+                                            CustomerDropdown(
+                                              custList: controllers.customers,
+                                              onChanged: (AllCustomersObj? customer) {
+                                                setState(() {
+                                                  controllers.selectCustomer(customer!);
+                                                });
+                                              },),20.height,
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    /// Fixed Header:
+                                    // Row containing Search Dropdown and Variation/Quantity field
+                                    20.height,
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        SizedBox(
+                                          width: screenWidth/2.5,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius
+                                                  .circular(20),
+                                              border: Border.all(
+                                                  color: Colors.grey
+                                                      .shade600,
+                                                  width: 1.4),
                                             ),
-                                          ),
+                                            padding: const EdgeInsets.symmetric(horizontal: 0),
+                                            child:Focus(
+                                              onKeyEvent: (node, event) {
+                                                // 🚫 block ONLY arrow keys (these cause editable.dart crash)
+                                                if (event.logicalKey == LogicalKeyboardKey.arrowDown ||
+                                                    event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                                                  return KeyEventResult.handled;
+                                                }
 
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0, right: 8, bottom: 1, top: 1),
+                                                // ✅ allow everything else (numbers, enter, tab, etc)
+                                                return KeyEventResult.ignored;
+                                              },
+                                              onFocusChange: (hasFocus) {
+                                                if (!hasFocus) {
 
-                                            child: SizedBox(
-                                              height: 49,
-                                              width: screenWidth*0.12,
-                                              child: ElevatedButton(
-                                                focusNode: FocusNode(skipTraversal: true),
-                                                onPressed: () async {
-                                                  if (billingProvider.billingItems
-                                                      .isEmpty) {
-                                                    billingProvider.printButtonController
-                                                        .reset();
-                                                    Toasts.showToastBar(
-                                                      context: context,
-                                                      text: 'Bill List is empty',
-                                                      color: Colors.red,
+                                                  final billing = billingProvider;
+                                                  final text = dropdownController.text.trim();
+
+                                                  // 🔒 Skip validation during scan / programmatic update
+                                                  if (_isProgrammaticChange) return;
+
+                                                  // ❌ Manual typing but no product selected
+                                                  if (billing.selectedProduct == null && text.isNotEmpty) {
+                                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                                    //   const SnackBar(
+                                                    //     content: Text("❌ Product not found"),
+                                                    //     backgroundColor: Colors.red,
+                                                    //   ),
+                                                    // );
+
+                                                    Future.microtask(() {
+                                                      billing.dropdownFocusNode.requestFocus();
+
+                                                      dropdownController.value = TextEditingValue(
+                                                        text: dropdownController.text,
+                                                        selection: TextSelection.collapsed(
+                                                          offset: dropdownController.text.length,
+                                                        ),
+                                                      );
+                                                    });
+                                                  }
+                                                }
+                                              },
+                                              child: KeyboardDropdownField<ProductData>(
+                                                focusNode: billingProvider.dropdownFocusNode,
+
+                                                items: billingProvider.productsList
+                                                    .where((p) {
+                                                  final price = double.tryParse(p.outPrice?.toString() ?? "0") ?? 0;
+
+                                                  // Apply price > 0 condition to BOTH loose and normal products
+                                                  if (price > 0) return true;
+
+                                                  return false;
+                                                })
+                                                    .toList()
+                                                  ..sort((a, b) {
+                                                    String titleA = a.pTitle?.toLowerCase().trim() ?? "";
+                                                    String titleB = b.pTitle?.toLowerCase().trim() ?? "";
+                                                    titleA = titleA.replaceAll(RegExp(r'\s+'), '');
+                                                    titleB = titleB.replaceAll(RegExp(r'\s+'), '');
+
+                                                    bool aStartsNum = RegExp(r'^\d').hasMatch(titleA);
+                                                    bool bStartsNum = RegExp(r'^\d').hasMatch(titleB);
+
+                                                    if (!aStartsNum && bStartsNum) return -1;
+                                                    if (aStartsNum && !bStartsNum) return 1;
+                                                    return titleA.compareTo(titleB);
+                                                  }),
+                                                hintText: "Product...",
+                                                hintStyle: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 24,
+                                                  color: Colors.grey.shade600,
+                                                ),
+                                                linkStyle: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 24,
+                                                  color: Colors.black,
+                                                ),
+
+                                                labelText: "Product",
+                                                textEditingController: dropdownController,
+
+                                                labelBuilder: (product) {
+                                                  final double qty =
+                                                      double.tryParse(product.qtyLeft?.toString() ?? "0") ?? 0;
+
+                                                  bool isLowStock = qty > 0 && qty <= 10; // 🔥 low stock limit
+
+                                                  return product.isLoose == '0'
+                                                      ? '${product.pTitle ?? ""}'
+                                                      '${product.pVariation != null ? " ${product.pVariation}" : ""}'
+                                                      '${product.unit != null ? product.unit : ""}'
+                                                      : '${product.pTitle ?? ""}'
+                                                      '${product.pVariation != null ? " (${product.pVariation})" : ""}';
+
+                                                },
+
+                                                itemBuilder: (product)
+                                                {
+                                                  final double qty =
+                                                      double.tryParse(product.qtyLeft?.toString() ?? "0") ?? 0;
+
+                                                  bool isLowStock = qty > 0 && qty <= 20; // 🔥 low stock limit
+
+
+                                                  bool isOutOfStock = qty <= 0;
+                                                  return Container(
+                                                    padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                                    child:
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 230,
+                                                          child: Text(
+                                                            product.qtyLeft! == "0"
+                                                                ? product.isLoose == '0'
+                                                                ? '${product.pTitle} ${product.pVariation}${product.unit} (Out of Stock)'
+                                                                : '${product.pTitle} (${product.pVariation}) (Out of Stock)'
+                                                                : product.isLoose == '0'
+                                                                ? '${product.pTitle} ${product.pVariation}${product.unit}'
+                                                                : '${product.pTitle} (${product.pVariation})',
+                                                            style: TextStyle(
+                                                              color: isOutOfStock ? Colors.green
+                                                                  : Colors.black, // ✅ out of stock red
+                                                              fontSize: 18,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                            maxLines: 2,
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
+                                                        ),
+
+                                                        SizedBox(width: 10),
+                                                        buildInfoBlock(
+                                                          label: product.qtyLeft! == "0"
+                                                              ? ""
+                                                              : "MRP:",
+                                                          value: product.qtyLeft! == "0"
+                                                              ? ""
+                                                              : product.isLoose == "1"
+                                                              ? ((double.tryParse(
+                                                              product.mrp?.toString() ?? "") ?? 0))
+                                                              .toStringAsFixed(1)
+                                                              : (double.tryParse(
+                                                              product.mrp?.toString() ?? "") ?? 0)
+                                                              .toStringAsFixed(1),
+                                                          color: Colors.blue, color1: Colors.black,
+                                                        ),
+
+                                                        buildInfoBlock(
+                                                          label: product.qtyLeft! == "0"
+                                                              ? ""
+                                                              : "Sell:",
+                                                          value: product.qtyLeft! == "0"
+                                                              ? ""
+                                                              : product.isLoose == "1"
+                                                              ? ((double.tryParse(
+                                                              product.pricePerG?.toString() ?? "") ?? 0) * 1000)
+                                                              .toStringAsFixed(1)
+                                                              : (double.tryParse(
+                                                              product.outPrice?.toString() ?? "") ?? 0)
+                                                              .toStringAsFixed(1),
+                                                          color: Colors.green, color1: Colors.black,
+                                                        ),
+
+                                                        buildInfoBlock(
+                                                          label: product.qtyLeft! == "0"
+                                                              ? ""
+                                                              : "Stk:",
+                                                          value: product.qtyLeft! == "0"
+                                                              ? ""
+                                                              : product.isLoose == "1"
+                                                              ? "${((double.tryParse(
+                                                              product.qtyLeft?.toString() ?? "") ?? 0) / 1000)
+                                                              .toStringAsFixed(2)} Kg"
+                                                              : (int.tryParse(
+                                                              product.qtyLeft?.toString() ?? "") ?? 0)
+                                                              .toString(),
+                                                          color: Colors.purple,
+                                                          color1: isLowStock ? Colors.lightBlueAccent.shade700 : Colors.black,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+
+                                                },
+                                                onScan: (code) {
+                                                  final billingProvider =
+                                                  Provider.of<BillingProvider>(context, listen: false);
+
+                                                  String onlyDigits(String s) =>
+                                                      s.replaceAll(RegExp(r'[^0-9]'), '');
+
+                                                  final digits = onlyDigits(code.trim());
+
+                                                  if (digits.length < 6) return;
+
+                                                  _scanDebounce?.cancel();
+
+                                                  _scanDebounce = Timer(const Duration(milliseconds: 120), () {
+
+                                                    try {
+                                                      final match = billingProvider.productsList.firstWhere(
+                                                            (p) => p.barcode == digits,
+                                                      );
+
+                                                      final double qty =
+                                                          double.tryParse(match.qtyLeft?.toString() ?? "0") ?? 0;
+
+                                                      if (qty <= 0) {
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                          const SnackBar(
+                                                            content: Text("❌ Out of Stock"),
+                                                            backgroundColor: Colors.red,
+                                                          ),
+                                                        );
+                                                        return;
+                                                      }
+
+                                                      _isProgrammaticChange = true;
+
+                                                      dropdownController.value = TextEditingValue(
+                                                        text: digits,
+                                                        selection: TextSelection.collapsed(offset: digits.length),
+                                                      );
+
+                                                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                        _setScannedProduct(match);
+                                                        scrollDown();
+                                                        _isProgrammaticChange = false;
+                                                      });
+
+                                                      // reset error memory on success
+                                                      _lastScannedCode = null;
+                                                      _lastErrorTime = null;
+
+                                                    } catch (_) {
+
+                                                      final now = DateTime.now();
+
+                                                      // 🔒 Prevent repeat error within 1 second for same barcode
+                                                      if (_lastScannedCode == digits &&
+                                                          _lastErrorTime != null &&
+                                                          now.difference(_lastErrorTime!) < const Duration(seconds: 1)) {
+                                                        return;
+                                                      }
+
+                                                      _lastScannedCode = digits;
+                                                      _lastErrorTime = now;
+
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        const SnackBar(
+                                                          content: Text("❌ Product not found"),
+                                                          backgroundColor: Colors.red,
+                                                        ),
+                                                      );
+                                                    }
+                                                  });
+                                                },
+
+
+
+                                                //                                                    onScan: (code) {
+                                                //                                                      final billingProvider =
+                                                //                                                      Provider.of<BillingProvider>(context, listen: false);
+                                                //
+                                                //                                                      String onlyDigits(String s) =>
+                                                //                                                          s.replaceAll(RegExp(r'[^0-9]'), '');
+                                                //
+                                                //                                                      final digits = onlyDigits(code.trim());
+                                                //                                                      if (digits.length < 6) return;
+                                                //
+                                                //                                                      try {
+                                                //                                                        final match = billingProvider.productsList.firstWhere(
+                                                //                                                              (p) => p.barcode == digits,
+                                                //                                                        );
+                                                //    /// ❌ NOT FOUND
+                                                // ///   if (match == null) {
+                                                //
+                                                //                                                        final qty =
+                                                //                                                            double.tryParse(match.qtyLeft?.toString() ?? "0") ?? 0;
+                                                //
+                                                //                                                        // if (qty <= 0) {
+                                                //                                                        //   ScaffoldMessenger.of(context).showSnackBar(
+                                                //                                                        //     const SnackBar(
+                                                //                                                        //       content: Text("❌ Out of Stock"),
+                                                //                                                        //       backgroundColor: Colors.red,
+                                                //                                                        //     ),
+                                                //                                                        //   );
+                                                //                                                        //   return;
+                                                //                                                        // }
+                                                //
+                                                //                                                        _isProgrammaticChange = true;
+                                                //
+                                                //                                                        /// update text safely
+                                                //                                                        dropdownController.value = TextEditingValue(
+                                                //                                                          text: digits,
+                                                //                                                          selection: TextSelection.collapsed(offset: digits.length),
+                                                //                                                        );
+                                                //
+                                                //                                                        /// schedule logic AFTER frame (non blocking)
+                                                //                                                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                //                                                          _setScannedProduct(match);
+                                                //                                                          scrollDown();
+                                                //                                                        });
+                                                //
+                                                //                                                      } catch (_) {
+                                                //                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                //                                                          const SnackBar(
+                                                //                                                            content: Text("❌ Product not found"),
+                                                //                                                            backgroundColor: Colors.red,
+                                                //                                                          ),
+                                                //                                                        );
+                                                //                                                      }
+                                                //
+                                                //                                                      _isProgrammaticChange = false;
+                                                //                                                    },
+
+
+
+                                                // onSelected: (product) async {
+                                                //   bool isOutOfStock(ProductData p) {
+                                                //     final double qty =
+                                                //         double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
+                                                //     return qty <= 0;
+                                                //   }
+                                                //   // 🚫 BLOCK OUT OF STOCK SELECTION
+                                                //   if (isOutOfStock(product)) {
+                                                //     ScaffoldMessenger.of(context).showSnackBar(
+                                                //       const SnackBar(
+                                                //         content: Text("❌ Out of Stock"),
+                                                //         backgroundColor: Colors.red,
+                                                //       ),
+                                                //     );
+                                                //
+                                                //     dropdownController.clear();
+                                                //     billingProvider.selectedProduct = null;
+                                                //
+                                                //     Future.delayed(const Duration(milliseconds: 80), () {
+                                                //       billingProvider.dropdownFocusNode.requestFocus();
+                                                //     });
+                                                //
+                                                //     return; // ⛔ STOP HERE
+                                                //   }
+                                                //
+                                                //   // ✅ ALLOW ONLY IF STOCK AVAILABLE
+                                                //   billingProvider.selectedProduct = product;
+                                                //
+                                                //   billingProvider.updateTemporaryFields(
+                                                //     variation: product.isLoose == '1' ? 1.0 : null,
+                                                //     quantity: product.isLoose == '0' ? 1 : null,
+                                                //   );
+                                                //
+                                                //   dropdownController.text =
+                                                //   product.isLoose == '0'
+                                                //       ? '${product.pTitle} ${product.pVariation}${product.unit}'
+                                                //       : '${product.pTitle} (${product.pVariation})';
+                                                //
+                                                //   dropdownController.selection = TextSelection.fromPosition(
+                                                //     TextPosition(offset: dropdownController.text.length),
+                                                //   );
+                                                //
+                                                //   fieldFocusNode.requestFocus();
+                                                // },
+
+                                                onSelected: (product) async {
+                                                  bool isOutOfStock(ProductData p) {
+                                                    final double qty =
+                                                        double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
+                                                    return qty <= 0;
+                                                  }
+
+                                                  // 🚫 BLOCK OUT OF STOCK SELECTION
+                                                  if (isOutOfStock(product)) {
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text("❌ Out of Stock"),
+                                                        backgroundColor: Colors.red,
+                                                      ),
                                                     );
+
+                                                    safeClear(dropdownController);
+                                                    billingProvider.selectedProduct = null;
+
+                                                    Future.microtask(() {
+                                                      billingProvider.dropdownFocusNode.requestFocus();
+                                                      scrollDown();
+                                                    });
+
                                                     return;
                                                   }
 
-                                                  final paymentMap = {
-                                                    'UPI': '1',
-                                                    'Paytm': '1',
-                                                    'Split Payment': '5',
-                                                    'Credit Card': '4',
-                                                    'Cash': '2',
-                                                    'Credit': '3',
-                                                  };
+                                                  // ✅ ALLOW ONLY IF STOCK AVAILABLE
+                                                  billingProvider.selectedProduct = product;
 
-                                                  final selectedMethod = billingProvider
-                                                      .selectBillMethod ?? "Cash";
-                                                  final paymentId = paymentMap[selectedMethod] ??
-                                                      '0';
-                                                  final now = DateTime.now();
-                                                  final billNo = 'BILL${now
-                                                      .millisecondsSinceEpoch % 10000}';
-                                                  final formattedDate =
-                                                      '${now.day}/${now.month}/${now
-                                                      .year} ${now.hour}:${now.minute}';
-                                                  await billingProvider.saveHoldBillDetails(context: context,
-                                                    order: Order(
-                                                      split_pay: billingProvider.selectBillMethod =="Split Payment"?
-                                                      (billingProvider.upiPayment.text.isEmpty ? "0" : billingProvider.upiPayment .text): "0",
-                                                      id: billNo,
-                                                      createdTs: formattedDate,
-                                                      customerMobile: controllers.selectedCustomerMobile.value,
-                                                      cashier: "${controllers.storage.read("id")}",
-                                                      salesmanId: "${controllers.storage.read("id")}",
-                                                      customerId: controllers.selectedCustomerId.value,
-                                                      customerName: controllers.selectedCustomerName.value,
-                                                      customerAddress:"",
-                                                      paymentMethod: selectedMethod,
-                                                      paymentId: paymentId,
-                                                      creditDays: selectedMethod =="Credit"? (billingProvider.creditDays ??0): 0,
-                                                      products: billingProvider.billingItems,
-                                                      orderGrandTotal:billingProvider.calculatedGrandTotal().toStringAsFixed(2),
-                                                      orderSubTotal:billingProvider.calculatedGrandTotal().toStringAsFixed(2),
-                                                      receivedAmt: billingProvider.paymentReceived.text.isEmpty? "0.0": double.parse(billingProvider.paymentReceived.text).toStringAsFixed(2),
-                                                      payBackAmt:(selectedMethod == "Cash" ? ((billingProvider .paymentReceived.text .isEmpty ? 0.0
-                                                              : double.parse( billingProvider .paymentReceived .text)) -
-                                                              billingProvider .calculatedGrandTotal()) .abs() .toStringAsFixed(2) : "0.00"
-                                                      ),
-                                                      version: "0.0",
-                                                      savings: '${billingProvider.billingItems .fold(0.0, (t, i) => t + i.calculateDiscount())}',
-                                                      billStatus: 0,
-                                                    ),
+                                                  billingProvider.updateTemporaryFields(
+                                                    variation: product.isLoose == '1' ? 1.0 : null,
+                                                    quantity: product.isLoose == '0' ? 1 : null,
                                                   );
 
-                                                  Toasts.showToastBar(
-                                                    context: context,
-                                                    text: 'Bill saved to Hold successfully',
-                                                    color: Colors.green,
+                                                  final displayText = product.isLoose == '0'
+                                                      ? '${product.pTitle} ${product.pVariation}${product.unit}'
+                                                      : '${product.pTitle} (${product.pVariation})';
+
+                                                  // ✅ SAFE text + caret placement
+                                                  dropdownController.value = TextEditingValue(
+                                                    text: displayText,
+                                                    selection: TextSelection.collapsed(offset: displayText.length),
                                                   );
 
-                                                  billingProvider.printAfterChangeButtonControllerHold.reset();
-                                                  billingProvider.billingItems.clear();
-                                                  billingProvider.quantityControllers.clear();
-                                                  billingProvider.notifyListeners();
+                                                  // ✅ Delay focus change (prevents caret crash)
+                                                  Future.microtask(() {
+                                                    fieldFocusNode.requestFocus();
+                                                    scrollDown();
+                                                  });
                                                 },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: AppColors
-                                                      .textFieldBackground,
-                                                  foregroundColor: AppColors.black,
-                                                  elevation: 6,
-                                                  shadowColor: Colors.black26,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(
-                                                        20),
-                                                    side: BorderSide(
-                                                      color: Colors.black,
-                                                      // subtle border
-                                                      width: 0.8,
-                                                    ),
-                                                  ),
-                                                  padding: const EdgeInsets.symmetric(
-                                                      horizontal: 25, vertical: 10),
-                                                ),
-                                                child: MyText(
-                                                  text: 'Hold Bill (F4)',
-                                                  color: AppColors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: TextFormat.responsiveFontSize(
-                                                      context, 18),
-                                                ),
-                                              ),
-                                            ),
-                                          ),  // Hold Bill
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0, right: 8, bottom: 1, top: 1),
-                                            child: SizedBox(
-                                              height: 49,
-                                              width: screenWidth*0.12,
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  if (billingProvider.billingItems
-                                                      .isNotEmpty) {
-                                                    showPaymentBalanceDialog(
-                                                      context,
-                                                      onPressPrint: () {
-                                                        final paymentMap = {
-                                                          'UPI': '1',
-                                                          'Paytm': '1',
-                                                          'Split Payment': '5',
-                                                          'Credit Card': '4',
-                                                          'Cash': '2',
-                                                          'Credit': '3',
-                                                        };
-                                                        final selectedMethod =
-                                                        billingProvider.selectBillMethod
-                                                            .toString();
-                                                        final paymentId = paymentMap[selectedMethod] ??
-                                                            '0';
 
-                                                        final billStatus = selectedMethod ==
-                                                            'Credit' ? 0 : 1;
 
-                                                        if (customerProvider
-                                                            .selectedCustomerId.isEmpty) {
-                                                          customerProvider
-                                                              .setCustomerDetails(
-                                                            customerId: ProjectData.cash,
-                                                            customerName: ProjectData
-                                                                .name,
-                                                            customerMobile: ProjectData
-                                                                .mobile,
-                                                            customerAddress: ProjectData
-                                                                .address,
-                                                          );
-                                                        }
 
-                                                        billingProvider
-                                                            .placeOrderAndSaveBill(
-                                                          context,
-                                                          order: Order(
-                                                            split_pay: selectedMethod ==
-                                                                "Split Payment"
-                                                                ? (billingProvider
-                                                                .upiPayment.text.isEmpty
-                                                                ? "0"
-                                                                : billingProvider
-                                                                .upiPayment.text)
-                                                                : "0",
+                                                // onSelected: (product) async {
+                                                //   billingProvider
+                                                //       .selectedProduct =
+                                                //       product;
+                                                //   billingProvider
+                                                //       .updateTemporaryFields(
+                                                //     variation: product
+                                                //         .isLoose == '1'
+                                                //         ? 1.0
+                                                //         : null,
+                                                //     quantity: product
+                                                //         .isLoose == '0'
+                                                //         ? 1
+                                                //         : null,
+                                                //   );
+                                                //
+                                                //   dropdownController.text =
+                                                //   product.isLoose == '0'
+                                                //       ? '${product
+                                                //       .pTitle} ${product
+                                                //       .pVariation}${product
+                                                //       .unit}'
+                                                //       : '${product
+                                                //       .pTitle} (${product
+                                                //       .pVariation})';
+                                                //
+                                                //   dropdownController
+                                                //       .selection =
+                                                //       TextSelection
+                                                //           .fromPosition(
+                                                //         TextPosition(
+                                                //             offset: dropdownController
+                                                //                 .text.length),
+                                                //       );
+                                                //
+                                                //   fieldFocusNode
+                                                //       .requestFocus();
+                                                // },
+                                                onClear: () {
+                                                  billingProvider
+                                                      .selectedProduct = null;
+                                                  billingProvider
+                                                      .updateTemporaryFields(
+                                                      quantity: 0,
+                                                      variation: 0.0);
+                                                  safeClear(dropdownController);
+                                                  safeClear(quantityVariationController);
 
-                                                            customerMobile:
-                                                            customerProvider
-                                                                .selectedCustomerMobile,
-                                                            customerId: customerProvider
-                                                                .selectedCustomerId,
-                                                            customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
-                                                            customerAddress:
-                                                            customerProvider
-                                                                .customerAddressController
-                                                                .text,
-
-                                                            cashier: controllers.storage.read("id"),
-                                                            paymentMethod: selectedMethod,
-                                                            paymentId: paymentId,
-                                                            salesmanId: controllers.storage.read("id")
-                                                                .toString(),
-
-                                                            creditDays: selectedMethod ==
-                                                                "Credit"
-                                                                ? (billingProvider
-                                                                .creditDays ?? 0)
-                                                                : 0,
-
-                                                            products: billingProvider
-                                                                .billingItems,
-                                                            orderGrandTotal: billingProvider
-                                                                .calculatedGrandTotal()
-                                                                .toString(),
-                                                            orderSubTotal: billingProvider
-                                                                .calculatedGrandTotal()
-                                                                .toString(),
-
-                                                            receivedAmt:
-                                                            billingProvider
-                                                                .paymentReceived.text
-                                                                .isEmpty
-                                                                ? "0.0"
-                                                                : double.parse(
-                                                                billingProvider
-                                                                    .paymentReceived.text)
-                                                                .toStringAsFixed(1),
-
-                                                            payBackAmt: (
-                                                                selectedMethod == "Cash"
-                                                                    ? ((billingProvider
-                                                                    .paymentReceived.text
-                                                                    .isEmpty
-                                                                    ? 0.0
-                                                                    : double.parse(
-                                                                    billingProvider
-                                                                        .paymentReceived
-                                                                        .text)) -
-                                                                    billingProvider
-                                                                        .calculatedGrandTotal())
-                                                                    .abs()
-                                                                    .toStringAsFixed(2)
-                                                                    : "0.00"
-                                                            ),
-
-                                                            savings:
-                                                            '${billingProvider
-                                                                .billingItems.fold(
-                                                                0.0, (t, i) =>
-                                                            t + i.calculateDiscount())}',
-                                                            version: "0.0",
-                                                            billStatus: billStatus,
-                                                          ),
-                                                        );
-                                                      },
-                                                      onPressPrintHold: () {},
-                                                      onPressPrintSave: () async {
-                                                        // =======================================
-                                                        // 🔥 PREVENT MULTIPLE CALLS
-                                                        // =======================================
-                                                        // if (billingProvider.billingItems.isNotEmpty) {
-                                                        if (_isPrinting) {
-                                                          print("PRINT BLOCKED — ALREADY PRINTING");
-                                                          return;
-                                                        }
-
-                                                        _isPrinting = true; // lock
-
-                                                        final paymentMap = {
-                                                          'UPI': '1',
-                                                          'Paytm': '1',
-                                                          'Split Payment': '5',
-                                                          'Credit Card': '4',
-                                                          'Cash': '2',
-                                                          'Credit': '3',
-                                                        };
-
-                                                        final selectedMethod = billingProvider
-                                                            .selectBillMethod.toString();
-                                                        final paymentId = paymentMap[selectedMethod] ?? '0';
-
-                                                        print(
-                                                            "Payment Method: $selectedMethod, Payment ID: $paymentId");
-
-                                                        final billStatus = selectedMethod == 'Credit'
-                                                            ? 0
-                                                            : 1;
-
-                                                        // Assign default customer if empty
-                                                        if (customerProvider.selectedCustomerId.isEmpty) {
-                                                          customerProvider.setCustomerDetails(
-                                                            customerId: ProjectData.cash,
-                                                            customerName: ProjectData.name,
-                                                            customerMobile: ProjectData.mobile,
-                                                            customerAddress: ProjectData.address,
-                                                          );
-                                                        }
-
-                                                        // =======================================
-                                                        // 🔥 REAL PRINT — ONLY ONCE
-                                                        // =======================================
-                                                        await billingProvider.placeOrderAndSaveBill(
-                                                          context,
-                                                          order: Order(
-                                                            split_pay: selectedMethod == "Split Payment"
-                                                                ? (billingProvider.upiPayment.text.isEmpty
-                                                                ? "0"
-                                                                : billingProvider.upiPayment.text)
-                                                                : "0",
-
-                                                            customerMobile: customerProvider
-                                                                .selectedCustomerMobile,
-                                                            customerId: customerProvider.selectedCustomerId,
-                                                            customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
-                                                            customerAddress: customerProvider
-                                                                .customerAddressController.text,
-                                                            cashier: controllers.storage.read("id"),
-                                                            paymentMethod: selectedMethod,
-                                                            paymentId: paymentId,
-                                                            creditDays:
-                                                            selectedMethod == "Credit" ? (billingProvider
-                                                                .creditDays ?? 0) : 0,
-                                                            products: billingProvider.billingItems,
-                                                            orderGrandTotal:
-                                                            billingProvider
-                                                                .calculatedGrandTotal()
-                                                                .toString(),
-                                                            orderSubTotal:
-                                                            billingProvider
-                                                                .calculatedGrandTotal()
-                                                                .toString(),
-                                                            receivedAmt: billingProvider.paymentReceived
-                                                                .text.isEmpty
-                                                                ? "0.0"
-                                                                : double.parse(
-                                                                billingProvider.paymentReceived.text)
-                                                                .toStringAsFixed(0),
-                                                            payBackAmt: selectedMethod == "Cash"
-                                                                ? ((billingProvider.paymentReceived.text
-                                                                .isEmpty
-                                                                ? 0.0
-                                                                : double.parse(
-                                                                billingProvider.paymentReceived.text)) -
-                                                                billingProvider.calculatedGrandTotal())
-                                                                .abs()
-                                                                .toStringAsFixed(2)
-                                                                : "0.00",
-                                                            savings:
-                                                            '${billingProvider.billingItems.fold(
-                                                                0.0, (total, item) =>
-                                                            total + item.calculateDiscount())}',
-                                                            billStatus: billStatus,
-                                                            salesmanId: controllers.storage.read("id").toString(),
-                                                            version: "0.0",
-                                                          ),
-                                                        );
-
-                                                        // Unlock print after attempt
-                                                        _isPrinting = false;
-                                                      },
-                                                    );
-                                                  } else {
-                                                    billingProvider.printButtonController
-                                                        .reset();
-                                                    Toasts.showToastBar(
-                                                        context: context,
-                                                        text: 'Bill List is empty',
-                                                        color: Colors.red);
-                                                  }
                                                 },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: AppColors
-                                                      .textFieldBackground,
-                                                  foregroundColor: AppColors.black,
-                                                  elevation: 3,
-                                                  shadowColor: Colors.black26,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(
-                                                        23),
-                                                    side: BorderSide(
-                                                      color: Colors.black,
-                                                      width: 0.8,
-                                                    ),
-                                                  ),
-                                                  padding: const EdgeInsets.symmetric(
-                                                      horizontal: 25, vertical: 10),
-                                                ),
-                                                child: MyText(
-                                                  text: 'Save Bill (TAB)',
-                                                  color: AppColors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: TextFormat.responsiveFontSize(
-                                                      context, 18),
-
-                                                  letterSpacing: 1.2,
-                                                ),
-                                              ),
-                                            ),
-                                          ),  //  Save bill
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0, right: 8, bottom: 1, top: 1),
-                                            child: SizedBox(
-                                              height: 49,
-                                              width: screenWidth*0.12,
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  if (billingProvider.billingItems
-                                                      .isNotEmpty) {
-                                                    showPaymentBalanceDialog(
-                                                      context,
-                                                      onPressPrint: () {
-                                                        final paymentMap = {
-                                                          'UPI': '1',
-                                                          'Paytm': '1',
-                                                          'Split Payment': '5',
-                                                          'Credit Card': '4',
-                                                          'Cash': '2',
-                                                          'Credit': '3',
-                                                        };
-                                                        final selectedMethod =
-                                                        billingProvider.selectBillMethod
-                                                            .toString();
-                                                        final paymentId = paymentMap[selectedMethod] ??
-                                                            '0';
-
-                                                        final billStatus = selectedMethod ==
-                                                            'Credit' ? 0 : 1;
-
-                                                        if (customerProvider
-                                                            .selectedCustomerId.isEmpty) {
-                                                          customerProvider
-                                                              .setCustomerDetails(
-                                                            customerId: ProjectData.cash,
-                                                            customerName: ProjectData
-                                                                .name,
-                                                            customerMobile: ProjectData
-                                                                .mobile,
-                                                            customerAddress: ProjectData
-                                                                .address,
-                                                          );
-                                                        }
-
-                                                        billingProvider
-                                                            .placeOrderAndPrintBill(
-                                                          context,
-                                                          order: Order(
-                                                            split_pay: selectedMethod ==
-                                                                "Split Payment"
-                                                                ? (billingProvider
-                                                                .upiPayment.text.isEmpty
-                                                                ? "0"
-                                                                : billingProvider
-                                                                .upiPayment.text)
-                                                                : "0",
-
-                                                            customerMobile:
-                                                            customerProvider
-                                                                .selectedCustomerMobile,
-                                                            customerId: customerProvider
-                                                                .selectedCustomerId,
-                                                            customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
-                                                            customerAddress:
-                                                            customerProvider
-                                                                .customerAddressController
-                                                                .text,
-
-                                                            cashier: controllers.storage.read("id"),
-                                                            paymentMethod: selectedMethod,
-                                                            paymentId: paymentId,
-                                                            salesmanId: controllers.storage.read("id")
-                                                                .toString(),
-
-                                                            creditDays: selectedMethod ==
-                                                                "Credit"
-                                                                ? (billingProvider
-                                                                .creditDays ?? 0)
-                                                                : 0,
-
-                                                            products: billingProvider
-                                                                .billingItems,
-                                                            orderGrandTotal: billingProvider
-                                                                .calculatedGrandTotal()
-                                                                .toString(),
-                                                            orderSubTotal: billingProvider
-                                                                .calculatedGrandTotal()
-                                                                .toString(),
-
-                                                            receivedAmt:
-                                                            billingProvider
-                                                                .paymentReceived.text
-                                                                .isEmpty
-                                                                ? "0.0"
-                                                                : double.parse(
-                                                                billingProvider
-                                                                    .paymentReceived.text)
-                                                                .toStringAsFixed(1),
-
-                                                            payBackAmt: (
-                                                                selectedMethod == "Cash"
-                                                                    ? ((billingProvider
-                                                                    .paymentReceived.text
-                                                                    .isEmpty
-                                                                    ? 0.0
-                                                                    : double.parse(
-                                                                    billingProvider
-                                                                        .paymentReceived
-                                                                        .text)) -
-                                                                    billingProvider
-                                                                        .calculatedGrandTotal())
-                                                                    .abs()
-                                                                    .toStringAsFixed(2)
-                                                                    : "0.00"
-                                                            ),
-
-                                                            savings:
-                                                            '${billingProvider
-                                                                .billingItems.fold(
-                                                                0.0, (t, i) =>
-                                                            t + i.calculateDiscount())}',
-
-                                                            billStatus: billStatus,
-                                                            version: "0.0",
-                                                          ),
-                                                        );
-                                                      },
-                                                      onPressPrintHold: () {},
-                                                      onPressPrintSave: () async {
-                                                        // =======================================
-                                                        // 🔥 PREVENT MULTIPLE CALLS
-                                                        // =======================================
-                                                        // if (billingProvider.billingItems.isNotEmpty) {
-                                                        if (_isPrinting) {
-                                                          print("PRINT BLOCKED — ALREADY PRINTING");
-                                                          return;
-                                                        }
-
-                                                        _isPrinting = true; // lock
-
-                                                        final paymentMap = {
-                                                          'UPI': '1',
-                                                          'Paytm': '1',
-                                                          'Split Payment': '5',
-                                                          'Credit Card': '4',
-                                                          'Cash': '2',
-                                                          'Credit': '3',
-                                                        };
-
-                                                        final selectedMethod = billingProvider
-                                                            .selectBillMethod.toString();
-                                                        final paymentId = paymentMap[selectedMethod] ?? '0';
-
-                                                        print(
-                                                            "Payment Method: $selectedMethod, Payment ID: $paymentId");
-
-                                                        final billStatus = selectedMethod == 'Credit'
-                                                            ? 0
-                                                            : 1;
-
-                                                        // Assign default customer if empty
-                                                        if (customerProvider.selectedCustomerId.isEmpty) {
-                                                          customerProvider.setCustomerDetails(
-                                                            customerId: ProjectData.cash,
-                                                            customerName: ProjectData.name,
-                                                            customerMobile: ProjectData.mobile,
-                                                            customerAddress: ProjectData.address,
-                                                          );
-                                                        }
-
-                                                        // =======================================
-                                                        // 🔥 REAL PRINT — ONLY ONCE
-                                                        // =======================================
-                                                        await billingProvider.placeOrderAndSaveBill(
-                                                          context,
-                                                          order: Order(
-                                                            split_pay: selectedMethod == "Split Payment"
-                                                                ? (billingProvider.upiPayment.text.isEmpty
-                                                                ? "0"
-                                                                : billingProvider.upiPayment.text)
-                                                                : "0",
-
-                                                            customerMobile: customerProvider
-                                                                .selectedCustomerMobile,
-                                                            customerId: customerProvider.selectedCustomerId,
-                                                            customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
-                                                            customerAddress: customerProvider
-                                                                .customerAddressController.text,
-                                                            cashier: controllers.storage.read("id"),
-                                                            paymentMethod: selectedMethod,
-                                                            paymentId: paymentId,
-                                                            creditDays:
-                                                            selectedMethod == "Credit" ? (billingProvider
-                                                                .creditDays ?? 0) : 0,
-                                                            products: billingProvider.billingItems,
-                                                            orderGrandTotal:
-                                                            billingProvider
-                                                                .calculatedGrandTotal()
-                                                                .toString(),
-                                                            orderSubTotal:
-                                                            billingProvider
-                                                                .calculatedGrandTotal()
-                                                                .toString(),
-                                                            receivedAmt: billingProvider.paymentReceived
-                                                                .text.isEmpty
-                                                                ? "0.0"
-                                                                : double.parse(
-                                                                billingProvider.paymentReceived.text)
-                                                                .toStringAsFixed(0),
-                                                            payBackAmt: selectedMethod == "Cash"
-                                                                ? ((billingProvider.paymentReceived.text
-                                                                .isEmpty
-                                                                ? 0.0
-                                                                : double.parse(
-                                                                billingProvider.paymentReceived.text)) -
-                                                                billingProvider.calculatedGrandTotal())
-                                                                .abs()
-                                                                .toStringAsFixed(2)
-                                                                : "0.00",
-                                                            savings:
-                                                            '${billingProvider.billingItems.fold(
-                                                                0.0, (total, item) =>
-                                                            total + item.calculateDiscount())}',
-                                                            billStatus: billStatus,
-                                                            salesmanId: controllers.storage.read("id").toString(),
-                                                            version: "0.0",
-                                                          ),
-                                                        );
-
-                                                        // Unlock print after attempt
-                                                        _isPrinting = false;
-                                                      },
-                                                    );
-                                                  } else {
-                                                    billingProvider.printButtonController
-                                                        .reset();
-                                                    Toasts.showToastBar(
-                                                        context: context,
-                                                        text: 'Bill List is empty',
-                                                        color: Colors.red);
-                                                  }
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: AppColors
-                                                      .textFieldBackground,
-                                                  foregroundColor: AppColors.black,
-                                                  elevation: 3,
-                                                  shadowColor: Colors.black26,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(
-                                                        23),
-                                                    side: BorderSide(
-                                                      color: Colors.black,
-                                                      width: 0.8,
-                                                    ),
-                                                  ),
-                                                  padding: const EdgeInsets.symmetric(
-                                                      horizontal: 25, vertical: 10),
-                                                ),
-                                                child: MyText(
-                                                  text: 'Print Bill (F1)',
-                                                  color: AppColors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: TextFormat.responsiveFontSize(
-                                                      context, 18),
-
-                                                  letterSpacing: 1.2,
-                                                ),
                                               ),
                                             ),
                                           ),
-                                          SizedBox(
-                                            height: 40,
-                                            child: ElevatedButton(
-                                              onPressed: (){
-                                                if(controllers.selectedCustomerId.value==""){
-                                                  utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
-                                                }else if(billingProvider.billingItems.isEmpty){
-                                                  utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
-                                                }else{
-                                                  setState(() {
-                                                    controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
-                                                    controllers.isTemplate.value=false;
-                                                    controllers.emailSubjectCtr.clear();
-                                                    controllers.emailMessageCtr.clear();
+                                        ),
+                                        Container(
+                                          width: screenWidth*0.08,
+                                          alignment: Alignment.center,
+                                          child: MyTextField(
+                                            focusNode: fieldFocusNode,
+                                            height: 50,
+                                            controller: quantityVariationController,
+
+                                            hintText: billingProvider
+                                                .selectedProduct
+                                                ?.isLoose == '1'
+                                                ? "1.000"
+                                                : "1",
+                                            labelText: billingProvider
+                                                .selectedProduct
+                                                ?.isLoose == '1'
+                                                ? "variation"
+                                                : "Quantity",
+
+                                            keyboardType: TextInputType
+                                                .number,
+                                            inputFormatters: billingProvider
+                                                .selectedProduct
+                                                ?.isLoose == '1'
+                                                ? InputFormatters
+                                                .variationInput
+                                                : InputFormatters
+                                                .quantityInput,
+                                            // onTap: () {
+                                            //   if (billingProvider.selectedProduct != null &&
+                                            //       quantityVariationController.text.isEmpty) {
+                                            //     quantityVariationController.text =
+                                            //     billingProvider.selectedProduct!
+                                            //         .isLoose == '1'
+                                            //         ? "1.000"
+                                            //         : "1";
+                                            //     quantityVariationController.selection =
+                                            //         TextSelection(
+                                            //             baseOffset: 0,
+                                            //             extentOffset: quantityVariationController
+                                            //                 .text.length);
+                                            //   }
+                                            // },
+                                            // onChanged: (value) {
+                                            //   if (billingProvider
+                                            //       .selectedProduct ==
+                                            //       null) {
+                                            //     Toasts.showToastBar(
+                                            //         context: context,
+                                            //         text: "Please add product",
+                                            //         color: Colors.red);
+                                            //     return;
+                                            //   }
+                                            //   if (value.isEmpty) {
+                                            //     quantityVariationController.text =
+                                            //     billingProvider.selectedProduct!.isLoose == '1'
+                                            //         ? "1.000"
+                                            //         : "1";
+                                            //     quantityVariationController.selection =
+                                            //         TextSelection(
+                                            //             baseOffset: 0,
+                                            //             extentOffset: quantityVariationController
+                                            //                 .text.length);
+                                            //     return;
+                                            //   }
+                                            //   if (billingProvider
+                                            //       .selectedProduct!
+                                            //       .isLoose == '1') {
+                                            //     billingProvider
+                                            //         .updateTemporaryFields(
+                                            //         variation: (double
+                                            //             .parse(value) *
+                                            //             1000));
+                                            //   } else {
+                                            //     billingProvider
+                                            //         .updateTemporaryFields(
+                                            //         quantity: int
+                                            //             .tryParse(
+                                            //             value) ??
+                                            //             billingProvider
+                                            //                 .temporaryQuantity);
+                                            //   }
+                                            // },
+                                            onFieldSubmitted: (value) {
+                                              final billing = billingProvider;
+
+                                              // 1) Selected product must exist
+                                              final product = billing.selectedProduct;
+                                              bool isOutOfStock(ProductData p) {
+                                                final double qty =
+                                                    double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
+                                                return qty <= 0;
+                                              }
+                                              if (product == null) {
+                                                Toasts.showToastBar(
+                                                  context: context,
+                                                  text: "Please add product",
+                                                  color: Colors.red,
+                                                );
+                                                return;
+                                              }
+                                              if (isOutOfStock(product)) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text("❌ Out of Stock"),
+                                                    backgroundColor: Colors.red,
+                                                  ),
+                                                );
+                                                return;
+                                              }
+
+                                              // 2) Entered value cleanup
+                                              final enteredText = value.trim().isEmpty ? "1" : value.trim();
+
+                                              // 3) Safe parsing
+                                              final double parsedDouble = safeDouble(enteredText);
+                                              final int parsedInt = safeInt(enteredText);
+
+                                              // 4) Safe product values
+                                              final double stockQty = safeDouble(product.qtyLeft);
+                                              final double mrp = safeDouble(product.mrp);
+                                              final double outPrice = safeDouble(product.outPrice);
+
+                                              // ---------------------------------------------------
+                                              // PRODUCT EXISTS → UPDATE IT
+                                              // ---------------------------------------------------
+                                              final alreadyExists = billing.billingItems.any(
+                                                    (item) => item.id == product.id.toString(),
+                                              );
+
+                                              if (alreadyExists) {
+                                                final existingItem = billing.billingItems.firstWhere(
+                                                      (item) => item.id == product.id.toString(),
+                                                );
+
+                                                final double currentQty = product.isLoose == '1'
+                                                    ? existingItem.variation / 1000
+                                                    : existingItem.quantity.toDouble();
+
+                                                final double newQty = product.isLoose == '1'
+                                                    ? parsedDouble
+                                                    : parsedInt.toDouble();
+
+                                                final double totalQty = currentQty + newQty;
+                                                if (stockQty <= 0) {
+                                                  Toasts.showToastBar(
+                                                    context: context,
+                                                    text: "Out of Stock",
+                                                    color: Colors.red,
+                                                  );
+                                                  return;
+                                                }
+
+                                                // STOCK CHECK
+                                                if (totalQty > stockQty) {
+                                                  Toasts.showToastBar(
+                                                    context: context,
+                                                    text: "Stock limit reached! Available: $stockQty",
+                                                    color: Colors.red,
+                                                  );
+
+                                                  // 🔥 CLEAR EVERYTHING RELATED TO THIS PRODUCT
+                                                  safeClear(quantityVariationController);
+                                                  safeClear(dropdownController);
+
+                                                  billing.selectedProduct = null;
+
+                                                  // 🔥 MOVE FOCUS BACK TO PRODUCT FIELD
+                                                  Future.microtask(() {
+                                                    billing.dropdownFocusNode.requestFocus();
                                                   });
-                                                  showDialog(
-                                                      context: context,
-                                                      barrierDismissible: false,
-                                                      builder: (context) {
-                                                        return AlertDialog(
-                                                          actions: [
-                                                            Column(
-                                                              children: [
-                                                                Divider(
-                                                                  color: Colors.grey.shade300,
-                                                                  thickness: 1,
-                                                                ),
-                                                                Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  children: [
-                                                                    SizedBox(
-                                                                      child: Row(
-                                                                        children: [
-                                                                          TextButton(
-                                                                              onPressed: () {
-                                                                                Navigator.of(context).pop();
-                                                                                settingsController.showAddTemplateDialog(context);
-                                                                              },
-                                                                              child: CustomText(
-                                                                                text: "Add Template",
-                                                                                isCopy: false,
-                                                                                colors: colorsConst.third,
-                                                                                size: 18,
-                                                                                isBold: true,
-                                                                              )),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                    CustomLoadingButton(
-                                                                      callback: () {
-                                                                        if(controllers.emailToCtr.text.trim().isEmpty){
-                                                                          utils.snackBar(context: context, msg: "To is empty!", color: Colors.red);
-                                                                          controllers.emailCtr.reset();
-                                                                          return;
-                                                                        }
-                                                                        if(!controllers.emailToCtr.text.trim().isEmail){
-                                                                          utils.snackBar(
-                                                                            context: context,
-                                                                            msg: "Invalid mail!",
-                                                                            color: Colors.red,
-                                                                          );
-                                                                          controllers.emailCtr.reset();
-                                                                          return;
-                                                                        }
-                                                                        if(controllers.emailSubjectCtr.text.trim().isEmpty){
-                                                                          utils.snackBar(context: context, msg: "Subject is empty!", color: Colors.red);
-                                                                          controllers.emailCtr.reset();
-                                                                          return;
-                                                                        }
-                                                                        if(controllers.emailMessageCtr.text.trim().isEmpty){
-                                                                          utils.snackBar(context: context, msg: "Message is empty!", color: Colors.red);
-                                                                          controllers.emailCtr.reset();
-                                                                          return;
-                                                                        }
-                                                                        sendInvoice(billingProvider);
-                                                                      },
-                                                                      controller: controllers.emailCtr,
-                                                                      isImage: false,
-                                                                      isLoading: true,
-                                                                      backgroundColor: colorsConst.primary,
-                                                                      radius: 5,
-                                                                      width: 200,
-                                                                      height: 50,
-                                                                      text: "Send Quotation",
-                                                                      textColor: Colors.white,
-                                                                    ),
-                                                                  ],
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ],
-                                                          content: SizedBox(
-                                                              width: 600,
-                                                              height: 400,
-                                                              child: SingleChildScrollView(
-                                                                child: Column(
-                                                                  children: [
-                                                                    Align(
-                                                                        alignment: Alignment.topRight,
-                                                                        child: InkWell(
-                                                                            onTap: () {
-                                                                              Navigator.pop(context);
-                                                                            },
-                                                                            child: Icon(
-                                                                              Icons.clear,
-                                                                              size: 18,
-                                                                              color: colorsConst.textColor,
-                                                                            ))),
-                                                                    Align(
-                                                                      alignment: Alignment.topRight,
-                                                                      child: TextButton(
-                                                                          onPressed: () {
-                                                                            controllers.isTemplate.value = !controllers.isTemplate.value;
-                                                                          },
-                                                                          child: CustomText(
-                                                                            text: "Get Form Template",
-                                                                            colors: colorsConst.third,
-                                                                            size: 18,
-                                                                            isCopy: false,
-                                                                            isBold: true,
-                                                                          )),
-                                                                    ),
-                                                                    Row(
+
+                                                  return;
+                                                }
+                                                // UPDATE EXISTING ITEM
+                                                final index = billing.billingItems.indexOf(existingItem);
+
+                                                if (product.isLoose == '1') {
+                                                  final double addQty = parsedDouble * 1000;
+                                                  existingItem.variation += addQty;
+
+                                                  billing.quantityControllers[index]!.text =
+                                                      (existingItem.variation / 1000).toStringAsFixed(3);
+
+                                                } else
+                                                {
+                                                  existingItem.quantity += parsedInt;
+
+                                                  billing.quantityControllers[index]!.text =
+                                                      existingItem.quantity.toString();
+                                                }
+
+                                                billing.updateExistingBillingItem(existingItem);
+                                                billing.notifyListeners();
+
+                                                // RESET
+                                                safeClear(quantityVariationController);
+                                                safeClear(dropdownController);
+                                                billing.selectedProduct = null;
+                                                Future.microtask(() {
+                                                  billing.dropdownFocusNode.requestFocus();
+                                                });
+
+                                                return;
+                                              }
+
+                                              // ---------------------------------------------------
+                                              // ADD NEW PRODUCT
+                                              // ---------------------------------------------------
+                                              if (product.isLoose == '1') {
+                                                final double enteredKg = parsedDouble <= 0 ? 1.0 : parsedDouble;
+                                                final double enteredQty = enteredKg * 1000;
+                                                if (enteredQty > stockQty) {
+                                                  Toasts.showToastBar(
+                                                    context: context,
+                                                    text: "Entered weight exceeds stock ($stockQty g).",
+                                                    color: Colors.red,
+                                                  );
+                                                  Future.microtask(() {
+                                                    fieldFocusNode.requestFocus();
+                                                  });
+
+                                                  return;
+                                                }
+
+                                                billing.addBillingItem(
+                                                  BillingItem(
+                                                    id: product.id.toString(),
+                                                    product: product,
+                                                    productTitle: "${product.pTitle}",
+                                                    variation: enteredQty,
+                                                    variationUnit: "${product.pVariation}${product.unit}",
+                                                    quantity: 1,
+                                                    p_out_price: product.outPrice.toString(),
+                                                    p_mrp:product.mrp.toString(),
+                                                  ),
+                                                );
+
+                                                final index = billing.billingItems.indexWhere(
+                                                        (item) => item.product.id == product.id.toString());
+
+                                                billing.quantityControllers[index]!.text =
+                                                    enteredKg.toStringAsFixed(3);
+
+                                              } else {
+                                                final int finalQty = parsedInt <= 0 ? 1 : parsedInt;
+                                                if (stockQty <= 0) {
+                                                  Toasts.showToastBar(
+                                                    context: context,
+                                                    text: "Out of Stock",
+                                                    color: Colors.red,
+                                                  );
+                                                  return;
+                                                }
+
+                                                if (finalQty > stockQty) {
+                                                  Toasts.showToastBar(
+                                                    context: context,
+                                                    text: "Entered quantity exceeds stock ($stockQty).",
+                                                    color: Colors.red,
+                                                  );
+                                                  Future.microtask(() {
+                                                    fieldFocusNode.requestFocus();
+                                                  });
+
+                                                  return;
+                                                }
+
+                                                billing.addBillingItem(
+                                                  BillingItem(
+                                                    id: product.id.toString(),
+                                                    product: product,
+                                                    variation: 1,
+                                                    variationUnit: "${product.pVariation}${product.unit}",
+                                                    quantity: finalQty,
+                                                    productTitle: product.pTitle ?? "",
+                                                    p_out_price: product.outPrice.toString(),
+                                                    p_mrp:product.mrp.toString(),
+                                                  ),
+                                                );
+                                              }
+
+                                              // ---------------------------------------------------
+                                              // FINAL RESET
+                                              // ---------------------------------------------------
+                                              safeClear(billing.barcodeScanner);
+                                              billing.selectedProduct = null;
+
+                                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                  scrollDown();
+                                                });
+                                              });
+
+                                              safeClear(quantityVariationController);
+                                              safeClear(dropdownController);
+
+                                              Future.microtask(() {
+                                                billing.dropdownFocusNode.requestFocus();
+                                              });
+                                            },
+
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 49,
+                                          width: screenWidth*0.1,
+                                          child: ElevatedButton(
+                                            focusNode: FocusNode(skipTraversal: true),
+                                            onPressed: () async {
+                                              if (billingProvider.billingItems
+                                                  .isEmpty) {
+                                                billingProvider.printButtonController
+                                                    .reset();
+                                                Toasts.showToastBar(
+                                                  context: context,
+                                                  text: 'Bill List is empty',
+                                                  color: Colors.red,
+                                                );
+                                                return;
+                                              }
+
+                                              final paymentMap = {
+                                                'UPI': '1',
+                                                'Paytm': '1',
+                                                'Split Payment': '5',
+                                                'Credit Card': '4',
+                                                'Cash': '2',
+                                                'Credit': '3',
+                                              };
+
+                                              final selectedMethod = billingProvider
+                                                  .selectBillMethod ?? "Cash";
+                                              final paymentId = paymentMap[selectedMethod] ??
+                                                  '0';
+                                              final now = DateTime.now();
+                                              final billNo = 'BILL${now
+                                                  .millisecondsSinceEpoch % 10000}';
+                                              final formattedDate =
+                                                  '${now.day}/${now.month}/${now
+                                                  .year} ${now.hour}:${now.minute}';
+                                              await billingProvider.saveHoldBillDetails(context: context,
+                                                order: Order(
+                                                  split_pay: billingProvider.selectBillMethod =="Split Payment"?
+                                                  (billingProvider.upiPayment.text.isEmpty ? "0" : billingProvider.upiPayment .text): "0",
+                                                  id: billNo,
+                                                  createdTs: formattedDate,
+                                                  customerMobile: controllers.selectedCustomerMobile.value,
+                                                  cashier: "${controllers.storage.read("id")}",
+                                                  salesmanId: "${controllers.storage.read("id")}",
+                                                  customerId: controllers.selectedCustomerId.value,
+                                                  customerName: controllers.selectedCustomerName.value,
+                                                  customerAddress:"",
+                                                  paymentMethod: selectedMethod,
+                                                  paymentId: paymentId,
+                                                  creditDays: selectedMethod =="Credit"? (billingProvider.creditDays ??0): 0,
+                                                  products: billingProvider.billingItems,
+                                                  orderGrandTotal:billingProvider.calculatedGrandTotal().toStringAsFixed(2),
+                                                  orderSubTotal:billingProvider.calculatedGrandTotal().toStringAsFixed(2),
+                                                  receivedAmt: billingProvider.paymentReceived.text.isEmpty? "0.0": double.parse(billingProvider.paymentReceived.text).toStringAsFixed(2),
+                                                  payBackAmt:(selectedMethod == "Cash" ? ((billingProvider .paymentReceived.text .isEmpty ? 0.0
+                                                      : double.parse( billingProvider .paymentReceived .text)) -
+                                                      billingProvider .calculatedGrandTotal()) .abs() .toStringAsFixed(2) : "0.00"
+                                                  ),
+                                                  version: "0.0",
+                                                  savings: '${billingProvider.billingItems .fold(0.0, (t, i) => t + i.calculateDiscount())}',
+                                                  billStatus: 0,
+                                                ),
+                                              );
+
+                                              Toasts.showToastBar(
+                                                context: context,
+                                                text: 'Bill saved to Hold successfully',
+                                                color: Colors.green,
+                                              );
+
+                                              billingProvider.printAfterChangeButtonControllerHold.reset();
+                                              billingProvider.billingItems.clear();
+                                              billingProvider.quantityControllers.clear();
+                                              billingProvider.notifyListeners();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: AppColors
+                                                  .textFieldBackground,
+                                              foregroundColor: AppColors.black,
+                                              elevation: 6,
+                                              shadowColor: Colors.black26,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                    20),
+                                                side: BorderSide(
+                                                  color: Colors.black,
+                                                  // subtle border
+                                                  width: 0.8,
+                                                ),
+                                              ),
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 25, vertical: 10),
+                                            ),
+                                            child: MyText(
+                                              text: 'Hold Bill (F4)',
+                                              color: AppColors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: TextFormat.responsiveFontSize(
+                                                  context, 18),
+                                            ),
+                                          ),
+                                        ),
+                                        // Hold Bill
+                                        // Padding(
+                                        //   padding: const EdgeInsets.only(
+                                        //       left: 8.0, right: 8, bottom: 1, top: 1),
+                                        //   child: SizedBox(
+                                        //     height: 49,
+                                        //     width: screenWidth*0.12,
+                                        //     child: ElevatedButton(
+                                        //       onPressed: () {
+                                        //         if (billingProvider.billingItems
+                                        //             .isNotEmpty) {
+                                        //           showPaymentBalanceDialog(
+                                        //             context,
+                                        //             onPressPrint: () {
+                                        //               final paymentMap = {
+                                        //                 'UPI': '1',
+                                        //                 'Paytm': '1',
+                                        //                 'Split Payment': '5',
+                                        //                 'Credit Card': '4',
+                                        //                 'Cash': '2',
+                                        //                 'Credit': '3',
+                                        //               };
+                                        //               final selectedMethod =
+                                        //               billingProvider.selectBillMethod
+                                        //                   .toString();
+                                        //               final paymentId = paymentMap[selectedMethod] ??
+                                        //                   '0';
+                                        //
+                                        //               final billStatus = selectedMethod ==
+                                        //                   'Credit' ? 0 : 1;
+                                        //
+                                        //               if (customerProvider
+                                        //                   .selectedCustomerId.isEmpty) {
+                                        //                 customerProvider
+                                        //                     .setCustomerDetails(
+                                        //                   customerId: ProjectData.cash,
+                                        //                   customerName: ProjectData
+                                        //                       .name,
+                                        //                   customerMobile: ProjectData
+                                        //                       .mobile,
+                                        //                   customerAddress: ProjectData
+                                        //                       .address,
+                                        //                 );
+                                        //               }
+                                        //
+                                        //               billingProvider
+                                        //                   .placeOrderAndSaveBill(
+                                        //                 context,
+                                        //                 order: Order(
+                                        //                   split_pay: selectedMethod ==
+                                        //                       "Split Payment"
+                                        //                       ? (billingProvider
+                                        //                       .upiPayment.text.isEmpty
+                                        //                       ? "0"
+                                        //                       : billingProvider
+                                        //                       .upiPayment.text)
+                                        //                       : "0",
+                                        //
+                                        //                   customerMobile:
+                                        //                   customerProvider
+                                        //                       .selectedCustomerMobile,
+                                        //                   customerId: customerProvider
+                                        //                       .selectedCustomerId,
+                                        //                   customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
+                                        //                   customerAddress:
+                                        //                   customerProvider
+                                        //                       .customerAddressController
+                                        //                       .text,
+                                        //
+                                        //                   cashier: controllers.storage.read("id"),
+                                        //                   paymentMethod: selectedMethod,
+                                        //                   paymentId: paymentId,
+                                        //                   salesmanId: controllers.storage.read("id")
+                                        //                       .toString(),
+                                        //
+                                        //                   creditDays: selectedMethod ==
+                                        //                       "Credit"
+                                        //                       ? (billingProvider
+                                        //                       .creditDays ?? 0)
+                                        //                       : 0,
+                                        //
+                                        //                   products: billingProvider
+                                        //                       .billingItems,
+                                        //                   orderGrandTotal: billingProvider
+                                        //                       .calculatedGrandTotal()
+                                        //                       .toString(),
+                                        //                   orderSubTotal: billingProvider
+                                        //                       .calculatedGrandTotal()
+                                        //                       .toString(),
+                                        //
+                                        //                   receivedAmt:
+                                        //                   billingProvider
+                                        //                       .paymentReceived.text
+                                        //                       .isEmpty
+                                        //                       ? "0.0"
+                                        //                       : double.parse(
+                                        //                       billingProvider
+                                        //                           .paymentReceived.text)
+                                        //                       .toStringAsFixed(1),
+                                        //
+                                        //                   payBackAmt: (
+                                        //                       selectedMethod == "Cash"
+                                        //                           ? ((billingProvider
+                                        //                           .paymentReceived.text
+                                        //                           .isEmpty
+                                        //                           ? 0.0
+                                        //                           : double.parse(
+                                        //                           billingProvider
+                                        //                               .paymentReceived
+                                        //                               .text)) -
+                                        //                           billingProvider
+                                        //                               .calculatedGrandTotal())
+                                        //                           .abs()
+                                        //                           .toStringAsFixed(2)
+                                        //                           : "0.00"
+                                        //                   ),
+                                        //
+                                        //                   savings:
+                                        //                   '${billingProvider
+                                        //                       .billingItems.fold(
+                                        //                       0.0, (t, i) =>
+                                        //                   t + i.calculateDiscount())}',
+                                        //                   version: "0.0",
+                                        //                   billStatus: billStatus,
+                                        //                 ),
+                                        //               );
+                                        //             },
+                                        //             onPressPrintHold: () {},
+                                        //             onPressPrintSave: () async {
+                                        //               // =======================================
+                                        //               // 🔥 PREVENT MULTIPLE CALLS
+                                        //               // =======================================
+                                        //               // if (billingProvider.billingItems.isNotEmpty) {
+                                        //               if (_isPrinting) {
+                                        //                 print("PRINT BLOCKED — ALREADY PRINTING");
+                                        //                 return;
+                                        //               }
+                                        //
+                                        //               _isPrinting = true; // lock
+                                        //
+                                        //               final paymentMap = {
+                                        //                 'UPI': '1',
+                                        //                 'Paytm': '1',
+                                        //                 'Split Payment': '5',
+                                        //                 'Credit Card': '4',
+                                        //                 'Cash': '2',
+                                        //                 'Credit': '3',
+                                        //               };
+                                        //
+                                        //               final selectedMethod = billingProvider
+                                        //                   .selectBillMethod.toString();
+                                        //               final paymentId = paymentMap[selectedMethod] ?? '0';
+                                        //
+                                        //               print(
+                                        //                   "Payment Method: $selectedMethod, Payment ID: $paymentId");
+                                        //
+                                        //               final billStatus = selectedMethod == 'Credit'
+                                        //                   ? 0
+                                        //                   : 1;
+                                        //
+                                        //               // Assign default customer if empty
+                                        //               if (customerProvider.selectedCustomerId.isEmpty) {
+                                        //                 customerProvider.setCustomerDetails(
+                                        //                   customerId: ProjectData.cash,
+                                        //                   customerName: ProjectData.name,
+                                        //                   customerMobile: ProjectData.mobile,
+                                        //                   customerAddress: ProjectData.address,
+                                        //                 );
+                                        //               }
+                                        //
+                                        //               // =======================================
+                                        //               // 🔥 REAL PRINT — ONLY ONCE
+                                        //               // =======================================
+                                        //               await billingProvider.placeOrderAndSaveBill(
+                                        //                 context,
+                                        //                 order: Order(
+                                        //                   split_pay: selectedMethod == "Split Payment"
+                                        //                       ? (billingProvider.upiPayment.text.isEmpty
+                                        //                       ? "0"
+                                        //                       : billingProvider.upiPayment.text)
+                                        //                       : "0",
+                                        //
+                                        //                   customerMobile: customerProvider
+                                        //                       .selectedCustomerMobile,
+                                        //                   customerId: customerProvider.selectedCustomerId,
+                                        //                   customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
+                                        //                   customerAddress: customerProvider
+                                        //                       .customerAddressController.text,
+                                        //                   cashier: controllers.storage.read("id"),
+                                        //                   paymentMethod: selectedMethod,
+                                        //                   paymentId: paymentId,
+                                        //                   creditDays:
+                                        //                   selectedMethod == "Credit" ? (billingProvider
+                                        //                       .creditDays ?? 0) : 0,
+                                        //                   products: billingProvider.billingItems,
+                                        //                   orderGrandTotal:
+                                        //                   billingProvider
+                                        //                       .calculatedGrandTotal()
+                                        //                       .toString(),
+                                        //                   orderSubTotal:
+                                        //                   billingProvider
+                                        //                       .calculatedGrandTotal()
+                                        //                       .toString(),
+                                        //                   receivedAmt: billingProvider.paymentReceived
+                                        //                       .text.isEmpty
+                                        //                       ? "0.0"
+                                        //                       : double.parse(
+                                        //                       billingProvider.paymentReceived.text)
+                                        //                       .toStringAsFixed(0),
+                                        //                   payBackAmt: selectedMethod == "Cash"
+                                        //                       ? ((billingProvider.paymentReceived.text
+                                        //                       .isEmpty
+                                        //                       ? 0.0
+                                        //                       : double.parse(
+                                        //                       billingProvider.paymentReceived.text)) -
+                                        //                       billingProvider.calculatedGrandTotal())
+                                        //                       .abs()
+                                        //                       .toStringAsFixed(2)
+                                        //                       : "0.00",
+                                        //                   savings:
+                                        //                   '${billingProvider.billingItems.fold(
+                                        //                       0.0, (total, item) =>
+                                        //                   total + item.calculateDiscount())}',
+                                        //                   billStatus: billStatus,
+                                        //                   salesmanId: controllers.storage.read("id").toString(),
+                                        //                   version: "0.0",
+                                        //                 ),
+                                        //               );
+                                        //
+                                        //               // Unlock print after attempt
+                                        //               _isPrinting = false;
+                                        //             },
+                                        //           );
+                                        //         } else {
+                                        //           billingProvider.printButtonController
+                                        //               .reset();
+                                        //           Toasts.showToastBar(
+                                        //               context: context,
+                                        //               text: 'Bill List is empty',
+                                        //               color: Colors.red);
+                                        //         }
+                                        //       },
+                                        //       style: ElevatedButton.styleFrom(
+                                        //         backgroundColor: AppColors
+                                        //             .textFieldBackground,
+                                        //         foregroundColor: AppColors.black,
+                                        //         elevation: 3,
+                                        //         shadowColor: Colors.black26,
+                                        //         shape: RoundedRectangleBorder(
+                                        //           borderRadius: BorderRadius.circular(
+                                        //               23),
+                                        //           side: BorderSide(
+                                        //             color: Colors.black,
+                                        //             width: 0.8,
+                                        //           ),
+                                        //         ),
+                                        //         padding: const EdgeInsets.symmetric(
+                                        //             horizontal: 25, vertical: 10),
+                                        //       ),
+                                        //       child: MyText(
+                                        //         text: 'Save Bill (TAB)',
+                                        //         color: AppColors.black,
+                                        //         fontWeight: FontWeight.bold,
+                                        //         fontSize: TextFormat.responsiveFontSize(
+                                        //             context, 18),
+                                        //
+                                        //         letterSpacing: 1.2,
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // ),  //  Save bill
+                                        ///
+                                        // Padding(
+                                        //   padding: const EdgeInsets.only(
+                                        //       left: 8.0, right: 8, bottom: 1, top: 1),
+                                        //   child: SizedBox(
+                                        //     height: 49,
+                                        //     width: screenWidth*0.12,
+                                        //     child: ElevatedButton(
+                                        //       onPressed: () {
+                                        //         if (billingProvider.billingItems
+                                        //             .isNotEmpty) {
+                                        //           showPaymentBalanceDialog(
+                                        //             context,
+                                        //             onPressPrint: () {
+                                        //               final paymentMap = {
+                                        //                 'UPI': '1',
+                                        //                 'Paytm': '1',
+                                        //                 'Split Payment': '5',
+                                        //                 'Credit Card': '4',
+                                        //                 'Cash': '2',
+                                        //                 'Credit': '3',
+                                        //               };
+                                        //               final selectedMethod =
+                                        //               billingProvider.selectBillMethod
+                                        //                   .toString();
+                                        //               final paymentId = paymentMap[selectedMethod] ??
+                                        //                   '0';
+                                        //
+                                        //               final billStatus = selectedMethod ==
+                                        //                   'Credit' ? 0 : 1;
+                                        //
+                                        //               if (customerProvider
+                                        //                   .selectedCustomerId.isEmpty) {
+                                        //                 customerProvider
+                                        //                     .setCustomerDetails(
+                                        //                   customerId: ProjectData.cash,
+                                        //                   customerName: ProjectData
+                                        //                       .name,
+                                        //                   customerMobile: ProjectData
+                                        //                       .mobile,
+                                        //                   customerAddress: ProjectData
+                                        //                       .address,
+                                        //                 );
+                                        //               }
+                                        //
+                                        //               billingProvider
+                                        //                   .placeOrderAndPrintBill(
+                                        //                 context,
+                                        //                 order: Order(
+                                        //                   split_pay: selectedMethod ==
+                                        //                       "Split Payment"
+                                        //                       ? (billingProvider
+                                        //                       .upiPayment.text.isEmpty
+                                        //                       ? "0"
+                                        //                       : billingProvider
+                                        //                       .upiPayment.text)
+                                        //                       : "0",
+                                        //
+                                        //                   customerMobile:
+                                        //                   customerProvider
+                                        //                       .selectedCustomerMobile,
+                                        //                   customerId: customerProvider
+                                        //                       .selectedCustomerId,
+                                        //                   customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
+                                        //                   customerAddress:
+                                        //                   customerProvider
+                                        //                       .customerAddressController
+                                        //                       .text,
+                                        //
+                                        //                   cashier: controllers.storage.read("id"),
+                                        //                   paymentMethod: selectedMethod,
+                                        //                   paymentId: paymentId,
+                                        //                   salesmanId: controllers.storage.read("id")
+                                        //                       .toString(),
+                                        //
+                                        //                   creditDays: selectedMethod ==
+                                        //                       "Credit"
+                                        //                       ? (billingProvider
+                                        //                       .creditDays ?? 0)
+                                        //                       : 0,
+                                        //
+                                        //                   products: billingProvider
+                                        //                       .billingItems,
+                                        //                   orderGrandTotal: billingProvider
+                                        //                       .calculatedGrandTotal()
+                                        //                       .toString(),
+                                        //                   orderSubTotal: billingProvider
+                                        //                       .calculatedGrandTotal()
+                                        //                       .toString(),
+                                        //
+                                        //                   receivedAmt:
+                                        //                   billingProvider
+                                        //                       .paymentReceived.text
+                                        //                       .isEmpty
+                                        //                       ? "0.0"
+                                        //                       : double.parse(
+                                        //                       billingProvider
+                                        //                           .paymentReceived.text)
+                                        //                       .toStringAsFixed(1),
+                                        //
+                                        //                   payBackAmt: (
+                                        //                       selectedMethod == "Cash"
+                                        //                           ? ((billingProvider
+                                        //                           .paymentReceived.text
+                                        //                           .isEmpty
+                                        //                           ? 0.0
+                                        //                           : double.parse(
+                                        //                           billingProvider
+                                        //                               .paymentReceived
+                                        //                               .text)) -
+                                        //                           billingProvider
+                                        //                               .calculatedGrandTotal())
+                                        //                           .abs()
+                                        //                           .toStringAsFixed(2)
+                                        //                           : "0.00"
+                                        //                   ),
+                                        //
+                                        //                   savings:
+                                        //                   '${billingProvider
+                                        //                       .billingItems.fold(
+                                        //                       0.0, (t, i) =>
+                                        //                   t + i.calculateDiscount())}',
+                                        //
+                                        //                   billStatus: billStatus,
+                                        //                   version: "0.0",
+                                        //                 ),
+                                        //               );
+                                        //             },
+                                        //             onPressPrintHold: () {},
+                                        //             onPressPrintSave: () async {
+                                        //               // =======================================
+                                        //               // 🔥 PREVENT MULTIPLE CALLS
+                                        //               // =======================================
+                                        //               // if (billingProvider.billingItems.isNotEmpty) {
+                                        //               if (_isPrinting) {
+                                        //                 print("PRINT BLOCKED — ALREADY PRINTING");
+                                        //                 return;
+                                        //               }
+                                        //
+                                        //               _isPrinting = true; // lock
+                                        //
+                                        //               final paymentMap = {
+                                        //                 'UPI': '1',
+                                        //                 'Paytm': '1',
+                                        //                 'Split Payment': '5',
+                                        //                 'Credit Card': '4',
+                                        //                 'Cash': '2',
+                                        //                 'Credit': '3',
+                                        //               };
+                                        //
+                                        //               final selectedMethod = billingProvider
+                                        //                   .selectBillMethod.toString();
+                                        //               final paymentId = paymentMap[selectedMethod] ?? '0';
+                                        //
+                                        //               print(
+                                        //                   "Payment Method: $selectedMethod, Payment ID: $paymentId");
+                                        //
+                                        //               final billStatus = selectedMethod == 'Credit'
+                                        //                   ? 0
+                                        //                   : 1;
+                                        //
+                                        //               // Assign default customer if empty
+                                        //               if (customerProvider.selectedCustomerId.isEmpty) {
+                                        //                 customerProvider.setCustomerDetails(
+                                        //                   customerId: ProjectData.cash,
+                                        //                   customerName: ProjectData.name,
+                                        //                   customerMobile: ProjectData.mobile,
+                                        //                   customerAddress: ProjectData.address,
+                                        //                 );
+                                        //               }
+                                        //
+                                        //               // =======================================
+                                        //               // 🔥 REAL PRINT — ONLY ONCE
+                                        //               // =======================================
+                                        //               await billingProvider.placeOrderAndSaveBill(
+                                        //                 context,
+                                        //                 order: Order(
+                                        //                   split_pay: selectedMethod == "Split Payment"
+                                        //                       ? (billingProvider.upiPayment.text.isEmpty
+                                        //                       ? "0"
+                                        //                       : billingProvider.upiPayment.text)
+                                        //                       : "0",
+                                        //
+                                        //                   customerMobile: customerProvider
+                                        //                       .selectedCustomerMobile,
+                                        //                   customerId: customerProvider.selectedCustomerId,
+                                        //                   customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
+                                        //                   customerAddress: customerProvider
+                                        //                       .customerAddressController.text,
+                                        //                   cashier: controllers.storage.read("id"),
+                                        //                   paymentMethod: selectedMethod,
+                                        //                   paymentId: paymentId,
+                                        //                   creditDays:
+                                        //                   selectedMethod == "Credit" ? (billingProvider
+                                        //                       .creditDays ?? 0) : 0,
+                                        //                   products: billingProvider.billingItems,
+                                        //                   orderGrandTotal:
+                                        //                   billingProvider
+                                        //                       .calculatedGrandTotal()
+                                        //                       .toString(),
+                                        //                   orderSubTotal:
+                                        //                   billingProvider
+                                        //                       .calculatedGrandTotal()
+                                        //                       .toString(),
+                                        //                   receivedAmt: billingProvider.paymentReceived
+                                        //                       .text.isEmpty
+                                        //                       ? "0.0"
+                                        //                       : double.parse(
+                                        //                       billingProvider.paymentReceived.text)
+                                        //                       .toStringAsFixed(0),
+                                        //                   payBackAmt: selectedMethod == "Cash"
+                                        //                       ? ((billingProvider.paymentReceived.text
+                                        //                       .isEmpty
+                                        //                       ? 0.0
+                                        //                       : double.parse(
+                                        //                       billingProvider.paymentReceived.text)) -
+                                        //                       billingProvider.calculatedGrandTotal())
+                                        //                       .abs()
+                                        //                       .toStringAsFixed(2)
+                                        //                       : "0.00",
+                                        //                   savings:
+                                        //                   '${billingProvider.billingItems.fold(
+                                        //                       0.0, (total, item) =>
+                                        //                   total + item.calculateDiscount())}',
+                                        //                   billStatus: billStatus,
+                                        //                   salesmanId: controllers.storage.read("id").toString(),
+                                        //                   version: "0.0",
+                                        //                 ),
+                                        //               );
+                                        //
+                                        //               // Unlock print after attempt
+                                        //               _isPrinting = false;
+                                        //             },
+                                        //           );
+                                        //         } else {
+                                        //           billingProvider.printButtonController
+                                        //               .reset();
+                                        //           Toasts.showToastBar(
+                                        //               context: context,
+                                        //               text: 'Bill List is empty',
+                                        //               color: Colors.red);
+                                        //         }
+                                        //       },
+                                        //       style: ElevatedButton.styleFrom(
+                                        //         backgroundColor: AppColors
+                                        //             .textFieldBackground,
+                                        //         foregroundColor: AppColors.black,
+                                        //         elevation: 3,
+                                        //         shadowColor: Colors.black26,
+                                        //         shape: RoundedRectangleBorder(
+                                        //           borderRadius: BorderRadius.circular(
+                                        //               23),
+                                        //           side: BorderSide(
+                                        //             color: Colors.black,
+                                        //             width: 0.8,
+                                        //           ),
+                                        //         ),
+                                        //         padding: const EdgeInsets.symmetric(
+                                        //             horizontal: 25, vertical: 10),
+                                        //       ),
+                                        //       child: MyText(
+                                        //         text: 'Print Bill (F1)',
+                                        //         color: AppColors.black,
+                                        //         fontWeight: FontWeight.bold,
+                                        //         fontSize: TextFormat.responsiveFontSize(
+                                        //             context, 18),
+                                        //
+                                        //         letterSpacing: 1.2,
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                        ///
+                                        SizedBox(
+                                          height: 49,
+                                          width: screenWidth*0.12,
+                                          child: ElevatedButton(
+                                            onPressed: (){
+                                              if(controllers.selectedCustomerId.value==""){
+                                                utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
+                                              }else if(billingProvider.billingItems.isEmpty){
+                                                utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
+                                              }else{
+                                                printInvoice(billingProvider);
+                                              }
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: AppColors
+                                                  .textFieldBackground,
+                                              foregroundColor: AppColors.black,
+                                              elevation: 3,
+                                              shadowColor: Colors.black26,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                    23),
+                                                side: BorderSide(
+                                                  color: Colors.black,
+                                                  width: 0.8,
+                                                ),
+                                              ),
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 25, vertical: 10),
+                                            ),
+                                            child: MyText(
+                                              text: 'View Invoice',
+                                              color: AppColors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: TextFormat.responsiveFontSize(
+                                                  context, 18),
+
+                                              letterSpacing: 1.2,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 49,
+                                          width: screenWidth*0.15,
+                                          child: ElevatedButton(
+                                            onPressed: (){
+                                              if(controllers.selectedCustomerId.value==""){
+                                                utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
+                                              }else if(billingProvider.billingItems.isEmpty){
+                                                utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
+                                              }else{
+                                                setState(() {
+                                                  controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
+                                                  controllers.isTemplate.value=false;
+                                                  controllers.emailSubjectCtr.clear();
+                                                  controllers.emailMessageCtr.clear();
+                                                });
+                                                showDialog(
+                                                    context: context,
+                                                    barrierDismissible: false,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        actions: [
+                                                          Column(
+                                                            children: [
+                                                              Divider(
+                                                                color: Colors.grey.shade300,
+                                                                thickness: 1,
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  SizedBox(
+                                                                    child: Row(
                                                                       children: [
-                                                                        CustomText(
-                                                                          textAlign: TextAlign.center,
-                                                                          text: "To",
-                                                                          colors: colorsConst.textColor,
-                                                                          size: 15,
-                                                                          isCopy: false,
-                                                                        ),
-                                                                        50.width,
-                                                                        SizedBox(
-                                                                          width: 500,
-                                                                          child: TextField(
-                                                                            controller: controllers.emailToCtr,
-                                                                            style: TextStyle(
-                                                                                fontSize: 15, color: colorsConst.textColor),
-                                                                            decoration: const InputDecoration(
-                                                                              border: InputBorder.none,
-                                                                            ),
-                                                                          ),
-                                                                        )
+                                                                        TextButton(
+                                                                            onPressed: () {
+                                                                              Navigator.of(context).pop();
+                                                                              settingsController.showAddTemplateDialog(context);
+                                                                            },
+                                                                            child: CustomText(
+                                                                              text: "Add Template",
+                                                                              isCopy: false,
+                                                                              colors: colorsConst.third,
+                                                                              size: 18,
+                                                                              isBold: true,
+                                                                            )),
                                                                       ],
                                                                     ),
-                                                                    SizedBox(
-                                                                        width: 600,
-                                                                        child: SingleChildScrollView(
-                                                                          child: Column(
-                                                                            children: [
-                                                                              Divider(
-                                                                                color: Colors.grey.shade300,
-                                                                                thickness: 1,
-                                                                              ),
-                                                                              Row(
-                                                                                children: [
-                                                                                  15.height,
-                                                                                  CustomText(
-                                                                                    text: "Subject",
-                                                                                    colors: colorsConst.textColor,
-                                                                                    size: 14,
-                                                                                    isCopy: false,
+                                                                  ),
+                                                                  CustomLoadingButton(
+                                                                    callback: () {
+                                                                      if(controllers.emailToCtr.text.trim().isEmpty){
+                                                                        utils.snackBar(context: context, msg: "To is empty!", color: Colors.red);
+                                                                        controllers.emailCtr.reset();
+                                                                        return;
+                                                                      }
+                                                                      if(!controllers.emailToCtr.text.trim().isEmail){
+                                                                        utils.snackBar(
+                                                                          context: context,
+                                                                          msg: "Invalid mail!",
+                                                                          color: Colors.red,
+                                                                        );
+                                                                        controllers.emailCtr.reset();
+                                                                        return;
+                                                                      }
+                                                                      if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                                                        utils.snackBar(context: context, msg: "Subject is empty!", color: Colors.red);
+                                                                        controllers.emailCtr.reset();
+                                                                        return;
+                                                                      }
+                                                                      if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                                                        utils.snackBar(context: context, msg: "Message is empty!", color: Colors.red);
+                                                                        controllers.emailCtr.reset();
+                                                                        return;
+                                                                      }
+                                                                      sendInvoice(billingProvider);
+                                                                    },
+                                                                    controller: controllers.emailCtr,
+                                                                    isImage: false,
+                                                                    isLoading: true,
+                                                                    backgroundColor: colorsConst.primary,
+                                                                    radius: 5,
+                                                                    width: 200,
+                                                                    height: 50,
+                                                                    text: "Send Quotation",
+                                                                    textColor: Colors.white,
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ],
+                                                        content: SizedBox(
+                                                            width: 600,
+                                                            height: 400,
+                                                            child: SingleChildScrollView(
+                                                              child: Column(
+                                                                children: [
+                                                                  Align(
+                                                                      alignment: Alignment.topRight,
+                                                                      child: InkWell(
+                                                                          onTap: () {
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child: Icon(
+                                                                            Icons.clear,
+                                                                            size: 18,
+                                                                            color: colorsConst.textColor,
+                                                                          ))),
+                                                                  Align(
+                                                                    alignment: Alignment.topRight,
+                                                                    child: TextButton(
+                                                                        onPressed: () {
+                                                                          controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                        },
+                                                                        child: CustomText(
+                                                                          text: "Get Form Template",
+                                                                          colors: colorsConst.third,
+                                                                          size: 18,
+                                                                          isCopy: false,
+                                                                          isBold: true,
+                                                                        )),
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      CustomText(
+                                                                        textAlign: TextAlign.center,
+                                                                        text: "To",
+                                                                        colors: colorsConst.textColor,
+                                                                        size: 15,
+                                                                        isCopy: false,
+                                                                      ),
+                                                                      50.width,
+                                                                      SizedBox(
+                                                                        width: 500,
+                                                                        child: TextField(
+                                                                          controller: controllers.emailToCtr,
+                                                                          style: TextStyle(
+                                                                              fontSize: 15, color: colorsConst.textColor),
+                                                                          decoration: const InputDecoration(
+                                                                            border: InputBorder.none,
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(
+                                                                      width: 600,
+                                                                      child: SingleChildScrollView(
+                                                                        child: Column(
+                                                                          children: [
+                                                                            Divider(
+                                                                              color: Colors.grey.shade300,
+                                                                              thickness: 1,
+                                                                            ),
+                                                                            Row(
+                                                                              children: [
+                                                                                15.height,
+                                                                                CustomText(
+                                                                                  text: "Subject",
+                                                                                  colors: colorsConst.textColor,
+                                                                                  size: 14,
+                                                                                  isCopy: false,
+                                                                                ),
+                                                                                20.width,
+                                                                                SizedBox(
+                                                                                  width: 500,
+                                                                                  height: 50,
+                                                                                  child: TextField(
+                                                                                    controller: controllers.emailSubjectCtr,
+                                                                                    maxLines: null,
+                                                                                    minLines: 1,
+                                                                                    style: TextStyle(
+                                                                                      color: colorsConst.textColor,
+                                                                                    ),
+                                                                                    decoration: const InputDecoration(
+                                                                                      border: InputBorder.none,
+                                                                                    ),
                                                                                   ),
-                                                                                  20.width,
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                            Divider(
+                                                                              color: Colors.grey.shade300,
+                                                                              thickness: 1,
+                                                                            ),
+                                                                            Obx(() => controllers.isTemplate.value == false
+                                                                                ? SingleChildScrollView(
+                                                                              child: Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
                                                                                   SizedBox(
-                                                                                    width: 500,
-                                                                                    height: 50,
+                                                                                    width: 600,
+                                                                                    height: 170,
                                                                                     child: TextField(
-                                                                                      controller: controllers.emailSubjectCtr,
-                                                                                      maxLines: null,
-                                                                                      minLines: 1,
+                                                                                      textInputAction: TextInputAction.newline,
+                                                                                      controller: controllers.emailMessageCtr,
+                                                                                      keyboardType: TextInputType.multiline,
+                                                                                      maxLines: 21,
+                                                                                      expands: false,
                                                                                       style: TextStyle(
                                                                                         color: colorsConst.textColor,
                                                                                       ),
-                                                                                      decoration: const InputDecoration(
+                                                                                      decoration: InputDecoration(
+                                                                                        hintText: "Message",
+                                                                                        hintStyle: TextStyle(
+                                                                                            color: colorsConst.textColor,
+                                                                                            fontSize: 14,
+                                                                                            fontFamily: "Lato"),
                                                                                         border: InputBorder.none,
                                                                                       ),
                                                                                     ),
-                                                                                  )
+                                                                                  ),
                                                                                 ],
                                                                               ),
-                                                                              Divider(
-                                                                                color: Colors.grey.shade300,
-                                                                                thickness: 1,
-                                                                              ),
-                                                                              Obx(() => controllers.isTemplate.value == false
-                                                                                  ? SingleChildScrollView(
-                                                                                child: Column(
-                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                  children: [
-                                                                                    SizedBox(
-                                                                                      width: 600,
-                                                                                      height: 170,
-                                                                                      child: TextField(
-                                                                                        textInputAction: TextInputAction.newline,
-                                                                                        controller: controllers.emailMessageCtr,
-                                                                                        keyboardType: TextInputType.multiline,
-                                                                                        maxLines: 21,
-                                                                                        expands: false,
-                                                                                        style: TextStyle(
-                                                                                          color: colorsConst.textColor,
-                                                                                        ),
-                                                                                        decoration: InputDecoration(
-                                                                                          hintText: "Message",
-                                                                                          hintStyle: TextStyle(
-                                                                                              color: colorsConst.textColor,
-                                                                                              fontSize: 14,
-                                                                                              fontFamily: "Lato"),
-                                                                                          border: InputBorder.none,
+                                                                            )
+                                                                                :Obx(() => UnconstrainedBox(
+                                                                              child: Container(
+                                                                                width: 500,
+                                                                                alignment: Alignment.center,
+                                                                                decoration: BoxDecoration(
+                                                                                  color: colorsConst.secondary,
+                                                                                  borderRadius: BorderRadius.circular(10),
+                                                                                ),
+                                                                                child: SingleChildScrollView(
+                                                                                  child: Column(
+                                                                                    children: [
+                                                                                      SizedBox(
+                                                                                        width: 500,
+                                                                                        height: 170,
+                                                                                        child: Table(
+                                                                                          defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                          border: TableBorder.all(
+                                                                                            color: Colors.grey.shade300,
+                                                                                            style: BorderStyle.solid,
+                                                                                            borderRadius: BorderRadius.circular(10),
+                                                                                            width: 1,
+                                                                                          ),
+                                                                                          children: [
+                                                                                            // Header Row
+                                                                                            TableRow(
+                                                                                              children: [
+                                                                                                CustomText(
+                                                                                                  textAlign: TextAlign.center,
+                                                                                                  text: "\nTemplate Name\n",
+                                                                                                  colors: colorsConst.textColor,
+                                                                                                  size: 15,
+                                                                                                  isBold: true,
+                                                                                                  isCopy: false,
+                                                                                                ),
+                                                                                                CustomText(
+                                                                                                  textAlign: TextAlign.center,
+                                                                                                  text: "\nSubject\n",
+                                                                                                  colors: colorsConst.textColor,
+                                                                                                  size: 15,
+                                                                                                  isBold: true,
+                                                                                                  isCopy: false,
+                                                                                                ),
+                                                                                              ],
+                                                                                            ),
+                                                                                            // Dynamic Rows
+                                                                                            for (var item in settingsController.templateList)
+                                                                                              utils.emailRow(
+                                                                                                  context,
+                                                                                                  isCheck: controllers.isAdd,
+                                                                                                  templateName: item.templateName,
+                                                                                                  msg: item.message,
+                                                                                                  subject: item.subject,
+                                                                                                  id: item.id
+                                                                                              ),
+                                                                                          ],
                                                                                         ),
                                                                                       ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              )
-                                                                                  :Obx(() => UnconstrainedBox(
-                                                                                child: Container(
-                                                                                  width: 500,
-                                                                                  alignment: Alignment.center,
-                                                                                  decoration: BoxDecoration(
-                                                                                    color: colorsConst.secondary,
-                                                                                    borderRadius: BorderRadius.circular(10),
-                                                                                  ),
-                                                                                  child: SingleChildScrollView(
-                                                                                    child: Column(
-                                                                                      children: [
-                                                                                        SizedBox(
-                                                                                          width: 500,
-                                                                                          height: 170,
-                                                                                          child: Table(
-                                                                                            defaultColumnWidth: const FixedColumnWidth(120.0),
-                                                                                            border: TableBorder.all(
-                                                                                              color: Colors.grey.shade300,
-                                                                                              style: BorderStyle.solid,
-                                                                                              borderRadius: BorderRadius.circular(10),
-                                                                                              width: 1,
-                                                                                            ),
-                                                                                            children: [
-                                                                                              // Header Row
-                                                                                              TableRow(
-                                                                                                children: [
-                                                                                                  CustomText(
-                                                                                                    textAlign: TextAlign.center,
-                                                                                                    text: "\nTemplate Name\n",
-                                                                                                    colors: colorsConst.textColor,
-                                                                                                    size: 15,
-                                                                                                    isBold: true,
-                                                                                                    isCopy: false,
-                                                                                                  ),
-                                                                                                  CustomText(
-                                                                                                    textAlign: TextAlign.center,
-                                                                                                    text: "\nSubject\n",
-                                                                                                    colors: colorsConst.textColor,
-                                                                                                    size: 15,
-                                                                                                    isBold: true,
-                                                                                                    isCopy: false,
-                                                                                                  ),
-                                                                                                ],
-                                                                                              ),
-                                                                                              // Dynamic Rows
-                                                                                              for (var item in settingsController.templateList)
-                                                                                                utils.emailRow(
-                                                                                                    context,
-                                                                                                    isCheck: controllers.isAdd,
-                                                                                                    templateName: item.templateName,
-                                                                                                    msg: item.message,
-                                                                                                    subject: item.subject,
-                                                                                                    id: item.id
-                                                                                                ),
-                                                                                            ],
-                                                                                          ),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
+                                                                                    ],
                                                                                   ),
                                                                                 ),
-                                                                              ))),
-                                                                              Container(
-                                                                                width: MediaQuery.of(context).size.width*0.6,
-                                                                                decoration: customDecoration.baseBackgroundDecoration(
-                                                                                  color: Colors.grey.shade50,radius: 5,
-                                                                                ),
-                                                                                child: Padding(
-                                                                                  padding: const EdgeInsets.all(8.0),
-                                                                                  child: CustomText(
-                                                                                    textAlign: TextAlign.start,
-                                                                                    text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
-                                                                                    isCopy: false,colors: colorsConst.primary,isBold: true,),
-                                                                                ),
-                                                                              )
-                                                                            ],
-                                                                          ),
-                                                                        )),
-                                                                  ],
-                                                                ),
-                                                              )),
-                                                        );
-                                                      });
-                                                }
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: const Color(0xff0078D7),
-                                                padding: const EdgeInsets.symmetric(
-                                                    horizontal: 20, vertical: 12),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(4),
+                                                                              ),
+                                                                            ))),
+                                                                            Container(
+                                                                              width: MediaQuery.of(context).size.width*0.6,
+                                                                              decoration: customDecoration.baseBackgroundDecoration(
+                                                                                color: Colors.grey.shade50,radius: 5,
+                                                                              ),
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.all(8.0),
+                                                                                child: CustomText(
+                                                                                  textAlign: TextAlign.start,
+                                                                                  text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
+                                                                                  isCopy: false,colors: colorsConst.primary,isBold: true,),
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                      )),
+                                                                ],
+                                                              ),
+                                                            )),
+                                                      );
+                                                    });
+                                              }
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: AppColors
+                                                  .textFieldBackground,
+                                              foregroundColor: AppColors.black,
+                                              elevation: 3,
+                                              shadowColor: Colors.black26,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                    23),
+                                                side: BorderSide(
+                                                  color: Colors.black,
+                                                  width: 0.8,
                                                 ),
                                               ),
-                                              child: Text(
-                                                'Send Quotation',
-                                                style: GoogleFonts.lato(
-                                                    color: Colors.white,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold
-                                                ),
-                                              ),
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 25, vertical: 10),
+                                            ),
+                                            child: MyText(
+                                              text: 'Send Quotation',
+                                              color: AppColors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: TextFormat.responsiveFontSize(
+                                                  context, 18),
+
+                                              letterSpacing: 1.2,
                                             ),
                                           ),
-                                        ],
-                                      ),
-
-                                      ///  Billing Table :
-                                      Expanded(
-                                        child: Card(
-                                          elevation: 4,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(10),
-                                            child: Container(
-                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                                              child: Column(
-                                                children: [
-                                                  // ===========================
-                                                  // HEADER
-                                                  // ===========================
-                                                  Table(
-                                                    border: TableBorder(
-                                                      top: const BorderSide(color: Colors.black26, width: 1),
-                                                      bottom: const BorderSide(color: Colors.black26, width: 1),
-                                                      left: const BorderSide(color: Colors.black26, width: 1),
-                                                      right: const BorderSide(color: Colors.black26, width: 1),
-                                                      horizontalInside: const BorderSide(color: Colors.black26, width: 1),
-                                                      verticalInside: const BorderSide(color: Colors.black26, width: 1),
-                                                    ),
-                                                    columnWidths: const {
-                                                      0: FixedColumnWidth(70),//s no
-                                                      1: FlexColumnWidth(5),//ptp
-                                                      2: FixedColumnWidth(80),//var
-                                                      3: FixedColumnWidth(80),//qty
-                                                      // 4: FixedColumnWidth(100),//tot sto
-                                                      5: FlexColumnWidth(2),//mrp
-                                                      6: FlexColumnWidth(1),//op
-                                                      7: FlexColumnWidth(2),//dic
-                                                      8: FlexColumnWidth(1),//st
-                                                    },
-                                                    children: [
-                                                      TableRow(
-                                                        decoration: BoxDecoration(color: colorsConst.primary),
-                                                        children: [
-                                                          _buildHeaderCell("S.N"),
-                                                          _buildHeaderCell("Product"),
-                                                          // _buildCell("Product"),
-                                                          _buildHeaderCell("Vari"),
-                                                          _buildHeaderCell("Qty"),
-                                                          // _buildRightHeaderCell("Tot Sto"),
-                                                          _buildRightHeaderCell("MRP"),
-                                                          _buildRightHeaderCell("Our Price"),
-                                                          _buildRightHeaderCell("Disc"),
-                                                          _buildRightHeaderCell("Sub Tot"),
-                                                        ],
-                                                      ),
-                                                    ],
+                                        ),
+                                      ],
+                                    ),
+                                    10.height,
+                                    ///  Billing Table :
+                                    Expanded(
+                                      child: Card(
+                                        elevation: 4,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(10),
+                                          child: Container(
+                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                                            child: Column(
+                                              children: [
+                                                // ===========================
+                                                // HEADER
+                                                // ===========================
+                                                Table(
+                                                  border: TableBorder(
+                                                    top: const BorderSide(color: Colors.black26, width: 1),
+                                                    bottom: const BorderSide(color: Colors.black26, width: 1),
+                                                    left: const BorderSide(color: Colors.black26, width: 1),
+                                                    right: const BorderSide(color: Colors.black26, width: 1),
+                                                    horizontalInside: const BorderSide(color: Colors.black26, width: 1),
+                                                    verticalInside: const BorderSide(color: Colors.black26, width: 1),
                                                   ),
+                                                  columnWidths: const {
+                                                    0: FixedColumnWidth(70),//s no
+                                                    1: FlexColumnWidth(5),//ptp
+                                                    2: FixedColumnWidth(80),//var
+                                                    3: FixedColumnWidth(80),//qty
+                                                    // 4: FixedColumnWidth(100),//tot sto
+                                                    5: FlexColumnWidth(2),//mrp
+                                                    6: FlexColumnWidth(1),//op
+                                                    7: FlexColumnWidth(2),//dic
+                                                    8: FlexColumnWidth(1),//st
+                                                  },
+                                                  children: [
+                                                    TableRow(
+                                                      decoration: BoxDecoration(color: colorsConst.primary),
+                                                      children: [
+                                                        _buildHeaderCell("S.N"),
+                                                        _buildHeaderCell("Product"),
+                                                        // _buildCell("Product"),
+                                                        _buildHeaderCell("Vari"),
+                                                        _buildHeaderCell("Qty"),
+                                                        // _buildRightHeaderCell("Tot Sto"),
+                                                        _buildRightHeaderCell("MRP"),
+                                                        _buildRightHeaderCell("Our Price"),
+                                                        _buildRightHeaderCell("Disc"),
+                                                        _buildRightHeaderCell("Sub Tot"),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
 
-                                                  // ===========================
-                                                  //     BILLING LIST
-                                                  // ===========================
-                                                  Expanded(
-                                                    child: billingProvider.billingItems.isNotEmpty
-                                                        ? ListView.builder(
-                                                      controller: scrollController,
-                                                      itemCount: billingProvider.billingItems.length,
-                                                      itemBuilder: (context, index) {
+                                                // ===========================
+                                                //     BILLING LIST
+                                                // ===========================
+                                                Expanded(
+                                                  child: billingProvider.billingItems.isNotEmpty
+                                                      ? ListView.builder(
+                                                    controller: scrollController,
+                                                    itemCount: billingProvider.billingItems.length,
+                                                    itemBuilder: (context, index) {
 
-                                                        // --- ALWAYS sync qtyFocusNodes with items ---
-                                                        if (qtyFocusNodes.length != billingProvider.billingItems.length) {
-                                                          qtyFocusNodes = List.generate(
-                                                            billingProvider.billingItems.length,
-                                                                (_) => FocusNode(),
-                                                          );
-                                                        }
-
-                                                        final billProduct = billingProvider.billingItems[index];
-                                                        final productData = billingProvider.productsList.firstWhere(
-                                                              (p) => p.id == billProduct.product.id,
-                                                          orElse: () => billProduct.product,
+                                                      // --- ALWAYS sync qtyFocusNodes with items ---
+                                                      if (qtyFocusNodes.length != billingProvider.billingItems.length) {
+                                                        qtyFocusNodes = List.generate(
+                                                          billingProvider.billingItems.length,
+                                                              (_) => FocusNode(),
                                                         );
-                                                        if (billingProvider.quantityControllers.length <= index) {
-                                                          billingProvider.quantityControllers.add(TextEditingController(text: billProduct.quantity.toString().isEmpty?"1":billProduct.quantity.toString()=='null'?"1":billProduct.quantity.toString()));
-                                                        }
-                                                        return Table(
-                                                          border: TableBorder(
-                                                            top: const BorderSide(color: Colors.black26, width: 1),
-                                                            bottom: const BorderSide(color: Colors.black26, width: 1),
-                                                            left: const BorderSide(color: Colors.black26, width: 1),
-                                                            right: const BorderSide(color: Colors.black26, width: 1),
-                                                            horizontalInside: const BorderSide(color: Colors.black26, width: 1),
-                                                            verticalInside: const BorderSide(color: Colors.black26, width: 1),
-                                                          ),
-                                                          columnWidths: const {
-                                                            0: FixedColumnWidth(70),//s no
-                                                            1: FlexColumnWidth(5),//ptp
-                                                            2: FixedColumnWidth(80),//var
-                                                            3: FixedColumnWidth(80),//qty
-                                                            // 4: FixedColumnWidth(100),//tot sto
-                                                            5: FlexColumnWidth(2),//mrp
-                                                            6: FlexColumnWidth(1),//op
-                                                            7: FlexColumnWidth(2),//dic
-                                                            8: FlexColumnWidth(1),//st
-                                                          },
-                                                          children: [
-                                                            TableRow(
-                                                              decoration: BoxDecoration(
-                                                                color: selectedRowIndex == index
-                                                                    ? Colors.yellow.shade200
-                                                                    : Colors.white,
-                                                              ),
-                                                              children: [
-                                                                _buildCell("${index + 1}"),
+                                                      }
 
-                                                                Padding(
-                                                                  padding: const EdgeInsets.symmetric(vertical: 1),
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Expanded(
-                                                                        child: Padding(
-                                                                          padding: const EdgeInsets.only(left: 15.0),
-                                                                          child: MyText(
-                                                                            text: billProduct.product.isLoose == '1'
-                                                                                ? billProduct.product.pTitle!
-                                                                                : "${billProduct.product.pTitle} "
-                                                                                "${billProduct.product.pVariation ?? ""}"
-                                                                                "${billProduct.product.unit ?? ""}",
-                                                                            fontSize: 20,
-                                                                          ),
+                                                      final billProduct = billingProvider.billingItems[index];
+                                                      final productData = billingProvider.productsList.firstWhere(
+                                                            (p) => p.id == billProduct.product.id,
+                                                        orElse: () => billProduct.product,
+                                                      );
+                                                      if (billingProvider.quantityControllers.length <= index) {
+                                                        billingProvider.quantityControllers.add(TextEditingController(text: billProduct.quantity.toString().isEmpty?"1":billProduct.quantity.toString()=='null'?"1":billProduct.quantity.toString()));
+                                                      }
+                                                      return Table(
+                                                        border: TableBorder(
+                                                          top: const BorderSide(color: Colors.black26, width: 1),
+                                                          bottom: const BorderSide(color: Colors.black26, width: 1),
+                                                          left: const BorderSide(color: Colors.black26, width: 1),
+                                                          right: const BorderSide(color: Colors.black26, width: 1),
+                                                          horizontalInside: const BorderSide(color: Colors.black26, width: 1),
+                                                          verticalInside: const BorderSide(color: Colors.black26, width: 1),
+                                                        ),
+                                                        columnWidths: const {
+                                                          0: FixedColumnWidth(70),//s no
+                                                          1: FlexColumnWidth(5),//ptp
+                                                          2: FixedColumnWidth(80),//var
+                                                          3: FixedColumnWidth(80),//qty
+                                                          // 4: FixedColumnWidth(100),//tot sto
+                                                          5: FlexColumnWidth(2),//mrp
+                                                          6: FlexColumnWidth(1),//op
+                                                          7: FlexColumnWidth(2),//dic
+                                                          8: FlexColumnWidth(1),//st
+                                                        },
+                                                        children: [
+                                                          TableRow(
+                                                            decoration: BoxDecoration(
+                                                              color: selectedRowIndex == index
+                                                                  ? Colors.yellow.shade200
+                                                                  : Colors.white,
+                                                            ),
+                                                            children: [
+                                                              _buildCell("${index + 1}"),
+
+                                                              Padding(
+                                                                padding: const EdgeInsets.symmetric(vertical: 1),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.only(left: 15.0),
+                                                                        child: MyText(
+                                                                          text: billProduct.product.isLoose == '1'
+                                                                              ? billProduct.product.pTitle!
+                                                                              : "${billProduct.product.pTitle} "
+                                                                              "${billProduct.product.pVariation ?? ""}"
+                                                                              "${billProduct.product.unit ?? ""}",
+                                                                          fontSize: 20,
                                                                         ),
                                                                       ),
-                                                                      IconButton(
-                                                                        icon: const Icon(Icons.delete_forever, color: Colors.black),
-                                                                        onPressed: () {
-                                                                          billingProvider.removeBillingItem(index: index);
-                                                                        },
-                                                                      ),
-                                                                    ],
+                                                                    ),
+                                                                    IconButton(
+                                                                      icon: const Icon(Icons.delete_forever, color: Colors.black),
+                                                                      onPressed: () {
+                                                                        billingProvider.removeBillingItem(index: index);
+                                                                      },
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+
+
+                                                              billProduct.product.isLoose == '1'
+                                                                  ? TextField(
+                                                                focusNode: qtyFocusNodes[index],
+                                                                controller: billingProvider.quantityControllers[index]!,
+                                                                textAlign: TextAlign.center,
+                                                                keyboardType:
+                                                                const TextInputType.numberWithOptions(decimal: true),
+
+                                                                inputFormatters: [
+                                                                  FilteringTextInputFormatter.allow(
+                                                                    RegExp(r'^\d*\.?\d{0,3}'),
+                                                                  ),
+                                                                ],
+
+                                                                style: const TextStyle(fontSize: 21),
+
+                                                                decoration: const InputDecoration(
+                                                                  isDense: true,
+                                                                  border: InputBorder.none,
+                                                                  enabledBorder: InputBorder.none,
+                                                                  focusedBorder: InputBorder.none,
+                                                                  contentPadding: EdgeInsets.symmetric(
+                                                                    vertical: 6,
+                                                                    horizontal: 6,
+                                                                  ),),
+
+                                                                // 🔹 USER TYPING (ALLOW EMPTY)
+                                                                onChanged: (value) {
+                                                                  // allow empty while typing
+                                                                  if (value.isEmpty) {
+                                                                    billingProvider.updateBillingItem(
+                                                                      index,
+                                                                      isLoose: '1',
+                                                                      variation: 0, // temp
+                                                                    );
+                                                                    return;
+                                                                  }
+
+                                                                  final controller =
+                                                                  billingProvider.quantityControllers[index]!;
+
+                                                                  final double enteredKg = double.tryParse(value) ?? 0;
+
+                                                                  final double maxKg =
+                                                                      (double.tryParse(billProduct.product.qtyLeft ?? "0") ??
+                                                                          0) /
+                                                                          1000;
+
+                                                                  double safeKg = enteredKg;
+
+                                                                  // 🔥 STOCK LIMIT
+                                                                  if (enteredKg > maxKg) {
+                                                                    safeKg = maxKg;
+
+                                                                    final fixedText = safeKg.toStringAsFixed(3);
+
+                                                                    if (controller.text != fixedText) {
+                                                                      controller.value = controller.value.copyWith(
+                                                                        text: fixedText,
+                                                                        selection:
+                                                                        TextSelection.collapsed(offset: fixedText.length),
+                                                                        composing: TextRange.empty,
+                                                                      );
+                                                                    }
+                                                                  }
+
+                                                                  // update provider in grams
+                                                                  billingProvider.updateBillingItem(
+                                                                    index,
+                                                                    isLoose: '1',
+                                                                    variation: safeKg * 1000,
+                                                                  );
+                                                                },
+
+                                                                // 🔹 USER FINISHED → APPLY DEFAULT
+                                                                onEditingComplete: () {
+                                                                  _applyDefaultLooseIfNeeded(
+                                                                    billingProvider,
+                                                                    index,
+                                                                  );
+                                                                  Future.microtask(() {
+                                                                    billingProvider.dropdownFocusNode.requestFocus();
+                                                                  });
+                                                                },
+
+                                                                onSubmitted: (_) {
+                                                                  _applyDefaultLooseIfNeeded(
+                                                                    billingProvider,
+                                                                    index,
+                                                                  );
+                                                                  Future.microtask(() {
+                                                                    billingProvider.dropdownFocusNode.requestFocus();
+                                                                  });
+                                                                },
+                                                              )
+                                                                  : _buildCell(
+                                                                billProduct.variationUnit == "nullnull"
+                                                                    ? ""
+                                                                    : billProduct.variationUnit,
+                                                              ),
+
+
+                                                              //cahnge qty
+                                                              billProduct.product.isLoose == '0'
+                                                                  ? TextField(
+                                                                focusNode: qtyFocusNodes[index],
+                                                                controller: billingProvider.quantityControllers[index]!,
+                                                                textAlign: TextAlign.center,
+                                                                keyboardType: TextInputType.number,
+                                                                style: const TextStyle(fontSize: 21),
+                                                                decoration: const InputDecoration(
+                                                                  isDense: true,
+                                                                  border: InputBorder.none,
+                                                                  enabledBorder: InputBorder.none,
+                                                                  focusedBorder: InputBorder.none,
+                                                                  contentPadding: EdgeInsets.symmetric(
+                                                                    vertical: 6,
+                                                                    horizontal: 6,
                                                                   ),
                                                                 ),
 
+                                                                // 🔹 USER TYPING — ALLOW EMPTY / 0
+                                                                onChanged: (value) {
+                                                                  // allow empty while typing
+                                                                  if (value.isEmpty) {
+                                                                    billingProvider.updateBillingItem(
+                                                                      index,
+                                                                      isLoose: '0',
+                                                                      quantity: 0, // temp
+                                                                    );
+                                                                    return;
+                                                                  }
 
-                                                                billProduct.product.isLoose == '1'
-                                                                    ? TextField(
-                                                                  focusNode: qtyFocusNodes[index],
-                                                                  controller: billingProvider.quantityControllers[index]!,
-                                                                  textAlign: TextAlign.center,
-                                                                  keyboardType:
-                                                                  const TextInputType.numberWithOptions(decimal: true),
+                                                                  int qty = int.tryParse(value) ?? 0;
 
-                                                                  inputFormatters: [
-                                                                    FilteringTextInputFormatter.allow(
-                                                                      RegExp(r'^\d*\.?\d{0,3}'),
-                                                                    ),
-                                                                  ],
+                                                                  // allow 0 while typing
+                                                                  if (qty < 0) qty = 0;
 
-                                                                  style: const TextStyle(fontSize: 21),
+                                                                  // stock limit
+                                                                  final int maxQty =
+                                                                      int.tryParse(billProduct.product.qtyLeft ?? "0") ?? 0;
 
-                                                                  decoration: const InputDecoration(
-                                                                    isDense: true,
-                                                                    border: InputBorder.none,
-                                                                    enabledBorder: InputBorder.none,
-                                                                    focusedBorder: InputBorder.none,
-                                                                    contentPadding: EdgeInsets.symmetric(
-                                                                      vertical: 6,
-                                                                      horizontal: 6,
-                                                                    ),),
-
-                                                                  // 🔹 USER TYPING (ALLOW EMPTY)
-                                                                  onChanged: (value) {
-                                                                    // allow empty while typing
-                                                                    if (value.isEmpty) {
-                                                                      billingProvider.updateBillingItem(
-                                                                        index,
-                                                                        isLoose: '1',
-                                                                        variation: 0, // temp
-                                                                      );
-                                                                      return;
-                                                                    }
+                                                                  if (qty > maxQty) {
+                                                                    qty = maxQty;
 
                                                                     final controller =
                                                                     billingProvider.quantityControllers[index]!;
 
-                                                                    final double enteredKg = double.tryParse(value) ?? 0;
+                                                                    final fixedText = qty.toString();
 
-                                                                    final double maxKg =
-                                                                        (double.tryParse(billProduct.product.qtyLeft ?? "0") ??
-                                                                            0) /
-                                                                            1000;
-
-                                                                    double safeKg = enteredKg;
-
-                                                                    // 🔥 STOCK LIMIT
-                                                                    if (enteredKg > maxKg) {
-                                                                      safeKg = maxKg;
-
-                                                                      final fixedText = safeKg.toStringAsFixed(3);
-
-                                                                      if (controller.text != fixedText) {
-                                                                        controller.value = controller.value.copyWith(
-                                                                          text: fixedText,
-                                                                          selection:
-                                                                          TextSelection.collapsed(offset: fixedText.length),
-                                                                          composing: TextRange.empty,
-                                                                        );
-                                                                      }
-                                                                    }
-
-                                                                    // update provider in grams
-                                                                    billingProvider.updateBillingItem(
-                                                                      index,
-                                                                      isLoose: '1',
-                                                                      variation: safeKg * 1000,
-                                                                    );
-                                                                  },
-
-                                                                  // 🔹 USER FINISHED → APPLY DEFAULT
-                                                                  onEditingComplete: () {
-                                                                    _applyDefaultLooseIfNeeded(
-                                                                      billingProvider,
-                                                                      index,
-                                                                    );
-                                                                    Future.microtask(() {
-                                                                      billingProvider.dropdownFocusNode.requestFocus();
-                                                                    });
-                                                                  },
-
-                                                                  onSubmitted: (_) {
-                                                                    _applyDefaultLooseIfNeeded(
-                                                                      billingProvider,
-                                                                      index,
-                                                                    );
-                                                                    Future.microtask(() {
-                                                                      billingProvider.dropdownFocusNode.requestFocus();
-                                                                    });
-                                                                  },
-                                                                )
-                                                                    : _buildCell(
-                                                                  billProduct.variationUnit == "nullnull"
-                                                                      ? ""
-                                                                      : billProduct.variationUnit,
-                                                                ),
-
-
-                                                                //cahnge qty
-                                                                billProduct.product.isLoose == '0'
-                                                                    ? TextField(
-                                                                  focusNode: qtyFocusNodes[index],
-                                                                  controller: billingProvider.quantityControllers[index]!,
-                                                                  textAlign: TextAlign.center,
-                                                                  keyboardType: TextInputType.number,
-                                                                  style: const TextStyle(fontSize: 21),
-                                                                  decoration: const InputDecoration(
-                                                                    isDense: true,
-                                                                    border: InputBorder.none,
-                                                                    enabledBorder: InputBorder.none,
-                                                                    focusedBorder: InputBorder.none,
-                                                                    contentPadding: EdgeInsets.symmetric(
-                                                                      vertical: 6,
-                                                                      horizontal: 6,
-                                                                    ),
-                                                                  ),
-
-                                                                  // 🔹 USER TYPING — ALLOW EMPTY / 0
-                                                                  onChanged: (value) {
-                                                                    // allow empty while typing
-                                                                    if (value.isEmpty) {
-                                                                      billingProvider.updateBillingItem(
-                                                                        index,
-                                                                        isLoose: '0',
-                                                                        quantity: 0, // temp
+                                                                    // cursor-safe update
+                                                                    if (controller.text != fixedText) {
+                                                                      controller.value = controller.value.copyWith(
+                                                                        text: fixedText,
+                                                                        selection:
+                                                                        TextSelection.collapsed(offset: fixedText.length),
+                                                                        composing: TextRange.empty,
                                                                       );
-                                                                      return;
                                                                     }
+                                                                  }
 
-                                                                    int qty = int.tryParse(value) ?? 0;
+                                                                  // update provider
+                                                                  billingProvider.updateBillingItem(
+                                                                    index,
+                                                                    isLoose: '0',
+                                                                    quantity: qty,
+                                                                  );
+                                                                },
 
-                                                                    // allow 0 while typing
-                                                                    if (qty < 0) qty = 0;
+                                                                // 🔹 USER FINISHED → APPLY DEFAULT
+                                                                // 🔹 Enter pressed
+                                                                onEditingComplete: () {
+                                                                  _applyDefaultQtyIfNeeded(billingProvider, index);
+                                                                  qtyFocusNodes[index].unfocus();
 
-                                                                    // stock limit
-                                                                    final int maxQty =
-                                                                        int.tryParse(billProduct.product.qtyLeft ?? "0") ?? 0;
-
-                                                                    if (qty > maxQty) {
-                                                                      qty = maxQty;
-
-                                                                      final controller =
-                                                                      billingProvider.quantityControllers[index]!;
-
-                                                                      final fixedText = qty.toString();
-
-                                                                      // cursor-safe update
-                                                                      if (controller.text != fixedText) {
-                                                                        controller.value = controller.value.copyWith(
-                                                                          text: fixedText,
-                                                                          selection:
-                                                                          TextSelection.collapsed(offset: fixedText.length),
-                                                                          composing: TextRange.empty,
-                                                                        );
-                                                                      }
-                                                                    }
-
-                                                                    // update provider
-                                                                    billingProvider.updateBillingItem(
-                                                                      index,
-                                                                      isLoose: '0',
-                                                                      quantity: qty,
-                                                                    );
-                                                                  },
-
-                                                                  // 🔹 USER FINISHED → APPLY DEFAULT
-                                                                  // 🔹 Enter pressed
-                                                                  onEditingComplete: () {
-                                                                    _applyDefaultQtyIfNeeded(billingProvider, index);
-                                                                    qtyFocusNodes[index].unfocus();
-
-                                                                    Future.microtask(() {
-                                                                      Future.microtask(() {
-                                                                        billingProvider.dropdownFocusNode.requestFocus();
-                                                                      });
-                                                                    });
-                                                                  },
-
-                                                                  onSubmitted: (_) {
-                                                                    _applyDefaultQtyIfNeeded(billingProvider, index);
-                                                                    qtyFocusNodes[index].unfocus();
-
+                                                                  Future.microtask(() {
                                                                     Future.microtask(() {
                                                                       billingProvider.dropdownFocusNode.requestFocus();
                                                                     });
-                                                                  },
+                                                                  });
+                                                                },
 
-                                                                )
-                                                                    : _buildCellQuantity("${1}"),
+                                                                onSubmitted: (_) {
+                                                                  _applyDefaultQtyIfNeeded(billingProvider, index);
+                                                                  qtyFocusNodes[index].unfocus();
 
-                                                                _buildBoldCell(
-                                                                  TextFormat.formattedAmount(
-                                                                    billProduct.mrpPerProduct(),
-                                                                  ),
+                                                                  Future.microtask(() {
+                                                                    billingProvider.dropdownFocusNode.requestFocus();
+                                                                  });
+                                                                },
+
+                                                              )
+                                                                  : _buildCellQuantity("${1}"),
+
+                                                              _buildBoldCell(
+                                                                TextFormat.formattedAmount(
+                                                                  billProduct.mrpPerProduct(),
                                                                 ),
-                                                                _buildRedBoldCell(
-                                                                  TextFormat.formattedAmount(
-                                                                    billProduct.calculateOutPrice(),
-                                                                  ),
+                                                              ),
+                                                              _buildRedBoldCell(
+                                                                TextFormat.formattedAmount(
+                                                                  billProduct.calculateOutPrice(),
                                                                 ),
-                                                                _buildRightCell(
-                                                                  billProduct.calculateDiscount().toStringAsFixed(2),
+                                                              ),
+                                                              _buildRightCell(
+                                                                billProduct.calculateDiscount().toStringAsFixed(2),
+                                                              ),
+                                                              _buildBoldCell(
+                                                                TextFormat.formattedAmount(
+                                                                  billProduct.calculateSubtotal(),
                                                                 ),
-                                                                _buildBoldCell(
-                                                                  TextFormat.formattedAmount(
-                                                                    billProduct.calculateSubtotal(),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    )
-                                                        : ScreenWidgets.emptyAlert(
-                                                      context,
-                                                      image: 'assets/bill/empty_bill.png',
-                                                      text: '',
-                                                    ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  )
+                                                      : ScreenWidgets.emptyAlert(
+                                                    context,
+                                                    image: 'assets/bill/empty_bill.png',
+                                                    text: '',
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
-                                      ),30.height,
-                                      billingProvider.isLoading ? 0.height
-                                      : Container(
-                                        width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
-                                        color: colorsConst.primary.withOpacity(0.1),
-                                        // padding: const EdgeInsets.only(
-                                        //     top: 8, left: 12, right: 12, bottom: 8),
-                                        height: screenHeight * 0.14,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            BottomWidgets.valueCard(context: context,
-                                                title: 'Items',
-                                                value: billingProvider
-                                                    .calculatedTotalProducts()
-                                                    .toString(),
-                                                isBold: false),
-                                            BottomWidgets.valueCard(context: context,
-                                                title: 'Qty',
-                                                value: billingProvider
-                                                    .calculatedTotalQuantity()
-                                                    .toString(),
-                                                isBold: false),
-                                            BottomWidgets.valueCard(context: context,
-                                                title: 'MRP',
-                                                value: billingProvider
-                                                    .calculatedMrpSubtotal()
-                                                    .toString(),
-                                                isBold: false),
-                                            BottomWidgets.valueCard(context: context,
-                                                title: 'Discount',
-                                                value: billingProvider.calculateTotalDiscount(),
-                                                isBold: false),
-                                            BottomWidgets.valueCard(context: context,
-                                                title: 'GST',
-                                                value: '0.0%',
-                                                isBold: false),
-                                            BottomWidgets.valueRight(
-                                              context: context,
-                                              title: 'Grand Total',
-                                              value: TextFormat.formattedAmount(
-                                                  billingProvider.calculatedGrandTotal()),
-                                              isBold: true,
-                                            ),
-                                          ],
-                                        ),
                                       ),
-                                    ],
-                                  ),
+                                    ),30.height,
+                                    billingProvider.isLoading ? 0.height
+                                        : Container(
+                                      width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+                                      color: colorsConst.primary.withOpacity(0.1),
+                                      // padding: const EdgeInsets.only(
+                                      //     top: 8, left: 12, right: 12, bottom: 8),
+                                      height: screenHeight * 0.14,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          BottomWidgets.valueCard(context: context,
+                                              title: 'Items',
+                                              value: billingProvider
+                                                  .calculatedTotalProducts()
+                                                  .toString(),
+                                              isBold: false),
+                                          BottomWidgets.valueCard(context: context,
+                                              title: 'Qty',
+                                              value: billingProvider
+                                                  .calculatedTotalQuantity()
+                                                  .toString(),
+                                              isBold: false),
+                                          BottomWidgets.valueCard(context: context,
+                                              title: 'MRP',
+                                              value: billingProvider
+                                                  .calculatedMrpSubtotal()
+                                                  .toString(),
+                                              isBold: false),
+                                          BottomWidgets.valueCard(context: context,
+                                              title: 'Discount',
+                                              value: billingProvider.calculateTotalDiscount(),
+                                              isBold: false),
+                                          BottomWidgets.valueCard(context: context,
+                                              title: 'GST',
+                                              value: '0.0%',
+                                              isBold: false),
+                                          BottomWidgets.valueRight(
+                                            context: context,
+                                            title: 'Grand Total',
+                                            value: TextFormat.formattedAmount(
+                                                billingProvider.calculatedGrandTotal()),
+                                            isBold: true,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 )
-                            ),
-                          ],
                         ),
                       ),
                     ),
@@ -4442,10 +4455,20 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
     );
   }
 
-  Future<void> sendInvoice(BillingProvider billingPvr) async {
+  Future<void> printInvoice(BillingProvider billingPvr) async {
     final pdf = await generateInvoicePdf(billingPvr);
 
-    apiService.insertQuotationAPI(context, pdf);
+    await Printing.layoutPdf(
+      onLayout: (format) async => pdf.save(),
+    );
+  }
+
+  Future<void> sendInvoice(BillingProvider billingPvr) async {
+    final pdf = await generateInvoicePdf(billingPvr);
+    String productListJson = jsonEncode(
+      billingPvr.billingItems.map((e) => e.toJson()).toList(),
+    );
+    apiService.insertQuotationAPI(context, pdf,productListJson);
   }
 
   Future<pw.Document> generateInvoicePdf(BillingProvider billingPvr) async {
@@ -4560,6 +4583,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                     /// DATA
                     ...List.generate(billingPvr.billingItems.length, (index) {
                       final p = billingPvr.billingItems[index];
+                      final billProduct = billingPvr.billingItems[index];
 
                       return pw.TableRow(
                         children: [
@@ -4567,7 +4591,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                           tableCell(p.productTitle.toString()),
                           tableCell(p.quantity.toString()),
                           tableCell(p.p_mrp.toString()),
-                          tableCell("Rs. ${p.outPrice}"),
+                          tableCell("Rs. ${billProduct.calculateSubtotal()}"),
                         ],
                       );
                     }),

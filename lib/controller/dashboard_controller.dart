@@ -49,6 +49,11 @@ class DashboardController extends GetxController {
     "Last 30 Days",
     "Custom",
   ];
+  final List<String> filterType = [
+    "All",
+    "Mine",
+    "Team"
+  ];
 var selectedSortBy = 'Today'.obs;
 var selectedRange = Rxn<DateTimeRange>(); // null-safe observable
 var isDateRangeSet = false.obs;

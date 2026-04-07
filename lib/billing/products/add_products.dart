@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
+import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:provider/provider.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
 
@@ -147,15 +148,23 @@ class _AddProductDialogState extends State<AddProductDialog> {
           child: Consumer<BillingProvider>(
             builder: (context, p, _) {
               return SizedBox(
-                width: 420,
+                width: 500,
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Add Product",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Add Product",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                          IconButton(onPressed: (){
+                            Navigator.pop(context);
+                          }, icon: Icon(Icons.clear))
+                        ],
+                      ),
                       const SizedBox(height: 16),
 
                       _field("Product Name", p.title, nameFN, skuFN, cap: true),
@@ -319,13 +328,13 @@ class _AddProductDialogState extends State<AddProductDialog> {
                                   focusNode: looseNoFN,
                                   child: ListTile(
                                     tileColor: looseNoFN.hasFocus
-                                        ? Colors.green.withOpacity(0.12)
+                                        ? colorsConst.primary
                                         : null,
                                     leading: Icon(
                                       p.isLoose == 0
                                           ? Icons.radio_button_checked
                                           : Icons.radio_button_off,
-                                      color: p.isLoose == 0 ? Colors.green : Colors.grey,
+                                      color: p.isLoose == 0 ? colorsConst.primary : Colors.grey,
                                     ),
                                     title: const Text("No"),
                                     onTap: () {
@@ -340,13 +349,13 @@ class _AddProductDialogState extends State<AddProductDialog> {
                                   focusNode: looseYesFN,
                                   child: ListTile(
                                     tileColor: looseYesFN.hasFocus
-                                        ? Colors.green.withOpacity(0.12)
+                                        ? colorsConst.primary
                                         : null,
                                     leading: Icon(
                                       p.isLoose == 1
                                           ? Icons.radio_button_checked
                                           : Icons.radio_button_off,
-                                      color: p.isLoose == 1 ? Colors.green : Colors.grey,
+                                      color: p.isLoose == 1 ? colorsConst.primary : Colors.grey,
                                     ),
                                     title: const Text("Yes"),
                                     onTap: () {
@@ -378,7 +387,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           child: ElevatedButton(
                             onPressed: p.loading ? null : () => _save(p),
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green),
+                                backgroundColor: colorsConst.primary),
                             child: const Text("SAVE PRODUCT",
                                 style: TextStyle(
                                     fontSize: 16,

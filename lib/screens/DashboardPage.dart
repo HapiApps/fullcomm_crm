@@ -130,7 +130,7 @@ class _DashboardPageState extends State<DashboardPage>
       }
       controllers.getRangeStatus();
       controllers.getIndustries();
-      productCtr.getProducts();
+      // productCtr.getProducts();
       productCtr.getOrderDetails();
       productCtr.getQuotationDetails();
     });
@@ -826,6 +826,1304 @@ void checkDate(){
                             20.height,
                             Row(
                               children: [
+                                Container(
+                                  width: screenWidth/3,
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(18),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        blurRadius: 10,
+                                        color: Colors.black12,
+                                        offset: Offset(0, 4),
+                                      )
+                                    ],
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          CustomText(text: "Appointments", isCopy: false,isBold: true,size: 15,textAlign: TextAlign.start,),
+                                          if(controllers.storage.read("role") == "See All Customer Records")
+                                            Obx(() {
+                                              return Container(
+                                                padding: const EdgeInsets.all(6),
+                                                decoration: _filterGroupDecoration(),
+                                                child: Row(
+                                                  children: dashController.filterType.map((filter) {
+                                                    final bool isSelected = remController.filterApp.value == filter;
+                                                    return MouseRegion(
+                                                      cursor: SystemMouseCursors.click,
+                                                      child: GestureDetector(
+                                                        behavior: HitTestBehavior.opaque,
+                                                        onTap: () {
+                                                          remController.filterApp.value = filter;
+                                                          remController.filterAndSortMeetings(
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectMeetingType.value,
+                                                            sortField: controllers.sortFieldMeetingActivity.value,
+                                                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          width: MediaQuery.of(context).size.width*0.05,
+                                                          decoration: BoxDecoration(
+                                                            color: isSelected
+                                                                ? Colors.white
+                                                                : Colors.transparent,
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            boxShadow: isSelected
+                                                                ? const [
+                                                              BoxShadow(
+                                                                color: Colors.black12,
+                                                                blurRadius: 6,
+                                                                offset: Offset(0, 2),
+                                                              ),
+                                                            ]
+                                                                : null,
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(5.0),
+                                                            child: CustomText(
+                                                              text: filter,
+                                                              isCopy: false,
+                                                              size: 12,
+                                                              isBold: true,
+                                                              colors: isSelected
+                                                                  ? const Color(0xff0078D7)
+                                                                  : const Color(0xff666666),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              );
+                                            }),
+                                        ],
+                                      ),5.height,
+                                      Container(
+                                        color: Colors.white,
+                                        width: screenWidth/3,
+                                        child: Table(
+                                          columnWidths: {
+                                            0: FixedColumnWidth(100),
+                                            1: FixedColumnWidth(100),
+                                            2: FixedColumnWidth(100),
+                                            3: FixedColumnWidth(100),
+                                          },
+                                          border: TableBorder(
+                                            horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                            verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                          ),
+                                          children: [
+                                            TableRow(
+                                                decoration: BoxDecoration(
+                                                    color: colorsConst.primary,
+                                                    borderRadius: const BorderRadius.only(
+                                                        topLeft: Radius.circular(5),
+                                                        topRight: Radius.circular(5))),
+                                                children: [
+                                                  headerCell(2, Row(
+                                                    children: [
+                                                      CustomText(//1
+                                                        textAlign: TextAlign.left,
+                                                        text: "Lead Name",
+                                                        size: 15,
+                                                        isBold: true,
+                                                        isCopy: true,
+                                                        colors: Colors.white,
+                                                      ),
+                                                      3.width,
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                          if(controllers.sortFieldMeetingActivity.value=='customerName' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                                            controllers.sortOrderMeetingActivity.value='desc';
+                                                          }else{
+                                                            controllers.sortOrderMeetingActivity.value='asc';
+                                                          }
+                                                          controllers.sortFieldMeetingActivity.value='customerName';
+                                                          remController.filterAndSortMeetings(
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectMeetingType.value,
+                                                            sortField: controllers.sortFieldMeetingActivity.value,
+                                                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                          );
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldMeetingActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderMeetingActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                  headerCell(3, Row(
+                                                    children: [
+                                                      CustomText(//2
+                                                        textAlign: TextAlign.left,
+                                                        text: "Company name",
+                                                        isCopy: true,
+                                                        size: 15,
+                                                        isBold: true,
+                                                        colors: Colors.white,
+                                                      ),
+                                                      3.width,
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                          if(controllers.sortFieldMeetingActivity.value=='companyName' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                                            controllers.sortOrderMeetingActivity.value='desc';
+                                                          }else{
+                                                            controllers.sortOrderMeetingActivity.value='asc';
+                                                          }
+                                                          controllers.sortFieldMeetingActivity.value='companyName';
+                                                          remController.filterAndSortMeetings(
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectMeetingType.value,
+                                                            sortField: controllers.sortFieldMeetingActivity.value,
+                                                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                          );
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldMeetingActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderMeetingActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                  headerCell(3, Row(
+                                                    children: [
+                                                      CustomText(//2
+                                                        textAlign: TextAlign.left,
+                                                        text: "Employee",
+                                                        isCopy: true,
+                                                        size: 15,
+                                                        isBold: true,
+                                                        colors: Colors.white,
+                                                      ),
+                                                      3.width,
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                          if(controllers.sortFieldMeetingActivity.value=='emp' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                                            controllers.sortOrderMeetingActivity.value='desc';
+                                                          }else{
+                                                            controllers.sortOrderMeetingActivity.value='asc';
+                                                          }
+                                                          controllers.sortFieldMeetingActivity.value='emp';
+                                                          remController.filterAndSortMeetings(
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectMeetingType.value,
+                                                            sortField: controllers.sortFieldMeetingActivity.value,
+                                                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                          );
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldMeetingActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderMeetingActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                  headerCell(7, Row(
+                                                    children: [
+                                                      CustomText(
+                                                        textAlign: TextAlign.center,
+                                                        text: "Date & Time",
+                                                        isCopy: true,
+                                                        size: 15,
+                                                        isBold: true,
+                                                        colors: Colors.white,
+                                                      ),
+                                                      3.width,
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                          if(controllers.sortFieldMeetingActivity.value=='date' && controllers.sortOrderMeetingActivity.value=='asc'){
+                                                            controllers.sortOrderMeetingActivity.value='desc';
+                                                          }else{
+                                                            controllers.sortOrderMeetingActivity.value='asc';
+                                                          }
+                                                          controllers.sortFieldMeetingActivity.value='date';
+                                                          remController.filterAndSortMeetings(
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectMeetingType.value,
+                                                            sortField: controllers.sortFieldMeetingActivity.value,
+                                                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                          );
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldMeetingActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderMeetingActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),)
+                                                ]),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        color: Colors.white,
+                                        width: screenWidth/3,
+                                        height: 200,
+                                        child: remController.meetingFilteredList.isEmpty?
+                                        Center(
+                                          child: CustomText(
+                                            text: "No Appointments",
+                                            isCopy: true,
+                                            colors: colorsConst.textColor,
+                                            size: 16,),
+                                        )
+                                            :RawKeyboardListener(
+                                          focusNode: _focusNode,
+                                          autofocus: true,
+                                          child: ListView.builder(
+                                            controller: _controller,
+                                            shrinkWrap: true,
+                                            physics: const ScrollPhysics(),
+                                            itemCount: remController.meetingFilteredList.length,
+                                            itemBuilder: (context, index) {
+                                              final data = remController.meetingFilteredList[index];
+                                              return Table(
+                                                columnWidths: {
+                                                  0: FixedColumnWidth(100),
+                                                  1: FixedColumnWidth(100),
+                                                  2: FixedColumnWidth(100),
+                                                  3: FixedColumnWidth(100),
+                                                },
+                                                border: TableBorder(
+                                                  horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                                  verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                                  // bottom:  BorderSide(width: 0.2, color: Colors.green.shade400),
+                                                ),
+                                                children:[
+                                                  TableRow(
+                                                      decoration: BoxDecoration(
+                                                        color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                                      ),
+                                                      children:[
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showMeetingDialog(context, remController.meetingFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: data.cusName.toString()=="null"?"":data.cusName.toString(),
+                                                              size: 13,
+                                                              isCopy: true,
+                                                              colors:colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showMeetingDialog(context, remController.meetingFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text:data.comName.toString()=="null"?"":data.comName.toString(),
+                                                              size: 13,
+                                                              isCopy: true,
+                                                              colors: colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showMeetingDialog(context, remController.meetingFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text:data.employeeName.toString()=="null"?"":data.employeeName.toString(),
+                                                              size: 13,
+                                                              isCopy: true,
+                                                              colors: colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showMeetingDialog(context, remController.meetingFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: formatFirstDate("${data.dates} ${data.time}"),
+                                                              size: 13,
+                                                              isCopy: true,
+                                                              colors: colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ]
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),15.width,
+                                // Container(
+                                //   width: screenWidth/2.3,
+                                //   padding: const EdgeInsets.all(16),
+                                //   decoration: BoxDecoration(
+                                //     color: Colors.white,
+                                //     borderRadius: BorderRadius.circular(18),
+                                //     boxShadow: const [
+                                //       BoxShadow(
+                                //         blurRadius: 10,
+                                //         color: Colors.black12,
+                                //         offset: Offset(0, 4),
+                                //       )
+                                //     ],
+                                //   ),
+                                //   child: Column(
+                                //     crossAxisAlignment: CrossAxisAlignment.start,
+                                //     children: [
+                                //       Row(
+                                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                //         children: [
+                                //           CustomText(text: "Call Records", isCopy: false,isBold: true,size: 15,),
+                                //           if(controllers.storage.read("role") == "See All Customer Records")
+                                //           Obx(() {
+                                //               return Container(
+                                //                 padding: const EdgeInsets.all(6),
+                                //                 decoration: _filterGroupDecoration(),
+                                //                 child: Row(
+                                //                   children: dashController.filterType.map((filter) {
+                                //                     final bool isSelected = remController.filterCall.value == filter;
+                                //                     return MouseRegion(
+                                //                       cursor: SystemMouseCursors.click,
+                                //                       child: GestureDetector(
+                                //                         behavior: HitTestBehavior.opaque,
+                                //                         onTap: () {
+                                //                           remController.filterCall.value = filter;
+                                //                           remController.filterAndSortCalls(
+                                //                             allCalls: controllers.callActivity,
+                                //                             searchText: controllers.searchText.value.toLowerCase(),
+                                //                             callType: controllers.selectCallType.value,
+                                //                             sortField: controllers.sortFieldCallActivity.value,
+                                //                             sortOrder: controllers.sortOrderCallActivity.value,
+                                //                             selectedMonth: remController.selectedCallMonth.value,
+                                //                             selectedRange: remController.selectedCallRange.value,
+                                //                             selectedDateFilter: remController.selectedCallSortBy.value,
+                                //                           );
+                                //                         },
+                                //                         child: Container(
+                                //                           width: MediaQuery.of(context).size.width*0.05,
+                                //                           decoration: BoxDecoration(
+                                //                             color: isSelected
+                                //                                 ? Colors.white
+                                //                                 : Colors.transparent,
+                                //                             borderRadius: BorderRadius.circular(10),
+                                //                             boxShadow: isSelected
+                                //                                 ? const [
+                                //                               BoxShadow(
+                                //                                 color: Colors.black12,
+                                //                                 blurRadius: 6,
+                                //                                 offset: Offset(0, 2),
+                                //                               ),
+                                //                             ]
+                                //                                 : null,
+                                //                           ),
+                                //                           child: Padding(
+                                //                             padding: const EdgeInsets.all(5.0),
+                                //                             child: CustomText(
+                                //                               text: filter,
+                                //                               isCopy: false,
+                                //                               size: 12,
+                                //                               isBold: true,
+                                //                               colors: isSelected
+                                //                                   ? const Color(0xff0078D7)
+                                //                                   : const Color(0xff666666),
+                                //                             ),
+                                //                           ),
+                                //                         ),
+                                //                       ),
+                                //                     );
+                                //                   }).toList(),
+                                //                 ),
+                                //               );
+                                //             }),
+                                //         ],
+                                //       ),5.height,
+                                //       Container(
+                                //         color: Colors.white,
+                                //         width: screenWidth/2.3,
+                                //         child: Table(
+                                //           columnWidths: {
+                                //             0: FixedColumnWidth(100),
+                                //             1: FixedColumnWidth(100),
+                                //             2: FixedColumnWidth(100),
+                                //             3: FixedColumnWidth(100),
+                                //             4: FixedColumnWidth(100),
+                                //             5: FixedColumnWidth(100),
+                                //           },
+                                //           border: TableBorder(
+                                //             horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                //             verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                //           ),
+                                //           children: [
+                                //             TableRow(
+                                //                 decoration: BoxDecoration(
+                                //                     color: colorsConst.primary,
+                                //                     borderRadius: const BorderRadius.only(
+                                //                         topLeft: Radius.circular(5),
+                                //                         topRight: Radius.circular(5))),
+                                //                 children: [
+                                //                   headerCell(1, Row(
+                                //                     children: [
+                                //                       CustomText(//1
+                                //                         textAlign: TextAlign.left,
+                                //                         text: "Lead Name",
+                                //                         size: 13,
+                                //                         isBold: true,
+                                //                         isCopy: true,
+                                //                         colors: Colors.white,
+                                //                       ),3.width,
+                                //                       GestureDetector(
+                                //                         onTap: (){
+                                //                           if(controllers.sortFieldCallActivity.value=='customerName' && controllers.sortOrderCallActivity.value=='asc'){
+                                //                             controllers.sortOrderCallActivity.value='desc';
+                                //                           }else{
+                                //                             controllers.sortOrderCallActivity.value='asc';
+                                //                           }
+                                //                           controllers.sortFieldCallActivity.value='customerName';
+                                //                           remController.filterAndSortCalls(
+                                //                             allCalls: controllers.callActivity,
+                                //                             searchText: controllers.searchText.value.toLowerCase(),
+                                //                             callType: controllers.selectCallType.value,
+                                //                             sortField: controllers.sortFieldCallActivity.value,
+                                //                             sortOrder: controllers.sortOrderCallActivity.value,
+                                //                             selectedMonth: remController.selectedCallMonth.value,
+                                //                             selectedRange: remController.selectedCallRange.value,
+                                //                             selectedDateFilter: remController.selectedCallSortBy.value,
+                                //                           );
+                                //                         },
+                                //                         child: Obx(() => Image.asset(
+                                //                           controllers.sortFieldCallActivity.value.isEmpty
+                                //                               ? "assets/images/arrow.png"
+                                //                               : controllers.sortOrderCallActivity.value == 'asc'
+                                //                               ? "assets/images/arrow_up.png"
+                                //                               : "assets/images/arrow_down.png",
+                                //                           width: 15,
+                                //                           height: 15,
+                                //                         ),
+                                //                         ),
+                                //                       ),
+                                //                     ],
+                                //                   ),),
+                                //                   headerCell(1, Row(
+                                //                     children: [
+                                //                       CustomText(//1
+                                //                         textAlign: TextAlign.left,
+                                //                         text: "Company",
+                                //                         size: 13,
+                                //                         isBold: true,
+                                //                         isCopy: true,
+                                //                         colors: Colors.white,
+                                //                       ),3.width,
+                                //                       GestureDetector(
+                                //                         onTap: (){
+                                //                           if(controllers.sortFieldCallActivity.value=='company' && controllers.sortOrderCallActivity.value=='asc'){
+                                //                             controllers.sortOrderCallActivity.value='desc';
+                                //                           }else{
+                                //                             controllers.sortOrderCallActivity.value='asc';
+                                //                           }
+                                //                           controllers.sortFieldCallActivity.value='company';
+                                //                           remController.filterAndSortCalls(
+                                //                             allCalls: controllers.callActivity,
+                                //                             searchText: controllers.searchText.value.toLowerCase(),
+                                //                             callType: controllers.selectCallType.value,
+                                //                             sortField: controllers.sortFieldCallActivity.value,
+                                //                             sortOrder: controllers.sortOrderCallActivity.value,
+                                //                             selectedMonth: remController.selectedCallMonth.value,
+                                //                             selectedRange: remController.selectedCallRange.value,
+                                //                             selectedDateFilter: remController.selectedCallSortBy.value,
+                                //                           );
+                                //                         },
+                                //                         child: Obx(() => Image.asset(
+                                //                           controllers.sortFieldCallActivity.value.isEmpty
+                                //                               ? "assets/images/arrow.png"
+                                //                               : controllers.sortOrderCallActivity.value == 'asc'
+                                //                               ? "assets/images/arrow_up.png"
+                                //                               : "assets/images/arrow_down.png",
+                                //                           width: 15,
+                                //                           height: 15,
+                                //                         ),
+                                //                         ),
+                                //                       ),
+                                //                     ],
+                                //                   ),),
+                                //                   headerCell(2, Row(
+                                //                     children: [
+                                //                       CustomText(
+                                //                         textAlign: TextAlign.center,
+                                //                         text: "Call Date",
+                                //                         isCopy: true,
+                                //                         size: 13,
+                                //                         isBold: true,
+                                //                         colors: Colors.white,
+                                //                       ),3.width,
+                                //                       GestureDetector(
+                                //                         onTap: (){
+                                //                           if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
+                                //                             controllers.sortOrderCallActivity.value='desc';
+                                //                           }else{
+                                //                             controllers.sortOrderCallActivity.value='asc';
+                                //                           }
+                                //                           controllers.sortFieldCallActivity.value='date';
+                                //                           remController.filterAndSortCalls(
+                                //                             allCalls: controllers.callActivity,
+                                //                             searchText: controllers.searchText.value.toLowerCase(),
+                                //                             callType: controllers.selectCallType.value,
+                                //                             sortField: controllers.sortFieldCallActivity.value,
+                                //                             sortOrder: controllers.sortOrderCallActivity.value,
+                                //                             selectedMonth: remController.selectedCallMonth.value,
+                                //                             selectedRange: remController.selectedCallRange.value,
+                                //                             selectedDateFilter: remController.selectedCallSortBy.value,
+                                //                           );
+                                //                         },
+                                //                         child: Obx(() => Image.asset(
+                                //                           controllers.sortFieldCallActivity.value.isEmpty
+                                //                               ? "assets/images/arrow.png"
+                                //                               : controllers.sortOrderCallActivity.value == 'asc'
+                                //                               ? "assets/images/arrow_up.png"
+                                //                               : "assets/images/arrow_down.png",
+                                //                           width: 15,
+                                //                           height: 15,
+                                //                         ),
+                                //                         ),
+                                //                       ),
+                                //                     ],
+                                //                   ),),
+                                //                   headerCell(3, Row(
+                                //                     children: [
+                                //                       CustomText(
+                                //                         textAlign: TextAlign.center,
+                                //                         text: "Call Type",
+                                //                         isCopy: true,
+                                //                         size: 13,
+                                //                         isBold: true,
+                                //                         colors: Colors.white,
+                                //                       ),3.width,
+                                //                       GestureDetector(
+                                //                         onTap: (){
+                                //                           if(controllers.sortFieldCallActivity.value=='type' && controllers.sortOrderCallActivity.value=='asc'){
+                                //                             controllers.sortOrderCallActivity.value='desc';
+                                //                           }else{
+                                //                             controllers.sortOrderCallActivity.value='asc';
+                                //                           }
+                                //                           controllers.sortFieldCallActivity.value='type';
+                                //                           remController.filterAndSortCalls(
+                                //                             allCalls: controllers.callActivity,
+                                //                             searchText: controllers.searchText.value.toLowerCase(),
+                                //                             callType: controllers.selectCallType.value,
+                                //                             sortField: controllers.sortFieldCallActivity.value,
+                                //                             sortOrder: controllers.sortOrderCallActivity.value,
+                                //                             selectedMonth: remController.selectedCallMonth.value,
+                                //                             selectedRange: remController.selectedCallRange.value,
+                                //                             selectedDateFilter: remController.selectedCallSortBy.value,
+                                //                           );
+                                //                         },
+                                //                         child: Obx(() => Image.asset(
+                                //                           controllers.sortFieldCallActivity.value.isEmpty
+                                //                               ? "assets/images/arrow.png"
+                                //                               : controllers.sortOrderCallActivity.value == 'asc'
+                                //                               ? "assets/images/arrow_up.png"
+                                //                               : "assets/images/arrow_down.png",
+                                //                           width: 15,
+                                //                           height: 15,
+                                //                         ),
+                                //                         ),
+                                //                       ),
+                                //                     ],
+                                //                   ),),
+                                //                   headerCell(4, Row(
+                                //                     children: [
+                                //                       CustomText(
+                                //                         textAlign: TextAlign.center,
+                                //                         text: "Call Status",
+                                //                         isCopy: true,
+                                //                         size: 13,
+                                //                         isBold: true,
+                                //                         colors: Colors.white,
+                                //                       ),3.width,
+                                //                       GestureDetector(
+                                //                         onTap: (){
+                                //                           if(controllers.sortFieldCallActivity.value=='status' && controllers.sortOrderCallActivity.value=='asc'){
+                                //                             controllers.sortOrderCallActivity.value='desc';
+                                //                           }else{
+                                //                             controllers.sortOrderCallActivity.value='asc';
+                                //                           }
+                                //                           controllers.sortFieldCallActivity.value='status';
+                                //                           remController.filterAndSortCalls(
+                                //                             allCalls: controllers.callActivity,
+                                //                             searchText: controllers.searchText.value.toLowerCase(),
+                                //                             callType: controllers.selectCallType.value,
+                                //                             sortField: controllers.sortFieldCallActivity.value,
+                                //                             sortOrder: controllers.sortOrderCallActivity.value,
+                                //                             selectedMonth: remController.selectedCallMonth.value,
+                                //                             selectedRange: remController.selectedCallRange.value,
+                                //                             selectedDateFilter: remController.selectedCallSortBy.value,
+                                //                           );
+                                //                         },
+                                //                         child: Obx(() => Image.asset(
+                                //                           controllers.sortFieldCallActivity.value.isEmpty
+                                //                               ? "assets/images/arrow.png"
+                                //                               : controllers.sortOrderCallActivity.value == 'asc'
+                                //                               ? "assets/images/arrow_up.png"
+                                //                               : "assets/images/arrow_down.png",
+                                //                           width: 15,
+                                //                           height: 15,
+                                //                         ),
+                                //                         ),
+                                //                       ),
+                                //                     ],
+                                //                   ),),
+                                //                   headerCell(5, Row(
+                                //                     children: [
+                                //                       CustomText(
+                                //                         textAlign: TextAlign.center,
+                                //                         text: "Added By",
+                                //                         isCopy: true,
+                                //                         size: 13,
+                                //                         isBold: true,
+                                //                         colors: Colors.white,
+                                //                       ),3.width,
+                                //                       GestureDetector(
+                                //                         onTap: (){
+                                //                           if(controllers.sortFieldCallActivity.value=='addedBy' && controllers.sortOrderCallActivity.value=='asc'){
+                                //                             controllers.sortOrderCallActivity.value='desc';
+                                //                           }else{
+                                //                             controllers.sortOrderCallActivity.value='asc';
+                                //                           }
+                                //                           controllers.sortFieldCallActivity.value='addedBy';
+                                //                           remController.filterAndSortCalls(
+                                //                             allCalls: controllers.callActivity,
+                                //                             searchText: controllers.searchText.value.toLowerCase(),
+                                //                             callType: controllers.selectCallType.value,
+                                //                             sortField: controllers.sortFieldCallActivity.value,
+                                //                             sortOrder: controllers.sortOrderCallActivity.value,
+                                //                             selectedMonth: remController.selectedCallMonth.value,
+                                //                             selectedRange: remController.selectedCallRange.value,
+                                //                             selectedDateFilter: remController.selectedCallSortBy.value,
+                                //                           );
+                                //                         },
+                                //                         child: Obx(() => Image.asset(
+                                //                           controllers.sortFieldCallActivity.value.isEmpty
+                                //                               ? "assets/images/arrow.png"
+                                //                               : controllers.sortOrderCallActivity.value == 'asc'
+                                //                               ? "assets/images/arrow_up.png"
+                                //                               : "assets/images/arrow_down.png",
+                                //                           width: 15,
+                                //                           height: 15,
+                                //                         ),
+                                //                         ),
+                                //                       ),
+                                //                     ],
+                                //                   ),)
+                                //                 ]),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //       Container(
+                                //         color: Colors.white,
+                                //         width: screenWidth/2.3,
+                                //         height: 200,
+                                //         child: remController.callFilteredList.isEmpty?
+                                //         Center(
+                                //           child: CustomText(
+                                //             text: "No Call Records",
+                                //             isCopy: true,
+                                //             colors: colorsConst.textColor,
+                                //             size: 16,),
+                                //         )
+                                //             :RawKeyboardListener(
+                                //           focusNode: _focusNode,
+                                //           autofocus: true,
+                                //           child: ListView.builder(
+                                //             controller: _controller,
+                                //             shrinkWrap: true,
+                                //             physics: const ScrollPhysics(),
+                                //             itemCount: remController.callFilteredList.length,
+                                //             itemBuilder: (context, index) {
+                                //               final data = remController.callFilteredList[index];
+                                //               return Table(
+                                //                 columnWidths: {
+                                //                   0: FixedColumnWidth(100),
+                                //                   1: FixedColumnWidth(100),
+                                //                   2: FixedColumnWidth(100),
+                                //                   3: FixedColumnWidth(100),
+                                //                   4: FixedColumnWidth(100),
+                                //                   5: FixedColumnWidth(100),
+                                //                 },
+                                //                 border: TableBorder(
+                                //                   horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                //                   verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                //                   // bottom:  BorderSide(width: 0.2, color: Colors.green.shade400),
+                                //                 ),
+                                //                 children:[
+                                //                   TableRow(
+                                //                       decoration: BoxDecoration(
+                                //                         color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                //                       ),
+                                //                       children:[
+                                //                         InkWell(
+                                //                           onTap:(){
+                                //                             showCallDialog(context,remController.callFilteredList,index);
+                                //                           },
+                                //                           child: Padding(
+                                //                             padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                //                             child: CustomText(
+                                //                               textAlign: TextAlign.left,
+                                //                               text: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                //                               size: 13,
+                                //                               isCopy: true,
+                                //                               colors:colorsConst.textColor,
+                                //                             ),
+                                //                           ),
+                                //                         ),
+                                //                         InkWell(
+                                //                           onTap:(){
+                                //                             showCallDialog(context,remController.callFilteredList,index);
+                                //                           },
+                                //                           child: Padding(
+                                //                             padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                //                             child: CustomText(
+                                //                               textAlign: TextAlign.left,
+                                //                               text: data.companyName.toString()=="null"?"":data.companyName.toString(),
+                                //                               size: 13,
+                                //                               isCopy: true,
+                                //                               colors:colorsConst.textColor,
+                                //                             ),
+                                //                           ),
+                                //                         ),
+                                //                         InkWell(
+                                //                           onTap:(){
+                                //                             showCallDialog(context,remController.callFilteredList,index);
+                                //                           },
+                                //                           child: Padding(
+                                //                             padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                //                             child: Column(
+                                //                               children: [
+                                //                                 CustomText(
+                                //                                   textAlign: TextAlign.left,
+                                //                                   text: data.sentDate.toString().split(" ")[0],
+                                //                                   size: 13,
+                                //                                   isCopy: true,
+                                //                                   colors: colorsConst.textColor,
+                                //                                 ),
+                                //                                 CustomText(
+                                //                                   textAlign: TextAlign.start,
+                                //                                   text: "${data.sentDate.toString().split(" ")[1]} ${data.sentDate.toString().split(" ")[2]}",
+                                //                                   size: 13,
+                                //                                   isCopy: true,
+                                //                                   colors: colorsConst.textColor,
+                                //                                 ),
+                                //                               ],
+                                //                             ),
+                                //                           ),
+                                //                         ),
+                                //                         InkWell(
+                                //                           onTap:(){
+                                //                             showCallDialog(context,remController.callFilteredList,index);
+                                //                           },
+                                //                           child: Padding(
+                                //                             padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                //                             child: CustomText(
+                                //                               textAlign: TextAlign.left,
+                                //                               text: data.callType,
+                                //                               size: 13,
+                                //                               isCopy: true,
+                                //                               colors: colorsConst.textColor,
+                                //                             ),
+                                //                           ),
+                                //                         ),
+                                //                         InkWell(
+                                //                           onTap:(){
+                                //                             showCallDialog(context,remController.callFilteredList,index);
+                                //                           },
+                                //                           child: Padding(
+                                //                             padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                //                             child: CustomText(
+                                //                               textAlign: TextAlign.left,
+                                //                               text: data.callStatus,
+                                //                               size: 13,
+                                //                               isCopy: true,
+                                //                               colors: colorsConst.textColor,
+                                //                             ),
+                                //                           ),
+                                //                         ),
+                                //                         InkWell(
+                                //                           onTap:(){
+                                //                             showCallDialog(context,remController.callFilteredList,index);
+                                //                           },
+                                //                           child: Padding(
+                                //                             padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                //                             child: CustomText(
+                                //                               textAlign: TextAlign.left,
+                                //                               text: data.name,
+                                //                               size: 13,
+                                //                               isCopy: true,
+                                //                               colors: colorsConst.textColor,
+                                //                             ),
+                                //                           ),
+                                //                         ),
+                                //                       ]
+                                //                   ),
+                                //                 ],
+                                //               );
+                                //             },
+                                //           ),
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
+                                Container(
+                                  width: screenWidth/2.3,
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(18),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        blurRadius: 10,
+                                        color: Colors.black12,
+                                        offset: Offset(0, 4),
+                                      )
+                                    ],
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          CustomText(text: "Reminders", isCopy: false,isBold: true,size: 15,),
+                                          if(controllers.storage.read("role") == "See All Customer Records")
+                                            Obx(() {
+                                              return Container(
+                                                padding: const EdgeInsets.all(6),
+                                                decoration: _filterGroupDecoration(),
+                                                child: Row(
+                                                  children: dashController.filterType.map((filter) {
+                                                    final bool isSelected = remController.filterRem.value == filter;
+                                                    return MouseRegion(
+                                                      cursor: SystemMouseCursors.click,
+                                                      child: GestureDetector(
+                                                        behavior: HitTestBehavior.opaque,
+                                                        onTap: () {
+                                                          remController.filterRem.value = filter;
+                                                          remController.sortReminders();
+                                                        },
+                                                        child: Container(
+                                                          width: MediaQuery.of(context).size.width*0.05,
+                                                          decoration: BoxDecoration(
+                                                            color: isSelected
+                                                                ? Colors.white
+                                                                : Colors.transparent,
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            boxShadow: isSelected
+                                                                ? const [
+                                                              BoxShadow(
+                                                                color: Colors.black12,
+                                                                blurRadius: 6,
+                                                                offset: Offset(0, 2),
+                                                              ),
+                                                            ]
+                                                                : null,
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(5.0),
+                                                            child: CustomText(
+                                                              text: filter,
+                                                              isCopy: false,
+                                                              size: 12,
+                                                              isBold: true,
+                                                              colors: isSelected
+                                                                  ? const Color(0xff0078D7)
+                                                                  : const Color(0xff666666),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              );
+                                            }),
+                                        ],
+                                      ),5.height,
+                                      Container(
+                                        color: Colors.white,
+                                        width: screenWidth/1.29,
+                                        child: Table(
+                                          // columnWidths: {
+                                          //   0: FixedColumnWidth(5),
+                                          //   1: FixedColumnWidth(5),
+                                          //   2: FixedColumnWidth(5),
+                                          //   3: FixedColumnWidth(5),
+                                          //   4: FixedColumnWidth(5),
+                                          // },
+                                          border: TableBorder(
+                                            horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                            verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                          ),
+                                          children: [
+                                            TableRow(
+                                                decoration: BoxDecoration(
+                                                    color: colorsConst.primary,
+                                                    borderRadius: const BorderRadius.only(
+                                                        topLeft: Radius.circular(5),
+                                                        topRight: Radius.circular(5))),
+                                                children: [
+                                                  headerCell(2, Row(
+                                                    children: [
+                                                      CustomText(//1
+                                                        textAlign: TextAlign.left,
+                                                        text: "Event Name",
+                                                        size: 15,
+                                                        isBold: true,
+                                                        isCopy: true,
+                                                        colors: Colors.white,
+                                                      ),
+                                                      3.width,
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          if (remController.sortFieldCallActivity.value == 'title' &&
+                                                              remController.sortOrderCallActivity.value == 'asc') {
+                                                            remController.sortOrderCallActivity.value = 'desc';
+                                                          } else {
+                                                            remController.sortOrderCallActivity.value = 'asc';
+                                                          }
+                                                          remController.sortFieldCallActivity.value = 'title';
+                                                          remController.sortReminders();
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldCallActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        )),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                  headerCell(3, Row(
+                                                    children: [
+                                                      CustomText(//2
+                                                        textAlign: TextAlign.left,
+                                                        text: "Type",
+                                                        isCopy: true,
+                                                        size: 15,
+                                                        isBold: true,
+                                                        colors: Colors.white,
+                                                      ),
+                                                      3.width,
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          if (remController.sortFieldCallActivity.value == 'type' &&
+                                                              remController.sortOrderCallActivity.value == 'asc') {
+                                                            remController.sortOrderCallActivity.value = 'desc';
+                                                          } else {
+                                                            remController.sortOrderCallActivity.value = 'asc';
+                                                          }
+                                                          remController.sortFieldCallActivity.value = 'type';
+                                                          remController.sortReminders();
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldCallActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        )),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                  headerCell(7, Row(
+                                                    children: [
+                                                      CustomText(
+                                                        textAlign: TextAlign.center,
+                                                        text: "Lead Name",
+                                                        isCopy: true,
+                                                        size: 15,
+                                                        isBold: true,
+                                                        colors: Colors.white,
+                                                      ),
+                                                      3.width,
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          if (remController.sortBy.value == 'customerName' &&
+                                                              remController.sortOrderCallActivity.value == 'asc') {
+                                                            remController.sortOrderCallActivity.value = 'desc';
+                                                          } else {
+                                                            remController.sortOrderCallActivity.value = 'asc';
+                                                          }
+                                                          remController.sortBy.value = 'customerName';
+                                                          remController.sortReminders();
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          remController.sortBy.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        )),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                  headerCell(7, Row(
+                                                    children: [
+                                                      CustomText(
+                                                        textAlign: TextAlign.center,
+                                                        text: "Employee Name",
+                                                        isCopy: true,
+                                                        size: 15,
+                                                        isBold: true,
+                                                        colors: Colors.white,
+                                                      ),
+                                                      3.width,
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          if (remController.sortFieldCallActivity.value == 'employeeName' &&
+                                                              remController.sortOrderCallActivity.value == 'asc') {
+                                                            remController.sortOrderCallActivity.value = 'desc';
+                                                          } else {
+                                                            remController.sortOrderCallActivity.value = 'asc';
+                                                          }
+                                                          remController.sortFieldCallActivity.value = 'employeeName';
+                                                          remController.sortReminders();
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldCallActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        )),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                  headerCell(7, Row(
+                                                    children: [
+                                                      CustomText(
+                                                        textAlign: TextAlign.center,
+                                                        text: "Start & End Date",
+                                                        isCopy: true,
+                                                        size: 15,
+                                                        isBold: true,
+                                                        colors: Colors.white,
+                                                      ),
+                                                      3.width,
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          if (remController.sortFieldCallActivity.value == 'startDate' &&
+                                                              remController.sortOrderCallActivity.value == 'asc') {
+                                                            remController.sortOrderCallActivity.value = 'desc';
+                                                          } else {
+                                                            remController.sortOrderCallActivity.value = 'asc';
+                                                          }
+                                                          remController.sortFieldCallActivity.value = 'startDate';
+                                                          remController.sortReminders();
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldCallActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        )),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                ]),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        color: Colors.white,
+                                        width: screenWidth/1.29,
+                                        height: 200,
+                                        child: remController.reminderFilteredList.isEmpty?
+                                        Center(
+                                          child: CustomText(
+                                            text: "No Reminders",
+                                            isCopy: true,
+                                            colors: colorsConst.textColor,
+                                            size: 16,),
+                                        )
+                                            :RawKeyboardListener(
+                                          focusNode: _focusNode,
+                                          autofocus: true,
+                                          child: ListView.builder(
+                                            controller: _controller,
+                                            shrinkWrap: true,
+                                            physics: const ScrollPhysics(),
+                                            itemCount: remController.reminderFilteredList.length,
+                                            itemBuilder: (context, index) {
+                                              final data = remController.reminderFilteredList[index];
+                                              return Table(
+                                                // columnWidths: {
+                                                //   0: FixedColumnWidth(5),
+                                                //   1: FixedColumnWidth(5),
+                                                //   2: FixedColumnWidth(5),
+                                                //   3: FixedColumnWidth(5),
+                                                //   4: FixedColumnWidth(5),
+                                                // },
+                                                border: TableBorder(
+                                                  horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                                  verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                                  // bottom:  BorderSide(width: 0.2, color: Colors.green.shade400),
+                                                ),
+                                                children:[
+                                                  TableRow(
+                                                      decoration: BoxDecoration(
+                                                        color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                                      ),
+                                                      children:[
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showReminderDialog(context,remController.reminderFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: data.title.toString(),
+                                                              size: 15,
+                                                              isCopy: true,
+                                                              colors:colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showReminderDialog(context,remController.reminderFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: data.type.toString()=="1"?"Follow-up":"Appointment",
+                                                              size: 15,
+                                                              isCopy: true,
+                                                              colors:colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showReminderDialog(context,remController.reminderFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                                              size: 15,
+                                                              isCopy: true,
+                                                              colors:colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showReminderDialog(context,remController.reminderFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: data.employeeName.toString(),
+                                                              size: 15,
+                                                              isCopy: true,
+                                                              colors:colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showReminderDialog(context,remController.reminderFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: controllers.formatDate(data.startDt.toString()),
+                                                              size: 15,
+                                                              isCopy: true,
+                                                              colors:colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ]
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: screenWidth/9,
+                                )
+                              ],
+                            ),
+                            20.height,
+                            Row(
+                              children: [
                                 SizedBox(
                                   width: screenWidth/1.29,
                                   child: Row(
@@ -850,1433 +2148,15 @@ void checkDate(){
                                                     value: double.tryParse(
                                                         dashController.leadReport[i]["customer_count"].toString()) ??
                                                         0,
-                                                    color: dashController.color[i],
+                                                    color: controllers.leadColors[i],
                                                   ),
                                             ]
                                         ),
                                       ),
                                       CustomerActivityCard(),
-                                      InkWell(
-                                        onTap: (){
-                                          remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
-                                          controllers.changeTab(0);
-                                          controllers.selectCallType.value = "All";
-                                          Navigator.push( context,
-                                          PageRouteBuilder( pageBuilder: (context, animation1, animation2) =>
-                                            const Records( isReload: "true", ), transitionDuration: Duration.zero, reverseTransitionDuration: Duration.zero,
-                                          ),
-                                          );
-                                          controllers.oldIndex.value = controllers.selectedIndex.value;
-                                          controllers.selectedIndex.value = 101;
-                                        },
-                                        child: SizedBox(
-                                          width: screenWidth/3.3,
-                                          child: CustomerStatusCard(
-                                            items: [
-                                              for (var i = 0;
-                                              i < dashController.visitStatusReport.length;
-                                              i++)
-                                                CustomerStatusItem(
-                                                  label: dashController.visitStatusReport[i]["value"].toString(),
-                                                  value: int.parse(
-                                                      dashController.visitStatusReport[i]["total_count"].toString()),
-                                                  percentage: dashController.total == 0
-                                                      ? 0
-                                                      : double.parse(
-                                                      dashController.visitStatusReport[i]["total_count"].toString()) /
-                                                      dashController.total,
-                                                ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: screenWidth/9,
-                                )
-                              ],
-                            ),
-                            20.height,
-                            Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        CustomText(text: "Appointments", isCopy: false,isBold: true,size: 15,),
-                                        if(controllers.storage.read("role") == "See All Customer Records")
-                                        Row(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Radio<String>(
-                                                    value: "All",
-                                                    groupValue: remController.filterApp.value,
-                                                    activeColor: const Color(0xFF0078D7),
-                                                    onChanged: (v) {
-                                                      remController.filterApp.value="All";
-                                                      remController.filterAndSortMeetings(
-                                                        searchText: controllers.searchText.value.toLowerCase(),
-                                                        callType: controllers.selectMeetingType.value,
-                                                        sortField: controllers.sortFieldMeetingActivity.value,
-                                                        sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                      );
-                                                    },
-                                                  ),
-                                                  CustomText(
-                                                    text: "All",
-                                                    colors: Colors.black,
-                                                    size: 15,
-                                                    isCopy: true,
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Radio<String>(
-                                                    value: "My",
-                                                    groupValue: remController.filterApp.value,
-                                                    activeColor: const Color(0xFF0078D7),
-                                                    onChanged: (v) {
-                                                      remController.filterApp.value="My";
-                                                      remController.filterAndSortMeetings(
-                                                        searchText: controllers.searchText.value.toLowerCase(),
-                                                        callType: controllers.selectMeetingType.value,
-                                                        sortField: controllers.sortFieldMeetingActivity.value,
-                                                        sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                      );
-                                                    },
-                                                  ),
-                                                  CustomText(
-                                                    text: "Mine",
-                                                    colors: Colors.black,
-                                                    size: 15,
-                                                    isCopy: true,
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Radio<String>(
-                                                    value: "Team",
-                                                    groupValue: remController.filterApp.value,
-                                                    activeColor: const Color(0xFF0078D7),
-                                                    onChanged: (v) {
-                                                      remController.filterApp.value="Team";
-                                                      remController.filterAndSortMeetings(
-                                                        searchText: controllers.searchText.value.toLowerCase(),
-                                                        callType: controllers.selectMeetingType.value,
-                                                        sortField: controllers.sortFieldMeetingActivity.value,
-                                                        sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                      );
-                                                    },
-                                                  ),
-                                                  CustomText(
-                                                    text: "Team",
-                                                    colors: Colors.black,
-                                                    size: 15,
-                                                    isCopy: true,
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                      ],
-                                    ),5.height,
-                                    Container(
-                                      color: Colors.white,
-                                      width: screenWidth/3,
-                                      child: Table(
-                                        columnWidths: {
-                                          0: FixedColumnWidth(100),
-                                          1: FixedColumnWidth(100),
-                                          2: FixedColumnWidth(100),
-                                          3: FixedColumnWidth(100),
-                                        },
-                                        border: TableBorder(
-                                          horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                          verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                        ),
-                                        children: [
-                                          TableRow(
-                                              decoration: BoxDecoration(
-                                                  color: colorsConst.primary,
-                                                  borderRadius: const BorderRadius.only(
-                                                      topLeft: Radius.circular(5),
-                                                      topRight: Radius.circular(5))),
-                                              children: [
-                                                headerCell(2, Row(
-                                                  children: [
-                                                    CustomText(//1
-                                                      textAlign: TextAlign.left,
-                                                      text: "Lead Name",
-                                                      size: 13,
-                                                      isBold: true,
-                                                      isCopy: true,
-                                                      colors: Colors.white,
-                                                    ),
-                                                    3.width,
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        if(controllers.sortFieldMeetingActivity.value=='customerName' && controllers.sortOrderMeetingActivity.value=='asc'){
-                                                          controllers.sortOrderMeetingActivity.value='desc';
-                                                        }else{
-                                                          controllers.sortOrderMeetingActivity.value='asc';
-                                                        }
-                                                        controllers.sortFieldMeetingActivity.value='customerName';
-                                                        remController.filterAndSortMeetings(
-                                                          searchText: controllers.searchText.value.toLowerCase(),
-                                                          callType: controllers.selectMeetingType.value,
-                                                          sortField: controllers.sortFieldMeetingActivity.value,
-                                                          sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                        );
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldMeetingActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderMeetingActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(3, Row(
-                                                  children: [
-                                                    CustomText(//2
-                                                      textAlign: TextAlign.left,
-                                                      text: "Company name",
-                                                      isCopy: true,
-                                                      size: 13,
-                                                      isBold: true,
-                                                      colors: Colors.white,
-                                                    ),
-                                                    3.width,
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        if(controllers.sortFieldMeetingActivity.value=='companyName' && controllers.sortOrderMeetingActivity.value=='asc'){
-                                                          controllers.sortOrderMeetingActivity.value='desc';
-                                                        }else{
-                                                          controllers.sortOrderMeetingActivity.value='asc';
-                                                        }
-                                                        controllers.sortFieldMeetingActivity.value='companyName';
-                                                        remController.filterAndSortMeetings(
-                                                          searchText: controllers.searchText.value.toLowerCase(),
-                                                          callType: controllers.selectMeetingType.value,
-                                                          sortField: controllers.sortFieldMeetingActivity.value,
-                                                          sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                        );
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldMeetingActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderMeetingActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(3, Row(
-                                                  children: [
-                                                    CustomText(//2
-                                                      textAlign: TextAlign.left,
-                                                      text: "Employee",
-                                                      isCopy: true,
-                                                      size: 13,
-                                                      isBold: true,
-                                                      colors: Colors.white,
-                                                    ),
-                                                    3.width,
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        if(controllers.sortFieldMeetingActivity.value=='emp' && controllers.sortOrderMeetingActivity.value=='asc'){
-                                                          controllers.sortOrderMeetingActivity.value='desc';
-                                                        }else{
-                                                          controllers.sortOrderMeetingActivity.value='asc';
-                                                        }
-                                                        controllers.sortFieldMeetingActivity.value='emp';
-                                                        remController.filterAndSortMeetings(
-                                                          searchText: controllers.searchText.value.toLowerCase(),
-                                                          callType: controllers.selectMeetingType.value,
-                                                          sortField: controllers.sortFieldMeetingActivity.value,
-                                                          sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                        );
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldMeetingActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderMeetingActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(7, Row(
-                                                  children: [
-                                                    CustomText(
-                                                      textAlign: TextAlign.center,
-                                                      text: "Date",
-                                                      isCopy: true,
-                                                      size: 13,
-                                                      isBold: true,
-                                                      colors: Colors.white,
-                                                    ),
-                                                    3.width,
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        if(controllers.sortFieldMeetingActivity.value=='date' && controllers.sortOrderMeetingActivity.value=='asc'){
-                                                          controllers.sortOrderMeetingActivity.value='desc';
-                                                        }else{
-                                                          controllers.sortOrderMeetingActivity.value='asc';
-                                                        }
-                                                        controllers.sortFieldMeetingActivity.value='date';
-                                                        remController.filterAndSortMeetings(
-                                                          searchText: controllers.searchText.value.toLowerCase(),
-                                                          callType: controllers.selectMeetingType.value,
-                                                          sortField: controllers.sortFieldMeetingActivity.value,
-                                                          sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                        );
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldMeetingActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderMeetingActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),)
-                                              ]),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      color: Colors.white,
-                                      width: screenWidth/3,
-                                      height: 200,
-                                      child: remController.meetingFilteredList.isEmpty?
-                                      Center(
-                                        child: CustomText(
-                                          text: "No Appointments",
-                                          isCopy: true,
-                                          colors: colorsConst.textColor,
-                                          size: 16,),
-                                      )
-                                          :RawKeyboardListener(
-                                        focusNode: _focusNode,
-                                        autofocus: true,
-                                        child: ListView.builder(
-                                          controller: _controller,
-                                          shrinkWrap: true,
-                                          physics: const ScrollPhysics(),
-                                          itemCount: remController.meetingFilteredList.length,
-                                          itemBuilder: (context, index) {
-                                            final data = remController.meetingFilteredList[index];
-                                            return Table(
-                                              columnWidths: {
-                                                0: FixedColumnWidth(100),
-                                                1: FixedColumnWidth(100),
-                                                2: FixedColumnWidth(100),
-                                                3: FixedColumnWidth(100),
-                                              },
-                                              border: TableBorder(
-                                                horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                                verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                                // bottom:  BorderSide(width: 0.2, color: Colors.green.shade400),
-                                              ),
-                                              children:[
-                                                TableRow(
-                                                    decoration: BoxDecoration(
-                                                      color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                                    ),
-                                                    children:[
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showMeetingDialog(context, remController.meetingFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.cusName.toString()=="null"?"":data.cusName.toString(),
-                                                            size: 13,
-                                                            isCopy: true,
-                                                            colors:colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showMeetingDialog(context, remController.meetingFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text:data.comName.toString()=="null"?"":data.comName.toString(),
-                                                            size: 13,
-                                                            isCopy: true,
-                                                            colors: colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showMeetingDialog(context, remController.meetingFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text:data.employeeName.toString()=="null"?"":data.employeeName.toString(),
-                                                            size: 13,
-                                                            isCopy: true,
-                                                            colors: colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showMeetingDialog(context, remController.meetingFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: formatFirstDate("${data.dates} ${data.time}"),
-                                                            size: 13,
-                                                            isCopy: true,
-                                                            colors: colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ]
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),15.width,
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        CustomText(text: "Call Records", isCopy: false,isBold: true,size: 15,),
-                                        if(controllers.storage.read("role") == "See All Customer Records")
-                                        Row(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Radio<String>(
-                                                  value: "All",
-                                                  groupValue: remController.filterCall.value,
-                                                  activeColor: const Color(0xFF0078D7),
-                                                  onChanged: (v) {
-                                                    remController.filterCall.value="All";
-                                                    remController.filterAndSortCalls(
-                                                      allCalls: controllers.callActivity,
-                                                      searchText: controllers.searchText.value.toLowerCase(),
-                                                      callType: controllers.selectCallType.value,
-                                                      sortField: controllers.sortFieldCallActivity.value,
-                                                      sortOrder: controllers.sortOrderCallActivity.value,
-                                                      selectedMonth: remController.selectedCallMonth.value,
-                                                      selectedRange: remController.selectedCallRange.value,
-                                                      selectedDateFilter: remController.selectedCallSortBy.value,
-                                                    );
-                                                  },
-                                                ),
-                                                CustomText(
-                                                  text: "All",
-                                                  colors: Colors.black,
-                                                  size: 15,
-                                                  isCopy: true,
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Radio<String>(
-                                                  value: "My",
-                                                  groupValue: remController.filterCall.value,
-                                                  activeColor: const Color(0xFF0078D7),
-                                                  onChanged: (v) {
-                                                    remController.filterCall.value="My";
-                                                    remController.filterAndSortCalls(
-                                                      allCalls: controllers.callActivity,
-                                                      searchText: controllers.searchText.value.toLowerCase(),
-                                                      callType: controllers.selectCallType.value,
-                                                      sortField: controllers.sortFieldCallActivity.value,
-                                                      sortOrder: controllers.sortOrderCallActivity.value,
-                                                      selectedMonth: remController.selectedCallMonth.value,
-                                                      selectedRange: remController.selectedCallRange.value,
-                                                      selectedDateFilter: remController.selectedCallSortBy.value,
-                                                    );
-                                                  },
-                                                ),
-                                                CustomText(
-                                                  text: "Mine",
-                                                  colors: Colors.black,
-                                                  size: 15,
-                                                  isCopy: true,
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Radio<String>(
-                                                  value: "Team",
-                                                  groupValue: remController.filterCall.value,
-                                                  activeColor: const Color(0xFF0078D7),
-                                                  onChanged: (v) {
-                                                    remController.filterCall.value="Team";
-                                                    remController.filterAndSortCalls(
-                                                      allCalls: controllers.callActivity,
-                                                      searchText: controllers.searchText.value.toLowerCase(),
-                                                      callType: controllers.selectCallType.value,
-                                                      sortField: controllers.sortFieldCallActivity.value,
-                                                      sortOrder: controllers.sortOrderCallActivity.value,
-                                                      selectedMonth: remController.selectedCallMonth.value,
-                                                      selectedRange: remController.selectedCallRange.value,
-                                                      selectedDateFilter: remController.selectedCallSortBy.value,
-                                                    );
-                                                  },
-                                                ),
-                                                CustomText(
-                                                  text: "Team",
-                                                  colors: Colors.black,
-                                                  size: 15,
-                                                  isCopy: true,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),5.height,
-                                    Container(
-                                      color: Colors.white,
-                                      width: screenWidth/2.3,
-                                      child: Table(
-                                        columnWidths: {
-                                          0: FixedColumnWidth(100),
-                                          1: FixedColumnWidth(100),
-                                          2: FixedColumnWidth(100),
-                                          3: FixedColumnWidth(100),
-                                          4: FixedColumnWidth(100),
-                                          5: FixedColumnWidth(100),
-                                        },
-                                        border: TableBorder(
-                                          horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                          verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                        ),
-                                        children: [
-                                          TableRow(
-                                              decoration: BoxDecoration(
-                                                  color: colorsConst.primary,
-                                                  borderRadius: const BorderRadius.only(
-                                                      topLeft: Radius.circular(5),
-                                                      topRight: Radius.circular(5))),
-                                              children: [
-                                                headerCell(1, Row(
-                                                  children: [
-                                                    CustomText(//1
-                                                      textAlign: TextAlign.left,
-                                                      text: "Lead Name",
-                                                      size: 13,
-                                                      isBold: true,
-                                                      isCopy: true,
-                                                      colors: Colors.white,
-                                                    ),3.width,
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        if(controllers.sortFieldCallActivity.value=='customerName' && controllers.sortOrderCallActivity.value=='asc'){
-                                                          controllers.sortOrderCallActivity.value='desc';
-                                                        }else{
-                                                          controllers.sortOrderCallActivity.value='asc';
-                                                        }
-                                                        controllers.sortFieldCallActivity.value='customerName';
-                                                        remController.filterAndSortCalls(
-                                                          allCalls: controllers.callActivity,
-                                                          searchText: controllers.searchText.value.toLowerCase(),
-                                                          callType: controllers.selectCallType.value,
-                                                          sortField: controllers.sortFieldCallActivity.value,
-                                                          sortOrder: controllers.sortOrderCallActivity.value,
-                                                          selectedMonth: remController.selectedCallMonth.value,
-                                                          selectedRange: remController.selectedCallRange.value,
-                                                          selectedDateFilter: remController.selectedCallSortBy.value,
-                                                        );
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldCallActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderCallActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(1, Row(
-                                                  children: [
-                                                    CustomText(//1
-                                                      textAlign: TextAlign.left,
-                                                      text: "Company",
-                                                      size: 13,
-                                                      isBold: true,
-                                                      isCopy: true,
-                                                      colors: Colors.white,
-                                                    ),3.width,
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        if(controllers.sortFieldCallActivity.value=='company' && controllers.sortOrderCallActivity.value=='asc'){
-                                                          controllers.sortOrderCallActivity.value='desc';
-                                                        }else{
-                                                          controllers.sortOrderCallActivity.value='asc';
-                                                        }
-                                                        controllers.sortFieldCallActivity.value='company';
-                                                        remController.filterAndSortCalls(
-                                                          allCalls: controllers.callActivity,
-                                                          searchText: controllers.searchText.value.toLowerCase(),
-                                                          callType: controllers.selectCallType.value,
-                                                          sortField: controllers.sortFieldCallActivity.value,
-                                                          sortOrder: controllers.sortOrderCallActivity.value,
-                                                          selectedMonth: remController.selectedCallMonth.value,
-                                                          selectedRange: remController.selectedCallRange.value,
-                                                          selectedDateFilter: remController.selectedCallSortBy.value,
-                                                        );
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldCallActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderCallActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(2, Row(
-                                                  children: [
-                                                    CustomText(
-                                                      textAlign: TextAlign.center,
-                                                      text: "Call Date",
-                                                      isCopy: true,
-                                                      size: 13,
-                                                      isBold: true,
-                                                      colors: Colors.white,
-                                                    ),3.width,
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
-                                                          controllers.sortOrderCallActivity.value='desc';
-                                                        }else{
-                                                          controllers.sortOrderCallActivity.value='asc';
-                                                        }
-                                                        controllers.sortFieldCallActivity.value='date';
-                                                        remController.filterAndSortCalls(
-                                                          allCalls: controllers.callActivity,
-                                                          searchText: controllers.searchText.value.toLowerCase(),
-                                                          callType: controllers.selectCallType.value,
-                                                          sortField: controllers.sortFieldCallActivity.value,
-                                                          sortOrder: controllers.sortOrderCallActivity.value,
-                                                          selectedMonth: remController.selectedCallMonth.value,
-                                                          selectedRange: remController.selectedCallRange.value,
-                                                          selectedDateFilter: remController.selectedCallSortBy.value,
-                                                        );
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldCallActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderCallActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(3, Row(
-                                                  children: [
-                                                    CustomText(
-                                                      textAlign: TextAlign.center,
-                                                      text: "Call Type",
-                                                      isCopy: true,
-                                                      size: 13,
-                                                      isBold: true,
-                                                      colors: Colors.white,
-                                                    ),3.width,
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        if(controllers.sortFieldCallActivity.value=='type' && controllers.sortOrderCallActivity.value=='asc'){
-                                                          controllers.sortOrderCallActivity.value='desc';
-                                                        }else{
-                                                          controllers.sortOrderCallActivity.value='asc';
-                                                        }
-                                                        controllers.sortFieldCallActivity.value='type';
-                                                        remController.filterAndSortCalls(
-                                                          allCalls: controllers.callActivity,
-                                                          searchText: controllers.searchText.value.toLowerCase(),
-                                                          callType: controllers.selectCallType.value,
-                                                          sortField: controllers.sortFieldCallActivity.value,
-                                                          sortOrder: controllers.sortOrderCallActivity.value,
-                                                          selectedMonth: remController.selectedCallMonth.value,
-                                                          selectedRange: remController.selectedCallRange.value,
-                                                          selectedDateFilter: remController.selectedCallSortBy.value,
-                                                        );
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldCallActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderCallActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(4, Row(
-                                                  children: [
-                                                    CustomText(
-                                                      textAlign: TextAlign.center,
-                                                      text: "Call Status",
-                                                      isCopy: true,
-                                                      size: 13,
-                                                      isBold: true,
-                                                      colors: Colors.white,
-                                                    ),3.width,
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        if(controllers.sortFieldCallActivity.value=='status' && controllers.sortOrderCallActivity.value=='asc'){
-                                                          controllers.sortOrderCallActivity.value='desc';
-                                                        }else{
-                                                          controllers.sortOrderCallActivity.value='asc';
-                                                        }
-                                                        controllers.sortFieldCallActivity.value='status';
-                                                        remController.filterAndSortCalls(
-                                                          allCalls: controllers.callActivity,
-                                                          searchText: controllers.searchText.value.toLowerCase(),
-                                                          callType: controllers.selectCallType.value,
-                                                          sortField: controllers.sortFieldCallActivity.value,
-                                                          sortOrder: controllers.sortOrderCallActivity.value,
-                                                          selectedMonth: remController.selectedCallMonth.value,
-                                                          selectedRange: remController.selectedCallRange.value,
-                                                          selectedDateFilter: remController.selectedCallSortBy.value,
-                                                        );
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldCallActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderCallActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(5, Row(
-                                                  children: [
-                                                    CustomText(
-                                                      textAlign: TextAlign.center,
-                                                      text: "Added By",
-                                                      isCopy: true,
-                                                      size: 13,
-                                                      isBold: true,
-                                                      colors: Colors.white,
-                                                    ),3.width,
-                                                    GestureDetector(
-                                                      onTap: (){
-                                                        if(controllers.sortFieldCallActivity.value=='addedBy' && controllers.sortOrderCallActivity.value=='asc'){
-                                                          controllers.sortOrderCallActivity.value='desc';
-                                                        }else{
-                                                          controllers.sortOrderCallActivity.value='asc';
-                                                        }
-                                                        controllers.sortFieldCallActivity.value='addedBy';
-                                                        remController.filterAndSortCalls(
-                                                          allCalls: controllers.callActivity,
-                                                          searchText: controllers.searchText.value.toLowerCase(),
-                                                          callType: controllers.selectCallType.value,
-                                                          sortField: controllers.sortFieldCallActivity.value,
-                                                          sortOrder: controllers.sortOrderCallActivity.value,
-                                                          selectedMonth: remController.selectedCallMonth.value,
-                                                          selectedRange: remController.selectedCallRange.value,
-                                                          selectedDateFilter: remController.selectedCallSortBy.value,
-                                                        );
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldCallActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderCallActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),)
-                                              ]),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      color: Colors.white,
-                                      width: screenWidth/2.3,
-                                      height: 200,
-                                      child: remController.callFilteredList.isEmpty?
-                                      Center(
-                                        child: CustomText(
-                                          text: "No Call Records",
-                                          isCopy: true,
-                                          colors: colorsConst.textColor,
-                                          size: 16,),
-                                      )
-                                          :RawKeyboardListener(
-                                        focusNode: _focusNode,
-                                        autofocus: true,
-                                        child: ListView.builder(
-                                          controller: _controller,
-                                          shrinkWrap: true,
-                                          physics: const ScrollPhysics(),
-                                          itemCount: remController.callFilteredList.length,
-                                          itemBuilder: (context, index) {
-                                            final data = remController.callFilteredList[index];
-                                            return Table(
-                                              columnWidths: {
-                                                0: FixedColumnWidth(100),
-                                                1: FixedColumnWidth(100),
-                                                2: FixedColumnWidth(100),
-                                                3: FixedColumnWidth(100),
-                                                4: FixedColumnWidth(100),
-                                                5: FixedColumnWidth(100),
-                                              },
-                                              border: TableBorder(
-                                                horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                                verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                                // bottom:  BorderSide(width: 0.2, color: Colors.green.shade400),
-                                              ),
-                                              children:[
-                                                TableRow(
-                                                    decoration: BoxDecoration(
-                                                      color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                                    ),
-                                                    children:[
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showCallDialog(context,remController.callFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.customerName.toString()=="null"?"":data.customerName.toString(),
-                                                            size: 13,
-                                                            isCopy: true,
-                                                            colors:colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showCallDialog(context,remController.callFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.companyName.toString()=="null"?"":data.companyName.toString(),
-                                                            size: 13,
-                                                            isCopy: true,
-                                                            colors:colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showCallDialog(context,remController.callFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: Column(
-                                                            children: [
-                                                              CustomText(
-                                                                textAlign: TextAlign.left,
-                                                                text: data.sentDate.toString().split(" ")[0],
-                                                                size: 13,
-                                                                isCopy: true,
-                                                                colors: colorsConst.textColor,
-                                                              ),
-                                                              CustomText(
-                                                                textAlign: TextAlign.start,
-                                                                text: "${data.sentDate.toString().split(" ")[1]} ${data.sentDate.toString().split(" ")[2]}",
-                                                                size: 13,
-                                                                isCopy: true,
-                                                                colors: colorsConst.textColor,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showCallDialog(context,remController.callFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.callType,
-                                                            size: 13,
-                                                            isCopy: true,
-                                                            colors: colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showCallDialog(context,remController.callFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.callStatus,
-                                                            size: 13,
-                                                            isCopy: true,
-                                                            colors: colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showCallDialog(context,remController.callFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.name,
-                                                            size: 13,
-                                                            isCopy: true,
-                                                            colors: colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ]
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: screenWidth/9,
-                                )
-                              ],
-                            ),
-                            20.height,
-                            Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        CustomText(text: "Reminders", isCopy: false,isBold: true,size: 15,),
-                                        if(controllers.storage.read("role") == "See All Customer Records")
-                                          Row(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Radio<String>(
-                                                    value: "All",
-                                                    groupValue: remController.filterRem.value,
-                                                    activeColor: const Color(0xFF0078D7),
-                                                    onChanged: (v) {
-                                                      remController.filterRem.value="All";
-                                                      remController.sortReminders();
-                                                    },
-                                                  ),
-                                                  CustomText(
-                                                    text: "All",
-                                                    colors: Colors.black,
-                                                    size: 15,
-                                                    isCopy: true,
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Radio<String>(
-                                                    value: "My",
-                                                    groupValue: remController.filterRem.value,
-                                                    activeColor: const Color(0xFF0078D7),
-                                                    onChanged: (v) {
-                                                      remController.filterRem.value="My";
-                                                      remController.sortReminders();
-                                                    },
-                                                  ),
-                                                  CustomText(
-                                                    text: "Mine",
-                                                    colors: Colors.black,
-                                                    size: 15,
-                                                    isCopy: true,
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Radio<String>(
-                                                    value: "Team",
-                                                    groupValue: remController.filterRem.value,
-                                                    activeColor: const Color(0xFF0078D7),
-                                                    onChanged: (v) {
-                                                      remController.filterRem.value="Team";
-                                                      remController.sortReminders();
-                                                    },
-                                                  ),
-                                                  CustomText(
-                                                    text: "Team",
-                                                    colors: Colors.black,
-                                                    size: 15,
-                                                    isCopy: true,
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                      ],
-                                    ),5.height,
-                                    Container(
-                                      color: Colors.white,
-                                      width: screenWidth/1.29,
-                                      child: Table(
-                                        columnWidths: {
-                                          0: FixedColumnWidth(130),
-                                          1: FixedColumnWidth(130),
-                                          2: FixedColumnWidth(150),
-                                          3: FixedColumnWidth(150),
-                                          4: FixedColumnWidth(150),
-                                          5: FixedColumnWidth(150),
-                                        },
-                                        border: TableBorder(
-                                          horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                          verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                        ),
-                                        children: [
-                                          TableRow(
-                                              decoration: BoxDecoration(
-                                                  color: colorsConst.primary,
-                                                  borderRadius: const BorderRadius.only(
-                                                      topLeft: Radius.circular(5),
-                                                      topRight: Radius.circular(5))),
-                                              children: [
-                                                headerCell(2, Row(
-                                                  children: [
-                                                    CustomText(//1
-                                                      textAlign: TextAlign.left,
-                                                      text: "Event Name",
-                                                      size: 15,
-                                                      isBold: true,
-                                                      isCopy: true,
-                                                      colors: Colors.white,
-                                                    ),
-                                                    3.width,
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        if (remController.sortFieldCallActivity.value == 'title' &&
-                                                            remController.sortOrderCallActivity.value == 'asc') {
-                                                          remController.sortOrderCallActivity.value = 'desc';
-                                                        } else {
-                                                          remController.sortOrderCallActivity.value = 'asc';
-                                                        }
-                                                        remController.sortFieldCallActivity.value = 'title';
-                                                        remController.sortReminders();
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldCallActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderCallActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      )),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(3, Row(
-                                                  children: [
-                                                    CustomText(//2
-                                                      textAlign: TextAlign.left,
-                                                      text: "Type",
-                                                      isCopy: true,
-                                                      size: 15,
-                                                      isBold: true,
-                                                      colors: Colors.white,
-                                                    ),
-                                                    3.width,
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        if (remController.sortFieldCallActivity.value == 'type' &&
-                                                            remController.sortOrderCallActivity.value == 'asc') {
-                                                          remController.sortOrderCallActivity.value = 'desc';
-                                                        } else {
-                                                          remController.sortOrderCallActivity.value = 'asc';
-                                                        }
-                                                        remController.sortFieldCallActivity.value = 'type';
-                                                        remController.sortReminders();
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldCallActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderCallActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      )),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(7, Row(
-                                                  children: [
-                                                    CustomText(
-                                                      textAlign: TextAlign.center,
-                                                      text: "Employee Name",
-                                                      isCopy: true,
-                                                      size: 15,
-                                                      isBold: true,
-                                                      colors: Colors.white,
-                                                    ),
-                                                    3.width,
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        if (remController.sortFieldCallActivity.value == 'employeeName' &&
-                                                            remController.sortOrderCallActivity.value == 'asc') {
-                                                          remController.sortOrderCallActivity.value = 'desc';
-                                                        } else {
-                                                          remController.sortOrderCallActivity.value = 'asc';
-                                                        }
-                                                        remController.sortFieldCallActivity.value = 'employeeName';
-                                                        remController.sortReminders();
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldCallActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderCallActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      )),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(7, Row(
-                                                  children: [
-                                                    CustomText(
-                                                      textAlign: TextAlign.center,
-                                                      text: "Lead Name",
-                                                      isCopy: true,
-                                                      size: 15,
-                                                      isBold: true,
-                                                      colors: Colors.white,
-                                                    ),
-                                                    3.width,
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        if (remController.sortBy.value == 'customerName' &&
-                                                            remController.sortOrderCallActivity.value == 'asc') {
-                                                          remController.sortOrderCallActivity.value = 'desc';
-                                                        } else {
-                                                          remController.sortOrderCallActivity.value = 'asc';
-                                                        }
-                                                        remController.sortBy.value = 'customerName';
-                                                        remController.sortReminders();
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        remController.sortBy.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderCallActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      )),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(7, Row(
-                                                  children: [
-                                                    CustomText(
-                                                      textAlign: TextAlign.center,
-                                                      text: "Start Date",
-                                                      isCopy: true,
-                                                      size: 15,
-                                                      isBold: true,
-                                                      colors: Colors.white,
-                                                    ),
-                                                    3.width,
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        if (remController.sortFieldCallActivity.value == 'startDate' &&
-                                                            remController.sortOrderCallActivity.value == 'asc') {
-                                                          remController.sortOrderCallActivity.value = 'desc';
-                                                        } else {
-                                                          remController.sortOrderCallActivity.value = 'asc';
-                                                        }
-                                                        remController.sortFieldCallActivity.value = 'startDate';
-                                                        remController.sortReminders();
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldCallActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderCallActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      )),
-                                                    ),
-                                                  ],
-                                                ),),
-                                                headerCell(7, Row(
-                                                  children: [
-                                                    CustomText(
-                                                      textAlign: TextAlign.center,
-                                                      text: "End Date",
-                                                      isCopy: true,
-                                                      size: 15,
-                                                      isBold: true,
-                                                      colors: Colors.white,
-                                                    ),
-                                                    3.width,
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        if (remController.sortFieldCallActivity.value == 'endDate' &&
-                                                            remController.sortOrderCallActivity.value == 'asc') {
-                                                          remController.sortOrderCallActivity.value = 'desc';
-                                                        } else {
-                                                          remController.sortOrderCallActivity.value = 'asc';
-                                                        }
-                                                        remController.sortFieldCallActivity.value = 'endDate';
-                                                        remController.sortReminders();
-                                                      },
-                                                      child: Obx(() => Image.asset(
-                                                        controllers.sortFieldCallActivity.value.isEmpty
-                                                            ? "assets/images/arrow.png"
-                                                            : controllers.sortOrderCallActivity.value == 'asc'
-                                                            ? "assets/images/arrow_up.png"
-                                                            : "assets/images/arrow_down.png",
-                                                        width: 15,
-                                                        height: 15,
-                                                      )),
-                                                    ),
-                                                  ],
-                                                ),),
-                                              ]),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      color: Colors.white,
-                                      width: screenWidth/1.29,
-                                      height: 200,
-                                      child: remController.reminderFilteredList.isEmpty?
-                                      Center(
-                                        child: CustomText(
-                                          text: "No Reminders",
-                                          isCopy: true,
-                                          colors: colorsConst.textColor,
-                                          size: 16,),
-                                      )
-                                          :RawKeyboardListener(
-                                        focusNode: _focusNode,
-                                        autofocus: true,
-                                        child: ListView.builder(
-                                          controller: _controller,
-                                          shrinkWrap: true,
-                                          physics: const ScrollPhysics(),
-                                          itemCount: remController.reminderFilteredList.length,
-                                          itemBuilder: (context, index) {
-                                            final data = remController.reminderFilteredList[index];
-                                            return Table(
-                                              columnWidths: {
-                                                0: FixedColumnWidth(130),
-                                                1: FixedColumnWidth(130),
-                                                2: FixedColumnWidth(150),
-                                                3: FixedColumnWidth(150),
-                                                4: FixedColumnWidth(150),
-                                                5: FixedColumnWidth(150),
-                                              },
-                                              border: TableBorder(
-                                                horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                                verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                                // bottom:  BorderSide(width: 0.2, color: Colors.green.shade400),
-                                              ),
-                                              children:[
-                                                TableRow(
-                                                    decoration: BoxDecoration(
-                                                      color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                                    ),
-                                                    children:[
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showReminderDialog(context,remController.reminderFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.title.toString(),
-                                                            size: 15,
-                                                            isCopy: true,
-                                                            colors:colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showReminderDialog(context,remController.reminderFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.type.toString()=="1"?"Follow-up":"Appointment",
-                                                            size: 15,
-                                                            isCopy: true,
-                                                            colors:colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showReminderDialog(context,remController.reminderFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.employeeName.toString(),
-                                                            size: 15,
-                                                            isCopy: true,
-                                                            colors:colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showReminderDialog(context,remController.reminderFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.customerName.toString()=="null"?"":data.customerName.toString(),
-                                                            size: 15,
-                                                            isCopy: true,
-                                                            colors:colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showReminderDialog(context,remController.reminderFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.startDt.toString()=="null"?"":data.startDt.toString(),
-                                                            size: 15,
-                                                            isCopy: true,
-                                                            colors:colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap:(){
-                                                          showReminderDialog(context,remController.reminderFilteredList,index);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.endDt.toString()=="null"?"":data.endDt.toString(),
-                                                            size: 15,
-                                                            isCopy: true,
-                                                            colors:colorsConst.textColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ]
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: screenWidth/9,
-                                )
-                              ],
-                            ),
-                            20.height,
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: screenWidth/1.29,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
                                       Container(
                                         height: 300,
-                                        width: screenWidth /4.7,
+                                        width: screenWidth/3.3,
                                         padding: const EdgeInsets.all(16),
                                         decoration: _whiteCard(),
                                         child: Column(
@@ -2285,7 +2165,7 @@ void checkDate(){
                                           children: [
                                             // -------- TITLE --------
                                             CustomText(
-                                              text: "Active Status",
+                                              text: "Portfolio Heat",
                                               isCopy: false,
                                               size: 15,
                                               isBold: true,
@@ -2308,123 +2188,748 @@ void checkDate(){
                                             ),
 
                                             18.height,
-
-                                            // -------- RATING BAR () --------
-                                            Expanded(
-                                              child: LayoutBuilder(
-                                                builder: (context, constraints) {
-                                                  final hot = int.tryParse(
-                                                      dashController
-                                                          .totalHot.value) ??
-                                                      0;
-                                                  final warm = int.tryParse(
-                                                      dashController
-                                                          .totalWarm.value) ??
-                                                      0;
-                                                  final cold = int.tryParse(
-                                                      dashController
-                                                          .totalCold.value) ??
-                                                      0;
-                                                  final total = hot + warm + cold;
-
-                                                  return ActivityRatingBar(
-                                                    hot: hot,
-                                                    warm: warm,
-                                                    cold: cold,
-                                                    totalWidth:
-                                                    constraints.maxWidth,
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                            12.height,
-                                            Wrap(
-                                              spacing: 16,
-                                              runSpacing: 8,
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                               children: [
-                                                Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    const SizedBox(
-                                                      width: 8,
-                                                      height: 8,
-                                                      child: DecoratedBox(
-                                                        decoration: BoxDecoration(
-                                                          color: Color(
-                                                            0xffEF4444,
-                                                          ),
-                                                          shape: BoxShape.circle,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(width: 6),
-                                                    CustomText(
-                                                      // text: "Hot ${dashController.totalHot.value=="0"?"0":"(0-${(int.tryParse(dashController.totalHot.value) ??0)}d)"}",
-                                                      text: "Hot ${dashController.totalHot.value=="0"?"0":dashController.totalHot.value}",
-                                                      isCopy: false,
-                                                      size: 11,
-                                                      isBold: true,
-                                                      colors: const Color(0xffEF4444),
-                                                    ),
-                                                  ],
+                                                Container(
+                                                  height: 100,width: 100,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Color(0xFFFFF2F2),radius: 10
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: [
+                                                      CustomText(text: "${int.tryParse(dashController.totalHot.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
+                                                      Image.asset("assets/images/hot.png"),
+                                                      CustomText(text: "Hot Leads", isCopy: false,isBold: true,colors: Color(0xFFEF4444))
+                                                    ],
+                                                  ),
                                                 ),
-
-                                                Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 8,
-                                                      height: 8,
-                                                      child: DecoratedBox(
-                                                        decoration: BoxDecoration(
-                                                          color: Color(
-                                                            0xffF59E0B,
-                                                          ),
-                                                          shape: BoxShape.circle,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 6),
-                                                    CustomText(
-                                                      text: "Warm ${dashController.totalWarm.value=="0"?"0":"(${(int.tryParse(dashController.totalHot.value) ??0)+1}-${int.tryParse(
-                                                          dashController.totalWarm.value) ??0}d)"}",
-                                                      isCopy: false,
-                                                      size: 11,
-                                                      isBold: true,
-                                                      colors: Color(0xffF59E0B),
-                                                    ),
-                                                  ],
+                                                Container(
+                                                  height: 100,width: 100,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Color(0xFFFFF8ED),radius: 10
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: [
+                                                      CustomText(text: "${int.tryParse(dashController.totalWarm.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
+                                                      Image.asset("assets/images/warm.png"),
+                                                      CustomText(text: "Warm Leads", isCopy: false,isBold: true,colors: Color(0xFFF59E0B))
+                                                    ],
+                                                  ),
                                                 ),
-                                                Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 8,
-                                                      height: 8,
-                                                      child: DecoratedBox(
-                                                        decoration: BoxDecoration(
-                                                          color: Color(
-                                                            0xff3B82F6,
-                                                          ),
-                                                          shape: BoxShape.circle,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 6),
-                                                    CustomText(
-                                                      text: "Cold ${dashController.totalWarm.value=="0"?"0":"(${(int.tryParse(dashController.totalWarm.value) ??0)+1}+d)"}",
-                                                      isCopy: false,
-                                                      size: 11,
-                                                      isBold: true,
-                                                      colors: Color(0xff3B82F6),
-                                                    ),
-                                                  ],
+                                                Container(
+                                                  height: 100,width: 100,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Color(0xFFF0F6FF),radius: 10
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: [
+                                                      CustomText(text: "${int.tryParse(dashController.totalCold.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
+                                                      Image.asset("assets/images/cold.png"),
+                                                      CustomText(text: "Cold Leads", isCopy: false,isBold: true,colors: Color(0xFF3B82F6))
+                                                    ],
+                                                  ),
                                                 ),
                                               ],
-                                            ),
+                                            )
+                                            // -------- RATING BAR () --------
+                                            // Expanded(
+                                            //   child: LayoutBuilder(
+                                            //     builder: (context, constraints) {
+                                            //       final hot = int.tryParse(
+                                            //           dashController
+                                            //               .totalHot.value) ??
+                                            //           0;
+                                            //       final warm = int.tryParse(
+                                            //           dashController
+                                            //               .totalWarm.value) ??
+                                            //           0;
+                                            //       final cold = int.tryParse(
+                                            //           dashController
+                                            //               .totalCold.value) ??
+                                            //           0;
+                                            //       final total = hot + warm + cold;
+                                            //
+                                            //       return ActivityRatingBar(
+                                            //         hot: hot,
+                                            //         warm: warm,
+                                            //         cold: cold,
+                                            //         totalWidth:
+                                            //         constraints.maxWidth,
+                                            //       );
+                                            //     },
+                                            //   ),
+                                            // ),
+                                            // 12.height,
+                                            // Wrap(
+                                            //   spacing: 16,
+                                            //   runSpacing: 8,
+                                            //   children: [
+                                            //     Row(
+                                            //       mainAxisSize: MainAxisSize.min,
+                                            //       children: [
+                                            //         const SizedBox(
+                                            //           width: 8,
+                                            //           height: 8,
+                                            //           child: DecoratedBox(
+                                            //             decoration: BoxDecoration(
+                                            //               color: Color(
+                                            //                 0xffEF4444,
+                                            //               ),
+                                            //               shape: BoxShape.circle,
+                                            //             ),
+                                            //           ),
+                                            //         ),
+                                            //         const SizedBox(width: 6),
+                                            //         CustomText(
+                                            //           // text: "Hot ${dashController.totalHot.value=="0"?"0":"(0-${(int.tryParse(dashController.totalHot.value) ??0)}d)"}",
+                                            //           text: "Hot ${dashController.totalHot.value=="0"?"0":dashController.totalHot.value}",
+                                            //           isCopy: false,
+                                            //           size: 11,
+                                            //           isBold: true,
+                                            //           colors: const Color(0xffEF4444),
+                                            //         ),
+                                            //       ],
+                                            //     ),
+                                            //
+                                            //     Row(
+                                            //       mainAxisSize: MainAxisSize.min,
+                                            //       children: [
+                                            //         SizedBox(
+                                            //           width: 8,
+                                            //           height: 8,
+                                            //           child: DecoratedBox(
+                                            //             decoration: BoxDecoration(
+                                            //               color: Color(
+                                            //                 0xffF59E0B,
+                                            //               ),
+                                            //               shape: BoxShape.circle,
+                                            //             ),
+                                            //           ),
+                                            //         ),
+                                            //         SizedBox(width: 6),
+                                            //         CustomText(
+                                            //           text: "Warm ${dashController.totalWarm.value=="0"?"0":"(${(int.tryParse(dashController.totalHot.value) ??0)+1}-${int.tryParse(
+                                            //               dashController.totalWarm.value) ??0}d)"}",
+                                            //           isCopy: false,
+                                            //           size: 11,
+                                            //           isBold: true,
+                                            //           colors: Color(0xffF59E0B),
+                                            //         ),
+                                            //       ],
+                                            //     ),
+                                            //     Row(
+                                            //       mainAxisSize: MainAxisSize.min,
+                                            //       children: [
+                                            //         SizedBox(
+                                            //           width: 8,
+                                            //           height: 8,
+                                            //           child: DecoratedBox(
+                                            //             decoration: BoxDecoration(
+                                            //               color: Color(
+                                            //                 0xff3B82F6,
+                                            //               ),
+                                            //               shape: BoxShape.circle,
+                                            //             ),
+                                            //           ),
+                                            //         ),
+                                            //         SizedBox(width: 6),
+                                            //         CustomText(
+                                            //           text: "Cold ${dashController.totalWarm.value=="0"?"0":"(${(int.tryParse(dashController.totalWarm.value) ??0)+1}+d)"}",
+                                            //           isCopy: false,
+                                            //           size: 11,
+                                            //           isBold: true,
+                                            //           colors: Color(0xff3B82F6),
+                                            //         ),
+                                            //       ],
+                                            //     ),
+                                            //   ],
+                                            // ),
                                           ],
                                         ),
                                       ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: screenWidth/9,
+                                )
+                              ],
+                            ),
+                            20.height,
+                            Row(
+                              children: [
+                                Container(
+                                  width: screenWidth/2.17,
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(18),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        blurRadius: 10,
+                                        color: Colors.black12,
+                                        offset: Offset(0, 4),
+                                      )
+                                    ],
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          CustomText(text: "Call Records", isCopy: false,isBold: true,size: 15,),
+                                          if(controllers.storage.read("role") == "See All Customer Records")
+                                          Obx(() {
+                                              return Container(
+                                                padding: const EdgeInsets.all(6),
+                                                decoration: _filterGroupDecoration(),
+                                                child: Row(
+                                                  children: dashController.filterType.map((filter) {
+                                                    final bool isSelected = remController.filterCall.value == filter;
+                                                    return MouseRegion(
+                                                      cursor: SystemMouseCursors.click,
+                                                      child: GestureDetector(
+                                                        behavior: HitTestBehavior.opaque,
+                                                        onTap: () {
+                                                          remController.filterCall.value = filter;
+                                                          remController.filterAndSortCalls(
+                                                            allCalls: controllers.callActivity,
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectCallType.value,
+                                                            sortField: controllers.sortFieldCallActivity.value,
+                                                            sortOrder: controllers.sortOrderCallActivity.value,
+                                                            selectedMonth: remController.selectedCallMonth.value,
+                                                            selectedRange: remController.selectedCallRange.value,
+                                                            selectedDateFilter: remController.selectedCallSortBy.value,
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          width: MediaQuery.of(context).size.width*0.05,
+                                                          decoration: BoxDecoration(
+                                                            color: isSelected
+                                                                ? Colors.white
+                                                                : Colors.transparent,
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            boxShadow: isSelected
+                                                                ? const [
+                                                              BoxShadow(
+                                                                color: Colors.black12,
+                                                                blurRadius: 6,
+                                                                offset: Offset(0, 2),
+                                                              ),
+                                                            ]
+                                                                : null,
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(5.0),
+                                                            child: CustomText(
+                                                              text: filter,
+                                                              isCopy: false,
+                                                              size: 12,
+                                                              isBold: true,
+                                                              colors: isSelected
+                                                                  ? const Color(0xff0078D7)
+                                                                  : const Color(0xff666666),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              );
+                                            }),
+                                        ],
+                                      ),5.height,
+                                      Container(
+                                        color: Colors.white,
+                                        width: screenWidth/2,
+                                        child: Table(
+                                          columnWidths: {
+                                            0: FixedColumnWidth(100),
+                                            1: FixedColumnWidth(100),
+                                            2: FixedColumnWidth(100),
+                                            3: FixedColumnWidth(100),
+                                            4: FixedColumnWidth(100),
+                                            5: FixedColumnWidth(100),
+                                          },
+                                          border: TableBorder(
+                                            horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                            verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                          ),
+                                          children: [
+                                            TableRow(
+                                                decoration: BoxDecoration(
+                                                    color: colorsConst.primary,
+                                                    borderRadius: const BorderRadius.only(
+                                                        topLeft: Radius.circular(5),
+                                                        topRight: Radius.circular(5))),
+                                                children: [
+                                                  headerCell(1, Row(
+                                                    children: [
+                                                      CustomText(//1
+                                                        textAlign: TextAlign.left,
+                                                        text: "Lead Name",
+                                                        size: 15,
+                                                        isBold: true,
+                                                        isCopy: true,
+                                                        colors: Colors.white,
+                                                      ),3.width,
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                          if(controllers.sortFieldCallActivity.value=='customerName' && controllers.sortOrderCallActivity.value=='asc'){
+                                                            controllers.sortOrderCallActivity.value='desc';
+                                                          }else{
+                                                            controllers.sortOrderCallActivity.value='asc';
+                                                          }
+                                                          controllers.sortFieldCallActivity.value='customerName';
+                                                          remController.filterAndSortCalls(
+                                                            allCalls: controllers.callActivity,
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectCallType.value,
+                                                            sortField: controllers.sortFieldCallActivity.value,
+                                                            sortOrder: controllers.sortOrderCallActivity.value,
+                                                            selectedMonth: remController.selectedCallMonth.value,
+                                                            selectedRange: remController.selectedCallRange.value,
+                                                            selectedDateFilter: remController.selectedCallSortBy.value,
+                                                          );
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldCallActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                  headerCell(1, Row(
+                                                    children: [
+                                                      CustomText(//1
+                                                        textAlign: TextAlign.left,
+                                                        text: "Company",
+                                                        size: 15,
+                                                        isBold: true,
+                                                        isCopy: true,
+                                                        colors: Colors.white,
+                                                      ),3.width,
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                          if(controllers.sortFieldCallActivity.value=='company' && controllers.sortOrderCallActivity.value=='asc'){
+                                                            controllers.sortOrderCallActivity.value='desc';
+                                                          }else{
+                                                            controllers.sortOrderCallActivity.value='asc';
+                                                          }
+                                                          controllers.sortFieldCallActivity.value='company';
+                                                          remController.filterAndSortCalls(
+                                                            allCalls: controllers.callActivity,
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectCallType.value,
+                                                            sortField: controllers.sortFieldCallActivity.value,
+                                                            sortOrder: controllers.sortOrderCallActivity.value,
+                                                            selectedMonth: remController.selectedCallMonth.value,
+                                                            selectedRange: remController.selectedCallRange.value,
+                                                            selectedDateFilter: remController.selectedCallSortBy.value,
+                                                          );
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldCallActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                  headerCell(2, Row(
+                                                    children: [
+                                                      CustomText(
+                                                        textAlign: TextAlign.center,
+                                                        text: "Call Date",
+                                                        isCopy: true,
+                                                        size: 15,
+                                                        isBold: true,
+                                                        colors: Colors.white,
+                                                      ),3.width,
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                          if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
+                                                            controllers.sortOrderCallActivity.value='desc';
+                                                          }else{
+                                                            controllers.sortOrderCallActivity.value='asc';
+                                                          }
+                                                          controllers.sortFieldCallActivity.value='date';
+                                                          remController.filterAndSortCalls(
+                                                            allCalls: controllers.callActivity,
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectCallType.value,
+                                                            sortField: controllers.sortFieldCallActivity.value,
+                                                            sortOrder: controllers.sortOrderCallActivity.value,
+                                                            selectedMonth: remController.selectedCallMonth.value,
+                                                            selectedRange: remController.selectedCallRange.value,
+                                                            selectedDateFilter: remController.selectedCallSortBy.value,
+                                                          );
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldCallActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                  headerCell(3, Row(
+                                                    children: [
+                                                      CustomText(
+                                                        textAlign: TextAlign.center,
+                                                        text: "Call Type",
+                                                        isCopy: true,
+                                                        size: 15,
+                                                        isBold: true,
+                                                        colors: Colors.white,
+                                                      ),3.width,
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                          if(controllers.sortFieldCallActivity.value=='type' && controllers.sortOrderCallActivity.value=='asc'){
+                                                            controllers.sortOrderCallActivity.value='desc';
+                                                          }else{
+                                                            controllers.sortOrderCallActivity.value='asc';
+                                                          }
+                                                          controllers.sortFieldCallActivity.value='type';
+                                                          remController.filterAndSortCalls(
+                                                            allCalls: controllers.callActivity,
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectCallType.value,
+                                                            sortField: controllers.sortFieldCallActivity.value,
+                                                            sortOrder: controllers.sortOrderCallActivity.value,
+                                                            selectedMonth: remController.selectedCallMonth.value,
+                                                            selectedRange: remController.selectedCallRange.value,
+                                                            selectedDateFilter: remController.selectedCallSortBy.value,
+                                                          );
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldCallActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                  headerCell(4, Row(
+                                                    children: [
+                                                      CustomText(
+                                                        textAlign: TextAlign.center,
+                                                        text: "Call Status",
+                                                        isCopy: true,
+                                                        size: 15,
+                                                        isBold: true,
+                                                        colors: Colors.white,
+                                                      ),3.width,
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                          if(controllers.sortFieldCallActivity.value=='status' && controllers.sortOrderCallActivity.value=='asc'){
+                                                            controllers.sortOrderCallActivity.value='desc';
+                                                          }else{
+                                                            controllers.sortOrderCallActivity.value='asc';
+                                                          }
+                                                          controllers.sortFieldCallActivity.value='status';
+                                                          remController.filterAndSortCalls(
+                                                            allCalls: controllers.callActivity,
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectCallType.value,
+                                                            sortField: controllers.sortFieldCallActivity.value,
+                                                            sortOrder: controllers.sortOrderCallActivity.value,
+                                                            selectedMonth: remController.selectedCallMonth.value,
+                                                            selectedRange: remController.selectedCallRange.value,
+                                                            selectedDateFilter: remController.selectedCallSortBy.value,
+                                                          );
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldCallActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),),
+                                                  headerCell(5, Row(
+                                                    children: [
+                                                      CustomText(
+                                                        textAlign: TextAlign.center,
+                                                        text: "Added By",
+                                                        isCopy: true,
+                                                        size: 15,
+                                                        isBold: true,
+                                                        colors: Colors.white,
+                                                      ),3.width,
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                          if(controllers.sortFieldCallActivity.value=='addedBy' && controllers.sortOrderCallActivity.value=='asc'){
+                                                            controllers.sortOrderCallActivity.value='desc';
+                                                          }else{
+                                                            controllers.sortOrderCallActivity.value='asc';
+                                                          }
+                                                          controllers.sortFieldCallActivity.value='addedBy';
+                                                          remController.filterAndSortCalls(
+                                                            allCalls: controllers.callActivity,
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectCallType.value,
+                                                            sortField: controllers.sortFieldCallActivity.value,
+                                                            sortOrder: controllers.sortOrderCallActivity.value,
+                                                            selectedMonth: remController.selectedCallMonth.value,
+                                                            selectedRange: remController.selectedCallRange.value,
+                                                            selectedDateFilter: remController.selectedCallSortBy.value,
+                                                          );
+                                                        },
+                                                        child: Obx(() => Image.asset(
+                                                          controllers.sortFieldCallActivity.value.isEmpty
+                                                              ? "assets/images/arrow.png"
+                                                              : controllers.sortOrderCallActivity.value == 'asc'
+                                                              ? "assets/images/arrow_up.png"
+                                                              : "assets/images/arrow_down.png",
+                                                          width: 15,
+                                                          height: 15,
+                                                        ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),)
+                                                ]),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        color: Colors.white,
+                                        width: screenWidth/2,
+                                        height: 200,
+                                        child: remController.callFilteredList.isEmpty?
+                                        Center(
+                                          child: CustomText(
+                                            text: "No Call Records",
+                                            isCopy: true,
+                                            colors: colorsConst.textColor,
+                                            size: 16,),
+                                        )
+                                            :RawKeyboardListener(
+                                          focusNode: _focusNode,
+                                          autofocus: true,
+                                          child: ListView.builder(
+                                            controller: _controller,
+                                            shrinkWrap: true,
+                                            physics: const ScrollPhysics(),
+                                            itemCount: remController.callFilteredList.length,
+                                            itemBuilder: (context, index) {
+                                              final data = remController.callFilteredList[index];
+                                              return Table(
+                                                columnWidths: {
+                                                  0: FixedColumnWidth(100),
+                                                  1: FixedColumnWidth(100),
+                                                  2: FixedColumnWidth(100),
+                                                  3: FixedColumnWidth(100),
+                                                  4: FixedColumnWidth(100),
+                                                  5: FixedColumnWidth(100),
+                                                },
+                                                border: TableBorder(
+                                                  horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                                  verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                                  // bottom:  BorderSide(width: 0.2, color: Colors.green.shade400),
+                                                ),
+                                                children:[
+                                                  TableRow(
+                                                      decoration: BoxDecoration(
+                                                        color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                                      ),
+                                                      children:[
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showCallDialog(context,remController.callFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                                              size: 15,
+                                                              isCopy: true,
+                                                              colors:colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showCallDialog(context,remController.callFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: data.companyName.toString()=="null"?"":data.companyName.toString(),
+                                                              size: 15,
+                                                              isCopy: true,
+                                                              colors:colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showCallDialog(context,remController.callFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: Column(
+                                                              children: [
+                                                                CustomText(
+                                                                  textAlign: TextAlign.left,
+                                                                  text: data.sentDate.toString().split(" ")[0],
+                                                                  size: 15,
+                                                                  isCopy: true,
+                                                                  colors: colorsConst.textColor,
+                                                                ),
+                                                                CustomText(
+                                                                  textAlign: TextAlign.start,
+                                                                  text: "${data.sentDate.toString().split(" ")[1]} ${data.sentDate.toString().split(" ")[2]}",
+                                                                  size: 15,
+                                                                  isCopy: true,
+                                                                  colors: colorsConst.textColor,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showCallDialog(context,remController.callFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: data.callType,
+                                                              size: 15,
+                                                              isCopy: true,
+                                                              colors: colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showCallDialog(context,remController.callFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: data.callStatus,
+                                                              size: 15,
+                                                              isCopy: true,
+                                                              colors: colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap:(){
+                                                            showCallDialog(context,remController.callFilteredList,index);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign.left,
+                                                              text: data.name,
+                                                              size: 15,
+                                                              isCopy: true,
+                                                              colors: colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ]
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),15.width,
+                                InkWell(
+                                  onTap: (){
+                                    remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+                                    controllers.changeTab(0);
+                                    controllers.selectCallType.value = "All";
+                                    Navigator.push( context,
+                                      PageRouteBuilder( pageBuilder: (context, animation1, animation2) =>
+                                      const Records( isReload: "true", ), transitionDuration: Duration.zero, reverseTransitionDuration: Duration.zero,
+                                      ),
+                                    );
+                                    controllers.oldIndex.value = controllers.selectedIndex.value;
+                                    controllers.selectedIndex.value = 101;
+                                  },
+                                  child: SizedBox(
+                                    width: screenWidth/3.3,
+                                    height: 310,
+                                    child: CustomerStatusCard(
+                                      items: [
+                                        for (var i = 0;
+                                        i < dashController.visitStatusReport.length;
+                                        i++)
+                                          CustomerStatusItem(
+                                            label: dashController.visitStatusReport[i]["value"].toString(),
+                                            value: int.parse(
+                                                dashController.visitStatusReport[i]["total_count"].toString()),
+                                            percentage: dashController.total == 0
+                                                ? 0
+                                                : double.parse(
+                                                dashController.visitStatusReport[i]["total_count"].toString()) /
+                                                dashController.total,
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: screenWidth/9,
+                                )
+                              ],
+                            ),
+                            20.height,
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: screenWidth/1.29,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+
                                       ActivityOverTimeChart(
                                         maxY: 330,
                                         xLabels: controllers.xLabels,
@@ -2486,16 +2991,7 @@ void checkDate(){
       ),
     );
   }
-  List<double> colWidths = [
-    50,   // 0 Checkbox
-    80,  // 1 Actions
-    150,  // 2 Event Name
-    150,  // 3 Type
-    150,  // 4 Location
-    150,  // 5 Employee Name
-    150,  // 6 Customer Name
-    150,  // 7 Start Date
-  ];
+
   Widget headerCell(int index, Widget child) {
     return Stack(
       children: [
@@ -2511,12 +3007,6 @@ void checkDate(){
           width: 10,
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onHorizontalDragUpdate: (details) {
-              setState(() {
-                colWidths[index] += details.delta.dx;
-                if (colWidths[index] < 60) colWidths[index] = 60;
-              });
-            },
             child: MouseRegion(
               cursor: SystemMouseCursors.resizeColumn,
               child: Container(color: Colors.transparent),
@@ -2580,99 +3070,83 @@ void checkDate(){
               text: "Life Time Customer Journey",
               isCopy: false,colors: Colors.blue,
             ),
-            20.height,
+            10.height,
+            Container(
+              height: 50,
+              width: MediaQuery.of(context).size.width*0.1,
+              decoration: customDecoration.baseBackgroundDecoration(
+                color: colorsConst.primary,
+                radius: 10,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomText(
+                    text: "${controllers.leadCategoryList.fold(0, (sum, item) => sum + (item.list2.length ?? 0))-controllers.leadCategoryList.value.last.list2.length}",size: 18,
+                    isCopy: false,colors: Colors.white,isBold: true,
+                  ),10.width,
+                  CustomText(
+                    text: "Total Leads",
+                    isCopy: false,colors: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+            10.height,
             // ================= FUNNEL ITEMS =================
             for (int i = 0; i < controllers.leadCategoryList.length; i++)
               _animatedLeadItem(
                 index: 0,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          height: 55,
-                          width: 10,
-                          decoration: BoxDecoration(
-                            color: controllers.leadColors[i],
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              bottomLeft: Radius.circular(20),
+                        Row(
+                          children: [
+                            Container(
+                              height: 30,
+                              width: 30,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: controllers.leadColors[i].withOpacity(0.10),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Container(
+                                height: 12,
+                                width: 12,
+                                decoration: BoxDecoration(
+                                  color: controllers.leadColors[i],
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                            ),10.width,
+                            CustomText(
+                              text:  controllers.leadCategoryList[i].value.toUpperCase(),
+                              isCopy: false,
+                              size: 11,
+                              isBold: true,
+                              colors: controllers.leadColors[i],
                             ),
-                          ),
+                          ],
                         ),
-                        Container(
-                          height: 55,
-                          width: MediaQuery.of(context).size.width*0.095,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(15),
-                              bottomRight: Radius.circular(15),
-                            ),
-                            border: Border(
-                              right: BorderSide(
-                                color:Colors.grey.shade100,
-                                width: 2,
-                              ),
-                              top: BorderSide(
-                                color:Colors.grey.shade100,
-                                width: 2,
-                              ),
-                              bottom: BorderSide(
-                                color:Colors.grey.shade100,
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CustomText(
-                                      text: controllers.leadCategoryList[i].value.toUpperCase(),
-                                      isCopy: false,
-                                      size: 11,
-                                      isBold: true,
-                                      colors: Colors.black,
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    CustomText(
-                                      text: controllers.leadCategoryList[i].list.length.toString(),
-                                      isCopy: false,
-                                      size: 14,
-                                      isBold: true,
-                                      colors: Colors.black,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                        CustomText(
+                          text: controllers.leadCategoryList[i].list.length.toString(),
+                          isCopy: false,
+                          size: 14,
+                          isBold: true,
+                          colors: controllers.leadColors[i],
                         ),
                       ],
                     ),
-                    if(i!=controllers.leadCategoryList.length-1)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Container(
-                            height: 20,
-                            color: Colors.grey.shade400,width: 2,
-                          ),
-                          Container(
-                            height: 10,
-                            color: Colors.grey.shade300,width: 2,
-                          )
-                        ],
-                      )
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                      child: Container(
+                        height: 25,color: Colors.grey.shade300,width: 2,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -2797,105 +3271,6 @@ void checkDate(){
   //     ),
   //   );
   // }
-}
-
-Widget _leadItem({
-  required String title,
-  required String image,
-  required String count,
-  required int index,
-  required double width,
-}) {
-  return Column(
-    children: [
-      Row(
-        children: [
-          Container(
-            height: 55,
-            width: 10,
-            decoration: BoxDecoration(
-              color: controllers.leadColors[index],
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                bottomLeft: Radius.circular(20),
-              ),
-            ),
-          ),
-          Container(
-            height: 55,
-            width: width,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(15),
-                bottomRight: Radius.circular(15),
-              ),
-              border: Border(
-                right: BorderSide(
-                  color:Colors.grey.shade100,
-                  width: 2,
-                ),
-                top: BorderSide(
-                  color:Colors.grey.shade100,
-                  width: 2,
-                ),
-                bottom: BorderSide(
-                  color:Colors.grey.shade100,
-                  width: 2,
-                ),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        text:  title.toUpperCase(),
-                        isCopy: false,
-                        size: 11,
-                        isBold: true,
-                        colors: Colors.black,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      CustomText(
-                        text: count,
-                        isCopy: false,
-                        size: 14,
-                        isBold: true,
-                        colors: Colors.black,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-      if(index!=controllers.leadCategoryList.length-1)
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Container(
-            height: 20,
-            color: Colors.grey.shade400,width: 2,
-          ),
-          Container(
-            height: 10,
-            color: Colors.grey.shade300,width: 2,
-          )
-        ],
-      )
-    ],
-  );
 }
 
 BoxDecoration _whiteCard() => BoxDecoration(

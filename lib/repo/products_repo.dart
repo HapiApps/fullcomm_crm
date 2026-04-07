@@ -23,8 +23,8 @@ class ProductsRepository{
         },
         body: jsonEncode(requestBody),
       );
-      // print("b_select_products");
-      // print(response.body);
+      print("b_select_products");
+      print(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

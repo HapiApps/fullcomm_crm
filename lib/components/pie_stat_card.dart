@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import '../controller/controller.dart';
 import '../controller/dashboard_controller.dart';
 import 'Customtext.dart';
 class PieData {
@@ -69,186 +70,128 @@ class _LeadPieCardState extends State<LeadPieCard> {
           5.height,
 
           /// PIE CHART
-          if(total.toInt().toString()!="0")
-          SizedBox(
-            height: 150,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Stack(
-                  children: [
-                    PieChart(
-                      PieChartData(
-                        sectionsSpace: 3,
-                        centerSpaceRadius: 45,
-                        pieTouchData: PieTouchData(
-                          enabled: true,
-                          touchCallback: (event, response) {
+          // if(total.toInt().toString()!="0")
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              SizedBox(
+                height: 150,
+                width: 100,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Stack(
+                      children: [
+                        PieChart(
+                          PieChartData(
+                            sectionsSpace: 3,
+                            centerSpaceRadius: 45,
+                            pieTouchData: PieTouchData(
+                              enabled: true,
+                              touchCallback: (event, response) {
 
-                            if (!event.isInterestedForInteractions ||
-                                response == null ||
-                                response.touchedSection == null) {
+                                if (!event.isInterestedForInteractions ||
+                                    response == null ||
+                                    response.touchedSection == null) {
 
-                              if (touchedIndex != -1) {
-                                setState(() {
-                                  touchedIndex = -1;
-                                });
-                              }
-                              return;
-                            }
+                                  if (touchedIndex != -1) {
+                                    setState(() {
+                                      touchedIndex = -1;
+                                    });
+                                  }
+                                  return;
+                                }
 
-                            final index = response.touchedSection!.touchedSectionIndex;
+                                final index = response.touchedSection!.touchedSectionIndex;
 
-                            if (touchedIndex != index) {
-                              setState(() {
-                                touchedIndex = index;
-                              });
-                            }
-                          },
+                                if (touchedIndex != index) {
+                                  setState(() {
+                                    touchedIndex = index;
+                                  });
+                                }
+                              },
+                            ),
+                            sections:
+                            List.generate(widget.data.length, (i) {
+                              final isTouched = i == touchedIndex;
+
+                              return PieChartSectionData(
+                                color: widget.data[i].color,
+                                value: widget.data[i].value,
+                                radius: isTouched ? 45 : 30,
+                                showTitle: false,
+                              );
+                            }),
+                          ),
                         ),
-                        sections:
-                        List.generate(widget.data.length, (i) {
-                          final isTouched = i == touchedIndex;
 
-                          return PieChartSectionData(
-                            color: widget.data[i].color,
-                            value: widget.data[i].value,
-                            radius: isTouched ? 45 : 30,
-                            showTitle: false,
-                          );
-                        }),
-                      ),
-                    ),
+                        /// CENTER TEXT
+                        // if (touchedIndex == -1)
+                          Align(
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CustomText(
+                                  text: total.toInt().toString(),
+                                  size: 20,
+                                  isBold: true,
+                                  isCopy: false,
+                                ),
+                                CustomText(
+                                  text: "Total Leads",
+                                  colors: Colors.grey,
+                                  isCopy: false,
+                                ),
+                              ],
+                            ),
+                          ),
 
-                    /// CENTER TEXT
-                    // if (touchedIndex == -1)
-                      Align(
-                        alignment: Alignment.center,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                        /// FLOATING TOOLTIP
+                          if (touchedIndex != -1)
+                            Positioned(
+                              top: 10,
+                              right: 10,
+                              child: _buildTooltip(widget.data[touchedIndex]),
+                            ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              SizedBox(
+                width: 100,
+                // height: 150,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: dashController.leadReport.length,
+                    itemBuilder: (context,index){
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 7, 0, 0),
+                        child: Row(
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CustomText(
-                              text: total.toInt().toString(),
-                              size: 20,
-                              isBold: true,
-                              isCopy: false,
+                            CircleAvatar(
+                              radius: 5,
+                              backgroundColor: controllers.leadColors[index],
                             ),
+                            6.width,
                             CustomText(
-                              text: "Total Leads",
-                              colors: Colors.grey,
-                              isCopy: false,
+                              text: dashController.leadReport[index]["category"] ?? "",
+                              isCopy: false,colors: controllers.leadColors[index],
                             ),
+                            // 5.width,
+                            // CustomText(
+                            //   text: value.toString(),
+                            //   isCopy: false,
+                            // ),
                           ],
                         ),
-                      ),
-
-                    /// FLOATING TOOLTIP
-                      if (touchedIndex != -1)
-                        Positioned(
-                          top: 10,
-                          right: 10,
-                          child: _buildTooltip(widget.data[touchedIndex]),
-                        ),
-                  ],
-                );
-              },
-            ),
+                      );
+                    }),
+              )
+            ],
           ),
-
-          // 5.height,
-
-          /// LEGEND GRID (2 per row)
-          SizedBox(
-            // height: 50,
-            child: GridView.builder(
-              // physics: const BouncingScrollPhysics(), // 👈 scroll feel
-              shrinkWrap: true,
-              physics:const NeverScrollableScrollPhysics(),
-              // itemCount: widget.data.length,
-              gridDelegate:
-              const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 3,
-                childAspectRatio: 10,
-              ),
-                itemCount: dashController.leadReport.length,
-                itemBuilder: (context, index) {
-
-                  final item = dashController.leadReport[index];
-                  final value =
-                      int.tryParse(item["customer_count"].toString()) ?? 0;
-
-                  return Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CircleAvatar(
-                        radius: 5,
-                        backgroundColor: dashController.color[index],
-                      ),
-                      6.width,
-                      CustomText(
-                        text: item["category"] ?? "",
-                        isCopy: false,colors: dashController.color[index],
-                      ),5.width,
-                      CustomText(
-                        text: value.toString(),
-                        isCopy: false,
-                      ),
-                    ],
-                  );
-                }
-            ),
-          ),
-          ///
-          // Wrap(
-          //   spacing: 25.0, // Horizontal gap (oru item-kum innoru item-kum naduvula)
-          //   runSpacing: 12.0, // Vertical gap (adutha line-ku)
-          //   alignment: WrapAlignment.start,
-          //   children: dashController.leadReport.asMap().entries.map((entry) {
-          //     int index = entry.key;
-          //     var item = entry.value;
-          //
-          //     // Value extract panrom (item["customer_count"])
-          //     final value = int.tryParse(item["customer_count"].toString()) ?? 0;
-          //
-          //     // Color safe-ah edukkarom
-          //     final itemColor = dashController.color[index % dashController.color.length];
-          //
-          //     return IntrinsicWidth( // Ithu content-ku yetha maari width-ah adjust pannikum
-          //       child: Row(
-          //         mainAxisSize: MainAxisSize.min,
-          //         children: [
-          //           // Dot
-          //           Container(
-          //             width: 10,
-          //             height: 10,
-          //             decoration: BoxDecoration(
-          //               color: itemColor,
-          //               shape: BoxShape.circle,
-          //             ),
-          //           ),
-          //           8.width,
-          //           // Category Name
-          //           CustomText(
-          //             text:"${item["category"] ?? ""}",
-          //               size: 14,
-          //               colors: itemColor,isBold: true, isCopy: false,
-          //           ),
-          //
-          //           // Count Value
-          //           // Text(
-          //           //   value.toString(),
-          //           //   style: TextStyle(
-          //           //     fontSize: 14,
-          //           //     color: Colors.black,
-          //           //     fontWeight: FontWeight.bold,
-          //           //   ),
-          //           // ),
-          //         ],
-          //       ),
-          //     );
-          //   }).toList(),
-          // )
         ],
       ),
     );

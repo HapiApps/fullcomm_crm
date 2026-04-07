@@ -52,27 +52,24 @@ class Product {
   final String name;
   final int qty;
   final double price;
+  final double mrp;
   final double amount;
 
   Product({
     required this.name,
     required this.qty,
     required this.price,
+    required this.mrp,
     required this.amount,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       name: json['name'] ?? '',
-
-      /// ✅ string/int safe convert
       qty: int.tryParse(json['qty']?.toString() ?? "0") ?? 0,
-
-      /// ✅ safe double convert
+      mrp: double.tryParse(json['mrp']?.toString() ?? "0") ?? 0,
       price: double.tryParse(json['price']?.toString() ?? "0") ?? 0,
-
-      /// ✅ API uses 'amt'
-      amount: double.tryParse(json['amt']?.toString() ?? "0") ?? 0,
+      amount: double.tryParse(json['amount']?.toString() ?? "0") ?? 0,
     );
   }
 }
@@ -81,6 +78,7 @@ class Quotations {
   final int id;
   final String invoicePdf;
   final String name;
+  final String quotationNo;
   final String number;
   final String createdTs;
   final String status;
@@ -91,6 +89,7 @@ class Quotations {
     required this.id,
     required this.totalAmt,
     required this.invoicePdf,
+    required this.quotationNo,
     required this.name,
     required this.number,
     required this.createdTs,
@@ -102,6 +101,7 @@ class Quotations {
     return Quotations(
       id: int.tryParse(json['id']?.toString() ?? "0") ?? 0,
       cusId: int.tryParse(json['cus_id']?.toString() ?? "0") ?? 0,
+      quotationNo: json['q_no'] ?? '',
       invoicePdf: json['invoice_pdf'] ?? '',
       name: json['name'] ?? '',
       number: json['number'] ?? '',

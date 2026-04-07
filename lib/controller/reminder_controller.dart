@@ -841,7 +841,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
       final matchesFilterType =
           filterCall.value == "All" ||
-              (filterCall.value == "My" &&
+              (filterCall.value == "Mine" &&
                   activity.name == controllers.storage.read("f_name")) ||
               (filterCall.value == "Team" &&
                   activity.name != controllers.storage.read("f_name"));
@@ -1033,7 +1033,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           activity.status == controllers.selectMeetingType.value;
       final matchesFilterType =
           filterApp.value == "All" ||
-              (filterApp.value == "My" &&
+              (filterApp.value == "Mine" &&
                   activity.employeeName.contains(controllers.storage.read("f_name"))) ||
               (filterApp.value == "Team" &&
                   !activity.employeeName.contains(controllers.storage.read("f_name")));
@@ -1169,7 +1169,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       String currentUser = controllers.storage.read("f_name") ?? "";
 
       return filterRem.value == "All" ||
-          (filterRem.value == "My" &&
+          (filterRem.value == "Mine" &&
               (a.employeeName ?? "").toLowerCase().contains(currentUser.toLowerCase())) ||
           (filterRem.value == "Team" &&
               !(a.employeeName ?? "").toLowerCase().contains(currentUser.toLowerCase()));

@@ -303,8 +303,7 @@ class SideBar extends StatelessWidget {
               selectedImage: "assets/images/order1.png",
               unSelectedImage: "assets/images/order.png",
               label: "Quotation",
-              // page: const QuotationPage(),
-              page: const NewBillingScreen(),
+              page: const QuotationPage(),
             ),
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()

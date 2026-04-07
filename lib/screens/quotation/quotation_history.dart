@@ -27,6 +27,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
   List<double> colWidths = [
     20,   // 0 Checkbox
     80,  // 1 Actions
+    80,  // 1 Actions
     100,  // 2 Event Name
     100,  // 3 Type
     100,  // 4 Location
@@ -253,6 +254,14 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                           headerCell(2,  CustomText(
                             textAlign: TextAlign.left,
                             text: "S.No",
+                            size: 15,
+                            isBold: true,
+                            isCopy: true,
+                            colors: Colors.white,
+                          ),),
+                          headerCell(2,  CustomText(
+                            textAlign: TextAlign.left,
+                            text: "Quotation No",
                             size: 15,
                             isBold: true,
                             isCopy: true,
@@ -1010,6 +1019,16 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                       child: CustomText(
                                         textAlign: TextAlign.left,
                                         text: "${index+1}",
+                                        size: 14,
+                                        isCopy: true,
+                                        colors:colorsConst.textColor,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: CustomText(
+                                        textAlign: TextAlign.left,
+                                        text: data.quotationNo,
                                         size: 14,
                                         isCopy: true,
                                         colors:colorsConst.textColor,
