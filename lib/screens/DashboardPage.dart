@@ -300,7 +300,7 @@ void checkDate(){
       ),
     );
   }
-
+  int hoverIndex = -1;
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -2160,8 +2160,8 @@ void checkDate(){
                                         padding: const EdgeInsets.all(16),
                                         decoration: _whiteCard(),
                                         child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                           children: [
                                             // -------- TITLE --------
                                             CustomText(
@@ -2170,7 +2170,7 @@ void checkDate(){
                                               size: 15,
                                               isBold: true,
                                             ),
-                                            4.height,
+                                            //4.height,
                                             // -------- SUBTITLE --------
                                             CustomText(
                                               text: "Customer Engagement Levels",
@@ -2179,7 +2179,7 @@ void checkDate(){
                                               isBold: false,
                                               colors: Color(0xff6B7280),
                                             ),
-                                            10.height,
+                                            //10.height,
                                             // -------- DIVIDER --------
                                             const Divider(
                                               height: 1,
@@ -2187,53 +2187,56 @@ void checkDate(){
                                               color: Color(0xffD1D5DB),
                                             ),
 
-                                            18.height,
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Container(
-                                                  height: 100,width: 100,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFFFF2F2),radius: 10
+                                            //25.height,
+                                            Center(
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                // crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    height: 130,width: 130,
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                        color: Color(0xFFFFF2F2),radius: 10
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                      children: [
+                                                        CustomText(text: "${int.tryParse(dashController.totalHot.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
+                                                        Image.asset("assets/images/hot.png"),
+                                                        CustomText(text: "Hot Leads", isCopy: false,isBold: true,colors: Color(0xFFEF4444))
+                                                      ],
+                                                    ),
                                                   ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      CustomText(text: "${int.tryParse(dashController.totalHot.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
-                                                      Image.asset("assets/images/hot.png"),
-                                                      CustomText(text: "Hot Leads", isCopy: false,isBold: true,colors: Color(0xFFEF4444))
-                                                    ],
+                                                  Container(
+                                                    height: 130,width: 130,
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                        color: Color(0xFFFFF8ED),radius: 10
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                      children: [
+                                                        CustomText(text: "${int.tryParse(dashController.totalWarm.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
+                                                        Image.asset("assets/images/warm.png"),
+                                                        CustomText(text: "Warm Leads", isCopy: false,isBold: true,colors: Color(0xFFF59E0B))
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                                Container(
-                                                  height: 100,width: 100,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFFFF8ED),radius: 10
+                                                  Container(
+                                                    height: 130,width: 130,
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                        color: Color(0xFFF0F6FF),radius: 10
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                      children: [
+                                                        CustomText(text: "${int.tryParse(dashController.totalCold.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
+                                                        Image.asset("assets/images/cold.png"),
+                                                        CustomText(text: "Cold Leads", isCopy: false,isBold: true,colors: Color(0xFF3B82F6))
+                                                      ],
+                                                    ),
                                                   ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      CustomText(text: "${int.tryParse(dashController.totalWarm.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
-                                                      Image.asset("assets/images/warm.png"),
-                                                      CustomText(text: "Warm Leads", isCopy: false,isBold: true,colors: Color(0xFFF59E0B))
-                                                    ],
-                                                  ),
-                                                ),
-                                                Container(
-                                                  height: 100,width: 100,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFF0F6FF),radius: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      CustomText(text: "${int.tryParse(dashController.totalCold.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
-                                                      Image.asset("assets/images/cold.png"),
-                                                      CustomText(text: "Cold Leads", isCopy: false,isBold: true,colors: Color(0xFF3B82F6))
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             )
                                             // -------- RATING BAR () --------
                                             // Expanded(
@@ -3079,14 +3082,15 @@ void checkDate(){
                 radius: 10,
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  20.width,
                   CustomText(
                     text: "${controllers.leadCategoryList.fold(0, (sum, item) => sum + (item.list2.length ?? 0))-controllers.leadCategoryList.value.last.list2.length}",size: 18,
                     isCopy: false,colors: Colors.white,isBold: true,
                   ),10.width,
                   CustomText(
-                    text: "Total Leads",
+                    text: "total leads",
                     isCopy: false,colors: Colors.white,
                   ),
                 ],
@@ -3097,57 +3101,141 @@ void checkDate(){
             for (int i = 0; i < controllers.leadCategoryList.length; i++)
               _animatedLeadItem(
                 index: 0,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              height: 30,
-                              width: 30,
-                              alignment: Alignment.center,
+                // child: Column(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   mainAxisAlignment: MainAxisAlignment.start,
+                //   children: [
+                //     Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       children: [
+                //         Row(
+                //           children: [
+                //             Container(
+                //               height: 30,
+                //               width: 30,
+                //               alignment: Alignment.center,
+                //               decoration: BoxDecoration(
+                //                 color: controllers.leadColors[i].withOpacity(0.10),
+                //                 shape: BoxShape.circle,
+                //               ),
+                //               child: Container(
+                //                 height: 12,
+                //                 width: 12,
+                //                 decoration: BoxDecoration(
+                //                   color: controllers.leadColors[i],
+                //                   shape: BoxShape.circle,
+                //                 ),
+                //               ),
+                //             ),10.width,
+                //             CustomText(
+                //               text:  controllers.leadCategoryList[i].value.toUpperCase(),
+                //               isCopy: false,
+                //               size: 11,
+                //               isBold: true,
+                //               colors: controllers.leadColors[i],
+                //             ),
+                //           ],
+                //         ),
+                //         CustomText(
+                //           text: controllers.leadCategoryList[i].list.length.toString(),
+                //           isCopy: false,
+                //           size: 14,
+                //           isBold: true,
+                //           colors: controllers.leadColors[i],
+                //         ),
+                //       ],
+                //     ),
+                //     if(i!=controllers.leadCategoryList.length-1)
+                //     Padding(
+                //       padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                //       child: Container(
+                //         height: 25,color: Colors.grey.shade300,width: 2,
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                child: MouseRegion(
+                  onEnter: (_) {
+                    setState(() {
+                      hoverIndex = i;
+                    });
+                  },
+                  onExit: (_) {
+                    setState(() {
+                      hoverIndex = -1;
+                    });
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: 30,
+                            width: 30,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: controllers.leadColors[i].withOpacity(0.10),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Container(
+                              height: 12,
+                              width: 12,
                               decoration: BoxDecoration(
-                                color: controllers.leadColors[i].withOpacity(0.10),
+                                color: controllers.leadColors[i],
                                 shape: BoxShape.circle,
                               ),
-                              child: Container(
-                                height: 12,
-                                width: 12,
-                                decoration: BoxDecoration(
-                                  color: controllers.leadColors[i],
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            ),10.width,
-                            CustomText(
-                              text:  controllers.leadCategoryList[i].value.toUpperCase(),
-                              isCopy: false,
-                              size: 11,
-                              isBold: true,
-                              colors: controllers.leadColors[i],
                             ),
-                          ],
-                        ),
-                        CustomText(
-                          text: controllers.leadCategoryList[i].list.length.toString(),
-                          isCopy: false,
-                          size: 14,
-                          isBold: true,
-                          colors: controllers.leadColors[i],
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                      child: Container(
-                        height: 25,color: Colors.grey.shade300,width: 2,
+                          ),
+                          10.width,
+                          Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: hoverIndex == i
+                                  ? controllers.leadColors[i].withOpacity(0.08) // 🔥 hover color
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width*0.06,
+                                    child: CustomText(
+                                      text: controllers.leadCategoryList[i].value.toUpperCase(),
+                                      isCopy: false,
+                                      textAlign: TextAlign.start,
+                                      size: 11,
+                                      isBold: true,
+                                      colors: controllers.leadColors[i],
+                                    ),
+                                  ),
+                                  CustomText(
+                                    text: controllers.leadCategoryList[i].list.length.toString(),
+                                    isCopy: false,
+                                    size: 14,
+                                    isBold: true,
+                                    colors: controllers.leadColors[i],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      if (i != controllers.leadCategoryList.length - 1)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                          child: Container(
+                            height: 20,
+                            color: Colors.grey.shade300,
+                            width: 2,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
           ],
@@ -3238,39 +3326,6 @@ void checkDate(){
       ),
     );
   }
-
-  // Widget _filterChip(String text) {
-  //   final bool active = selectedFilter == text;
-  //
-  //   return InkWell(
-  //     onTap: () => setState(() => selectedFilter = text),
-  //     borderRadius: BorderRadius.circular(10),
-  //     child: Container(
-  //       margin: const EdgeInsets.symmetric(horizontal: 4),
-  //       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  //       decoration: BoxDecoration(
-  //         color: active ? Colors.white : Colors.transparent,
-  //         borderRadius: BorderRadius.circular(10),
-  //         boxShadow: active
-  //             ? [
-  //                 BoxShadow(
-  //                   color: Colors.black12,
-  //                   blurRadius: 6,
-  //                   offset: const Offset(0, 2),
-  //                 ),
-  //               ]
-  //             : null,
-  //       ),
-  //       child: CustomText(
-  //       text: text,
-  //       isCopy: false,
-  //       size: 12,
-  //       isBold: true,
-  //       colors: active ? Color(0xff0078D7) : Color(0xff666666),
-  //     ),
-  //     ),
-  //   );
-  // }
 }
 
 BoxDecoration _whiteCard() => BoxDecoration(
