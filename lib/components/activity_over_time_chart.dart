@@ -401,7 +401,7 @@ class CustomerActivityCard extends StatelessWidget {
               Row(
                 children: [
                   CustomText(
-                    text: "Total Customers : ",
+                    text: "Total : ",
                     size: 13,
                     colors: Color(0xff666666),
                     isCopy: false,
@@ -462,7 +462,7 @@ class CustomerActivityCard extends StatelessWidget {
               Row(
                 children: [
                   CustomText(
-                    text: "Total Leads : ",
+                    text: "Total : ",
                     size: 13,
                     colors: Color(0xff666666),
                     isCopy: false,

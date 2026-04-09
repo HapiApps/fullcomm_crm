@@ -22,28 +22,23 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   List<double> colWidths = [
-    20,   // 0 Checkbox
     80,  // 1 Actions
     100,  // 2 Event Name
     100,  // 2 Event Name
     100,  // 3 Type
     100,  // 4 Location
     100,  // 5 Employee Name
-    100,  // 6 Customer Name
-    100,  // 7 Start Date
-    100,  // 7 Start Date
   ];
+  late FocusNode _focusNode;
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode();
+    _focusNode = FocusNode(); // ✅ ADD THIS LINE
     WidgetsBinding.instance.addPostFrameCallback((_) {
       productCtr.isSelectAll.value=false;
       productCtr.idsList.value.clear();
       productCtr.totalProspectPages.value=(productCtr.products.length / productCtr.itemsPerPage).ceil();
       _focusNode.requestFocus();
-    });
-    Future.delayed(Duration.zero,(){
       productCtr.filterAndSortProducts(
         searchText: controllers.searchText.value.toLowerCase(),
         sortField: controllers.sortFieldCallActivity.value,
@@ -53,6 +48,12 @@ class _ProductPageState extends State<ProductPage> {
         selectedDateFilter: productCtr.selectedCallSortBy.value,
       );
     });
+  }
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _controller.dispose();
+    super.dispose();
   }
   Widget headerCell(int index, Widget child) {
     return Stack(
@@ -90,21 +91,20 @@ class _ProductPageState extends State<ProductPage> {
             "-${DateTime.now().month.toString().padLeft(2, "0")}"
             "-${DateTime.now().year.toString()}";
   }
-  late FocusNode _focusNode;
   final ScrollController _controller = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          SideBar(),
-          /// MAIN
-          Container(
-            width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
-            height: MediaQuery.of(context).size.height,
-            alignment: Alignment.center,
-            padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
-            child: Expanded(
+    return SelectionArea(
+      child: Scaffold(
+        body: Row(
+          children: [
+            SideBar(),
+            /// MAIN
+            Container(
+              width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+              height: MediaQuery.of(context).size.height,
+              alignment: Alignment.center,
+              padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
               child: Column(
                 children: [
                   Row(
@@ -287,10 +287,10 @@ class _ProductPageState extends State<ProductPage> {
                   SizedBox(
                     width: controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
                     child: Table(
-                      columnWidths: {
-                        for (int i = 0; i < colWidths.length; i++)
-                          i: FixedColumnWidth(colWidths[i]),
-                      },
+                      // columnWidths: {
+                      //   for (int i = 0; i < colWidths.length; i++)
+                      //     i: FixedColumnWidth(colWidths[i]),
+                      // },
                       border: TableBorder(
                         horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                         verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -721,10 +721,10 @@ class _ProductPageState extends State<ProductPage> {
                             itemBuilder: (context, index) {
                               final data = productCtr.products[index];
                               return Table(
-                                columnWidths: {
-                                  for (int i = 0; i < colWidths.length; i++)
-                                    i: FixedColumnWidth(colWidths[i]),
-                                },
+                                // columnWidths: {
+                                //   for (int i = 0; i < colWidths.length; i++)
+                                //     i: FixedColumnWidth(colWidths[i]),
+                                // },
                                 border: TableBorder(
                                   horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                                   verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -1370,8 +1370,8 @@ class _ProductPageState extends State<ProductPage> {
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

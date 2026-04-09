@@ -139,7 +139,7 @@ class _StatusRow extends StatelessWidget {
             ),
           ),
 
-          10.width,
+          5.width,
 
           /// Bar Section
           Expanded(
@@ -186,7 +186,7 @@ class _StatusRow extends StatelessWidget {
             isCopy: false,
             size: 13,
             colors: Colors.black,
-          ),
+          ),10.width
         ],
       ),
     );

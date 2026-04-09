@@ -2221,7 +2221,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         SizedBox(
-                                          width: screenWidth/2.5,
+                                          width: screenWidth/2.6,
                                           child: Container(
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius
@@ -2706,7 +2706,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                           ),
                                         ),
                                         Container(
-                                          width: screenWidth*0.08,
+                                          width: screenWidth*0.09,
                                           alignment: Alignment.center,
                                           child: MyTextField(
                                             focusNode: fieldFocusNode,

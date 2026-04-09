@@ -828,7 +828,7 @@ void checkDate(){
                               children: [
                                 Container(
                                   width: screenWidth/3,
-                                  padding: const EdgeInsets.all(16),
+                                  padding: const EdgeInsets.all(14),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(18),
@@ -910,12 +910,12 @@ void checkDate(){
                                         color: Colors.white,
                                         width: screenWidth/3,
                                         child: Table(
-                                          columnWidths: {
-                                            0: FixedColumnWidth(100),
-                                            1: FixedColumnWidth(100),
-                                            2: FixedColumnWidth(100),
-                                            3: FixedColumnWidth(100),
-                                          },
+                                          // columnWidths: {
+                                          //   0: FixedColumnWidth(100),
+                                          //   1: FixedColumnWidth(100),
+                                          //   2: FixedColumnWidth(100),
+                                          //   3: FixedColumnWidth(100),
+                                          // },
                                           border: TableBorder(
                                             horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                                             verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -938,7 +938,7 @@ void checkDate(){
                                                         isCopy: true,
                                                         colors: Colors.white,
                                                       ),
-                                                      3.width,
+                                                      1.width,
                                                       GestureDetector(
                                                         onTap: (){
                                                           if(controllers.sortFieldMeetingActivity.value=='customerName' && controllers.sortOrderMeetingActivity.value=='asc'){
@@ -971,13 +971,13 @@ void checkDate(){
                                                     children: [
                                                       CustomText(//2
                                                         textAlign: TextAlign.left,
-                                                        text: "Company name",
+                                                        text: "Company",
                                                         isCopy: true,
                                                         size: 15,
                                                         isBold: true,
                                                         colors: Colors.white,
                                                       ),
-                                                      3.width,
+                                                      1.width,
                                                       GestureDetector(
                                                         onTap: (){
                                                           if(controllers.sortFieldMeetingActivity.value=='companyName' && controllers.sortOrderMeetingActivity.value=='asc'){
@@ -1016,7 +1016,7 @@ void checkDate(){
                                                         isBold: true,
                                                         colors: Colors.white,
                                                       ),
-                                                      3.width,
+                                                      1.width,
                                                       GestureDetector(
                                                         onTap: (){
                                                           if(controllers.sortFieldMeetingActivity.value=='emp' && controllers.sortOrderMeetingActivity.value=='asc'){
@@ -1055,7 +1055,7 @@ void checkDate(){
                                                         isBold: true,
                                                         colors: Colors.white,
                                                       ),
-                                                      3.width,
+                                                      1.width,
                                                       GestureDetector(
                                                         onTap: (){
                                                           if(controllers.sortFieldMeetingActivity.value=='date' && controllers.sortOrderMeetingActivity.value=='asc'){
@@ -1111,12 +1111,12 @@ void checkDate(){
                                             itemBuilder: (context, index) {
                                               final data = remController.meetingFilteredList[index];
                                               return Table(
-                                                columnWidths: {
-                                                  0: FixedColumnWidth(100),
-                                                  1: FixedColumnWidth(100),
-                                                  2: FixedColumnWidth(100),
-                                                  3: FixedColumnWidth(100),
-                                                },
+                                                // columnWidths: {
+                                                //   0: FixedColumnWidth(100),
+                                                //   1: FixedColumnWidth(100),
+                                                //   2: FixedColumnWidth(100),
+                                                //   3: FixedColumnWidth(100),
+                                                // },
                                                 border: TableBorder(
                                                   horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                                                   verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -1719,7 +1719,7 @@ void checkDate(){
                                 // ),
                                 Container(
                                   width: screenWidth/2.3,
-                                  padding: const EdgeInsets.all(16),
+                                  padding: const EdgeInsets.all(14),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(18),
@@ -1825,7 +1825,7 @@ void checkDate(){
                                                         isCopy: true,
                                                         colors: Colors.white,
                                                       ),
-                                                      3.width,
+                                                      1.width,
                                                       GestureDetector(
                                                         onTap: () {
                                                           if (remController.sortFieldCallActivity.value == 'title' &&
@@ -1859,7 +1859,7 @@ void checkDate(){
                                                         isBold: true,
                                                         colors: Colors.white,
                                                       ),
-                                                      3.width,
+                                                      1.width,
                                                       GestureDetector(
                                                         onTap: () {
                                                           if (remController.sortFieldCallActivity.value == 'type' &&
@@ -1893,7 +1893,7 @@ void checkDate(){
                                                         isBold: true,
                                                         colors: Colors.white,
                                                       ),
-                                                      3.width,
+                                                      1.width,
                                                       GestureDetector(
                                                         onTap: () {
                                                           if (remController.sortBy.value == 'customerName' &&
@@ -1921,13 +1921,13 @@ void checkDate(){
                                                     children: [
                                                       CustomText(
                                                         textAlign: TextAlign.center,
-                                                        text: "Employee Name",
+                                                        text: "Employee",
                                                         isCopy: true,
                                                         size: 15,
                                                         isBold: true,
                                                         colors: Colors.white,
                                                       ),
-                                                      3.width,
+                                                      1.width,
                                                       GestureDetector(
                                                         onTap: () {
                                                           if (remController.sortFieldCallActivity.value == 'employeeName' &&
@@ -1955,13 +1955,13 @@ void checkDate(){
                                                     children: [
                                                       CustomText(
                                                         textAlign: TextAlign.center,
-                                                        text: "Start & End Date",
+                                                        text: "Date & Time",
                                                         isCopy: true,
                                                         size: 15,
                                                         isBold: true,
                                                         colors: Colors.white,
                                                       ),
-                                                      3.width,
+                                                      1.width,
                                                       GestureDetector(
                                                         onTap: () {
                                                           if (remController.sortFieldCallActivity.value == 'startDate' &&
@@ -2161,83 +2161,92 @@ void checkDate(){
                                         decoration: _whiteCard(),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             // -------- TITLE --------
-                                            CustomText(
-                                              text: "Portfolio Heat",
-                                              isCopy: false,
-                                              size: 15,
-                                              isBold: true,
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                CustomText(
+                                                  text: "Portfolio Heat",
+                                                  isCopy: false,
+                                                  size: 15,
+                                                  isBold: true,
+                                                ),
+                                                4.height,
+                                                // -------- SUBTITLE --------
+                                                CustomText(
+                                                  text: "Customer Engagement Levels",
+                                                  isCopy: false,
+                                                  size: 13,
+                                                  isBold: false,
+                                                  colors: Color(0xff6B7280),
+                                                ),
+                                                10.height,
+                                                // -------- DIVIDER --------
+                                                const Divider(
+                                                  height: 1,
+                                                  thickness: 1,
+                                                  color: Color(0xffD1D5DB),
+                                                ),
+                                              ],
                                             ),
-                                            //4.height,
-                                            // -------- SUBTITLE --------
-                                            CustomText(
-                                              text: "Customer Engagement Levels",
-                                              isCopy: false,
-                                              size: 13,
-                                              isBold: false,
-                                              colors: Color(0xff6B7280),
-                                            ),
-                                            //10.height,
-                                            // -------- DIVIDER --------
-                                            const Divider(
-                                              height: 1,
-                                              thickness: 1,
-                                              color: Color(0xffD1D5DB),
-                                            ),
-
-                                            //25.height,
-                                            Center(
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                // crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    height: 130,width: 130,
-                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                        color: Color(0xFFFFF2F2),radius: 10
+                                            // 5.height,
+                                            Padding(
+                                              padding: const EdgeInsets.fromLTRB(10, 10, 10, 40),
+                                              child: Center(
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      height: screenWidth/15,width: screenWidth/15,
+                                                      decoration: customDecoration.baseBackgroundDecoration(
+                                                          color: Color(0xFFFFF2F2),radius: 10
+                                                      ),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                        children: [
+                                                          CustomText(text: "${int.tryParse(dashController.totalHot.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
+                                                          Image.asset("assets/images/hot.png"),
+                                                          CustomText(text: "Hot Leads", isCopy: false,isBold: true,colors: Color(0xFFEF4444))
+                                                        ],
+                                                      ),
                                                     ),
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                      children: [
-                                                        CustomText(text: "${int.tryParse(dashController.totalHot.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
-                                                        Image.asset("assets/images/hot.png"),
-                                                        CustomText(text: "Hot Leads", isCopy: false,isBold: true,colors: Color(0xFFEF4444))
-                                                      ],
+                                                    Container(
+                                                      height: screenWidth/15,width: screenWidth/15,
+                                                      decoration: customDecoration.baseBackgroundDecoration(
+                                                          color: Color(0xFFFFF8ED),radius: 10
+                                                      ),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                        children: [
+                                                          CustomText(text: "${int.tryParse(dashController.totalWarm.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
+                                                          Image.asset("assets/images/warm.png"),
+                                                          CustomText(text: "Warm Leads", isCopy: false,isBold: true,colors: Color(0xFFF59E0B))
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Container(
-                                                    height: 130,width: 130,
-                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                        color: Color(0xFFFFF8ED),radius: 10
+                                                    Container(
+                                                      height: screenWidth/15,width: screenWidth/15,
+                                                      decoration: customDecoration.baseBackgroundDecoration(
+                                                          color: Color(0xFFF0F6FF),radius: 10
+                                                      ),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                        children: [
+                                                          CustomText(text: "${int.tryParse(dashController.totalCold.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
+                                                          Image.asset("assets/images/cold.png"),
+                                                          CustomText(text: "Cold Leads", isCopy: false,isBold: true,colors: Color(0xFF3B82F6))
+                                                        ],
+                                                      ),
                                                     ),
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                      children: [
-                                                        CustomText(text: "${int.tryParse(dashController.totalWarm.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
-                                                        Image.asset("assets/images/warm.png"),
-                                                        CustomText(text: "Warm Leads", isCopy: false,isBold: true,colors: Color(0xFFF59E0B))
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    height: 130,width: 130,
-                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                        color: Color(0xFFF0F6FF),radius: 10
-                                                    ),
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                      children: [
-                                                        CustomText(text: "${int.tryParse(dashController.totalCold.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
-                                                        Image.asset("assets/images/cold.png"),
-                                                        CustomText(text: "Cold Leads", isCopy: false,isBold: true,colors: Color(0xFF3B82F6))
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                            )
+                                            ),
+                                            // 5.height
                                             // -------- RATING BAR () --------
                                             // Expanded(
                                             //   child: LayoutBuilder(

@@ -615,8 +615,8 @@ var isSelectAll=false.obs;
         matchesDate = activityDate.isAfter(start) &&
             activityDate.isBefore(todayStart.add(const Duration(days: 1)));
       }
-      print("activityDate ${activityDate}");
-      print("selectedRange ${selectedRange}");
+      // print("activityDate ${activityDate}");
+      // print("selectedRange ${selectedRange}");
 
       /// Date Range Filter (same date issue fixed)
       if (selectedRange != null) {
