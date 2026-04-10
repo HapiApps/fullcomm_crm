@@ -1,27 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
-import 'package:fullcomm_crm/screens/leads/suspects.dart';
-import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/components/line_chart.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
-import 'package:fullcomm_crm/screens/leads/rating_leads.dart';
 import 'package:fullcomm_crm/screens/records/records.dart';
 import 'package:fullcomm_crm/screens/reminder/reminder_page.dart';
 import 'package:get/get.dart';
-import 'package:pie_chart/pie_chart.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../common/constant/api.dart';
-import '../common/constant/app_colors.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/constant/dashboard_assets.dart';
-import '../common/utilities/utils.dart';
 import '../components/activity_over_time_chart.dart';
 import '../components/activityratingbar.dart';
-import '../components/custom_rating.dart';
 import '../components/custom_sidebar.dart';
 import '../components/custom_text.dart';
 import '../components/customer_status_card.dart';
@@ -29,11 +17,9 @@ import '../components/pie_stat_card.dart';
 import '../components/wave_stat_card.dart';
 import '../controller/controller.dart';
 import '../controller/reminder_controller.dart';
-import '../provider/dashboard_provider.dart';
 import '../provider/employee_provider.dart';
 import '../services/api_services.dart';
 import 'dart:html' as html;
-import 'employee/employee_screen.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -45,9 +31,9 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage>
     with SingleTickerProviderStateMixin {
   late FocusNode _focusNode;
-  final ScrollController _controller = ScrollController();
-  final ScrollController _leftController = ScrollController();
-  final ScrollController _rightController = ScrollController();
+  // final ScrollController _controller = ScrollController();
+  // final ScrollController _leftController = ScrollController();
+  // final ScrollController _rightController = ScrollController();
 
   @override
   void initState() {
@@ -171,11 +157,6 @@ class _DashboardPageState extends State<DashboardPage>
   late AnimationController _leadItemController;
   late List<Animation<double>> _leadItemAnimations;
   int? hoveredIndex;
-  String _formatDate(DateTime date) {
-    return "${date.day.toString().padLeft(2, '0')}-"
-        "${date.month.toString().padLeft(2, '0')}-"
-        "${date.year}";
-  }
 
   @override
   void dispose() {
@@ -201,11 +182,11 @@ class _DashboardPageState extends State<DashboardPage>
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    final width = MediaQuery.of(context).size.width;
-    final isMobile = width < 768;
-    final isTablet = width >= 768 && width < 1100;
-    final isDesktop = width >= 1100;
-    final dashboard = context.watch<DashboardProvider>();
+    // final width = MediaQuery.of(context).size.width;
+    // final isMobile = width < 768;
+    // final isTablet = width >= 768 && width < 1100;
+    // final isDesktop = width >= 1100;
+    // final dashboard = context.watch<DashboardProvider>();
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6F8),
       appBar: PreferredSize(
@@ -948,7 +929,7 @@ class _DashboardPageState extends State<DashboardPage>
                                       20.height,
                                       // -------- Activity Over Time () --------
                                       ActivityOverTimeChart(
-                                        maxY: 80,
+                                        // maxY: 80,
                                         xLabels: controllers.xLabels,
                                         lines: [
                                           ActivityLineData(
@@ -1259,38 +1240,6 @@ class _DashboardPageState extends State<DashboardPage>
     );
   }
 
-  Widget _filterChip(String text) {
-    final bool active = selectedFilter == text;
-
-    return InkWell(
-      onTap: () => setState(() => selectedFilter = text),
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: active ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: active
-              ? [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: CustomText(
-        text: text,
-        isCopy: false,
-        size: 12,
-        isBold: true,
-        colors: active ? Color(0xff0078D7) : Color(0xff666666),
-      ),
-      ),
-    );
-  }
 }
 
 Widget _leadItem({

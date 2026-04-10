@@ -75,7 +75,6 @@ class _ReminderPageState extends State<ReminderPage> {
     Future.delayed(Duration.zero,() {
       remController.sortReminders();
     });
-    apiService.getAllEmployees();
   }
 
   @override

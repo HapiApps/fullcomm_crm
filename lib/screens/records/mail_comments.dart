@@ -99,7 +99,6 @@ class _MailCommentsState extends State<MailComments> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    bool isWebView = screenWidth > screenHeight;
     screenWidth > screenHeight ? screenWidth * 0.30 : screenWidth * 0.90;
     return PopScope(
       canPop: true,

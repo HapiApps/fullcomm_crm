@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/reminder_utils.dart';
@@ -12,9 +10,6 @@ import 'package:fullcomm_crm/components/custom_checkbox.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
-import 'package:fullcomm_crm/screens/records/mail_comments.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../common/constant/api.dart';
 import '../controller/reminder_controller.dart';
 import '../controller/table_controller.dart';
 import '../models/new_lead_obj.dart';
@@ -22,7 +17,6 @@ import '../screens/records/cus_mail_comments.dart';
 import '../screens/leads/update_lead.dart';
 import '../screens/records/records.dart';
 import '../services/api_services.dart';
-import 'custom_date_box.dart';
 import 'custom_loading_button.dart';
 
 class CustomerNameTile extends StatefulWidget {
@@ -268,7 +262,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
   @override
   Widget build(BuildContext context) {
     final headings = tableController.tableHeadings;
-    final int totalColumns = tableController.tableHeadings.length + 1 + (widget.showCheckbox ? 1 : 0);
+    // final int totalColumns = tableController.tableHeadings.length + 1 + (widget.showCheckbox ? 1 : 0);
     final Map<int, TableColumnWidth> columnWidths = {
       0: FlexColumnWidth(0.6),//santhiya
       1: const FlexColumnWidth(2),
@@ -516,21 +510,6 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                             10.width,
                                             CustomLoadingButton(
                                               callback: () async {
-                                                final deleteData = {
-                                                  "lead_id": widget.id.toString(),
-                                                  "user_id": controllers.storage
-                                                      .read("id")
-                                                      .toString(),
-                                                  "rating":
-                                                  (widget.rating ?? "Warm")
-                                                      .toString(),
-                                                  "cos_id": controllers.storage
-                                                      .read("cos_id")
-                                                      .toString(),
-                                                  "mail_id":
-                                                  widget.mainEmail.toString(),
-                                                };
-
                                                 await apiService.deleteCustomersAPI(context, [widget.id],widget.list,widget.list2);
                                               },
                                               height: 35,
@@ -923,7 +902,6 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                 builder: (context) {
                                   String? stageId;
                                   String? selectedStage;
-                                  bool isEdit = false;
 
                                   TextEditingController reasonController = TextEditingController();
 
@@ -977,7 +955,6 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                                     print("stageId: $stageId");
                                                     print("selectedStage: $selectedStage");
 
-                                                    isEdit = true;
                                                   });
                                                 },
                                               ),

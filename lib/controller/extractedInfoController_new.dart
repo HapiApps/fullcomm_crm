@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../common/constant/api.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'controller.dart';
 
 final exControllers = Get.put(ExtractedInfoControllerNew());

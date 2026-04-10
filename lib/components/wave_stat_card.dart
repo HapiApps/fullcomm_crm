@@ -102,9 +102,7 @@ import 'package:flutter/material.dart';
 //
 // }
 import 'dart:math' as math;
-import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-
 import '../common/utilities/animated_wave_painter.dart';
 import 'Customtext.dart';
 

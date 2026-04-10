@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -23,20 +22,29 @@ class ActivityLineData {
 class ActivityOverTimeChart extends StatefulWidget {
   final List<String> xLabels;
   final List<ActivityLineData> lines;
-  final double maxY;
 
   const ActivityOverTimeChart({
     super.key,
     required this.xLabels,
     required this.lines,
-    this.maxY = 100,
   });
 
   @override
   State<ActivityOverTimeChart> createState() =>
       _ActivityOverTimeChartState();
 }
+double getMaxY() {
+  final allValues = [
+    ...controllers.calls,
+    ...controllers.mails,
+    ...controllers.updates,
+  ];
 
+  double maxValue = allValues.reduce((a, b) => a > b ? a : b);
+
+  // கொஞ்சம் top spacing காக
+  return (maxValue + 2).ceilToDouble();
+}
 class _ActivityOverTimeChartState
     extends State<ActivityOverTimeChart> {
 
@@ -128,13 +136,13 @@ class _ActivityOverTimeChartState
               child: LineChart(
                 LineChartData(
                   minY: 0,
-                  maxY: widget.maxY,
+                  maxY: getMaxY(),
                   borderData: FlBorderData(show: false),
 
                   gridData: FlGridData(
                     show: true,
                     drawVerticalLine: false,
-                    horizontalInterval: widget.maxY / 4,
+                    horizontalInterval: getMaxY() / 4,
                     getDrawingHorizontalLine: (value) => const FlLine(
                       color: Color(0xffE2E8F0),
                       strokeWidth: 1,
@@ -151,7 +159,7 @@ class _ActivityOverTimeChartState
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        interval: widget.maxY / 4,
+                        interval: getMaxY() / 4,
                         reservedSize: 28,
                         getTitlesWidget: (value, meta) => Text(
                           value.toInt().toString(),

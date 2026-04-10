@@ -36,10 +36,10 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    // double screenWidth = MediaQuery.of(context).size.width;
+    // double screenHeight = MediaQuery.of(context).size.height;
 
-    bool isWebView = screenWidth > screenHeight;
+    // bool isWebView = screenWidth > screenHeight;
 
     return  Consumer<EmployeeProvider>(
         builder: (context,employeeProvider,_) {

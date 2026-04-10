@@ -54,7 +54,7 @@ class DashboardController extends GetxController {
     "Mine",
     "Team"
   ];
-var selectedSortBy = 'Today'.obs;
+var selectedSortBy = "${controllers.storage.read("selectedSortBy") ?? "Today"}".obs;
 var selectedRange = Rxn<DateTimeRange>(); // null-safe observable
 var isDateRangeSet = false.obs;
 var date1="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}".obs;
@@ -371,10 +371,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
   RxInt refreshTime = 0.obs;
 
   Future getDashboardReport() async {
-    final range = dashController.selectedRange.value;
-    var today = DateTime.now();
-    var tomorrow = DateTime.now().add(Duration(days: 1));
-    final adjustedEnd = range?.end.add(const Duration(days: 1));
+    // final range = dashController.selectedRange.value;
+    // var today = DateTime.now();
+    // var tomorrow = DateTime.now().add(Duration(days: 1));
+    // final adjustedEnd = range?.end.add(const Duration(days: 1));
     try {
       Map data = {
         "search_type": "dashboard_report",
@@ -518,10 +518,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
   }
   List<Color> color=[];
   Future getLeadReport() async {
-    final range = dashController.selectedRange.value;
-    var today = DateTime.now();
-    var tomorrow = DateTime.now().add(Duration(days: 1));
-    final adjustedEnd = range?.end.add(const Duration(days: 1));
+    // final range = dashController.selectedRange.value;
+    // var today = DateTime.now();
+    // var tomorrow = DateTime.now().add(Duration(days: 1));
+    // final adjustedEnd = range?.end.add(const Duration(days: 1));
     leadReport.clear();
     try {
       Map data = {
@@ -637,10 +637,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
   }
 
   Future getStatusWiseReport() async {
-    final range = dashController.selectedRange.value;
-    var today = DateTime.now();
-    var tomorrow = DateTime.now().add(Duration(days: 1));
-    final adjustedEnd = range?.end.add(const Duration(days: 1));
+    // final range = dashController.selectedRange.value;
+    // var today = DateTime.now();
+    // var tomorrow = DateTime.now().add(Duration(days: 1));
+    // final adjustedEnd = range?.end.add(const Duration(days: 1));
     // try {
       visitStatusReport.clear();
       total=0;

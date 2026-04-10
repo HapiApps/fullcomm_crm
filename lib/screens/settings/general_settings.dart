@@ -4,7 +4,6 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
-import 'package:fullcomm_crm/screens/settings/add_office_hours.dart';
 import 'package:get/get.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/constant/key_constant.dart';
@@ -16,7 +15,6 @@ import '../../components/custom_textfield.dart';
 import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
 import '../../controller/dashboard_controller.dart';
-import '../../controller/reminder_controller.dart';
 import '../../models/all_customers_obj.dart';
 import '../../services/api_services.dart';
 import 'lead_categories.dart';
@@ -33,9 +31,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    apiService.getAllEmployees();
     Future.delayed(Duration.zero, () {
-      dashController.selectedSortBy.value = controllers.storage.read("selectedSortBy") ?? "All";
+      dashController.selectedSortBy.value = controllers.storage.read("selectedSortBy") ?? "Today";
     });
   }
   @override

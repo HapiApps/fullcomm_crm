@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/common/utilities/ocr_web_helper.dart';
 import 'package:fullcomm_crm/controller/table_controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -69,9 +68,6 @@ class _HeaderSectionState extends State<HeaderSection> {
     final fileBytes = excel.encode();
     final blob = html.Blob([fileBytes]);
     final url = html.Url.createObjectUrlFromBlob(blob);
-    final anchor = html.AnchorElement(href: url)
-      ..setAttribute("download", "leads_${DateTime.now().millisecondsSinceEpoch}.xlsx")
-      ..click();
     html.Url.revokeObjectUrl(url);
   }
 

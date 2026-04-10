@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
@@ -21,7 +22,6 @@ import '../models/customer_activity.dart';
 import '../models/meeting_obj.dart';
 import '../models/reminder_obj.dart';
 import '../provider/reminder_provider.dart';
-import '../screens/reminder/reminder_page.dart';
 import 'controller.dart';
 import 'dashboard_controller.dart';
 
@@ -48,7 +48,8 @@ void showMeetingDialog(
     int index,
     ) {
   PageController controller = PageController(initialPage: index);
-
+  if(meetings.isEmpty)
+  return ;
   showDialog(
     context: context,
     builder: (context) {
@@ -83,7 +84,7 @@ void showMeetingDialog(
                         ),5.height,
                         Center(
                           child: CustomText(
-                            text: "Meeting Details",
+                            text: "Appointment Details",
                             size: 18,
                             isBold: true,isCopy: false,
                           ),
@@ -104,8 +105,18 @@ void showMeetingDialog(
                               buildRow("Date", meeting.dates.toString().split("||")[0]),
                               buildRow("Time", meeting.time.toString().split("||")[0]),
                               buildRow("Notes", meeting.notes),
-                              buildRow("Status", meeting.status),
-                            ],
+                              buildRow("Status", meeting.status,color: meeting.status=="Scheduled"?Colors.blue:meeting.status=="Cancelled"?Colors.red:Colors.green),
+                              10.height,
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorsConst.primary
+                                ),
+                                  onPressed: (){
+                                remController.selectedMeetingIds.add(meeting.id);
+                                Navigator.pop(context);
+                                utils.appointmentStatus(context,meeting.status);
+                              }, child: CustomText(text: "Update Status", isCopy: false,colors: Colors.white,))
+                              ],
                           ),
                         ),
                       ],
@@ -149,7 +160,8 @@ void showCallDialog(
     int index,
     ) {
   PageController controller = PageController(initialPage: index);
-
+  if(calls.isEmpty)
+  return ;
   showDialog(
     context: context,
     builder: (context) {
@@ -256,7 +268,8 @@ void showReminderDialog(
     int index,
     ) {
   PageController controller = PageController(initialPage: index);
-
+  if(calls.isEmpty)
+  return ;
   showDialog(
     context: context,
     builder: (context) {
@@ -311,7 +324,7 @@ void showReminderDialog(
                               buildRow("Lead Name", meeting.customerName),
                               buildRow("Start Date", meeting.startDt),
                               buildRow("End Date", meeting.endDt),
-                              buildRow("DatDetailse", meeting.details),
+                              buildRow("Details", meeting.details),
                             ],
                           ),
                         ),
@@ -350,7 +363,7 @@ void showReminderDialog(
     },
   );
 }
-Widget buildRow(String label, String value) {
+Widget buildRow(String label, String value, {Color? color = Colors.black}) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 4),
     child: Row(
@@ -371,7 +384,7 @@ Widget buildRow(String label, String value) {
           flex: 5,
           child: CustomText(
             textAlign: TextAlign.start,
-            text: value,
+            text: value,colors: color,
             size: 14,
             isBold: true,isCopy: false,
           ),
@@ -505,7 +518,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
   void loadSavedFilters() {
     final storage = controllers.storage.read("selectedSortBy");
-    dashController.selectedSortBy.value = storage ?? "All";
+    dashController.selectedSortBy.value = storage ?? "Today";
     controllers.selectedProspectSortBy.value = storage ?? "All";
     controllers.selectedQualifiedSortBy.value = storage ?? "All";
     controllers.selectedCustomerSortBy.value = storage ?? "All";
@@ -822,11 +835,11 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required DateTime? selectedMonth,
     required DateTimeRange? selectedRange,
   }) {
-
     DateTime parseDate(String dateStr) {
       try {
-        return DateFormat("dd.MM.yyyy hh:mm a").parse(dateStr);
+        return DateFormat("dd-MM-yyyy hh.mm a").parse(dateStr);
       } catch (e) {
+        print("❌ Date parse error: $dateStr");
         return DateTime(1900);
       }
     }
@@ -857,8 +870,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
       /// Today
       if (selectedDateFilter == "Today") {
-        matchesDate = activityDate.isAfter(today.subtract(const Duration(seconds: 1))) &&
-            activityDate.isBefore(today.add(const Duration(days: 1)));
+        matchesDate = activityDate.year == now.year &&
+            activityDate.month == now.month &&
+            activityDate.day == now.day;
       }
 
       /// Yesterday
@@ -1010,6 +1024,101 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           case 'Last 30 Days':
             final last30 = now.subtract(const Duration(days: 30));
             return date.isAfter(last30);
+          case 'Custom Month':
+            if (selectedMeetMonth.value != null) {
+              final selected = selectedMeetMonth.value!;
+              return date.year == selected.year && date.month == selected.month;
+            }
+            return true;
+          case 'Custom Range':
+            if (selectedMeetRange.value != null) {
+              final range = selectedMeetRange.value!;
+              return date.isAfter(range.start.subtract(const Duration(days: 1))) &&
+                  date.isBefore(range.end.add(const Duration(days: 1)));
+            }
+            return true;
+          default:
+            return true;
+        }
+      }).toList();
+    }
+    filtered = filtered.where((activity) {
+      final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
+          activity.status == controllers.selectMeetingType.value;
+      final matchesFilterType =
+          filterApp.value == "All" ||
+              (filterApp.value == "Mine" &&
+                  activity.employeeName.contains(controllers.storage.read("f_name"))) ||
+              (filterApp.value == "Team" &&
+                  !activity.employeeName.contains(controllers.storage.read("f_name")));
+
+      final matchesSearch = searchText.isEmpty ||
+          (activity.comName.toLowerCase().contains(searchText)) ||
+          (activity.employeeName.toLowerCase().contains(searchText)) ||
+          (activity.title.toLowerCase().contains(searchText)) ||
+          (activity.venue.toLowerCase().contains(searchText)) ||
+          (activity.notes.toLowerCase().contains(searchText)) ||
+          (activity.cusName.toLowerCase().contains(searchText));
+
+      return matchesCallType && matchesSearch && matchesFilterType;
+    }).toList();
+
+    String field = controllers.sortFieldMeetingActivity.value;
+    String order = controllers.sortOrderMeetingActivity.value;
+
+    int compareString(String a, String b) {
+      final comparison = a.toLowerCase().compareTo(b.toLowerCase());
+      return order == 'asc' ? comparison : -comparison;
+    }
+
+    if (field == 'customerName') {
+      filtered.sort((a, b) => compareString(a.cusName ?? '', b.cusName ?? ''));
+    } else if (field == 'companyName') {
+      filtered.sort((a, b) => compareString(a.comName ?? '', b.comName ?? ''));
+    } else if (field == 'title') {
+      filtered.sort((a, b) => compareString(a.title ?? '', b.title ?? ''));
+    } else if (field == 'venue') {
+      filtered.sort((a, b) => compareString(a.venue ?? '', b.venue ?? ''));
+    } else if (field == 'notes') {
+      filtered.sort((a, b) => compareString(a.notes ?? '', b.notes ?? ''));
+    } else if (field == 'emp') {
+      filtered.sort((a, b) => compareString(a.employeeName ?? '', b.employeeName ?? ''));
+    }  else if (field == 'status') {
+      filtered.sort((a, b) => compareString(a.status ?? '', b.status ?? ''));
+    } else if (field == 'date') {
+      filtered.sort((a, b) {
+        final dateA = _parseMeetingDate(a.dates ?? '');
+        final dateB = _parseMeetingDate(b.dates ?? '');
+        final comparison = dateA.compareTo(dateB);
+        return order == 'asc' ? comparison : -comparison;
+      });
+    }
+    meetingFilteredList.assignAll(filtered);
+  }
+  void dashboardMeetings({
+    required String searchText,
+    required String callType,
+    required String sortField,
+    required String sortOrder,
+  }) {
+    var filtered = [...controllers.meetingActivity];
+
+    final now = DateTime.now();
+    if (selectedMeetSortBy.value.isNotEmpty) {
+      filtered = filtered.where((activity) {
+        final date = _parseMeetingDate(activity.dates ?? '');
+        switch (selectedMeetSortBy.value) {
+          case 'Today':
+            return _isSameDay(date, now);
+          case 'Yesterday':
+            final yesterday = now.subtract(const Duration(days: 1));
+            return _isSameDay(date, yesterday);
+          case 'Last 7 Days':
+            final endDate = now.add(const Duration(days: 7));
+            return date.isAfter(now) && date.isBefore(endDate);
+          case 'Last 30 Days':
+            final endDate = now.add(const Duration(days: 30));
+            return date.isAfter(now) && date.isBefore(endDate);
           case 'Custom Month':
             if (selectedMeetMonth.value != null) {
               final selected = selectedMeetMonth.value!;

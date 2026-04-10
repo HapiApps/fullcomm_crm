@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/components/date_filter_bar.dart';
-import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:intl/intl.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/utils.dart';
-import '../../components/custom_date_box.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_text.dart';
-import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
 

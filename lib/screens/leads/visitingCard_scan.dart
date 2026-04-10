@@ -30,50 +30,50 @@ class _VisitingCardPageState extends State<VisitingCardPage> {
   bool isLoading = false;
 
   /// IMAGE PICK + OCR
-  Future<void> pickImageAndScan() async {
-    final uploadInput = html.FileUploadInputElement();
-    uploadInput.accept = 'image/*';
-    uploadInput.click();
-
-    uploadInput.onChange.listen((event) async {
-      final file = uploadInput.files!.first;
-
-      final reader = html.FileReader();
-      reader.readAsArrayBuffer(file);
-      await reader.onLoad.first;
-
-      imageBytes = reader.result as Uint8List;
-
-      // base64 convert
-      reader.readAsDataUrl(file);
-      await reader.onLoad.first;
-      final base64Image = reader.result as String;
-
-      setState(() => isLoading = true);
-
-      try {
-        /// OCR call
-        final ocrText = await readTextFromImage(base64Image);
-
-        print("OCR RESULT = $ocrText");
-
-        /// parse text → fields
-        final card = parseOCRText(ocrText);
-
-        nameController.text = card.name;
-        companyController.text = card.company;
-        jobController.text = card.jobTitle;
-        phoneController.text = card.phone;
-        emailController.text = card.email;
-        websiteController.text = card.website;
-        locationController.text = card.location;
-      } catch (e) {
-        print("OCR ERROR: $e");
-      }
-
-      setState(() => isLoading = false);
-    });
-  }
+  // Future<void> pickImageAndScan() async {
+  //   final uploadInput = html.FileUploadInputElement();
+  //   uploadInput.accept = 'image/*';
+  //   uploadInput.click();
+  //
+  //   uploadInput.onChange.listen((event) async {
+  //     final file = uploadInput.files!.first;
+  //
+  //     final reader = html.FileReader();
+  //     reader.readAsArrayBuffer(file);
+  //     await reader.onLoad.first;
+  //
+  //     imageBytes = reader.result as Uint8List;
+  //
+  //     // base64 convert
+  //     reader.readAsDataUrl(file);
+  //     await reader.onLoad.first;
+  //     final base64Image = reader.result as String;
+  //
+  //     setState(() => isLoading = true);
+  //
+  //     try {
+  //       /// OCR call
+  //       final ocrText = await readTextFromImage(base64Image);
+  //
+  //       print("OCR RESULT = $ocrText");
+  //
+  //       /// parse text → fields
+  //       final card = parseOCRText(ocrText);
+  //
+  //       nameController.text = card.name;
+  //       companyController.text = card.company;
+  //       jobController.text = card.jobTitle;
+  //       phoneController.text = card.phone;
+  //       emailController.text = card.email;
+  //       websiteController.text = card.website;
+  //       locationController.text = card.location;
+  //     } catch (e) {
+  //       print("OCR ERROR: $e");
+  //     }
+  //
+  //     setState(() => isLoading = false);
+  //   });
+  // }
 
   Widget buildField(String label, TextEditingController controller) {
     return Padding(
@@ -130,10 +130,10 @@ class _VisitingCardPageState extends State<VisitingCardPage> {
                       ),
 
                     /// SCAN BUTTON
-                    OutlinedButton(
-                      onPressed: pickImageAndScan,
-                      child: CustomText(text:"Scan Visiting Card",isCopy: false,isBold: true,size: 15,),
-                    ),
+                    // OutlinedButton(
+                    //   onPressed: pickImageAndScan,
+                    //   child: CustomText(text:"Scan Visiting Card",isCopy: false,isBold: true,size: 15,),
+                    // ),
 
                     SizedBox(height: 20),
 

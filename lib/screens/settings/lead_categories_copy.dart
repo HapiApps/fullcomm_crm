@@ -1,13 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart'as http;
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fullcomm_crm/common/constant/assets_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
-import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/constant/key_constant.dart';
@@ -18,7 +14,6 @@ import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../components/custom_textfield.dart';
-import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
 import '../../controller/dashboard_controller.dart';
 import '../../models/all_customers_obj.dart';
@@ -844,7 +839,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
       );
       debugPrint(data.toString());
       debugPrint(request.body);
-      Map<String, dynamic> response = json.decode(request.body);
+      // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

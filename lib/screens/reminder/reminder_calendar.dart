@@ -2,28 +2,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-
 import '../../common/constant/colors_constant.dart';
 import '../../common/styles/decoration.dart';
-import '../../common/styles/styles.dart';
-import '../../common/utilities/utils.dart';
-import '../../components/custom_date_box.dart';
-import '../../components/custom_dropdown.dart';
-import '../../components/custom_loading_button.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
-import '../../components/custom_textfield.dart';
-import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
-import '../../models/all_customers_obj.dart';
 import '../../models/reminder_obj.dart';
-import '../../provider/reminder_provider.dart';
-import '../../services/api_services.dart';
 
 class ReminderCalender extends StatefulWidget {
   const ReminderCalender({super.key});
@@ -45,8 +32,6 @@ class _ReminderCalenderState extends State<ReminderCalender> {
   Widget build(BuildContext context) {
     var webWidth=MediaQuery.of(context).size.width * 0.5;
     var phoneWidth=MediaQuery.of(context).size.width * 0.95;
-    double screenWidth = MediaQuery.of(context).size.width;
-    double textFieldSize = (MediaQuery.of(context).size.width - 400) / 1.8;
     final DateTime now = DateTime.now();
     final DateTime firstDayOfYear = DateTime(now.year-1, 12, 1);
     final DateTime lastDayOfYear = DateTime(now.year, 12, 31);
@@ -172,9 +157,7 @@ class _ReminderCalenderState extends State<ReminderCalender> {
 
                               bool isInCurrentMonth = details.date.month == visibleMonth;
 
-                              Color textColor = isSelected
-                                  ? Colors.grey.shade400
-                                  : isInCurrentMonth
+                              Color textColor = isInCurrentMonth
                                   ? colorsConst.primary
                                   : Colors.grey; // 👉 other month dates in grey
 
@@ -182,9 +165,7 @@ class _ReminderCalenderState extends State<ReminderCalender> {
                                 alignment: Alignment.topLeft,
                                 margin: const EdgeInsets.all(4),
                                 decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? Colors.white
-                                      : hasAppointments
+                                  color: hasAppointments
                                       ? Colors.green
                                       : Colors.transparent,
                                   borderRadius: BorderRadius.circular(isSelected ? 0 : 10),

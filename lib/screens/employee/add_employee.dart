@@ -39,8 +39,8 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   Widget build(BuildContext context) {
     return Consumer<EmployeeProvider>(builder: (context, employeeProvider, _) {
       double screenWidth = MediaQuery.of(context).size.width;
-      double screenHeight = MediaQuery.of(context).size.height;
-      bool isWebView = screenWidth > screenHeight;
+      // double screenHeight = MediaQuery.of(context).size.height;
+      // bool isWebView = screenWidth > screenHeight;
       double textFieldSize = (MediaQuery.of(context).size.width - 400) / 2.5;
       return Scaffold(
         body: Row(
@@ -484,7 +484,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                       color: Colors.red,
                                     );
                                   } else {
-                                   final int currentLimit = int.tryParse(controllers.currentUserCount.value) ?? 0;
+                                   // final int currentLimit = int.tryParse(controllers.currentUserCount.value) ?? 0;
                                    // if (employeeProvider.filteredStaff.length >= currentLimit) {
                                    //   print("Only after making a payment, you can add employees.");
                                    //   utils.expiredEmpDialog();

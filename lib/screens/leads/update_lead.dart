@@ -564,7 +564,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           textCapitalization: TextCapitalization.words,
                                           inputFormatters: constInputFormatters.textInput,
                                           onChanged:(value) async {
-                                            SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                            // SharedPreferences sharedPref = await SharedPreferences.getInstance();
                                             //sharedPref.setString("leadName$index", value.toString().trim());
                                           },
                                         ),
@@ -824,7 +824,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           textInputAction: TextInputAction.next,
                                           inputFormatters: constInputFormatters.emailInput,
                                           onChanged:(value) async {
-                                            SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                            // SharedPreferences sharedPref = await SharedPreferences.getInstance();
                                             //sharedPref.setString("leadEmail$index", value.toString().trim());
                                           },
                                         ),

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,14 +13,12 @@ import 'package:fullcomm_crm/res/components/buttons.dart';
 import 'package:fullcomm_crm/res/components/k_loadings.dart';
 import 'package:fullcomm_crm/res/components/k_text.dart';
 import 'package:fullcomm_crm/res/components/screen_widgtes.dart';
-import 'package:fullcomm_crm/res/widgets/divider_widgets.dart';
 import 'package:fullcomm_crm/billing_utils/input_formatters.dart';
 import 'package:fullcomm_crm/billing_utils/sized_box.dart';
 import 'package:fullcomm_crm/billing_utils/text_formats.dart';
 import 'package:fullcomm_crm/billing_utils/toast_messages.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
 import 'package:fullcomm_crm/view_models/customer_provider.dart';
-import 'package:fullcomm_crm/billing/orders/hold_order_details.dart';
 import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
@@ -34,25 +31,20 @@ import '../../common/styles/decoration.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/Customtext.dart';
 import '../../components/custom_loading_button.dart';
-import '../../components/custom_sidebar.dart';
 import '../../controller/controller.dart';
 import '../../controller/settings_controller.dart';
 import '../../models/all_customers_obj.dart';
 import '../../models/billing_models/billing_product.dart';
-import '../../models/billing_models/customers_response.dart';
 import '../../models/billing_models/place_order.dart';
 import '../../models/billing_models/products_response.dart';
 import '../../models/billing_models/return_qty.dart';
-import '../../res/components/customer_widgets.dart';
 import '../../res/components/hint.dart';
-import '../../res/components/k_dropdown_menu_2.dart';
 import '../../res/components/k_text_field.dart';
 import '../../res/components/keyboard_search.dart';
 import '../../screens/quotation/send_quotation.dart';
 import '../../services/api_services.dart';
 import '../orders/hold_order.dart';
 import '../orders/order_detail_page.dart';
-import '../orders/reorderbill.dart';
 import '../products/add_products.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -136,8 +128,6 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
   bool _isProgrammaticChange = false;
   String? _lastScannedCode;
   DateTime? _lastErrorTime;
-  bool _fetchInProgress = false;
-  bool _alreadyRefetchedForThisScan = false;
   String? qrData;
   String upiId = "test@upi";
   String upiName = "Test User";
@@ -191,9 +181,6 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
   List<FocusNode> qtyFocusNodes = []; // focus for qty cells
   final FocusNode _keyboardFocusNode = FocusNode();
   bool isProductDropdownOpen = false;   // <<< ADD THIS ABOVE BUILD()
-  String _barcodeBuffer = '';
-  Timer? _barcodeTimer;
-  bool _scanCompleted = false;
 
   void closeDropdownMenu() {
     FocusScope.of(context).unfocus();
@@ -222,10 +209,6 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
       );
     }
   }
-
-  bool _productDropdownInitialFocusDone = false;
-  final FocusNode _scanFocusNode = FocusNode();
-  final TextEditingController _scanController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   FocusNode _focusNodeSearch = FocusNode();
   void scrollToLastItem() {
@@ -419,34 +402,8 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
     });
   }
 
-  void _handleNoProductFound() {
-    final billingProvider =
-    Provider.of<BillingProvider>(context, listen: false);
-
-    // clear selection
-    billingProvider.selectedProduct = null;
-
-    // clear text
-    dropdownController.clear();
-
-    // focus back to product field
-    billingProvider.dropdownFocusNode.requestFocus();
-
-    // show snackbar
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('❌ No product found'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
 
   Timer? _scanDebounce;
-  bool _scanLocked = false;
-  DateTime? _lastKeyTime;
-  bool _isScannerInput = true;
-  static const int scannerThresholdMs = 40; // 🔥 KEY VALUE
 
   void updateMethod(int index) {
     final billingProvider = Provider.of<BillingProvider>(context);
@@ -487,7 +444,6 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
 
         final FocusNode quantityFocusNode = FocusNode();
 
-        bool scanLocked = false;
 
         return StatefulBuilder(
           builder: (context, setDialogState) {
@@ -1033,9 +989,8 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
         .of(context)
         .size
         .height;
-    String searchText = "";
     bool _isPaymentDialogOpen = false;
-    BuildContext? _dialogContext;bool _isPrinting = false;
+    bool _isPrinting = false;
     return Consumer2<CustomersProvider, BillingProvider>(
         builder: (context, customerProvider, billingProvider,
             _) {
@@ -1589,6 +1544,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                             billingProvider.quantityControllers.clear();
                             billingProvider.notifyListeners();
                           }
+                          return null;
                         }, //F6 last bill
                       ),
                       OpenProductIntent: CallbackAction<OpenProductIntent>(
@@ -1612,6 +1568,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                           // );
                           // return null;
                           customerProvider.addCustomerDialog(context);
+                          return null;
                         },
                       ),
                       RefreshIntent: CallbackAction<RefreshIntent>(
@@ -1633,8 +1590,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                       ),
                       ReturnIntent: CallbackAction<ReturnIntent>(
                         onInvoke: (intent) {
-                          if (localData.secretCode == null ||
-                              localData.secretCode!.trim().isEmpty) {
+                          if (localData.secretCode.trim().isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: const Text(
@@ -1665,6 +1621,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                             if (result == true) {
                               setState(() {}); // refreshes UI to show restored products
                             }
+                            return null;
                           }
 
                       ),
@@ -1672,6 +1629,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                         onInvoke: (intent) {
                           // Show logout confirm dialog
                           customerProvider.showCashierPopupAndLogout(context,billingProvider);
+                          return null;
                         },
                       ),
                       ResetIntent: CallbackAction<ResetIntent>(
@@ -1679,6 +1637,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                           // Show logout confirm dialog
                           billingProvider.clearBillingData(context);
                           billingProvider.dropdownFocusNode.requestFocus();
+                          return null;
                         },
                       ),
                       OpenCustomerDropdownIntent: CallbackAction<
@@ -1735,6 +1694,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                             Future.microtask(() {
                               billingProvider.dropdownFocusNode.requestFocus();
                             });
+                            return null;
 
                           }    ),
                     },
@@ -1945,10 +1905,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                   width:137,
                                                   child: InkWell(
                                                     onTap: () {
-                                                      if (localData.secretCode == null ||
-                                                          localData.secretCode!
-                                                              .trim()
-                                                              .isEmpty) {
+                                                      if (localData.secretCode.trim().isEmpty) {
                                                         ScaffoldMessenger
                                                             .of(context)
                                                             .showSnackBar(
@@ -2316,11 +2273,6 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                 textEditingController: dropdownController,
 
                                                 labelBuilder: (product) {
-                                                  final double qty =
-                                                      double.tryParse(product.qtyLeft?.toString() ?? "0") ?? 0;
-
-                                                  bool isLowStock = qty > 0 && qty <= 10; // 🔥 low stock limit
-
                                                   return product.isLoose == '0'
                                                       ? '${product.pTitle ?? ""}'
                                                       '${product.pVariation != null ? " ${product.pVariation}" : ""}'
@@ -2825,8 +2777,6 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
 
                                               // 4) Safe product values
                                               final double stockQty = safeDouble(product.qtyLeft);
-                                              final double mrp = safeDouble(product.mrp);
-                                              final double outPrice = safeDouble(product.outPrice);
 
                                               // ---------------------------------------------------
                                               // PRODUCT EXISTS → UPDATE IT
@@ -4102,10 +4052,10 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                       }
 
                                                       final billProduct = billingProvider.billingItems[index];
-                                                      final productData = billingProvider.productsList.firstWhere(
-                                                            (p) => p.id == billProduct.product.id,
-                                                        orElse: () => billProduct.product,
-                                                      );
+                                                      // final productData = billingProvider.productsList.firstWhere(
+                                                      //       (p) => p.id == billProduct.product.id,
+                                                      //   orElse: () => billProduct.product,
+                                                      // );
                                                       if (billingProvider.quantityControllers.length <= index) {
                                                         billingProvider.quantityControllers.add(TextEditingController(text: billProduct.quantity.toString().isEmpty?"1":billProduct.quantity.toString()=='null'?"1":billProduct.quantity.toString()));
                                                       }
@@ -4788,8 +4738,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                     final method = billingProvider.billMethods[index];
 
                     if (method == "Credit" &&
-                        (localData.secretCode == null ||
-                            localData.secretCode!.trim().isEmpty)) {
+                        (localData.secretCode.trim().isEmpty)) {
                       index =
                           (index + 1) % billingProvider.billMethods.length;
                       continue;
@@ -4956,11 +4905,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                       focusNode: null, // ✅ NO RADIO FOCUS
                                       onChanged: (value) {
                                         if (value == "Credit" &&
-                                            (localData.secretCode ==
-                                                null ||
-                                                localData.secretCode!
-                                                    .trim()
-                                                    .isEmpty)) {
+                                            (localData.secretCode.trim().isEmpty)) {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             const SnackBar(
@@ -5339,124 +5284,6 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
     );
   }
 
-  Widget _buildQtyField({
-    required BillingProvider billingProvider,
-    required int index,
-    required dynamic billProduct, // 🔥 changed
-  }) {
-    return Focus(
-      onKeyEvent: (node, event) {
-        // 🔥 Scanner or any key press while qty focused
-        if (event is KeyDownEvent &&
-            qtyFocusNodes[index].hasFocus) {
-
-          final controller =
-          billingProvider.quantityControllers[index]!;
-
-          // keep old value safe
-          int oldQty = int.tryParse(controller.text) ?? 0;
-
-          if (oldQty <= 0) {
-            controller.text = "1";
-            oldQty = 1;
-          }
-
-          billingProvider.updateBillingItem(
-            index,
-            isLoose: '0',
-            quantity: oldQty,
-          );
-
-          // ❌ stop qty receiving characters
-          qtyFocusNodes[index].unfocus();
-
-          // ✅ move to product/barcode
-          Future.microtask(() {
-            billingProvider.dropdownFocusNode.requestFocus();
-          });
-
-          return KeyEventResult.handled;
-        }
-
-        return KeyEventResult.ignored;
-      },
-
-      child: TextField(
-        focusNode: qtyFocusNodes[index],
-        controller: billingProvider.quantityControllers[index]!,
-        textAlign: TextAlign.center,
-        keyboardType: TextInputType.number,
-        style: const TextStyle(fontSize: 21),
-
-        decoration: const InputDecoration(
-          isDense: true,
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            vertical: 6,
-            horizontal: 6,
-          ),
-        ),
-
-        // 🔹 Manual typing only
-        onChanged: (value) {
-          if (value.isEmpty) {
-            billingProvider.updateBillingItem(
-              index,
-              isLoose: '0',
-              quantity: 0,
-            );
-            return;
-          }
-
-          int qty = int.tryParse(value) ?? 0;
-          if (qty < 0) qty = 0;
-
-          final int maxQty =
-              int.tryParse(billProduct.product.qtyLeft ?? "0") ?? 0;
-
-          if (qty > maxQty) {
-            qty = maxQty;
-
-            final fixed = qty.toString();
-
-            billingProvider.quantityControllers[index]!.value =
-                billingProvider.quantityControllers[index]!.value.copyWith(
-                  text: fixed,
-                  selection:
-                  TextSelection.collapsed(offset: fixed.length),
-                );
-          }
-
-          billingProvider.updateBillingItem(
-            index,
-            isLoose: '0',
-            quantity: qty,
-          );
-        },
-
-        // 🔹 Enter pressed
-        onEditingComplete: () {
-          _applyDefaultQtyIfNeeded(billingProvider, index);
-          qtyFocusNodes[index].unfocus();
-
-          Future.microtask(() {
-            billingProvider.dropdownFocusNode.requestFocus();
-          });
-        },
-
-        onSubmitted: (_) {
-          _applyDefaultQtyIfNeeded(billingProvider, index);
-          qtyFocusNodes[index].unfocus();
-
-          Future.microtask(() {
-            billingProvider.dropdownFocusNode.requestFocus();
-          });
-        },
-      ),
-    );
-  }
 
 
   Widget _buildRightCell(String text) {
@@ -5525,32 +5352,6 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
     });
   }
 
-  Widget _buildEditableCell({
-    required int index,
-    required FocusNode focusNode,
-    required TextEditingController controller,
-    required Function(String) onChanged,
-    required Function() onEditingComplete,
-    List<TextInputFormatter>? inputFormatters,
-  }) {
-    return TextField(
-      focusNode: focusNode,
-      controller: controller,
-      textAlign: TextAlign.center,
-      keyboardType: TextInputType.number,
-      inputFormatters: inputFormatters,
-      onChanged: onChanged,
-      onEditingComplete: onEditingComplete,
-      style: const TextStyle(fontSize: 16),
-
-      // ⬇ THIS REMOVES UNDERLINE
-      decoration: const InputDecoration(
-        isDense: true,
-        contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-        border: InputBorder.none,
-      ),
-    );
-  }
 }
 
 
@@ -5559,23 +5360,5 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
 
 
 
-String _formatKg(dynamic grams) {
-  double g = double.tryParse(grams.toString()) ?? 0;
-  double kg = g / 1000;
-
-  // Remove trailing zeros (1.0 â†’ 1, 1.50 â†’ 1.5)
-  if (kg % 1 == 0) {
-    return kg.toInt().toString();     // example: 1
-  } else {
-    return kg.toStringAsFixed(3).replaceAll(RegExp(r"0+$"), "").replaceAll(RegExp(r"\.$"), "");
-  }
-}
-Widget _verticalDivider() {
-  return Container(
-    width: 2,
-    height: 40,
-    color:colorsConst.primary,
-  );
-}
 
 

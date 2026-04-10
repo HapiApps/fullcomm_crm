@@ -81,8 +81,8 @@ dependencies:
   fluttertoast:
   cached_network_image:
   image_picker:
-  google_mlkit_barcode_scanning: ^0.14.1
-  google_mlkit_text_recognition: ^0.15.0
+#  google_mlkit_barcode_scanning: ^0.14.1
+#  google_mlkit_text_recognition: ^0.15.0
   js: ^0.6.7
   screenshot: ^3.0.0
   pdf:
@@ -90,10 +90,10 @@ dependencies:
   image: ^4.2.0
   oktoast: ^3.4.0                       # Toast UI
   flutter_date_pickers: ^0.4.2
-  open_filex: ^4.3.2
+#  open_filex: ^4.3.2
   flutter_pdfview: ^1.3.2
   esc_pos_utils_plus: ^2.0.4
-  bluetooth_thermal_printer:
+#  bluetooth_thermal_printer:
   qr_flutter: ^4.0.0
   collection: ^1.18.0
 #  fluttertoast:

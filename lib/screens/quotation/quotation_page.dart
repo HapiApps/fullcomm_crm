@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
-import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/screens/quotation/quotation_history.dart';
-import 'package:fullcomm_crm/screens/quotation/send_quotation.dart';
 import 'package:get/get.dart';
 import '../../billing/billing_view/new_billing_screen.dart';
 import '../../components/custom_sidebar.dart';
@@ -23,7 +21,6 @@ class _QuotationPageState extends State<QuotationPage> {
   }
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
     return DefaultTabController(
       length: 2,
       child: Scaffold(

@@ -15,7 +15,6 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../components/Customtext.dart';
-import '../../components/custom_sidebar.dart';
 import '../../controller/controller.dart';
 import '../../controller/product_controller.dart';
 import '../../controller/settings_controller.dart';

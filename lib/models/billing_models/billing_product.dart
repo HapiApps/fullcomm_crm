@@ -1,6 +1,4 @@
-import 'dart:developer';
 import 'package:fullcomm_crm/models/billing_models/products_response.dart';
-
 import '../../controller/controller.dart';
 
 class BillingItem {

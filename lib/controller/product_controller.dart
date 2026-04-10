@@ -1,32 +1,18 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/jwt_storage.dart';
-import 'package:fullcomm_crm/models/office_hours_obj.dart';
-import 'package:fullcomm_crm/models/role_obj.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
-import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
-import '../common/widgets/log_in.dart';
-import '../components/custom_loading_button.dart';
-import '../components/custom_text.dart';
-import '../components/custom_textfield.dart';
 import '../models/billing_models/products_response.dart';
 import '../models/order_model.dart';
 import '../models/product_model.dart';
-import '../models/template_obj.dart';
-import '../services/api_services.dart';
 import 'controller.dart';
 
 final productCtr = Get.put(ProductController());
@@ -74,9 +60,9 @@ class ProductController extends GetxController with GetSingleTickerProviderState
 
   List<ProductData> changeProductPage(RxList<ProductData> list,RxList<ProductData> list2){
     final query = searchProspects.value.trim().toLowerCase();
-    final ratingFilter = selectedProspectTemperature.value;
-    final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
-    final now = DateTime.now();
+    // final ratingFilter = selectedProspectTemperature.value;
+    // final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
+    // final now = DateTime.now();
 
     final filteredLeads = list2.value.where((lead) {
       final matchesQuery = (lead.pTitle ?? '').toLowerCase().contains(query);
@@ -128,9 +114,9 @@ class ProductController extends GetxController with GetSingleTickerProviderState
   }
   List<Quotations> changeQuotationPage(RxList<Quotations> list,RxList<Quotations> list2){
     final query = searchProspects.value.trim().toLowerCase();
-    final ratingFilter = selectedProspectTemperature.value;
-    final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
-    final now = DateTime.now();
+    // final ratingFilter = selectedProspectTemperature.value;
+    // final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
+    // final now = DateTime.now();
 
     final filteredLeads = list2.value.where((lead) {
       final matchesQuery = (lead.name ?? '').toLowerCase().contains(query);
@@ -388,7 +374,7 @@ class ProductController extends GetxController with GetSingleTickerProviderState
 var idsList=[].obs;
 var isSelectAll=false.obs;
   void checkDelete() {
-    for (var product in products) {
+    // for (var product in products) {
       // if(isSelectAll.value==true ){
       //   product.isSelect.value = isSelectAll.value;
       //   idsList.add(product.id);
@@ -396,7 +382,7 @@ var isSelectAll=false.obs;
       //   product.isSelect.value = isSelectAll.value;
       //   idsList.clear();
       // }
-    }
+    // }
   }
   String formatAmount(dynamic amount) {
     try {
@@ -568,7 +554,7 @@ var isSelectAll=false.obs;
       }
     }
 
-    final now = DateTime.now();
+    // final now = DateTime.now();
 
     final filtered = products2.where((activity) {
 
@@ -730,7 +716,7 @@ var isSelectAll=false.obs;
       }
     }
 
-    final now = DateTime.now();
+    // final now = DateTime.now();
 
     final filtered = ordersList2.where((activity) {
 
@@ -856,7 +842,7 @@ var isSelectAll=false.obs;
     }
   }
 
-    final now = DateTime.now();
+    // final now = DateTime.now();
 
     final filtered = quotationsList2.where((activity) {
 

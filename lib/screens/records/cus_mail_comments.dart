@@ -5,10 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/models/mail_receive_obj.dart';
-import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
-import '../../common/constant/default_constant.dart';
-import '../../common/utilities/utils.dart';
 import '../../components/custom_comment_container.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
@@ -32,7 +29,6 @@ class _CusMailCommentsState extends State<CusMailComments> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    bool isWebView = screenWidth > screenHeight;
     screenWidth > screenHeight ? screenWidth * 0.30 : screenWidth * 0.90;
     return SelectionArea(
       child: Scaffold(

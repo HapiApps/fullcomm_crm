@@ -25,7 +25,6 @@ class _AddOfficeHoursState extends State<AddOfficeHours> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    apiService.getAllEmployees();
   }
   @override
   Widget build(BuildContext context) {

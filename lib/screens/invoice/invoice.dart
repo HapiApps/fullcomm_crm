@@ -4,9 +4,7 @@ import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import '../../controller/product_controller.dart';
 // void main() {
 //   runApp(const InvoiceView(

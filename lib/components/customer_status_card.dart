@@ -192,34 +192,6 @@ class _StatusRow extends StatelessWidget {
     );
   }
 }
-class _DottedVerticalPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xffD1D5DB)
-      ..strokeWidth = 1;
-
-    const int divisions = 4;
-    final spacing = size.width / divisions;
-
-    for (int i = 1; i < divisions; i++) {
-      final x = spacing * i;
-
-      double y = 0;
-      while (y < size.height) {
-        canvas.drawLine(
-          Offset(x, y),
-          Offset(x, y + 3),
-          paint,
-        );
-        y += 6;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
 class _HoverBar extends StatefulWidget {
   final String label;
   final int value;

@@ -1,20 +1,13 @@
-import 'dart:convert';
-import 'dart:developer';
-import 'dart:ui' as ui;
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:intl/intl.dart';
-import 'package:fullcomm_crm/billing_utils/sized_box.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
-import 'package:universal_html/js.dart' as js;
 import '../../common/billing_data/project_data.dart';
 import '../../models/billing_models/order_details.dart';
 import '../../view_models/customer_provider.dart';
 import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart';
-import 'package:printing/printing.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:provider/provider.dart';
 import 'direct_print.dart';
@@ -600,19 +593,6 @@ class BillPdfBeforeCombo {
             : rate * qty;
 
 
-        String formatQty({
-          required String isLoose,
-          required double qty,
-        }) {
-          if (isLoose == "1") {
-            // grams → kg
-            return (qty / 1000).toStringAsFixed(3); // 1.000
-          } else {
-            return qty % 1 == 0
-                ? qty.toInt().toString()
-                : qty.toString();
-          }
-        }
 
 
         //  String displayQty = qty % 1 == 0 ? qty.toInt().toString() : qty.toString();

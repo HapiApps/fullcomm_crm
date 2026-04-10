@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/repo/customer_repo.dart';
 import 'package:fullcomm_crm/res/colors.dart';
@@ -6,9 +5,7 @@ import 'package:fullcomm_crm/billing_utils/sized_box.dart';
 import 'package:fullcomm_crm/billing_utils/toast_messages.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import '../billing_utils/input_formatters.dart';
 import '../billing_utils/text_formats.dart';
 import '../common/billing_data/local_data.dart';
@@ -602,7 +599,7 @@ class CustomersProvider with ChangeNotifier {
 
     await cashier.fetchCashierAmounts(controllers.storage.read("id"));
 
-    bool isClosing = false; // ✅ prevent double pop
+// ✅ prevent double pop
 
     await showDialog(
       context: context,

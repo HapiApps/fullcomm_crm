@@ -12,11 +12,7 @@ import 'package:fullcomm_crm/models/company_obj.dart';
 import 'package:fullcomm_crm/models/new_lead_obj.dart';
 import 'package:fullcomm_crm/models/user_heading_obj.dart';
 import 'package:fullcomm_crm/screens/leads/new_lead_page.dart';
-import 'package:fullcomm_crm/screens/leads/prospects.dart';
-import 'package:fullcomm_crm/screens/leads/qualified.dart';
-import 'package:fullcomm_crm/screens/leads/suspects.dart';
 import 'package:flutter/material.dart';
-import 'package:fullcomm_crm/screens/dashboard.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -26,7 +22,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/models/product_obj.dart';
-import 'package:fullcomm_crm/screens/leads/view_customer.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/jwt_storage.dart';
 import '../common/utilities/reminder_utils.dart';
@@ -617,7 +612,7 @@ class ApiService {
       );
       debugPrint(data.toString());
       debugPrint(request.body);
-      Map<String, dynamic> response = json.decode(request.body);
+      // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1386,7 +1381,7 @@ class ApiService {
       print(sendList);
       print("request.body");
       print(request.body);
-      Map<String, dynamic> response = json.decode(request.body);
+      // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -4000,7 +3995,7 @@ class ApiService {
       }
     } on SocketException {
       controllers.mailReceivesList.value = [];
-    } on HttpException catch (e) {
+    } on HttpException {
       controllers.mailReceivesList.value = [];
     } catch (e) {
       controllers.mailReceivesList.value = [];

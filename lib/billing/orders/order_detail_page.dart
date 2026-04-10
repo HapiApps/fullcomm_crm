@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/billing_utils/sized_box.dart';
@@ -780,20 +779,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
 
-  BarChartGroupData _bar(int x, int y, Color color) {
-    return BarChartGroupData(
-      x: x,
-      showingTooltipIndicators: [0],
-      barRods: [
-        BarChartRodData(
-          toY: y.toDouble(),
-          width: 20,
-          color: color,
-          borderRadius: BorderRadius.circular(6),
-        ),
-      ],
-    );
-  }
 
 }
 

@@ -1,36 +1,15 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/res/colors.dart';
-import 'package:fullcomm_crm/res/components/bottom_widgets.dart';
-import 'package:fullcomm_crm/res/components/buttons.dart';
 import 'package:fullcomm_crm/res/components/k_loadings.dart';
 import 'package:fullcomm_crm/res/components/k_text.dart';
-import 'package:fullcomm_crm/res/components/screen_widgtes.dart';
-import 'package:fullcomm_crm/res/widgets/divider_widgets.dart';
-import 'package:fullcomm_crm/billing_utils/input_formatters.dart';
-import 'package:fullcomm_crm/billing_utils/sized_box.dart';
-import 'package:fullcomm_crm/billing_utils/text_formats.dart';
-import 'package:fullcomm_crm/billing_utils/toast_messages.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
 import 'package:fullcomm_crm/view_models/customer_provider.dart';
-import 'package:fullcomm_crm/billing/orders/hold_order_details.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import '../../models/billing_models/customers_response.dart';
-import '../../res/components/customer_widgets.dart';
-import '../../res/components/hint.dart';
 import '../../res/components/k_dropdown_menu_2.dart';
-import '../../res/components/k_text_field.dart';
-import '../../res/components/keyboard_search.dart';
-import 'hold_order.dart';
-import 'order_detail_page.dart';
-import 'reorderbill.dart';
-import '../products/add_products.dart';
 
 class NextPageIntent extends Intent {
   const NextPageIntent();
@@ -108,11 +87,6 @@ class Reorder extends StatefulWidget {
 }
 
 class _ReorderState extends State<Reorder> {
-  bool _isProgrammaticChange = false;
-  String? _lastScannedCode;
-  DateTime? _lastErrorTime;
-  bool _fetchInProgress = false;
-  bool _alreadyRefetchedForThisScan = false;
   String? qrData;
   String upiId = "test@upi";
   String upiName = "Test User";
@@ -136,19 +110,11 @@ class _ReorderState extends State<Reorder> {
   final FocusNode globalFocusNode = FocusNode();
   int selectedRowIndex = -1; // highlighted row
   List<FocusNode> qtyFocusNodes = []; // focus for qty cells
-  final FocusNode _keyboardFocusNode = FocusNode();
-  bool isProductDropdownOpen = false;   // <<< ADD THIS ABOVE BUILD()
-  String _barcodeBuffer = '';
-  Timer? _barcodeTimer;
-  bool _scanCompleted = false;
+  bool isProductDropdownOpen = false;
 
 
   // For Scrolling Billing Table :
   ScrollController scrollController = ScrollController();
-
-  bool _productDropdownInitialFocusDone = false;
-  final FocusNode _scanFocusNode = FocusNode();
-  final TextEditingController _scanController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   FocusNode _focusNodeSearch = FocusNode();
   void scrollToLastItem() {
@@ -220,7 +186,6 @@ class _ReorderState extends State<Reorder> {
     scrollController.dispose();
     super.dispose();
   }
-  Timer? _scanDebounce;
   String capitalizeEachWord(String value) {
     if (value.trim().isEmpty) return value;
 
@@ -235,17 +200,10 @@ class _ReorderState extends State<Reorder> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
     double screenHeight = MediaQuery
         .of(context)
         .size
         .height;
-    String searchText = "";
-    bool _isPaymentDialogOpen = false;
-    BuildContext? _dialogContext;bool _isPrinting = false;
     return Consumer2<CustomersProvider, BillingProvider>(
         builder: (context, customerProvider, billingProvider,
             _) {
@@ -423,7 +381,6 @@ class _ReorderState extends State<Reorder> {
                                                 onSearchSubmit: (search) async {
                                                   final raw = (search ?? '').trim();
                                                   final q = raw.toLowerCase();
-                                                  final formattedName = capitalizeEachWord(raw);
 
                                                   final dropdownState = cusDropdownKey.currentState as dynamic;
                                                   final highlighted = dropdownState?.highlightedValue;

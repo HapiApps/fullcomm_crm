@@ -1504,9 +1504,9 @@ print("sortField ${sortField}");
 }
   List<Order> changeOrderPage(RxList<Order> list,RxList<Order> list2){
     final query = searchProspects.value.trim().toLowerCase();
-    final ratingFilter = selectedProspectTemperature.value;
-    final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
-    final now = DateTime.now();
+    // final ratingFilter = selectedProspectTemperature.value;
+    // final sortBy = selectedQualifiedSortBy.value; // 'Today', 'Last 7 Days', etc.
+    // final now = DateTime.now();
 
     final filteredLeads = list2.value.where((lead) {
       final matchesQuery = (lead.customerName ?? '').toLowerCase().contains(query);
@@ -3449,7 +3449,7 @@ var otp = "".obs;
       );
       print("request ${data}");
       print("request ${request.body}");
-      Map<String, dynamic> response = json.decode(request.body);
+      // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3493,7 +3493,7 @@ var otp = "".obs;
       );
       print("request ${data}");
       print("request ${request.body}");
-      Map<String, dynamic> response = json.decode(request.body);
+      // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3719,19 +3719,10 @@ var otp = "".obs;
       String jobTitleP) async {
     try {
       // Lead Status
-      String leadId = controllers.leadCategory == "Suspects"
-          ? "1"
-          : controllers.leadCategory == "Prospects"
-          ? "2"
-          : controllers.leadCategory == "Qualified"
-          ? "3"
-          : "4";
 
       // Visit Type
-      String callListId = "";
       for (var role in controllers.callList) {
         if (role['value'] == controllers.visitType) {
-          callListId = role['id'].toString();
           break;
         }
       }

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:fullcomm_crm/models/common_response.dart';
 import '../common/billing_data/api_urls.dart';
 import '../controller/controller.dart';
 import '../models/billing_models/cashier_details.dart';

@@ -8,12 +8,10 @@ import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/repo/place_order_repo.dart';
 import 'package:fullcomm_crm/repo/products_repo.dart';
 import 'package:fullcomm_crm/billing_utils/toast_messages.dart';
-import 'package:oktoast/oktoast.dart' as Fluttertoast;
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart' show SharedPreferences;
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:universal_html/js.dart';
 import '../billing/pdf/bill_pdf.dart';
 import '../billing_utils/text_formats.dart';
 import '../common/utilities/utils.dart';
@@ -945,7 +943,6 @@ class BillingProvider with ChangeNotifier{
       text: balance.toStringAsFixed(2),
     );
   }
-  String _paymentBalanceAmount = '';
 
   // Calculate Payment Balance
   void calculatePaymentBalance() {
@@ -1037,18 +1034,6 @@ class BillingProvider with ChangeNotifier{
     );
   }
 
-  String _paymentType(OrderData order) {
-    switch (order.pMethodId) {
-      case '1':
-        return 'UPI';
-      case '2':
-        return 'CASH';
-      case '3':
-        return 'CREDIT';
-      default:
-        return 'UNKNOWN';
-    }
-  }
   double _amount(dynamic raw) {
     if (raw == null) return 0.0;
     return double.tryParse(raw.toString()) ?? 0.0;
@@ -2123,8 +2108,6 @@ class BillingProvider with ChangeNotifier{
 
   Future<void> getDataByDate(String date) async {
     print("Selected Date: $date");
-    final today = DateTime.now();
-    final tomorrow = today.add(const Duration(days: 1));
 
     stDate = date;
 

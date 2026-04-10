@@ -1,31 +1,22 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
-import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:fullcomm_crm/models/order_model.dart';
-import 'package:fullcomm_crm/screens/invoice/invoice.dart';
-import 'package:fullcomm_crm/screens/order/place_order.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:screenshot/screenshot.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../components/Customtext.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/date_filter_bar.dart';
-import '../../components/keyboard_search.dart';
 import '../../controller/controller.dart';
 import '../../controller/product_controller.dart';
 import '../../controller/reminder_controller.dart';
-import '../../models/all_customers_obj.dart';
-import '../../models/product_model.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage({super.key, });
@@ -103,7 +94,6 @@ class _OrderPageState extends State<OrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    var weWidth = MediaQuery.of(context).size.width;
     return SelectionArea(
       child: Scaffold(
         body: Row(

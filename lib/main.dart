@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
@@ -8,7 +7,6 @@ import 'package:fullcomm_crm/provider/employee_provider.dart';
 import 'package:fullcomm_crm/provider/reminder_provider.dart';
 import 'package:fullcomm_crm/screens/DashboardPage.dart';
 import 'package:fullcomm_crm/screens/mobile_dashboard.dart';
-import 'package:fullcomm_crm/screens/dashboard.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
@@ -29,23 +27,24 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // ✅ MUST
   await GetStorage.init();
   final prefs = await SharedPreferences.getInstance();
   final loginScreen = prefs.getBool("loginScreen$versionNum") ?? false;
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.web,
-  );
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print(" Foreground message: ${message.data}");
-
-    // App already open -> show dialog/snackbar
-  });
-
-  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    print(" Notification tapped: ${message.data}");
-
-    // When user clicks the notification and app opens
-  });
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.web,
+  // );
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   print(" Foreground message: ${message.data}");
+  //
+  //   // App already open -> show dialog/snackbar
+  // });
+  //
+  // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  //   print(" Notification tapped: ${message.data}");
+  //
+  //   // When user clicks the notification and app opens
+  // });
 
   runApp(
       MultiProvider(

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/screens/leads/update_lead.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import '../../common/constant/colors_constant.dart';
-import '../../common/utilities/mail_utils.dart';
 import '../../common/utilities/reminder_utils.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
@@ -134,7 +133,6 @@ void checkType(){
     super.dispose();
   }
 
-  Widget _emptyBox(double height) => SizedBox(height: height);
 
   @override
   Widget build(BuildContext context) {

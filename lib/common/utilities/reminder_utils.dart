@@ -1126,10 +1126,6 @@ class ReminderUtils {
                                 20.width,
                                 Consumer<ReminderProvider>(
                                   builder: (context, provider, _) {
-                                    // Determine which fields are required based on selectedNotification
-                                    final sel = provider.selectedNotification ?? "";
-                                    final employeeRequired = sel == "followup" || (sel != "followup" && sel != "meeting"); // followup => employee required; default both required handled later
-                                    final customerRequired = sel == "meeting" || (sel != "followup" && sel != "meeting"); // meeting => customer required
                                     return Row(
                                       children: [
                                         Row(

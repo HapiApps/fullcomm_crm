@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:get/get.dart';
@@ -11,7 +10,6 @@ import '../../common/utilities/utils.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../components/custom_textfield.dart';
-import '../../components/password_text_field.dart';
 import '../../models/employee_details.dart';
 import '../../provider/employee_provider.dart';
 

@@ -1,11 +1,6 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
-import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:provider/provider.dart';
-
 import '../../common/constant/colors_constant.dart';
-import '../../common/styles/decoration.dart';
-import '../../components/custom_text.dart';
 import '../../controller/reminder_controller.dart';
 
 class SearchCustomDropdown<T> extends StatefulWidget {

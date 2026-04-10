@@ -732,7 +732,7 @@ class MailUtils {
                                                     selectRange(range, isTarget?controllers.targetLeadsFuture:controllers.allNewLeadFuture);
                                                   }
                                                   );
-                                                  final leads = controllers.getLeadsByRange(index);
+                                                  // final leads = controllers.getLeadsByRange(index);
                                                   // here open another dialog to show leads
                                                   // showDialog(
                                                   //   context: context,

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
-import '../../common/constant/api.dart';
-import '../../common/constant/default_constant.dart';
-import '../../common/utilities/utils.dart';
 import '../../components/custom_sidebar.dart';
 import '../../controller/controller.dart';
 import 'call_comments.dart';
@@ -37,7 +33,6 @@ class _RecordsState extends State<Records> {
   }
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
     return DefaultTabController(
       length: 3,
       child: Scaffold(

@@ -91,7 +91,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                               return GestureDetector(
                                 onTap: () {
                                   dashController.selectedSortBy.value = filter;
-                                  DateTime now = DateTime.now();
+                                  // DateTime now = DateTime.now();
                                   switch (filter) {
                                     case "Today":
                                       DateTime now = DateTime.now();
@@ -104,7 +104,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
                                     case "Yesterday":
                                       dashController.selectedSortBy.value = "Yesterday";
                                       DateTime today = DateTime.now();
-                                      DateTime yesterday = today.subtract(const Duration(days: 1));
+                                      // DateTime yesterday = today.subtract(const Duration(days: 1));
                                       DateTime startDate = today.subtract(const Duration(days: 7));
                                       DateTime endDate = today;
                                       dashController.selectedRange.value = DateTimeRange(

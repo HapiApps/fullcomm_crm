@@ -192,9 +192,6 @@ class _MyDropdownMenuState<T> extends State<MyDropdownMenu2<T>> {
   TextEditingController? _localTextEditingController;
 
   // Add a public setter for external use
-  void _setText(String text) {
-    _localTextEditingController?.text = text;
-  }
 
   TextEditingValue get _initialTextEditingValue {
     final T? desired = widget.selectedItem ?? widget.initialSelection;

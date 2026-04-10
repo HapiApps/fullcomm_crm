@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/styles/decoration.dart';
 import 'custom_text.dart';

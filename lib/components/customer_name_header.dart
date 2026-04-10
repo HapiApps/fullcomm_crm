@@ -238,15 +238,12 @@
 
 
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/colors_constant.dart';
 import '../controller/controller.dart';
 import '../controller/table_controller.dart';
-import '../models/user_heading_obj.dart';
 
 class CustomerNameHeader extends StatefulWidget {
   final bool showCheckbox;

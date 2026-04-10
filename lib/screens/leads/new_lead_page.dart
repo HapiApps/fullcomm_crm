@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -7,7 +5,6 @@ import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/components/customer_name_tile.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import '../../common/utilities/mail_utils.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';

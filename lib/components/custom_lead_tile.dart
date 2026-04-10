@@ -1,27 +1,18 @@
 import 'dart:convert';
 import 'package:http/http.dart'as http;
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/screens/leads/view_lead.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
-import 'package:fullcomm_crm/components/custom_checkbox.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
-import 'package:fullcomm_crm/screens/records/mail_comments.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
 import '../common/utilities/jwt_storage.dart';
 import '../controller/table_controller.dart';
 import '../models/new_lead_obj.dart';
-import '../screens/records/cus_mail_comments.dart';
-import '../screens/leads/update_lead.dart';
-import '../screens/records/records.dart';
 import '../services/api_services.dart';
-import 'custom_loading_button.dart';
 
 class CustomLeadTile extends StatefulWidget {
   final bool showCheckbox;
@@ -420,9 +411,6 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                           .firstWhereOrNull((f) => normalize(f.userHeading) == normalize(heading))
                           ?.systemField;
 
-                      final column = controllers.fields
-                          .firstWhereOrNull((f) => normalize(f.systemField) == normalize(heading))
-                          ?.systemField;
 
                       final controller = key != null ? fieldControllers[key] : null;
 

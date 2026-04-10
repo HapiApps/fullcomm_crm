@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/jwt_storage.dart';
@@ -7,11 +6,9 @@ import 'package:fullcomm_crm/models/office_hours_obj.dart';
 import 'package:fullcomm_crm/models/role_obj.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/utilities/utils.dart';
-import '../common/widgets/log_in.dart';
 import '../components/custom_loading_button.dart';
 import '../components/custom_text.dart';
 import '../components/custom_textfield.dart';

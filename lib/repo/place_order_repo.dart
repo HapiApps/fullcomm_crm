@@ -229,8 +229,6 @@ class PlaceOrderRepository {
 
 
   Future<Map<String, dynamic>> updateBillStatus(String invoiceNo) async {
-    final url = http.post(Uri.parse(ApiUrl.script));
-
     final response = await http.post(
       Uri.parse(ApiUrl.script),
       headers: {"Content-Type": "application/json"},
