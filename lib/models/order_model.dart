@@ -84,6 +84,8 @@ class Quotations {
   final String status;
   final int totalAmt;
   final int cusId;
+  final int totalProduct;
+  final int totalItem;
 
   Quotations({
     required this.id,
@@ -95,6 +97,8 @@ class Quotations {
     required this.createdTs,
     required this.status,
     required this.cusId,
+    required this.totalProduct,
+    required this.totalItem,
   });
 
   factory Quotations.fromJson(Map<String, dynamic> json) {
@@ -107,7 +111,9 @@ class Quotations {
       number: json['number'] ?? '',
       status: json['status'] ?? '',
       createdTs: json['created_ts'] ?? '',
-      totalAmt: int.tryParse(json['total_amt']?.toString() ?? "0") ?? 0
+      totalAmt: int.tryParse(json['total_amt']?.toString() ?? "0") ?? 0,
+      totalProduct: int.tryParse(json['total_product']?.toString() ?? "0") ?? 0,
+      totalItem: int.tryParse(json['total_item']?.toString() ?? "0") ?? 0
     );
   }
 }

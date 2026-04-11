@@ -2884,6 +2884,8 @@ class ApiService {
         body: jsonEncode(data),
       );
       controllers.isMailLoading.value = false;
+      print("getting mails");
+      print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -2898,7 +2900,19 @@ class ApiService {
         final activities = response.map((e) => CustomerActivity.fromJson(e)).toList();
         controllers.mailActivity.assignAll(activities);
         controllers.allSentMails.value = controllers.mailActivity.length.toString();
+        remController.selectedMailSortBy.value=dashController.selectedSortBy.value;
         remController.sortMails();
+        // remController.sortMails();
+        // remController.dashboardCommunicationFilterList(
+        //   dataList: controllers.mailActivity,
+        //   searchText: controllers.searchText.value.toLowerCase(),
+        //   callType: controllers.selectCallType.value,
+        //   sortField: controllers.sortFieldCallActivity.value,
+        //   sortOrder: controllers.sortOrderCallActivity.value,
+        //   selectedMonth: remController.selectedCallMonth.value,
+        //   selectedRange: remController.selectedCallRange.value,
+        //   selectedDateFilter: remController.selectedCallSortBy.value,
+        // );
       } else {
         throw Exception('Failed to load mail activity');
       }
@@ -3331,10 +3345,14 @@ class ApiService {
       request.fields['body'] = controllers.emailMessageCtr.text;
       request.fields['cus_id'] = controllers.storage.read("id").toString();
       request.fields['customer_id'] = controllers.selectedCustomerId.value;
+      request.fields['notes'] = controllers.notesCtr.text;
+      request.fields['validity_date'] = "${DateFormat('dd-MM-yyyy').format(DateTime.now())} to ${DateFormat('dd-MM-yyyy').format(DateTime.now().add(Duration(days: 15)))}";
       request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
       request.fields['action'] = 'send_quotation';
       request.fields['total_amt'] = '${Provider.of<BillingProvider>(context, listen: false).calculatedGrandTotal()}';
       request.fields['productList'] = productListJson;
+      request.fields['total_product'] = Provider.of<BillingProvider>(context, listen: false).calculatedTotalProducts().toString();
+      request.fields['total_item'] = Provider.of<BillingProvider>(context, listen: false).calculatedTotalQuantity().toString();
       request.headers.addAll({
         'X-API-TOKEN': "${TokenStorage().readToken()}",
         'Content-Type': 'application/json'
@@ -3374,7 +3392,7 @@ class ApiService {
         Provider.of<BillingProvider>(context, listen: false).billingItems.clear();
         productCtr.getQuotationDetails();
         Navigator.pop(Get.context!);
-        controllers.changeTab(1);
+        controllers.changeTab(0);
         controllers.emailCtr.reset();
       } else {
         controllers.emailCtr.reset();
@@ -3418,6 +3436,13 @@ class ApiService {
         remController.selectedMeetingIds.clear();
         apiService.getAllMeetingActivity("");
         Navigator.pop(Get.context!);
+        remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
+        remController.dashboardMeetings(
+          searchText: controllers.searchText.value.toLowerCase(),
+          callType: controllers.selectMeetingType.value,
+          sortField: controllers.sortFieldMeetingActivity.value,
+          sortOrder: controllers.sortOrderMeetingActivity.value,
+        );
         controllers.emailCtr.reset();
       } else {
         controllers.emailCtr.reset();
@@ -3504,6 +3529,7 @@ class ApiService {
       request.fields['id'] = id;
       request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
       request.fields['action'] = 'mail_receive';
+      request.fields['customer_name'] = controllers.selectedCustomerName.value;
       request.headers.addAll({
         'X-API-TOKEN': "${TokenStorage().readToken()}",
         'Content-Type': 'application/json'
@@ -3561,6 +3587,7 @@ class ApiService {
       request.fields['id'] = id;
       request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
       request.fields['action'] = 'mail_receive';
+      request.fields['customer_name'] = controllers.selectedCustomerName.value;
       request.headers.addAll({
         'X-API-TOKEN': "${TokenStorage().readToken()}",
         'Content-Type': 'application/json'
@@ -4140,7 +4167,7 @@ class ApiService {
         final decoded = jsonDecode(response.body);
 
         if (decoded is Map && decoded['responseCode']?.toString() == '200') {
-          final data = decoded['billing_data'];
+          final data = decoded['data'];
           if (data is Map<String, dynamic>) {
             return CustomerFullDetails.fromJson(data);
           } else {
@@ -4279,7 +4306,6 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print(data);
       print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -4308,6 +4334,16 @@ class ApiService {
         mergeStatusWithCount();
         remController.filterAndSortCalls(
           allCalls: controllers.callActivity,
+          searchText: controllers.searchText.value.toLowerCase(),
+          callType: controllers.selectCallType.value,
+          sortField: controllers.sortFieldCallActivity.value,
+          sortOrder: controllers.sortOrderCallActivity.value,
+          selectedMonth: remController.selectedCallMonth.value,
+          selectedRange: remController.selectedCallRange.value,
+          selectedDateFilter: remController.selectedCallSortBy.value,
+        );
+        remController.dashboardCommunicationFilterList(
+          dataList: controllers.callActivity,
           searchText: controllers.searchText.value.toLowerCase(),
           callType: controllers.selectCallType.value,
           sortField: controllers.sortFieldCallActivity.value,

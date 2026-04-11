@@ -352,6 +352,47 @@ class _ProductPageState extends State<ProductPage> {
                                   ),
                                 ],
                               ),),
+                              headerCell(3, Row(
+                                children: [
+                                  CustomText(//2
+                                    textAlign: TextAlign.left,
+                                    text: "Brand",
+                                    size: 15,
+                                    isBold: true,
+                                    isCopy: true,
+                                    colors: Colors.white,
+                                  ),
+                                  3.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      if(controllers.sortFieldCallActivity.value=='name' && controllers.sortOrderCallActivity.value=='asc'){
+                                        controllers.sortOrderCallActivity.value='desc';
+                                      }else{
+                                        controllers.sortOrderCallActivity.value='asc';
+                                      }
+                                      controllers.sortFieldCallActivity.value='name';
+                                      productCtr.filterAndSortProducts(
+                                        searchText: controllers.searchText.value.toLowerCase(),
+                                        sortField: controllers.sortFieldCallActivity.value,
+                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                        selectedMonth: productCtr.selectedCallMonth.value,
+                                        selectedRange: productCtr.selectedCallRange.value,
+                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                      );
+                                    },
+                                    child: Obx(() => Image.asset(
+                                      controllers.sortFieldCallActivity.value.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                    ),
+                                  ),
+                                ],
+                              ),),
                               headerCell(4, Row(
                                 children: [
                                   CustomText(
@@ -480,6 +521,129 @@ class _ProductPageState extends State<ProductPage> {
                                   CustomText(//4
                                     textAlign: TextAlign.left,
                                     text: "HSN Code",
+                                    size: 15,
+                                    isBold: true,
+                                    isCopy: true,
+                                    colors: Colors.white,
+                                  ),
+                                  3.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      if(controllers.sortFieldCallActivity.value=='hsn' && controllers.sortOrderCallActivity.value=='asc'){
+                                        controllers.sortOrderCallActivity.value='desc';
+                                      }else{
+                                        controllers.sortOrderCallActivity.value='asc';
+                                      }
+                                      controllers.sortFieldCallActivity.value='hsn';
+                                      productCtr.filterAndSortProducts(
+                                        searchText: controllers.searchText.value.toLowerCase(),
+                                        sortField: controllers.sortFieldCallActivity.value,
+                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                        selectedMonth: productCtr.selectedCallMonth.value,
+                                        selectedRange: productCtr.selectedCallRange.value,
+                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                      );
+                                    },
+                                    child: Obx(() => Image.asset(
+                                      controllers.sortFieldCallActivity.value.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                    ),
+                                  ),
+                                ],
+                              ),),
+                              headerCell(7, Row(
+                                children: [
+                                  CustomText(//4
+                                    textAlign: TextAlign.left,
+                                    text: "Category",
+                                    size: 15,
+                                    isBold: true,
+                                    isCopy: true,
+                                    colors: Colors.white,
+                                  ),
+                                  3.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      if(controllers.sortFieldCallActivity.value=='cat' && controllers.sortOrderCallActivity.value=='asc'){
+                                        controllers.sortOrderCallActivity.value='desc';
+                                      }else{
+                                        controllers.sortOrderCallActivity.value='asc';
+                                      }
+                                      controllers.sortFieldCallActivity.value='cat';
+                                      productCtr.filterAndSortProducts(
+                                        searchText: controllers.searchText.value.toLowerCase(),
+                                        sortField: controllers.sortFieldCallActivity.value,
+                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                        selectedMonth: productCtr.selectedCallMonth.value,
+                                        selectedRange: productCtr.selectedCallRange.value,
+                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                      );
+                                    },
+                                    child: Obx(() => Image.asset(
+                                      controllers.sortFieldCallActivity.value.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                    ),
+                                  ),
+                                ],
+                              ),),
+                              headerCell(7, Row(
+                                children: [
+                                  CustomText(//4
+                                    textAlign: TextAlign.left,
+                                    text: "Sub Category",
+                                    size: 15,
+                                    isBold: true,
+                                    isCopy: true,
+                                    colors: Colors.white,
+                                  ),
+                                  3.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      if(controllers.sortFieldCallActivity.value=='subcat' && controllers.sortOrderCallActivity.value=='asc'){
+                                        controllers.sortOrderCallActivity.value='desc';
+                                      }else{
+                                        controllers.sortOrderCallActivity.value='asc';
+                                      }
+                                      controllers.sortFieldCallActivity.value='subcat';
+                                      productCtr.filterAndSortProducts(
+                                        searchText: controllers.searchText.value.toLowerCase(),
+                                        sortField: controllers.sortFieldCallActivity.value,
+                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                        selectedMonth: productCtr.selectedCallMonth.value,
+                                        selectedRange: productCtr.selectedCallRange.value,
+                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                      );
+                                    },
+                                    child: Obx(() => Image.asset(
+                                      controllers.sortFieldCallActivity.value.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                    ),
+                                  ),
+                                ],
+                              ),),
+                              headerCell(7, Row(
+                                children: [
+                                  CustomText(//4
+                                    textAlign: TextAlign.left,
+                                    text: "Variation",
                                     size: 15,
                                     isBold: true,
                                     isCopy: true,
@@ -1231,6 +1395,19 @@ class _ProductPageState extends State<ProductPage> {
                                           ),
                                         ),
                                         Tooltip(
+                                          message: data.brand.toString()=="null"?"":data.brand.toString(),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              text:data.brand.toString()=="null"?"":data.brand.toString(),
+                                              size: 14,
+                                              isCopy: true,
+                                              colors: colorsConst.textColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Tooltip(
                                           message: data.mrp.toString()=="null"?"":data.mrp.toString(),
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
@@ -1280,6 +1457,39 @@ class _ProductPageState extends State<ProductPage> {
                                               isCopy: true,
                                               colors:colorsConst.textColor,
                                             ),
+                                          ),
+                                        ),
+                                        Tooltip(
+                                          message: data.pVariation.toString()=="null"?"":data.pVariation.toString(),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              text: data.pVariation.toString()=="null"?"":data.pVariation.toString(),
+                                              size: 14,
+                                              isCopy: true,
+                                              colors:colorsConst.textColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: data.category.toString()=="null"?"":data.category.toString(),
+                                            size: 14,
+                                            isCopy: true,
+                                            colors:colorsConst.textColor,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: data.subCategory.toString()=="null"?"":data.subCategory.toString(),
+                                            size: 14,
+                                            isCopy: true,
+                                            colors:colorsConst.textColor,
                                           ),
                                         ),
                                         // Tooltip(

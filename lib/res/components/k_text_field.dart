@@ -111,15 +111,15 @@ class MyTextField extends StatelessWidget {
             style: GoogleFonts.lato(
               color: Colors.black,
               fontWeight: FontWeight.bold,
-              fontSize: 24,
+              fontSize: 18,
             ),
           ),
           hintText: hintText,
 
           hintStyle: GoogleFonts.lato(color: Colors.black,
-              fontSize: 24, fontWeight: FontWeight.bold,),
+              fontSize: 18, fontWeight: FontWeight.bold,),
           labelStyle:  GoogleFonts.lato(color: Colors.black,
-              fontSize: 24, fontWeight: FontWeight.bold,),
+              fontSize: 18, fontWeight: FontWeight.bold,),
           suffixIcon: suffixIcon,
           prefixIcon: prefixIcon,
           contentPadding: const EdgeInsets.fromLTRB(10, 30, 5, 0),

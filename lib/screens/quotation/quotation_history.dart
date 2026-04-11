@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../components/Customtext.dart';
+import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/date_filter_bar.dart';
 import '../../controller/controller.dart';
@@ -26,6 +27,8 @@ class _QuotationHistoryState extends State<QuotationHistory> {
   var sizeInKB=0.0.obs;
   List<double> colWidths = [
     20,   // 0 Checkbox
+    80,  // 1 Actions
+    80,  // 1 Actions
     80,  // 1 Actions
     80,  // 1 Actions
     100,  // 2 Event Name
@@ -125,6 +128,19 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                         isCopy: true,
                       ),
                     ],
+                  ),
+                  CustomLoadingButton(
+                    callback: ()  {
+                      controllers.changeTab(1);
+                    },
+                    isLoading: false,
+                    height: 35,
+                    backgroundColor: colorsConst.primary,
+                    radius: 2,
+                    width: MediaQuery.of(context).size.width*0.1,
+                    isImage: false,
+                    text: "Create Quotation",
+                    textColor: Colors.white,
                   ),
                 ],
               ),
@@ -259,13 +275,47 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                             isCopy: true,
                             colors: Colors.white,
                           ),),
-                          headerCell(2,  CustomText(
-                            textAlign: TextAlign.left,
-                            text: "Quotation No",
-                            size: 15,
-                            isBold: true,
-                            isCopy: true,
-                            colors: Colors.white,
+                          headerCell(2,  Row(
+                            children: [
+                              CustomText(
+                                textAlign: TextAlign.left,
+                                text: "Quotation No",
+                                size: 15,
+                                isBold: true,
+                                isCopy: true,
+                                colors: Colors.white,
+                              ),
+                              3.width,
+                              GestureDetector(
+                                onTap: (){
+                                  if(controllers.sortFieldCallActivity.value=='qno' && controllers.sortOrderCallActivity.value=='asc'){
+                                    controllers.sortOrderCallActivity.value='desc';
+                                  }else{
+                                    controllers.sortOrderCallActivity.value='asc';
+                                  }
+                                  controllers.sortFieldCallActivity.value='qno';
+                                  productCtr.filterAndSortQuotations(
+                                    searchText: controllers.searchText.value.toLowerCase(),
+                                    sortField: controllers.sortFieldCallActivity.value,
+                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                    selectedRange: productCtr.selectedCallRange.value,
+                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                  );
+                                },
+                                child: Obx(() => Image.asset(
+                                  controllers.sortFieldCallActivity.value.isEmpty
+                                      ? "assets/images/arrow.png"
+                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                      ? "assets/images/arrow_up.png"
+                                      : "assets/images/arrow_down.png",
+                                  width: 15,
+                                  height: 15,
+                                ),
+                                ),
+                              ),
+
+                            ],
                           ),),
                           headerCell(3, Row(
                             children: [
@@ -327,6 +377,88 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                     controllers.sortOrderCallActivity.value='asc';
                                   }
                                   controllers.sortFieldCallActivity.value='number';
+                                  productCtr.filterAndSortQuotations(
+                                    searchText: controllers.searchText.value.toLowerCase(),
+                                    sortField: controllers.sortFieldCallActivity.value,
+                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                    selectedRange: productCtr.selectedCallRange.value,
+                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                  );
+                                },
+                                child: Obx(() => Image.asset(
+                                  controllers.sortFieldCallActivity.value.isEmpty
+                                      ? "assets/images/arrow.png"
+                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                      ? "assets/images/arrow_up.png"
+                                      : "assets/images/arrow_down.png",
+                                  width: 15,
+                                  height: 15,
+                                ),
+                                ),
+                              ),
+                            ],
+                          ),),
+                          headerCell(2, Row(
+                            children: [
+                              CustomText(
+                                textAlign: TextAlign.left,
+                                text: "Total Products",
+                                size: 15,
+                                isBold: true,
+                                isCopy: true,
+                                colors: Colors.white,
+                              ),
+                              3.width,
+                              GestureDetector(
+                                onTap: (){
+                                  if(controllers.sortFieldCallActivity.value=='products' && controllers.sortOrderCallActivity.value=='asc'){
+                                    controllers.sortOrderCallActivity.value='desc';
+                                  }else{
+                                    controllers.sortOrderCallActivity.value='asc';
+                                  }
+                                  controllers.sortFieldCallActivity.value='products';
+                                  productCtr.filterAndSortQuotations(
+                                    searchText: controllers.searchText.value.toLowerCase(),
+                                    sortField: controllers.sortFieldCallActivity.value,
+                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                    selectedRange: productCtr.selectedCallRange.value,
+                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                  );
+                                },
+                                child: Obx(() => Image.asset(
+                                  controllers.sortFieldCallActivity.value.isEmpty
+                                      ? "assets/images/arrow.png"
+                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                      ? "assets/images/arrow_up.png"
+                                      : "assets/images/arrow_down.png",
+                                  width: 15,
+                                  height: 15,
+                                ),
+                                ),
+                              ),
+                            ],
+                          ),),
+                          headerCell(2, Row(
+                            children: [
+                              CustomText(
+                                textAlign: TextAlign.left,
+                                text: "Total Item",
+                                size: 15,
+                                isBold: true,
+                                isCopy: true,
+                                colors: Colors.white,
+                              ),
+                              3.width,
+                              GestureDetector(
+                                onTap: (){
+                                  if(controllers.sortFieldCallActivity.value=='item' && controllers.sortOrderCallActivity.value=='asc'){
+                                    controllers.sortOrderCallActivity.value='desc';
+                                  }else{
+                                    controllers.sortOrderCallActivity.value='asc';
+                                  }
+                                  controllers.sortFieldCallActivity.value='item';
                                   productCtr.filterAndSortQuotations(
                                     searchText: controllers.searchText.value.toLowerCase(),
                                     sortField: controllers.sortFieldCallActivity.value,
@@ -474,7 +606,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                           ),),
                           headerCell(8, CustomText(
                             textAlign: TextAlign.left,
-                            text: "Invoice",
+                            text: "Quotation",
                             size: 15,
                             isBold: true,
                             isCopy: true,
@@ -1061,6 +1193,32 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                       ),
                                     ),
                                     Tooltip(
+                                      message: data.totalProduct.toString(),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.left,
+                                          text: data.totalProduct.toString(),
+                                          size: 14,
+                                          isCopy: true,
+                                          colors:colorsConst.textColor,
+                                        ),
+                                      ),
+                                    ),
+                                    Tooltip(
+                                      message: data.totalItem.toString(),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.left,
+                                          text: data.totalItem.toString(),
+                                          size: 14,
+                                          isCopy: true,
+                                          colors:colorsConst.textColor,
+                                        ),
+                                      ),
+                                    ),
+                                    Tooltip(
                                       message: productCtr.formatAmount(data.totalAmt.toString()),
                                       child: Padding(
                                         padding: const EdgeInsets.all(10.0),
@@ -1073,6 +1231,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                         ),
                                       ),
                                     ),
+
                                     Padding(
                                       padding: const EdgeInsets.all(10.0),
                                       child: CustomText(
@@ -1105,7 +1264,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
-                                          child: CustomText(text: "View Invoice", isCopy: false,colors: colorsConst.primary,),
+                                          child: CustomText(text: "View Quotation", isCopy: false,colors: colorsConst.primary,),
                                         ),
                                       ),
                                     ),

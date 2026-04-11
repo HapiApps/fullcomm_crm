@@ -63,6 +63,8 @@ class ProductData {
   String? buyQty;
   String? getQty;
   String? isFree;
+  String? category;
+  String? subCategory;
 
   ProductData({
     this.id,
@@ -105,6 +107,8 @@ class ProductData {
     this.getQty,
     this.isFree,
     this.createdTs,
+    this.category,
+    this.subCategory,
   });
 
   factory ProductData.fromJson(Map<String, dynamic> json) => ProductData(
@@ -151,6 +155,8 @@ class ProductData {
     getQty: json["get_qty"]?.toString(),
     isFree: json["is_free"]?.toString(),
     createdTs: json["created_ts"]?.toString(),
+    category: json["category"]?.toString(),
+    subCategory: json["sub_category"]?.toString(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -194,5 +200,7 @@ class ProductData {
     "get_qty": getQty,
     "is_free": isFree,
     "created_ts": createdTs,
+    "category": category,
+    "sub_category": subCategory,
   };
 }

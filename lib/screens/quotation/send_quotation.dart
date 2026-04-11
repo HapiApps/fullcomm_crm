@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import '../../common/constant/app_colors.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../components/Customtext.dart';
 import '../../controller/controller.dart';
@@ -671,20 +672,6 @@ class _SendQuotationState extends State<SendQuotation> {
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
 
-                /// 🔴 TITLE BOX
-                pw.Center(
-                  child: pw.Container(
-                    padding: const pw.EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
-                    decoration: pw.BoxDecoration(
-                      border: pw.Border.all(),
-                      borderRadius: pw.BorderRadius.circular(5),
-                    ),
-                    child: pw.Text("TAX INVOICE",
-                        style: pw.TextStyle(fontSize: 14)),
-                  ),
-                ),
-
                 pw.SizedBox(height: 20),
 
                 /// 🟢 HEADER ROW
@@ -928,48 +915,110 @@ class _SendQuotationState extends State<SendQuotation> {
 class CustomerDropdown extends StatefulWidget {
   final List<AllCustomersObj> custList;
   final ValueChanged<AllCustomersObj?> onChanged;
-  const CustomerDropdown({super.key, required this.custList, required this.onChanged});
+
+  const CustomerDropdown({
+    super.key,
+    required this.custList,
+    required this.onChanged,
+  });
 
   @override
   State<CustomerDropdown> createState() => _CustomerDropdownState();
 }
 
 class _CustomerDropdownState extends State<CustomerDropdown> {
+  final FocusNode _searchFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  String _formatCustomer(AllCustomersObj customer) {
+    return '${customer.name}'
+        '${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} '
+        '${customer.name.toString().isEmpty ? "" : "-"} '
+        '${customer.phoneNo} - ${customer.category}';
+  }
+
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      width: MediaQuery.of(context).size.width*0.35,
+      width: screenWidth / 2.6,
       height: 47,
       decoration: customDecoration.baseBackgroundDecoration(
         color: Colors.white,
-        radius: 5,
+        radius: 20,
+        borderColor: AppColors.black,
       ),
       child: DropdownSearch<AllCustomersObj>(
         items: widget.custList,
-        itemAsString: (AllCustomersObj customer) => '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+
+        /// Text format
+        itemAsString: (customer) => _formatCustomer(customer),
+
         onChanged: widget.onChanged,
+
+        /// Dropdown UI
         dropdownDecoratorProps: DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
-              hintText: "Search Name",
-              contentPadding: const EdgeInsets.all(10),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-              )
+            hintText: "Search Customer Name",
+            hintStyle: GoogleFonts.lato(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+            contentPadding: const EdgeInsets.all(10),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: BorderSide(
+                width: 0,
+                color: AppColors.black,
+              ),
+            ),
           ),
         ),
+
+        /// 🔥 Popup with autofocus fix
         popupProps: PopupProps.menu(
           showSearchBox: true,
           fit: FlexFit.loose,
+
+          /// ✅ AUTO FOCUS FIX
+          searchFieldProps: TextFieldProps(
+            focusNode: _searchFocusNode,
+            autofocus: true,
+            decoration: const InputDecoration(
+              hintText: "Type to search...",
+            ),
+
+            /// 🔥 Force focus (important for some devices)
+            onTap: () {
+              Future.delayed(const Duration(milliseconds: 100), () {
+                if (mounted) {
+                  FocusScope.of(context).requestFocus(_searchFocusNode);
+                }
+              });
+            },
+          ),
+
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.9,
           ),
-          itemBuilder: (context, AllCustomersObj customer, bool isSelected) {
+
+          itemBuilder:
+              (context, AllCustomersObj customer, bool isSelected) {
             return Padding(
               padding: const EdgeInsets.all(10.0),
               child: CustomText(
                 textAlign: TextAlign.start,
-                text:'${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}', isCopy: false,),
+                colors: AppColors.black,
+                text: _formatCustomer(customer),
+                isCopy: false,
+              ),
             );
           },
         ),

@@ -422,7 +422,7 @@ var isSelectAll=false.obs;
       );
 
       // print("STATUS CODE add_values: ${response.statusCode}");
-      // print("get_products...: ${response.body}");
+      print("get_products...: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -928,6 +928,12 @@ var isSelectAll=false.obs;
         a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
         return sortOrder == 'asc' ? comparison : -comparison;
       });
+    }else if (sortField == 'qno') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.quotationNo.toString().toLowerCase().compareTo(b.quotationNo.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
     }else if (sortField == 'number') {
       filtered.sort((a, b) {
         final comparison =
@@ -938,6 +944,20 @@ var isSelectAll=false.obs;
       filtered.sort((a, b) {
         final aVal = int.tryParse(a.totalAmt.toString()) ?? 0;
         final bVal = int.tryParse(b.totalAmt.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'products') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.totalProduct.toString()) ?? 0;
+        final bVal = int.tryParse(b.totalProduct.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'item') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.totalItem.toString()) ?? 0;
+        final bVal = int.tryParse(b.totalItem.toString()) ?? 0;
         final comparison = aVal.compareTo(bVal);
         return sortOrder == 'asc' ? comparison : -comparison;
       });
@@ -980,7 +1000,7 @@ var isSelectAll=false.obs;
       );
 
       // print("STATUS CODE add_values: ${response.statusCode}");
-      print("get_quotations..: ${response.body}");
+      // print("get_quotations..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -996,6 +1016,48 @@ var isSelectAll=false.obs;
         // print("get_quotations..: ${quotationsList.length}");
         // print("get_quotations..: ${quotationsList2.length}");
         return quotationsList;
+      }else{
+          return [];
+      }
+    } catch (e) {
+      log("FLUTTER ERROR => $e");
+      return [];
+    }
+  }
+  RxList termsAndConditionsList=[].obs;
+  Future<List> getTermsAndConditions() async {
+    try {
+      termsAndConditionsList.clear();
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "action": "get_data",
+          "search_type": "get_terms_and_conditions",
+          "role": controllers.storage.read("role").toString(),
+          "cos_id": controllers.storage.read("cos_id").toString(),
+        }),
+      );
+
+      // print("STATUS CODE add_values: ${response.statusCode}");
+      print("getTermsAndConditions..: ${response.body}");
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getTermsAndConditions();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200) {
+        final List data = jsonDecode(response.body);
+        termsAndConditionsList.value =data;
+        // print("get_quotations..: ${quotationsList.length}");
+        // print("get_quotations..: ${quotationsList2.length}");
+        return termsAndConditionsList;
       }else{
           return [];
       }

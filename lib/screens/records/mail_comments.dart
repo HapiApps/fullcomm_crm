@@ -38,6 +38,8 @@ class MailComments extends StatefulWidget {
 class _MailCommentsState extends State<MailComments> {
   List<double> colWidths = [
     150,   // 0 Checkbox
+    150,   // 0 Checkbox
+    150,   // 0 Checkbox
     150,  // 1 Actions
     150,  // 2 Event Name
     150,  // 3 Type
@@ -340,6 +342,74 @@ class _MailCommentsState extends State<MailComments> {
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.left,
+                                  text: "Lead Name",
+                                  size: 15,
+                                  isBold: true,
+                                  isCopy: false,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(remController.sortFieldCallActivity.value=='name' && remController.sortOrderCallActivity.value=='asc'){
+                                      remController.sortOrderCallActivity.value='desc';
+                                    }else{
+                                      remController.sortOrderCallActivity.value='asc';
+                                    }
+                                    remController.sortFieldCallActivity.value='name';
+                                    remController.sortMails();
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    controllers.sortFieldCallActivity.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : controllers.sortOrderCallActivity.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
+                            ),),
+                            headerCell(0, Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
+                                  text: "Company Name",
+                                  size: 15,
+                                  isBold: true,
+                                  isCopy: false,
+                                  colors: Colors.white,
+                                ),
+                                const SizedBox(width: 3),
+                                GestureDetector(
+                                  onTap: (){
+                                    if(remController.sortFieldCallActivity.value=='company' && remController.sortOrderCallActivity.value=='asc'){
+                                      remController.sortOrderCallActivity.value='desc';
+                                    }else{
+                                      remController.sortOrderCallActivity.value='asc';
+                                    }
+                                    remController.sortFieldCallActivity.value='company';
+                                    remController.sortMails();
+                                  },
+                                  child: Obx(() => Image.asset(
+                                    controllers.sortFieldCallActivity.value.isEmpty
+                                        ? "assets/images/arrow.png"
+                                        : controllers.sortOrderCallActivity.value == 'asc'
+                                        ? "assets/images/arrow_up.png"
+                                        : "assets/images/arrow_down.png",
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  ),
+                                ),
+                              ],
+                            ),),
+                            headerCell(0, Row(
+                              children: [
+                                CustomText(
+                                  textAlign: TextAlign.left,
                                   text: "Sent Mail",
                                   size: 15,
                                   isBold: true,
@@ -557,6 +627,26 @@ class _MailCommentsState extends State<MailComments> {
                                         child: CustomText(
                                           textAlign: TextAlign.left,
                                           isCopy: true,
+                                          text:data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                          size: 14,
+                                          colors: colorsConst.textColor,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.left,
+                                          isCopy: true,
+                                          text:data.companyName.toString()=="null"?"":data.companyName.toString(),
+                                          size: 14,
+                                          colors: colorsConst.textColor,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.left,
+                                          isCopy: true,
                                           text:data.toData.toString()=="null"?"":data.toData.toString(),
                                           size: 14,
                                           colors: colorsConst.textColor,
@@ -634,9 +724,9 @@ class _MailCommentsState extends State<MailComments> {
                                       )
                                           : Padding(
                                         padding: const EdgeInsets.all(10.0),
-                                        child: Text(
-                                          "No attachment",
-                                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                                        child: CustomText(
+                                          isCopy: false,textAlign: TextAlign.center,
+                                          text:"No attachment",colors: Colors.grey, size: 14,
                                         ),
                                       ),
                                       Padding(

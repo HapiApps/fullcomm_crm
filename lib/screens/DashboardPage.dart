@@ -113,11 +113,14 @@ class _DashboardPageState extends State<DashboardPage>
       if(controllers.hCallStatusList.isEmpty){
         controllers.getCallStatus();
       }
+      apiService.getAllMailActivity();
+
       controllers.getRangeStatus();
       controllers.getIndustries();
       // productCtr.getProducts();
       productCtr.getOrderDetails();
       productCtr.getQuotationDetails();
+      productCtr.getTermsAndConditions();
     });
 
     Future.delayed(Duration.zero, () async {
@@ -143,9 +146,11 @@ class _DashboardPageState extends State<DashboardPage>
         sortField: controllers.sortFieldMeetingActivity.value,
         sortOrder: controllers.sortOrderMeetingActivity.value,
       );
-      remController.sortReminders();
-      remController.filterAndSortCalls(
-        allCalls: controllers.callActivity,
+      remController.dashboardSortReminders();
+      remController.callMailsList.addAll(remController.callFilteredList);
+      remController.callMailsList.addAll(remController.mailFilteredList);
+      remController.dashboardCommunicationFilterList(
+        dataList: remController.callMailsList,
         searchText: controllers.searchText.value.toLowerCase(),
         callType: controllers.selectCallType.value,
         sortField: controllers.sortFieldCallActivity.value,
@@ -490,8 +495,8 @@ void checkDate(){
                                   sortField: controllers.sortFieldMeetingActivity.value,
                                   sortOrder: controllers.sortOrderMeetingActivity.value,
                                 );
-                                remController.filterAndSortCalls(
-                                  allCalls: controllers.callActivity,
+                                remController.dashboardCommunicationFilterList(
+                                  dataList: remController.callMailsList,
                                   searchText: controllers.searchText.value.toLowerCase(),
                                   callType: controllers.selectCallType.value,
                                   sortField: controllers.sortFieldCallActivity.value,
@@ -500,7 +505,7 @@ void checkDate(){
                                   selectedRange: remController.selectedCallRange.value,
                                   selectedDateFilter: remController.selectedCallSortBy.value,
                                 );
-                                remController.sortReminders();
+                                remController.dashboardSortReminders();
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -836,9 +841,10 @@ void checkDate(){
                                                 InkWell(
                                                   onTap: (){
                                                     final futureDate = DateTime.now().add(const Duration(days: 3));
-                                                    controllers.fDate.value = DateFormat('dd-MM-yyyy').format(futureDate);
+                                                    final adjustedDate = futureDate.weekday == DateTime.sunday?futureDate.add(const Duration(days: 1)):futureDate;
+                                                    controllers.fDate.value = DateFormat('dd-MM-yyyy').format(adjustedDate);
                                                     controllers.fTime.value = DateFormat('hh.mm a').format(DateTime.now().add(const Duration(minutes: 15)));
-                                                    controllers.toDate.value = DateFormat('dd-MM-yyyy').format(futureDate);
+                                                    controllers.toDate.value = DateFormat('dd-MM-yyyy').format(adjustedDate);
                                                     controllers.toTime.value = DateFormat('hh.mm a').format(DateTime.now().add(const Duration(minutes: 30)));
 
                                                     setState(() {
@@ -1137,7 +1143,7 @@ void checkDate(){
                                                   children:[
                                                     TableRow(
                                                         decoration: BoxDecoration(
-                                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : Colors.grey.shade100,
                                                         ),
                                                         children:[
                                                           InkWell(
@@ -1193,7 +1199,7 @@ void checkDate(){
                                                               padding: const EdgeInsets.all(10.0),
                                                               child: CustomText(
                                                                 textAlign: TextAlign.left,
-                                                                text: formatDateTime(data.dates,data.time),
+                                                                text: utils.formatDateTime(data.dates,data.time),
                                                                 size: 13,
                                                                 isCopy: true,
                                                                 colors: colorsConst.textColor,
@@ -1265,7 +1271,7 @@ void checkDate(){
                                                           behavior: HitTestBehavior.opaque,
                                                           onTap: () {
                                                             remController.filterRem.value = filter;
-                                                            remController.sortReminders();
+                                                            remController.dashboardSortReminders();
                                                           },
                                                           child: Container(
                                                             width: MediaQuery.of(context).size.width*0.05,
@@ -1348,7 +1354,7 @@ void checkDate(){
                                                               remController.sortOrderCallActivity.value = 'asc';
                                                             }
                                                             remController.sortFieldCallActivity.value = 'title';
-                                                            remController.sortReminders();
+                                                            remController.dashboardSortReminders();
                                                           },
                                                           child: Obx(() => Image.asset(
                                                             controllers.sortFieldCallActivity.value.isEmpty
@@ -1382,7 +1388,7 @@ void checkDate(){
                                                               remController.sortOrderCallActivity.value = 'asc';
                                                             }
                                                             remController.sortFieldCallActivity.value = 'type';
-                                                            remController.sortReminders();
+                                                            remController.dashboardSortReminders();
                                                           },
                                                           child: Obx(() => Image.asset(
                                                             controllers.sortFieldCallActivity.value.isEmpty
@@ -1416,7 +1422,7 @@ void checkDate(){
                                                               remController.sortOrderCallActivity.value = 'asc';
                                                             }
                                                             remController.sortBy.value = 'customerName';
-                                                            remController.sortReminders();
+                                                            remController.dashboardSortReminders();
                                                           },
                                                           child: Obx(() => Image.asset(
                                                             remController.sortBy.value.isEmpty
@@ -1450,7 +1456,7 @@ void checkDate(){
                                                               remController.sortOrderCallActivity.value = 'asc';
                                                             }
                                                             remController.sortFieldCallActivity.value = 'employeeName';
-                                                            remController.sortReminders();
+                                                            remController.dashboardSortReminders();
                                                           },
                                                           child: Obx(() => Image.asset(
                                                             controllers.sortFieldCallActivity.value.isEmpty
@@ -1484,7 +1490,7 @@ void checkDate(){
                                                               remController.sortOrderCallActivity.value = 'asc';
                                                             }
                                                             remController.sortFieldCallActivity.value = 'startDate';
-                                                            remController.sortReminders();
+                                                            remController.dashboardSortReminders();
                                                           },
                                                           child: Obx(() => Image.asset(
                                                             controllers.sortFieldCallActivity.value.isEmpty
@@ -1540,7 +1546,7 @@ void checkDate(){
                                                   children:[
                                                     TableRow(
                                                         decoration: BoxDecoration(
-                                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : Colors.grey.shade100,
                                                         ),
                                                         children:[
                                                           InkWell(
@@ -1552,7 +1558,7 @@ void checkDate(){
                                                               child: CustomText(
                                                                 textAlign: TextAlign.left,
                                                                 text: data.title.toString(),
-                                                                size: 15,
+                                                                size: 13,
                                                                 isCopy: true,
                                                                 colors:colorsConst.textColor,
                                                               ),
@@ -1567,7 +1573,7 @@ void checkDate(){
                                                               child: CustomText(
                                                                 textAlign: TextAlign.left,
                                                                 text: data.type.toString()=="1"?"Follow-up":"Appointment",
-                                                                size: 15,
+                                                                size: 13,
                                                                 isCopy: true,
                                                                 colors:colorsConst.textColor,
                                                               ),
@@ -1582,7 +1588,7 @@ void checkDate(){
                                                               child: CustomText(
                                                                 textAlign: TextAlign.left,
                                                                 text: data.customerName.toString()=="null"?"":data.customerName.toString(),
-                                                                size: 15,
+                                                                size: 13,
                                                                 isCopy: true,
                                                                 colors:colorsConst.textColor,
                                                               ),
@@ -1597,7 +1603,7 @@ void checkDate(){
                                                               child: CustomText(
                                                                 textAlign: TextAlign.left,
                                                                 text: data.employeeName.toString(),
-                                                                size: 15,
+                                                                size: 13,
                                                                 isCopy: true,
                                                                 colors:colorsConst.textColor,
                                                               ),
@@ -1612,7 +1618,7 @@ void checkDate(){
                                                               child: CustomText(
                                                                 textAlign: TextAlign.left,
                                                                 text: controllers.formatDate(data.startDt.toString()),
-                                                                size: 15,
+                                                                size: 13,
                                                                 isCopy: true,
                                                                 colors:colorsConst.textColor,
                                                               ),
@@ -1890,7 +1896,7 @@ void checkDate(){
                               children: [
                                 InkWell(
                                   onTap:(){
-                                    showCallDialog(context,remController.callFilteredList,0);
+                                    showCallDialog(context,remController.callMailsFilterList,0);
                                   },
                                   child: Container(
                                     width: screenWidth/2.17,
@@ -1914,7 +1920,7 @@ void checkDate(){
                                           children: [
                                             Row(
                                               children: [
-                                                CustomText(text: "Call Records", isCopy: false,isBold: true,size: 15,),
+                                                CustomText(text: "Communication Details", isCopy: false,isBold: true,size: 15,),
                                                 10.width,
                                                 InkWell(
                                                   onTap: (){
@@ -1955,8 +1961,8 @@ void checkDate(){
                                                           behavior: HitTestBehavior.opaque,
                                                           onTap: () {
                                                             remController.filterCall.value = filter;
-                                                            remController.filterAndSortCalls(
-                                                              allCalls: controllers.callActivity,
+                                                            remController.dashboardCommunicationFilterList(
+                                                              dataList: remController.callMailsList,
                                                               searchText: controllers.searchText.value.toLowerCase(),
                                                               callType: controllers.selectCallType.value,
                                                               sortField: controllers.sortFieldCallActivity.value,
@@ -2046,8 +2052,8 @@ void checkDate(){
                                                               controllers.sortOrderCallActivity.value='asc';
                                                             }
                                                             controllers.sortFieldCallActivity.value='customerName';
-                                                            remController.filterAndSortCalls(
-                                                              allCalls: controllers.callActivity,
+                                                            remController.dashboardCommunicationFilterList(
+                                                              dataList: remController.callMailsList,
                                                               searchText: controllers.searchText.value.toLowerCase(),
                                                               callType: controllers.selectCallType.value,
                                                               sortField: controllers.sortFieldCallActivity.value,
@@ -2088,8 +2094,8 @@ void checkDate(){
                                                               controllers.sortOrderCallActivity.value='asc';
                                                             }
                                                             controllers.sortFieldCallActivity.value='company';
-                                                            remController.filterAndSortCalls(
-                                                              allCalls: controllers.callActivity,
+                                                            remController.dashboardCommunicationFilterList(
+                                                              dataList: remController.callMailsList,
                                                               searchText: controllers.searchText.value.toLowerCase(),
                                                               callType: controllers.selectCallType.value,
                                                               sortField: controllers.sortFieldCallActivity.value,
@@ -2130,8 +2136,8 @@ void checkDate(){
                                                               controllers.sortOrderCallActivity.value='asc';
                                                             }
                                                             controllers.sortFieldCallActivity.value='date';
-                                                            remController.filterAndSortCalls(
-                                                              allCalls: controllers.callActivity,
+                                                            remController.dashboardCommunicationFilterList(
+                                                              dataList: remController.callMailsList,
                                                               searchText: controllers.searchText.value.toLowerCase(),
                                                               callType: controllers.selectCallType.value,
                                                               sortField: controllers.sortFieldCallActivity.value,
@@ -2172,8 +2178,8 @@ void checkDate(){
                                                               controllers.sortOrderCallActivity.value='asc';
                                                             }
                                                             controllers.sortFieldCallActivity.value='type';
-                                                            remController.filterAndSortCalls(
-                                                              allCalls: controllers.callActivity,
+                                                            remController.dashboardCommunicationFilterList(
+                                                              dataList: remController.callMailsList,
                                                               searchText: controllers.searchText.value.toLowerCase(),
                                                               callType: controllers.selectCallType.value,
                                                               sortField: controllers.sortFieldCallActivity.value,
@@ -2200,42 +2206,42 @@ void checkDate(){
                                                       children: [
                                                         CustomText(
                                                           textAlign: TextAlign.center,
-                                                          text: "Call Status",
+                                                          text: "Type",
                                                           isCopy: true,
                                                           size: 15,
                                                           isBold: true,
                                                           colors: Colors.white,
                                                         ),3.width,
-                                                        GestureDetector(
-                                                          onTap: (){
-                                                            if(controllers.sortFieldCallActivity.value=='status' && controllers.sortOrderCallActivity.value=='asc'){
-                                                              controllers.sortOrderCallActivity.value='desc';
-                                                            }else{
-                                                              controllers.sortOrderCallActivity.value='asc';
-                                                            }
-                                                            controllers.sortFieldCallActivity.value='status';
-                                                            remController.filterAndSortCalls(
-                                                              allCalls: controllers.callActivity,
-                                                              searchText: controllers.searchText.value.toLowerCase(),
-                                                              callType: controllers.selectCallType.value,
-                                                              sortField: controllers.sortFieldCallActivity.value,
-                                                              sortOrder: controllers.sortOrderCallActivity.value,
-                                                              selectedMonth: remController.selectedCallMonth.value,
-                                                              selectedRange: remController.selectedCallRange.value,
-                                                              selectedDateFilter: remController.selectedCallSortBy.value,
-                                                            );
-                                                          },
-                                                          child: Obx(() => Image.asset(
-                                                            controllers.sortFieldCallActivity.value.isEmpty
-                                                                ? "assets/images/arrow.png"
-                                                                : controllers.sortOrderCallActivity.value == 'asc'
-                                                                ? "assets/images/arrow_up.png"
-                                                                : "assets/images/arrow_down.png",
-                                                            width: 15,
-                                                            height: 15,
-                                                          ),
-                                                          ),
-                                                        ),
+                                                        // GestureDetector(
+                                                        //   onTap: (){
+                                                        //     if(controllers.sortFieldCallActivity.value=='status' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        //       controllers.sortOrderCallActivity.value='desc';
+                                                        //     }else{
+                                                        //       controllers.sortOrderCallActivity.value='asc';
+                                                        //     }
+                                                        //     controllers.sortFieldCallActivity.value='status';
+                                                        //     remController.dashboardCommunicationFilterList(
+                                                        //       dataList: remController.callMailsList,
+                                                        //       searchText: controllers.searchText.value.toLowerCase(),
+                                                        //       callType: controllers.selectCallType.value,
+                                                        //       sortField: controllers.sortFieldCallActivity.value,
+                                                        //       sortOrder: controllers.sortOrderCallActivity.value,
+                                                        //       selectedMonth: remController.selectedCallMonth.value,
+                                                        //       selectedRange: remController.selectedCallRange.value,
+                                                        //       selectedDateFilter: remController.selectedCallSortBy.value,
+                                                        //     );
+                                                        //   },
+                                                        //   child: Obx(() => Image.asset(
+                                                        //     controllers.sortFieldCallActivity.value.isEmpty
+                                                        //         ? "assets/images/arrow.png"
+                                                        //         : controllers.sortOrderCallActivity.value == 'asc'
+                                                        //         ? "assets/images/arrow_up.png"
+                                                        //         : "assets/images/arrow_down.png",
+                                                        //     width: 15,
+                                                        //     height: 15,
+                                                        //   ),
+                                                        //   ),
+                                                        // ),
                                                       ],
                                                     ),),
                                                     headerCell(5, Row(
@@ -2256,8 +2262,8 @@ void checkDate(){
                                                               controllers.sortOrderCallActivity.value='asc';
                                                             }
                                                             controllers.sortFieldCallActivity.value='addedBy';
-                                                            remController.filterAndSortCalls(
-                                                              allCalls: controllers.callActivity,
+                                                            remController.dashboardCommunicationFilterList(
+                                                              dataList: remController.callMailsList,
                                                               searchText: controllers.searchText.value.toLowerCase(),
                                                               callType: controllers.selectCallType.value,
                                                               sortField: controllers.sortFieldCallActivity.value,
@@ -2288,10 +2294,10 @@ void checkDate(){
                                           color: Colors.white,
                                           width: screenWidth/2,
                                           height: 200,
-                                          child: remController.callFilteredList.isEmpty?
+                                          child: remController.callMailsFilterList.isEmpty?
                                           Center(
                                             child: CustomText(
-                                              text: "No Call Records",
+                                              text: "No Communication Details Found ${remController.callMailsFilterList.length}-${remController.callFilteredList.length}-${remController.mailFilteredList.length}",
                                               isCopy: true,
                                               colors: colorsConst.textColor,
                                               size: 16,),
@@ -2303,9 +2309,9 @@ void checkDate(){
                                               controller: _controller,
                                               shrinkWrap: true,
                                               physics: const ScrollPhysics(),
-                                              itemCount: remController.callFilteredList.length,
+                                              itemCount: remController.callMailsFilterList.length,
                                               itemBuilder: (context, index) {
-                                                final data = remController.callFilteredList[index];
+                                                final data = remController.callMailsFilterList[index];
                                                 return Table(
                                                   columnWidths: {
                                                     0: FixedColumnWidth(100),
@@ -2323,12 +2329,12 @@ void checkDate(){
                                                   children:[
                                                     TableRow(
                                                         decoration: BoxDecoration(
-                                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : Colors.grey.shade100,
                                                         ),
                                                         children:[
                                                           InkWell(
                                                             onTap:(){
-                                                              showCallDialog(context,remController.callFilteredList,index);
+                                                              showCallDialog(context,remController.callMailsFilterList,index);
                                                             },
                                                             child: Padding(
                                                               padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -2343,7 +2349,7 @@ void checkDate(){
                                                           ),
                                                           InkWell(
                                                             onTap:(){
-                                                              showCallDialog(context,remController.callFilteredList,index);
+                                                              showCallDialog(context,remController.callMailsFilterList,index);
                                                             },
                                                             child: Padding(
                                                               padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -2358,7 +2364,7 @@ void checkDate(){
                                                           ),
                                                           InkWell(
                                                             onTap:(){
-                                                              showCallDialog(context,remController.callFilteredList,index);
+                                                              showCallDialog(context,remController.callMailsFilterList,index);
                                                             },
                                                             child: Padding(
                                                               padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -2384,7 +2390,7 @@ void checkDate(){
                                                           ),
                                                           InkWell(
                                                             onTap:(){
-                                                              showCallDialog(context,remController.callFilteredList,index);
+                                                              showCallDialog(context,remController.callMailsFilterList,index);
                                                             },
                                                             child: Padding(
                                                               padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -2399,13 +2405,13 @@ void checkDate(){
                                                           ),
                                                           InkWell(
                                                             onTap:(){
-                                                              showCallDialog(context,remController.callFilteredList,index);
+                                                              showCallDialog(context,remController.callMailsFilterList,index);
                                                             },
                                                             child: Padding(
                                                               padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                               child: CustomText(
                                                                 textAlign: TextAlign.left,
-                                                                text: data.callStatus,
+                                                                text: data.callStatus=="null"||data.callStatus==""?"Mail":"Call",
                                                                 size: 15,
                                                                 isCopy: true,
                                                                 colors: colorsConst.textColor,
@@ -2414,7 +2420,7 @@ void checkDate(){
                                                           ),
                                                           InkWell(
                                                             onTap:(){
-                                                              showCallDialog(context,remController.callFilteredList,index);
+                                                              showCallDialog(context,remController.callMailsFilterList,index);
                                                             },
                                                             child: Padding(
                                                               padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -2550,36 +2556,77 @@ void checkDate(){
       ),
     );
   }
-  String formatDateTime(String dates,String times) {
-    try {
-      List<String> dateList = dates.split("||");
-      List<String> timeList = times.split("||");
-      String finalDate="";
-      String finalTime="";
-      String startDate = dateList[0];
-      String startTime = timeList[0];
-      String endDate = dateList[1];
-      String endTime = timeList[1];
-
-
-
-      if (startDate == endDate) {
-        // same date → no repeat
-        finalDate=startDate;
-      } else {
-        finalDate="$startDate - $endDate";
-      }
-      if (startTime == endTime) {
-        // same date → no repeat
-        finalTime=startTime;
-      } else {
-        finalTime="$startTime - $endTime";
-      }
-      return "$finalDate to $finalTime";
-    } catch (e) {
-      return "";
-    }
-  }
+  // String formatDateTime(String dates,String times) {
+  //   try {
+  //     List<String> dateList = dates.split("||");
+  //     List<String> timeList = times.split("||");
+  //     String finalDate="";
+  //     String finalTime="";
+  //     String startDate = dateList[0];
+  //     String startTime = timeList[0];
+  //     String endDate = dateList[1];
+  //     String endTime = timeList[1];
+  //
+  //
+  //
+  //     if (startDate == endDate) {
+  //       // same date → no repeat
+  //       finalDate=startDate;
+  //     } else {
+  //       finalDate="$startDate - $endDate";
+  //     }
+  //     if (startTime == endTime) {
+  //       // same date → no repeat
+  //       finalTime=startTime;
+  //     } else {
+  //       finalTime="$startTime - $endTime";
+  //     }
+  //     return "$finalDate to $finalTime";
+  //   } catch (e) {
+  //     return "";
+  //   }
+  // }
+  ///
+  // String formatDateTime(String dates, String times) {
+  //   try {
+  //     List<String> dateList = dates.split("||");
+  //     List<String> timeList = times.split("||");
+  //
+  //     String startDate = dateList[0];
+  //     String endDate = dateList[1];
+  //
+  //     String startTime = timeList[0];
+  //     String endTime = timeList[1];
+  //
+  //     DateTime now = DateTime.now();
+  //
+  //     DateTime start = DateFormat("dd.MM.yyyy").parse(startDate);
+  //     DateTime end = DateFormat("dd.MM.yyyy").parse(endDate);
+  //
+  //     String formatDate(DateTime date) {
+  //       if (date.year == now.year) {
+  //         return DateFormat("dd/MM").format(date);
+  //       } else {
+  //         return DateFormat("dd/MM/yyyy").format(date);
+  //       }
+  //     }
+  //
+  //     // ✅ SAME DATE
+  //     if (startDate == endDate) {
+  //       if (startTime == endTime) {
+  //         return "${formatDate(start)} $startTime";
+  //       } else {
+  //         return "${formatDate(start)} $startTime to $endTime";
+  //       }
+  //     }
+  //
+  //     // ✅ DIFFERENT DATE
+  //     return "${formatDate(start)} $startTime to ${formatDate(end)} $endTime";
+  //
+  //   } catch (e) {
+  //     return "";
+  //   }
+  // }
   Widget headerCell(int index, Widget child) {
     return Stack(
       children: [

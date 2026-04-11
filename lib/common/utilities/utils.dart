@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -1291,7 +1292,7 @@ class Utils {
                                   controllers.emailCtr.reset();
                                   return;
                                 }
-                                apiService.insertEmailAPI(context, "1",imageController.photo1.value);
+                                apiService.insertEmailAPI(context, "",imageController.photo1.value);
                               },
                               controller: controllers.emailCtr,
                               isImage: false,
@@ -1909,7 +1910,68 @@ class Utils {
   //     ),
   //   ));
   // }
-void addAppointment(context){
+
+  String formatDateTime(String dates, String times) {
+    try {
+      List<String> dateList = dates.split("||");
+      List<String> timeList = times.split("||");
+
+      String startRaw = dateList[0].trim();
+      String endRaw = dateList[1].trim();
+
+      String startTime = timeList[0].trim();
+      String endTime = timeList[1].trim();
+
+      DateTime now = DateTime.now();
+
+      // 🔥 handle both formats
+      DateTime parseDate(String input) {
+        try {
+          // with time
+          return DateFormat("dd-MM-yyyy hh:mm a").parse(input);
+        } catch (_) {
+          try {
+            return DateFormat("dd.MM.yyyy").parse(input);
+          } catch (_) {
+            return DateFormat("dd-MM-yyyy").parse(input);
+          }
+        }
+      }
+
+      DateTime start = parseDate(startRaw);
+      DateTime end = parseDate(endRaw);
+
+      String formatDate(DateTime date) {
+        if (date.year == now.year) {
+          return DateFormat("dd/MM").format(date);
+        } else {
+          return DateFormat("dd/MM/yyyy").format(date);
+        }
+      }
+
+      // ✅ SAME DATE
+      if (DateFormat("yyyyMMdd").format(start) ==
+          DateFormat("yyyyMMdd").format(end)) {
+
+        if (startTime == endTime) {
+          return "${formatDate(start)} $startTime";
+        } else {
+          return "${formatDate(start)} $startTime to $endTime";
+        }
+      }
+
+      // ✅ DIFFERENT DATE
+      return "${formatDate(start)} $startTime to ${formatDate(end)} $endTime";
+
+    } catch (e) {
+      print("Error: $e"); // debug
+      return "";
+    }
+  }
+
+  void addAppointment(context){
+  remController.assignedIds.value="";
+  remController.assignedNames.value="";
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -1920,7 +1982,7 @@ void addAppointment(context){
       String? stTimeError;
       String? enTimeError;
       String? customerError;
-      String? employeeError;
+      // String? employeeError;
 
       return StatefulBuilder(
         builder: (context, setState) {
@@ -2053,14 +2115,12 @@ void addAppointment(context){
                         ),
                       ),
                     ),
-                    5.height,
+                    10.height,
                     SizedBox(
-                      width:480,
+                      width: 480,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-
-                          /// DATE
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -2089,7 +2149,7 @@ void addAppointment(context){
                                 },
                                 child: Container(
                                   height: 40,
-                                  width:480/2.2,
+                                  width:MediaQuery.of(context).size.width*0.06,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade400),
@@ -2107,9 +2167,8 @@ void addAppointment(context){
                                   ),
                                 ),
                               )),
-
                               if (stDateError.toString().isNotEmpty)
-                                CustomText(
+                              CustomText(
                                   text: stDateError.toString(),
                                   colors: Colors.red,
                                   size: 12,
@@ -2117,8 +2176,6 @@ void addAppointment(context){
                                 ),
                             ],
                           ),
-
-                          /// TIME
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -2147,7 +2204,7 @@ void addAppointment(context){
                                 },
                                 child: Container(
                                   height: 40,
-                                  width:480/2.2,
+                                  width:MediaQuery.of(context).size.width*0.06,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade400),
@@ -2175,16 +2232,6 @@ void addAppointment(context){
                                 ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width:480,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-
-                          /// DATE
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -2213,7 +2260,7 @@ void addAppointment(context){
                                 },
                                 child: Container(
                                   height: 40,
-                                  width:480/2.2,
+                                  width:MediaQuery.of(context).size.width*0.06,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade400),
@@ -2231,7 +2278,6 @@ void addAppointment(context){
                                   ),
                                 ),
                               )),
-
                               if (enDateError.toString().isNotEmpty)
                                 CustomText(
                                   text: enDateError.toString(),
@@ -2241,8 +2287,6 @@ void addAppointment(context){
                                 ),
                             ],
                           ),
-
-                          /// TIME
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -2271,7 +2315,7 @@ void addAppointment(context){
                                 },
                                 child: Container(
                                   height: 40,
-                                  width:480/2.2,
+                                  width:MediaQuery.of(context).size.width*0.06,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade400),
@@ -2374,12 +2418,6 @@ void addAppointment(context){
                           colors: colorsConst.fieldHead,
                           isCopy: false,
                         ),
-                        const CustomText(
-                          text: "*",
-                          colors: Colors.red,
-                          size: 13,
-                          isCopy: false,
-                        )
                       ],
                     ),
                     SearchCustomDropdown(
@@ -2388,22 +2426,22 @@ void addAppointment(context){
                       valueList: controllers.employees,
                       onChanged: (value) {
                         setState((){
-                          employeeError=null;
+                          // employeeError=null;
                         });
                       },
                       width: 480,
                     ),
                     10.height,
-                    if (employeeError != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(
-                          employeeError!,
-                          style: const TextStyle(
-                              color: Colors.red, fontSize: 13),
-                        ),
-                      ),
-                    5.height,
+                    // if (employeeError != null)
+                    //   Padding(
+                    //     padding: const EdgeInsets.only(top: 4),
+                    //     child: Text(
+                    //       employeeError!,
+                    //       style: const TextStyle(
+                    //           color: Colors.red, fontSize: 13),
+                    //     ),
+                    //   ),
+                    10.height,
                     /// NOTES
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -2411,11 +2449,11 @@ void addAppointment(context){
                         const CustomText(text: "Notes", size: 13, isCopy: false,),
                         SizedBox(
                           width: 480,
-                          height: 40,
+                          // height: 40,
                           child: TextField(
                             controller: controllers.callCommentCont,
-                            expands: true,
                             maxLines: null,
+                            minLines: 3,
                             decoration: InputDecoration(
                               hintText: "Notes",
                               border: OutlineInputBorder(),
@@ -2506,11 +2544,11 @@ void addAppointment(context){
                         controllers.productCtr.reset();
                         return;
                       }
-                      if (controllers.selectedEmployeeId.value.isEmpty) {
-                        setState(() => employeeError = "Select employee name");
-                        controllers.productCtr.reset();
-                        return;
-                      }
+                      // if (controllers.selectedEmployeeId.value.isEmpty) {
+                      //   setState(() => employeeError = "Select employee name");
+                      //   controllers.productCtr.reset();
+                      //   return;
+                      // }
 
                       apiService.insertMeetingDetailsAPI(context);
                     }, isLoading: true, backgroundColor: colorsConst.primary, radius: 5, width: 100,
@@ -2659,7 +2697,7 @@ void appointmentStatus(context,String value){
   Future<void> datePicker({
     BuildContext? context,
     TextEditingController? textEditingController,
-    RxString? pathVal,
+    required RxString pathVal,
   }) async {
 
     DateTime dateTime = DateTime.now();
@@ -2668,12 +2706,11 @@ void appointmentStatus(context,String value){
     print("Controller Text : ${textEditingController?.text}");
 
     // ---------- Parse Existing Date ----------
-    if (textEditingController != null &&
-        textEditingController.text.isNotEmpty) {
+    if (pathVal.value!="") {
 
       try {
 
-        String cleaned = textEditingController.text
+        String cleaned = pathVal.value
             .replaceAll("/", "-")
             .replaceAll(".", "-")
             .trim();
@@ -2719,7 +2756,7 @@ void appointmentStatus(context,String value){
     final value = await showDatePicker(
       context: context!,
       initialDate: dateTime,
-      firstDate: DateTime(2010),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2030),
     );
 

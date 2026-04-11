@@ -3236,6 +3236,7 @@ var otp = "".obs;
   TextEditingController emailToCtr = TextEditingController();
   TextEditingController emailSubjectCtr = TextEditingController();
   TextEditingController emailMessageCtr = TextEditingController();
+  TextEditingController notesCtr = TextEditingController();
   TextEditingController emailQuotationCtr = TextEditingController();
   TextEditingController statusController = TextEditingController();
 

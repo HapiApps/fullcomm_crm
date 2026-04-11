@@ -70,86 +70,6 @@ class _MeetingCommentsState extends State<MeetingComments> {
   //     return "";
   //   }
   // }
-  String formatFirstDate(String input) {
-    try {
-      // print(input);
-
-      List<String> parts = input.split("||").map((e) => e.trim()).toList();
-
-      String date1 = parts.isNotEmpty ? parts[0].replaceAll('.', '-') : "";
-
-      String secondPart = parts.length > 1 ? parts[1] : "";
-
-      String date2 = date1;
-      String time1 = "";
-
-      if (secondPart.isNotEmpty) {
-        // 👉 extract date2
-        final dateMatch =
-        RegExp(r'\d{2}[.-]\d{2}[.-]\d{4}').firstMatch(secondPart);
-
-        if (dateMatch != null) {
-          date2 = dateMatch.group(0)!.replaceAll('.', '-');
-        }
-
-        // 👉 extract time1 (works with or without "and")
-        final timeMatch = RegExp(
-          r'\d{1,2}[:.-]\d{2}\s?(AM|PM)',
-          caseSensitive: false,
-        ).firstMatch(secondPart);
-
-        if (timeMatch != null) {
-          time1 = timeMatch.group(0)!;
-        }
-      }
-
-      // 👉 normalize time1 (12-58 → 12:58)
-      time1 = time1.replaceAllMapped(
-        RegExp(r'(\d{1,2})-(\d{2})'),
-            (m) => "${m[1]}:${m[2]}",
-      );
-
-      time1 = time1.replaceAll('.', ':');
-
-      // 👉 time2
-      String time2 = parts.length > 2 ? parts[2].trim() : "";
-
-      time2 = time2.replaceAllMapped(
-        RegExp(r'(\d{1,2})-(\d{2})'),
-            (m) => "${m[1]}:${m[2]}",
-      );
-
-      time2 = time2.replaceAll('.', ':');
-
-      final match2 = RegExp(r'\d{1,2}:\d{2}\s?(AM|PM)', caseSensitive: false)
-          .firstMatch(time2);
-      time2 = match2?.group(0) ?? "";
-
-      String formattedStart = date1;
-      String formattedEnd = date2;
-
-      // 👉 parse start
-      if (time1.isNotEmpty) {
-        DateTime start =
-        DateFormat("dd-MM-yyyy h:mm a").parse("$date1 $time1");
-
-        formattedStart = DateFormat("dd-MM-yyyy h:mm a").format(start);
-      }
-
-      // 👉 parse end
-      if (time2.isNotEmpty) {
-        DateTime end =
-        DateFormat("dd-MM-yyyy h:mm a").parse("$date2 $time2");
-
-        formattedEnd = DateFormat("dd-MM-yyyy h:mm a").format(end);
-      }
-
-      return "$formattedStart to $formattedEnd";
-    } catch (e) {
-      // print("Error parsing: $e");
-      return "";
-    }
-  }
   List<double> colWidths = [
     50,   // 0 Checkbox
     80,  // 1 Actions
@@ -271,9 +191,10 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         ),
                         onPressed: (){
                           final futureDate = DateTime.now().add(const Duration(days: 3));
-                          controllers.fDate.value = DateFormat('dd-MM-yyyy').format(futureDate);
+                          final adjustedDate = futureDate.weekday == DateTime.sunday?futureDate.add(const Duration(days: 1)):futureDate;
+                          controllers.fDate.value = DateFormat('dd-MM-yyyy').format(adjustedDate);
                           controllers.fTime.value = DateFormat('hh.mm a').format(DateTime.now().add(const Duration(minutes: 15)));
-                          controllers.toDate.value = DateFormat('dd-MM-yyyy').format(futureDate);
+                          controllers.toDate.value = DateFormat('dd-MM-yyyy').format(adjustedDate);
                           controllers.toTime.value = DateFormat('hh.mm a').format(DateTime.now().add(const Duration(minutes: 30)));
 
                           setState(() {
@@ -1676,7 +1597,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                     controllers.callCommentCont.text = data.notes.toString()=="null"?"":data.notes.toString();
                                                     controllers.cusController.text ='${data.cusName}${data.comName.isEmpty ? "" : " ,${data.comName}"}';
                                                     remController.assignedIds.value=data.employee;
-                                                    ;remController.assignedNames.value=data.employeeName;
+                                                    remController.assignedNames.value=data.employeeName;
                                                   });
                                                   showDialog(
                                                     context: context,
@@ -2830,7 +2751,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                         padding: const EdgeInsets.all(10.0),
                                         child: CustomText(
                                           textAlign: TextAlign.left,
-                                          text: formatFirstDate("${data.dates} ${data.time}"),
+                                          text: utils.formatDateTime(data.dates,data.time),
                                           size: 14,
                                           isCopy: true,
                                           colors: colorsConst.textColor,

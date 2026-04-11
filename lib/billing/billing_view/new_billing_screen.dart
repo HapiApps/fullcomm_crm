@@ -1747,7 +1747,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                         color: colorsConst.primary,
                                         padding: const EdgeInsets.only(bottom: 1),
                                         child: Column(
-                                          // crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             20.height,
@@ -2260,12 +2260,12 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                 hintText: "Product...",
                                                 hintStyle: TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 24,
+                                                  fontSize: 18,
                                                   color: Colors.grey.shade600,
                                                 ),
                                                 linkStyle: const TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 24,
+                                                  fontSize: 18,
                                                   color: Colors.black,
                                                 ),
 
@@ -3059,7 +3059,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                               color: AppColors.black,
                                               fontWeight: FontWeight.bold,
                                               fontSize: TextFormat.responsiveFontSize(
-                                                  context, 18),
+                                                  context, 15),
                                             ),
                                           ),
                                         ),
@@ -3638,11 +3638,11 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                   horizontal: 25, vertical: 10),
                                             ),
                                             child: MyText(
-                                              text: 'View Invoice',
+                                              text: 'View Quotation',
                                               color: AppColors.black,
                                               fontWeight: FontWeight.bold,
                                               fontSize: TextFormat.responsiveFontSize(
-                                                  context, 18),
+                                                  context, 15),
 
                                               letterSpacing: 1.2,
                                             ),
@@ -3926,6 +3926,47 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                                                 ),
                                                                               ),
                                                                             ))),
+                                                                            SizedBox(
+                                                                              width: 600,
+                                                                              child: TextField(
+                                                                                textInputAction: TextInputAction.newline,
+                                                                                controller: controllers.notesCtr,
+                                                                                keyboardType: TextInputType.multiline,
+                                                                                maxLines: null,
+                                                                                minLines: 3,
+                                                                                style: TextStyle(
+                                                                                  color: colorsConst.textColor,
+                                                                                ),
+                                                                                decoration: InputDecoration(
+                                                                                  hintText: "Notes",
+                                                                                  hintStyle: TextStyle(
+                                                                                      color: colorsConst.textColor,
+                                                                                      fontSize: 14,
+                                                                                      fontFamily: "Lato"),
+                                                                                  border: OutlineInputBorder(),
+                                                                                  enabledBorder: OutlineInputBorder(
+                                                                                      borderSide: BorderSide(
+                                                                                        color: Colors.grey.shade400,
+                                                                                      ),
+                                                                                      borderRadius: BorderRadius.circular(5)),
+                                                                                  focusedBorder: OutlineInputBorder(
+                                                                                      borderSide: BorderSide(
+                                                                                        color: colorsConst.primary,
+                                                                                      ),
+                                                                                      borderRadius: BorderRadius.circular(5)),
+                                                                                  focusedErrorBorder: OutlineInputBorder(
+                                                                                      borderSide: BorderSide(
+                                                                                          color: const Color(0xffE1E5FA)),
+                                                                                      borderRadius: BorderRadius.circular(5)),
+                                                                                  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                                                                  errorBorder: OutlineInputBorder(
+                                                                                      borderSide: BorderSide(
+                                                                                          color: const Color(0xffE1E5FA)),
+                                                                                      borderRadius: BorderRadius.circular(5)),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            10.height,
                                                                             Container(
                                                                               width: MediaQuery.of(context).size.width*0.6,
                                                                               decoration: customDecoration.baseBackgroundDecoration(
@@ -3971,7 +4012,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                               color: AppColors.black,
                                               fontWeight: FontWeight.bold,
                                               fontSize: TextFormat.responsiveFontSize(
-                                                  context, 18),
+                                                  context, 15),
 
                                               letterSpacing: 1.2,
                                             ),
@@ -4434,21 +4475,6 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-
-                /// 🔴 TITLE BOX
-                pw.Center(
-                  child: pw.Container(
-                    padding: const pw.EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
-                    decoration: pw.BoxDecoration(
-                      border: pw.Border.all(),
-                      borderRadius: pw.BorderRadius.circular(5),
-                    ),
-                    child: pw.Text("TAX INVOICE",
-                        style: pw.TextStyle(fontSize: 14)),
-                  ),
-                ),
-
                 pw.SizedBox(height: 20),
 
                 /// 🟢 HEADER ROW

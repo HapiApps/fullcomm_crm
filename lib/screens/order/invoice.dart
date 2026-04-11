@@ -41,17 +41,6 @@ class _InvoiceViewState extends State<InvoiceView> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
-                        child: Container(
-                          decoration: customDecoration.baseBackgroundDecoration(
-                              color: Colors.white,radius: 5,borderColor: colorsConst.primary
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CustomText(text: "TAX INVOICE", isCopy: false,colors: colorsConst.primary,),
-                          ),
-                        ),
-                      ),
                       Image.asset("assets/images/hapi_apps_logo.png",width: kIsWeb?100:50,height:  kIsWeb?100:50,),
                       Row(
                         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -289,17 +278,6 @@ class _InvoiceViewPrintState extends State<InvoiceViewPrint> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Center(
-                          child: Container(
-                            decoration: customDecoration.baseBackgroundDecoration(
-                                color: Colors.white,radius: 5,borderColor: colorsConst.primary
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CustomText(text: "TAX INVOICE", isCopy: false,colors: colorsConst.primary,),
-                            ),
-                          ),
-                        ),
                         Image.asset("assets/images/hapi_apps_logo.png",width: kIsWeb?100:50,height:  kIsWeb?100:50,),
                         Row(
                           // mainAxisAlignment: MainAxisAlignment.spaceBetween,

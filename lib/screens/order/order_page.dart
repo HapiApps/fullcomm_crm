@@ -392,7 +392,7 @@ class _OrderPageState extends State<OrderPage> {
                               ),),
                               headerCell(6, CustomText(//4
                                 textAlign: TextAlign.left,
-                                text: "Invoice",
+                                text: "Order Details",
                                 size: 15,
                                 isBold: true,
                                 isCopy: true,
@@ -995,7 +995,7 @@ class _OrderPageState extends State<OrderPage> {
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   Icon(Icons.print,color: colorsConst.primary),5.width,
-                                                  CustomText(text: "Invoice", isCopy: false,colors: colorsConst.primary),
+                                                  CustomText(text: "View Order", isCopy: false,colors: colorsConst.primary),
                                                 ],
                                               ),
                                             ),
@@ -1285,21 +1285,6 @@ class OrderInvoiceDialog extends StatelessWidget {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-
-                /// 🔴 TITLE BOX
-                pw.Center(
-                  child: pw.Container(
-                    padding: const pw.EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
-                    decoration: pw.BoxDecoration(
-                      border: pw.Border.all(),
-                      borderRadius: pw.BorderRadius.circular(5),
-                    ),
-                    child: pw.Text("TAX INVOICE",
-                        style: pw.TextStyle(fontSize: 14)),
-                  ),
-                ),
-
                 pw.SizedBox(height: 20),
 
                 /// 🟢 HEADER ROW

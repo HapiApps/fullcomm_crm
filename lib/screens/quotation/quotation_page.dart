@@ -73,10 +73,10 @@ class _QuotationPageState extends State<QuotationPage> {
 
                       tabs: [
                         Tab(
-                          child: const Text('Send Quotation'),
+                          child: const Text('Quotation History'),
                         ),
                         Tab(
-                          child: const Text('Quotation History'),
+                          child: const Text('Send Quotation'),
                         ),
                       ],
                     ),
@@ -86,8 +86,8 @@ class _QuotationPageState extends State<QuotationPage> {
                       controller: controllers.tabController,
                       children: [
                         // SendQuotation(),
-                        NewBillingScreen(),
                         QuotationHistory(),
+                        NewBillingScreen(),
                       ],
                     ),
                   ),
