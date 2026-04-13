@@ -5135,12 +5135,154 @@ class ApiService {
             if (controllers.leadCategoryList[i].leadStatus == controllers.allLeadList[j].leadStatus) {
               controllers.leadCategoryList[i].list.add(controllers.allLeadList[j]);
               controllers.leadCategoryList[i].list2.add(controllers.allLeadList[j]);
-              print("Added → ${controllers.allLeadList[j].leadStatus} to ${controllers.leadCategoryList[i].leadStatus}");
+              // print("Added → ${controllers.allLeadList[j].leadStatus} to ${controllers.leadCategoryList[i].leadStatus}");
             }
           }
-          print("Final List for ${controllers.leadCategoryList[i].leadStatus} : ${controllers.leadCategoryList[i].list}");
+          // print("Final List for ${controllers.leadCategoryList[i].leadStatus} : ${controllers.leadCategoryList[i].list}");
         }
-        log("----------> ${controllers.leadCategoryList}");
+        // log("----------> ${controllers.leadCategoryList}");
+        controllers.isCrmData.value=true;
+        dashController.getCustomerStatus();
+      } else {
+        controllers.allLeadList.clear();
+        throw Exception('Failed to load leads: Status code ${response.body}');
+      }
+    } on SocketException {
+      controllers.allLeadList.clear();
+      controllers.isCrmData.value=true;
+      throw Exception('No internet connection');
+    } on HttpException catch (e) {
+      controllers.allLeadList.clear();
+      controllers.isCrmData.value=true;
+      throw Exception('Server error: ${e.toString()}');
+    } catch (e) {
+      controllers.allLeadList.clear();
+      controllers.isCrmData.value=true;
+      controllers.newLeadList.clear();
+      throw Exception('Unexpected error: ${e.toString()}');
+    }
+  }
+  Future<void> getLeadRatingDetails(String type) async {
+    debugPrint("getLeadRatingDetails");
+    controllers.isCrmData.value = false;
+    controllers.ratingList.clear();
+    controllers.ratingList2.clear();
+    final url = Uri.parse(scriptApi);
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "search_type": "lead_rating_leads",
+          "cos_id": controllers.storage.read("cos_id"),
+          "role": controllers.storage.read("role"),
+          "id": controllers.storage.read("id"),
+          "lead_status": controllers.leadCategoryList.last.leadStatus,
+          "type": type,
+          "action": "get_data"
+        }),
+      );
+      // debugPrint("response.bodyyyy");
+      // debugPrint(response.body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getCustomLeads();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as List;
+        // newLeadList.clear();
+        controllers.allLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        // controllers.searchNewLeadList.value = billing_data.map((json) => NewLeadObj.fromJson(json)).toList();
+        for (var e in controllers.leadCategoryList) { e.list.clear(); e.list2.clear(); }
+        for (int i = 0; i < controllers.leadCategoryList.length; i++) {
+          for (int j = 0; j < controllers.allLeadList.length; j++) {
+            if (controllers.leadCategoryList[i].leadStatus == controllers.allLeadList[j].leadStatus) {
+              controllers.leadCategoryList[i].list.add(controllers.allLeadList[j]);
+              controllers.leadCategoryList[i].list2.add(controllers.allLeadList[j]);
+              // print("Added → ${controllers.allLeadList[j].leadStatus} to ${controllers.leadCategoryList[i].leadStatus}");
+            }
+          }
+          // print("Final List for ${controllers.leadCategoryList[i].leadStatus} : ${controllers.leadCategoryList[i].list}");
+        }
+        // log("----------> ${controllers.leadCategoryList}");
+        controllers.isCrmData.value=true;
+        dashController.getCustomerStatus();
+      } else {
+        controllers.allLeadList.clear();
+        throw Exception('Failed to load leads: Status code ${response.body}');
+      }
+    } on SocketException {
+      controllers.allLeadList.clear();
+      controllers.isCrmData.value=true;
+      throw Exception('No internet connection');
+    } on HttpException catch (e) {
+      controllers.allLeadList.clear();
+      controllers.isCrmData.value=true;
+      throw Exception('Server error: ${e.toString()}');
+    } catch (e) {
+      controllers.allLeadList.clear();
+      controllers.isCrmData.value=true;
+      controllers.newLeadList.clear();
+      throw Exception('Unexpected error: ${e.toString()}');
+    }
+  }
+  Future<void> getCustomerRatingDetails(String type) async {
+    debugPrint("getCustomerRatingDetails");
+    controllers.isCrmData.value = false;
+    controllers.ratingList.clear();
+    controllers.ratingList2.clear();
+    final url = Uri.parse(scriptApi);
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "search_type": "customer_rating_leads",
+          "cos_id": controllers.storage.read("cos_id"),
+          "role": controllers.storage.read("role"),
+          "id": controllers.storage.read("id"),
+          "lead_status": controllers.leadCategoryList.last.leadStatus,
+          "type": type,
+          "action": "get_data"
+        }),
+      );
+      debugPrint("customer_rating_leads");
+      debugPrint(response.body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getCustomLeads();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as List;
+        // newLeadList.clear();
+        controllers.allLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        // controllers.searchNewLeadList.value = billing_data.map((json) => NewLeadObj.fromJson(json)).toList();
+        for (var e in controllers.leadCategoryList) { e.list.clear(); e.list2.clear(); }
+        for (int i = 0; i < controllers.leadCategoryList.length; i++) {
+          for (int j = 0; j < controllers.allLeadList.length; j++) {
+            if (controllers.leadCategoryList[i].leadStatus == controllers.allLeadList[j].leadStatus) {
+              controllers.leadCategoryList[i].list.add(controllers.allLeadList[j]);
+              controllers.leadCategoryList[i].list2.add(controllers.allLeadList[j]);
+              // print("Added → ${controllers.allLeadList[j].leadStatus} to ${controllers.leadCategoryList[i].leadStatus}");
+            }
+          }
+          // print("Final List for ${controllers.leadCategoryList[i].leadStatus} : ${controllers.leadCategoryList[i].list}");
+        }
+        // log("----------> ${controllers.leadCategoryList}");
         controllers.isCrmData.value=true;
         dashController.getCustomerStatus();
       } else {

@@ -4,6 +4,8 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import '../controller/reminder_controller.dart';
+import '../screens/records/records.dart';
 import 'Customtext.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -428,20 +430,68 @@ class CustomerActivityCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              activityCircle(
-                dashController.customerStatusReport[0]["customer_call"].toString(),
-                double.parse(dashController.customerStatusReport[0]["customer_call"].toString()) / 100,
-                "Calls",
-                Color(0xFF0F8D4B),
+              InkWell(
+                onTap: dashController.customerStatusReport[0]["customer_call"].toString()!="0"?(){
+                  if(dashController.customerStatusReport[0]["customer_call"].toString()!="0"){
+                    remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+                    controllers.changeTab(0);
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context,
+                            animation1,
+                            animation2) =>
+                        const Records(
+                          isReload: "true",
+                        ),
+                        transitionDuration:
+                        Duration.zero,
+                        reverseTransitionDuration:
+                        Duration.zero,
+                      ),
+                    );
+                    controllers.oldIndex.value = controllers.selectedIndex.value;
+                    controllers.selectedIndex.value = 101;
+                  }
+                }:null,
+                child: activityCircle(
+                  dashController.customerStatusReport[0]["customer_call"].toString(),
+                  double.parse(dashController.customerStatusReport[0]["customer_call"].toString()) / 100,
+                  "Calls",
+                  Color(0xFF0F8D4B),
+                ),
               ),
-
-              activityCircle(
-                dashController.customerStatusReport[0]["customer_mail"].toString(),
-                double.parse(dashController.customerStatusReport[0]["customer_mail"].toString()) / 100,
-                "Mails",
-                Color(0xFFEB3342),
+              InkWell(
+                onTap: dashController.customerStatusReport[0]["customer_mail"].toString()!="0"?(){
+                  if(dashController.customerStatusReport[0]["customer_mail"].toString()!="0"){
+                    remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
+                    controllers.changeTab(1);
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context,
+                            animation1,
+                            animation2) =>
+                        const Records(
+                          isReload: "true",
+                        ),
+                        transitionDuration:
+                        Duration.zero,
+                        reverseTransitionDuration:
+                        Duration.zero,
+                      ),
+                    );
+                    controllers.oldIndex.value =controllers.selectedIndex.value;
+                    controllers.selectedIndex.value = 101;
+                  }
+                }:null,
+                child: activityCircle(
+                  dashController.customerStatusReport[0]["customer_mail"].toString(),
+                  double.parse(dashController.customerStatusReport[0]["customer_mail"].toString()) / 100,
+                  "Mails",
+                  Color(0xFFEB3342),
+                ),
               ),
-
               activityCircle(
                 dashController.customerStatusReport[0]["customer_count"].toString(),
                 double.parse(dashController.customerStatusReport[0]["customer_count"].toString()) / 100,
@@ -489,17 +539,67 @@ class CustomerActivityCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              activityCircle(
-                dashController.customerStatusReport[0]["lead_call"].toString(),
-                double.parse(dashController.customerStatusReport[0]["lead_call"].toString()) / 100,
-                "Calls",
-                Color(0xFF8B2CF5),
+              InkWell(
+                onTap: dashController.customerStatusReport[0]["lead_call"].toString()!="0"?(){
+                  if(dashController.customerStatusReport[0]["lead_call"].toString()!="0"){
+                    remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+                    controllers.changeTab(0);
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context,
+                            animation1,
+                            animation2) =>
+                        const Records(
+                          isReload: "true",
+                        ),
+                        transitionDuration:
+                        Duration.zero,
+                        reverseTransitionDuration:
+                        Duration.zero,
+                      ),
+                    );
+                    controllers.oldIndex.value = controllers.selectedIndex.value;
+                    controllers.selectedIndex.value = 101;
+                  }
+                }:null,
+                child: activityCircle(
+                  dashController.customerStatusReport[0]["lead_call"].toString(),
+                  double.parse(dashController.customerStatusReport[0]["lead_call"].toString()) / 100,
+                  "Calls",
+                  Color(0xFF8B2CF5),
+                ),
               ),
-              activityCircle(
-                dashController.customerStatusReport[0]["lead_mail"].toString(),
-                double.parse(dashController.customerStatusReport[0]["lead_mail"].toString()) / 100,
-                "Mails",
-                Color(0xFFF59E0B),
+              InkWell(
+                onTap: dashController.customerStatusReport[0]["lead_mail"].toString()!="0"?(){
+                  if(dashController.customerStatusReport[0]["lead_mail"].toString()!="0"){
+                    remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
+                    controllers.changeTab(1);
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context,
+                            animation1,
+                            animation2) =>
+                        const Records(
+                          isReload: "true",
+                        ),
+                        transitionDuration:
+                        Duration.zero,
+                        reverseTransitionDuration:
+                        Duration.zero,
+                      ),
+                    );
+                    controllers.oldIndex.value =controllers.selectedIndex.value;
+                    controllers.selectedIndex.value = 101;
+                  }
+                }:null,
+                child: activityCircle(
+                  dashController.customerStatusReport[0]["lead_mail"].toString(),
+                  double.parse(dashController.customerStatusReport[0]["lead_mail"].toString()) / 100,
+                  "Mails",
+                  Color(0xFFF59E0B),
+                ),
               ),
               activityCircle(
                 dashController.customerStatusReport[0]["lead_count"].toString(),

@@ -3116,7 +3116,8 @@ var otp = "".obs;
   RxString radioSortBy = "All".obs;
   var idList = [].obs,dateList = [].obs,
       isMainPersonList = [].obs,
-      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,allLeadList=<NewLeadObj>[].obs,newLeadList=<NewLeadObj>[].obs,searchNewLeadList=<NewLeadObj>[].obs,
+      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,allLeadList=<NewLeadObj>[].obs,ratingList=<NewLeadObj>[].obs,ratingList2=<NewLeadObj>[].obs,
+      newLeadList=<NewLeadObj>[].obs,searchNewLeadList=<NewLeadObj>[].obs,
       isLeadsList = [].obs,
       isGoodLeadList = [].obs,
       isCoMobileNumberList = [].obs,

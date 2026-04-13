@@ -78,6 +78,7 @@ class Quotations {
   final int id;
   final String invoicePdf;
   final String name;
+  final String company;
   final String quotationNo;
   final String number;
   final String createdTs;
@@ -99,6 +100,7 @@ class Quotations {
     required this.cusId,
     required this.totalProduct,
     required this.totalItem,
+    required this.company,
   });
 
   factory Quotations.fromJson(Map<String, dynamic> json) {
@@ -108,6 +110,7 @@ class Quotations {
       quotationNo: json['q_no'] ?? '',
       invoicePdf: json['invoice_pdf'] ?? '',
       name: json['name'] ?? '',
+      company: json['company_name'] ?? '',
       number: json['number'] ?? '',
       status: json['status'] ?? '',
       createdTs: json['created_ts'] ?? '',

@@ -26,6 +26,9 @@ class DashboardController extends GetxController {
   var totalWarm        = "0".obs;
   var totalCold        = "0".obs;
   var totalHot         = "0".obs;
+  var totalWarm2        = "0".obs;
+  var totalCold2        = "0".obs;
+  var totalHot2         = "0".obs;
   var totalSuspects    = "0".obs;
   var totalProspects   = "0".obs;
   var totalQualified   = "0".obs;
@@ -341,6 +344,9 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
       totalCold.value = "0";
       totalHot.value = "0";
       totalWarm.value = "0";
+      totalCold2.value = "0";
+      totalHot2.value = "0";
+      totalWarm2.value = "0";
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -351,19 +357,29 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
       }
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
-        totalCold.value = response[0]["cold_total"].toString()=="null"?"0":response[0]["cold_total"];
-        totalHot.value = response[0]["hot_total"].toString()=="null"?"0":response[0]["hot_total"];
-        totalWarm.value = response[0]["warm_total"].toString()=="null"?"0":response[0]["warm_total"];
+        totalCold.value = response[0]["lead_cold"].toString()=="null"?"0":response[0]["lead_cold"];
+        totalHot.value = response[0]["lead_hot"].toString()=="null"?"0":response[0]["lead_hot"];
+        totalWarm.value = response[0]["lead_warm"].toString()=="null"?"0":response[0]["lead_warm"];
+
+        totalCold2.value = response[0]["customer_cold"].toString()=="null"?"0":response[0]["customer_cold"];
+        totalHot2.value = response[0]["customer_hot"].toString()=="null"?"0":response[0]["customer_hot"];
+        totalWarm2.value = response[0]["customer_warm"].toString()=="null"?"0":response[0]["customer_warm"];
       } else {
         totalCold.value = "0";
         totalHot.value = "0";
         totalWarm.value = "0";
+        totalCold2.value = "0";
+        totalHot2.value = "0";
+        totalWarm2.value = "0";
         throw Exception('Failed to load album');
       }
     } catch (e) {
       totalCold.value = "0";
       totalHot.value = "0";
       totalWarm.value = "0";
+      totalCold2.value = "0";
+      totalHot2.value = "0";
+      totalWarm2.value = "0";
       throw Exception('Failed to load album');
     }
   }
@@ -436,9 +452,6 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
           dashController.completedMeetings.value = response["completed_meetings"]?.toString() ?? "0";
           dashController.totalCalls.value        = response["total_calls"]?.toString() ?? "0";
           dashController.totalEmployees.value    = response["total_employees"]?.toString() ?? "0";
-          dashController.totalHot.value          = response["hot_total"]?.toString() ?? "0";
-          dashController.totalWarm.value         = response["warm_total"]?.toString() ?? "0";
-          dashController.totalCold.value         = response["cold_total"]?.toString() ?? "0";
           // dashController.totalSuspects.value     = response["total_suspects"]?.toString() ?? "0";
           dashController.totalSuspects.value     = response["new_customers"]?.toString() ?? "0";
           dashController.totalProspects.value    = response["total_prospects"]?.toString() ?? "0";
@@ -455,9 +468,6 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
           dashController.completedMeetings.value = "0";
           dashController.totalCalls.value        = "0";
           dashController.totalEmployees.value    = "0";
-          dashController.totalHot.value          = "0";
-          dashController.totalWarm.value         = "0";
-          dashController.totalCold.value         = "0";
           dashController.totalSuspects.value     = "0";
           dashController.totalProspects.value    = "0";
           dashController.totalQualified.value    = "0";
@@ -473,9 +483,6 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         dashController.completedMeetings.value = "0";
         dashController.totalCalls.value        = "0";
         dashController.totalEmployees.value    = "0";
-        dashController.totalHot.value          = "0";
-        dashController.totalWarm.value         = "0";
-        dashController.totalCold.value         = "0";
         dashController.totalSuspects.value     = "0";
         dashController.totalProspects.value    = "0";
         dashController.totalQualified.value    = "0";

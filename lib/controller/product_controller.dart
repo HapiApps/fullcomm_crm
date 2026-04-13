@@ -684,19 +684,25 @@ var isSelectAll=false.obs;
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     }
-    // else if (sortField == 'cat') {
-    //   filtered.sort((a, b) {
-    //     final comparison =
-    //     a.cat.toString().toLowerCase().compareTo(b.cat.toString().toLowerCase());
-    //     return sortOrder == 'asc' ? comparison : -comparison;
-    //   });
-    // }else if (sortField == 'sub cat') {
-    //   filtered.sort((a, b) {
-    //     final comparison =
-    //     a.subCat.toString().toLowerCase().compareTo(b.subCat.toString().toLowerCase());
-    //     return sortOrder == 'asc' ? comparison : -comparison;
-    //   });
-    // }
+    else if (sortField == 'cat') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.category.toString().toLowerCase().compareTo(b.category.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'subcat') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.subCategory.toString().toLowerCase().compareTo(b.subCategory.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'brand') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.brand.toString().toLowerCase().compareTo(b.brand.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
     products.assignAll(filtered);
   }
 
@@ -926,6 +932,12 @@ var isSelectAll=false.obs;
       filtered.sort((a, b) {
         final comparison =
         a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'company') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.company.toString().toLowerCase().compareTo(b.company.toString().toLowerCase());
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     }else if (sortField == 'qno') {

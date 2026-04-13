@@ -951,8 +951,8 @@ class _CustomerDropdownState extends State<CustomerDropdown> {
       height: 47,
       decoration: customDecoration.baseBackgroundDecoration(
         color: Colors.white,
-        radius: 20,
-        borderColor: AppColors.black,
+        radius: 5,
+        borderColor: Colors.grey.shade300,
       ),
       child: DropdownSearch<AllCustomersObj>(
         items: widget.custList,
@@ -968,17 +968,10 @@ class _CustomerDropdownState extends State<CustomerDropdown> {
             hintText: "Search Customer Name",
             hintStyle: GoogleFonts.lato(
               color: Colors.black,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+              fontSize: 15,
             ),
             contentPadding: const EdgeInsets.all(10),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide(
-                width: 0,
-                color: AppColors.black,
-              ),
-            ),
+            border: InputBorder.none,
           ),
         ),
 

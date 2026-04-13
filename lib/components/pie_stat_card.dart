@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import '../controller/controller.dart';
 import '../controller/dashboard_controller.dart';
+import '../screens/leads/new_lead_page.dart';
 import 'Customtext.dart';
 class PieData {
   final String label;
@@ -108,6 +109,16 @@ class _LeadPieCardState extends State<LeadPieCard> {
                                     touchedIndex = index;
                                   });
                                 }
+                                // controllers.selectedIndex.value=int.parse(controllers.leadCategoryList[index].leadStatus);
+                                // controllers.selectedIndex.value = 500;
+                                // controllers.isLeadsExpanded.value=true;
+                                // Navigator.push( context,
+                                //   PageRouteBuilder( pageBuilder: (context, animation1, animation2) =>
+                                //       NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
+                                //         name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
+                                //         list2: controllers.leadCategoryList[index].list2, listIndex: index,), transitionDuration: Duration.zero, reverseTransitionDuration: Duration.zero,
+                                //   ),
+                                // );
                               },
                             ),
                             sections:
@@ -168,24 +179,38 @@ class _LeadPieCardState extends State<LeadPieCard> {
                     itemBuilder: (context,index){
                       return Padding(
                         padding: const EdgeInsets.fromLTRB(0, 7, 0, 0),
-                        child: Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CircleAvatar(
-                              radius: 5,
-                              backgroundColor: controllers.leadColors[index],
-                            ),
-                            6.width,
-                            CustomText(
-                              text: dashController.leadReport[index]["category"] ?? "",
-                              isCopy: false,colors: controllers.leadColors[index],
-                            ),
-                            // 5.width,
-                            // CustomText(
-                            //   text: value.toString(),
-                            //   isCopy: false,
-                            // ),
-                          ],
+                        child: InkWell(
+                          onTap: (){
+                            controllers.selectedIndex.value=int.parse(controllers.leadCategoryList[index].leadStatus);
+                            controllers.selectedIndex.value = 500;
+                            controllers.isLeadsExpanded.value=true;
+                            Navigator.push( context,
+                              PageRouteBuilder( pageBuilder: (context, animation1, animation2) =>
+                                  NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
+                                    name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
+                                    list2: controllers.leadCategoryList[index].list2, listIndex: index,), transitionDuration: Duration.zero, reverseTransitionDuration: Duration.zero,
+                              ),
+                            );
+                          },
+                          child: Row(
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CircleAvatar(
+                                radius: 5,
+                                backgroundColor: controllers.leadColors[index],
+                              ),
+                              6.width,
+                              CustomText(
+                                text: dashController.leadReport[index]["category"] ?? "",
+                                isCopy: false,colors: controllers.leadColors[index],
+                              ),
+                              // 5.width,
+                              // CustomText(
+                              //   text: value.toString(),
+                              //   isCopy: false,
+                              // ),
+                            ],
+                          ),
                         ),
                       );
                     }),

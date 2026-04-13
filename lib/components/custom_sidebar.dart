@@ -559,6 +559,7 @@ class SidebarItem extends StatelessWidget {
             remController.selectedMailSortBy.value="All";
             remController.selectedMeetSortBy.value="All";
             remController.selectedReminderSortBy.value="All";
+            controllers.changeTab(0);
             Navigator.push(
               context,
               PageRouteBuilder(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../colors.dart';
 
@@ -68,7 +69,7 @@ class MyTextField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         style: GoogleFonts.lato(
-          fontSize: 24,fontWeight: FontWeight.bold,color: Colors.black
+          fontSize: 15,color: Colors.black
         ),
         textCapitalization: textCapitalization ?? TextCapitalization.none,
         textInputAction: textInputAction ?? TextInputAction.next,
@@ -84,23 +85,20 @@ class MyTextField extends StatelessWidget {
 
         decoration: InputDecoration(
           filled: true,
-          fillColor: AppColors.textFieldBackground,
+          fillColor: Colors.white,
           label: labelRedText != null
               ? RichText(
             text: TextSpan(
               text: labelText ?? '',
               style: GoogleFonts.lato(
                 color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
+                fontSize: 15,
               ),
               children: [
                 TextSpan(
                   text: ' *',
                   style: GoogleFonts.lato(
                     color: Colors.red,
-
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
@@ -110,25 +108,43 @@ class MyTextField extends StatelessWidget {
             labelText ?? '',
             style: GoogleFonts.lato(
               color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 15,
             ),
           ),
           hintText: hintText,
 
           hintStyle: GoogleFonts.lato(color: Colors.black,
-              fontSize: 18, fontWeight: FontWeight.bold,),
+              fontSize: 15),
           labelStyle:  GoogleFonts.lato(color: Colors.black,
-              fontSize: 18, fontWeight: FontWeight.bold,),
+              fontSize: 15),
           suffixIcon: suffixIcon,
           prefixIcon: prefixIcon,
           contentPadding: const EdgeInsets.fromLTRB(10, 30, 5, 0),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: const BorderSide(
-              width: 0,
-              color: AppColors.textFieldBackground,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(
+              color: Colors.grey.shade300, // 👈 normal state
+              width: 1.5,
             ),
+          ),
+
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(
+              color: colorsConst.primary, // 👈 focus ஆனப்போ
+              width: 2,
+            ),
+          ),
+
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(
+              color: Colors.grey.shade300,
+            ),
+          ),
+
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
           ),
         ),
 

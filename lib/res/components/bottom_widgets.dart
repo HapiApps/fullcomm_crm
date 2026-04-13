@@ -39,12 +39,12 @@ class BottomWidgets {
                   borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
                   color: colorsConst.primary
               ),
-              child: MyText(text: title,color: Colors.white,textAlign: TextAlign.center,fontSize: 22,fontWeight: FontWeight.bold ,),
+              child: MyText(text: title,color: Colors.white,textAlign: TextAlign.center,fontSize: 18,fontWeight: FontWeight.bold ,),
             ),
             Container(
               alignment: Alignment.center,
               height: screenHeight*0.05,
-              child: MyText(text: value, color: isBold ? Colors.blueAccent : Colors.black,fontSize: isBold ? 27 : 22,textAlign: TextAlign.center,
+              child: MyText(text: value, color: isBold ? Colors.blueAccent : Colors.black,fontSize: isBold ? 15 : 15,textAlign: TextAlign.center,
                 fontWeight:FontWeight.bold ),
             ),
           ]
@@ -83,16 +83,16 @@ class BottomWidgets {
               height: screenHeight*0.06,
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-                  color: Colors.yellowAccent
+                  color: Colors.green
               ),
-              child: MyText(text: title,color:AppColors.black,textAlign: TextAlign.center,fontSize: 22,fontWeight: FontWeight.bold,),
+              child: MyText(text: title,color:Colors.white,textAlign: TextAlign.center,fontSize: 18,fontWeight: FontWeight.bold,),
             ),
             Padding(
               padding: const EdgeInsets.only(right: 12.0),
               child: Container(
                 alignment: Alignment.centerRight,
                 height: screenHeight*0.05,
-                child: MyText(text: value, color: isBold ? Colors.blueAccent : Colors.black,fontSize: isBold ? 30 : 22,textAlign: TextAlign.center,
+                child: MyText(text: value, color: isBold ? Colors.blueAccent : Colors.black,fontSize: isBold ? 17 : 17,textAlign: TextAlign.center,
                   fontWeight:FontWeight.bold ),
               ),
             ),
