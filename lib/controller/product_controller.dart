@@ -493,6 +493,26 @@ var isSelectAll=false.obs;
       return dateTime ?? "-";
     }
   }
+  String fixedDateTime(String? dateTime) {
+    try {
+      if (dateTime == null || dateTime.isEmpty) return "-";
+
+      final dt = DateTime.parse(dateTime);
+      final now = DateTime.now();
+
+      // ✅ same year → hide year
+      if (dt.year == now.year) {
+        return DateFormat('dd/MM hh:mm a').format(dt);
+      }
+      // ✅ different year → show full
+      else {
+        return DateFormat('dd/MM/yyyy hh:mm a').format(dt);
+      }
+
+    } catch (e) {
+      return dateTime ?? "-";
+    }
+  }
   Future<List<Order>> getOrderDetails() async {
     try {
       // ordersList.clear();
@@ -667,15 +687,14 @@ var isSelectAll=false.obs;
         final comparison = aVal.compareTo(bVal);
         return sortOrder == 'asc' ? comparison : -comparison;
       });
+    }else if (sortField == 'gst') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.cgst.toString()) ?? 0;
+        final bVal = int.tryParse(b.cgst.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
     }
-    // else if (sortField == 'gst') {
-    //   filtered.sort((a, b) {
-    //     final aVal = int.tryParse(a.gst.toString()) ?? 0;
-    //     final bVal = int.tryParse(b.gst.toString()) ?? 0;
-    //     final comparison = aVal.compareTo(bVal);
-    //     return sortOrder == 'asc' ? comparison : -comparison;
-    //   });
-    // }
     else if (sortField == 'date') {
       filtered.sort((a, b) {
         final dateA = parseDate(a.createdTs.toString());
@@ -684,7 +703,13 @@ var isSelectAll=false.obs;
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     }
-    else if (sortField == 'cat') {
+    else if (sortField == 'barcode') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.barcode.toString().toLowerCase().compareTo(b.barcode.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'cat') {
       filtered.sort((a, b) {
         final comparison =
         a.category.toString().toLowerCase().compareTo(b.category.toString().toLowerCase());
@@ -805,6 +830,18 @@ var isSelectAll=false.obs;
       filtered.sort((a, b) {
         final comparison =
         a.customerName.toString().toLowerCase().compareTo(b.customerName.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'company') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.companyName.toString().toLowerCase().compareTo(b.companyName.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'status') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.status.toString().toLowerCase().compareTo(b.status.toString().toLowerCase());
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     }else if (sortField == 'number') {
@@ -1037,9 +1074,11 @@ var isSelectAll=false.obs;
     }
   }
   RxList termsAndConditionsList=[].obs;
+  RxList termsAndConditionsList2=[].obs;
   Future<List> getTermsAndConditions() async {
     try {
       termsAndConditionsList.clear();
+      termsAndConditionsList2.clear();
       final response = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -1067,6 +1106,7 @@ var isSelectAll=false.obs;
       if (response.statusCode == 200) {
         final List data = jsonDecode(response.body);
         termsAndConditionsList.value =data;
+        termsAndConditionsList2.value =data;
         // print("get_quotations..: ${quotationsList.length}");
         // print("get_quotations..: ${quotationsList2.length}");
         return termsAndConditionsList;

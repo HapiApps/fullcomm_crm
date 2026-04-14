@@ -1,9 +1,11 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:http/http.dart' as http;
@@ -42,118 +44,539 @@ class AddReminderModel {
 
 final remController = Get.put(ReminderController());
 
+// void showMeetingDialog(
+//     BuildContext context,
+//     List<MeetingObj> meetings,
+//     int index,
+//     ) {
+//   PageController controller = PageController(initialPage: index);
+//   if(meetings.isEmpty)
+//   return ;
+//   showDialog(
+//     context: context,
+//     builder: (context) {
+//       return Dialog(
+//         backgroundColor: Colors.white,
+//         insetPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+//         child: Container(
+//           width: 400,height: 400,
+//           decoration: BoxDecoration(
+//             color: Colors.white,
+//             borderRadius: BorderRadius.circular(16),
+//           ),
+//           padding: EdgeInsets.all(8),
+//           child: Column(
+//             children: [
+//               Expanded(
+//                 child: PageView.builder(
+//                   controller: controller,
+//                   itemCount: meetings.length,
+//                   itemBuilder: (context, i) {
+//                     final meeting = meetings[i];
+//
+//                     return Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Align(
+//                           alignment: Alignment.centerRight,
+//                           child: IconButton(
+//                             onPressed: () => Navigator.pop(context),
+//                             icon: Icon(Icons.clear),
+//                           ),
+//                         ),5.height,
+//                         Center(
+//                           child: CustomText(
+//                             text: "Appointment Details",
+//                             size: 18,
+//                             isBold: true,isCopy: false,
+//                           ),
+//                         ),
+//                         15.height,
+//                         Container(
+//                           padding: EdgeInsets.all(12),
+//                           decoration: BoxDecoration(
+//                             color: Colors.white,
+//                             borderRadius: BorderRadius.circular(12),
+//                           ),
+//                           child: Column(
+//                             children: [
+//                               buildRow("Company Name", meeting.comName),
+//                               buildRow("Customer Name", meeting.cusName),
+//                               buildRow("Title", meeting.title),
+//                               buildRow("Venue", meeting.venue),
+//                               buildRow("Date", meeting.dates.toString().split("||")[0]),
+//                               buildRow("Time", meeting.time.toString().split("||")[0]),
+//                               buildRow("Notes", meeting.notes),
+//                               buildRow("Status", meeting.status,color: meeting.status=="Scheduled"?Colors.blue:meeting.status=="Cancelled"?Colors.red:Colors.green),
+//                               10.height,
+//                               ElevatedButton(
+//                                 style: ElevatedButton.styleFrom(
+//                                   backgroundColor: colorsConst.primary
+//                                 ),
+//                                   onPressed: (){
+//                                 remController.selectedMeetingIds.add(meeting.id);
+//                                 Navigator.pop(context);
+//                                 utils.appointmentStatus(context,meeting.status);
+//                               }, child: CustomText(text: "Update Status", isCopy: false,colors: Colors.white,))
+//                               ],
+//                           ),
+//                         ),
+//                       ],
+//                     );
+//                   },
+//                 ),
+//               ),
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 children: [
+//                   IconButton(
+//                     icon: Icon(Icons.arrow_left,size: 30),
+//                     onPressed: () {
+//                       controller.previousPage(
+//                         duration: Duration(milliseconds: 300),
+//                         curve: Curves.ease,
+//                       );
+//                     },
+//                   ),
+//                   IconButton(
+//                     icon: Icon(Icons.arrow_right,size: 30),
+//                     onPressed: () {
+//                       controller.nextPage(
+//                         duration: Duration(milliseconds: 300),
+//                         curve: Curves.ease,
+//                       );
+//                     },
+//                   ),
+//                 ],
+//               )
+//             ],
+//           ),
+//         ),
+//       );
+//     },
+//   );
+// }
 void showMeetingDialog(
     BuildContext context,
     List<MeetingObj> meetings,
     int index,
     ) {
   PageController controller = PageController(initialPage: index);
-  if(meetings.isEmpty)
-  return ;
+
+  if (meetings.isEmpty) return;
+
   showDialog(
     context: context,
     builder: (context) {
-      return Dialog(
-        backgroundColor: Colors.white,
-        insetPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-        child: Container(
-          width: 400,height: 400,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          padding: EdgeInsets.all(8),
-          child: Column(
-            children: [
-              Expanded(
-                child: PageView.builder(
-                  controller: controller,
-                  itemCount: meetings.length,
-                  itemBuilder: (context, i) {
-                    final meeting = meetings[i];
+      return StatefulBuilder(
+        builder: (context, setState) {
+          int currentPage = index;
 
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          return Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Container(
+              width: 420,
+              height: 400,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.white,
+              ),
+              child: Column(
+                children: [
+                  /// 🔵 HEADER
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: colorsConst.primary,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    ),
+                    child: Row(
                       children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: IconButton(
-                            onPressed: () => Navigator.pop(context),
-                            icon: Icon(Icons.clear),
-                          ),
-                        ),5.height,
-                        Center(
+                        Expanded(
                           child: CustomText(
                             text: "Appointment Details",
-                            size: 18,
-                            isBold: true,isCopy: false,
+                            size: 16,
+                            isBold: true,
+                            colors: Colors.white,
+                            isCopy: false,
                           ),
                         ),
-                        15.height,
+
                         Container(
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
+                            color: Color(0XFFE2E8F0),
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Column(
+                          child: Row(
                             children: [
-                              buildRow("Company Name", meeting.comName),
-                              buildRow("Customer Name", meeting.cusName),
-                              buildRow("Title", meeting.title),
-                              buildRow("Venue", meeting.venue),
-                              buildRow("Date", meeting.dates.toString().split("||")[0]),
-                              buildRow("Time", meeting.time.toString().split("||")[0]),
-                              buildRow("Notes", meeting.notes),
-                              buildRow("Status", meeting.status,color: meeting.status=="Scheduled"?Colors.blue:meeting.status=="Cancelled"?Colors.red:Colors.green),
-                              10.height,
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: colorsConst.primary
-                                ),
-                                  onPressed: (){
-                                remController.selectedMeetingIds.add(meeting.id);
-                                Navigator.pop(context);
-                                utils.appointmentStatus(context,meeting.status);
-                              }, child: CustomText(text: "Update Status", isCopy: false,colors: Colors.white,))
-                              ],
+                              InkWell(
+                                child: const Icon(Icons.arrow_back_ios, size: 15),
+                                onTap: () {
+                                  controller.previousPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.ease,
+                                  );
+                                },
+                              ),5.width,
+                              CustomText(
+                                text: "${currentPage + 1} / ${meetings.length}",
+                                size: 14,isBold: true,
+                                isCopy: false,
+                              ),5.width,
+                              InkWell(
+                                child: const Icon(Icons.arrow_forward_ios_sharp, size: 15),
+                                onTap: () {
+                                  controller.nextPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.ease,
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         ),
+
+                        8.width,
+
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: const Icon(Icons.close, color: Colors.white),
+                        )
                       ],
-                    );
-                  },
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_left,size: 30),
-                    onPressed: () {
-                      controller.previousPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.ease,
-                      );
-                    },
+                    ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_right,size: 30),
-                    onPressed: () {
-                      controller.nextPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.ease,
-                      );
-                    },
+
+                  /// 📄 BODY
+                  SizedBox(
+                    height: 330,
+                    child: PageView.builder(
+                      controller: controller,
+                      itemCount: meetings.length,
+                      onPageChanged: (i) {
+                        setState(() => currentPage = i);
+                      },
+                      itemBuilder: (context, i) {
+                        final m = meetings[i];
+                        String? selectedValue=m.status;
+
+                        return Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    // color: Colors.pink,
+                                    width:MediaQuery.of(context).size.width*0.05,
+                                    child: CustomText(text: "COMPANY", isCopy: false,size: 12,isBold: true,
+                                    textAlign: TextAlign.start,),
+                                  ),
+                                  SizedBox(
+                                    // color: Colors.yellow,
+                                    width:MediaQuery.of(context).size.width*0.15,
+                                    child: Row(
+                                      children: [
+                                        Image.asset("assets/images/alert2.png",width: 20,height: 20,),10.width,
+                                        CustomText(text: m.comName, isCopy: false,size: 12,textAlign: TextAlign.start,),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),10.height,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    // color: Colors.pink,
+                                    width:MediaQuery.of(context).size.width*0.05,
+                                    child: CustomText(text: "CUSTOMER", isCopy: false,size: 12,isBold: true,
+                                    textAlign: TextAlign.start,),
+                                  ),
+                                  SizedBox(
+                                    // color: Colors.yellow,
+                                    width:MediaQuery.of(context).size.width*0.15,
+                                    child: Row(
+                                      children: [
+                                        Image.asset("assets/images/alert.png",width: 20,height: 20,),10.width,
+                                        CustomText(text: m.cusName, isCopy: false,size: 12,textAlign: TextAlign.start,),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),10.height,
+                              Row(
+                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    // color: Colors.pink,
+                                    width:MediaQuery.of(context).size.width*0.05,
+                                    child: CustomText(text: "TITLE", isCopy: false,size: 12,isBold: true,
+                                    textAlign: TextAlign.start,),
+                                  ),10.width,
+                                  SizedBox(
+                                    // color: Colors.yellow,
+                                    // width:MediaQuery.of(context).size.width*0.15,
+                                    child: Container(
+                                      // alignment: Alignment.centerLeft,
+                                      decoration: customDecoration.baseBackgroundDecoration(
+                                        color: Color(0xFFE2E8F0),radius: 5
+                                      ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: CustomText(text: m.title, isCopy: false,size: 12,textAlign: TextAlign.start,),
+                                        )),
+                                  ),
+                                ],
+                              ),10.height,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    // color: Colors.pink,
+                                    width:MediaQuery.of(context).size.width*0.05,
+                                    child: CustomText(text: "VENUE", isCopy: false,size: 12,isBold: true,
+                                    textAlign: TextAlign.start,),
+                                  ),
+                                  SizedBox(
+                                    // color: Colors.yellow,
+                                    width:MediaQuery.of(context).size.width*0.15,
+                                    child: CustomText(text: m.venue, isCopy: false,size: 12,textAlign: TextAlign.start,),
+                                  ),
+                                ],
+                              ),10.height,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    // color: Colors.pink,
+                                    width:MediaQuery.of(context).size.width*0.05,
+                                    child: CustomText(text: "DATE & TIME", isCopy: false,size: 12,isBold: true,
+                                    textAlign: TextAlign.start,),
+                                  ),
+                                  SizedBox(
+                                    // color: Colors.yellow,
+                                    width:MediaQuery.of(context).size.width*0.15,
+                                    child: CustomText(text: "${m.dates.split("||")[0]}   ${m.time.split("||")[0]}", isBold: true,
+                                      isCopy: false,size: 12,textAlign: TextAlign.start,),
+                                  ),
+                                ],
+                              ),
+                              10.height,
+                              if(m.notes!="")
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    // color: Colors.pink,
+                                    width:MediaQuery.of(context).size.width*0.05,
+                                    child: CustomText(text: "NOTES", isCopy: false,size: 12,isBold: true,
+                                    textAlign: TextAlign.start,),
+                                  ),
+                                  SizedBox(
+                                    // color: Colors.yellow,
+                                    width:MediaQuery.of(context).size.width*0.15,
+                                    child: Container(
+                                      width: double.infinity,
+                                      margin: const EdgeInsets.only(top: 10),
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFFF4F6F8),
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border(
+                                          left: BorderSide(color: colorsConst.primary, width: 3),
+                                        ),
+                                      ),
+                                      child: CustomText(
+                                        text: m.notes ?? "",
+                                        size: 13,
+                                        isCopy: false,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if(m.notes!="")
+                              10.height,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    // color: Colors.pink,
+                                    width:MediaQuery.of(context).size.width*0.05,
+                                    child: CustomText(text: "STATUS", isCopy: false,size: 12,isBold: true,
+                                    textAlign: TextAlign.start,),
+                                  ),
+                                  Container(
+                                    decoration: customDecoration.baseBackgroundDecoration(
+                                      color: Color(0xFFF4F6F8),radius: 5,shadowColor: Colors.grey.shade50,isShadow: true
+                                    ),
+                                    height: 35,
+                                    width:MediaQuery.of(context).size.width*0.15,
+                                    child: DropdownButtonFormField<String>(
+                                      value: selectedValue,icon:Icon(Icons.keyboard_arrow_down_outlined),
+                                      hint: CustomText(text: "Select",isCopy: false,),
+                                      isExpanded: true,
+                                      items: ["Scheduled", "Completed", "Cancelled"]
+                                          .map((e) => DropdownMenuItem(
+                                        value: e,
+                                        child: CustomText(text: e,isCopy: false,),
+                                      ))
+                                          .toList(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedValue = value;
+                                        });
+                                      },
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.grey.shade50),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.grey.shade50),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.grey.shade50),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.grey.shade50),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),10.height,
+                              Divider(
+                                color: Colors.grey.shade100,
+                              ),
+                              10.height,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () => Navigator.pop(context),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                        alignment: Alignment.center,
+                                        child: CustomText(
+                                          text: "Cancel",isBold: true,
+                                          isCopy: false,colors: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: colorsConst.primary,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        remController.selectedMeetingIds.add(m.id);
+                                        Navigator.pop(context);
+                                        utils.appointmentStatus(context, m.status);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: CustomText(
+                                          text: "Update Status",
+                                          colors: Colors.white,
+                                          isCopy: false,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
-              )
-            ],
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       );
     },
   );
 }
+
+Widget buildRow(String label, String? value, {bool? isBold=false}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Row(
+      children: [
+        SizedBox(
+          width: 120,
+          child: CustomText(
+            text: label,
+            size: 12,
+            isBold: true,
+            isCopy: false,
+          ),
+        ),
+        Expanded(
+          child: CustomText(
+            text: value ?? "-",
+            isCopy: false,isBold: isBold??false,
+          ),
+        )
+      ],
+    ),
+  );
+}
+
+Widget buildChipRow(String label, String? value) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Row(
+      children: [
+        SizedBox(
+          width: 120,
+          child: CustomText(
+            text: label,
+            size: 12,
+            isBold: true,
+            isCopy: false,
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: Color(0xFFE2E8F0),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: CustomText(
+            text: value ?? "",
+            size: 12,
+            isCopy: false,
+          ),
+        )
+      ],
+    ),
+  );
+}
+
+Color _statusColor(String? status) {
+  switch (status) {
+    case "Scheduled":
+      return Colors.blue;
+    case "Cancelled":
+      return Colors.red;
+    default:
+      return Colors.green;
+  }
+}
+
 void showCallDialog(
     BuildContext context,
     List<CustomerActivity> calls,
@@ -363,36 +786,36 @@ void showReminderDialog(
     },
   );
 }
-Widget buildRow(String label, String value, {Color? color = Colors.black}) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 3,
-          child: CustomText(
-            textAlign: TextAlign.start,
-            text: label,
-            size: 14,
-            isBold: true,
-            colors: Colors.grey, isCopy: false,
-          ),
-        ),
-        Expanded(
-          flex: 5,
-          child: CustomText(
-            textAlign: TextAlign.start,
-            text: value,colors: color,
-            size: 14,
-            isBold: true,isCopy: false,
-          ),
-        ),
-      ],
-    ),
-  );
-}
+// Widget buildRow(String label, String value, {Color? color = Colors.black}) {
+//   return Padding(
+//     padding: const EdgeInsets.symmetric(vertical: 4),
+//     child: Row(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       mainAxisAlignment: MainAxisAlignment.start,
+//       children: [
+//         Expanded(
+//           flex: 3,
+//           child: CustomText(
+//             textAlign: TextAlign.start,
+//             text: label,
+//             size: 14,
+//             isBold: true,
+//             colors: Colors.grey, isCopy: false,
+//           ),
+//         ),
+//         Expanded(
+//           flex: 5,
+//           child: CustomText(
+//             textAlign: TextAlign.start,
+//             text: value,colors: color,
+//             size: 14,
+//             isBold: true,isCopy: false,
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
 class ReminderController extends GetxController with GetSingleTickerProviderStateMixin {
   // late CalendarDataSource dataSource;
   late CalendarDataSource dataSource;
@@ -537,8 +960,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   var selectedMeetingIds = <String>[].obs;
   var selectedRecordMailIds = <String>[].obs;
   var selectedRecordCallIds = <String>[].obs;
-  RxList<CustomerActivity> callMailsList  = <CustomerActivity>[].obs;
-  RxList<CustomerActivity> callMailsFilterList  = <CustomerActivity>[].obs;
+  RxList<CustomerActivity> callMailsDetailsList  = <CustomerActivity>[].obs;
+  RxList<CustomerActivity> callMailsDetailsList2  = <CustomerActivity>[].obs;
   RxList<CustomerActivity> callFilteredList  = <CustomerActivity>[].obs;
   RxList<CustomerActivity> mailFilteredList  = <CustomerActivity>[].obs;
   RxList<MeetingObj> meetingFilteredList     = <MeetingObj>[].obs;
@@ -999,7 +1422,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     }
 
     callFilteredList.assignAll(filtered);
-    remController.callMailsList.addAll(remController.callFilteredList);
     // apiService.mergeStatusWithCount();
   }
 
@@ -1428,6 +1850,84 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
     final now = DateTime.now();
 
+    // final filtered = dataList.where((activity) {
+    //
+    //   /// 👤 Mine / Team
+    //   final matchesFilterType =
+    //       filterCall.value == "All" ||
+    //           (filterCall.value == "Mine" &&
+    //               activity.name == controllers.storage.read("f_name")) ||
+    //           (filterCall.value == "Team" &&
+    //               activity.name != controllers.storage.read("f_name"));
+    //
+    //   /// 🔍 Search
+    //   final matchesSearch =
+    //       searchText.isEmpty ||
+    //           activity.customerName.toLowerCase().contains(searchText.toLowerCase()) ||
+    //           activity.sentDate.toLowerCase().contains(searchText.toLowerCase());
+    //
+    //   final activityDate = parseDate(activity.sentDate);
+    //
+    //   bool matchesDate = true;
+    //
+    //   /// 🔥 Priority: Range > Month > Quick
+    //
+    //   /// 📅 Custom Range
+    //   if (selectedRange != null) {
+    //     final start = _startOfDay(selectedRange.start);
+    //     final end = _endOfDay(selectedRange.end);
+    //
+    //     matchesDate = !activityDate.isBefore(start) &&
+    //         !activityDate.isAfter(end);
+    //   }
+    //
+    //   /// 📅 Month
+    //   else if (selectedMonth != null) {
+    //     matchesDate = activityDate.year == selectedMonth.year &&
+    //         activityDate.month == selectedMonth.month;
+    //   }
+    //
+    //   /// ⚡ Quick Filters
+    //   else {
+    //     switch (selectedDateFilter) {
+    //
+    //       case "Today":
+    //         matchesDate = activityDate.year == now.year &&
+    //             activityDate.month == now.month &&
+    //             activityDate.day == now.day;
+    //         break;
+    //
+    //       case "Yesterday":
+    //         final yesterday = now.subtract(const Duration(days: 1));
+    //         matchesDate = activityDate.year == yesterday.year &&
+    //             activityDate.month == yesterday.month &&
+    //             activityDate.day == yesterday.day;
+    //         break;
+    //
+    //       case "Last 7 Days": // 👉 future
+    //         final start = _startOfDay(now);
+    //         final end = _endOfDay(now.subtract(const Duration(days: 7)));
+    //
+    //         matchesDate = !activityDate.isBefore(start) &&
+    //             !activityDate.isAfter(end);
+    //         break;
+    //
+    //       case "Last 30 Days": // 👉 future
+    //         final start = _startOfDay(now);
+    //         final end = _endOfDay(now.subtract(const Duration(days: 30)));
+    //
+    //         matchesDate = !activityDate.isBefore(start) &&
+    //             !activityDate.isAfter(end);
+    //         break;
+    //
+    //       default:
+    //         matchesDate = true;
+    //     }
+    //   }
+    //
+    //   return matchesSearch && matchesDate && matchesFilterType;
+    //
+    // }).toList();
     final filtered = dataList.where((activity) {
 
       /// 👤 Mine / Team
@@ -1441,9 +1941,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       /// 🔍 Search
       final matchesSearch =
           searchText.isEmpty ||
-              activity.customerName.toLowerCase().contains(searchText.toLowerCase()) ||
-              activity.sentDate.toLowerCase().contains(searchText.toLowerCase());
+              (activity.customerName ?? "")
+                  .toLowerCase()
+                  .contains(searchText.toLowerCase()) ||
+              (activity.sentDate ?? "")
+                  .toLowerCase()
+                  .contains(searchText.toLowerCase());
 
+      /// 📅 Parse Date (SAFE)
       final activityDate = parseDate(activity.sentDate);
 
       bool matchesDate = true;
@@ -1482,17 +1987,19 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
                 activityDate.day == yesterday.day;
             break;
 
-          case "Last 7 Days": // 👉 future
-            final start = _startOfDay(now);
-            final end = _endOfDay(now.add(const Duration(days: 7)));
+        /// ✅ FIXED
+          case "Last 7 Days":
+            final start = _startOfDay(now.subtract(const Duration(days: 7)));
+            final end = _endOfDay(now);
 
             matchesDate = !activityDate.isBefore(start) &&
                 !activityDate.isAfter(end);
             break;
 
-          case "Last 30 Days": // 👉 future
-            final start = _startOfDay(now);
-            final end = _endOfDay(now.add(const Duration(days: 30)));
+        /// ✅ FIXED
+          case "Last 30 Days":
+            final start = _startOfDay(now.subtract(const Duration(days: 30)));
+            final end = _endOfDay(now);
 
             matchesDate = !activityDate.isBefore(start) &&
                 !activityDate.isAfter(end);
@@ -1506,7 +2013,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       return matchesSearch && matchesDate && matchesFilterType;
 
     }).toList();
-
     /// 🔽 Sorting
     filtered.sort((a, b) {
       dynamic aValue;
@@ -1575,234 +2081,11 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       return sortOrder == 'asc' ? result : -result;
     });
 
-    callMailsFilterList.assignAll(filtered);
+    remController.callMailsDetailsList.assignAll(filtered);
 
-    print("FINAL COUNT: ${callMailsFilterList.length}");
+    print("FINAL COUNT: ${remController.callMailsDetailsList.length}");
   }
-  void filterAndSortMeetings({
-    required String searchText,
-    required String callType,
-    required String sortField,
-    required String sortOrder,
-  }) {
-    var filtered = [...controllers.meetingActivity];
-
-    final now = DateTime.now();
-    if (selectedMeetSortBy.value.isNotEmpty) {
-      filtered = filtered.where((activity) {
-        final date = _parseMeetingDate(activity.dates ?? '');
-        switch (selectedMeetSortBy.value) {
-          case 'Today':
-            return _isSameDay(date, now);
-          case 'Yesterday':
-            final yesterday = now.subtract(const Duration(days: 1));
-            return _isSameDay(date, yesterday);
-          case 'Last 7 Days':
-            final last7 = now.subtract(const Duration(days: 7));
-            return date.isAfter(last7);
-          case 'Last 30 Days':
-            final last30 = now.subtract(const Duration(days: 30));
-            return date.isAfter(last30);
-          case 'Custom Month':
-            if (selectedMeetMonth.value != null) {
-              final selected = selectedMeetMonth.value!;
-              return date.year == selected.year && date.month == selected.month;
-            }
-            return true;
-          case 'Custom Range':
-            if (selectedMeetRange.value != null) {
-              final range = selectedMeetRange.value!;
-              return date.isAfter(range.start.subtract(const Duration(days: 1))) &&
-                  date.isBefore(range.end.add(const Duration(days: 1)));
-            }
-            return true;
-          default:
-            return true;
-        }
-      }).toList();
-    }
-    filtered = filtered.where((activity) {
-      final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
-          activity.status == controllers.selectMeetingType.value;
-      final matchesFilterType =
-          filterApp.value == "All" ||
-              (filterApp.value == "Mine" &&
-                  activity.employeeName.contains(controllers.storage.read("f_name"))) ||
-              (filterApp.value == "Team" &&
-                  !activity.employeeName.contains(controllers.storage.read("f_name")));
-
-      final matchesSearch = searchText.isEmpty ||
-          (activity.comName.toLowerCase().contains(searchText)) ||
-          (activity.employeeName.toLowerCase().contains(searchText)) ||
-          (activity.title.toLowerCase().contains(searchText)) ||
-          (activity.venue.toLowerCase().contains(searchText)) ||
-          (activity.notes.toLowerCase().contains(searchText)) ||
-          (activity.cusName.toLowerCase().contains(searchText));
-
-      return matchesCallType && matchesSearch && matchesFilterType;
-    }).toList();
-
-    String field = controllers.sortFieldMeetingActivity.value;
-    String order = controllers.sortOrderMeetingActivity.value;
-
-    int compareString(String a, String b) {
-      final comparison = a.toLowerCase().compareTo(b.toLowerCase());
-      return order == 'asc' ? comparison : -comparison;
-    }
-
-    if (field == 'customerName') {
-      filtered.sort((a, b) => compareString(a.cusName ?? '', b.cusName ?? ''));
-    } else if (field == 'companyName') {
-      filtered.sort((a, b) => compareString(a.comName ?? '', b.comName ?? ''));
-    } else if (field == 'title') {
-      filtered.sort((a, b) => compareString(a.title ?? '', b.title ?? ''));
-    } else if (field == 'venue') {
-      filtered.sort((a, b) => compareString(a.venue ?? '', b.venue ?? ''));
-    } else if (field == 'notes') {
-      filtered.sort((a, b) => compareString(a.notes ?? '', b.notes ?? ''));
-    } else if (field == 'emp') {
-      filtered.sort((a, b) => compareString(a.employeeName ?? '', b.employeeName ?? ''));
-    }  else if (field == 'status') {
-      filtered.sort((a, b) => compareString(a.status ?? '', b.status ?? ''));
-    } else if (field == 'date') {
-      filtered.sort((a, b) {
-        final dateA = _parseMeetingDate(a.dates ?? '');
-        final dateB = _parseMeetingDate(b.dates ?? '');
-        final comparison = dateA.compareTo(dateB);
-        return order == 'asc' ? comparison : -comparison;
-      });
-    }
-    meetingFilteredList.assignAll(filtered);
-  }
-  void dashboardMeetings({
-    required String searchText,
-    required String callType,
-    required String sortField,
-    required String sortOrder,
-  }) {
-    var filtered = [...controllers.meetingActivity];
-
-    final now = DateTime.now();
-
-    DateTime _startOfDay(DateTime date) {
-      return DateTime(date.year, date.month, date.day);
-    }
-
-    DateTime _endOfDay(DateTime date) {
-      return DateTime(date.year, date.month, date.day, 23, 59, 59);
-    }
-
-    if (selectedMeetSortBy.value.isNotEmpty) {
-      filtered = filtered.where((activity) {
-        final date = _parseMeetingDate(activity.dates ?? '');
-
-        switch (selectedMeetSortBy.value) {
-          case 'Today':
-            return _isSameDay(date, now);
-
-          case 'Yesterday':
-            final yesterday = now.subtract(const Duration(days: 1));
-            return _isSameDay(date, yesterday);
-
-          case 'Last 7 Days': // 👉 future 7 days
-            final endDate = now.add(const Duration(days: 7));
-            return !date.isBefore(_startOfDay(now)) &&
-                !date.isAfter(_endOfDay(endDate));
-
-          case 'Last 30 Days': // 👉 future 30 days
-            final endDate = now.add(const Duration(days: 30));
-            return !date.isBefore(_startOfDay(now)) &&
-                !date.isAfter(_endOfDay(endDate));
-
-          case 'Custom Month':
-            if (selectedMeetMonth.value != null) {
-              final selected = selectedMeetMonth.value!;
-              return date.year == selected.year &&
-                  date.month == selected.month;
-            }
-            return true;
-
-          case 'Custom Range':
-            if (selectedMeetRange.value != null) {
-              final range = selectedMeetRange.value!;
-              return !date.isBefore(_startOfDay(range.start)) &&
-                  !date.isAfter(_endOfDay(range.end));
-            }
-            return true;
-
-          default:
-            return true;
-        }
-      }).toList();
-    }
-
-    // 🔍 Search + Filter
-    filtered = filtered.where((activity) {
-      final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
-          activity.status == controllers.selectMeetingType.value;
-
-      final matchesFilterType =
-          filterApp.value == "All" ||
-              (filterApp.value == "Mine" &&
-                  activity.employeeName.contains(
-                      controllers.storage.read("f_name"))) ||
-              (filterApp.value == "Team" &&
-                  !activity.employeeName.contains(
-                      controllers.storage.read("f_name")));
-
-      final matchesSearch = searchText.isEmpty ||
-          (activity.comName.toLowerCase().contains(searchText)) ||
-          (activity.employeeName.toLowerCase().contains(searchText)) ||
-          (activity.title.toLowerCase().contains(searchText)) ||
-          (activity.venue.toLowerCase().contains(searchText)) ||
-          (activity.notes.toLowerCase().contains(searchText)) ||
-          (activity.cusName.toLowerCase().contains(searchText));
-
-      return matchesCallType && matchesSearch && matchesFilterType;
-    }).toList();
-
-    // 🔃 Sorting
-    String field = controllers.sortFieldMeetingActivity.value;
-    String order = controllers.sortOrderMeetingActivity.value;
-
-    int compareString(String a, String b) {
-      final comparison = a.toLowerCase().compareTo(b.toLowerCase());
-      return order == 'asc' ? comparison : -comparison;
-    }
-
-    if (field == 'customerName') {
-      filtered.sort((a, b) =>
-          compareString(a.cusName ?? '', b.cusName ?? ''));
-    } else if (field == 'companyName') {
-      filtered.sort((a, b) =>
-          compareString(a.comName ?? '', b.comName ?? ''));
-    } else if (field == 'title') {
-      filtered.sort((a, b) =>
-          compareString(a.title ?? '', b.title ?? ''));
-    } else if (field == 'venue') {
-      filtered.sort((a, b) =>
-          compareString(a.venue ?? '', b.venue ?? ''));
-    } else if (field == 'notes') {
-      filtered.sort((a, b) =>
-          compareString(a.notes ?? '', b.notes ?? ''));
-    } else if (field == 'emp') {
-      filtered.sort((a, b) =>
-          compareString(a.employeeName ?? '', b.employeeName ?? ''));
-    } else if (field == 'status') {
-      filtered.sort((a, b) =>
-          compareString(a.status ?? '', b.status ?? ''));
-    } else if (field == 'date') {
-      filtered.sort((a, b) {
-        final dateA = _parseMeetingDate(a.dates ?? '');
-        final dateB = _parseMeetingDate(b.dates ?? '');
-        final comparison = dateA.compareTo(dateB);
-        return order == 'asc' ? comparison : -comparison;
-      });
-    }
-
-    meetingFilteredList.assignAll(filtered);
-  }
-  // void dashboardMeetings({
+  // void filterAndSortMeetings({
   //   required String searchText,
   //   required String callType,
   //   required String sortField,
@@ -1821,11 +2104,11 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //           final yesterday = now.subtract(const Duration(days: 1));
   //           return _isSameDay(date, yesterday);
   //         case 'Last 7 Days':
-  //           final endDate = now.add(const Duration(days: 7));
-  //           return date.isAfter(now) && date.isBefore(endDate);
+  //           final last7 = now.subtract(const Duration(days: 7));
+  //           return date.isAfter(last7);
   //         case 'Last 30 Days':
-  //           final endDate = now.add(const Duration(days: 30));
-  //           return date.isAfter(now) && date.isBefore(endDate);
+  //           final last30 = now.subtract(const Duration(days: 30));
+  //           return date.isAfter(last30);
   //         case 'Custom Month':
   //           if (selectedMeetMonth.value != null) {
   //             final selected = selectedMeetMonth.value!;
@@ -1897,6 +2180,351 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //   }
   //   meetingFilteredList.assignAll(filtered);
   // }
+  // void dashboardMeetings({
+  //   required String searchText,
+  //   required String callType,
+  //   required String sortField,
+  //   required String sortOrder,
+  // }) {
+  //   var filtered = [...controllers.meetingActivity];
+  //
+  //   final now = DateTime.now();
+  //
+  //   DateTime _startOfDay(DateTime date) {
+  //     return DateTime(date.year, date.month, date.day);
+  //   }
+  //
+  //   DateTime _endOfDay(DateTime date) {
+  //     return DateTime(date.year, date.month, date.day, 23, 59, 59);
+  //   }
+  //
+  //   if (selectedMeetSortBy.value.isNotEmpty) {
+  //     filtered = filtered.where((activity) {
+  //       final date = _parseMeetingDate(activity.dates ?? '');
+  //
+  //       switch (selectedMeetSortBy.value) {
+  //         case 'Today':
+  //           return _isSameDay(date, now);
+  //
+  //         case 'Yesterday':
+  //           final yesterday = now.subtract(const Duration(days: 1));
+  //           return _isSameDay(date, yesterday);
+  //
+  //         case 'Last 7 Days': // 👉 future 7 days
+  //           final endDate = now.add(const Duration(days: 7));
+  //           return !date.isBefore(_startOfDay(now)) &&
+  //               !date.isAfter(_endOfDay(endDate));
+  //
+  //         case 'Last 30 Days': // 👉 future 30 days
+  //           final endDate = now.add(const Duration(days: 30));
+  //           return !date.isBefore(_startOfDay(now)) &&
+  //               !date.isAfter(_endOfDay(endDate));
+  //
+  //         case 'Custom Month':
+  //           if (selectedMeetMonth.value != null) {
+  //             final selected = selectedMeetMonth.value!;
+  //             return date.year == selected.year &&
+  //                 date.month == selected.month;
+  //           }
+  //           return true;
+  //
+  //         case 'Custom Range':
+  //           if (selectedMeetRange.value != null) {
+  //             final range = selectedMeetRange.value!;
+  //             return !date.isBefore(_startOfDay(range.start)) &&
+  //                 !date.isAfter(_endOfDay(range.end));
+  //           }
+  //           return true;
+  //
+  //         default:
+  //           return true;
+  //       }
+  //     }).toList();
+  //   }
+  //
+  //   // 🔍 Search + Filter
+  //   filtered = filtered.where((activity) {
+  //     final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
+  //         activity.status == controllers.selectMeetingType.value;
+  //
+  //     final matchesFilterType =
+  //         filterApp.value == "All" ||
+  //             (filterApp.value == "Mine" &&
+  //                 activity.employeeName.contains(
+  //                     controllers.storage.read("f_name"))) ||
+  //             (filterApp.value == "Team" &&
+  //                 !activity.employeeName.contains(
+  //                     controllers.storage.read("f_name")));
+  //
+  //     final matchesSearch = searchText.isEmpty ||
+  //         (activity.comName.toLowerCase().contains(searchText)) ||
+  //         (activity.employeeName.toLowerCase().contains(searchText)) ||
+  //         (activity.title.toLowerCase().contains(searchText)) ||
+  //         (activity.venue.toLowerCase().contains(searchText)) ||
+  //         (activity.notes.toLowerCase().contains(searchText)) ||
+  //         (activity.cusName.toLowerCase().contains(searchText));
+  //
+  //     return matchesCallType && matchesSearch && matchesFilterType;
+  //   }).toList();
+  //
+  //   // 🔃 Sorting
+  //   String field = controllers.sortFieldMeetingActivity.value;
+  //   String order = controllers.sortOrderMeetingActivity.value;
+  //
+  //   int compareString(String a, String b) {
+  //     final comparison = a.toLowerCase().compareTo(b.toLowerCase());
+  //     return order == 'asc' ? comparison : -comparison;
+  //   }
+  //
+  //   if (field == 'customerName') {
+  //     filtered.sort((a, b) =>
+  //         compareString(a.cusName ?? '', b.cusName ?? ''));
+  //   } else if (field == 'companyName') {
+  //     filtered.sort((a, b) =>
+  //         compareString(a.comName ?? '', b.comName ?? ''));
+  //   } else if (field == 'title') {
+  //     filtered.sort((a, b) =>
+  //         compareString(a.title ?? '', b.title ?? ''));
+  //   } else if (field == 'venue') {
+  //     filtered.sort((a, b) =>
+  //         compareString(a.venue ?? '', b.venue ?? ''));
+  //   } else if (field == 'notes') {
+  //     filtered.sort((a, b) =>
+  //         compareString(a.notes ?? '', b.notes ?? ''));
+  //   } else if (field == 'emp') {
+  //     filtered.sort((a, b) =>
+  //         compareString(a.employeeName ?? '', b.employeeName ?? ''));
+  //   } else if (field == 'status') {
+  //     filtered.sort((a, b) =>
+  //         compareString(a.status ?? '', b.status ?? ''));
+  //   } else if (field == 'date') {
+  //     filtered.sort((a, b) {
+  //       final dateA = _parseMeetingDate(a.dates ?? '');
+  //       final dateB = _parseMeetingDate(b.dates ?? '');
+  //       final comparison = dateA.compareTo(dateB);
+  //       return order == 'asc' ? comparison : -comparison;
+  //     });
+  //   }
+  //
+  //   meetingFilteredList.assignAll(filtered);
+  // }
+  List<DateTime> _parseMeetingDateRange(String input) {
+    try {
+      if (input.isEmpty) return [];
+
+      // 👉 Split start & end
+      final parts = input.split("||");
+
+      DateTime parse(String date) {
+        try {
+          return DateFormat("dd.MM.yyyy").parse(date);
+        } catch (e) {
+          try {
+            return DateFormat("dd-MM-yyyy").parse(date);
+          } catch (e) {
+            print("❌ Date parse error: $date");
+            return DateTime(2000);
+          }
+        }
+      }
+
+      if (parts.length == 2) {
+        return [parse(parts[0]), parse(parts[1])];
+      } else {
+        return [parse(parts[0])];
+      }
+
+    } catch (e) {
+      print("❌ Range parse error: $input");
+      return [];
+    }
+  }
+  void dashboardMeetings({
+    required String searchText,
+    required String callType,
+    required String sortField,
+    required String sortOrder,
+  }) {
+    var filtered = [...controllers.meetingActivity];
+
+    final now = DateTime.now();
+
+    // ✅ Normalize date (remove time)
+    DateTime normalize(DateTime d) {
+      return DateTime(d.year, d.month, d.day);
+    }
+
+    // ✅ Safe Date Parsing
+    DateTime _parseMeetingDate(String input) {
+      print("input");
+      print(input);
+      try {
+        // ✅ 24-hour format (your current data)
+        return DateFormat("dd-MM-yyyy HH:mm").parse(input);
+      } catch (e) {
+        try {
+          // ✅ fallback (if AM/PM data வந்தா)
+          return DateFormat("dd-MM-yyyy hh:mm a").parse(input);
+        } catch (e) {
+          try {
+            // ✅ another fallback (dot format)
+            return DateFormat("dd-MM-yyyy hh.mm a").parse(input);
+          } catch (e) {
+            print("❌ Date parse error: $input");
+            return DateTime(2000);
+          }
+        }
+      }
+    }
+    // ✅ DATE FILTER
+    if (selectedMeetSortBy.value.isNotEmpty) {
+      filtered = filtered.where((activity) {
+
+        final dates = _parseMeetingDateRange(activity.dates ?? '');
+        final today = normalize(now);
+
+        bool match = false;
+
+        for (var rawDate in dates) {
+          final date = normalize(rawDate);
+
+          switch (selectedMeetSortBy.value) {
+
+            case 'Today':
+              if (date == today) match = true;
+              break;
+
+            case 'Yesterday':
+              final yesterday = normalize(now.subtract(const Duration(days: 1)));
+              if (date == yesterday) match = true;
+              break;
+
+          /// ✅ FUTURE 7 DAYS
+            case 'Last 7 Days':
+              final start = today;
+              final end = normalize(now.add(const Duration(days: 7)));
+
+              if (!date.isBefore(start) && !date.isAfter(end)) {
+                match = true;
+              }
+              break;
+
+          /// ✅ FUTURE 30 DAYS
+            case 'Last 30 Days':
+              final start = today;
+              final end = normalize(now.add(const Duration(days: 30)));
+
+              if (!date.isBefore(start) && !date.isAfter(end)) {
+                match = true;
+              }
+              break;
+
+            case 'Custom Month':
+              if (selectedMeetMonth.value != null) {
+                final selected = selectedMeetMonth.value!;
+                if (date.year == selected.year &&
+                    date.month == selected.month) {
+                  match = true;
+                }
+              }
+              break;
+
+            case 'Custom Range':
+              if (selectedMeetRange.value != null) {
+                final range = selectedMeetRange.value!;
+                final start = normalize(range.start);
+                final end = normalize(range.end);
+
+                if (!date.isBefore(start) && !date.isAfter(end)) {
+                  match = true;
+                }
+              }
+              break;
+
+            default:
+              match = true;
+          }
+
+          if (match) break; // ✅ stop early if matched
+        }
+
+        return match;
+
+      }).toList();
+    }
+    // 🔍 SEARCH + FILTER
+    filtered = filtered.where((activity) {
+      final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
+          activity.status == controllers.selectMeetingType.value;
+
+      final matchesFilterType =
+          filterApp.value == "All" ||
+              (filterApp.value == "Mine" &&
+                  (activity.employeeName ?? '')
+                      .toLowerCase()
+                      .contains((controllers.storage.read("f_name") ?? '')
+                      .toLowerCase())) ||
+              (filterApp.value == "Team" &&
+                  !(activity.employeeName ?? '')
+                      .toLowerCase()
+                      .contains((controllers.storage.read("f_name") ?? '')
+                      .toLowerCase()));
+
+      final search = searchText.toLowerCase();
+
+      final matchesSearch = search.isEmpty ||
+          (activity.comName ?? '').toLowerCase().contains(search) ||
+          (activity.employeeName ?? '').toLowerCase().contains(search) ||
+          (activity.title ?? '').toLowerCase().contains(search) ||
+          (activity.venue ?? '').toLowerCase().contains(search) ||
+          (activity.notes ?? '').toLowerCase().contains(search) ||
+          (activity.cusName ?? '').toLowerCase().contains(search);
+
+      return matchesCallType && matchesSearch && matchesFilterType;
+    }).toList();
+
+    // 🔃 SORTING
+    String field = controllers.sortFieldMeetingActivity.value;
+    String order = controllers.sortOrderMeetingActivity.value;
+
+    int compareString(String a, String b) {
+      final comparison = a.toLowerCase().compareTo(b.toLowerCase());
+      return order == 'asc' ? comparison : -comparison;
+    }
+
+    if (field == 'customerName') {
+      filtered.sort((a, b) =>
+          compareString(a.cusName ?? '', b.cusName ?? ''));
+    } else if (field == 'companyName') {
+      filtered.sort((a, b) =>
+          compareString(a.comName ?? '', b.comName ?? ''));
+    } else if (field == 'title') {
+      filtered.sort((a, b) =>
+          compareString(a.title ?? '', b.title ?? ''));
+    } else if (field == 'venue') {
+      filtered.sort((a, b) =>
+          compareString(a.venue ?? '', b.venue ?? ''));
+    } else if (field == 'notes') {
+      filtered.sort((a, b) =>
+          compareString(a.notes ?? '', b.notes ?? ''));
+    } else if (field == 'emp') {
+      filtered.sort((a, b) =>
+          compareString(a.employeeName ?? '', b.employeeName ?? ''));
+    } else if (field == 'status') {
+      filtered.sort((a, b) =>
+          compareString(a.status ?? '', b.status ?? ''));
+    } else if (field == 'date') {
+      filtered.sort((a, b) {
+        final dateA = normalize(_parseMeetingDate(a.dates ?? ''));
+        final dateB = normalize(_parseMeetingDate(b.dates ?? ''));
+        final comparison = dateA.compareTo(dateB);
+        return order == 'asc' ? comparison : -comparison;
+      });
+    }
+
+    meetingFilteredList.assignAll(filtered);
+  }
+  ///
   DateTime _parseMeetingDate(String dateStr) {
     try {
       final parts = dateStr.split('||');
@@ -2798,7 +3426,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     });
 
     mailFilteredList.assignAll(filteredList);
-    callMailsList.addAll(mailFilteredList);
 
  debugPrint("remController.selectedMailSortBy.value ${remController.selectedMailSortBy.value}");
  debugPrint("controllers.mailActivity ${controllers.mailActivity}");
@@ -2809,7 +3436,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     try {
       return formatter.parse(date ?? '');
     } catch (e) {
-      log("Date parse failed for: $date -> $e");
+      // log("Date parse failed for: $date -> $e");
       return DateTime(2000);
     }
   }

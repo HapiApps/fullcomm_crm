@@ -3050,7 +3050,7 @@ class ApiService {
         controllers.allScheduleMeet.value = scheduled.length.toString();
         controllers.allCompletedMeet.value = completed.length.toString();
         controllers.allCancelled.value = cancelled.length.toString();
-        remController.filterAndSortMeetings(
+        remController.dashboardMeetings(
           searchText: controllers.searchText.value.toLowerCase(),
           callType: controllers.selectMeetingType.value,
           sortField: controllers.sortFieldMeetingActivity.value,
@@ -4367,6 +4367,61 @@ class ApiService {
       throw Exception('Failed to load album Recordssss');
     }
   }
+  Future getMailCallActivity() async {
+    try {
+      Map data = {
+        "search_type": "mails_calls",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data",
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      print(data);
+      print(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getMailCallActivity();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        remController.callMailsDetailsList2.clear();
+
+        remController.callMailsDetailsList2.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+
+        remController.dashboardCommunicationFilterList(
+          dataList: remController.callMailsDetailsList2,
+          searchText: controllers.searchText.value.toLowerCase(),
+          callType: controllers.selectCallType.value,
+          sortField: controllers.sortFieldCallActivity.value,
+          sortOrder: controllers.sortOrderCallActivity.value,
+          selectedMonth: remController.selectedCallMonth.value,
+          selectedRange: remController.selectedCallRange.value,
+          selectedDateFilter: remController.selectedCallSortBy.value,
+        );
+      } else {
+        controllers.allIncomingCalls.value = "0";
+        controllers.allOutgoingCalls.value = "0";
+        controllers.allMissedCalls.value = "0";
+        controllers.callActivity.clear();
+        throw Exception('Failed to load album Recordssss');
+      }
+    } catch (e) {
+      controllers.allIncomingCalls.value = "0";
+      controllers.allOutgoingCalls.value = "0";
+      controllers.allMissedCalls.value = "0";
+      controllers.callActivity.clear();
+      throw Exception('Failed to load album Recordssss');
+    }
+  }
   Future<void> allRatingLeadsDetails(String type) async {
     controllers.isLead.value = false;
     final url = Uri.parse(scriptApi);
@@ -5163,7 +5218,7 @@ class ApiService {
     }
   }
   Future<void> getLeadRatingDetails(String type) async {
-    debugPrint("getLeadRatingDetails");
+    // debugPrint("getLeadRatingDetails");
     controllers.isCrmData.value = false;
     controllers.ratingList.clear();
     controllers.ratingList2.clear();
@@ -5197,44 +5252,32 @@ class ApiService {
       }
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
-        // newLeadList.clear();
-        controllers.allLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
-        // controllers.searchNewLeadList.value = billing_data.map((json) => NewLeadObj.fromJson(json)).toList();
-        for (var e in controllers.leadCategoryList) { e.list.clear(); e.list2.clear(); }
-        for (int i = 0; i < controllers.leadCategoryList.length; i++) {
-          for (int j = 0; j < controllers.allLeadList.length; j++) {
-            if (controllers.leadCategoryList[i].leadStatus == controllers.allLeadList[j].leadStatus) {
-              controllers.leadCategoryList[i].list.add(controllers.allLeadList[j]);
-              controllers.leadCategoryList[i].list2.add(controllers.allLeadList[j]);
-              // print("Added → ${controllers.allLeadList[j].leadStatus} to ${controllers.leadCategoryList[i].leadStatus}");
-            }
-          }
-          // print("Final List for ${controllers.leadCategoryList[i].leadStatus} : ${controllers.leadCategoryList[i].list}");
-        }
-        // log("----------> ${controllers.leadCategoryList}");
+        controllers.ratingList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        controllers.ratingList2.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         controllers.isCrmData.value=true;
-        dashController.getCustomerStatus();
       } else {
         controllers.allLeadList.clear();
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
     } on SocketException {
-      controllers.allLeadList.clear();
+      controllers.ratingList.clear();
+      controllers.ratingList2.clear();
       controllers.isCrmData.value=true;
       throw Exception('No internet connection');
     } on HttpException catch (e) {
-      controllers.allLeadList.clear();
+      controllers.ratingList.clear();
+      controllers.ratingList2.clear();
       controllers.isCrmData.value=true;
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
-      controllers.allLeadList.clear();
+      controllers.ratingList.clear();
+      controllers.ratingList2.clear();
       controllers.isCrmData.value=true;
-      controllers.newLeadList.clear();
       throw Exception('Unexpected error: ${e.toString()}');
     }
   }
   Future<void> getCustomerRatingDetails(String type) async {
-    debugPrint("getCustomerRatingDetails");
+    // print("getCustomerRatingDetails");
     controllers.isCrmData.value = false;
     controllers.ratingList.clear();
     controllers.ratingList2.clear();
@@ -5256,8 +5299,8 @@ class ApiService {
           "action": "get_data"
         }),
       );
-      debugPrint("customer_rating_leads");
-      debugPrint(response.body);
+      // print("customer_rating_leads");
+      // print(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5268,39 +5311,29 @@ class ApiService {
       }
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
-        // newLeadList.clear();
-        controllers.allLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
-        // controllers.searchNewLeadList.value = billing_data.map((json) => NewLeadObj.fromJson(json)).toList();
-        for (var e in controllers.leadCategoryList) { e.list.clear(); e.list2.clear(); }
-        for (int i = 0; i < controllers.leadCategoryList.length; i++) {
-          for (int j = 0; j < controllers.allLeadList.length; j++) {
-            if (controllers.leadCategoryList[i].leadStatus == controllers.allLeadList[j].leadStatus) {
-              controllers.leadCategoryList[i].list.add(controllers.allLeadList[j]);
-              controllers.leadCategoryList[i].list2.add(controllers.allLeadList[j]);
-              // print("Added → ${controllers.allLeadList[j].leadStatus} to ${controllers.leadCategoryList[i].leadStatus}");
-            }
-          }
-          // print("Final List for ${controllers.leadCategoryList[i].leadStatus} : ${controllers.leadCategoryList[i].list}");
-        }
-        // log("----------> ${controllers.leadCategoryList}");
+        controllers.ratingList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        controllers.ratingList2.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         controllers.isCrmData.value=true;
-        dashController.getCustomerStatus();
       } else {
-        controllers.allLeadList.clear();
+        controllers.ratingList.clear();
+        controllers.ratingList2.clear();
+        controllers.isCrmData.value=true;
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
     } on SocketException {
-      controllers.allLeadList.clear();
+      controllers.ratingList.clear();
+      controllers.ratingList2.clear();
       controllers.isCrmData.value=true;
       throw Exception('No internet connection');
     } on HttpException catch (e) {
-      controllers.allLeadList.clear();
+      controllers.ratingList.clear();
+      controllers.ratingList2.clear();
       controllers.isCrmData.value=true;
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
-      controllers.allLeadList.clear();
+      controllers.ratingList.clear();
+      controllers.ratingList2.clear();
       controllers.isCrmData.value=true;
-      controllers.newLeadList.clear();
       throw Exception('Unexpected error: ${e.toString()}');
     }
   }

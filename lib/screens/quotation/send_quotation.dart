@@ -815,6 +815,20 @@ class _SendQuotationState extends State<SendQuotation> {
                     ),
                   ],
                 ),
+                pw.SizedBox(height: 10),
+                pw.Text("${productCtr.termsAndConditionsList.length} . "),
+                pw.ListView.builder(
+                    itemCount: productCtr.termsAndConditionsList.length,
+                    itemBuilder: (context,i){
+                      return
+                        pw.Row(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: [
+                            pw.Text("${i+1} . "),
+                            pw.Text(productCtr.termsAndConditionsList[i]["name"])
+                          ],
+                        );
+                    }, )
               ],
             ),
           );

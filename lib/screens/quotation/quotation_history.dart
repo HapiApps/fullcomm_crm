@@ -124,7 +124,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                     height: 35,
                     backgroundColor: colorsConst.primary,
                     radius: 2,
-                    width: MediaQuery.of(context).size.width*0.1,
+                    width: MediaQuery.of(context).size.width*0.15,
                     isImage: false,
                     text: "Create Quotation",
                     textColor: Colors.white,
@@ -372,7 +372,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                             children: [
                               CustomText(
                                 textAlign: TextAlign.left,
-                                text: "Customer No",
+                                text: "Phone No",
                                 size: 15,
                                 isBold: true,
                                 isCopy: true,
@@ -798,7 +798,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                       padding: const EdgeInsets.all(10.0),
                                       child: CustomText(
                                         textAlign: TextAlign.left,
-                                        text: productCtr.formatDateTime(data.createdTs.toString()),
+                                        text: productCtr.fixedDateTime(data.createdTs.toString()),
                                         size: 14,
                                         isCopy: true,
                                         colors:colorsConst.textColor,

@@ -158,7 +158,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                     // Header Section
                     HeaderSection(
                       list: widget.list,list2: widget.list2,
-                      title: "Leads - ${widget.name}",
+                      title: "${widget.listIndex!=controllers.leadCategoryList.length-1?"Leads - ":""}${widget.name}",
                       subtitle: "View all of your ${widget.name} Information",
                       // list: controllers.allLeadFuture,
                     ),

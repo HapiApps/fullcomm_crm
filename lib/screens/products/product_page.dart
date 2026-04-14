@@ -233,15 +233,17 @@ class _ProductPageState extends State<ProductPage> {
                       columnWidths: const {
                         0: FixedColumnWidth(70),//s no
                         1: FlexColumnWidth(1),//sku
-                        2: FlexColumnWidth(1),//HSN
-                        3: FlexColumnWidth(3),//name
-                        4: FlexColumnWidth(1),//var
-                        5: FlexColumnWidth(1),//mrp
-                        6: FlexColumnWidth(1),//op
-                        7: FlexColumnWidth(1),//br
-                        8: FlexColumnWidth(1.5),//cat
-                        9: FlexColumnWidth(1.5),//subcat
-                        10:FlexColumnWidth(1.5),//date
+                        2: FlexColumnWidth(1.1),//HSN
+                        3: FlexColumnWidth(1),//bar
+                        4: FlexColumnWidth(2.8),//name
+                        5: FlexColumnWidth(1),//var
+                        6: FlexColumnWidth(1),//mrp
+                        7: FlexColumnWidth(1),//op
+                        8: FlexColumnWidth(1),//br
+                        9: FlexColumnWidth(1.5),//cat
+                        10: FlexColumnWidth(1.5),//subcat
+                        11: FlexColumnWidth(0.5),//gst
+                        12:FlexColumnWidth(1.5),//date
                       },
                       border: TableBorder(
                         horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -323,6 +325,47 @@ class _ProductPageState extends State<ProductPage> {
                                         controllers.sortOrderCallActivity.value='asc';
                                       }
                                       controllers.sortFieldCallActivity.value='hsn';
+                                      productCtr.filterAndSortProducts(
+                                        searchText: controllers.searchText.value.toLowerCase(),
+                                        sortField: controllers.sortFieldCallActivity.value,
+                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                        selectedMonth: productCtr.selectedCallMonth.value,
+                                        selectedRange: productCtr.selectedCallRange.value,
+                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                      );
+                                    },
+                                    child: Obx(() => Image.asset(
+                                      controllers.sortFieldCallActivity.value.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                    ),
+                                  ),
+                                ],
+                              ),),//HSN
+                              headerCell(7, Row(
+                                children: [
+                                  CustomText(//4
+                                    textAlign: TextAlign.left,
+                                    text: "BarCode",
+                                    size: 15,
+                                    isBold: true,
+                                    isCopy: true,
+                                    colors: Colors.white,
+                                  ),
+                                  3.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      if(controllers.sortFieldCallActivity.value=='barcode' && controllers.sortOrderCallActivity.value=='asc'){
+                                        controllers.sortOrderCallActivity.value='desc';
+                                      }else{
+                                        controllers.sortOrderCallActivity.value='asc';
+                                      }
+                                      controllers.sortFieldCallActivity.value='barcode';
                                       productCtr.filterAndSortProducts(
                                         searchText: controllers.searchText.value.toLowerCase(),
                                         sortField: controllers.sortFieldCallActivity.value,
@@ -632,6 +675,47 @@ class _ProductPageState extends State<ProductPage> {
                                   ),
                                 ],
                               ),),//Sub Cat
+                              headerCell(7, Row(
+                                children: [
+                                  CustomText(//4
+                                    textAlign: TextAlign.left,
+                                    text: "GST",
+                                    size: 15,
+                                    isBold: true,
+                                    isCopy: true,
+                                    colors: Colors.white,
+                                  ),
+                                  3.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      if(controllers.sortFieldCallActivity.value=='gst' && controllers.sortOrderCallActivity.value=='asc'){
+                                        controllers.sortOrderCallActivity.value='desc';
+                                      }else{
+                                        controllers.sortOrderCallActivity.value='asc';
+                                      }
+                                      controllers.sortFieldCallActivity.value='gst';
+                                      productCtr.filterAndSortProducts(
+                                        searchText: controllers.searchText.value.toLowerCase(),
+                                        sortField: controllers.sortFieldCallActivity.value,
+                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                        selectedMonth: productCtr.selectedCallMonth.value,
+                                        selectedRange: productCtr.selectedCallRange.value,
+                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                      );
+                                    },
+                                    child: Obx(() => Image.asset(
+                                      controllers.sortFieldCallActivity.value.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                    ),
+                                  ),
+                                ],
+                              ),),//GST
                               headerCell(11, Row(
                                 children: [
                                   CustomText(//4
@@ -717,15 +801,17 @@ class _ProductPageState extends State<ProductPage> {
                                 columnWidths: const {
                                   0: FixedColumnWidth(70),//s no
                                   1: FlexColumnWidth(1),//sku
-                                  2: FlexColumnWidth(1),//HSN
-                                  3: FlexColumnWidth(3),//name
-                                  4: FlexColumnWidth(1),//var
-                                  5: FlexColumnWidth(1),//mrp
-                                  6: FlexColumnWidth(1),//op
-                                  7: FlexColumnWidth(1),//br
-                                  8: FlexColumnWidth(1.5),//cat
-                                  9: FlexColumnWidth(1.5),//subcat
-                                  10:FlexColumnWidth(1.5),//date
+                                  2: FlexColumnWidth(1.1),//HSN
+                                  3: FlexColumnWidth(1),//bar
+                                  4: FlexColumnWidth(2.8),//name
+                                  5: FlexColumnWidth(1),//var
+                                  6: FlexColumnWidth(1),//mrp
+                                  7: FlexColumnWidth(1),//op
+                                  8: FlexColumnWidth(1),//br
+                                  9: FlexColumnWidth(1.5),//cat
+                                  10: FlexColumnWidth(1.5),//subcat
+                                  11: FlexColumnWidth(0.5),//gst
+                                  12:FlexColumnWidth(1.5),//date
                                 },
                                 border: TableBorder(
                                   horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -774,6 +860,16 @@ class _ProductPageState extends State<ProductPage> {
                                             ),
                                           ),
                                         ),//hsn
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: data.barcode.toString()=="null"?"":data.barcode.toString(),
+                                            size: 14,
+                                            isCopy: true,
+                                            colors:colorsConst.textColor,
+                                          ),
+                                        ),//barc
                                         Tooltip(
                                           message: data.pTitle.toString()=="null"?"":data.pTitle.toString(),
                                           child: Padding(
@@ -859,6 +955,16 @@ class _ProductPageState extends State<ProductPage> {
                                             colors:colorsConst.textColor,
                                           ),
                                         ),//sub cat
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: data.cgst.toString()=="null"?"":data.cgst.toString(),
+                                            size: 14,
+                                            isCopy: true,
+                                            colors:colorsConst.textColor,
+                                          ),
+                                        ),//gst
                                         Tooltip(
                                           message: productCtr.formatDateTime(data.createdTs.toString()),
                                           child: Padding(

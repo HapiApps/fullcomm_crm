@@ -9,6 +9,7 @@ class Order {
   final String address;
   final String mobile;
   final String subtotal;
+  final String companyName;
   final List<Product> products;
 
   Order({
@@ -23,6 +24,7 @@ class Order {
     required this.mobile,
     required this.subtotal,
     required this.products,
+    required this.companyName,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -30,6 +32,7 @@ class Order {
       id: json['id']?.toString() ?? "",
       orderId: json['invoice_no']?.toString() ?? "",
       customerName: json['name'] ?? "",
+      companyName: json['company_name'] ?? "",
       createdTs: json['created_ts'] ?? "",
       totalAmt: json['o_total']?.toString() ?? "",
       subtotal: json['subtotal']?.toString() ?? "",

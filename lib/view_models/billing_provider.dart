@@ -683,7 +683,7 @@ class BillingProvider with ChangeNotifier{
 
 
 
-  final BillPdf pdfService = BillPdf();
+  // final BillPdf pdfService = BillPdf();
 
   // Place Order Api :
   Future<void> placeOrderAndPrintBill(
@@ -702,10 +702,10 @@ class BillingProvider with ChangeNotifier{
         // 1️⃣ PRINT THE BILL
         bool printSuccess = false;
         try {
-          printSuccess = await pdfService.printBill(
-            context,
-            invoiceNo: response.invoiceNo ?? 0,
-          );
+          // printSuccess = await pdfService.printBill(
+          //   context,
+          //   invoiceNo: response.invoiceNo ?? 0,
+          // );
 
         } catch (e) {
           print("PRINT ERROR: $e");
@@ -1335,9 +1335,9 @@ class BillingProvider with ChangeNotifier{
         _lastOrder = response.ordersList ?? [];
         log("_lastOrder.toString()");
         log(_lastOrder.toString());
-        await pdfService.printCustomBill(
-            context,
-            data: _lastOrder[0]);
+        // await pdfService.printCustomBill(
+        //     context,
+        //     data: _lastOrder[0]);
       }else {
         _lastOrder = [];
       }
@@ -1470,11 +1470,11 @@ class BillingProvider with ChangeNotifier{
     notifyListeners();
 
     if (response['status'] == true) {
-      final BillPdf pdfService = BillPdf();
-      await pdfService.printCustomBill(context, data: data);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response['message'] ?? 'Update successful')),
-      );
+      // final BillPdf pdfService = BillPdf();
+      // await pdfService.printCustomBill(context, data: data);
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text(response['message'] ?? 'Update successful')),
+      // );
       DateTime today = DateTime.now();
       DateTime tomorrow = today.add(const Duration(days: 1));
       String todayStr = DateFormat('yyyy-MM-dd').format(today);

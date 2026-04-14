@@ -76,7 +76,7 @@ class _QuotationPageState extends State<QuotationPage> {
                           child: const Text('Quotation History'),
                         ),
                         Tab(
-                          child: const Text('Send Quotation'),
+                          child: const Text('Create Quotation'),
                         ),
                       ],
                     ),

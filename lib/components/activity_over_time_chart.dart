@@ -403,7 +403,7 @@ class CustomerActivityCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomText(
-                text: "CUSTOMER ACTIVITY",
+                text: "Customer Activity",
                 size: 13,
                 colors: Color(0xff666666),
                 isCopy: false,
@@ -512,7 +512,7 @@ class CustomerActivityCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomText(
-                text: "LEAD ACTIVITY",
+                text: "Lead Activity",
                 size: 13,
                 colors: Color(0xff666666),
                 isCopy: false,

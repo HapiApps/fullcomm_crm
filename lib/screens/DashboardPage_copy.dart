@@ -67,7 +67,7 @@ class _DashboardPageState extends State<DashboardPage>
       // remController.selectedMeetSortBy.value = "Today";
       // remController.selectedCallSortBy.value = "Today";
       // remController.selectedReminderSortBy.value = "Today";
-      remController.filterAndSortMeetings(
+      remController.dashboardMeetings(
         searchText: controllers.searchText.value.toLowerCase(),
         callType: controllers.selectMeetingType.value,
         sortField: controllers.sortFieldMeetingActivity.value,
@@ -375,7 +375,7 @@ class _DashboardPageState extends State<DashboardPage>
                                           today);
                                     }
                                     remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
-                                    remController.filterAndSortMeetings(
+                                    remController.dashboardMeetings(
                                       searchText: controllers.searchText.value.toLowerCase(),
                                       callType: controllers.selectMeetingType.value,
                                       sortField: controllers.sortFieldMeetingActivity.value,

@@ -85,52 +85,46 @@ class _DashboardPageState extends State<DashboardPage>
     _focusNode = FocusNode();
     dashController.getToken();
     apiService.getHeading();
-    Timer.periodic(const Duration(seconds: 30), (timer) {
-      dashController.refreshTime.value++;
-    });
-
-    if(controllers.leadCategoryList.isEmpty){
-      apiService.getLeadCategories();
-    }
-    if(controllers.allLeadList.isEmpty){
-      apiService.getCustomLeads();
-    }
-    if(controllers.allLeadCategoryList.isEmpty){
-      apiService.getAllLeadCategories();
-    }
-    apiService.getAllEmployees();
-    if(dashController.customerStatusReport.isEmpty){
-      dashController.getCustomerStatus();
-    }
-    if(Provider.of<BillingProvider>(context, listen: false).productsList.isEmpty){
-      Provider.of<BillingProvider>(context, listen: false).getProducts();
-    }
-    if(productCtr.products.isEmpty){
-      productCtr.getProducts();
-    }
+    // Timer.periodic(const Duration(seconds: 30), (timer) {
+    //   dashController.refreshTime.value++;
+    // });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
+      if(controllers.leadCategoryList.isEmpty){
+        apiService.getLeadCategories();
+      }
+      if(controllers.allLeadList.isEmpty){
+        apiService.getCustomLeads();
+      }
+      if(controllers.allLeadCategoryList.isEmpty){
+        apiService.getAllLeadCategories();
+      }
+      apiService.getAllEmployees();
+      if(dashController.customerStatusReport.isEmpty){
+        dashController.getCustomerStatus();
+      }
+      if(Provider.of<BillingProvider>(context, listen: false).productsList.isEmpty){
+        Provider.of<BillingProvider>(context, listen: false).getProducts();
+      }
+      if(productCtr.products.isEmpty){
+        productCtr.getProducts();
+      }
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
       employeeData.staffRoleDetailsData(context: context);
       if(controllers.hCallStatusList.isEmpty){
         controllers.getCallStatus();
       }
-      apiService.getAllMailActivity();
-
       controllers.getRangeStatus();
       controllers.getIndustries();
       // productCtr.getProducts();
       productCtr.getOrderDetails();
       productCtr.getQuotationDetails();
       productCtr.getTermsAndConditions();
-    });
-
-    Future.delayed(Duration.zero, () async {
       apiService.currentVersion();
       controllers.selectedIndex.value = 100;
-      final prefs = await SharedPreferences.getInstance();
-      controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
+      // final prefs = await SharedPreferences.getInstance();
+      // controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
       DateTime now = DateTime.now();
       // dashController.selectedSortBy.value = "Today";
       // dashController.selectedSortBy.value = controllers.storage.read("selectedSortBy") ?? "Today";
@@ -152,13 +146,11 @@ class _DashboardPageState extends State<DashboardPage>
       if(remController.reminderList.isEmpty){
         remController.allReminders("2");
       }
-      if(controllers.mailActivity.isEmpty){
-        apiService.getAllMailActivity();
+      if(remController.callMailsDetailsList.isEmpty){
+        apiService.getMailCallActivity();
       }
-      debugPrint("remController.callFilteredList ${remController.callFilteredList.length}");
-      debugPrint("remController.mailFilteredList ${remController.mailFilteredList.length}");
       remController.dashboardCommunicationFilterList(
-        dataList: remController.callMailsList,
+        dataList: remController.callMailsDetailsList2,
         searchText: controllers.searchText.value.toLowerCase(),
         callType: controllers.selectCallType.value,
         sortField: controllers.sortFieldCallActivity.value,
@@ -504,7 +496,7 @@ void checkDate(){
                                   sortOrder: controllers.sortOrderMeetingActivity.value,
                                 );
                                 remController.dashboardCommunicationFilterList(
-                                  dataList: remController.callMailsList,
+                                  dataList: remController.callMailsDetailsList2,
                                   searchText: controllers.searchText.value.toLowerCase(),
                                   callType: controllers.selectCallType.value,
                                   sortField: controllers.sortFieldCallActivity.value,
@@ -883,8 +875,8 @@ void checkDate(){
                                                 },
                                                 child: Row(
                                                   children: [
-                                                    CustomText(text: "View All Appointments", isCopy: false,size: 13,textAlign: TextAlign.start,colors: colorsConst.primary,),10.width,
-                                                    Icon(Icons.arrow_upward,size: 17,)
+                                                    CustomText(text: "View All Appointments", isCopy: false,size: 13,textAlign: TextAlign.start,colors: colorsConst.primary,),5.width,
+                                                    Icon(Icons.north_east,size: 20,color: colorsConst.primary,)
                                                   ],
                                                 ),
                                               )
@@ -1286,8 +1278,8 @@ void checkDate(){
                                                 },
                                                 child: Row(
                                                   children: [
-                                                    CustomText(text: "View All Reminders", isCopy: false,size: 13,textAlign: TextAlign.start,colors: colorsConst.primary,),10.width,
-                                                    Icon(Icons.arrow_upward,size: 17,)
+                                                    CustomText(text: "View All Reminders", isCopy: false,size: 13,textAlign: TextAlign.start,colors: colorsConst.primary,),5.width,
+                                                    Icon(Icons.north_east,size: 20,color: colorsConst.primary,)
                                                   ],
                                                 ),
                                               )
@@ -1744,9 +1736,9 @@ void checkDate(){
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 InkWell(
-                                                  onTap:(){
-                                                    Get.to(RatingPage(rep:"1",type: "hot",));
-                                                  },
+                                                  onTap:dashController.totalHot2.value!="0"?(){
+                                                    Get.to(RatingPage(rep:"1",type: "Hot", pageName: 'Customer',));
+                                                  }:null,
                                                   child: Container(
                                                     height: screenWidth/30,width: screenWidth/20,
                                                     decoration: customDecoration.baseBackgroundDecoration(
@@ -1769,43 +1761,53 @@ void checkDate(){
                                                     ),
                                                   ),
                                                 ),
-                                                Container(
-                                                  height: screenWidth/30,width: screenWidth/20,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFFFF8ED),radius: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Image.asset("assets/images/warm.png"),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          CustomText(text: "Warm", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
-                                                          5.width,
-                                                          CustomText(text: "${int.tryParse(dashController.totalWarm2.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
-                                                        ],
-                                                      )
-                                                    ],
+                                                InkWell(
+                                                  onTap:dashController.totalWarm2.value!="0"?(){
+                                                    Get.to(RatingPage(rep:"1",type: "Warm", pageName: 'Customer',));
+                                                  }:null,
+                                                  child: Container(
+                                                    height: screenWidth/30,width: screenWidth/20,
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                        color: Color(0xFFFFF8ED),radius: 10
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                      children: [
+                                                        Image.asset("assets/images/warm.png"),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            CustomText(text: "Warm", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
+                                                            5.width,
+                                                            CustomText(text: "${int.tryParse(dashController.totalWarm2.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
-                                                Container(
-                                                  height: screenWidth/30,width: screenWidth/20,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFF0F6FF),radius: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Image.asset("assets/images/cold.png"),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          CustomText(text: "Cold", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),5.width,
-                                                          CustomText(text: "${int.tryParse(dashController.totalCold2.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
-                                                        ],
-                                                      )
-                                                    ],
+                                                InkWell(
+                                                  onTap:dashController.totalCold2.value!="0"?(){
+                                                    Get.to(RatingPage(rep:"1",type: "Cold", pageName: 'Customer',));
+                                                  }:null,
+                                                  child: Container(
+                                                    height: screenWidth/30,width: screenWidth/20,
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                        color: Color(0xFFF0F6FF),radius: 10
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                      children: [
+                                                        Image.asset("assets/images/cold.png"),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            CustomText(text: "Cold", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),5.width,
+                                                            CustomText(text: "${int.tryParse(dashController.totalCold2.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -1825,64 +1827,79 @@ void checkDate(){
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Container(
-                                                  height: screenWidth/30,width: screenWidth/20,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFFFF2F2),radius: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Image.asset("assets/images/hot.png"),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          CustomText(text: "Hot", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
-                                                          5.width,
-                                                          CustomText(text: "${int.tryParse(dashController.totalHot.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
+                                                InkWell(
+                                                  onTap:dashController.totalHot.value!="0"?(){
+                                                    Get.to(RatingPage(rep:"2",type: "Hot", pageName: 'Leads',));
+                                                  }:null,
+                                                  child: Container(
+                                                    height: screenWidth/30,width: screenWidth/20,
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                        color: Color(0xFFFFF2F2),radius: 10
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                      children: [
+                                                        Image.asset("assets/images/hot.png"),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            CustomText(text: "Hot", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
+                                                            5.width,
+                                                            CustomText(text: "${int.tryParse(dashController.totalHot.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
 
-                                                        ],
-                                                      )
-                                                    ],
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
-                                                Container(
-                                                  height: screenWidth/30,width: screenWidth/20,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFFFF8ED),radius: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Image.asset("assets/images/warm.png"),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          CustomText(text: "Warm", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
-                                                          5.width,
-                                                          CustomText(text: "${int.tryParse(dashController.totalWarm.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
-                                                        ],
-                                                      )
-                                                    ],
+                                                InkWell(
+                                                  onTap:dashController.totalWarm.value!="0"?(){
+                                                    Get.to(RatingPage(rep:"2",type: "Warm", pageName: 'Leads',));
+                                                  }:null,
+                                                  child: Container(
+                                                    height: screenWidth/30,width: screenWidth/20,
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                        color: Color(0xFFFFF8ED),radius: 10
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                      children: [
+                                                        Image.asset("assets/images/warm.png"),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            CustomText(text: "Warm", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
+                                                            5.width,
+                                                            CustomText(text: "${int.tryParse(dashController.totalWarm.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
-                                                Container(
-                                                  height: screenWidth/30,width: screenWidth/20,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFF0F6FF),radius: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Image.asset("assets/images/cold.png"),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          CustomText(text: "Cold", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),5.width,
-                                                          CustomText(text: "${int.tryParse(dashController.totalCold.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
-                                                        ],
-                                                      )
-                                                    ],
+                                                InkWell(
+                                                  onTap:dashController.totalCold.value!="0"?(){
+                                                    Get.to(RatingPage(rep:"2",type: "Cold", pageName: 'Leads',));
+                                                  }:null,
+                                                  child: Container(
+                                                    height: screenWidth/30,width: screenWidth/20,
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                        color: Color(0xFFF0F6FF),radius: 10
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                      children: [
+                                                        Image.asset("assets/images/cold.png"),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            CustomText(text: "Cold", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),5.width,
+                                                            CustomText(text: "${int.tryParse(dashController.totalCold.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -1965,7 +1982,7 @@ void checkDate(){
                                                       onTap: () {
                                                         remController.filterCall.value = filter;
                                                         remController.dashboardCommunicationFilterList(
-                                                          dataList: remController.callMailsList,
+                                                          dataList: remController.callMailsDetailsList2,
                                                           searchText: controllers.searchText.value.toLowerCase(),
                                                           callType: controllers.selectCallType.value,
                                                           sortField: controllers.sortFieldCallActivity.value,
@@ -2056,7 +2073,7 @@ void checkDate(){
                                                           }
                                                           controllers.sortFieldCallActivity.value='customerName';
                                                           remController.dashboardCommunicationFilterList(
-                                                            dataList: remController.callMailsList,
+                                                            dataList: remController.callMailsDetailsList2,
                                                             searchText: controllers.searchText.value.toLowerCase(),
                                                             callType: controllers.selectCallType.value,
                                                             sortField: controllers.sortFieldCallActivity.value,
@@ -2098,7 +2115,7 @@ void checkDate(){
                                                           }
                                                           controllers.sortFieldCallActivity.value='company';
                                                           remController.dashboardCommunicationFilterList(
-                                                            dataList: remController.callMailsList,
+                                                            dataList: remController.callMailsDetailsList2,
                                                             searchText: controllers.searchText.value.toLowerCase(),
                                                             callType: controllers.selectCallType.value,
                                                             sortField: controllers.sortFieldCallActivity.value,
@@ -2140,7 +2157,7 @@ void checkDate(){
                                                           }
                                                           controllers.sortFieldCallActivity.value='date';
                                                           remController.dashboardCommunicationFilterList(
-                                                            dataList: remController.callMailsList,
+                                                            dataList: remController.callMailsDetailsList2,
                                                             searchText: controllers.searchText.value.toLowerCase(),
                                                             callType: controllers.selectCallType.value,
                                                             sortField: controllers.sortFieldCallActivity.value,
@@ -2182,7 +2199,7 @@ void checkDate(){
                                                           }
                                                           controllers.sortFieldCallActivity.value='type';
                                                           remController.dashboardCommunicationFilterList(
-                                                            dataList: remController.callMailsList,
+                                                            dataList: remController.callMailsDetailsList2,
                                                             searchText: controllers.searchText.value.toLowerCase(),
                                                             callType: controllers.selectCallType.value,
                                                             sortField: controllers.sortFieldCallActivity.value,
@@ -2224,7 +2241,7 @@ void checkDate(){
                                                       //     }
                                                       //     controllers.sortFieldCallActivity.value='status';
                                                       //     remController.dashboardCommunicationFilterList(
-                                                      //       dataList: remController.callMailsList,
+                                                      //       dataList: remController.callMailsDetailsList,
                                                       //       searchText: controllers.searchText.value.toLowerCase(),
                                                       //       callType: controllers.selectCallType.value,
                                                       //       sortField: controllers.sortFieldCallActivity.value,
@@ -2266,7 +2283,7 @@ void checkDate(){
                                                           }
                                                           controllers.sortFieldCallActivity.value='addedBy';
                                                           remController.dashboardCommunicationFilterList(
-                                                            dataList: remController.callMailsList,
+                                                            dataList: remController.callMailsDetailsList2,
                                                             searchText: controllers.searchText.value.toLowerCase(),
                                                             callType: controllers.selectCallType.value,
                                                             sortField: controllers.sortFieldCallActivity.value,
@@ -2297,7 +2314,7 @@ void checkDate(){
                                         color: Colors.white,
                                         width: screenWidth/2,
                                         height: 200,
-                                        child: remController.callMailsFilterList.isEmpty?
+                                        child: remController.callMailsDetailsList.isEmpty?
                                         Center(
                                           child: CustomText(
                                             text: "No Communication Details Found",
@@ -2309,9 +2326,9 @@ void checkDate(){
                                           controller: _controller,
                                           shrinkWrap: true,
                                           physics: const ScrollPhysics(),
-                                          itemCount: remController.callMailsFilterList.length,
+                                          itemCount: remController.callMailsDetailsList.length,
                                           itemBuilder: (context, index) {
-                                            final data = remController.callMailsFilterList[index];
+                                            final data = remController.callMailsDetailsList[index];
                                             return Table(
                                               columnWidths: {
                                                 0: FixedColumnWidth(100),
@@ -2334,7 +2351,7 @@ void checkDate(){
                                                     children:[
                                                       InkWell(
                                                         onTap:(){
-                                                          showCallDialog(context,remController.callMailsFilterList,index);
+                                                          showCallDialog(context,remController.callMailsDetailsList,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -2349,7 +2366,7 @@ void checkDate(){
                                                       ),
                                                       InkWell(
                                                         onTap:(){
-                                                          showCallDialog(context,remController.callMailsFilterList,index);
+                                                          showCallDialog(context,remController.callMailsDetailsList,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -2364,7 +2381,7 @@ void checkDate(){
                                                       ),
                                                       InkWell(
                                                         onTap:(){
-                                                          showCallDialog(context,remController.callMailsFilterList,index);
+                                                          showCallDialog(context,remController.callMailsDetailsList,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -2390,7 +2407,7 @@ void checkDate(){
                                                       ),
                                                       InkWell(
                                                         onTap:(){
-                                                          showCallDialog(context,remController.callMailsFilterList,index);
+                                                          showCallDialog(context,remController.callMailsDetailsList,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -2405,7 +2422,7 @@ void checkDate(){
                                                       ),
                                                       InkWell(
                                                         onTap:(){
-                                                          showCallDialog(context,remController.callMailsFilterList,index);
+                                                          showCallDialog(context,remController.callMailsDetailsList,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -2420,7 +2437,7 @@ void checkDate(){
                                                       ),
                                                       InkWell(
                                                         onTap:(){
-                                                          showCallDialog(context,remController.callMailsFilterList,index);
+                                                          showCallDialog(context,remController.callMailsDetailsList,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -2802,21 +2819,24 @@ void checkDate(){
                       Row(
                         children: [
                           Container(
-                            height: 30,
-                            width: 30,
+                            height: 40,
+                            width: 40,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: controllers.leadColors[i].withOpacity(0.10),
                               shape: BoxShape.circle,
                             ),
                             child: Container(
-                              height: 12,
-                              width: 12,
+                              height: 20,
+                              width: 20,
                               decoration: BoxDecoration(
                                 color: controllers.leadColors[i],
                                 shape: BoxShape.circle,
                               ),
-                              // child: CustomText(text: controllers.leadCategoryList[i].leadStatus, isCopy: false,colors: controllers.leadColors[i].withOpacity(0.10),),
+                              child: Center(
+                                child: CustomText(text: controllers.leadCategoryList[i].displayOrder.toString(),
+                                  isCopy: false,isBold: true,colors: Colors.white,textAlign: TextAlign.center,),
+                              ),
                             ),
                           ),
                           10.width,

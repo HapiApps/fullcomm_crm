@@ -187,7 +187,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
                           remController.selectedMeetSortBy.value =
                           "Custom Range";
 
-                          remController.filterAndSortMeetings(
+                          remController.dashboardMeetings(
                             searchText:
                             controllers.searchText.value.toLowerCase(),
                             callType:

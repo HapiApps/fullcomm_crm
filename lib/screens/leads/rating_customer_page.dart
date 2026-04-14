@@ -5,6 +5,7 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/components/customer_name_tile.dart';
+import 'package:fullcomm_crm/res/components/k_loadings.dart';
 import 'package:get/get.dart';
 import '../../common/utilities/mail_utils.dart';
 import '../../components/custom_filter_seaction.dart';
@@ -24,7 +25,8 @@ import '../../services/api_services.dart';
 class RatingPage extends StatefulWidget {
   final String rep;
   final String type;
-  const RatingPage({super.key, required this.type, required this.rep});
+  final String pageName;
+  const RatingPage({super.key, required this.type, required this.rep, required this.pageName});
 
   @override
   State<RatingPage> createState() => _RatingPageState();
@@ -58,14 +60,15 @@ class _RatingPageState extends State<RatingPage> {
     // debugPrint("controllers.ratingList2: ${controllers.ratingList}");
     // debugPrint("controllers.ratingList: ${controllers.ratingList.length}");
     // debugPrint("controllers.ratingList2: ${controllers.ratingList2.length}");
-    if(widget.rep=="1"){
-      apiService.getCustomerRatingDetails(widget.type);
-    }else{
-      apiService.getLeadRatingDetails(widget.type);
-    }
+
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
+      if(widget.rep=="1"){
+        apiService.getCustomerRatingDetails(widget.type);
+      }else{
+        apiService.getLeadRatingDetails(widget.type);
+      }
       searchBy();
       controllers.totalProspectPages.value=(controllers.ratingList2.length / controllers.itemsPerPage).ceil();
     });
@@ -74,22 +77,11 @@ class _RatingPageState extends State<RatingPage> {
       apiService.currentVersion();
       controllers.groupController.selectIndex(0);
       setState(() {
-        // controllers.search.clear();
         controllers.idList.clear();
         for (var lead in controllers.ratingList) {
           lead.select = false;
         }
-        // apiService.newLeadList = [];
-        // apiService.newLeadList.clear();
-        // //Santhiya
         controllers.isAllSelected.value = false;
-        // for (var item in controllers.isLeadsList) {
-        //   item["isSelect"] = false;
-        //
-        //   controllers.ratingList.removeWhere(
-        //         (e) => e.userId== item["lead_id"],
-        //   );
-        // }
       });
     });
     _leftController.addListener(() {
@@ -116,18 +108,6 @@ class _RatingPageState extends State<RatingPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    final screenWidth = MediaQuery.of(context).size.width;
-    // double tableWidth;
-    // if (screenWidth >= 1600) {
-    //   tableWidth = 4000;
-    // } else if (screenWidth >= 1200) {
-    //   tableWidth = 3000;
-    // } else if (screenWidth >= 900) {
-    //   tableWidth = 2400;
-    // } else {
-    //   tableWidth = 2000;
-    // }
     double tableWidth = tableController.tableHeadings.fold(
       0.0,
           (sum, h) => sum + (tableController.colWidth[h] ?? 150),
@@ -143,14 +123,16 @@ class _RatingPageState extends State<RatingPage> {
                 height: MediaQuery.of(context).size.height,
                 alignment: Alignment.center,
                 padding: EdgeInsets.fromLTRB(20, 5, 20, 16),
-                child: Column(
+                child: controllers.isCrmData.value== false?
+                CircularProgressIndicator():
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Header Section
                     HeaderSection(
                       list: controllers.ratingList,list2: controllers.ratingList2,
-                      title: "Leads - ${widget.type}",
-                      subtitle: "View all of your ${widget.type} Information",
+                      title: "${widget.pageName} - ${widget.type}",
+                      subtitle: "View all of your ${widget.pageName} Information",
                       // list: controllers.allLeadFuture,
                     ),
                     20.height,

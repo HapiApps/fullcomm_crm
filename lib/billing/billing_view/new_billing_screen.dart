@@ -22,7 +22,6 @@ import 'package:fullcomm_crm/view_models/customer_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import '../../billing_utils/caps_letter.dart';
 import '../../common/billing_data/local_data.dart';
 import '../../common/billing_data/project_data.dart';
@@ -32,6 +31,7 @@ import '../../common/utilities/utils.dart';
 import '../../components/Customtext.dart';
 import '../../components/custom_loading_button.dart';
 import '../../controller/controller.dart';
+import '../../controller/product_controller.dart';
 import '../../controller/settings_controller.dart';
 import '../../models/all_customers_obj.dart';
 import '../../models/billing_models/billing_product.dart';
@@ -1061,15 +1061,15 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                     actions: {
                       NextPageIntent: CallbackAction<NextPageIntent>(
                         onInvoke: (intent) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const OrderDetailPage(),
-                            ),
-                          ).then((_) {
-                            // 🔥 Search Bill screen-la irundhu thirumba vandha udane
-                            billingProvider.dropdownFocusNode.requestFocus();
-                          });
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => const OrderDetailPage(),
+                          //   ),
+                          // ).then((_) {
+                          //   // 🔥 Search Bill screen-la irundhu thirumba vandha udane
+                          //   billingProvider.dropdownFocusNode.requestFocus();
+                          // });
 
                           return null;
                         },
@@ -1837,9 +1837,9 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                   height: 35,
                                                   backgroundColor: Colors.white,
                                                   radius: 2,
-                                                  width: MediaQuery.of(context).size.width*0.05,
+                                                  width: MediaQuery.of(context).size.width*0.08,
                                                   isImage: false,
-                                                  text: "Hold Bill",
+                                                  text: "Save Draft",
                                                   textColor: colorsConst.primary,
                                                 ),10.width,
                                                 CustomLoadingButton(
@@ -1850,9 +1850,9 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                   height: 35,
                                                   backgroundColor: Colors.white,
                                                   radius: 2,
-                                                  width: MediaQuery.of(context).size.width*0.05,
+                                                  width: MediaQuery.of(context).size.width*0.08,
                                                   isImage: false,
-                                                  text: "Clear Bill",
+                                                  text: "Clear Draft",
                                                   textColor: colorsConst.primary,
                                                 ),10.width,
                                                 CustomLoadingButton(
@@ -1874,9 +1874,9 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                                   height: 35,
                                                   backgroundColor: Colors.white,
                                                   radius: 2,
-                                                  width: MediaQuery.of(context).size.width*0.07,
+                                                  width: MediaQuery.of(context).size.width*0.08,
                                                   isImage: false,
-                                                  text: "Release Bill",
+                                                  text: "Load Draft",
                                                   textColor: colorsConst.primary,
                                                 ),10.width,
                                                 CustomLoadingButton(
@@ -2248,252 +2248,475 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                             ),
                                           ),
                                         ),
-                                        Container(
-                                          width: screenWidth*0.09,
-                                          alignment: Alignment.center,
-                                          child: MyTextField(
-                                            focusNode: fieldFocusNode,
-                                            height: 50,
-                                            controller: quantityVariationController,
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: screenWidth*0.09,
+                                              alignment: Alignment.center,
+                                              child: MyTextField(
+                                                focusNode: fieldFocusNode,
+                                                height: 50,
+                                                controller: quantityVariationController,
 
-                                            hintText: billingProvider
-                                                .selectedProduct
-                                                ?.isLoose == '1'
-                                                ? "1.000"
-                                                : "1",
-                                            labelText: billingProvider
-                                                .selectedProduct
-                                                ?.isLoose == '1'
-                                                ? "variation"
-                                                : "Quantity",
+                                                hintText: billingProvider
+                                                    .selectedProduct
+                                                    ?.isLoose == '1'
+                                                    ? "1.000"
+                                                    : "1",
+                                                labelText: billingProvider
+                                                    .selectedProduct
+                                                    ?.isLoose == '1'
+                                                    ? "variation"
+                                                    : "Quantity",
 
-                                            keyboardType: TextInputType
-                                                .number,
-                                            inputFormatters: billingProvider
-                                                .selectedProduct
-                                                ?.isLoose == '1'
-                                                ? InputFormatters
-                                                .variationInput
-                                                : InputFormatters
-                                                .quantityInput,
-                                            onFieldSubmitted: (value) {
-                                              final billing = billingProvider;
+                                                keyboardType: TextInputType
+                                                    .number,
+                                                inputFormatters: billingProvider
+                                                    .selectedProduct
+                                                    ?.isLoose == '1'
+                                                    ? InputFormatters
+                                                    .variationInput
+                                                    : InputFormatters
+                                                    .quantityInput,
+                                                onFieldSubmitted: (value) {
+                                                  final billing = billingProvider;
 
-                                              // 1) Selected product must exist
-                                              final product = billing.selectedProduct;
-                                              bool isOutOfStock(ProductData p) {
-                                                final double qty =
-                                                    double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
-                                                return qty <= 0;
-                                              }
-                                              if (product == null) {
-                                                Toasts.showToastBar(
-                                                  context: context,
-                                                  text: "Please add product",
-                                                  color: Colors.red,
-                                                );
-                                                return;
-                                              }
-                                              if (isOutOfStock(product)) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text("❌ Out of Stock"),
-                                                    backgroundColor: Colors.red,
-                                                  ),
-                                                );
-                                                return;
-                                              }
+                                                  // 1) Selected product must exist
+                                                  final product = billing.selectedProduct;
+                                                  bool isOutOfStock(ProductData p) {
+                                                    final double qty =
+                                                        double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
+                                                    return qty <= 0;
+                                                  }
+                                                  if (product == null) {
+                                                    Toasts.showToastBar(
+                                                      context: context,
+                                                      text: "Please add product",
+                                                      color: Colors.red,
+                                                    );
+                                                    return;
+                                                  }
+                                                  if (isOutOfStock(product)) {
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text("❌ Out of Stock"),
+                                                        backgroundColor: Colors.red,
+                                                      ),
+                                                    );
+                                                    return;
+                                                  }
 
-                                              // 2) Entered value cleanup
-                                              final enteredText = value.trim().isEmpty ? "1" : value.trim();
+                                                  // 2) Entered value cleanup
+                                                  final enteredText = value.trim().isEmpty ? "1" : value.trim();
 
-                                              // 3) Safe parsing
-                                              final double parsedDouble = safeDouble(enteredText);
-                                              final int parsedInt = safeInt(enteredText);
+                                                  // 3) Safe parsing
+                                                  final double parsedDouble = safeDouble(enteredText);
+                                                  final int parsedInt = safeInt(enteredText);
 
-                                              // 4) Safe product values
-                                              final double stockQty = safeDouble(product.qtyLeft);
+                                                  // 4) Safe product values
+                                                  final double stockQty = safeDouble(product.qtyLeft);
 
-                                              // ---------------------------------------------------
-                                              // PRODUCT EXISTS → UPDATE IT
-                                              // ---------------------------------------------------
-                                              final alreadyExists = billing.billingItems.any(
-                                                    (item) => item.id == product.id.toString(),
-                                              );
-
-                                              if (alreadyExists) {
-                                                final existingItem = billing.billingItems.firstWhere(
-                                                      (item) => item.id == product.id.toString(),
-                                                );
-
-                                                final double currentQty = product.isLoose == '1'
-                                                    ? existingItem.variation / 1000
-                                                    : existingItem.quantity.toDouble();
-
-                                                final double newQty = product.isLoose == '1'
-                                                    ? parsedDouble
-                                                    : parsedInt.toDouble();
-
-                                                final double totalQty = currentQty + newQty;
-                                                if (stockQty <= 0) {
-                                                  Toasts.showToastBar(
-                                                    context: context,
-                                                    text: "Out of Stock",
-                                                    color: Colors.red,
-                                                  );
-                                                  return;
-                                                }
-
-                                                // STOCK CHECK
-                                                if (totalQty > stockQty) {
-                                                  Toasts.showToastBar(
-                                                    context: context,
-                                                    text: "Stock limit reached! Available: $stockQty",
-                                                    color: Colors.red,
+                                                  // ---------------------------------------------------
+                                                  // PRODUCT EXISTS → UPDATE IT
+                                                  // ---------------------------------------------------
+                                                  final alreadyExists = billing.billingItems.any(
+                                                        (item) => item.id == product.id.toString(),
                                                   );
 
-                                                  // 🔥 CLEAR EVERYTHING RELATED TO THIS PRODUCT
+                                                  if (alreadyExists) {
+                                                    final existingItem = billing.billingItems.firstWhere(
+                                                          (item) => item.id == product.id.toString(),
+                                                    );
+
+                                                    final double currentQty = product.isLoose == '1'
+                                                        ? existingItem.variation / 1000
+                                                        : existingItem.quantity.toDouble();
+
+                                                    final double newQty = product.isLoose == '1'
+                                                        ? parsedDouble
+                                                        : parsedInt.toDouble();
+
+                                                    final double totalQty = currentQty + newQty;
+                                                    if (stockQty <= 0) {
+                                                      Toasts.showToastBar(
+                                                        context: context,
+                                                        text: "Out of Stock",
+                                                        color: Colors.red,
+                                                      );
+                                                      return;
+                                                    }
+
+                                                    // STOCK CHECK
+                                                    if (totalQty > stockQty) {
+                                                      Toasts.showToastBar(
+                                                        context: context,
+                                                        text: "Stock limit reached! Available: $stockQty",
+                                                        color: Colors.red,
+                                                      );
+
+                                                      // 🔥 CLEAR EVERYTHING RELATED TO THIS PRODUCT
+                                                      safeClear(quantityVariationController);
+                                                      safeClear(dropdownController);
+
+                                                      billing.selectedProduct = null;
+
+                                                      // 🔥 MOVE FOCUS BACK TO PRODUCT FIELD
+                                                      Future.microtask(() {
+                                                        billing.dropdownFocusNode.requestFocus();
+                                                      });
+
+                                                      return;
+                                                    }
+                                                    // UPDATE EXISTING ITEM
+                                                    final index = billing.billingItems.indexOf(existingItem);
+
+                                                    if (product.isLoose == '1') {
+                                                      final double addQty = parsedDouble * 1000;
+                                                      existingItem.variation += addQty;
+
+                                                      billing.quantityControllers[index]!.text =
+                                                          (existingItem.variation / 1000).toStringAsFixed(3);
+
+                                                    } else
+                                                    {
+                                                      existingItem.quantity += parsedInt;
+
+                                                      billing.quantityControllers[index]!.text =
+                                                          existingItem.quantity.toString();
+                                                    }
+
+                                                    billing.updateExistingBillingItem(existingItem);
+                                                    billing.notifyListeners();
+
+                                                    // RESET
+                                                    safeClear(quantityVariationController);
+                                                    safeClear(dropdownController);
+                                                    billing.selectedProduct = null;
+                                                    Future.microtask(() {
+                                                      billing.dropdownFocusNode.requestFocus();
+                                                    });
+
+                                                    return;
+                                                  }
+
+                                                  // ---------------------------------------------------
+                                                  // ADD NEW PRODUCT
+                                                  // ---------------------------------------------------
+                                                  if (product.isLoose == '1') {
+                                                    final double enteredKg = parsedDouble <= 0 ? 1.0 : parsedDouble;
+                                                    final double enteredQty = enteredKg * 1000;
+                                                    if (enteredQty > stockQty) {
+                                                      Toasts.showToastBar(
+                                                        context: context,
+                                                        text: "Entered weight exceeds stock ($stockQty g).",
+                                                        color: Colors.red,
+                                                      );
+                                                      Future.microtask(() {
+                                                        fieldFocusNode.requestFocus();
+                                                      });
+
+                                                      return;
+                                                    }
+
+                                                    billing.addBillingItem(
+                                                      BillingItem(
+                                                        id: product.id.toString(),
+                                                        product: product,
+                                                        productTitle: "${product.pTitle}",
+                                                        variation: enteredQty,
+                                                        variationUnit: "${product.pVariation}${product.unit}",
+                                                        quantity: 1,
+                                                        p_out_price: product.outPrice.toString(),
+                                                        p_mrp:product.mrp.toString(),
+                                                      ),
+                                                    );
+
+                                                    final index = billing.billingItems.indexWhere(
+                                                            (item) => item.product.id == product.id.toString());
+
+                                                    billing.quantityControllers[index]!.text =
+                                                        enteredKg.toStringAsFixed(3);
+
+                                                  } else {
+                                                    final int finalQty = parsedInt <= 0 ? 1 : parsedInt;
+                                                    if (stockQty <= 0) {
+                                                      Toasts.showToastBar(
+                                                        context: context,
+                                                        text: "Out of Stock",
+                                                        color: Colors.red,
+                                                      );
+                                                      return;
+                                                    }
+
+                                                    if (finalQty > stockQty) {
+                                                      Toasts.showToastBar(
+                                                        context: context,
+                                                        text: "Entered quantity exceeds stock ($stockQty).",
+                                                        color: Colors.red,
+                                                      );
+                                                      Future.microtask(() {
+                                                        fieldFocusNode.requestFocus();
+                                                      });
+
+                                                      return;
+                                                    }
+
+                                                    billing.addBillingItem(
+                                                      BillingItem(
+                                                        id: product.id.toString(),
+                                                        product: product,
+                                                        variation: 1,
+                                                        variationUnit: "${product.pVariation}${product.unit}",
+                                                        quantity: finalQty,
+                                                        productTitle: product.pTitle ?? "",
+                                                        p_out_price: product.outPrice.toString(),
+                                                        p_mrp:product.mrp.toString(),
+                                                      ),
+                                                    );
+                                                  }
+
+                                                  // ---------------------------------------------------
+                                                  // FINAL RESET
+                                                  // ---------------------------------------------------
+                                                  safeClear(billing.barcodeScanner);
+                                                  billing.selectedProduct = null;
+
+                                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                      scrollDown();
+                                                    });
+                                                  });
+
                                                   safeClear(quantityVariationController);
                                                   safeClear(dropdownController);
 
-                                                  billing.selectedProduct = null;
-
-                                                  // 🔥 MOVE FOCUS BACK TO PRODUCT FIELD
                                                   Future.microtask(() {
                                                     billing.dropdownFocusNode.requestFocus();
                                                   });
+                                                },
 
-                                                  return;
-                                                }
-                                                // UPDATE EXISTING ITEM
-                                                final index = billing.billingItems.indexOf(existingItem);
+                                              ),
+                                            ),
+                                            10.width,
+                                            TextButton(
+                                                onPressed: () {
+                                                  final billing = billingProvider;
 
-                                                if (product.isLoose == '1') {
-                                                  final double addQty = parsedDouble * 1000;
-                                                  existingItem.variation += addQty;
+                                                  // 1) Selected product must exist
+                                                  final product = billing.selectedProduct;
+                                                  bool isOutOfStock(ProductData p) {
+                                                    final double qty =
+                                                        double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
+                                                    return qty <= 0;
+                                                  }
+                                                  if (product == null) {
+                                                    Toasts.showToastBar(
+                                                      context: context,
+                                                      text: "Please add product",
+                                                      color: Colors.red,
+                                                    );
+                                                    return;
+                                                  }
+                                                  if (isOutOfStock(product)) {
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text("❌ Out of Stock"),
+                                                        backgroundColor: Colors.red,
+                                                      ),
+                                                    );
+                                                    return;
+                                                  }
 
-                                                  billing.quantityControllers[index]!.text =
-                                                      (existingItem.variation / 1000).toStringAsFixed(3);
+                                                  // 2) Entered value cleanup
+                                                  final enteredText = quantityVariationController.text.trim().isEmpty ? "1" : quantityVariationController.text.trim();
 
-                                                } else
-                                                {
-                                                  existingItem.quantity += parsedInt;
+                                                  // 3) Safe parsing
+                                                  final double parsedDouble = safeDouble(enteredText);
+                                                  final int parsedInt = safeInt(enteredText);
 
-                                                  billing.quantityControllers[index]!.text =
-                                                      existingItem.quantity.toString();
-                                                }
+                                                  // 4) Safe product values
+                                                  final double stockQty = safeDouble(product.qtyLeft);
 
-                                                billing.updateExistingBillingItem(existingItem);
-                                                billing.notifyListeners();
-
-                                                // RESET
-                                                safeClear(quantityVariationController);
-                                                safeClear(dropdownController);
-                                                billing.selectedProduct = null;
-                                                Future.microtask(() {
-                                                  billing.dropdownFocusNode.requestFocus();
-                                                });
-
-                                                return;
-                                              }
-
-                                              // ---------------------------------------------------
-                                              // ADD NEW PRODUCT
-                                              // ---------------------------------------------------
-                                              if (product.isLoose == '1') {
-                                                final double enteredKg = parsedDouble <= 0 ? 1.0 : parsedDouble;
-                                                final double enteredQty = enteredKg * 1000;
-                                                if (enteredQty > stockQty) {
-                                                  Toasts.showToastBar(
-                                                    context: context,
-                                                    text: "Entered weight exceeds stock ($stockQty g).",
-                                                    color: Colors.red,
+                                                  // ---------------------------------------------------
+                                                  // PRODUCT EXISTS → UPDATE IT
+                                                  // ---------------------------------------------------
+                                                  final alreadyExists = billing.billingItems.any(
+                                                        (item) => item.id == product.id.toString(),
                                                   );
-                                                  Future.microtask(() {
-                                                    fieldFocusNode.requestFocus();
+
+                                                  if (alreadyExists) {
+                                                    final existingItem = billing.billingItems.firstWhere(
+                                                          (item) => item.id == product.id.toString(),
+                                                    );
+
+                                                    final double currentQty = product.isLoose == '1'
+                                                        ? existingItem.variation / 1000
+                                                        : existingItem.quantity.toDouble();
+
+                                                    final double newQty = product.isLoose == '1'
+                                                        ? parsedDouble
+                                                        : parsedInt.toDouble();
+
+                                                    final double totalQty = currentQty + newQty;
+                                                    if (stockQty <= 0) {
+                                                      Toasts.showToastBar(
+                                                        context: context,
+                                                        text: "Out of Stock",
+                                                        color: Colors.red,
+                                                      );
+                                                      return;
+                                                    }
+
+                                                    // STOCK CHECK
+                                                    if (totalQty > stockQty) {
+                                                      Toasts.showToastBar(
+                                                        context: context,
+                                                        text: "Stock limit reached! Available: $stockQty",
+                                                        color: Colors.red,
+                                                      );
+
+                                                      // 🔥 CLEAR EVERYTHING RELATED TO THIS PRODUCT
+                                                      safeClear(quantityVariationController);
+                                                      safeClear(dropdownController);
+
+                                                      billing.selectedProduct = null;
+
+                                                      // 🔥 MOVE FOCUS BACK TO PRODUCT FIELD
+                                                      Future.microtask(() {
+                                                        billing.dropdownFocusNode.requestFocus();
+                                                      });
+
+                                                      return;
+                                                    }
+                                                    // UPDATE EXISTING ITEM
+                                                    final index = billing.billingItems.indexOf(existingItem);
+
+                                                    if (product.isLoose == '1') {
+                                                      final double addQty = parsedDouble * 1000;
+                                                      existingItem.variation += addQty;
+
+                                                      billing.quantityControllers[index]!.text =
+                                                          (existingItem.variation / 1000).toStringAsFixed(3);
+
+                                                    } else
+                                                    {
+                                                      existingItem.quantity += parsedInt;
+
+                                                      billing.quantityControllers[index]!.text =
+                                                          existingItem.quantity.toString();
+                                                    }
+
+                                                    billing.updateExistingBillingItem(existingItem);
+                                                    billing.notifyListeners();
+
+                                                    // RESET
+                                                    safeClear(quantityVariationController);
+                                                    safeClear(dropdownController);
+                                                    billing.selectedProduct = null;
+                                                    Future.microtask(() {
+                                                      billing.dropdownFocusNode.requestFocus();
+                                                    });
+
+                                                    return;
+                                                  }
+
+                                                  // ---------------------------------------------------
+                                                  // ADD NEW PRODUCT
+                                                  // ---------------------------------------------------
+                                                  if (product.isLoose == '1') {
+                                                    final double enteredKg = parsedDouble <= 0 ? 1.0 : parsedDouble;
+                                                    final double enteredQty = enteredKg * 1000;
+                                                    if (enteredQty > stockQty) {
+                                                      Toasts.showToastBar(
+                                                        context: context,
+                                                        text: "Entered weight exceeds stock ($stockQty g).",
+                                                        color: Colors.red,
+                                                      );
+                                                      Future.microtask(() {
+                                                        fieldFocusNode.requestFocus();
+                                                      });
+
+                                                      return;
+                                                    }
+
+                                                    billing.addBillingItem(
+                                                      BillingItem(
+                                                        id: product.id.toString(),
+                                                        product: product,
+                                                        productTitle: "${product.pTitle}",
+                                                        variation: enteredQty,
+                                                        variationUnit: "${product.pVariation}${product.unit}",
+                                                        quantity: 1,
+                                                        p_out_price: product.outPrice.toString(),
+                                                        p_mrp:product.mrp.toString(),
+                                                      ),
+                                                    );
+
+                                                    final index = billing.billingItems.indexWhere(
+                                                            (item) => item.product.id == product.id.toString());
+
+                                                    billing.quantityControllers[index]!.text =
+                                                        enteredKg.toStringAsFixed(3);
+
+                                                  } else {
+                                                    final int finalQty = parsedInt <= 0 ? 1 : parsedInt;
+                                                    if (stockQty <= 0) {
+                                                      Toasts.showToastBar(
+                                                        context: context,
+                                                        text: "Out of Stock",
+                                                        color: Colors.red,
+                                                      );
+                                                      return;
+                                                    }
+
+                                                    if (finalQty > stockQty) {
+                                                      Toasts.showToastBar(
+                                                        context: context,
+                                                        text: "Entered quantity exceeds stock ($stockQty).",
+                                                        color: Colors.red,
+                                                      );
+                                                      Future.microtask(() {
+                                                        fieldFocusNode.requestFocus();
+                                                      });
+
+                                                      return;
+                                                    }
+
+                                                    billing.addBillingItem(
+                                                      BillingItem(
+                                                        id: product.id.toString(),
+                                                        product: product,
+                                                        variation: 1,
+                                                        variationUnit: "${product.pVariation}${product.unit}",
+                                                        quantity: finalQty,
+                                                        productTitle: product.pTitle ?? "",
+                                                        p_out_price: product.outPrice.toString(),
+                                                        p_mrp:product.mrp.toString(),
+                                                      ),
+                                                    );
+                                                  }
+
+                                                  // ---------------------------------------------------
+                                                  // FINAL RESET
+                                                  // ---------------------------------------------------
+                                                  safeClear(billing.barcodeScanner);
+                                                  billing.selectedProduct = null;
+
+                                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                      scrollDown();
+                                                    });
                                                   });
 
-                                                  return;
-                                                }
+                                                  safeClear(quantityVariationController);
+                                                  safeClear(dropdownController);
 
-                                                billing.addBillingItem(
-                                                  BillingItem(
-                                                    id: product.id.toString(),
-                                                    product: product,
-                                                    productTitle: "${product.pTitle}",
-                                                    variation: enteredQty,
-                                                    variationUnit: "${product.pVariation}${product.unit}",
-                                                    quantity: 1,
-                                                    p_out_price: product.outPrice.toString(),
-                                                    p_mrp:product.mrp.toString(),
-                                                  ),
-                                                );
-
-                                                final index = billing.billingItems.indexWhere(
-                                                        (item) => item.product.id == product.id.toString());
-
-                                                billing.quantityControllers[index]!.text =
-                                                    enteredKg.toStringAsFixed(3);
-
-                                              } else {
-                                                final int finalQty = parsedInt <= 0 ? 1 : parsedInt;
-                                                if (stockQty <= 0) {
-                                                  Toasts.showToastBar(
-                                                    context: context,
-                                                    text: "Out of Stock",
-                                                    color: Colors.red,
-                                                  );
-                                                  return;
-                                                }
-
-                                                if (finalQty > stockQty) {
-                                                  Toasts.showToastBar(
-                                                    context: context,
-                                                    text: "Entered quantity exceeds stock ($stockQty).",
-                                                    color: Colors.red,
-                                                  );
                                                   Future.microtask(() {
-                                                    fieldFocusNode.requestFocus();
+                                                    billing.dropdownFocusNode.requestFocus();
                                                   });
-
-                                                  return;
-                                                }
-
-                                                billing.addBillingItem(
-                                                  BillingItem(
-                                                    id: product.id.toString(),
-                                                    product: product,
-                                                    variation: 1,
-                                                    variationUnit: "${product.pVariation}${product.unit}",
-                                                    quantity: finalQty,
-                                                    productTitle: product.pTitle ?? "",
-                                                    p_out_price: product.outPrice.toString(),
-                                                    p_mrp:product.mrp.toString(),
-                                                  ),
-                                                );
-                                              }
-
-                                              // ---------------------------------------------------
-                                              // FINAL RESET
-                                              // ---------------------------------------------------
-                                              safeClear(billing.barcodeScanner);
-                                              billing.selectedProduct = null;
-
-                                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                  scrollDown();
-                                                });
-                                              });
-
-                                              safeClear(quantityVariationController);
-                                              safeClear(dropdownController);
-
-                                              Future.microtask(() {
-                                                billing.dropdownFocusNode.requestFocus();
-                                              });
-                                            },
-
-                                          ),
+                                                },
+                                                child: CustomText(text: "Add Product", isCopy: false,colors: colorsConst.primary,)),
+                                          ],
                                         ),
                                         CustomLoadingButton(
                                           callback: () {
@@ -2511,7 +2734,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                           radius: 2,
                                           width: screenWidth*0.1,
                                           isImage: false,
-                                          text: "View Quotation",
+                                          text: "View This Draft",
                                           textColor: Colors.white,
                                         ),
                                         CustomLoadingButton(
@@ -3310,7 +3533,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
         pageFormat: PdfPageFormat.a4,
         build: (context) {
           return pw.Container(
-            padding: const pw.EdgeInsets.all(20),
+            padding: const pw.EdgeInsets.all(10),
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
@@ -3458,6 +3681,24 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                     ),
                   ],
                 ),
+                pw.SizedBox(height: 10),
+                pw.Text("Terms And Conditions",style: pw.TextStyle(
+                  fontSize: 15,
+                  fontWeight: pw.FontWeight.bold, // ✔ correct
+                )),
+                pw.SizedBox(height: 10),
+                pw.ListView.builder(
+                  itemCount: productCtr.termsAndConditionsList.length,
+                  itemBuilder: (context,i){
+                    return
+                      pw.Row(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text("${i+1} . "),
+                          pw.Text(productCtr.termsAndConditionsList[i]["name"])
+                        ],
+                      );
+                  }, )
               ],
             ),
           );
@@ -3920,11 +4161,11 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                                 text: "Scan QR & Pay",
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold),
-                            SizedBox(
-                              width: 200,
-                              height: 200,
-                              child: QrImageView(data: qrData!),
-                            ),
+                            // SizedBox(
+                            //   width: 200,
+                            //   height: 200,
+                            //   child: QrImageView(data: qrData!),
+                            // ),
                           ],
                         ],
                       ),

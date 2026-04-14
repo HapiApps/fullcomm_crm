@@ -19,6 +19,7 @@ import '../screens/quotation/quotation_page.dart';
 import '../screens/records/records.dart';
 import '../screens/reminder/reminder_page.dart';
 import '../screens/settings/general_settings.dart';
+import '../screens/settings/quotation_settings.dart';
 import '../screens/settings/reminder_settings.dart';
 
 class SideBar extends StatelessWidget {
@@ -262,12 +263,12 @@ class SideBar extends StatelessWidget {
               context: context,
               controllers: controllers,
               colorsConst: colorsConst,
-              index: 105,
+              index: 107,
               icon: Icons.production_quantity_limits_sharp,
-              selectedImage: "assets/images/product1.png",
-              unSelectedImage: "assets/images/product.png",
-              label: constValue.products,
-              page: const ProductPage(),
+              selectedImage: "assets/images/order1.png",
+              unSelectedImage: "assets/images/order.png",
+              label: "Quotation",
+              page: const QuotationPage(),
             ),
             SidebarItem(
               context: context,
@@ -275,8 +276,8 @@ class SideBar extends StatelessWidget {
               colorsConst: colorsConst,
               index: 106,
               icon: Icons.production_quantity_limits_sharp,
-              selectedImage: "assets/images/order1.png",
-              unSelectedImage: "assets/images/order.png",
+              selectedImage: "assets/images/cart.png",
+              unSelectedImage: "assets/images/cart_1.png",
               label: "Orders",
               page: const OrderPage(),
             ),
@@ -284,12 +285,12 @@ class SideBar extends StatelessWidget {
               context: context,
               controllers: controllers,
               colorsConst: colorsConst,
-              index: 107,
+              index: 105,
               icon: Icons.production_quantity_limits_sharp,
-              selectedImage: "assets/images/order1.png",
-              unSelectedImage: "assets/images/order.png",
-              label: "Quotation",
-              page: const QuotationPage(),
+              selectedImage: "assets/images/product1.png",
+              unSelectedImage: "assets/images/product.png",
+              label: constValue.products,
+              page: const ProductPage(),
             ),
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()
@@ -387,6 +388,7 @@ class SideBar extends StatelessWidget {
                           //subItem(context,controllers.isSettingsExpanded, "User Plan & Access", 703, const UserPlan()),
                           subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "User Management", 704, const EmployeeScreen()),
                           subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "Reminder Settings", 705, const ReminderSettings()),
+                          subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "Invoice Settings", 706, const QuotationSettings()),
                         ],
                       ),
                     )

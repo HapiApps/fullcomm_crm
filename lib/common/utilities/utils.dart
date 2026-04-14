@@ -1910,24 +1910,82 @@ class Utils {
   //     ),
   //   ));
   // }
-
+///
+  // String formatDateTime(String dates, String times) {
+  //   try {
+  //     List<String> dateList = dates.split("||");
+  //     List<String> timeList = times.split("||");
+  //
+  //     String startRaw = dateList[0].trim();
+  //     String endRaw = dateList[1].trim();
+  //
+  //     String startTime = timeList[0].trim();
+  //     String endTime = timeList[1].trim();
+  //
+  //     DateTime now = DateTime.now();
+  //
+  //     // 🔥 handle both formats
+  //     DateTime parseDate(String input) {
+  //       try {
+  //         // with time
+  //         return DateFormat("dd-MM-yyyy hh:mm a").parse(input);
+  //       } catch (_) {
+  //         try {
+  //           return DateFormat("dd.MM.yyyy").parse(input);
+  //         } catch (_) {
+  //           return DateFormat("dd-MM-yyyy").parse(input);
+  //         }
+  //       }
+  //     }
+  //
+  //     DateTime start = parseDate(startRaw);
+  //     DateTime end = parseDate(endRaw);
+  //
+  //     String formatDate(DateTime date) {
+  //       if (date.year == now.year) {
+  //         return DateFormat("dd/MM").format(date);
+  //       } else {
+  //         return DateFormat("dd/MM/yyyy").format(date);
+  //       }
+  //     }
+  //
+  //     // ✅ SAME DATE
+  //     if (DateFormat("yyyyMMdd").format(start) ==
+  //         DateFormat("yyyyMMdd").format(end)) {
+  //
+  //       if (startTime == endTime) {
+  //         return "${formatDate(start)} $startTime";
+  //       } else {
+  //         return "${formatDate(start)} $startTime to $endTime";
+  //       }
+  //     }
+  //
+  //     // ✅ DIFFERENT DATE
+  //     return "${formatDate(start)} $startTime to ${formatDate(end)} $endTime";
+  //
+  //   } catch (e) {
+  //     print("Error: $e"); // debug
+  //     return "";
+  //   }
+  // }
   String formatDateTime(String dates, String times) {
     try {
       List<String> dateList = dates.split("||");
       List<String> timeList = times.split("||");
 
       String startRaw = dateList[0].trim();
-      String endRaw = dateList[1].trim();
+      String endRaw =
+      dateList.length > 1 ? dateList[1].trim() : startRaw;
 
       String startTime = timeList[0].trim();
-      String endTime = timeList[1].trim();
+      String endTime =
+      timeList.length > 1 ? timeList[1].trim() : startTime;
 
       DateTime now = DateTime.now();
 
-      // 🔥 handle both formats
+      // 🔥 handle multiple date formats
       DateTime parseDate(String input) {
         try {
-          // with time
           return DateFormat("dd-MM-yyyy hh:mm a").parse(input);
         } catch (_) {
           try {
@@ -1941,6 +1999,21 @@ class Utils {
       DateTime start = parseDate(startRaw);
       DateTime end = parseDate(endRaw);
 
+      // 🔥 FIX: support 03.42 PM format
+      DateTime parseTime(String time, DateTime baseDate) {
+        time = time.replaceAll(".", ":"); // ✅ முக்கிய fix
+
+        final t = DateFormat("hh:mm a").parse(time);
+
+        return DateTime(
+          baseDate.year,
+          baseDate.month,
+          baseDate.day,
+          t.hour,
+          t.minute,
+        );
+      }
+
       String formatDate(DateTime date) {
         if (date.year == now.year) {
           return DateFormat("dd/MM").format(date);
@@ -1949,26 +2022,39 @@ class Utils {
         }
       }
 
-      // ✅ SAME DATE
+      // ✅ SAME DATE → show duration
       if (DateFormat("yyyyMMdd").format(start) ==
           DateFormat("yyyyMMdd").format(end)) {
 
-        if (startTime == endTime) {
-          return "${formatDate(start)} $startTime";
-        } else {
-          return "${formatDate(start)} $startTime to $endTime";
+        DateTime startDateTime = parseTime(startTime, start);
+        DateTime endDateTime = parseTime(endTime, end);
+
+        Duration diff = endDateTime.difference(startDateTime);
+
+        // 🔥 negative case handle (optional safety)
+        if (diff.isNegative) {
+          diff = diff.abs();
         }
+
+        int hours = diff.inHours;
+        int minutes = diff.inMinutes % 60;
+
+        String duration = "";
+        if (hours > 0) duration += "$hours hr ";
+        if (minutes > 0) duration += "$minutes min";
+        if (duration.isEmpty) duration = "0 min";
+
+        return "${formatDate(start)} $duration";
       }
 
-      // ✅ DIFFERENT DATE
+      // ✅ DIFFERENT DATE → NO duration
       return "${formatDate(start)} $startTime to ${formatDate(end)} $endTime";
 
     } catch (e) {
-      print("Error: $e"); // debug
+      print("Error: $e");
       return "";
     }
   }
-
   void addAppointment(context){
   remController.assignedIds.value="";
   remController.assignedNames.value="";
